@@ -1,5 +1,7 @@
 {
   "name": "twGuider",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "ionic-angular"
 }
