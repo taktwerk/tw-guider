@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.taktwerk.twguider" version="0.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.taktwerk.twguider" version="0.0.5" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>twGuider</name>
     <description>taktwerk Guider App</description>
     <author email="support@taktwerk.ch" href="https://www.taktwerk.ch/">taktwerk SA</author>
@@ -83,6 +83,7 @@
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-ionic-webview" spec="^2.3.1" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.1.3" />
+    <plugin name="cordova-ios-plugin-no-export-compliance" spec="0.0.5" />
     <plugin name="cordova-plugin-ionic" spec="^5.2.10">
         <variable name="APP_ID" value="0736f66c" />
         <variable name="CHANNEL_NAME" value="Master" />
