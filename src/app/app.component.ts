@@ -33,7 +33,7 @@ export class MyApp {
 
             console.info('iab url', appUrl);
 
-            this.browser = iab.create(appUrl, "_self", {'location': 'no', 'toolbar': 'yes'});
+            this.browser = iab.create(appUrl, "_blank", {'location': 'no'});
         });
     }
 
