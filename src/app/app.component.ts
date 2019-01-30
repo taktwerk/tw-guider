@@ -21,9 +21,9 @@ export class MyApp {
     constructor(platform: Platform,
                 statusBar: StatusBar,
                 splashScreen: SplashScreen,
-                iab: InAppBrowser,
-                device: Device,
-                appVersion: AppVersion,
+                public iab: InAppBrowser,
+                public device: Device,
+                public appVersion: AppVersion,
                 toast: Toast) {
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
@@ -34,20 +34,24 @@ export class MyApp {
             toast.show(appVersion.getAppName() + ': ' + appVersion.getVersionNumber(), '5000', 'center').subscribe(
                 toast => {
                     console.log(toast);
+                    this.openWebview()
                 }
             );
-
-            // Build the In App Browser url
-            var appUrl = "https://demo.taktwerk.ch/en/webview-login/?client=1";
-
-            appUrl = "http://tw-demo-dev.devhost.taktwerk.ch/en/webview-login/?client=2";
-
-            appUrl += "&device_key=" + device.uuid + "&device_name=" + device.model;
-
-            console.info('iab url', appUrl);
-
-            this.browser = iab.create(appUrl, "_blank", {'location': 'no', 'toolbar': 'no'});
         });
+    }
+
+    public openWebview() {
+
+        // Build the In App Browser url
+        var appUrl = "https://demo.taktwerk.ch/en/webview-login/?client=1";
+
+        appUrl = "http://tw-demo-dev.devhost.taktwerk.ch/en/webview-login/?client=2";
+
+        appUrl += "&device_key=" + this.device.uuid + "&device_name=" + this.device.model;
+
+        console.info('iab url', appUrl);
+
+        this.browser = this.iab.create(appUrl, "_blank", {'location': 'no', 'toolbar': 'no'});
     }
 
     ionViewWillLeave() {
