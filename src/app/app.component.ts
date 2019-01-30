@@ -5,6 +5,11 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Device } from '@ionic-native/device';
 
+
+import { Toast } from '@ionic-native/toast';
+import { AppVersion } from '@ionic-native/app-version';
+
+
 import { HomePage } from '../pages/home/home';
 @Component({
   templateUrl: 'app.html'
@@ -17,12 +22,20 @@ export class MyApp {
                 statusBar: StatusBar,
                 splashScreen: SplashScreen,
                 iab: InAppBrowser,
-                device: Device) {
+                device: Device,
+                appVersion: AppVersion,
+                toast: Toast) {
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
             // Here you can do any higher level native things you might need.
             statusBar.styleDefault();
             splashScreen.hide();
+
+            toast.show(appVersion.getAppName() + ': ' + appVersion.getVersionNumber(), '5000', 'center').subscribe(
+                toast => {
+                    console.log(toast);
+                }
+            );
 
             // Build the In App Browser url
             var appUrl = "https://demo.taktwerk.ch/en/webview-login/?client=1";

@@ -9,6 +9,10 @@ import { HomePage } from '../pages/home/home';
 import { InAppBrowser } from "@ionic-native/in-app-browser";
 import { Device } from '@ionic-native/device';
 
+import { AppVersion } from "@ionic-native/app-version";
+import { Toast } from '@ionic-native/toast';
+
+
 @NgModule({
   declarations: [
     MyApp,
@@ -27,6 +31,8 @@ import { Device } from '@ionic-native/device';
     StatusBar,
     SplashScreen,
     InAppBrowser,
+    AppVersion,
+    Toast,
     Device,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
