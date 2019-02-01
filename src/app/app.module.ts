@@ -11,6 +11,8 @@ import { Device } from '@ionic-native/device';
 
 import { AppVersion } from "@ionic-native/app-version";
 import { Toast } from '@ionic-native/toast';
+import { IonicStorageModule } from "@ionic/storage";
+import { QRScanner } from "@ionic-native/qr-scanner";
 
 
 @NgModule({
@@ -20,7 +22,8 @@ import { Toast } from '@ionic-native/toast';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -34,6 +37,7 @@ import { Toast } from '@ionic-native/toast';
     AppVersion,
     Toast,
     Device,
+    QRScanner,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

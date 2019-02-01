@@ -6,6 +6,24 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding style="background: none transparent;">
 
+    <ion-card *ngIf="!isScanning">
+        <ion-item>
+            <ion-label>Client ID</ion-label>
+            <ion-input [(ngModel)]="client_id"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Dev Mode</ion-label>
+            <ion-checkbox [(ngModel)]="dev_mode"></ion-checkbox>
+        </ion-item>
+        <button ion-button (click)="save($event)">Save</button>
+
+        <ion-label>{{ version }}</ion-label>
+
+    </ion-card>
+
+    <ion-fab bottom right>
+        <button ion-fab mini (click)="scanQrcode()"><ion-icon name="camera"></ion-icon></button>
+    </ion-fab>
 </ion-content>
