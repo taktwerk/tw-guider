@@ -5,6 +5,7 @@ import {Device} from "@ionic-native/device";
 import {AppVersion} from "@ionic-native/app-version";
 import { Storage } from '@ionic/storage';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
+import { Platform } from 'ionic-angular';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class HomePage {
     private isScanning: boolean = false;
 
     constructor(public navCtrl: NavController,
+                public platform: Platform,
                 public iab: InAppBrowser,
                 public device: Device,
                 public appVersion: AppVersion,
@@ -74,7 +76,7 @@ export class HomePage {
 
         //Events: loadstart, loadstop, loaderror, exit
         this.browser.on('exit').subscribe(() => {
-            this.openWebview(url);
+            this.platform.exitApp();
         }, err => {
             console.error(err);
         });
@@ -86,6 +88,9 @@ export class HomePage {
         this.browser.close();
     }
 
+    /**
+     *
+     */
     public scanQrcode() {
         if (this.isScanning) {
             this.stopSearch();
@@ -110,7 +115,7 @@ export class HomePage {
                         this.storage.set('url', text);
                         this.openWebview(text);
 
-                        this.qrScanner.hide(); // hide camera preview
+                        this.stopSearch(); // hide camera preview
                         scanSub.unsubscribe(); // stop scanning
                     });
 
@@ -133,6 +138,7 @@ export class HomePage {
         if (this.isScanning) {
             this.isScanning = false;
             this.qrScanner.hide().then(res => {
+                this.qrScanner.destroy();
             });
         }
     }
