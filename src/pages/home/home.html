@@ -6,7 +6,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding style="background: none transparent;">
+<ion-content padding [ngClass]="{'bg-none': isScanning}">
 
     <ion-card *ngIf="!isScanning">
         <ion-item>
