@@ -112,8 +112,17 @@ export class HomePage {
                         console.log('Scanned something', text);
                         this.isScanning = false;
 
-                        this.storage.set('url', text);
-                        this.openWebview(text);
+                        console.log('raw', text);
+                        var config = JSON.parse(text);
+                        console.log('json', config);
+                        if (config.taktwerk && config.taktwerk === 'guider') {
+
+                            this.client_id = config.client;
+                            if (config.dev) {
+                                this.dev_mode = true;
+                            }
+                            this.save();
+                        }
 
                         this.stopSearch(); // hide camera preview
                         scanSub.unsubscribe(); // stop scanning
@@ -142,5 +151,4 @@ export class HomePage {
             });
         }
     }
-
 }
