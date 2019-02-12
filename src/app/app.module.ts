@@ -13,6 +13,7 @@ import { AppVersion } from "@ionic-native/app-version";
 import { Toast } from '@ionic-native/toast';
 import { IonicStorageModule } from "@ionic/storage";
 import { QRScanner } from "@ionic-native/qr-scanner";
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { QRScanner } from "@ionic-native/qr-scanner";
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    HttpClientModule,
     IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],

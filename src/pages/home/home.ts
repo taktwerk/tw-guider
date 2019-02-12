@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Injectable} from '@angular/core';
 import { NavController } from 'ionic-angular';
 import {InAppBrowser} from "@ionic-native/in-app-browser";
 import {Device} from "@ionic-native/device";
@@ -6,7 +6,9 @@ import {AppVersion} from "@ionic-native/app-version";
 import { Storage } from '@ionic/storage';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
 import { Platform } from 'ionic-angular';
-
+import { HttpClient } from '@angular/common/http';
+import { AlertController } from 'ionic-angular';
+import { LoadingController } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
@@ -22,11 +24,14 @@ export class HomePage {
     private isScanning: boolean = false;
 
     constructor(public navCtrl: NavController,
+                public http: HttpClient,
                 public platform: Platform,
                 public iab: InAppBrowser,
                 public device: Device,
                 public appVersion: AppVersion,
                 public storage: Storage,
+                public alertCtrl: AlertController,
+                public loadingCtrl: LoadingController,
                 private qrScanner: QRScanner) {
 
         appVersion.getAppName().then(res => {
@@ -49,18 +54,38 @@ export class HomePage {
      * Save the form into storage
      */
     public save() {
+        console.log('saving', this.client_id);
         if (this.client_id) {
+            const loader = this.loadingCtrl.create({
+                content: "Configurating...",
+                showBackdrop: false
+            });
+            loader.present();
 
             // Build the In App Browser url
             var appUrl = "https://demo.taktwerk.ch/en/webview-login/?client=" + this.client_id;
+            var appConfirmUrl = "https://demo.taktwerk.ch/en/webview-login/confirm?client=" + this.client_id;
 
             if (this.dev_mode) {
                 appUrl = "http://tw-demo-dev.devhost.taktwerk.ch/en/webview-login/?client=" + this.client_id;
+                appConfirmUrl = "http://tw-demo-dev.devhost.taktwerk.ch/en/webview-login/confirm?client=" + this.client_id;
             }
 
-            this.storage.set('url', appUrl);
 
-            this.openWebview(appUrl);
+            // We need to test the url
+            this.http.get(appConfirmUrl, {responseType: 'json'}).subscribe(res => {
+                this.storage.set('url', appUrl);
+                loader.dismiss();
+                this.openWebview(appUrl);
+            }, err => {
+                loader.dismiss();
+                const alert = this.alertCtrl.create({
+                    title: 'Config Error',
+                    subTitle: 'There was an error setting up the application. Please try again.',
+                    buttons: ['OK']
+                });
+                alert.present();
+            });
         }
     }
 
