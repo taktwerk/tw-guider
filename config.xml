@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.taktwerk.twguider" version="0.1.07" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.taktwerk.twguider" version="0.1.08" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>taktwerk Guider</name>
     <description>The Guider app from taktwerk GmbH</description>
     <author email="support@taktwerk.ch" href="https://www.taktwerk.ch/">taktwerk SA</author>

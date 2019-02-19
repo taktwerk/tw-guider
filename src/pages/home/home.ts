@@ -63,8 +63,8 @@ export class HomePage {
             loader.present();
 
             // Build the In App Browser url
-            var appUrl = "https://demo.taktwerk.ch/en/webview-login/?client=" + this.client_id;
-            var appConfirmUrl = "https://demo.taktwerk.ch/en/webview-login/confirm?client=" + this.client_id;
+            var appUrl = "https://tw-app.scapp.io/en/webview-login/?client=" + this.client_id;
+            var appConfirmUrl = "https://tw-app.scapp.io/en/webview-login/confirm?client=" + this.client_id;
 
             if (this.dev_mode) {
                 appUrl = "http://tw-demo-dev.devhost.taktwerk.ch/en/webview-login/?client=" + this.client_id;
@@ -89,6 +89,10 @@ export class HomePage {
         }
     }
 
+    /**
+     *
+     * @param url
+     */
     public openWebview(url) {
         var appUrl = url;
         appUrl += "&device_key=" + this.device.uuid + "&device_name=" + this.device.model;
