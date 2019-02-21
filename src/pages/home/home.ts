@@ -67,8 +67,8 @@ export class HomePage {
             var appConfirmUrl = "https://tw-app.scapp.io/en/webview-login/confirm?client=" + this.client_id;
 
             if (this.dev_mode) {
-                appUrl = "http://tw-demo-dev.devhost.taktwerk.ch/en/webview-login/?client=" + this.client_id;
-                appConfirmUrl = "http://tw-demo-dev.devhost.taktwerk.ch/en/webview-login/confirm?client=" + this.client_id;
+                appUrl = "http://tw-app-dev.devhost.taktwerk.ch/en/webview-login/?client=" + this.client_id;
+                appConfirmUrl = "http://tw-app-dev.devhost.taktwerk.ch/en/webview-login/confirm?client=" + this.client_id;
             }
 
 
