@@ -1,4 +1,4 @@
-import {Component, Injectable} from '@angular/core';
+import {Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import {InAppBrowser} from "@ionic-native/in-app-browser";
 import {Device} from "@ionic-native/device";
@@ -81,7 +81,7 @@ export class HomePage {
                 loader.dismiss();
                 const alert = this.alertCtrl.create({
                     title: 'Config Error',
-                    subTitle: 'There was an error setting up the application. Please try again.',
+                    subTitle: 'There was an error setting up the application. Please try again.' + "\n" + err.message,
                     buttons: ['OK']
                 });
                 alert.present();
