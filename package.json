@@ -50,6 +50,7 @@
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
     "rxjs": "5.5.11",
+    "sentry-cordova": "^0.13.1",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.26"
   },
@@ -80,10 +81,14 @@
       "cordova-plugin-app-version": {},
       "cordova-ios-plugin-no-export-compliance": {},
       "cordova-sqlite-storage": {},
-      "cordova-plugin-qrscanner": {}
+      "cordova-plugin-qrscanner": {},
+      "sentry-cordova": {}
     },
     "platforms": [
       "android"
     ]
+  },
+  "config": {
+    "ionic_generate_source_map": "true"
   }
 }

@@ -14,7 +14,20 @@ import { Toast } from '@ionic-native/toast';
 import { IonicStorageModule } from "@ionic/storage";
 import { QRScanner } from "@ionic-native/qr-scanner";
 import { HttpClientModule } from '@angular/common/http';
+import * as Sentry from 'sentry-cordova';
 
+Sentry.init({ dsn: 'https://06e0276028a24c4eacf3f1018809916c@sentry.io/1398173' });
+
+class SentryIonicErrorHandler extends IonicErrorHandler {
+    handleError(error) {
+        super.handleError(error);
+        try {
+            Sentry.captureException(error.originalError || error);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+}
 
 @NgModule({
   declarations: [
@@ -40,7 +53,7 @@ import { HttpClientModule } from '@angular/common/http';
     Toast,
     Device,
     QRScanner,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
   ]
 })
 export class AppModule {}
