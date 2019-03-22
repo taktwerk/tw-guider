@@ -71,12 +71,12 @@ export class HomePage {
             // Build the In App Browser url
 
             // Todo: test auto-detect?
-            var appUrl = "https://tw-app.scapp.io/webview-login/?client=" + this.client_id;
-            var appConfirmUrl = "https://tw-app.scapp.io/webview-login/confirm?client=" + this.client_id;
+            var appUrl = "https://tw-app.scapp.io/de/webview-login/?client=" + this.client_id;
+            var appConfirmUrl = "https://tw-app.scapp.io/de/webview-login/confirm?client=" + this.client_id;
 
             if (this.dev_mode) {
-                appUrl = "http://tw-app-dev.devhost.taktwerk.ch/webview-login/?client=" + this.client_id;
-                appConfirmUrl = "http://tw-app-dev.devhost.taktwerk.ch/webview-login/confirm?client=" + this.client_id;
+                appUrl = "http://tw-app-dev.devhost.taktwerk.ch/de/webview-login/?client=" + this.client_id;
+                appConfirmUrl = "http://tw-app-dev.devhost.taktwerk.ch/de/webview-login/confirm?client=" + this.client_id;
             }
 
 
