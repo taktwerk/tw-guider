@@ -47,7 +47,9 @@ export class HomePage {
      *
      */
     ionViewDidEnter() {
+        console.log('entered');
         this.storage.get('url').then((url) => {
+            console.log('url', url);
             if (url) {
                 this.openWebview(url);
             }
@@ -112,13 +114,8 @@ export class HomePage {
         //Events: loadstart, loadstop, loaderror, exit
         this.browser.on('exit').subscribe(() => {
             console.log('closed browser');
-            if (!this.navCtrl.canGoBack()) {
-                console.log('close app');
-                this.platform.exitApp();
-                navigator['app'].exitApp();
-                return;
-            }
-            this.navCtrl.pop();
+            this.platform.exitApp();
+            navigator['app'].exitApp();
         }, err => {
             console.error(err);
         });
