@@ -20,6 +20,7 @@ export class HomePage {
     public client_id;
     public dev_mode;
     public version;
+    public app_name;
 
     private isScanning: boolean = false;
 
@@ -35,9 +36,9 @@ export class HomePage {
                 private qrScanner: QRScanner) {
 
         appVersion.getAppName().then(res => {
-            this.version = res;
+            this.app_name = res;
             appVersion.getVersionNumber().then(res => {
-                this.version += '-' + res;
+                this.version = res;
             });
         });
     }
@@ -110,7 +111,14 @@ export class HomePage {
 
         //Events: loadstart, loadstop, loaderror, exit
         this.browser.on('exit').subscribe(() => {
-            this.platform.exitApp();
+            console.log('closed browser');
+            if (!this.navCtrl.canGoBack()) {
+                console.log('close app');
+                this.platform.exitApp();
+                navigator['app'].exitApp();
+                return;
+            }
+            this.navCtrl.pop();
         }, err => {
             console.error(err);
         });
