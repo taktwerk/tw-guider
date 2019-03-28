@@ -112,12 +112,20 @@ export class HomePage {
         });
 
         //Events: loadstart, loadstop, loaderror, exit
-        this.browser.on('exit').subscribe(() => {
-            console.log('closed browser');
-            this.platform.exitApp();
-            navigator['app'].exitApp();
-        }, err => {
-            console.error(err);
+        // this.browser.on('exit').subscribe(() => {
+        //     console.log('closed browser');
+        //     this.platform.exitApp();
+        //     navigator['app'].exitApp();
+        // }, err => {
+        //     console.error(err);
+        // });
+
+        // If going on the login page, redirect
+        this.browser.on('loadstart').subscribe((e) => {
+            console.log('url', e.url);
+            // if (e.url == theOtherUrl) {
+            //     this.browser.url = appUrl;
+            // }
         });
 
     }
