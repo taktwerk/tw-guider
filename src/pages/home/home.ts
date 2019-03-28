@@ -89,7 +89,7 @@ export class HomePage {
                 loader.dismiss();
                 const alert = this.alertCtrl.create({
                     title: 'Config Error',
-                    subTitle: 'There was an error setting up the application. Please try again.' + "\n" + err.message,
+                    subTitle: 'There was an error setting up the application. Please try again.',
                     buttons: ['OK']
                 });
                 alert.present();
