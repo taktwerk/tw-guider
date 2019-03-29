@@ -126,7 +126,7 @@ export class HomePage {
         // If going on the login page, redirect
         this.browser.on('loadstart').subscribe((e) => {
             console.log('url', e.url);
-            // if (e.url == theOtherUrl) {
+            // if (e.url == /user/login) {
             //     this.browser.url = appUrl;
             // }
         });
