@@ -108,7 +108,10 @@ export class HomePage {
         console.info('iab url', appUrl);
 
         this.browser = this.iab.create(appUrl, "_blank", {
-            'location': 'no', 'toolbar': 'no'
+            'location': 'no',
+            'toolbar': 'no',
+            'allowinlinemediaplayback': 'yes',
+            'usewkwebview': 'yes'
         });
 
         //Events: loadstart, loadstop, loaderror, exit
