@@ -34,3 +34,29 @@ to
     "cordova-plugin-inappbrowser": {
       "version": "file:./src/plugins/cordova-plugin-inappbrowser"
     },
+
+
+## Compile Android
+
+Compiling for android.
+
+    $ ionic cordova build --release android
+
+Copy `seafile\10 Projekte\02 Interne Projekte\2018 Guider\03 Entwicklung\02 App\Certificats\android\tw-guider.keystore` to `platform/android/build/outputs/apk/release`
+
+
+
+Sign the unsigned APK
+
+    $ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore tw-guider.keystore android-release-unsigned.apk tw-guider
+
+Password: `pp0`
+
+Zip-align the APK
+
+    $ zipalign -v 4 android-release-unsigned.apk tw-guider.apk
+
+
+Log in to [Google Play Console](https://play.google.com/apps/publish/?account=7025795242253286989#AppListPlace). `support@taktwerk.ch` `t4S`
+
+Create a new release [Here](https://play.google.com/apps/publish/?account=7025795242253286989#ManageReleasesPlace:p=com.taktwerk.twguider&appid=4974548217126383153)

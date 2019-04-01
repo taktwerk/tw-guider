@@ -49,7 +49,7 @@ export class HomePage {
     ionViewDidEnter() {
         console.log('entered');
         this.storage.get('url').then((url) => {
-            console.log('url', url);
+            console.log('Config.url', url);
             if (url) {
                 this.openWebview(url);
             }
@@ -125,10 +125,14 @@ export class HomePage {
 
         // If going on the login page, redirect
         this.browser.on('loadstart').subscribe((e) => {
-            console.log('url', e.url);
-            // if (e.url == /user/login) {
-            //     this.browser.url = appUrl;
-            // }
+            console.log('url loadstart', e.url);
+            var forbiddenUrl = e.url.includes('user/login');
+            console.log('forbidden', forbiddenUrl);
+            if (forbiddenUrl) {
+                console.log('closing');
+                this.browser.close();
+                this.openWebview(url);
+            }
         });
 
     }
