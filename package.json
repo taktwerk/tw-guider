@@ -80,15 +80,10 @@
       "cordova-plugin-app-version": {},
       "cordova-ios-plugin-no-export-compliance": {},
       "cordova-sqlite-storage": {},
-      "cordova-plugin-qrscanner": {},
-      "sentry-cordova": {},
-      "cordova-plugin-inappbrowser": {}
+      "cordova-plugin-qrscanner": {}
     },
     "platforms": [
       "android"
     ]
-  },
-  "config": {
-    "ionic_generate_source_map": "true"
   }
 }
