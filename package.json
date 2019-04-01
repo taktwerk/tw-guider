@@ -60,6 +60,7 @@
   "description": "An Ionic project",
   "cordova": {
     "plugins": {
+      "cordova-plugin-inappbrowser": {},
       "cordova-plugin-uniquedeviceid": {},
       "cordova-plugin-device": {},
       "cordova-plugin-whitelist": {},
