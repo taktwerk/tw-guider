@@ -101,5 +101,5 @@
     <plugin name="cordova-sqlite-storage" spec="^2.6.0" />
     <plugin name="cordova-plugin-qrscanner" spec="^2.6.0" />
     <plugin name="sentry-cordova" spec="^0.13.1" />
-    <plugin name="cordova-plugin-inappbrowser" spec="file:src/plugins/cordova-plugin-inappbrowser" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
 </widget>
