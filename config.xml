@@ -101,5 +101,5 @@
     <plugin name="cordova-plugin-app-version" spec="^0.1.9" />
     <plugin name="cordova-ios-plugin-no-export-compliance" spec="0.0.5" />
     <plugin name="cordova-sqlite-storage" spec="^2.6.0" />
-    <plugin name="cordova-plugin-qrscanner" spec="^2.6.0" />
+    <plugin name="cordova-plugin-qrscanner" spec="^3.0.1" />
 </widget>
