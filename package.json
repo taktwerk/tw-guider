@@ -60,7 +60,6 @@
   "description": "An Ionic project",
   "cordova": {
     "plugins": {
-      "cordova-plugin-inappbrowser": {},
       "cordova-plugin-uniquedeviceid": {},
       "cordova-plugin-device": {},
       "cordova-plugin-whitelist": {},
@@ -81,7 +80,8 @@
       "cordova-plugin-app-version": {},
       "cordova-ios-plugin-no-export-compliance": {},
       "cordova-sqlite-storage": {},
-      "cordova-plugin-qrscanner": {}
+      "cordova-plugin-qrscanner": {},
+      "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
       "android"
