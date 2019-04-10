@@ -42,8 +42,10 @@ export class HomePage {
     ionViewDidEnter() {
         console.log('ion view did enter');
         this.appVersion.getAppName().then(res => {
+            console.log('config: app name', res);
             this.app_name = res;
             this.appVersion.getVersionNumber().then((version) => {
+                console.log('config: app version', version);
                 this.version = version;
                 this.openBrowser();
             });
