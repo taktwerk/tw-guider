@@ -88,6 +88,7 @@ export class HomePage {
             'location': 'no',
             'toolbar': 'no',
             'allowinlinemediaplayback': 'yes',
+            'disallowoverscroll': 'yes',
             'usewkwebview': 'yes'
         });
 
