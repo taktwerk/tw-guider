@@ -14,6 +14,7 @@ import { Toast } from '@ionic-native/toast';
 import { IonicStorageModule } from "@ionic/storage";
 import { QRScanner } from "@ionic-native/qr-scanner";
 import { HttpClientModule } from '@angular/common/http';
+import {SetupPage} from "../pages/setup/setup";
 //import * as Sentry from 'sentry-cordova';
 
 // Sentry.init({ dsn: 'https://06e0276028a24c4eacf3f1018809916c@sentry.io/1398173' });
@@ -32,7 +33,8 @@ import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    SetupPage
   ],
   imports: [
     BrowserModule,
@@ -43,7 +45,8 @@ import { HttpClientModule } from '@angular/common/http';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    SetupPage
   ],
   providers: [
     StatusBar,

@@ -6,36 +6,20 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding [ngClass]="{'bg-none': isScanning}">
+<ion-content padding>
 
-    <ion-content *ngIf="!isScanning">
-        <p>
-            Die Guider App ermöglicht die Anzeige von digitalen Anleitungen (Montage, Schulungen, etc.)
-        </p>
-        <p>
-            Die App funktioniert nur mit einem Kundenkonto. Bitte kontaktieren Sie dafür die taktwerk GmbH: <a href="mailto:support@taktwerk.ch">support@taktwerk.ch</a>
-        </p>
+    <ion-content>
 
-        <h1>Setup</h1>
-        <p>Scannen Sie den erhaltenen <strong>QR-Code</strong></p>
-
-        <button ion-button icon-start full (click)="scanQrcode()">
-            <ion-icon name="qr-scanner"></ion-icon>
-            QR-Code
+        <button ion-button icon-start full (click)="openBrowser()">
+            <ion-icon name="browser"></ion-icon>
+            Browser
         </button>
 
-        <p>Alternatives Setup</p>
-        <ion-list>
-            <ion-item>
-                <ion-label>Kunden Kennung</ion-label>
-                <ion-input [(ngModel)]="client_id"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label>Entwicklungs Modus</ion-label>
-                <ion-toggle checked="false" [(ngModel)]="dev_mode"></ion-toggle>
-            </ion-item>
-        </ion-list>
-        <button ion-button full color="light" (click)="save($event)">Manuelles Setup</button>
+        <button ion-button icon-start full (click)="openSetup()">
+            <ion-icon name="setup"></ion-icon>
+            Setup
+        </button>
+
 
     </ion-content>
 </ion-content>
