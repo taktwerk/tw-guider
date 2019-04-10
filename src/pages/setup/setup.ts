@@ -58,8 +58,8 @@ export class SetupPage {
             // Build the In App Browser url
 
             // Todo: test auto-detect?
-            var appUrl = "https://tw-app.scapp.io/de/webview-login/?client=" + this.client_id;
-            var appConfirmUrl = "https://tw-app.scapp.io/de/webview-login/confirm?client=" + this.client_id;
+            var appUrl = "https://app.taktwerk.ch/de/webview-login/?client=" + this.client_id;
+            var appConfirmUrl = "https://app.taktwerk.ch/de/webview-login/confirm?client=" + this.client_id;
 
             if (this.dev_mode) {
                 appUrl = "http://tw-app-dev.devhost.taktwerk.ch/de/webview-login/?client=" + this.client_id;
