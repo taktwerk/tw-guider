@@ -14,6 +14,7 @@ import { Router, RouterModule } from '@angular/router';
 export class HomePage {
   private browser;
   public client_id;
+  public host_id;
   public dev_mode;
   public version;
   public app_name;

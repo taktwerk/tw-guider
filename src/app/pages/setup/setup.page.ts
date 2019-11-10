@@ -12,6 +12,7 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 export class SetupPage {
   private browser;
   public clientId: string | number;
+  public hostId: string;
   public devMode;
   public isScanning: boolean;
 
@@ -37,7 +38,7 @@ export class SetupPage {
      * Save the form into storage
      */
     public async save() {
-        console.log('saving', this.clientId);
+        console.log('saving', this.clientId, this.hostId);
         if (this.clientId) {
             const loader = await this.loadingCtrl.create({
                 message: 'Configurating...',
@@ -56,6 +57,10 @@ export class SetupPage {
                 appConfirmUrl = 'http://tw-app-dev.devhost.taktwerk.ch/de/webview-login/confirm?client=' + this.clientId;
             }
 
+            if (this.hostId) {
+                appUrl = this.hostId + '/de/webview-login/?client=' + this.clientId;
+                appConfirmUrl = this.hostId + '/de/webview-login/confirm?client=' + this.clientId;
+            }
 
             // We need to test the url
 
@@ -110,6 +115,9 @@ export class SetupPage {
                             this.clientId = config.client;
                             if (config.dev) {
                                 this.devMode = true;
+                            }
+                            if (config.host) {
+                                this.hostId = config.host;
                             }
                             this.save();
                         }
