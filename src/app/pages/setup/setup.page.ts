@@ -12,7 +12,9 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 export class SetupPage {
   private browser;
   public clientId: string | number;
+  public client_id: string | number;
   public hostId: string;
+  public host_id: string;
   public devMode;
   public isScanning: boolean;
 
@@ -25,10 +27,11 @@ export class SetupPage {
       private navCtrl: NavController
   ) { }
 
-    async presentAlert(header: string, subHeader: string, buttons: Array<string> ) {
+    async presentAlert(header: string, subHeader: string, message: string, buttons: Array<string> ) {
         const alert = await this.alertController.create({
             header,
             subHeader,
+            message,
             buttons
         });
         await alert.present();
@@ -38,7 +41,10 @@ export class SetupPage {
      * Save the form into storage
      */
     public async save() {
-        console.log('saving', this.clientId, this.hostId);
+        this.clientId = this.client_id;
+        this.hostId = this.host_id;
+
+        console.log('saving', this.clientId, this.hostId, this);
         if (this.clientId) {
             const loader = await this.loadingCtrl.create({
                 message: 'Configurating...',
@@ -74,7 +80,7 @@ export class SetupPage {
                 .catch(error => {
                     console.log(error);
                     loader.dismiss();
-                    this.presentAlert('Config Error', 'There was an error setting up the application. Please try again.', ['OK']);
+                    this.presentAlert('Config Error', null, 'There was an error setting up the application. Please try again.<br><br>Error: ' + error + '<br><br>Url: ' + appUrl, ['OK']);
                 });
 
         }
@@ -134,7 +140,7 @@ export class SetupPage {
                     // permission was denied, but not permanently. You can ask for permission again at a later time.
                 }
             })
-            .catch((e: any) => console.log('Error is', e));
+            .catch((e: any) => this.presentAlert('Config Error', null,'There was an error using the camera. Please try again.<br><br>Error: ' + e, ['OK']));
     }
 
 

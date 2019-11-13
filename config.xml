@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.taktwerk.twguider" version="3.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.taktwerk.twguider" version="3.1.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Guider</name>
     <description>The Guider app from taktwerk GmbH</description>
-    <author email="support@taktwerk.ch" href="https://www.taktwerk.ch/">taktwerk GmbH</author>
+    <author email="support@taktwerk.ch" href="https://www.taktwerk.ch/guider">taktwerk GmbH</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -100,6 +100,5 @@
         <splash height="828" src="resources/ios/splash/Default-Landscape-1792h~iphone.png" width="1792" />
     </platform>
     <plugin name="cordova-plugin-app-version" spec="0.1.9" />
-    <plugin name="cordova-plugin-advanced-http" spec="2.1.1" />
     <plugin name="cordova-plugin-qrscanner" spec="3.0.1" />
 </widget>
