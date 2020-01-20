@@ -10,3 +10,4 @@ export class AppSetting {
 
     static DB_NAME: string = 'guider';
 }
+
