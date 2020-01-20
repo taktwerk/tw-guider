@@ -4,21 +4,49 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      List
+      Guides
     </ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar animated="true" autocomplete="on" debounce="250" (ionChange)="searchGuides($event)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let item of items">
-      <ion-icon [name]="item.icon" slot="start"></ion-icon>
-      {{item.title}}
-      <div class="item-note" slot="end">
-        {{item.note}}
+<!--  <ion-list>-->
+    <div *ngFor="let guideCategory of guideCategories">
+      <div *ngIf="guideCategory.guides &&  guideCategory.guides.length">
+        <ion-item>
+          <h1>
+            {{ guideCategory.name }}
+          </h1>
+        </ion-item>
+        <ion-list>
+          <ion-item *ngFor="let item of guideCategory.guides">
+            <ion-thumbnail class="guide-preview" slot="start" [routerLink]="['/guide/' + item.idApi]">
+              <img *ngIf="item.getImage()" src="{{ item.getImage() }}" imageViewer>
+              <img *ngIf="!item.getImage()" src="assets/placeholder.jpg" imageViewer>
+              <div class="shortname-label badge badge-secondary">{{ item.short_name }}</div>
+            </ion-thumbnail>
+            <div>
+              <h2>
+                {{item.title}}
+              </h2>
+              <p class="item-note" [innerHTML]="item.description"></p>
+              <p *ngIf="item.duration">
+                Duration: {{ item.getDuration() }}
+              </p>
+              <ion-button  [routerLink]="['/guide/' + item.idApi]">
+                <ion-icon slot="start" [name]="play"></ion-icon>
+                SHOW GUIDE
+              </ion-button>
+            </div>
+          </ion-item>
+        </ion-list>
       </div>
-    </ion-item>
-  </ion-list>
+    </div>
+
+<!--  </ion-list>-->
   <!--
     <div *ngIf="selectedItem" padding>
       You navigated here from <b>{{selectedItem.title }}</b>

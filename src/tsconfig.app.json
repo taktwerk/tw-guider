@@ -1,0 +1,36 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "types": [ "node" ],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "paths": {
+      "react-native-sqlite-storage": [
+        "src/dummy.ts"
+      ]
+    },
+    "lib": [
+      "es2018",
+      "dom",
+      "es6"
+    ]
+  },
+  "include": [
+    "src/dummy.ts" // empty ts file as placeholder
+  ],
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  }
+}

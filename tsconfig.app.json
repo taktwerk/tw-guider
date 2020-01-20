@@ -2,10 +2,15 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [ "node" ],
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "node_modules/com-sarriaroman-photoviewer/source/PhotoViewer.ts",
+    "node_modules/com-sarriaroman-photoviewer/source/PhotoViewer.ts"
   ],
   "exclude": [
     "src/test.ts",

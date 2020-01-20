@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Profile of {{ authService.auth.username}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<style>
+  ion-content {
+    text-align: center;
+  }
+</style>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      Profile
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-icon name="logo-twitter" item-start></ion-icon>
+        ID
+        <ion-badge item-end>{{ authService.auth.userId }}</ion-badge>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <synchronization-component></synchronization-component>
+</ion-content>
