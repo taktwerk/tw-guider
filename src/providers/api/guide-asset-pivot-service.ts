@@ -6,7 +6,7 @@ import {DbProvider} from '../db-provider';
 import {AuthService} from '../../services/auth-service';
 import {HttpClient} from '../../services/http-client';
 import {DownloadService} from '../../services/download-service';
-import {GuideAssetPivotModel} from '../../../models/db/api/guide-asset-pivot-model';
+import {GuideAssetPivotModel} from '../../models/db/api/guide-asset-pivot-model';
 
 @Injectable()
 export class GuideAssetPivotService extends ApiService {

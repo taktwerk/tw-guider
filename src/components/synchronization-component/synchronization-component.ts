@@ -62,7 +62,14 @@ export class SynchronizationComponent {
                 private events: Events,
                 private syncService: SyncService) {
       this.authService.checkAccess();
-      this.init();
+      this.init().then(() => {
+        if (!this.userDb.userSetting.syncMode) {
+          this.userDb.userSetting.syncMode = SyncMode.Manual;
+          this.userDb.save();
+        } else {
+          this.modeSync = this.userDb.userSetting.syncMode;
+        }
+      });
       this.downloadService.pushProgressFilesInfo = new BehaviorSubject<any>({});
     }
 
@@ -76,8 +83,10 @@ export class SynchronizationComponent {
     return new Promise(resolve => {
       new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
         if (userDb) {
+          console.log('this.userDb', this.userDb);
           this.userDb = userDb;
-          this.modeSync = this.userDb.userSetting.syncMode;
+
+          resolve(true);
         }
       });
     });

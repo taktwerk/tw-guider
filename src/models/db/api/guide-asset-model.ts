@@ -62,18 +62,18 @@ export class GuideAssetModel extends DbApiModel {
     }
 
     public getLocalFilePath() {
-        return this[GuideStepModel.COL_LOCAL_ATTACHED_FILE];
+        return this[GuideAssetModel.COL_LOCAL_ATTACHED_FILE];
     }
 
     public getApiFilePath() {
-        return this[GuideStepModel.COL_ATTACHED_FILE];
+        return this[GuideAssetModel.COL_ATTACHED_FILE];
     }
 
     public getFile() {
-        if (this[GuideStepModel.COL_LOCAL_ATTACHED_FILE]) {
-            return this.downloadService.webview.convertFileSrc(this[GuideStepModel.COL_LOCAL_ATTACHED_FILE]);
+        if (this[GuideAssetModel.COL_LOCAL_ATTACHED_FILE]) {
+            return this.downloadService.webview.convertFileSrc(this[GuideAssetModel.COL_LOCAL_ATTACHED_FILE]);
         } else {
-            return this[GuideStepModel.COL_API_ATTACHED_FILE_PATH];
+            return this[GuideAssetModel.COL_API_ATTACHED_FILE_PATH];
         }
     }
 

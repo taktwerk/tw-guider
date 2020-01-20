@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders as Headers, HttpHeaders} from '@angular/common/http';
 import {AppSetting} from './app-setting';
 import {Platform, LoadingController} from '@ionic/angular';
 import {DbProvider} from '../providers/db-provider';
@@ -130,8 +130,12 @@ export class AuthService {
      * @returns {Promise<boolean>}
      */
     authenticate(formData: any): Promise<any> {
-        const headers = new HttpHeaders();
         const creds = `username=${formData.username}&password=${formData.password}`;
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            // 'Access-Control-Allow-Origin': ['*'],
+        });
+
         return new Promise((resolve) => {
             this.http.get<any>(AppSetting.API_URL + '/login?' + creds, {headers}).subscribe(
                 (data) => {
