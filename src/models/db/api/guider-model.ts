@@ -90,10 +90,6 @@ export class GuiderModel extends DbApiModel {
             {description: 'Guide description', title: 'Guider'}
         ];
     }
-    //
-    // public getImage() {
-    //     return 'http://192.168.0.180:8015' + this.preview_file;
-    // }
 
     public getDuration() {
         const days = Math.floor(this.duration / 1440);

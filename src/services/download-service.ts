@@ -59,7 +59,7 @@ export class DownloadService {
      * @param {string} modelFolder
      * @returns {Promise<string | boolean>}
      */
-    public download(url: string, name: string, modelFolder: string): Promise<string | boolean> {
+    public download(url: string, name: string, modelFolder: string, authToken: string): Promise<string | boolean> {
         return new Promise(resolve => {
             // Not on cordova
             if (!this.fileTransfer) {
@@ -74,9 +74,9 @@ export class DownloadService {
                 // File already exists, change nothing
                 resolve(finalPath);
             }).catch(err => {
-                // const headers = new Headers({'X-Auth-Token': authToken});
+                const headers = new Headers({'X-Auth-Token': authToken});
                 console.log('download file url', url);
-                this.http.get(url, {observe: 'response', responseType: 'blob'})
+                this.http.get(url, {headers: {'X-Auth-Token': authToken}, observe: 'response', responseType: 'blob'})
                     .toPromise()
                     .then(response => {
                        console.log('was downloading', response);

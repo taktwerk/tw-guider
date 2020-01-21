@@ -374,7 +374,7 @@ export abstract class ApiService {
                     }
                     // If we have a local path but no api path, we need to upload the file!
                     // Only download if the new file is different than the old one? We don't have this information here.
-                    model.downloadService.download(model[fields[1]], model[fields[0]], model.TABLE_NAME)
+                    model.downloadService.download(model[fields[1]], model[fields[0]], model.TABLE_NAME, this.http.getAuthorizationToken())
                         .then((res) => {
                             if (res === false) {
                                 console.log('model in fail', model);
