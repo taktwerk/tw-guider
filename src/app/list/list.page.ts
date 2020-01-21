@@ -43,7 +43,6 @@ export class ListPage implements OnInit {
     this.guideCategoryService.findByGuides(searchValue).then(guideCategories => {
       this.guideCategories = guideCategories;
       this.guideCategories.map(guideCategory => {
-        console.log('guideCategory', guideCategory);
         guideCategory.setGuides(searchValue);
       });
     });
@@ -53,7 +52,6 @@ export class ListPage implements OnInit {
     this.guideCategoryService.dbModelApi.findAll('name ASC').then(guideCategories => {
       this.guideCategories = guideCategories;
       this.guideCategories.map(guideCategory => {
-        console.log('guideCategory', guideCategory);
         guideCategory.setGuides();
       });
     });
