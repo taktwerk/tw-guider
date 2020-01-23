@@ -8,13 +8,37 @@
   }
 </style>
 
-<ion-chip *ngIf="modeSync === 0">
-  <ion-label (click)="syncData()" *ngIf="!isStartSync" color="primary">Synchronize Data</ion-label>
-  <ion-label *ngIf="isStartSync" color="primary">Is synchronization</ion-label>
-<!--  <ion-label (click)="stopSyncData()" *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'" color="success">Stop</ion-label>-->
-<!--  <ion-label (click)="resumeSyncData()" *ngIf="syncProgressStatus === 'pause'" color="success">Resume</ion-label>-->
-<!--  <ion-label (click)="cancelSyncData()" *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume' || syncProgressStatus === 'pause'" color="success">Cancel</ion-label>-->
-</ion-chip>
+<section *ngIf="modeSync === 0">
+  <ion-button *ngIf="!isStartSync"
+              (click)="syncData()"
+              color="primary"
+  >
+    Synchronize Data
+  </ion-button>
+  <ion-button *ngIf="isStartSync"
+              color="primary"
+  >
+    Is synchronization
+  </ion-button>
+<!--  <ion-button *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'"-->
+<!--              (click)="stopSyncData()"-->
+<!--              color="success"-->
+<!--  >-->
+<!--    Stop-->
+<!--  </ion-button>-->
+<!--  <ion-button *ngIf="syncProgressStatus === 'pause'"-->
+<!--              (click)="resumeSyncData()"-->
+<!--              color="success"-->
+<!--  >-->
+<!--    Resume-->
+<!--  </ion-button>-->
+<!--  <ion-button *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume' || syncProgressStatus === 'pause'"-->
+<!--              (click)="cancelSyncData()"-->
+<!--              color="success"-->
+<!--  >-->
+<!--    Cancel-->
+<!--  </ion-button>-->
+</section>
 <ion-card>
   <div *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'">
     In progress
@@ -33,19 +57,26 @@
 {{ syncedItemsPercent }}%
 
 <br>
+
 <section>
   <h4>Sync Modes</h4>
-  <ion-segment (ionChange)="changeSyncMode($event.detail.value)" color="secondary">
-    <ion-segment-button value="0" [checked]="modeSync === 0">
+  <ion-segment (ionChange)="changeSyncMode($event.detail.value)" color="secondary" value="{{ modeSync }}">
+    <ion-segment-button value="0">
       <ion-label>Manually</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="1" [checked]="modeSync === 1">
+    <ion-segment-button value="1">
       <ion-label>Online</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="2" [checked]="modeSync === 2">
+    <ion-segment-button value="2">
       <ion-label>Periodic</ion-label>
     </ion-segment-button>
   </ion-segment>
+</section>
+
+<section>
+  <ion-button (click)="showRefreshDataAlert()">
+    Re-sync data
+  </ion-button>
 </section>
 
 <!--<ion-card *ngIf="isStartSync || (syncProgressStatus !== 'not_sync' && syncProgressStatus !== 'failed' && syncProgressStatus !== 'no_sync_data')">-->

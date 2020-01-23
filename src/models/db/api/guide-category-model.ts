@@ -18,7 +18,7 @@ export class GuideCategoryModel extends DbApiModel {
     public name: string;
 
     /// relation
-    public guides: GuiderModel[];
+    public guides: GuiderModel[] = [];
 
     //db columns
     static COL_CLIENT_ID = 'client_id';
@@ -45,6 +45,19 @@ export class GuideCategoryModel extends DbApiModel {
         super(platform, db, events, downloadService);
     }
 
+    public addGuide(newData) {
+        const indexApi = this.guides.findIndex(record => newData.idApi && record.idApi === newData.idApi);
+        const indexDB = this.guides.findIndex(record => newData.id && record.id === newData.id);
+
+        if (indexApi !== -1) {
+            this.guides[indexApi] = newData;
+        } else if (indexDB !== -1) {
+            this.guides[indexDB] = newData;
+        } else {
+            this.guides.push(newData);
+        }
+    }
+
     public setGuides(searchValue?: string) {
         return new Promise((resolve) => {
             let query = 'SELECT ' + this.secure('guide') + '.*' + ' from ' + this.secure('guide') +
@@ -60,22 +73,17 @@ export class GuideCategoryModel extends DbApiModel {
             this.db.query(query).then((res) => {
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: DbBaseModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService);
+                        const obj: GuiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService);
                         obj.platform = this.platform;
                         obj.db = this.db;
                         obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         // console.debug(this.TAG, 'new instance', obj);
-                        entries.push(obj);
+                        this.addGuide(obj);
                     }
                 }
-
-                this.guides = entries;
-            }).catch((err) => {
-                console.error(this.TAG, query, err);
-                this.guides = entries;
-            });
+            }).catch((err) => {});
         });
     }
 }

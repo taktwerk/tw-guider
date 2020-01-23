@@ -100,7 +100,7 @@ export class HttpClient {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.error('HttpClient', 'handleError', {error : errMsg});
+
     return Promise.reject(errMsg);
   }
 

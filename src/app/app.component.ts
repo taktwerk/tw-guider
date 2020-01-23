@@ -11,6 +11,10 @@ import {HttpClient} from '../services/http-client';
 import {SyncService} from '../services/sync-service';
 import {Observable} from 'rxjs';
 import 'rxjs/add/observable/interval';
+import {UserDb} from '../models/db/user-db';
+import {DbProvider} from '../providers/db-provider';
+import {DownloadService} from '../services/download-service';
+import {SyncMode} from '../components/synchronization-component/synchronization-component';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -37,10 +41,14 @@ export class AppComponent implements OnInit {
     private authService: AuthService,
     private network: Network,
     private http: HttpClient,
-    private syncService: SyncService
+    private syncService: SyncService,
+    private downloadService: DownloadService,
+    private db: DbProvider
   ) {
     this.initializeApp();
   }
+
+  public userDb: UserDb;
 
   previousStatus = ConnectionStatusEnum.BeforeSet;
   periodicSync: any;
@@ -52,8 +60,34 @@ export class AppComponent implements OnInit {
       this.statusBar.styleDefault();
       // Do the user login (fake user or previously logged in user)
       this.login().then((result) => {
+        this.initUserDB().then(() => {
+          if (!this.userDb.userSetting.syncMode) {
+            this.userDb.userSetting.syncMode = SyncMode.Manual;
+            this.userDb.save();
+          }
+          this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
+        });
         this.splashScreen.hide();
         this.setPages();
+      });
+    });
+  }
+
+  protected initUserDB() {
+    if (this.userDb) {
+      return new Promise(resolve => {
+        resolve(true);
+      });
+    }
+
+    return new Promise(resolve => {
+      new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
+        if (userDb) {
+          this.userDb = userDb;
+          console.log('this.userDb', this.userDb);
+
+          resolve(true);
+        }
       });
     });
   }
@@ -123,27 +157,30 @@ export class AppComponent implements OnInit {
         if (res) {
           lastUser = res;
         }
-        // First create a dummy user to call the APIs while not yet authenticated.
-        if (!lastUser) {
-          this.authService.createDummyUser().then(() => {});
-        }
+        console.log('in login then', lastUser);
       });
     });
   }
 
   ngOnInit(): void {
     this.syncService.syncMode.subscribe((result) => {
-      console.log('syncService', result);
-      if (result !== 2 && this.periodicSync) {
-        this.periodicSync.unsubscribe();
-        this.periodicSync = null;
-      }
-      if (result === 2) {
-        this.periodicSync = Observable.interval(15000)
-            .subscribe(() => {
-              this.apiSync.runPull().then((res) => {});
-            });
-      }
+      this.initUserDB().then(() => {
+        console.log('show me your user', result)
+        this.userDb.userSetting.syncMode = result;
+        this.userDb.save();
+        if (result !== 2 && this.periodicSync) {
+          console.log('unsubsctibe me');
+          this.periodicSync.unsubscribe();
+          this.periodicSync = null;
+        }
+        if (result === 2) {
+          this.periodicSync = Observable.interval(15000)
+              .subscribe(() => {
+                console.log('subscribe on periodic sync');
+                this.apiSync.startSync();
+              });
+        }
+      });
     });
   }
 }

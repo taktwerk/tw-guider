@@ -130,7 +130,6 @@ export abstract class DbBaseModel {
                 });
             });
         });
-
     }
 
     /**
@@ -148,7 +147,6 @@ export abstract class DbBaseModel {
                         this.dbIsReady = true;
                         resolve(this.db);
                     } else {
-                        console.error(this.TAG, 'Could not create new table');
                         resolve(null);
                     }
                 });
@@ -193,7 +191,6 @@ export abstract class DbBaseModel {
                         this.dbIsBusy = false;
                         resolve(true);
                     }).catch((err) => {
-                        console.error(this.TAG, 'Unable to execute sql', err);
                         this.dbIsBusy = false;
                         resolve(false);
                     });
@@ -215,7 +212,6 @@ export abstract class DbBaseModel {
                     resolve(false);
                 }
                 const query = 'SELECT * FROM ' + this.secure(this.TABLE_NAME) + ' WHERE ' + this.secure(this.COL_ID) + ' = ' + id;
-                // console.debug(this.TAG, 'findById', query);
                 db.query(query).then((res) => {
                     if (res.rows.length === 1) {
                         if (newObject) {
@@ -234,7 +230,6 @@ export abstract class DbBaseModel {
                         resolve(false);
                     }
                 }).catch((err) => {
-                    console.error(this.TAG, 'findById', 'Error', query, err);
                     resolve(false);
                 });
             });
@@ -272,7 +267,6 @@ export abstract class DbBaseModel {
                         }
                         resolve(entries);
                     }).catch((err) => {
-                        console.error(this.TAG, query, err);
                         resolve(entries);
                     });
                 }
@@ -304,7 +298,6 @@ export abstract class DbBaseModel {
                         }
                         resolve(entries);
                     }).catch((err) => {
-                        console.error(this.TAG, query, err);
                         resolve(entries);
                     });
                 }
@@ -357,6 +350,10 @@ export abstract class DbBaseModel {
         return this.searchAll('WHERE ' + conditionString, orderBy, limit);
     }
 
+    public findFirst(condition, orderBy  = 'id ASC') {
+        return this.findAllWhere(condition, orderBy, 1);
+    }
+
     /**
      * Returns one instance from this db model by an optional ordering
      * and a fix LIMIT which is 1.
@@ -366,7 +363,7 @@ export abstract class DbBaseModel {
     public find(orderBy?: string): Promise<any> {
         return new Promise((resolve) => {
             this.findAll(orderBy, 1).then((res) => {
-                if (res.length == 1) {
+                if (res.length === 1) {
                     resolve(res[0]);
                 } else {
                     resolve(null);
@@ -489,10 +486,8 @@ export abstract class DbBaseModel {
     public save(forceCreation?: boolean): Promise<any> {
         return new Promise((resolve) => {
             if (this.id && !forceCreation) {
-                // console.log(this.TAG, 'update', this);
                 this.update().then(() => resolve(true));
             } else {
-                // console.log(this.TAG, 'create', this);
                 this.create().then(() => resolve(true));
             }
         });
@@ -635,7 +630,7 @@ export abstract class DbBaseModel {
                         // console.log(this.TAG, 'CREATE', 'redeclare update condition', this.updateCondition);
                         this.updateCondition = [this.COL_ID, this.id];
 
-                        this.events.publish(this.TAG + ':create', this.id);
+                        this.events.publish(this.TAG + ':create', this);
                         // console.log(this.TAG, 'CREATE', 'redeclare update condition - post', this.updateCondition);
                         resolve(res);
 
@@ -662,11 +657,10 @@ export abstract class DbBaseModel {
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
                     // console.log(this.TAG, 'update query', query);
                     db.query(query).then((res) => {
-                        this.events.publish(this.TAG + ':update', this.id);
+                        this.events.publish(this.TAG + ':update', this);
                         // console.log(this.TAG, 'UPDATE', 'SUCCESS', res);
                         resolve(res);
                     }).catch((err) => {
-                        console.error(this.TAG, 'UPDATE', 'ERROR', err);
                         resolve(false);
                     });
                 }
@@ -684,11 +678,9 @@ export abstract class DbBaseModel {
                         'WHERE ' + this.parseWhere(this.updateCondition);
                     // console.log(this.TAG, 'delete query', query);
                     db.query(query).then((res) => {
-                        this.events.publish(this.TAG + ':delete', this.id);
-                        // console.log(this.TAG, 'DELETE', 'SUCCESS', res);
+                        this.events.publish(this.TAG + ':delete', this);
                         resolve(res);
                     }).catch((err) => {
-                        console.error(this.TAG, 'DELETE', 'ERROR', err);
                         resolve(false);
                     });
                 }

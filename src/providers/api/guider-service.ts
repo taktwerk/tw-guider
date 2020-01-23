@@ -38,4 +38,8 @@ export class GuiderService extends ApiService {
     public newModel() {
         return new GuiderModel(this.p, this.db, this.events, this.downloadService);
     }
+
+    public getById(id) {
+        return this.dbModelApi.findFirst(['id', id]);
+    }
 }

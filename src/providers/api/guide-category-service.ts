@@ -49,7 +49,6 @@ export class GuideCategoryService extends ApiService {
                 ' JOIN ' + this.dbModelApi.secure('guide') + ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') + '=' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id') +
                 ' WHERE ' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%" OR ' + this.dbModelApi.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%"' +
                 ' ORDER BY guide_category.name ASC'
-            console.log('queriiiiii', query);
 
             const entries: any[] = [];
             this.db.query(query).then((res) => {
@@ -71,5 +70,9 @@ export class GuideCategoryService extends ApiService {
                 resolve(entries);
             });
         });
+    }
+
+    findAll() {
+        return this.dbModelApi.findAll('name ASC');
     }
 }

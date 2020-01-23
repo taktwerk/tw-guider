@@ -60,90 +60,89 @@ export class DownloadService {
      * @param authToken
      * @returns {Promise<string | boolean>}
      */
-    public download(url: string, name: string, modelFolder: string, authToken = ''): Promise<string | boolean> {
-        return new Promise(resolve => {
+    async downloadAndSaveFile(url: string, name: string, modelFolder: string, authToken = ''): Promise<any> {
+        const promise = new Promise(resolve => {
             // Not on cordova
-            if (!this.fileTransfer) {
-                console.warn('DownloadService', 'Download', 'no fileTransfer object');
-                resolve(false);
-            }
-
             const finalPath = this.file.dataDirectory + modelFolder + '/' + name;
 
-            this.file.checkFile(this.file.dataDirectory + modelFolder + '/', name).then(_ => {
-                console.log('check file my');
-                // File already exists, change nothing
-                resolve(finalPath);
-            }).catch(err => {
-                console.log('download file url', url);
-                const headers = new Headers({'Content-Type': 'application/json', 'X-Auth-Token': authToken, 'Access-Control-Allow-Origin': '*'});
-                this.http.get(
-                    url,
-                    {
-                        headers: headers,
-                        observe: 'response',
-                        responseType: 'blob'
+            this.isExistFile(this.file.dataDirectory + modelFolder + '/', name)
+                .then(isExist => {
+                    if (isExist) {
+                        resolve(finalPath);
+                        return;
+                    } else {
+                        this.download(url, authToken)
+                            .then(response => {
+                                this.getDownloadDirectoryPath(this.file.dataDirectory, modelFolder)
+                                    .then((directory) => {
+                                        this.file.writeFile(
+                                            this.file.dataDirectory + modelFolder,
+                                            name,
+                                            response.body,
+                                            { replace: true }
+                                            )
+                                            .then(fe => {
+                                                console.log('file was written');
+                                                resolve(finalPath);
+                                                return;
+                                            }).catch(writeFileErr => {
+                                                resolve(false);
+                                            });
+                                    });
+                            }, downloadErr => {
+                                console.log('file was not downloading', downloadErr);
+                                resolve(false);
+                                // Download failed
+                            });
                     }
-                    )
-                    .toPromise()
-                    .then(response => {
-                       console.log('was downloading', response);
-                       this.file.checkDir(this.file.dataDirectory, modelFolder).then(
-                           (exists) => {
-                               console.log('directory is exists');
-                               this.file.writeFile(
-                                   this.file.dataDirectory + modelFolder,
-                                   name,
-                                   response.body,
-                                   { replace: true })
-                                   .then(fe => {
-                                       console.log('file created', fe);
-                                       // if (events && eventName) {
-                                       //     events.publish(eventName);
-                                       // }
-                                       // All went well, resolve the Promise.
-                                       resolve(finalPath);
-                                   }).catch(writeFileErr => {
-                                       resolve(false);
-                                       console.log('file was not created created', writeFileErr);
-                                   // writeFile failed
-                               });
-                           },
-                           (checkDirError) => {
-                               this.file.createDir(this.file.dataDirectory, modelFolder, false)
-                                   .then(de => {
-                                       console.log('directory created', de);
-                                       // Write the downloaded Blob as the file. Note that the file will
-                                       // be overwritten if it already exists!
-                                       this.file.writeFile(
-                                           de.toURL(),
-                                           name,
-                                           response.body,
-                                           { replace: true })
-                                           .then(fe => {
-                                               // if (events && eventName) {
-                                               //     events.publish(eventName);
-                                               // }
-                                               console.log('file created', fe);
-                                               // All went well, resolve the Promise.
-                                               resolve(finalPath);
-                                           }).catch(writeFileErr => {
-                                           console.log('file was not created created', writeFileErr);
-                                           // writeFile failed
-                                       });
-                                   }).catch(createDirErr => {
-                                   console.log('directory was not created created', createDirErr);
-                                   resolve(false);
-                                   // createDir failed
+                });
+        });
 
-                               });
-                           }).catch( (exception) => { console.log(exception); } );
-                    }, downloadErr => {
-                        console.log('file was not downloading', downloadErr);
-                        resolve(false);
-                        // Download failed
-                    });
+        return await promise;
+    }
+
+    async download(url, authToken): Promise<any> {
+        const headers = new Headers(
+            {'Content-Type': 'application/json', 'X-Auth-Token': authToken, 'Access-Control-Allow-Origin': '*'}
+        );
+
+        const promise = new Promise((resolve) => {
+            this.http.get(
+                url,
+                {
+                    headers: headers,
+                    observe: 'response',
+                    responseType: 'blob'
+                }
+            )
+                .toPromise()
+                .then(response => {
+                    resolve(response);
+                }, downloadErr => {
+                    console.log('file was not downloading', downloadErr);
+                    resolve(false);
+                });
+        });
+
+        return await promise;
+    }
+
+    protected isExistFile(directory, name): Promise<boolean> {
+        return new Promise(resolve => {
+            this.file.checkFile(directory, name).then(existFile => {
+                resolve(true);
+            }).catch(err => {
+                resolve(false);
             });
+        });
+    }
+
+    protected getDownloadDirectoryPath(baseSystemPath, folder) {
+        return new Promise((resolve) => {
+            this.checkDir(folder)
+                .then(() => {
+                    resolve(baseSystemPath + folder);
+                });
         });
     }
 
@@ -210,7 +209,6 @@ export class DownloadService {
             console.log('DownloadService', 'Upload', data, " Uploaded Successfully");
           }, (err) => {
             resolve(false);
-            console.error('DownloadService', 'Upload', err);
           });
       });
     }
@@ -258,10 +256,6 @@ export class DownloadService {
             let newFilePath = this.file.dataDirectory + modelName;
             let newFileName = d.getTime() + "." + currentExt;
 
-            //console.log('DownloadService', 'copy', 'filePath', fullPath);
-            //console.log('DownloadService', 'copy', 'correctPath', correctPath, 'currentName', currentName);
-            //console.log('DownloadService', 'copy', 'newFilePath', newFilePath, 'newFileName', newFileName);
-
             this.checkDir(modelName).then(
                 suc => {
                     this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then(success => {
@@ -271,12 +265,10 @@ export class DownloadService {
                             resolve(false);
                         }
                     }, error => {
-                        console.error('DownloadService', 'Copy', error);
                         resolve(false);
                     });
                 },
                 err => {
-                    console.error('DownloadService', 'Create dir', err);
                     resolve(false);
                 });
         });
@@ -298,10 +290,8 @@ export class DownloadService {
     ): Promise<boolean> {
         return new Promise(resolve => {
             this.file.copyFile(namePath, currentName, newFilePath, newFileName).then(success => {
-                //console.log('DownloadService', 'CopyToLocalDir', success);
                 resolve(true);
             }, error => {
-                console.error('DownloadService', 'CopyToLocalDir', error);
                 resolve(false);
             });
         });
@@ -322,6 +312,41 @@ export class DownloadService {
                 this.file.createDir(this.file.dataDirectory, modelName, false).then(_ => {
                     resolve(true);
                 });
+            });
+        });
+    }
+
+    /**
+     * Check if a dir exists and delete it if exists.
+     *
+     * @param {string} modelName
+     * @returns {Promise<boolean>}
+     */
+    removeAllAppFiles(): Promise<boolean> {
+        return new Promise(resolve => {
+            this.file.listDir(this.file.dataDirectory, '').then((result) => {
+                if (!result.length) {
+                    resolve(true);
+                }
+                if (result.length) {
+                    for (const fileSystemEntry of result) {
+                        if (fileSystemEntry.isFile === true) {
+                            this.file.removeFile(this.file.dataDirectory, fileSystemEntry.name)
+                                .then(_ => {
+                                    resolve(true);
+                                }).catch(err => {
+                                    resolve(false);
+                                });
+                        } else {
+                            this.file.removeRecursively(this.file.dataDirectory,  fileSystemEntry.name)
+                                .then(_ => {
+                                    resolve(true);
+                                }).catch(err => {
+                                    resolve(false);
+                                });
+                        }
+                    }
+                }
             });
         });
     }

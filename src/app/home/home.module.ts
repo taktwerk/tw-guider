@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
+import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { HomePage } from './home.page';
         path: '',
         component: HomePage
       }
-    ])
+    ]),
+    SyncSpinnerComponentModule
   ],
   declarations: [HomePage]
 })

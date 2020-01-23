@@ -70,11 +70,9 @@ export class AuthService {
                 return auth.save().then(() => {
                     resolve(true);
                 }, (err) => {
-                    console.error('AuthService', 'createDummyUser', 'could not save auth', err);
                     resolve(false);
                 });
             }, (err) => {
-                console.error('AuthService', 'createDummyUser', 'could not save user', err);
                 resolve(false);
             });
         });

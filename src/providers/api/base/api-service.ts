@@ -96,7 +96,7 @@ export abstract class ApiService {
      */
     public available() {
         return this.data.filter(model => {
-            return model[model.COL_DELETED_AT] == '';
+            return model[model.COL_DELETED_AT] === '';
         });
     }
 
@@ -204,21 +204,17 @@ export abstract class ApiService {
         let indexApi = this.data.findIndex(record => newData.idApi && record.idApi === newData.idApi);
         let indexDB = this.data.findIndex(record => newData.id && record.id === newData.id);
         if (indexApi !== -1) {
-            //update list item
-            //console.log(newData.TAG, 'Api-Service', 'AddToList', 'update', 'API', indexApi);
             this.data[indexApi] = newData;
         } else if (indexDB !== -1) {
-            //update list item
-            //console.log(newData.TAG, 'Api-Service', 'AddToList', 'update', 'DB', indexDB);
             this.data[indexDB] = newData;
         } else {
-            //add to list
-            //console.log(newData.TAG, 'Api-Service', 'AddToList', 'push', this.data);
             this.data.push(newData);
 
             // Now that the file has been added and has an ID, let's download its files if there are any
             //this.downloadFiles(newData);
         }
+
+        console.log('add to list');
 
         this.dataVersion++;
     }
@@ -238,9 +234,6 @@ export abstract class ApiService {
             //update list item
             //console.log(model.TAG, 'Api-Service', 'RemoveFromList', 'update', 'DB', indexDB);
             this.data.splice(indexDB, 1);
-        } else {
-            //unknown element?
-            console.error(model.TAG, 'Api-Service', 'RemoveFromList', 'Push error', this.data);
         }
 
         this.dataVersion++;
@@ -257,7 +250,7 @@ export abstract class ApiService {
             model.save().then(res => {
                 if (res) {
                     //console.log(model.TAG, 'Service Save', 'Add to list ready', model);
-                    this.addToList(model);
+                    // this.addToList(model);
                 }
                 resolve(res);
             });
@@ -358,9 +351,8 @@ export abstract class ApiService {
      * @param {DbApiModel} oldModel the previous values
      * @returns {boolean}
      */
-    pullFiles(model: DbApiModel, oldModel: any) {
-        return new Promise((resolve) => {
-            //console.info('ApiService', 'Pull', 'SyncFiles', model);
+    async pullFiles(model: DbApiModel, oldModel: any) {
+        const promise = new Promise(async (resolve) => {
             // No use downloading if not on app
             if (/*model.platform.is('core') || */ model.platform.is('mobileweb')) {
                 resolve(true);
@@ -368,34 +360,42 @@ export abstract class ApiService {
 
             // Do we have files to upload?
             if (model.downloadMapping && model.downloadMapping.length > 0) {
-                for (let fields of model.downloadMapping) {
+                for (const fields of model.downloadMapping) {
                     if (!model[fields[0]] || !model[fields[1]]) {
                         resolve(false);
+                        return;
                     }
                     // If we have a local path but no api path, we need to upload the file!
                     // Only download if the new file is different than the old one? We don't have this information here.
-                    model.downloadService.download(model[fields[1]], model[fields[0]], model.TABLE_NAME, this.http.getAuthorizationToken())
-                        .then((res) => {
-                            if (res === false) {
-                                console.log('model in fail', model);
-                                resolve(false);
-                            }
-                            model[fields[2]] = res;
-                            // We received the local path back if it's successful
-                            model.saveSynced(true).then(() => {
-                                this.addToList(model);
+                    const data = await model.downloadService.downloadAndSaveFile(
+                        model[fields[1]],
+                        model[fields[0]],
+                        model.TABLE_NAME,
+                        this.http.getAuthorizationToken()
+                    );
+                    if (data === false) {
+                        console.log('model in fail', model);
+                        resolve(false);
+                        return;
+                    }
+                    model[fields[2]] = data;
+                    await model.saveSynced(true).then(() => {
+                        // this.addToList(model);
 
-                                // Delete old file
-                                if (oldModel && oldModel[fields[2]] !== model[fields[2]]) {
-                                    model.downloadService.deleteFile(oldModel[fields[2]]);
-                                }
-                                resolve(true);
-                            });
-                        });
+                        // Delete old file
+                        if (oldModel && oldModel[fields[2]] !== model[fields[2]]) {
+                            model.downloadService.deleteFile(oldModel[fields[2]]);
+                        }
+                        resolve(true);
+                        return;
+                    });
                 }
             } else {
                 resolve(true);
+                return;
             }
         });
+
+        return await promise;
     }
 }

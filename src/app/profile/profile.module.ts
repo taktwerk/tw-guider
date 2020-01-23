@@ -4,6 +4,8 @@ import {SynchronizationComponentModule} from '../../components/synchronization-c
 import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {IonicModule} from '@ionic/angular';
+import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -11,6 +13,7 @@ import {IonicModule} from '@ionic/angular';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     IonicModule,
     RouterModule.forChild([
       {
@@ -18,7 +21,8 @@ import {IonicModule} from '@ionic/angular';
         component: ProfilePage
       }
     ]),
-    SynchronizationComponentModule
+    SynchronizationComponentModule,
+    SyncSpinnerComponentModule
   ]
 })
 export class ProfilePageModule {}

@@ -12,6 +12,7 @@ import { DownloadService } from '../../services/download-service';
  * with the remote API. In that case you'd have to extend only DbHelper.
  */
 export abstract class DbApiModel extends DbBaseModel {
+    public defaultImage = '/assets/placeholder.jpg';
     /** flag that indicate either a record is synced with the API or not */
     public is_synced: boolean;
     /** primary key */
@@ -153,7 +154,7 @@ export abstract class DbApiModel extends DbBaseModel {
      */
     public save(forceCreation?: boolean, isSynced?: boolean, updateCondition?: string): Promise<any> {
 
-        if (this.updateCondition.length == 0) {
+        if (this.updateCondition.length === 0) {
             if (updateCondition) {
                 // Provided by the service
                 this.updateCondition = updateCondition;
@@ -165,7 +166,6 @@ export abstract class DbApiModel extends DbBaseModel {
         return new Promise((resolve) => {
             this.beforeSave(isSynced);
             this.exists().then((res) => {
-                console.log('exists', res);
                 if (res) {
                     this.update().then(() => resolve(true));
                 } else {
@@ -207,7 +207,6 @@ export abstract class DbApiModel extends DbBaseModel {
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
-                    console.error(this.TAG, 'db is null', this);
                     resolve(false);
                 } else {
                     //console.log(this.TAG, 'exist condition', this.updateCondition);
@@ -220,7 +219,6 @@ export abstract class DbApiModel extends DbBaseModel {
                         db.query(query).then((res) => {
                             resolve(res.rows.length > 0);
                         }).catch((err) => {
-                            console.error(this.TAG, 'Error', err);
                             resolve(false);
                         });
                     }

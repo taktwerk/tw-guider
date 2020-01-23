@@ -111,7 +111,7 @@ export class GuiderModel extends DbApiModel {
         if (this[GuiderModel.COL_LOCAL_PREVIEW_FILE]) {
             return this.downloadService.webview.convertFileSrc(this[GuiderModel.COL_LOCAL_PREVIEW_FILE]);
         } else {
-            return this[GuiderModel.COL_API_PREVIEW_FILE_PATH];
+            return this.defaultImage;
         }
     }
 }

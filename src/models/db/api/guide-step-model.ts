@@ -73,7 +73,7 @@ export class GuideStepModel extends DbApiModel {
         if (this[GuideStepModel.COL_LOCAL_ATTACHED_FILE]) {
             return this.downloadService.webview.convertFileSrc(this[GuideStepModel.COL_LOCAL_ATTACHED_FILE]);
         } else {
-            return this[GuideStepModel.COL_API_ATTACHED_FILE_PATH];
+            return this.defaultImage;
         }
     }
 

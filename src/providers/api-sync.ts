@@ -74,6 +74,16 @@ export class ApiSync {
         this.syncProgressStatus = new BehaviorSubject<string>('initial');
         this.isPrepareSynData = new BehaviorSubject<boolean>(false);
         this.init();
+        this.initializeEvents();
+    }
+
+    initializeEvents() {
+        this.events.subscribe('UserDb:create', (userDb) => {
+            this.userDb = userDb;
+        });
+        this.events.subscribe('UserDb:update', (userDb) => {
+            this.userDb = userDb;
+        });
     }
 
     /**
@@ -106,7 +116,6 @@ export class ApiSync {
                     }
                     resolve(true);
                 } else {
-                    console.error('ApiSync', 'could not load the current logged in user');
                     resolve(false);
                 }
             });
@@ -127,7 +136,6 @@ export class ApiSync {
                         }
                         resolve(res);
                     }).catch((err) => {
-                        console.error('ApiSync', err);
                         this.loadLocal();
                         resolve(false);
                     });
@@ -267,7 +275,6 @@ export class ApiSync {
                   }, (err) => {
                     this.isStartPushBehaviorSubject.next(false);
                     this.pushProgressStatus.next('failed');
-                    console.error('ApiSync', 'push', 'failed', {'error': err});
                     this.isBusy = false;
                   });
                 })
@@ -341,7 +348,6 @@ export class ApiSync {
                           Object.keys(data).forEach(function (key) {
                               let record =  data[key];
                               if (record.errors) {
-                                  console.error('ApiSync', 'push', 'Error', {id: key, errors: record.errors});
                                   return;
                               }
                               //get model by local id and update received primary key from api
@@ -489,6 +495,7 @@ export class ApiSync {
         // date.setTime(date.getTime() + ((date.getTimezoneOffset() * 60) * 1000));
         //
         // console.log('date', date)
+        // console.log('date.getTimezoneOffset()', date.getTimezoneOffset());
 
         date.setTime(date.getTime());
 
@@ -496,8 +503,9 @@ export class ApiSync {
     }
 
     private willMakePause() {
-      return !this.isStartSyncBehaviorSubject.getValue() &&
-        (this.syncProgressStatus.getValue() === 'progress' || this.syncProgressStatus.getValue() === 'resume');
+        console.log('this.isStartSyncBehaviorSubject.getValue() in will make pause', this.isStartSyncBehaviorSubject.getValue());
+        return !this.isStartSyncBehaviorSubject.getValue() &&
+            (this.syncProgressStatus.getValue() === 'progress' || this.syncProgressStatus.getValue() === 'resume');
     }
 
     private willMakeCancel() {
@@ -513,212 +521,156 @@ export class ApiSync {
         this.isPrepareSynData.next(true);
 
         return new Promise(resolve => {
-            resolve(false);
             if (this.network.type === 'none') {
                 this.unsetSyncProgressData();
                 this.isBusy = false;
                 resolve(false);
                 return;
             }
+            console.log('this.isBusy', this.isBusy);
             if (this.isBusy) {
                 resolve(false);
-            } else {
+                return;
+            }
+            console.log('this.syncMustBeEnd()', this.syncMustBeEnd());
+            if (this.syncMustBeEnd()) {
+                resolve(false);
+                return;
+            }
+            this.isBusy = true;
+            let differences = 0;
+            this.http.initHeaders();
+            this.http.get(this.getSyncUrl()).subscribe(async (data) => {
                 if (this.syncMustBeEnd()) {
                     resolve(false);
+                    return;
                 }
-                this.isBusy = true;
-                // add Current Datetime header
-                this.http.initHeaders();
-                this.http.addAuthorizationHeader();
-                this.http.addDateTimeHeader();
-                const promises = [];
-                // create sync url
-                let countOfSyncedData = 0;
-                let savedDataCount = 0;
-                let url = AppSetting.API_SYNC_URL;
-                if (this.userDb.userSetting.lastSyncedAt && !withoutDate) {
-                    // Need to recast the saved date to get the ISOString, which will give us the correct offset to sync with the ser
-                    let d = this.getUTCDate(new Date(this.userDb.userSetting.lastSyncedAt));
-                    url = url + '?lastUpdatedAt=' + d.toISOString();
-                }
-                if (this.userDb.userSetting.syncLastElementNumber && this.syncProgressStatus.getValue() === 'resume') {
-                    if (withoutDate) {
-                        url = url + '?lastUpdatedNumber=' + this.userDb.userSetting.syncLastElementNumber;
-                    } else {
-                        url = url + '&lastUpdatedNumber=' + this.userDb.userSetting.syncLastElementNumber;
+                differences = data.difference;
+                data = data.models;
+                if (!(this.userDb.userSetting.syncAllItemsCount && this.syncProgressStatus.getValue() === 'resume')) {
+                    let countOfSyncedData = 0;
+                    for (const key of Object.keys(data)) {
+                        countOfSyncedData += data[key].length;
                     }
-
-                    savedDataCount = this.userDb.userSetting.syncLastElementNumber;
+                    this.userDb.userSetting.syncAllItemsCount = countOfSyncedData;
+                    this.userDb.save();
+                }
+                if (this.userDb.userSetting.syncAllItemsCount === 0) {
+                    this.unsetSyncProgressData();
+                    this.isBusy = false;
+                    this.http.showToast('No data to sync.');
+                    resolve(false);
+                    return;
                 }
 
-                if (this.userDb.userSetting.syncAllItemsCount && this.syncProgressStatus.getValue() === 'resume') {
-                    countOfSyncedData = this.userDb.userSetting.syncAllItemsCount;
-                }
-
-                let differences = 0;
-                this.http.get(url).subscribe(data => {
+                this.http.showToast('Sync started.');
+                for (const key of Object.keys(data)) {
+                    const apiService = this.apiServices[key];
+                    if (!apiService) {
+                        console.warn('ApiSync', 'Sync for ' + key + ' not supported for now.');
+                        continue;
+                    }
+                    for (const model of data[key]) {
                         if (this.syncMustBeEnd()) {
                             resolve(false);
+                            return;
                         }
-                        //remove timestamp from httpclient's header
-                        // this.http.headers.delete('X-CURRENT-DATETIME');
-                        //update UserSetting last sync date and difference
-                        differences = data.difference;
-                        //get models from sync request
-                        data = data.models;
-                        //console.info('ApiSync', 'API sync available for ' + Object.keys(data).length + ' models', Object.keys(data));
-                        //iterate all received model-keys
-                        if (!(this.userDb.userSetting.syncAllItemsCount && this.syncProgressStatus.getValue() === 'resume')) {
-                            for (let key of Object.keys(data)) {
-                                countOfSyncedData += data[key].length;
-                            }
-                            this.userDb.userSetting.syncAllItemsCount = countOfSyncedData;
-                            this.userDb.save();
-                        }
-                        if (countOfSyncedData === 0) {
-                            this.unsetSyncProgressData();
-                            this.isBusy = false;
-                            this.http.showToast('No data to sync.');
-                            resolve(false);
-                        } else {
-                            this.http.showToast('Sync started.');
-                        }
-                        for (let key of Object.keys(data)) {
-                            //get registered api service for the current model
-                            let apiService = this.apiServices[key];
-                            //assert api service is registered in apiServices
-                            if (!apiService) {
-                                console.warn('ApiSync', 'Sync for ' + key + ' not supported for now.');
-                                continue;
-                            }
-                            //iterate api model objects
-                            for (const model of data[key]) {
-                                if (this.syncMustBeEnd()) {
-                                    resolve(false);
+                        await this.saveModel(apiService, model)
+                            .then(() => {
+                                if (this.isPrepareSynData.getValue() === true) {
+                                    this.isPrepareSynData.next(false);
                                 }
-                                //create new instance of the current model
-                                const obj = apiService.dbModelApi.loadFromApi(model);
-                                obj.is_synced = true;
-                                const oldModel = apiService.findById(obj.idApi);
-                                //save object in db
-                                //add model instance to its service data (model instance holder of the service)
+                                if (this.userDb.userSetting.syncAllItemsCount === 0) {
+                                    this.syncProgressStatus.next('failed');
+                                    this.userDb.userSetting.syncStatus = 'failed';
+                                    this.userDb.save();
+                                    this.isStartSyncBehaviorSubject.next(false);
+                                    this.http.showToast('Sync failed.');
+                                    this.isBusy = false;
+                                    resolve(false);
+                                    console.log('is 0000');
+                                    return;
+                                }
+                                // apiService.addToList(obj);
+                                this.userDb.userSetting.syncLastElementNumber++;
+                                this.userDb.userSetting.syncPercent = Math.round(
+                                    (this.userDb.userSetting.syncLastElementNumber / this.userDb.userSetting.syncAllItemsCount) * 100
+                                );
+                                this.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
 
-                                promises.push(apiService.pullFiles(obj, oldModel).then(() => {
-                                    if (this.syncMustBeEnd()) {
-                                        resolve(false);
-                                    }
-                                    // Download any new files if required
-                                    obj.saveSynced().then(() => {
-                                        if (this.isPrepareSynData.getValue() === true) {
-                                            this.isPrepareSynData.next(false);
-                                        }
-                                        if (this.syncMustBeEnd()) {
-                                            resolve(false);
-                                        }
-                                        apiService.addToList(obj);
-                                        savedDataCount++;
-                                        const savedDataPercent = Math.round((savedDataCount / countOfSyncedData) * 100);
-                                        this.syncedItemsPercent.next(savedDataPercent);
-                                        this.userDb.userSetting.syncLastElementNumber = savedDataCount;
-                                        this.userDb.userSetting.syncPercent = savedDataPercent;
-                                        this.userDb.save();
-
-                                        if (savedDataPercent === 100) {
-                                            this.syncProgressStatus.next('success');
-                                            this.userDb.userSetting.lastSyncedAt = new Date();
-                                            this.userDb.userSetting.lastSyncedDiff = differences;
-                                            this.userDb.userSetting.syncStatus = 'success';
-                                            this.userDb.userSetting.syncLastElementNumber = 0;
-                                            this.userDb.userSetting.syncAllItemsCount = 0;
-
-                                            this.userDb.save().then(() => {
-                                                this.isBusy = false;
-                                                this.http.showToast('Sync successful.');
-                                                resolve(true);
-                                            });
-                                        }
-                                    });
-                                }));
-                                // promises.push(obj.saveSynced().then(() => {
-                                //     if (this.syncMustBeEnd()) {
-                                //         resolve(false);
-                                //     }
-                                //     // Download any new files if required
-                                //     apiService.pullFiles(obj, oldModel).then(() => {
-                                //         if (this.isPrepareSynData.getValue() === true) {
-                                //             this.isPrepareSynData.next(false);
-                                //         }
-                                //         if (this.syncMustBeEnd()) {
-                                //             resolve(false);
-                                //         }
-                                //         apiService.addToList(obj);
-                                //         savedDataCount++;
-                                //         const savedDataPercent = Math.round((savedDataCount / countOfSyncedData) * 100);
-                                //         this.syncedItemsPercent.next(savedDataPercent);
-                                //         this.userDb.userSetting.syncLastElementNumber = savedDataCount;
-                                //         this.userDb.userSetting.syncPercent = savedDataPercent;
-                                //         this.userDb.save();
-                                //
-                                //         if (savedDataPercent === 100) {
-                                //             this.syncProgressStatus.next('success');
-                                //             this.userDb.userSetting.lastSyncedAt = new Date();
-                                //             this.userDb.userSetting.lastSyncedDiff = differences;
-                                //             this.userDb.userSetting.syncStatus = 'success';
-                                //             this.userDb.userSetting.syncLastElementNumber = 0;
-                                //             this.userDb.userSetting.syncAllItemsCount = 0;
-                                //
-                                //             this.userDb.save().then(() => {
-                                //                 this.isBusy = false;
-                                //                 this.http.showToast('Sync successful.');
-                                //                 resolve(true);
-                                //             });
-                                //         }
-                                //     });
-                                // }));
-                            }
-                        }
-                        Promise.all(promises).then(() => {
-                            if (
-                                (savedDataCount === 0 || Math.round((savedDataCount / countOfSyncedData) * 100) === 100) &&
-                                this.userDb.userSetting.syncStatus !== 'success'
-                            ) {
-                                this.syncProgressStatus.next('success');
-                                this.userDb.userSetting.lastSyncedAt = new Date();
-                                this.userDb.userSetting.lastSyncedDiff = differences;
-                                this.userDb.userSetting.syncStatus = 'success';
-                                this.userDb.userSetting.syncLastElementNumber = 0;
-                                this.userDb.userSetting.syncAllItemsCount = 0;
+                                if (this.userDb.userSetting.syncPercent === 100) {
+                                    this.syncProgressStatus.next('success');
+                                    this.isStartSyncBehaviorSubject.next(false);
+                                    this.userDb.userSetting.lastSyncedAt = new Date();
+                                    this.userDb.userSetting.lastSyncedDiff = differences;
+                                    this.userDb.userSetting.syncStatus = 'success';
+                                    this.userDb.userSetting.syncLastElementNumber = 0;
+                                    this.userDb.userSetting.syncAllItemsCount = 0;
+                                }
 
                                 this.userDb.save().then(() => {
-                                    this.isBusy = false;
-                                    resolve(true);
+                                    if (this.userDb.userSetting.syncPercent === 100) {
+                                        this.isBusy = false;
+                                        this.http.showToast('Sync successful.');
+                                        resolve(true);
+                                        return;
+                                    }
                                 });
-                            }
-                        });
-                    }, (err) => {
-                        this.syncProgressStatus.next('failed');
-                        this.userDb.userSetting.syncStatus = 'failed';
-                        this.userDb.save();
-                        console.error('ApiSync', 'Sync Error', err);
-                        this.http.showToast('Sync failed.');
-                        this.isBusy = false;
-                        resolve(false);
-                    });
-            }
+                            });
+                    }
+                }
+            }, (err) => {
+                this.syncProgressStatus.next('failed');
+                this.userDb.userSetting.syncStatus = 'failed';
+                this.userDb.save();
+                this.isStartSyncBehaviorSubject.next(false);
+                this.http.showToast('Sync failed.');
+                this.isBusy = false;
+                resolve(false);
+            });
         });
     }
 
+    private getSyncUrl() {
+        let url = AppSetting.API_SYNC_URL;
+
+        if (this.userDb.userSetting.lastSyncedAt) {
+            // Need to recast the saved date to get the ISOString, which will give us the correct offset to sync with the ser
+            const lastUpdatedAt = this.getUTCDate(new Date(this.userDb.userSetting.lastSyncedAt));
+            url = url + '?lastUpdatedAt=' + lastUpdatedAt.toISOString();
+        }
+        if (this.userDb.userSetting.syncLastElementNumber && this.syncProgressStatus.getValue() === 'resume') {
+            if (this.userDb.userSetting.lastSyncedAt) {
+                url = url + '&lastUpdatedNumber=' + this.userDb.userSetting.syncLastElementNumber;
+            }
+        }
+
+        return url;
+    }
+
+    async saveModel(apiService, model) {
+        const obj = apiService.dbModelApi.loadFromApi(model);
+        obj.is_synced = true;
+        const oldModel = apiService.findById(obj.idApi);
+
+        await obj.saveSynced();
+        return await apiService.pullFiles(obj, oldModel);
+    }
+
     public syncMustBeEnd() {
+        console.log('this.willMakeCancel()', this.willMakeCancel());
         if (this.willMakeCancel()) {
             this.isBusy = false;
 
             return true;
         }
+        console.log('this.syncProgressStatus.getValue()', this.syncProgressStatus.getValue());
         if (this.syncProgressStatus.getValue() === 'pause') {
             this.isBusy = false;
 
             return true;
         }
+        console.log('this.willMakePause()', this.willMakePause());
         if (this.willMakePause()) {
             this.syncProgressStatus.next('pause');
             this.userDb.userSetting.syncStatus = 'pause';
@@ -746,7 +698,6 @@ export class ApiSync {
                 if (!res) {
                   this.loadLocal();
                 }
-                this.isStartSyncBehaviorSubject.next(false);
                 resolve(res);
               }).catch((err) => {
                 this.isStartSyncBehaviorSubject.next(false);
@@ -762,10 +713,6 @@ export class ApiSync {
           }
         });
       });
-      // this.runPull().then((data) => {
-      //   this.isStartSyncBehaviorSubject.next(false);
-      // })
-      //   .catch((err) => this.isStartSyncBehaviorSubject.next(false));
     }
 
     public resumeSync(withoutDate = false) {
@@ -809,6 +756,16 @@ export class ApiSync {
                 });
             }
         }
+    }
+
+    resetSyncedData(): Promise<any> {
+        const apiSyncServicesPromises = [];
+        Object.keys(this.apiServices).forEach((modelKey) => {
+            const service: ApiService = this.apiServices[modelKey];
+            apiSyncServicesPromises.push(service.dbModelApi.removeAll());
+        });
+
+        return Promise.all(apiSyncServicesPromises);
     }
 }
 
