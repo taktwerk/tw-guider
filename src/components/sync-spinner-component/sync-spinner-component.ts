@@ -38,7 +38,6 @@ export class SyncSpinnerComponent implements OnInit {
                 public http: HttpClient,
                 public authService: AuthService,
                 public alertController: AlertController) {
-        console.log('SyncSpinnerComponent');
     }
 
 
@@ -49,9 +48,7 @@ export class SyncSpinnerComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.log('on init');
         this.apiSync.isStartSyncBehaviorSubject.subscribe(isSync => {
-            console.log('isStartSyncBehavior in spinner');
             this.isStartSync = isSync;
             this.detectChanges();
         });

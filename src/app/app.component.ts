@@ -84,7 +84,6 @@ export class AppComponent implements OnInit {
       new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
         if (userDb) {
           this.userDb = userDb;
-          console.log('this.userDb', this.userDb);
 
           resolve(true);
         }
@@ -157,7 +156,6 @@ export class AppComponent implements OnInit {
         if (res) {
           lastUser = res;
         }
-        console.log('in login then', lastUser);
       });
     });
   }
@@ -165,18 +163,15 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.syncService.syncMode.subscribe((result) => {
       this.initUserDB().then(() => {
-        console.log('show me your user', result)
         this.userDb.userSetting.syncMode = result;
         this.userDb.save();
         if (result !== 2 && this.periodicSync) {
-          console.log('unsubsctibe me');
           this.periodicSync.unsubscribe();
           this.periodicSync = null;
         }
         if (result === 2) {
           this.periodicSync = Observable.interval(15000)
               .subscribe(() => {
-                console.log('subscribe on periodic sync');
                 this.apiSync.startSync();
               });
         }

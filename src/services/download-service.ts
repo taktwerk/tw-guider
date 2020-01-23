@@ -86,6 +86,7 @@ export class DownloadService {
                                                 resolve(finalPath);
                                                 return;
                                             }).catch(writeFileErr => {
+                                                console.log('writeFile', writeFileErr)
                                                 resolve(false);
                                             });
                                     });

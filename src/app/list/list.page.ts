@@ -75,7 +75,6 @@ export class ListPage implements OnInit {
     } else if (indexDB !== -1) {
       this.guideCategories[indexDB] = newData;
     } else {
-      console.log('push guide category', this.guideCategories);
       this.guideCategories.push(newData);
     }
   }

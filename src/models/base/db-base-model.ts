@@ -170,7 +170,7 @@ export abstract class DbBaseModel {
             // query += ', ' + this.secure(name) + ' ' + schema;
         }
         query += rows.join(', ') + ')';
-        // console.info(this.TAG, 'create table', query);
+
         return query;
     }
 
@@ -180,7 +180,6 @@ export abstract class DbBaseModel {
      */
     protected dbCreateTable(): Promise<any> {
         return new Promise((resolve) => {
-            console.log('create table');
             if (this.dbIsBusy) {
                 resolve(false);
             } else {

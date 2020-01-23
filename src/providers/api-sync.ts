@@ -108,7 +108,6 @@ export class ApiSync {
                           this.syncProgressStatus.getValue() !== 'not_sync'
                         )
                     ) {
-                      console.log('in init try to use db');
                       this.syncProgressStatus.next(this.userDb.userSetting.syncStatus);
                     }
                     if (this.userDb.userSetting.syncPercent) {
@@ -158,7 +157,6 @@ export class ApiSync {
       this.isStartPushBehaviorSubject.next(true);
       return new Promise(resolve => {
         if (this.isBusy) {
-          console.warn('ApiSync', 'push', 'aborted', 'busy');
           resolve(false);
 
           return;
@@ -205,7 +203,6 @@ export class ApiSync {
 
           return allServicesBodies;
         }).then(allServicesBodies => {
-          console.log('allServicesBodies', allServicesBodies);
           if (Object.keys(allServicesBodies).length === 0) {
             this.isStartPushBehaviorSubject.next(false);
             this.pushProgressStatus.next('no_push_data');
@@ -281,7 +278,6 @@ export class ApiSync {
               )
             });
             Promise.all(promises).then((data) => {
-              console.log('start of the promises');
               if (!data) {
 
                 this.isStartPushBehaviorSubject.next(false);
@@ -291,7 +287,6 @@ export class ApiSync {
                 resolve(false);
                 return;
               }
-              console.log('promises');
               this.isStartPushBehaviorSubject.next(false);
               this.pushProgressStatus.next('success');
               this.isBusy = false;
@@ -490,20 +485,12 @@ export class ApiSync {
   }
 
     private getUTCDate(date: Date) {
-        // console.log('date.getTime()', date.getTime());
-        // console.log('date.getTimezoneOffset()', date.getTimezoneOffset());
-        // date.setTime(date.getTime() + ((date.getTimezoneOffset() * 60) * 1000));
-        //
-        // console.log('date', date)
-        // console.log('date.getTimezoneOffset()', date.getTimezoneOffset());
-
         date.setTime(date.getTime());
 
         return date;
     }
 
     private willMakePause() {
-        console.log('this.isStartSyncBehaviorSubject.getValue() in will make pause', this.isStartSyncBehaviorSubject.getValue());
         return !this.isStartSyncBehaviorSubject.getValue() &&
             (this.syncProgressStatus.getValue() === 'progress' || this.syncProgressStatus.getValue() === 'resume');
     }
@@ -527,12 +514,10 @@ export class ApiSync {
                 resolve(false);
                 return;
             }
-            console.log('this.isBusy', this.isBusy);
             if (this.isBusy) {
                 resolve(false);
                 return;
             }
-            console.log('this.syncMustBeEnd()', this.syncMustBeEnd());
             if (this.syncMustBeEnd()) {
                 resolve(false);
                 return;
@@ -575,7 +560,7 @@ export class ApiSync {
                             resolve(false);
                             return;
                         }
-                        this.saveModel(apiService, model)
+                        await this.saveModel(apiService, model)
                             .then(() => {
                                 if (this.isPrepareSynData.getValue() === true) {
                                     this.isPrepareSynData.next(false);
@@ -658,19 +643,16 @@ export class ApiSync {
     }
 
     public syncMustBeEnd() {
-        console.log('this.willMakeCancel()', this.willMakeCancel());
         if (this.willMakeCancel()) {
             this.isBusy = false;
 
             return true;
         }
-        console.log('this.syncProgressStatus.getValue()', this.syncProgressStatus.getValue());
         if (this.syncProgressStatus.getValue() === 'pause') {
             this.isBusy = false;
 
             return true;
         }
-        console.log('this.willMakePause()', this.willMakePause());
         if (this.willMakePause()) {
             this.syncProgressStatus.next('pause');
             this.userDb.userSetting.syncStatus = 'pause';

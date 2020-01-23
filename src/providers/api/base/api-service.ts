@@ -367,28 +367,31 @@ export abstract class ApiService {
                     }
                     // If we have a local path but no api path, we need to upload the file!
                     // Only download if the new file is different than the old one? We don't have this information here.
-                    const data = await model.downloadService.downloadAndSaveFile(
+                    model.downloadService.downloadAndSaveFile(
                         model[fields[1]],
                         model[fields[0]],
                         model.TABLE_NAME,
                         this.http.getAuthorizationToken()
-                    );
-                    if (data === false) {
-                        console.log('model in fail', model);
-                        resolve(false);
-                        return;
-                    }
-                    model[fields[2]] = data;
-                    await model.saveSynced(true).then(() => {
-                        // this.addToList(model);
+                    )
+                        .then((res) => {
+                            if (res === false) {
+                                console.log('model in fail', model);
+                                resolve(false);
+                                return;
+                            }
+                            model[fields[2]] = res;
+                            // We received the local path back if it's successful
+                            model.saveSynced(true).then(() => {
+                                // this.addToList(model);
 
-                        // Delete old file
-                        if (oldModel && oldModel[fields[2]] !== model[fields[2]]) {
-                            model.downloadService.deleteFile(oldModel[fields[2]]);
-                        }
-                        resolve(true);
-                        return;
-                    });
+                                // Delete old file
+                                if (oldModel && oldModel[fields[2]] !== model[fields[2]]) {
+                                    model.downloadService.deleteFile(oldModel[fields[2]]);
+                                }
+                                resolve(true);
+                                return;
+                            });
+                        });
                 }
             } else {
                 resolve(true);
