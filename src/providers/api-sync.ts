@@ -575,7 +575,7 @@ export class ApiSync {
                             resolve(false);
                             return;
                         }
-                        await this.saveModel(apiService, model)
+                        this.saveModel(apiService, model)
                             .then(() => {
                                 if (this.isPrepareSynData.getValue() === true) {
                                     this.isPrepareSynData.next(false);
