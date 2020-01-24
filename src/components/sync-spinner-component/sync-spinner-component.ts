@@ -18,12 +18,6 @@ import {ApiService} from '../../providers/api/base/api-service';
  * on Ionic pages and navigation.
  */
 
-export enum SyncMode {
-  Manual,
-  NetworkConnect,
-  Periodic
-}
-
 @Component({
   selector: 'sync-spinner-component',
   templateUrl: 'sync-spinner-component.html',

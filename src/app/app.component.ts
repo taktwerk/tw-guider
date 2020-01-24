@@ -15,6 +15,7 @@ import {UserDb} from '../models/db/user-db';
 import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from '../services/download-service';
 import {SyncMode} from '../components/synchronization-component/synchronization-component';
+import {UserService} from '../services/user-service';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -43,7 +44,8 @@ export class AppComponent implements OnInit {
     private http: HttpClient,
     private syncService: SyncService,
     private downloadService: DownloadService,
-    private db: DbProvider
+    private db: DbProvider,
+    private userService: UserService
   ) {
     this.initializeApp();
   }
@@ -61,10 +63,8 @@ export class AppComponent implements OnInit {
       // Do the user login (fake user or previously logged in user)
       this.login().then((result) => {
         this.initUserDB().then(() => {
-          if (!this.userDb.userSetting.syncMode) {
-            this.userDb.userSetting.syncMode = SyncMode.Manual;
-            this.userDb.save();
-          }
+          console.log('this.userDb.userSetting.syncMode', this.userDb.userSetting.syncMode);
+
           this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
         });
         this.splashScreen.hide();
@@ -162,9 +162,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.syncService.syncMode.subscribe((result) => {
-      this.initUserDB().then(() => {
-        this.userDb.userSetting.syncMode = result;
-        this.userDb.save();
+        console.log('this.syncService.syncModel', result);
         if (result !== 2 && this.periodicSync) {
           this.periodicSync.unsubscribe();
           this.periodicSync = null;
@@ -175,7 +173,6 @@ export class AppComponent implements OnInit {
                 this.apiSync.startSync();
               });
         }
-      });
     });
   }
 }

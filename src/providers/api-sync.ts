@@ -317,7 +317,6 @@ export class ApiSync {
         this.isStartPushBehaviorSubject.next(true);
         return new Promise(resolve => {
             if (this.isBusy) {
-                console.warn('ApiSync', 'push', 'aborted', 'busy');
                 this.isStartPushBehaviorSubject.next(false);
                 resolve(false);
 
@@ -358,12 +357,8 @@ export class ApiSync {
                                   //update isSynced = true and save with special update-condition
                                   dbModelApi.save(false, true, dbModelApi.COL_ID + '=' + record._id).then((res) => {
                                       if (res) {
-                                          //console.info('ApiSync', 'push', 'record', 'saved', record);
                                           service.dbModelApi.findById(record._id, true).then((m) => {
-                                              //console.info('ApiSync', 'push', 'record', 'saved', 'object', m);
                                           });
-
-                                          //console.warn('ApiSync', 'Push', 'Pushing and syncing', dbModelApi);
                                           service.pushFiles(dbModelApi);
                                       } else {
                                           console.warn('ApiSync', 'push', 'record', 'could not save record', record);
@@ -388,7 +383,6 @@ export class ApiSync {
     this.isStartPushBehaviorSubject.next(true);
     return new Promise(resolve => {
       if (this.isBusy) {
-        console.warn('ApiSync', 'push', 'aborted', 'busy');
         resolve(false);
 
         return;
@@ -505,15 +499,12 @@ export class ApiSync {
      * @returns {Promise<T>}
      */
     private pull(withoutDate = false): Promise<any> {
-        this.isPrepareSynData.next(true);
-
         return new Promise(resolve => {
-            if (this.network.type === 'none') {
-                this.unsetSyncProgressData();
-                this.isBusy = false;
+            if (this.syncMustBeEnd()) {
                 resolve(false);
                 return;
             }
+            this.isPrepareSynData.next(true);
             if (this.isBusy) {
                 resolve(false);
                 return;
@@ -525,7 +516,7 @@ export class ApiSync {
             this.isBusy = true;
             let differences = 0;
             this.http.initHeaders();
-            this.http.get(this.getSyncUrl()).subscribe(async (data) => {
+            this.http.get(this.getSyncUrl(withoutDate)).subscribe(async (data) => {
                 if (this.syncMustBeEnd()) {
                     resolve(false);
                     return;
@@ -541,7 +532,10 @@ export class ApiSync {
                     this.userDb.save();
                 }
                 if (this.userDb.userSetting.syncAllItemsCount === 0) {
-                    this.unsetSyncProgressData();
+                    this.unsetSyncProgressData().then(() => {
+                        this.userDb.userSetting.lastSyncedAt = new Date();
+                        this.userDb.save();
+                    });
                     this.isBusy = false;
                     this.http.showToast('No data to sync.');
                     resolve(false);
@@ -573,7 +567,6 @@ export class ApiSync {
                                     this.http.showToast('Sync failed.');
                                     this.isBusy = false;
                                     resolve(false);
-                                    console.log('is 0000');
                                     return;
                                 }
                                 // apiService.addToList(obj);
@@ -605,6 +598,7 @@ export class ApiSync {
                     }
                 }
             }, (err) => {
+                console.log('error in get', err);
                 this.syncProgressStatus.next('failed');
                 this.userDb.userSetting.syncStatus = 'failed';
                 this.userDb.save();
@@ -612,20 +606,23 @@ export class ApiSync {
                 this.http.showToast('Sync failed.');
                 this.isBusy = false;
                 resolve(false);
+                return;
             });
         });
     }
 
-    private getSyncUrl() {
+    private getSyncUrl(withoutDate) {
         let url = AppSetting.API_SYNC_URL;
 
-        if (this.userDb.userSetting.lastSyncedAt) {
+        if (this.userDb.userSetting.lastSyncedAt && !withoutDate) {
             // Need to recast the saved date to get the ISOString, which will give us the correct offset to sync with the ser
             const lastUpdatedAt = this.getUTCDate(new Date(this.userDb.userSetting.lastSyncedAt));
             url = url + '?lastUpdatedAt=' + lastUpdatedAt.toISOString();
         }
         if (this.userDb.userSetting.syncLastElementNumber && this.syncProgressStatus.getValue() === 'resume') {
-            if (this.userDb.userSetting.lastSyncedAt) {
+            if (withoutDate) {
+                url = url + '?lastUpdatedNumber=' + this.userDb.userSetting.syncLastElementNumber;
+            } else if (this.userDb.userSetting.lastSyncedAt && !withoutDate) {
                 url = url + '&lastUpdatedNumber=' + this.userDb.userSetting.syncLastElementNumber;
             }
         }
@@ -644,11 +641,13 @@ export class ApiSync {
 
     public syncMustBeEnd() {
         if (this.willMakeCancel()) {
+            this.isStartSyncBehaviorSubject.next(false);
             this.isBusy = false;
 
             return true;
         }
         if (this.syncProgressStatus.getValue() === 'pause') {
+            this.isStartSyncBehaviorSubject.next(false);
             this.isBusy = false;
 
             return true;
@@ -656,6 +655,24 @@ export class ApiSync {
         if (this.willMakePause()) {
             this.syncProgressStatus.next('pause');
             this.userDb.userSetting.syncStatus = 'pause';
+            this.isStartSyncBehaviorSubject.next(false);
+            this.userDb.save().then(() => {
+                this.isBusy = false;
+            });
+
+            return true;
+        }
+        if (this.isOffNetwork()) {
+            return true;
+        }
+    }
+
+    public isOffNetwork() {
+        if (this.network.type === 'none') {
+            this.http.showToast('No internet connection.');
+            this.syncProgressStatus.next('pause');
+            this.userDb.userSetting.syncStatus = 'pause';
+            this.isStartSyncBehaviorSubject.next(false);
             this.userDb.save().then(() => {
                 this.isBusy = false;
             });
@@ -665,6 +682,11 @@ export class ApiSync {
     }
 
     public startSync(withoutDate = false) {
+      if (this.isOffNetwork() || this.isBusy) {
+          return new Promise(resolve => {
+              resolve(false);
+          });
+      }
       this.isStartSyncBehaviorSubject.next(true);
       this.syncProgressStatus.next('progress');
 
@@ -673,7 +695,6 @@ export class ApiSync {
           if (data) {
             this.userDb.userSetting.syncPercent = 0;
             this.userDb.userSetting.syncLastElementNumber = 0;
-            this.userDb.userSetting.syncAllItemsCount = 0;
             this.userDb.userSetting.syncStatus = 'progress';
             this.userDb.save().then(() => {
               this.pull(withoutDate).then((res) => {
@@ -683,7 +704,6 @@ export class ApiSync {
                 resolve(res);
               }).catch((err) => {
                 this.isStartSyncBehaviorSubject.next(false);
-                console.error('ApiSync', err);
                 this.loadLocal();
                 resolve(false);
               });
@@ -697,13 +717,33 @@ export class ApiSync {
       });
     }
 
-    public resumeSync(withoutDate = false) {
+    public resumeSync() {
       this.isStartSyncBehaviorSubject.next(true);
       this.syncProgressStatus.next('resume');
-      this.runPull(withoutDate).then((data) => {
-        this.isStartSyncBehaviorSubject.next(false);
-      })
-        .catch((err) => this.isStartSyncBehaviorSubject.next(false));
+
+      return new Promise(resolve => {
+            this.init().then((data) => {
+                if (data) {
+                    this.userDb.userSetting.syncStatus = 'resume';
+                    this.userDb.save().then(() => {
+                        this.pull().then((res) => {
+                            if (!res) {
+                                this.loadLocal();
+                            }
+                            resolve(res);
+                        }).catch((err) => {
+                            this.isStartSyncBehaviorSubject.next(false);
+                            this.loadLocal();
+                            resolve(false);
+                        });
+                    });
+
+                } else {
+                    this.isStartSyncBehaviorSubject.next(false);
+                    resolve(false);
+                }
+            });
+        });
     }
 
     public unsetSyncProgressData() {
@@ -718,6 +758,9 @@ export class ApiSync {
             this.userDb.userSetting.syncLastElementNumber = 0;
             this.userDb.userSetting.syncAllItemsCount = 0;
             this.userDb.save();
+
+            resolve(true);
+            return;
           }
         });
       });
@@ -728,12 +771,10 @@ export class ApiSync {
      * @return {Promise<T>}
      */
     private loadLocal() {
-        // console.debug('ApiSync','loadLocal');
         for (let key of Object.keys(this.apiServices)) {
             let service: ApiService = this.apiServices[key];
             if (!service.data.length) {
                 service.dbModelApi.findAll().then((res) => {
-                    // console.debug('ApiSync', 'loadLocal', 'findAll', 'done');
                     service.data = res;
                 });
             }

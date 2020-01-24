@@ -8,36 +8,40 @@
   }
 </style>
 
+<section>
+  <h5>Last successful sync date:</h5> {{ this.getLastSyncDate() }}
+</section>
+
 <section *ngIf="modeSync === 0">
-  <ion-button *ngIf="!isStartSync"
+  <ion-button *ngIf="!isStartSync && syncProgressStatus !== 'pause'"
               (click)="syncData()"
               color="primary"
   >
     Synchronize Data
   </ion-button>
-  <ion-button *ngIf="isStartSync"
+  <ion-button *ngIf="isStartSync && syncProgressStatus !== 'pause'"
               color="primary"
   >
     Is synchronization
   </ion-button>
-<!--  <ion-button *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'"-->
-<!--              (click)="stopSyncData()"-->
-<!--              color="success"-->
-<!--  >-->
-<!--    Stop-->
-<!--  </ion-button>-->
-<!--  <ion-button *ngIf="syncProgressStatus === 'pause'"-->
-<!--              (click)="resumeSyncData()"-->
-<!--              color="success"-->
-<!--  >-->
-<!--    Resume-->
-<!--  </ion-button>-->
-<!--  <ion-button *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume' || syncProgressStatus === 'pause'"-->
-<!--              (click)="cancelSyncData()"-->
-<!--              color="success"-->
-<!--  >-->
-<!--    Cancel-->
-<!--  </ion-button>-->
+  <ion-button *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'"
+              (click)="stopSyncData()"
+              color="success"
+  >
+    Stop
+  </ion-button>
+  <ion-button *ngIf="syncProgressStatus === 'pause'"
+              (click)="resumeSyncData()"
+              color="success"
+  >
+    Resume
+  </ion-button>
+  <ion-button *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume' || syncProgressStatus === 'pause'"
+              (click)="cancelSyncData()"
+              color="success"
+  >
+    Cancel
+  </ion-button>
 </section>
 <ion-card>
   <div *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'">

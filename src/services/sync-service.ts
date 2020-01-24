@@ -5,11 +5,12 @@ import {DbProvider} from '../providers/db-provider';
 import { Events, NavController } from '@ionic/angular';
 import {ApiSync} from '../providers/api-sync';
 import {BehaviorSubject} from 'rxjs';
+import {SyncMode} from '../components/synchronization-component/synchronization-component';
 
 @Injectable()
 export class SyncService {
 
-    syncMode = new BehaviorSubject<number>(0);
+    syncMode = new BehaviorSubject<number>(null);
 
     constructor(public platform: Platform,
                 public dbProvider: DbProvider,
@@ -17,7 +18,6 @@ export class SyncService {
                 public events: Events,
                 public apiSync: ApiSync
     ) {
-        this.syncMode = new BehaviorSubject<number>(1);
     }
 }
 

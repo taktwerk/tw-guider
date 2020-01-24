@@ -108,7 +108,7 @@ export abstract class DbBaseModel {
         public platform: Platform,
         public db: DbProvider,
         public events: Events,
-        public downloadService: DownloadService
+        public downloadService: DownloadService,
     ) {
     }
 
@@ -139,7 +139,6 @@ export abstract class DbBaseModel {
     dbReady(): Promise<any> {
         return new Promise((resolve) => {
             if (this.dbIsReady) {
-                // console.log(this.TAG, 'dbReady is ready');
                 resolve(this.db);
             } else {
                 this.initDb().then((res) => {
@@ -446,7 +445,6 @@ export abstract class DbBaseModel {
      * @returns {Promise<any>}
      */
     public removeById(id: number): Promise<any> {
-        // console.log(this.TAG, 'remove()');
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) resolve(false);
@@ -464,7 +462,6 @@ export abstract class DbBaseModel {
      * @returns {Promise<any>}
      */
     public removeAll(): Promise<any> {
-        // console.log(this.TAG, 'removeAll()');
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) resolve(false);
@@ -540,7 +537,6 @@ export abstract class DbBaseModel {
         for (let i = 0; i < columnNames.length; i++) {
             let insert = this.secure(columnNames[i]) + ' = ' + columnValues[i];
             columnValueNames.push(insert);
-            // console.log(this.TAG, 'getColumnValueNames', insert);
         }
         return columnValueNames;
     }
@@ -600,7 +596,6 @@ export abstract class DbBaseModel {
         for (let column of this.TABLE) {
             let member = column[3] ? column[3] : column[0];
             let value: any = (<any>this)[(member)];
-            // console.log(this.TAG, 'columnValues', member, value, this);
             values.push(this.getValueByType(value, column[2]));
         }
         return values;
@@ -611,7 +606,6 @@ export abstract class DbBaseModel {
      * in the local SQLite database.
      */
     protected create(): Promise<any> {
-        console.debug(this.TAG, 'create');
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
@@ -622,15 +616,10 @@ export abstract class DbBaseModel {
                         'VALUES (' + this.columnValues().join(', ') + ') ';
                     console.debug(this.TAG, 'create statement', query);
                     db.query(query).then((res) => {
-                        // console.log(this.TAG, 'CREATE', 'SUCCESS', res);
-
                         //  Save ID in the model
                         this.id = res.insertId;
-                        // console.log(this.TAG, 'CREATE', 'redeclare update condition', this.updateCondition);
                         this.updateCondition = [this.COL_ID, this.id];
-
                         this.events.publish(this.TAG + ':create', this);
-                        // console.log(this.TAG, 'CREATE', 'redeclare update condition - post', this.updateCondition);
                         resolve(res);
 
                     }).catch((err) => {
@@ -654,10 +643,8 @@ export abstract class DbBaseModel {
                 } else {
                     let query = 'UPDATE ' + this.secure(this.TABLE_NAME) + ' ' +
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
-                    // console.log(this.TAG, 'update query', query);
                     db.query(query).then((res) => {
                         this.events.publish(this.TAG + ':update', this);
-                        // console.log(this.TAG, 'UPDATE', 'SUCCESS', res);
                         resolve(res);
                     }).catch((err) => {
                         resolve(false);
@@ -675,7 +662,6 @@ export abstract class DbBaseModel {
                 } else {
                     let query = 'DELETE FROM ' + this.secure(this.TABLE_NAME) + ' ' +
                         'WHERE ' + this.parseWhere(this.updateCondition);
-                    // console.log(this.TAG, 'delete query', query);
                     db.query(query).then((res) => {
                         this.events.publish(this.TAG + ':delete', this);
                         resolve(res);

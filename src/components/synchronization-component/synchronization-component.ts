@@ -9,7 +9,7 @@ import {HttpClient} from '../../services/http-client';
 import {UserDb} from '../../models/db/user-db';
 import {DbProvider} from '../../providers/db-provider';
 import {SyncService} from '../../services/sync-service';
-import {ApiService} from '../../providers/api/base/api-service';
+import {DatePipe} from '@angular/common';
 
 /**
  * Generated class for the TodoPage page.
@@ -52,6 +52,8 @@ export class SynchronizationComponent implements OnInit {
 
     public progressFileInformations: {};
 
+    public lastSuccessfullSyncDate: null;
+
     constructor(public apiSync: ApiSync,
                 private downloadService: DownloadService,
                 public modalCtrl: ModalController,
@@ -62,27 +64,18 @@ export class SynchronizationComponent implements OnInit {
                 private db: DbProvider,
                 private events: Events,
                 private syncService: SyncService,
-                public alertController: AlertController) {
+                public alertController: AlertController,
+                public datepipe: DatePipe) {
       this.authService.checkAccess();
-      this.initUserDB().then(() => {
-          console.log('this.userDb.userSetting.syncMode', this.userDb.userSetting.syncMode);
-          if ([0, 1, 2].includes(this.userDb.userSetting.syncMode)) {
-              this.modeSync = this.userDb.userSetting.syncMode;
-          } else {
-              this.modeSync = 0;
-          }
-          this.syncService.syncMode.next(this.modeSync);
-      });
+      this.initUser();
     }
 
   syncData() {
-    this.syncWithoutDate = false;
-    this.apiSync.startSync(this.syncWithoutDate);
+    this.apiSync.startSync();
   }
 
   syncAllData() {
-    this.syncWithoutDate = true;
-    this.apiSync.startSync(this.syncWithoutDate);
+    this.apiSync.startSync();
   }
 
   stopSyncData() {
@@ -90,7 +83,7 @@ export class SynchronizationComponent implements OnInit {
   }
 
   resumeSyncData() {
-    this.apiSync.resumeSync(this.syncWithoutDate);
+    this.apiSync.resumeSync();
   }
 
   cancelSyncData() {
@@ -152,7 +145,7 @@ export class SynchronizationComponent implements OnInit {
     }
   }
 
-   protected initUserDB() {
+   protected initUser() {
         if (this.userDb) {
             return new Promise(resolve => {
                 resolve(true);
@@ -162,7 +155,6 @@ export class SynchronizationComponent implements OnInit {
         return new Promise(resolve => {
             new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
                 if (userDb) {
-                    console.log('this.userDb', this.userDb);
                     this.userDb = userDb;
 
                     resolve(true);
@@ -179,11 +171,21 @@ export class SynchronizationComponent implements OnInit {
                 this.http.showToast('All files was deleted');
 
                 this.apiSync.resetSyncedData().then(() => {
-                  this.userDb.userSetting.lastSyncedAt = null;
-                  this.userDb.save().then(() => {
-                    this.http.showToast('The database is cleared.');
+                  this.initUser().then(() => {
+                      this.userDb.userSetting.lastSyncedDiff = 0;
+                      this.userDb.userSetting.syncStatus = 'success';
+                      this.userDb.userSetting.syncLastElementNumber = 0;
+                      this.userDb.userSetting.syncAllItemsCount = 0;
+                      this.userDb.userSetting.syncPercent = 0;
+                      this.userDb.save().then(() => {
+                          this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
+                          this.apiSync.syncProgressStatus.next('success');
+                          this.apiSync.isStartSyncBehaviorSubject.next(false);
+                          this.http.showToast('The database is cleared.');
+                          this.apiSync.startSync(true);
 
-                    resolve(true);
+                          resolve(true);
+                      });
                   });
                 });
               } else {
@@ -195,8 +197,20 @@ export class SynchronizationComponent implements OnInit {
       });
   }
 
+  getLastSyncDate() {
+        if (this.userDb && this.userDb.userSetting && this.userDb.userSetting.lastSyncedAt) {
+            const date = this.userDb.userSetting.lastSyncedAt;
+            return this.datepipe.transform(date, 'yyyy-MM-dd hh:mm');
+        }
+
+        return '-';
+  }
+
   ngOnInit() {
     this.syncService.syncMode.subscribe((result) => {
+      if (result === null) {
+          return;
+      }
       this.modeSync = result;
     });
     this.apiSync.isStartSyncBehaviorSubject.subscribe(isSync => {
@@ -215,7 +229,9 @@ export class SynchronizationComponent implements OnInit {
       this.isPrepareSynData = isPrepareSynData;
       this.detectChanges();
     });
-
+    this.events.subscribe('UserDb:update', (userDb) => {
+        this.userDb = userDb;
+    });
     // this.apiSync.isStartPushBehaviorSubject.subscribe(isPush => {
     //   this.isStartPush = isPush;
     //   this.detectChanges();

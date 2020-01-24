@@ -16,6 +16,8 @@ export class HttpClient {
     this.initHeaders();
   }
 
+  previousToast = null;
+
     /**
      * Init the headers
      */
@@ -75,14 +77,14 @@ export class HttpClient {
     console.log('HttpClient', 'Call URL', url);
     return this.http.get(url, {
       headers: this.headers
-    }).catch(this.handleError);
+    }).catch(error => this.handleError(error));
   }
 
   post(url, data): Observable<any> {
     this.initHeaders();
     return this.http.post(url, data, {
       headers: this.headers
-    }).catch(this.handleError);
+    }).catch(error => this.handleError(error));
   }
 
   private handleError(error: any) {
@@ -98,22 +100,37 @@ export class HttpClient {
       //   errMsg = error.text();
       // }
     } else {
-      errMsg = error.message ? error.message : error.toString();
+      if (error.status === 401) {
+          this.showToast('You are not authorized.', 'Please, login', 'danger');
+      } else {
+          errMsg = error.message ? error.message : error.toString();
+          this.showToast(errMsg, 'header', 'danger');
+      }
     }
 
     return Promise.reject(errMsg);
   }
 
-  async showToast(msg?: string) {
+  showToast(msg?: string, header = '' , toastColor?: string) {
+    console.log('showToast', header);
     if (!msg) {
         msg = 'Fehler: Keine Verbindung zum Server.';
     }
-    const toast = await this.toastCtrl.create({
-      showCloseButton: true,
-      closeButtonText: 'OK',
-      message: msg,
-      duration: 3000
+    let toastOptions = {
+        header: header,
+        showCloseButton: true,
+        closeButtonText: 'OK',
+        message: msg,
+        duration: 3000,
+        color: toastColor
+    };
+
+    this.toastCtrl.create(toastOptions).then((toast) => {
+        toast.present().then(() => {
+            this.previousToast.dismiss();
+            this.previousToast = toast;
+        });
+        this.previousToast = toast;
     });
-    await toast.present();
   }
 }

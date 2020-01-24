@@ -28,6 +28,8 @@ import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { VideoPlayer } from '@ionic-native/video-player/ngx';
 import {SyncService} from '../services/sync-service';
+import {UserService} from '../services/user-service';
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
@@ -62,6 +64,8 @@ import {SyncService} from '../services/sync-service';
     PhotoViewer,
     VideoPlayer,
     SyncService,
+    UserService,
+    DatePipe,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
