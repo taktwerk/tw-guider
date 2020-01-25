@@ -43,7 +43,7 @@ export class SynchronizationComponent implements OnInit {
     public syncProgressStatus = 'not_sync';
     public isPrepareSynData = false;
     public objectKeys = Object.keys;
-    public modeSync = SyncMode.Manual;
+    public modeSync;
     public userDb: UserDb;
 
     public isNetworkSyncMode: BehaviorSubject<boolean>;
@@ -51,8 +51,6 @@ export class SynchronizationComponent implements OnInit {
     protected syncWithoutDate = false;
 
     public progressFileInformations: {};
-
-    public lastSuccessfullSyncDate: null;
 
     constructor(public apiSync: ApiSync,
                 private downloadService: DownloadService,
@@ -67,27 +65,46 @@ export class SynchronizationComponent implements OnInit {
                 public alertController: AlertController,
                 public datepipe: DatePipe) {
       this.authService.checkAccess();
-      this.initUser();
+      this.initUser().then(() => {
+          if ([0, 1, 2].includes(this.userDb.userSetting.syncMode)) {
+              this.modeSync = this.userDb.userSetting.syncMode;
+          } else {
+              this.modeSync = SyncMode.Manual;
+          }
+          if (this.userDb.userSetting.syncLastElementNumber > 0 &&
+              (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
+          ) {
+              this.userDb.userSetting.syncStatus = 'pause';
+              this.userDb.save();
+          }
+          this.syncProgressStatus = this.userDb.userSetting.syncStatus;
+
+      });
     }
 
   syncData() {
-    this.apiSync.startSync();
+    this.apiSync.makeSyncProcess();
   }
 
   syncAllData() {
-    this.apiSync.startSync();
+    this.apiSync.makeSyncProcess();
   }
 
   stopSyncData() {
     this.apiSync.isStartSyncBehaviorSubject.next(false);
+    this.apiSync.makeSyncPause();
   }
 
   resumeSyncData() {
-    this.apiSync.resumeSync();
+    this.apiSync.makeSyncProcess('resume');
   }
 
   cancelSyncData() {
-    this.apiSync.unsetSyncProgressData();
+    return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
+        if (isCanceled) {
+            this.http.showToast('Sync was canceled.');
+        }
+    });
   }
 
   // pushData() {
@@ -116,13 +133,15 @@ export class SynchronizationComponent implements OnInit {
       if (this.modeSync === SyncMode.Periodic) {
           this.http.showToast('Now is periodic mode (every 15 seconds)');
       }
+      this.initUser().then(() => {
+          this.userDb.userSetting.syncMode = this.modeSync;
+          this.userDb.save();
+      });
       this.syncService.syncMode.next(this.modeSync);
   }
 
   async showRefreshDataAlert() {
-    if (!this.apiSync.isStartSyncBehaviorSubject.getValue()) {
       const alert = await this.alertController.create({
-        // header: 'Confirm!',
         message: 'Are you sure you want to overwrite the data?',
         buttons: [
           {
@@ -136,13 +155,6 @@ export class SynchronizationComponent implements OnInit {
       });
 
       await alert.present();
-    } else {
-      const alert = await this.alertController.create({
-        message: 'Now there is a synchronization process.'
-      });
-
-      await alert.present();
-    }
   }
 
    protected initUser() {
@@ -164,34 +176,36 @@ export class SynchronizationComponent implements OnInit {
     }
 
   refreshAppData() {
-      return new Promise(resolve => {
-        this.downloadService.removeAllAppFiles()
-            .then((res) => {
-              if (res) {
-                this.http.showToast('All files was deleted');
+      return new Promise(async resolve => {
+        if (this.apiSync.isStartSyncBehaviorSubject.getValue()) {
+            await this.cancelSyncData();
+        }
+        const isRemovedAllApiFiles = await this.downloadService.removeAllAppFiles();
+        if (!isRemovedAllApiFiles) {
+            this.http.showToast('Failed to remove data');
+            resolve(false);
+            return;
+        }
+        this.http.showToast('All files was deleted');
 
-                this.apiSync.resetSyncedData().then(() => {
-                  this.initUser().then(() => {
-                      this.userDb.userSetting.lastSyncedDiff = 0;
-                      this.userDb.userSetting.syncStatus = 'success';
-                      this.userDb.userSetting.syncLastElementNumber = 0;
-                      this.userDb.userSetting.syncAllItemsCount = 0;
-                      this.userDb.userSetting.syncPercent = 0;
-                      this.userDb.save().then(() => {
-                          this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
-                          this.apiSync.syncProgressStatus.next('success');
-                          this.apiSync.isStartSyncBehaviorSubject.next(false);
-                          this.http.showToast('The database is cleared.');
-                          this.apiSync.startSync(true);
+        await this.apiSync.resetSyncedData();
+        this.initUser().then(() => {
+          this.userDb.userSetting.lastSyncedDiff = 0;
+          this.userDb.userSetting.syncStatus = 'success';
+          this.userDb.userSetting.syncLastElementNumber = 0;
+          this.userDb.userSetting.syncAllItemsCount = 0;
+          this.userDb.userSetting.syncPercent = 0;
+          this.userDb.userSetting.lastSyncedAt = null;
+          this.userDb.save().then(() => {
+              this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
+              this.apiSync.syncProgressStatus.next('success');
+              this.apiSync.isStartSyncBehaviorSubject.next(false);
+              this.http.showToast('The database is cleared.');
+              this.apiSync.makeSyncProcess();
 
-                          resolve(true);
-                      });
-                  });
-                });
-              } else {
-                this.http.showToast('Failed to remove data');
-              }
-            });
+              resolve(true);
+          });
+        });
       }).then((res) => {
         this.http.showToast('All data was cleared');
       });
@@ -200,7 +214,7 @@ export class SynchronizationComponent implements OnInit {
   getLastSyncDate() {
         if (this.userDb && this.userDb.userSetting && this.userDb.userSetting.lastSyncedAt) {
             const date = this.userDb.userSetting.lastSyncedAt;
-            return this.datepipe.transform(date, 'yyyy-MM-dd hh:mm');
+            return this.datepipe.transform(date, 'yyyy-MM-dd HH:mm:ss');
         }
 
         return '-';

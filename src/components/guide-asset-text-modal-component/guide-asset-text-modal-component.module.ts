@@ -1,18 +1,16 @@
 import { NgModule } from '@angular/core';
-import {SynchronizationComponent} from './synchronization-component';
 import {CommonModule} from '@angular/common';
 import {IonicModule} from '@ionic/angular';
+import {GuideAssetTextModalComponent} from './guide-asset-text-modal-component';
 
 @NgModule({
   declarations: [
-    SynchronizationComponent,
   ],
   imports: [
     CommonModule,
     IonicModule,
   ],
   exports: [
-    SynchronizationComponent
-  ]
+  ],
 })
-export class SynchronizationComponentModule {}
+export class GuideAssetTextModalComponentModule {}

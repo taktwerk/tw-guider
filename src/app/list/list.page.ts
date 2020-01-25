@@ -7,6 +7,7 @@ import {AuthService} from '../../services/auth-service';
 import {GuideCategoryModel} from '../../models/db/api/guide-category-model';
 import {Events} from '@ionic/angular';
 import {DbApiModel} from '../../models/base/db-api-model';
+import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
 
 @Component({
   selector: 'app-list',
@@ -20,6 +21,7 @@ export class ListPage implements OnInit {
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
+      private guideCategoryBindingService: GuideCategoryBindingService,
       private guideCategoryService: GuideCategoryService,
       private guiderService: GuiderService,
       public authService: AuthService,
@@ -27,6 +29,7 @@ export class ListPage implements OnInit {
       public changeDetectorRef: ChangeDetectorRef
   ) {
     this.authService.checkAccess();
+    this.findAllGuideCategories();
   }
 
   public getModels() {
@@ -41,6 +44,7 @@ export class ListPage implements OnInit {
     this.searchValue = $event.detail.value;
 
     this.guideCategoryService.findByGuides(this.searchValue).then(guideCategories => {
+      this.guideCategories = [];
       this.setGuideInfo(guideCategories);
     });
   }
@@ -68,12 +72,9 @@ export class ListPage implements OnInit {
 
   public addToList(newData) {
     const indexApi = this.guideCategories.findIndex(record => newData.idApi && record.idApi === newData.idApi);
-    const indexDB = this.guideCategories.findIndex(record => newData.id && record.id === newData.id);
 
     if (indexApi !== -1) {
       this.guideCategories[indexApi] = newData;
-    } else if (indexDB !== -1) {
-      this.guideCategories[indexDB] = newData;
     } else {
       this.guideCategories.push(newData);
     }
@@ -86,7 +87,18 @@ export class ListPage implements OnInit {
   }
 
   ngOnInit() {
-    this.findAllGuideCategories();
+    this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
+      this.guideCategoryService.findByGuideBinding(model.adApi, this.searchValue).then(guideCategories => {
+        this.setGuideInfo(guideCategories);
+      });
+      this.detectChanges();
+    });
+    this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':create', (model) => {
+      this.guideCategoryService.findByGuideBinding(model.adApi, this.searchValue).then(guideCategories => {
+        this.setGuideInfo(guideCategories);
+      });
+      this.detectChanges();
+    });
     this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
       this.setGuideInfo([model]);
       this.detectChanges();
@@ -96,14 +108,12 @@ export class ListPage implements OnInit {
       this.detectChanges();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
-      console.log('change guide image');
       this.guideCategories.map(guideCategory => {
         guideCategory.setGuides(this.searchValue);
         this.detectChanges();
       });
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
-      console.log('change guide image');
       this.guideCategories.map(guideCategory => {
         guideCategory.setGuides(this.searchValue);
         this.detectChanges();

@@ -29,3 +29,8 @@ npm-debug.log*
 /platforms
 /plugins
 /www
+
+/src/environments/environment.ts
+/src/environments/environment.prod.ts
+config.xml
+resources/android/xml/network_security_config.xml

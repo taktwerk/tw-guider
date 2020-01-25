@@ -19,11 +19,6 @@
   >
     Synchronize Data
   </ion-button>
-  <ion-button *ngIf="isStartSync && syncProgressStatus !== 'pause'"
-              color="primary"
-  >
-    Is synchronization
-  </ion-button>
   <ion-button *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'"
               (click)="stopSyncData()"
               color="success"
@@ -46,8 +41,11 @@
 <ion-card>
   <div *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'">
     In progress
-    <span *ngIf="isPrepareSynData">
+    <span *ngIf="syncProgressStatus === 'progress' && isPrepareSynData">
       (Prepare data)
+    </span>
+    <span *ngIf="syncProgressStatus === 'resume' && isPrepareSynData">
+      (Prepare data for resume)
     </span>
   </div>
   <div *ngIf="syncProgressStatus === 'pause'">Pause</div>

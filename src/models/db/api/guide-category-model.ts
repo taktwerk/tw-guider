@@ -47,12 +47,9 @@ export class GuideCategoryModel extends DbApiModel {
 
     public addGuide(newData) {
         const indexApi = this.guides.findIndex(record => newData.idApi && record.idApi === newData.idApi);
-        const indexDB = this.guides.findIndex(record => newData.id && record.id === newData.id);
 
         if (indexApi !== -1) {
             this.guides[indexApi] = newData;
-        } else if (indexDB !== -1) {
-            this.guides[indexDB] = newData;
         } else {
             this.guides.push(newData);
         }
@@ -63,10 +60,14 @@ export class GuideCategoryModel extends DbApiModel {
             let query = 'SELECT ' + this.secure('guide') + '.*' + ' from ' + this.secure('guide') +
                 ' JOIN ' + this.secure('guide_category_binding') + ' ON ' + this.secure('guide_category_binding') + '.' + this.secure('guide_id') + '=' + this.secure('guide') + '.' + this.secure('id') +
                 ' JOIN ' + this.secure('guide_category') + ' ON ' + this.secure('guide_category_binding') + '.' + this.secure('guide_category_id') + '=' + this.secure('guide_category') + '.' + this.secure('id') +
-                ' WHERE ' + this.secure('guide_category') + '.' + this.secure('id') + ' = ' + this.idApi;
+                ' WHERE ' + this.secure('guide_category') + '.' + this.secure('id') + ' = ' + this.idApi +
+                ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
+                ' AND ' + this.secure('guide_category') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
+                ' AND ' + this.secure('guide_category_binding') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL';
 
             if (searchValue) {
-                query += ' AND (' + this.secure('guide') + '.' + this.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%" OR ' + this.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%")';
+                query += ' AND (' + this.secure('guide') + '.' + this.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%"' +
+                    ' OR ' + this.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%")';
             }
 
             const entries: any[] = [];

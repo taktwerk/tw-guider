@@ -283,14 +283,13 @@ export abstract class ApiService {
      * @returns Any
      */
     public findById(id: number): any {
-        let indexApi = this.data.findIndex(record => record.idApi == id);
-        let indexDb = this.data.findIndex(record => record.id == id);
+        const indexApi = this.data.findIndex(record => record.idApi === id);
+        const indexDb = this.data.findIndex(record => record.id === id);
         if (indexApi !== -1) {
             return this.data[indexApi];
         } else if (indexDb !== -1) {
             return this.data[indexDb];
         } else {
-            console.warn('ApiSync', 'findById', 'Can\'t find id', id);
             return null;
         }
     }
@@ -342,63 +341,5 @@ export abstract class ApiService {
             resolve(true);
           });
         });
-    }
-
-    /**
-     * Download new files of a model
-     *
-     * @param {DbApiModel} model
-     * @param {DbApiModel} oldModel the previous values
-     * @returns {boolean}
-     */
-    async pullFiles(model: DbApiModel, oldModel: any) {
-        const promise = new Promise(async (resolve) => {
-            // No use downloading if not on app
-            if (/*model.platform.is('core') || */ model.platform.is('mobileweb')) {
-                resolve(true);
-            }
-
-            // Do we have files to upload?
-            if (model.downloadMapping && model.downloadMapping.length > 0) {
-                for (const fields of model.downloadMapping) {
-                    if (!model[fields[0]] || !model[fields[1]]) {
-                        resolve(false);
-                        return;
-                    }
-                    // If we have a local path but no api path, we need to upload the file!
-                    // Only download if the new file is different than the old one? We don't have this information here.
-                    model.downloadService.downloadAndSaveFile(
-                        model[fields[1]],
-                        model[fields[0]],
-                        model.TABLE_NAME,
-                        this.http.getAuthorizationToken()
-                    )
-                        .then((res) => {
-                            if (res === false) {
-                                console.log('model in fail', model);
-                                resolve(false);
-                                return;
-                            }
-                            model[fields[2]] = res;
-                            // We received the local path back if it's successful
-                            model.saveSynced(true).then(() => {
-                                // this.addToList(model);
-
-                                // Delete old file
-                                if (oldModel && oldModel[fields[2]] !== model[fields[2]]) {
-                                    model.downloadService.deleteFile(oldModel[fields[2]]);
-                                }
-                                resolve(true);
-                                return;
-                            });
-                        });
-                }
-            } else {
-                resolve(true);
-                return;
-            }
-        });
-
-        return await promise;
     }
 }

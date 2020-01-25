@@ -30,10 +30,13 @@ import { VideoPlayer } from '@ionic-native/video-player/ngx';
 import {SyncService} from '../services/sync-service';
 import {UserService} from '../services/user-service';
 import {DatePipe} from '@angular/common';
+import {GuideAssetService} from '../providers/api/guide-asset-service';
+import {GuideAssetPivotService} from '../providers/api/guide-asset-pivot-service';
+import {GuideAssetTextModalComponent} from '../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
+  declarations: [AppComponent, GuideAssetTextModalComponent],
+  entryComponents: [GuideAssetTextModalComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -49,6 +52,8 @@ import {DatePipe} from '@angular/common';
     GuideCategoryService,
     GuideCategoryBindingService,
     GuideStepService,
+    GuideAssetService,
+    GuideAssetPivotService,
     DbProvider,
     AuthService,
     HttpClient,
@@ -66,6 +71,7 @@ import {DatePipe} from '@angular/common';
     SyncService,
     UserService,
     DatePipe,
+
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

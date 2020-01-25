@@ -35,41 +35,11 @@ export class HttpClient {
   }
 
     /**
-     * Add the Auth stuff. Always remove the previous one in case we switched users.
-     */
-  public addAuthorizationHeader() {
-      console.log('addAuthorizationHeader', this.headers.keys());
-      if (this.headers.has('X-Auth-Token')) {
-          this.headers.delete('X-Auth-Token');
-      }
-
-      this.headers.delete('Access-Control-Allow-Origin');
-      this.headers.append('Access-Control-Allow-Origin', '*');
-
-      console.log('this.authService.auth', !!(this.authService.auth && this.authService.auth.authToken));
-      if (this.authService.auth && this.authService.auth.authToken) {
-          console.log('in condition', this.getAuthorizationToken());
-          this.headers.set('X-Auth-Token', this.getAuthorizationToken());
-          console.log('HttpClient', 'X-Auth-Token', this.headers.get('X-Auth-Token'));
-      }
-  }
-
-    /**
      *
      * @returns {string}
      */
   public getAuthorizationToken() {
       return this.authService.auth.authToken;
-  }
-
-    /**
-     * Add the current datetime. Always remove the previous one set to be accurate.
-     */
-  public addDateTimeHeader() {
-      if (this.headers.has('X-CURRENT-DATETIME')) {
-          this.headers.delete('X-CURRENT-DATETIME');
-      }
-      this.headers.append('X-CURRENT-DATETIME', new Date().toISOString());
   }
 
   get(url): Observable<any> {
@@ -126,8 +96,11 @@ export class HttpClient {
     };
 
     this.toastCtrl.create(toastOptions).then((toast) => {
-        toast.present().then(() => {
+        if (this.previousToast) {
             this.previousToast.dismiss();
+        }
+
+        toast.present().then(() => {
             this.previousToast = toast;
         });
         this.previousToast = toast;

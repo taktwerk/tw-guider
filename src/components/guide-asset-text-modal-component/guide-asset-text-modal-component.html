@@ -1,0 +1,13 @@
+<ion-header translucent>
+    <ion-toolbar>
+        <ion-title>{{ asset.name }}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">Close</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen  class="ion-padding">
+    <div [innerHTML]="asset.asset_html"></div>
+</ion-content>
+

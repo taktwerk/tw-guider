@@ -51,34 +51,6 @@ export class AuthService {
     }
 
     /**
-     * Create a dummy user for API calls
-     * @returns {Promise<T>}
-     */
-    public createDummyUser(): Promise<any> {
-        // Do we really need a dummy user if we already have one?
-        let user = this.newUserModel();
-        user.userId = 1;
-        user.userSetting = new UserSetting();
-
-        return new Promise((resolve) => {
-            user.save().then(() => {
-                let auth = this.newAuthModel();
-                auth.userId = 1;
-                auth.authToken = '123123';
-                auth.username = '123123';
-                // auth.password = '123123';
-                return auth.save().then(() => {
-                    resolve(true);
-                }, (err) => {
-                    resolve(false);
-                });
-            }, (err) => {
-                resolve(false);
-            });
-        });
-    }
-
-    /**
      * Authentificate the last logged in user
      * @returns {Promise<T>}
      */
@@ -94,14 +66,6 @@ export class AuthService {
             }
         });
     }
-
-    /**
-     * Checks if a user can view a page.
-     * @returns {boolean}
-     */
-    // canViewPage(): boolean {
-    //     return this.isInitialized && this.isLoggedin;
-    // }
 
     /**
      * Get the last authed user for later

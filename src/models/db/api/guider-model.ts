@@ -3,7 +3,8 @@ import {DbApiModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
-import {WebView} from '@ionic-native/ionic-webview/ngx';
+import {GuideStepModel} from './guide-step-model';
+import {GuideAssetModel} from './guide-asset-model';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -12,6 +13,10 @@ export class GuiderModel extends DbApiModel {
     /** @inheritDoc */
     TAG: string = 'GuiderModel';
     public apiPk = 'id';
+
+    /// relations
+    steps: GuideStepModel[] = [];
+    assets: GuideAssetModel[] = [];
 
     //members
     public client_id: number;
@@ -113,5 +118,63 @@ export class GuiderModel extends DbApiModel {
         } else {
             return this.defaultImage;
         }
+    }
+
+    public addRelativeData(newData, relationKey) {
+        const indexApi = this[relationKey].findIndex(record => newData.idApi && record.idApi === newData.idApi);
+        const deletedIndexApi = this[relationKey].findIndex(record => !record.deleted_at);
+
+        if (indexApi !== -1) {
+            this[relationKey][indexApi] = newData;
+        } else {
+            this[relationKey].push(newData);
+        }
+        console.log(relationKey, this[relationKey]);
+    }
+
+    public setSteps() {
+        const guideStepModel = new GuideStepModel(this.platform, this.db, this.events, this.downloadService);
+        guideStepModel.findAllWhere(['guide_id', this.idApi], 'order_number ASC').then(results => {
+            results.map(model => {
+                if (!model[model.COL_DELETED_AT]) {
+                    this.addRelativeData(model, 'steps');
+                }
+            });
+        });
+    }
+
+    public setAssets(id): Promise<GuideAssetModel[]> {
+        return new Promise((resolve) => {
+            const query = 'SELECT ' + this.secure('guide_asset') + '.*' + ' from ' + this.secure('guide') +
+                ' JOIN ' + this.secure('guide_asset_pivot') + ' ON ' + this.secure('guide_asset_pivot') + '.' + this.secure('guide_id') + '=' + this.secure('guide') + '.' + this.secure('id') +
+                ' JOIN ' + this.secure('guide_asset') + ' ON ' + this.secure('guide_asset_pivot') + '.' + this.secure('guide_asset_id') + '=' + this.secure('guide_asset') + '.' + this.secure('id') +
+                ' WHERE ' + this.secure('guide') + '.' + this.secure('id') + ' = ' + id +
+                ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
+                ' AND ' + this.secure('guide_asset') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
+                ' AND ' + this.secure('guide_asset_pivot') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL';
+
+            console.log('set asssets');
+            this.db.query(query).then((res) => {
+                this.assets = [];
+                if (res.rows.length > 0) {
+                    for (let i = 0; i < res.rows.length; i++) {
+                        const obj: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService);
+                        obj.platform = this.platform;
+                        obj.db = this.db;
+                        obj.events = this.events;
+                        obj.downloadService = this.downloadService;
+                        obj.loadFromAttributes(res.rows.item(i));
+                        this.assets.push(obj);
+                        // this.assets = [...this.assets, obj];
+                    }
+                }
+                console.log('this.assets', this.assets);
+                resolve(this.assets);
+                // this.assets = [...this.assets, assetsData];
+            }).catch((err) => {
+                resolve(this.assets);
+                console.log('errrr', err);
+            });
+        });
     }
 }

@@ -67,12 +67,17 @@ export class DownloadService {
 
             this.isExistFile(this.file.dataDirectory + modelFolder + '/', name)
                 .then(isExist => {
+                    console.log('is exist file', isExist, modelFolder, name)
                     if (isExist) {
                         resolve(finalPath);
                         return;
                     } else {
                         this.download(url, authToken)
                             .then(response => {
+                                if (!response || !response.body) {
+                                    resolve(false);
+                                    return;
+                                }
                                 this.getDownloadDirectoryPath(this.file.dataDirectory, modelFolder)
                                     .then((directory) => {
                                         this.file.writeFile(
@@ -88,6 +93,7 @@ export class DownloadService {
                                             }).catch(writeFileErr => {
                                                 console.log('writeFile', writeFileErr)
                                                 resolve(false);
+                                                return;
                                             });
                                     });
                             }, downloadErr => {
@@ -102,12 +108,12 @@ export class DownloadService {
         return await promise;
     }
 
-    async download(url, authToken): Promise<any> {
+    download(url, authToken): Promise<any> {
         const headers = new Headers(
             {'Content-Type': 'application/json', 'X-Auth-Token': authToken, 'Access-Control-Allow-Origin': '*'}
         );
 
-        const promise = new Promise((resolve) => {
+        return new Promise((resolve) => {
             this.http.get(
                 url,
                 {
@@ -119,13 +125,13 @@ export class DownloadService {
                 .toPromise()
                 .then(response => {
                     resolve(response);
+                    return;
                 }, downloadErr => {
                     console.log('file was not downloading', downloadErr);
                     resolve(false);
+                    return;
                 });
         });
-
-        return await promise;
     }
 
     protected isExistFile(directory, name): Promise<boolean> {
@@ -328,6 +334,7 @@ export class DownloadService {
             this.file.listDir(this.file.dataDirectory, '').then((result) => {
                 if (!result.length) {
                     resolve(true);
+                    return;
                 }
                 if (result.length) {
                     for (const fileSystemEntry of result) {
@@ -335,15 +342,19 @@ export class DownloadService {
                             this.file.removeFile(this.file.dataDirectory, fileSystemEntry.name)
                                 .then(_ => {
                                     resolve(true);
+                                    return;
                                 }).catch(err => {
                                     resolve(false);
+                                    return;
                                 });
                         } else {
                             this.file.removeRecursively(this.file.dataDirectory,  fileSystemEntry.name)
                                 .then(_ => {
                                     resolve(true);
+                                    return;
                                 }).catch(err => {
                                     resolve(false);
+                                    return;
                                 });
                         }
                     }

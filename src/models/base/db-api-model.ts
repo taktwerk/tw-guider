@@ -72,16 +72,15 @@ export abstract class DbApiModel extends DbBaseModel {
         obj.events = this.events;
         obj.downloadService = this.downloadService;
 
-        //iterate over table fields
+        // iterate over table fields
         for (let column of this.TABLE) {
             let columnName = column[0];
             let type: number = parseInt(column[2]);
             let memberName = column[3] ? column[3] : columnName;
             obj[memberName] = this.getObjectByType(apiObj[memberName], type);
         }
-        //console.debug(this.TAG, 'loadFromApi',apiObj, this);
 
-        //default boilerplate fields
+        // default boilerplate fields
         obj.idApi = this.getNumberValue(apiObj[this.apiPk]);
         obj.created_at = this.getDateFromString(apiObj.created_at);
         obj.created_by = this.getNumberValue(apiObj.created_by);
@@ -90,8 +89,60 @@ export abstract class DbApiModel extends DbBaseModel {
         obj.deleted_at = this.getDateFromString(apiObj.deleted_at);
         obj.deleted_by = this.getNumberValue(apiObj.deleted_by);
 
-        //console.info(this.TAG, 'loadFromApi', obj);
         return obj;
+    }
+
+    /**
+     * Download new files of a model
+     *
+     * @param {DbApiModel} oldModel the previous values
+     * @param authorizationToken
+     * @returns {boolean}
+     */
+    pullFiles(oldModel: any, authorizationToken: string) {
+        return new Promise(async (resolve) => {
+            // No use downloading if not on app
+            if (/*model.platform.is('core') || */ this.platform.is('mobileweb')) {
+                resolve(true);
+            }
+
+            // Do we have files to upload?
+            if (!(this.downloadMapping && this.downloadMapping.length > 0)) {
+                resolve(true);
+                return;
+            }
+            for (const fields of this.downloadMapping) {
+                if (!this[fields[0]] || !this[fields[1]]) {
+                    resolve(false);
+                    return;
+                }
+                // If we have a local path but no api path, we need to upload the file!
+                // Only download if the new file is different than the old one? We don't have this information here.
+                const finalPath = await this.downloadService.downloadAndSaveFile(
+                    this[fields[1]],
+                    this[fields[0]],
+                    this.TABLE_NAME,
+                    authorizationToken
+                );
+                if (!finalPath) {
+                    console.log('model in fail', this);
+                    resolve(false);
+                    return;
+                }
+                console.log('before saving file', finalPath);
+                this[fields[2]] = finalPath;
+                // We received the local path back if it's successful
+                await this.saveSynced(true).then(async () => {
+                    console.log('saveSynced');
+                    // Delete old file
+                    if (oldModel && oldModel[fields[2]] !== this[fields[2]]) {
+                        await this.downloadService.deleteFile(oldModel[fields[2]]);
+                    }
+                    resolve(true);
+                    return;
+                });
+            }
+        });
     }
 
     /**
@@ -209,11 +260,9 @@ export abstract class DbApiModel extends DbBaseModel {
                 if (db == null) {
                     resolve(false);
                 } else {
-                    //console.log(this.TAG, 'exist condition', this.updateCondition);
                     let query = "SELECT * FROM " + this.TABLE_NAME + " WHERE " + this.parseWhere(this.updateCondition);
                     //console.log(this.TAG, 'exist query', query);
                     if (query.indexOf('undefined') >= 0) {
-                        //console.warn(this.TAG, 'invalid updateCondition', query);
                         resolve(false);
                     } else {
                         db.query(query).then((res) => {

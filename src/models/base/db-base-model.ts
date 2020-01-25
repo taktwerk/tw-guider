@@ -35,6 +35,10 @@ export abstract class DbBaseModel {
     abstract TAG: string = 'DbBaseModel';
     /** this instance's table name for SQLite db */
     abstract TABLE_NAME: string;
+
+    queryBuilder: string;
+    queryWhereArray: [] = [];
+
     /**
      * Holds information about the SQLite table provided by
      * a column-name and its db schema type as shown in the example below.
@@ -189,6 +193,7 @@ export abstract class DbBaseModel {
                         this.dbIsBusy = false;
                         resolve(true);
                     }).catch((err) => {
+                        console.log('when create table', err);
                         this.dbIsBusy = false;
                         resolve(false);
                     });
@@ -867,4 +872,21 @@ export abstract class DbBaseModel {
         if (seconds.length == 1) seconds = '0' + seconds;
         return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
     }
+    //
+    // select(select) {
+    //
+    // }
+    //
+    // where(condition) {
+    //     let isAnd = '';
+    //     if (this.queryWhereArray.length) {
+    //         isAnd = 'AND';
+    //     }
+    //     this.queryWhereArray.push([condition, isAnd]);
+    // }
+    //
+    // orWhere(condition) {
+    //     this.queryWhereArray.push([condition, 'OR']);
+    // }
 }
+

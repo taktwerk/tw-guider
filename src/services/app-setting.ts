@@ -1,13 +1,10 @@
 import {Injectable} from '@angular/core';
+import { environment } from '../environments/environment';
 
 @Injectable()
 export class AppSetting {
-    static API_URL: string = 'http://192.168.0.180:8015/api/v1'; //'http://cstei-cqvd.localhost.run/api/v1'; // erp.devhost.taktwerk.ch
-    static API_SYNC_URL: string = 'http://192.168.0.180:8015/api/v1/sync'; //'http://cstei-cqvd.localhost.run/api/v1/sync'; // erp.devhost.taktwerk.ch
-
-    // static API_URL: string = 'http://twerp.loc/api/v1';
-    // static API_SYNC_URL: string = 'http://twerp.loc/api/v1/sync';
-
-    static DB_NAME: string = 'guider';
+    static API_URL: string = environment.apiUrl;
+    static API_SYNC_URL: string = environment.apiSyncUrl;
+    static DB_NAME: string = environment.dbName;
 }
 

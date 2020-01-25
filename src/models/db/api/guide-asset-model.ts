@@ -3,8 +3,6 @@ import {DbApiModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
-import {WebView} from '@ionic-native/ionic-webview/ngx';
-
 /**
  * API Db Model for 'Guider Model'.
  */
@@ -15,43 +13,51 @@ export class GuideAssetModel extends DbApiModel {
 
     //members
     public client_id: number;
-    public order_number: number;
-    public title: string;
-    public description_html: string;
-    public attached_file: string;
+    public name: string;
+    public asset_file: string;
+    public asset_html: string;
+    public pdf_image: string;
 
     //db columns
     static COL_CLIENT_ID = 'client_id';
     static COL_NAME = 'name';
     static COL_ASSET_HTML = 'asset_html';
     static COL_ORDER_NUMBER = 'order_number';
-    static COL_ATTACHED_FILE = 'attached_file';
-    static COL_API_ATTACHED_FILE_PATH = 'attached_file_path';
-    static COL_LOCAL_ATTACHED_FILE = 'local_attached_file';
+    static COL_ASSET_FILE = 'asset_file';
+    static COL_API_ASSET_FILE_PATH = 'asset_file_path';
+    static COL_LOCAL_ASSET_FILE = 'local_asset_file';
+    static COL_PDF_IMAGE = 'pdf_image';
+    static COL_API_PDF_IMAGE_PATH = 'pdf_image_path';
+    static COL_LOCAL_PDF_IMAGE = 'local_pdf_image';
 
     public downloadMapping: any = [
         [
-            // Name of the file
-            GuideAssetModel.COL_ATTACHED_FILE,
-            // Url of the file
-            GuideAssetModel.COL_API_ATTACHED_FILE_PATH,
-            // Local path
-            GuideAssetModel.COL_LOCAL_ATTACHED_FILE
+            GuideAssetModel.COL_ASSET_FILE,
+            GuideAssetModel.COL_API_ASSET_FILE_PATH,
+            GuideAssetModel.COL_LOCAL_ASSET_FILE
+        ],
+        [
+            GuideAssetModel.COL_PDF_IMAGE,
+            GuideAssetModel.COL_API_PDF_IMAGE_PATH,
+            GuideAssetModel.COL_LOCAL_PDF_IMAGE
         ]
     ];
 
     /** @inheritDoc */
-    TABLE_NAME: string = 'guide_step';
+    TABLE_NAME: string = 'guide_asset';
 
     /** @inheritDoc */
     TABLE: any = [
         [GuideAssetModel.COL_CLIENT_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuideAssetModel.COL_NAME, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
-        [GuideAssetModel. COL_ASSET_HTML, 'TEXT', DbBaseModel.TYPE_STRING],
+        [GuideAssetModel.COL_ASSET_HTML, 'TEXT', DbBaseModel.TYPE_STRING],
         [GuideAssetModel.COL_ORDER_NUMBER, 'INT', DbBaseModel.TYPE_NUMBER],
-        [GuideAssetModel.COL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
-        [GuideAssetModel.COL_API_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
-        [GuideAssetModel.COL_LOCAL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [GuideAssetModel.COL_ASSET_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [GuideAssetModel.COL_API_ASSET_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [GuideAssetModel.COL_LOCAL_ASSET_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [GuideAssetModel.COL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [GuideAssetModel.COL_API_PDF_IMAGE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [GuideAssetModel.COL_LOCAL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
     ];
 
     /**
@@ -62,34 +68,63 @@ export class GuideAssetModel extends DbApiModel {
     }
 
     public getLocalFilePath() {
-        return this[GuideAssetModel.COL_LOCAL_ATTACHED_FILE];
+        return this[GuideAssetModel.COL_LOCAL_ASSET_FILE];
     }
 
     public getApiFilePath() {
-        return this[GuideAssetModel.COL_ATTACHED_FILE];
+        return this[GuideAssetModel.COL_ASSET_FILE];
     }
 
-    public getFile() {
-        if (this[GuideAssetModel.COL_LOCAL_ATTACHED_FILE]) {
-            return this.downloadService.webview.convertFileSrc(this[GuideAssetModel.COL_LOCAL_ATTACHED_FILE]);
+    public getLocalPdfImageFilePath() {
+        return this[GuideAssetModel.COL_LOCAL_PDF_IMAGE];
+    }
+
+    public getApiPdfImageFilePath() {
+        return this[GuideAssetModel.COL_PDF_IMAGE];
+    }
+
+    // public getFile() {
+    //     if (this[GuideAssetModel.COL_LOCAL_ATTACHED_FILE]) {
+    //         return this.downloadService.webview.convertFileSrc(this[GuideAssetModel.COL_LOCAL_ATTACHED_FILE]);
+    //     } else {
+    //         return this[GuideAssetModel.COL_API_ATTACHED_FILE_PATH];
+    //     }
+    // }
+
+    // public isVideoAttachedFile() {
+    //     const localFilePath = this.getLocalFilePath();
+    //     const apiFilePath = this.getApiFilePath();
+    //
+    //     return (localFilePath && (localFilePath.indexOf('.MOV') > -1 || localFilePath.indexOf('.mp4') > -1)) ||
+    //         (apiFilePath && (apiFilePath.indexOf('.MOV') > -1 || apiFilePath.indexOf('.mp4') > -1));
+    // }
+
+    public isFile() {
+        return !!this[GuideAssetModel.COL_ASSET_FILE];
+    }
+
+    public isPdf() {
+        if (!this.isFile()) {
+            return false;
+        }
+        const apiFilePath = this.getApiFilePath();
+
+        return apiFilePath.indexOf('.pdf') > -1;
+    }
+
+    public getPdf() {
+        if (this[GuideAssetModel.COL_LOCAL_PDF_IMAGE]) {
+            return this.downloadService.webview.convertFileSrc(this[GuideAssetModel.COL_LOCAL_PDF_IMAGE]);
         } else {
-            return this[GuideAssetModel.COL_API_ATTACHED_FILE_PATH];
+            return this.defaultImage;
         }
     }
 
-    public isVideoAttachedFile() {
-        const localFilePath = this.getLocalFilePath();
-        const apiFilePath = this.getApiFilePath();
-
-        return (localFilePath && (localFilePath.indexOf('.MOV') > -1 || localFilePath.indexOf('.mp4') > -1)) ||
-            (apiFilePath && (apiFilePath.indexOf('.MOV') > -1 || apiFilePath.indexOf('.mp4') > -1));
-    }
-
-    public isImageAttachedFile() {
-        const localFilePath = this.getLocalFilePath();
-        const apiFilePath = this.getApiFilePath();
-
-        return (localFilePath && (localFilePath.indexOf('.jpg') > -1 || localFilePath.indexOf('.png') > -1)) ||
-            (apiFilePath && (apiFilePath.indexOf('.jpg') > -1 || apiFilePath.indexOf('.png') > -1));
+    public getAssetFile() {
+        if (this[GuideAssetModel.COL_LOCAL_ASSET_FILE]) {
+            return this.downloadService.webview.convertFileSrc(this[GuideAssetModel.COL_LOCAL_ASSET_FILE]);
+        } else {
+            return this.defaultImage;
+        }
     }
 }

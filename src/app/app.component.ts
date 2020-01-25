@@ -63,8 +63,6 @@ export class AppComponent implements OnInit {
       // Do the user login (fake user or previously logged in user)
       this.login().then((result) => {
         this.initUserDB().then(() => {
-          console.log('this.userDb.userSetting.syncMode', this.userDb.userSetting.syncMode);
-
           this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
         });
         this.splashScreen.hide();
@@ -113,21 +111,22 @@ export class AppComponent implements OnInit {
   protected initializeNetworkEvents(): void {
     this.network.onDisconnect().subscribe(() => {
       if (this.previousStatus === ConnectionStatusEnum.Online) {
-        this.events.publish('network:offline');
+        this.events.publish('network:offline', true);
         this.previousStatus = ConnectionStatusEnum.Offline;
         this.http.showToast('Application now offline!');
-        if (this.authService.isLoggedin && this.syncService.syncMode.getValue() === 1) {
-          this.apiSync.unsetSyncProgressData().then(() => {});
-        }
       }
     });
     this.network.onConnect().subscribe(() => {
       if (this.previousStatus === ConnectionStatusEnum.Offline) {
-        this.events.publish('network:online');
+        this.events.publish('network:online', true);
         this.previousStatus = ConnectionStatusEnum.Online;
         this.http.showToast('Application now online!');
         if (this.authService.isLoggedin && this.syncService.syncMode.getValue() === 1) {
-          this.apiSync.startSync();
+          let syncProcessName = this.apiSync.syncProgressStatus.getValue();
+          if (syncProcessName === 'pause') {
+            syncProcessName = 'resume';
+          }
+          this.apiSync.makeSyncProcess(syncProcessName);
         }
       }
     });
@@ -149,7 +148,6 @@ export class AppComponent implements OnInit {
 
   private login(): Promise<any> {
     return new Promise((resolve) => {
-      // First get last successful user to log in
       this.authService.getLastUser().then((res) => {
         resolve(true);
         let lastUser: AuthDb = null;
@@ -162,7 +160,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.syncService.syncMode.subscribe((result) => {
-        console.log('this.syncService.syncModel', result);
         if (result !== 2 && this.periodicSync) {
           this.periodicSync.unsubscribe();
           this.periodicSync = null;
@@ -170,7 +167,7 @@ export class AppComponent implements OnInit {
         if (result === 2) {
           this.periodicSync = Observable.interval(15000)
               .subscribe(() => {
-                this.apiSync.startSync();
+                this.apiSync.makeSyncProcess();
               });
         }
     });

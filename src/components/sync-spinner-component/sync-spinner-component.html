@@ -1,8 +1,22 @@
 <style>
   ion-buttons {
-    margin: 20px;
+    margin-right: 20px;
+  }
+  ion-spinner {
+    font-size: 25px;
+  }
+  .wifi-icon {
+    font-size: 25px;
   }
 </style>
-<ion-buttons slot="primary" *ngIf="isStartSync">
-  <ion-spinner name="lines" color="primary"></ion-spinner>
+
+<ion-buttons slot="primary">
+  <ion-icon *ngIf="isNetwork" class="wifi-icon" name="wifi"></ion-icon>
+  <section (click)="clickOnSpinner()" *ngIf="isStartSync">
+    <ion-spinner name="lines" color="primary"></ion-spinner>
+    <span class="sync-percents">
+      {{ syncedItemsPercent }}
+    </span>
+
+  </section>
 </ion-buttons>

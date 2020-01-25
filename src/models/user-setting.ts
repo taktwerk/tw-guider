@@ -30,4 +30,6 @@ export class UserSetting{
   public lastPushedModelId: number;
 
   public syncMode: number;
+
+  public isStartSync: boolean = true;
 }
