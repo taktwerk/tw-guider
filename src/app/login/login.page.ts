@@ -56,6 +56,15 @@ export class LoginPage {
 
     loginOffine(form: NgForm) {
         this.http.showToast('Offline login');
+        this.authService.offlineAuthenticate(form.value).then((result) => {
+            console.log('result for offline login', result);
+            if (!result) {
+                this.http.showToast('Wrong password or login!');
+            } else {
+                this.navCtrl.navigateRoot('home');
+                this.http.showToast('You are logged in.');
+            }
+        });
     }
 
     loginOnline(form: NgForm) {

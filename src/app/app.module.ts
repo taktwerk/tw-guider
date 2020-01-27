@@ -33,6 +33,7 @@ import {DatePipe} from '@angular/common';
 import {GuideAssetService} from '../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../providers/api/guide-asset-pivot-service';
 import {GuideAssetTextModalComponent} from '../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
+import {CryptoProvider} from '../providers/crypto-provider';
 
 @NgModule({
   declarations: [AppComponent, GuideAssetTextModalComponent],
@@ -71,7 +72,7 @@ import {GuideAssetTextModalComponent} from '../components/guide-asset-text-modal
     SyncService,
     UserService,
     DatePipe,
-
+    CryptoProvider,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

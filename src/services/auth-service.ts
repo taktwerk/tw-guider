@@ -8,6 +8,7 @@ import {UserDb} from '../models/db/user-db';
 import {UserSetting} from '../models/user-setting';
 import { Events, NavController } from '@ionic/angular';
 import {DownloadService} from './download-service';
+import {CryptoProvider} from '../providers/crypto-provider';
 
 
 
@@ -36,6 +37,7 @@ export class AuthService {
      * @param events
      * @param downloadService
      * @param navCtrl
+     * @param cryptoProvider
      */
     constructor(private http: HttpClient,
                 public platform: Platform,
@@ -43,7 +45,8 @@ export class AuthService {
                 public loadingController: LoadingController,
                 public events: Events,
                 public downloadService: DownloadService,
-                public navCtrl: NavController
+                public navCtrl: NavController,
+                public cryptoProvider: CryptoProvider
     ) {
         // Create a tmp user until everything has properly been loaded
         this.auth = this.newAuthModel();
@@ -86,6 +89,46 @@ export class AuthService {
         });
     }
 
+    offlineAuthenticate(formData: any): Promise<any> {
+        return new Promise((resolve) => {
+            this.auth.findFirst(['username', '"' + formData.username + '"'], 'user_id DESC').then((result) => {
+                if (!result || !result[0]) {
+                    resolve(false);
+                    return;
+                }
+                const user = result[0];
+                this.cryptoProvider.deriveAesKey(formData.password);
+                const decryptedPassword = this.cryptoProvider.makeDecrypt(user.password);
+                if (decryptedPassword !== formData.password) {
+                    resolve(false);
+                    return;
+                }
+                user.loginDate = new Date();
+                user.save(true).then((authSaveResult) => {
+                    if (authSaveResult) {
+                        this.isLoggedin = true;
+                        // create user setting
+                        this.createUserSettingsIfNotExists().then((res) => {
+                            if (res) {
+                                // send a notification to the rest of the app
+                                this.events.publish('user:login', user.userId);
+                                resolve(user.userId);
+                                return;
+                            } else {
+                                resolve(false);
+                                return;
+                            }
+                        });
+                    } else {
+                        // User creation error?
+                        resolve(false);
+                        return;
+                    }
+                });
+            });
+        });
+    }
+
     /**
      * Tries to authenticate with a given pin and returns whether the authentification was successful or not.
      * @param pin
@@ -95,53 +138,48 @@ export class AuthService {
         const creds = `username=${formData.username}&password=${formData.password}`;
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            // 'Access-Control-Allow-Origin': ['*'],
         });
 
         return new Promise((resolve) => {
             this.http.get<any>(AppSetting.API_URL + '/login?' + creds, {headers}).subscribe(
                 (data) => {
-                    console.log('data of the http get', data);
                     if (data) {
-                        const user = data;
-                        console.log('user', user);
-                        console.log('AuthService', 'Logged in user', user);
-                        if (!this.auth) {
-                            this.auth = this.newAuthModel();
-                        }
-                        this.auth.userId = user.user_id;
-                        this.auth.authToken = user.access_token;
-                        this.auth.username = formData.username;
-                        // this.auth.password = formData.password;
-                        this.auth.loginDate = new Date();
-                        // save auth in local db
-                        this.auth.save(true).then((authSaveResult) => {
-                            if (authSaveResult) {
-                                this.isLoggedin = true;
-                                // create user setting
-                                this.createUserSettingsIfNotExists().then((res) => {
-                                    if (res) {
-                                        // send a notification to the rest of the app
-                                        this.events.publish('user:login', user.user_id);
+                        let user = data;
 
-                                        // return successful login state
-                                        // if (loading) {
-                                        //     loading.dismiss();
-                                        // }
-
-                                        console.log('AuthService', 'User could be logged in', this.auth);
-
-                                        resolve(user.user_id);
-                                    } else {
-                                        resolve(false);
-                                    }
-                                });
-                            } else {
-                                // User creation error?
-                                resolve(false);
-                            }
+                        const findAuthModel = this.newAuthModel();
+                        findAuthModel.findFirst(['user_id', user.user_id], 'login_at DESC').then((existUser) => {
+                           if (existUser.length) {
+                               this.auth = existUser[0];
+                               this.auth.password = this.cryptoProvider.makeEncrypt(formData.password);
+                               this.auth.loginDate = new Date();
+                           } else {
+                               this.auth = this.newAuthModel();
+                               this.auth.userId = user.user_id;
+                               this.auth.authToken = user.access_token;
+                               this.auth.username = formData.username;
+                               this.auth.password = this.cryptoProvider.makeEncrypt(formData.password);
+                               this.auth.loginDate = new Date();
+                           }
+                           this.auth.save(!!(existUser.length)).then((authSaveResult) => {
+                               if (authSaveResult) {
+                                   this.isLoggedin = true;
+                                   // create user setting
+                                   this.createUserSettingsIfNotExists().then((res) => {
+                                       if (res) {
+                                           // send a notification to the rest of the app
+                                           this.events.publish('user:login', user.user_id);
+                                            resolve(user.user_id);
+                                        } else {
+                                            resolve(false);
+                                        }
+                                    });
+                                } else {
+                                    // User creation error?
+                                    resolve(false);
+                                }
+                            });
                         });
-
+                        // save auth in local db
                     }
                 }, (err) => {
                     if (err.status === 0) {
@@ -184,15 +222,15 @@ export class AuthService {
      */
     logout() {
         return new Promise((resolve) => {
-            this.auth.removeAll().then((res) => {
+            this.auth.loginDate = null;
+            this.auth.save(true).then((res) => {
                 console.log('AuthService', 'logout', 'user loggin out');
-                this.auth = this.newAuthModel();
                 this.isLoggedin = false;
                 this.events.publish('user:logout');
                 if (res) {
                     console.log('successfully reset auths in local db');
                 }
-                resolve(res);
+                resolve(true);
             });
         });
     }

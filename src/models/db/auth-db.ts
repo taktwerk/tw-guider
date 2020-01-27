@@ -62,6 +62,18 @@ export class AuthDb extends DbBaseModel {
    * @returns {Promise<AuthDb>}
    */
   public loadLast(): Promise<any> {
-    return this.find(AuthDb.COL_LOGIN_DATE + ' DESC, ' + AuthDb.COL_ID + ' DESC');
+    return this.findWhere(['login_at IS NOT NULL'], AuthDb.COL_LOGIN_DATE + ' DESC, ' + AuthDb.COL_ID + ' DESC');
+  }
+
+  public save(forceCreation?: boolean): Promise<any> {
+    return new Promise((resolve) => {
+      console.log('forceCreation', forceCreation);
+      if (this.userId && forceCreation) {
+        console.log('updating');
+        this.update().then(() => resolve(true));
+      } else {
+        this.create().then(() => resolve(true));
+      }
+    });
   }
 }
