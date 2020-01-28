@@ -249,7 +249,7 @@ export abstract class ApiService {
         return new Promise(resolve => {
             model.save().then(res => {
                 if (res) {
-                    //console.log(model.TAG, 'Service Save', 'Add to list ready', model);
+                    console.log(model.TAG, 'Service Save', 'Add to list ready', model);
                     // this.addToList(model);
                 }
                 resolve(res);

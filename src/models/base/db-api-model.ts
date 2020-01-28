@@ -211,6 +211,7 @@ export abstract class DbApiModel extends DbBaseModel {
         } else {
             this.setUpdateCondition();
         }
+        console.log('in save method');
         return new Promise((resolve) => {
             this.beforeSave(isSynced);
             this.exists().then((res) => {

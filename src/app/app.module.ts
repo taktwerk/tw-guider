@@ -34,6 +34,7 @@ import {GuideAssetService} from '../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../providers/api/guide-asset-pivot-service';
 import {GuideAssetTextModalComponent} from '../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import {CryptoProvider} from '../providers/crypto-provider';
+import {FeedbackService} from '../providers/api/feedback-service';
 
 @NgModule({
   declarations: [AppComponent, GuideAssetTextModalComponent],
@@ -55,6 +56,7 @@ import {CryptoProvider} from '../providers/crypto-provider';
     GuideStepService,
     GuideAssetService,
     GuideAssetPivotService,
+    FeedbackService,
     DbProvider,
     AuthService,
     HttpClient,

@@ -19,63 +19,23 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Guide: {{ guide.title }}
+      Feedback
     </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-    <div *ngIf="guide.steps && guideSteps.length === 0">
-        No information here yet.
-    </div>
-    <div *ngIf="guide.steps && guideSteps.length > 0">
-        <ion-slides pager="true"
-                    [options]="slideOpts"
-        >
-            <ion-slide  class="ion-padding" *ngFor="let step of guideSteps">
-                <img *ngIf="step.isImageAttachedFile()"
-                     (click)="openFile(step.getApiFilePath(), step.getLocalFilePath(), guide.title)"
-                     src="{{ step.getFile() }}"
-                     imageViewer
-                >
-                <ion-icon name="videocam"
-                          class="videocam"
-                          slot="start"
-                          *ngIf="step.isVideoAttachedFile()"
-                          (click)="openFile(step.getApiFilePath(), step.getLocalFilePath())"
-                >
-                </ion-icon>
-                <img *ngIf="!step.isImageAttachedFile() && !step.isVideoAttachedFile()" src="/assets/placeholder.jpg" imageViewer>
-                <h2>{{step.title}}</h2>
-                <p [innerHTML]="step.description_html"></p>
-            </ion-slide>
-        </ion-slides>
-        <ion-card class="ion-text-center">
-            <section *ngIf="guideAssets.length">
-                <h2>
-                    Assets
-                </h2>
-                <div *ngFor="let asset of guideAssets; trackBy: trackGuideAsset">
-                    <div class="ion-text-center" *ngIf="asset.isFile() && asset.isPdf()">
-                        <img (click)="openFile(asset.getApiPdfImageFilePath(), asset.getLocalPdfImageFilePath(), asset.name)"
-                             class="pdf-image"
-                             src="{{ asset.getPdf() }}" imageViewer
-                        >
-                    </div>
-                    <div *ngIf="asset.isFile() && !asset.isPdf()">
-                        <img (click)="openFile(asset.getApiFilePath(), asset.getLocalFilePath(), asset.name)"
-                             class="pdf-image"
-                             src="{{ asset.getAssetFile() }}" imageViewer
-                        >
-                    </div>
-                    <ion-button *ngIf="!asset.isFile()" color="medium" (click)="openAssetTextModal(asset)">
-                        {{ asset.name }}
-                    </ion-button>
-                </div>
-            </section>
-        </ion-card>
+    <h1>Send Feedback</h1>
+    <ion-item>
+        <ion-label position="floating">Title</ion-label>
+        <ion-input type="text" name="title"  [(ngModel)]="model.title"></ion-input>
+    </ion-item>
 
-    </div>
+    <ion-item>
+        <ion-label position="floating">Description</ion-label>
+        <ion-textarea rows="5" cols="33" name="description" [(ngModel)]="model.description"></ion-textarea>
+    </ion-item>
 
+    <ion-button expand="block" (click)="save($event)">Send</ion-button>
 </ion-content>

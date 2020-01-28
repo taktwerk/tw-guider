@@ -141,6 +141,7 @@ export class AppComponent implements OnInit {
       this.appPages.push(
           {title: 'Guides', url: '/guides', icon: 'list'},
           {title: 'Profile', url: '/profile', icon: 'person'},
+          {title: 'Feedback', url: '/feedback', icon: 'list'},
           {title: 'Logout', url: '/logout', icon: 'exit'},
       );
     }

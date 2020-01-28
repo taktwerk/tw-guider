@@ -13,6 +13,8 @@ import {GuideAssetService} from '../../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-service';
 import {GuideAssetTextModalComponent} from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
+import {FeedbackService} from '../../providers/api/feedback-service';
+import {FeedbackModel} from '../../models/db/api/feedback-model';
 
 @Component({
   selector: 'app-feedback',
@@ -21,27 +23,33 @@ import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
 })
 export class FeedbackPage implements OnInit {
 
-  public guide: GuiderModel = this.guiderService.newModel();
-  public guideId: number = null;
-  public guideSteps: GuideStepModel[] = [];
-  public guideAssets: GuideAssetModel[] = [];
-  public slideOpts = {
-    initialSlide: 0,
-    speed: 400,
-    autoHeight: true
-  };
+  public model: FeedbackModel;
 
   constructor(
-      private guiderService: GuiderService,
+      private feedbackService: FeedbackService,
       public events: Events,
       public authService: AuthService,
       public changeDetectorRef: ChangeDetectorRef,
       public modalController: ModalController
   ) {
     this.authService.checkAccess();
+    if (!this.model) {
+      this.model = feedbackService.newModel();
+    }
   }
 
   ngOnInit(): void {
     //
+  }
+
+  public async save() {
+    const user = await this.authService.getLastUser();
+    if (!user) {
+      return;
+    }
+    this.model.user_id = user.userId;
+    this.feedbackService.save(this.model).then(res => {
+      // this.viewCtrl.dismiss();
+    });
   }
 }
