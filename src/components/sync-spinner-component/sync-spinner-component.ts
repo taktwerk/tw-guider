@@ -1,17 +1,10 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {AlertController, Events, ModalController, NavController, Platform} from '@ionic/angular';
+import {AlertController, Events, ModalController, NavController} from '@ionic/angular';
 
 import {ApiSync} from '../../providers/api-sync';
-import {DownloadService} from '../../services/download-service';
-import {BehaviorSubject, Observable} from 'rxjs';
 import {AuthService} from '../../services/auth-service';
 import {HttpClient} from '../../services/http-client';
-import {UserDb} from '../../models/db/user-db';
-import {DbProvider} from '../../providers/db-provider';
-import {SyncService} from '../../services/sync-service';
-import {ApiService} from '../../providers/api/base/api-service';
 import {Network} from '@ionic-native/network/ngx';
-import {ConnectionStatusEnum} from '../../app/app.component';
 
 /**
  * Generated class for the TodoPage page.
@@ -46,7 +39,6 @@ export class SyncSpinnerComponent implements OnInit {
         }
     }
 
-
     detectChanges() {
         if (!this.changeDetectorRef['destroyed']) {
             this.changeDetectorRef.detectChanges();
@@ -67,7 +59,6 @@ export class SyncSpinnerComponent implements OnInit {
             this.detectChanges();
         });
         this.events.subscribe('network:offline', (isNetwork) => {
-            console.log('subscribe on events');
             this.isNetwork = false;
             this.detectChanges();
         });

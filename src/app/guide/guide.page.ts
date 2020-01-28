@@ -144,5 +144,8 @@ export class GuidePage implements OnInit {
         this.setAssets(this.guide.idApi).then(() => this.detectChanges());
       }
     });
+    this.events.subscribe('network:online', (isNetwork) => {
+      this.authService.checkAccess();
+    });
   }
 }

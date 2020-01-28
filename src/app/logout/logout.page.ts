@@ -24,9 +24,4 @@ export class LogoutPage {
         this.http.showToast('You are logged out.');
       });
   }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad LogoutPage');
-  }
-
 }

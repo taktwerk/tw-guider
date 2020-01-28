@@ -64,7 +64,6 @@ export class SynchronizationComponent implements OnInit {
                 private syncService: SyncService,
                 public alertController: AlertController,
                 public datepipe: DatePipe) {
-      this.authService.checkAccess();
       this.initUser().then(() => {
           if ([0, 1, 2].includes(this.userDb.userSetting.syncMode)) {
               this.modeSync = this.userDb.userSetting.syncMode;

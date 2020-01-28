@@ -3,7 +3,7 @@ import {HttpClient as Http, HttpHeaders as Headers, HttpResponse as Response} fr
 import 'rxjs/add/operator/catch';
 import {AuthService} from './auth-service';
 import { Observable } from 'rxjs/Observable';
-import {ToastController} from '@ionic/angular';
+import {NavController, ToastController} from '@ionic/angular';
 
 @Injectable()
 export class HttpClient {
@@ -12,7 +12,8 @@ export class HttpClient {
   constructor(
       private http: Http,
       private authService: AuthService,
-      public toastCtrl: ToastController) {
+      public toastCtrl: ToastController,
+      public navCtrl: NavController) {
     this.initHeaders();
   }
 
@@ -42,9 +43,8 @@ export class HttpClient {
       return this.authService.auth.authToken;
   }
 
-  get(url): Observable<any> {
+  get(url, headers?): Observable<any> {
     this.initHeaders();
-    console.log('HttpClient', 'Call URL', url);
     return this.http.get(url, {
       headers: this.headers
     }).catch(error => this.handleError(error));
@@ -62,16 +62,13 @@ export class HttpClient {
     let errMsg: string;
     if (error instanceof Response) {
         console.log('errrorrr', error);
-      // try {
-      //   const body = error.json() || '';
-      //   const err = body.error || JSON.stringify(body);
-      //   errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-      // } catch (e) {
-      //   errMsg = error.text();
-      // }
     } else {
       if (error.status === 401) {
-          this.showToast('You are not authorized.', 'Please, login', 'danger');
+          this.authService.logout().then(() => {
+              this.navCtrl.navigateRoot('/login').then(() => {
+                  this.showToast('You are not authorized.', 'Please, login', 'danger');
+              });
+          });
       } else {
           errMsg = error.message ? error.message : error.toString();
           this.showToast(errMsg, 'header', 'danger');

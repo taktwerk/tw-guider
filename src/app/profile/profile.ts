@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Events, NavController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 
@@ -13,12 +13,18 @@ import {AuthService} from '../../services/auth-service';
   selector: 'page-profile',
   templateUrl: 'profile.html',
 })
-export class ProfilePage {
+export class ProfilePage implements OnInit {
         constructor(
             public navCtrl: NavController,
             public authService: AuthService,
             public events: Events,
     ) {
             this.authService.checkAccess();
+    }
+
+    ngOnInit(): void {
+        this.events.subscribe('network:online', (isNetwork) => {
+            this.authService.checkAccess();
+        });
     }
 }

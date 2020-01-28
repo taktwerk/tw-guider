@@ -44,8 +44,7 @@ export class AppComponent implements OnInit {
     private http: HttpClient,
     private syncService: SyncService,
     private downloadService: DownloadService,
-    private db: DbProvider,
-    private userService: UserService
+    private db: DbProvider
   ) {
     this.initializeApp();
   }
@@ -141,7 +140,6 @@ export class AppComponent implements OnInit {
       this.appPages.push(
           {title: 'Guides', url: '/guides', icon: 'list'},
           {title: 'Profile', url: '/profile', icon: 'person'},
-          {title: 'Feedback', url: '/feedback', icon: 'list'},
           {title: 'Logout', url: '/logout', icon: 'exit'},
       );
     }
@@ -168,6 +166,7 @@ export class AppComponent implements OnInit {
     });
     this.syncService.syncMode.subscribe((result) => {
         if (result !== 2 && this.periodicSync) {
+          console.log('please unsubscribe this');
           this.periodicSync.unsubscribe();
           this.periodicSync = null;
         }

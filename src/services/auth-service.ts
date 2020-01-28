@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders as Headers, HttpHeaders} from '@angular/common/http';
+import {Injectable, NgZone} from '@angular/core';
+import {HttpClient, HttpClientJsonpModule, HttpHeaders as Headers, HttpHeaders} from '@angular/common/http';
 import {AppSetting} from './app-setting';
-import {Platform, LoadingController} from '@ionic/angular';
+import {Platform, LoadingController, ToastController} from '@ionic/angular';
 import {DbProvider} from '../providers/db-provider';
 import {AuthDb} from '../models/db/auth-db';
 import {UserDb} from '../models/db/user-db';
@@ -9,7 +9,7 @@ import {UserSetting} from '../models/user-setting';
 import { Events, NavController } from '@ionic/angular';
 import {DownloadService} from './download-service';
 import {CryptoProvider} from '../providers/crypto-provider';
-
+import {Network} from '@ionic-native/network/ngx';
 
 
 @Injectable()
@@ -38,6 +38,9 @@ export class AuthService {
      * @param downloadService
      * @param navCtrl
      * @param cryptoProvider
+     * @param toastCtrl
+     * @param network
+     * @param ngZone
      */
     constructor(private http: HttpClient,
                 public platform: Platform,
@@ -46,7 +49,10 @@ export class AuthService {
                 public events: Events,
                 public downloadService: DownloadService,
                 public navCtrl: NavController,
-                public cryptoProvider: CryptoProvider
+                public cryptoProvider: CryptoProvider,
+                private toastCtrl: ToastController,
+                private network: Network,
+                private ngZone: NgZone
     ) {
         // Create a tmp user until everything has properly been loaded
         this.auth = this.newAuthModel();
@@ -230,12 +236,8 @@ export class AuthService {
         return new Promise((resolve) => {
             this.auth.loginDate = null;
             this.auth.save(true).then((res) => {
-                console.log('AuthService', 'logout', 'user loggin out');
                 this.isLoggedin = false;
                 this.events.publish('user:logout');
-                if (res) {
-                    console.log('successfully reset auths in local db');
-                }
                 resolve(true);
             });
         });
@@ -249,15 +251,89 @@ export class AuthService {
         return this.isLoggedin;
     }
 
+    checkUserToken(): Promise<boolean> {
+        return new Promise((resolve) => {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'X-CURRENT-DATETIME': new Date().toISOString()
+            };
+            if (this.auth && this.auth.authToken) {
+                headers['X-Auth-Token'] = this.auth.authToken;
+            } else {
+                resolve(false);
+                return;
+            }
+            const headersObject = new Headers(headers);
+
+            this.http.get(AppSetting.API_URL + '/login/check', {headers: headersObject}).subscribe(
+                (data) => {
+                    if (data) {
+                        resolve(true);
+                    } else {
+                        resolve(false);
+                    }
+                }, (err) => {
+                    if (err.status === 0) {
+                        // loading.dismiss();
+                        resolve(false);
+                    } else {
+                        // loading.dismiss();
+                        resolve(false);
+                    }
+                }
+            );
+        });
+    }
+
     /**
      * Check if a user has access to a page
      */
     public checkAccess(): void {
         this.getLastUser().then(isAuthenticatedUser => {
             if (!isAuthenticatedUser) {
-                this.navCtrl.navigateRoot('home');
+                this.ngZone.run(() => {
+                    this.navCtrl.navigateRoot('login').then(() => {
+                        console.log('navigate to login');
+                        this.showToast('You are not authorized.', 'Please, login', 'danger');
+                    });
+                });
+            } else {
+                if (this.network.type === 'none') {
+                    return;
+                }
+                this.checkUserToken().then(res => {
+                    if (!res) {
+                        this.logout().then(() => {
+                            this.ngZone.run(() => {
+                                this.navCtrl.navigateRoot('login').then(() => {
+                                    this.showToast('You are not authorized.', 'Please, login', 'danger');
+                                });
+                            });
+                        });
+                    }
+                });
             }
         });
+    }
+
+    async showToast(msg?: string, header = '' , toastColor?: string) {
+        if (!msg) {
+            msg = 'Fehler: Keine Verbindung zum Server.';
+        }
+        let toastOptions = {
+            header: header,
+            showCloseButton: true,
+            closeButtonText: 'OK',
+            message: msg,
+            duration: 3000,
+            color: toastColor
+        };
+
+        console.log('toast showing');
+
+        const toast = await this.toastCtrl.create(toastOptions);
+        await toast.present();
     }
 
     /**

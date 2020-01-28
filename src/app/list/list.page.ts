@@ -105,5 +105,8 @@ export class ListPage implements OnInit {
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
       this.setGuideInfo();
     });
+    this.events.subscribe('network:online', (isNetwork) => {
+      this.authService.checkAccess();
+    });
   }
 }

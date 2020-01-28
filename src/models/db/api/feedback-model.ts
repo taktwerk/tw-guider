@@ -20,7 +20,6 @@ export class FeedbackModel extends DbApiModel {
     public description: string;
 
     //db columns
-    static COL_USER_ID = 'user_id';
     static COL_TITLE = 'title';
     static COL_DESCRIPTION = 'description';
 
@@ -29,7 +28,6 @@ export class FeedbackModel extends DbApiModel {
 
     /** @inheritDoc */
     TABLE: any = [
-        [FeedbackModel.COL_USER_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [FeedbackModel.COL_TITLE, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
         [FeedbackModel. COL_DESCRIPTION, 'TEXT', DbBaseModel.TYPE_STRING],
     ];

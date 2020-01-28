@@ -192,7 +192,6 @@ export class ApiSync {
             }
             this.isPrepareSynData.next(true);
             this.isBusy = true;
-            this.http.initHeaders();
             this.http.get(this.getSyncUrl()).subscribe(async (data) => {
                 this.syncProgressStatus.next(status);
                 console.log('this.syncMustBeEnd() in get', this.syncMustBeEnd(), status);

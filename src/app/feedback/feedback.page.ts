@@ -38,10 +38,6 @@ export class FeedbackPage implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    //
-  }
-
   public async save() {
     const user = await this.authService.getLastUser();
     if (!user) {
@@ -50,6 +46,12 @@ export class FeedbackPage implements OnInit {
     this.model.user_id = user.userId;
     this.feedbackService.save(this.model).then(res => {
       // this.viewCtrl.dismiss();
+    });
+  }
+
+  ngOnInit(): void {
+    this.events.subscribe('network:online', (isNetwork) => {
+      this.authService.checkAccess();
     });
   }
 }

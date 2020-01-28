@@ -34,8 +34,8 @@ export class DownloadService {
      * @param {FileTransfer} transfer
      * @param {Toast} toast
      */
-    constructor(public platform: Platform,
-                public http: HttpClient,
+    constructor(public http: HttpClient,
+                public platform: Platform,
                 public file: File,
                 public webview: WebView,
                 public transfer: FileTransfer,
