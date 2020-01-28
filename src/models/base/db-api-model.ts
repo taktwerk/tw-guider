@@ -125,15 +125,12 @@ export abstract class DbApiModel extends DbBaseModel {
                     authorizationToken
                 );
                 if (!finalPath) {
-                    console.log('model in fail', this);
                     resolve(false);
                     return;
                 }
-                console.log('before saving file', finalPath);
                 this[fields[2]] = finalPath;
                 // We received the local path back if it's successful
                 await this.saveSynced(true).then(async () => {
-                    console.log('saveSynced');
                     // Delete old file
                     if (oldModel && oldModel[fields[2]] !== this[fields[2]]) {
                         await this.downloadService.deleteFile(oldModel[fields[2]]);
@@ -151,7 +148,6 @@ export abstract class DbApiModel extends DbBaseModel {
      */
     protected dbCreateTable(): Promise<any> {
         //init api table columns
-        this.TABLE.push([this.COL_ID_API, 'INT UNIQUE', DbBaseModel.TYPE_NUMBER, 'idApi']);
         this.TABLE.push([this.COL_IS_SYNCED, 'TINYINT(1) DEFAULT 1', DbBaseModel.TYPE_BOOLEAN, 'is_synced']);
         this.TABLE.push([this.COL_CREATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_CREATED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
@@ -159,6 +155,11 @@ export abstract class DbApiModel extends DbBaseModel {
         this.TABLE.push([this.COL_UPDATED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
         this.TABLE.push([this.COL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_DELETED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
+        if (!this.hasOwnProperty('user_id')) {
+            this.TABLE.push([this.COL_ID_API, 'INT UNIQUE', DbBaseModel.TYPE_NUMBER, 'idApi']);
+        } else {
+            this.TABLE.push([this.COL_ID_API, 'INT', DbBaseModel.TYPE_NUMBER, 'idApi']);
+        }
         return super.dbCreateTable();
     }
 
@@ -204,15 +205,11 @@ export abstract class DbApiModel extends DbBaseModel {
      * @override
      */
     public save(forceCreation?: boolean, isSynced?: boolean, updateCondition?: string): Promise<any> {
-
-        if (this.updateCondition.length === 0) {
-            if (updateCondition) {
-                // Provided by the service
-                this.updateCondition = updateCondition;
-            } else {
-                // Default
-                this.updateCondition = [this.COL_ID_API, this.idApi];
-            }
+        if (updateCondition) {
+            // Provided by the service
+            this.updateCondition = updateCondition;
+        } else {
+            this.setUpdateCondition();
         }
         return new Promise((resolve) => {
             this.beforeSave(isSynced);
@@ -224,6 +221,10 @@ export abstract class DbApiModel extends DbBaseModel {
                 }
             });
         });
+    }
+
+    public setUpdateCondition() {
+        this.updateCondition = [[this.COL_ID_API, this.idApi]];
     }
 
     public remove(): Promise<any> {
@@ -261,7 +262,6 @@ export abstract class DbApiModel extends DbBaseModel {
                     resolve(false);
                 } else {
                     let query = "SELECT * FROM " + this.TABLE_NAME + " WHERE " + this.parseWhere(this.updateCondition);
-                    //console.log(this.TAG, 'exist query', query);
                     if (query.indexOf('undefined') >= 0) {
                         resolve(false);
                     } else {

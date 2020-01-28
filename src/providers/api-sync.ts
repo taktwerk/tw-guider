@@ -186,12 +186,10 @@ export class ApiSync {
      */
     private pull(status = 'progress'): Promise<any> {
         return new Promise(resolve => {
-            console.log('run pull', status);
             if (this.isOffNetwork() || this.isBusy) {
                 resolve(false);
                 return;
             }
-            console.log('after network pull', status);
             this.isPrepareSynData.next(true);
             this.isBusy = true;
             this.http.initHeaders();
@@ -437,7 +435,11 @@ export class ApiSync {
         const apiSyncServicesPromises = [];
         Object.keys(this.apiServices).forEach((modelKey) => {
             const service: ApiService = this.apiServices[modelKey];
-            apiSyncServicesPromises.push(service.dbModelApi.removeAll());
+            const condition = [];
+            if (service.dbModelApi.hasOwnProperty('user_id')) {
+                condition.push(['user_id', this.userDb.userId]);
+            }
+            apiSyncServicesPromises.push(service.dbModelApi.removeAll(condition));
         });
 
         return Promise.all(apiSyncServicesPromises);

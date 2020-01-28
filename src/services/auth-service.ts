@@ -150,6 +150,7 @@ export class AuthService {
                         findAuthModel.findFirst(['user_id', user.user_id], 'login_at DESC').then((existUser) => {
                            if (existUser.length) {
                                this.auth = existUser[0];
+                               this.auth.authToken = user.access_token;
                                this.auth.password = this.cryptoProvider.makeEncrypt(formData.password);
                                this.auth.loginDate = new Date();
                            } else {

@@ -18,8 +18,10 @@ export class GuiderModel extends DbApiModel {
     steps: GuideStepModel[] = [];
     assets: GuideAssetModel[] = [];
 
+    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_USER_ID + ')';
+
     //members
-    public client_id: number;
+    public user_id: number = null;
     public short_name: string;
     public title: string;
     public description: string;
@@ -31,7 +33,7 @@ export class GuiderModel extends DbApiModel {
     public protocol_template_id: number;
 
     //db columns
-    static COL_CLIENT_ID = 'client_id';
+    static COL_USER_ID = 'user_id';
     static COL_SHORT_NAME = 'short_name';
     static COL_TITLE = 'title';
     static COL_DESCRIPTION = 'description';
@@ -60,7 +62,7 @@ export class GuiderModel extends DbApiModel {
 
     /** @inheritDoc */
     TABLE: any = [
-        [GuiderModel.COL_CLIENT_ID, 'INT', DbBaseModel.TYPE_NUMBER],
+        [GuiderModel.COL_USER_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuiderModel.COL_SHORT_NAME, 'VARCHAR(4)', DbBaseModel.TYPE_STRING],
         [GuiderModel.COL_TITLE, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
         [GuiderModel. COL_DESCRIPTION, 'TEXT', DbBaseModel.TYPE_STRING],
@@ -151,9 +153,9 @@ export class GuiderModel extends DbApiModel {
                 ' WHERE ' + this.secure('guide') + '.' + this.secure('id') + ' = ' + id +
                 ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
                 ' AND ' + this.secure('guide_asset') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
-                ' AND ' + this.secure('guide_asset_pivot') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL';
+                ' AND ' + this.secure('guide_asset_pivot') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
+                ' GROUP BY guide_asset.id';
 
-            console.log('set asssets');
             this.db.query(query).then((res) => {
                 this.assets = [];
                 if (res.rows.length > 0) {
@@ -165,16 +167,17 @@ export class GuiderModel extends DbApiModel {
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         this.assets.push(obj);
-                        // this.assets = [...this.assets, obj];
                     }
                 }
-                console.log('this.assets', this.assets);
                 resolve(this.assets);
-                // this.assets = [...this.assets, assetsData];
             }).catch((err) => {
                 resolve(this.assets);
-                console.log('errrr', err);
             });
         });
+    }
+
+    setUpdateCondition() {
+        super.setUpdateCondition();
+        this.updateCondition.push(['user_id', this.user_id]);
     }
 }

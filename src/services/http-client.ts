@@ -82,7 +82,6 @@ export class HttpClient {
   }
 
   showToast(msg?: string, header = '' , toastColor?: string) {
-    console.log('showToast', header);
     if (!msg) {
         msg = 'Fehler: Keine Verbindung zum Server.';
     }

@@ -42,67 +42,49 @@ export class GuideCategoryService extends ApiService {
         return new GuideCategoryModel(this.p, this.db, this.events, this.downloadService);
     }
 
-    public findByGuideBinding(bindingId, searchValue): Promise<any> {
-        return new Promise((resolve) => {
-            let query = 'SELECT ' + this.dbModelApi.secure('guide_category') + '.*' + ' from ' + this.dbModelApi.secure('guide_category') +
-                ' JOIN ' + this.dbModelApi.secure('guide_category_binding') + ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_category_id') + '=' + this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id') +
-                ' JOIN ' + this.dbModelApi.secure('guide') + ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') + '=' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id') +
-                ' WHERE ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('id') + ' = ' + bindingId +
-                ' ORDER BY guide_category.name ASC';
-
-            if (searchValue) {
-                query += ' AND (' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%" OR ' + this.dbModelApi.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%")';
-            }
-
-            const entries: any[] = [];
-            this.db.query(query).then((res) => {
-                if (res.rows.length > 0) {
-                    for (let i = 0; i < res.rows.length; i++) {
-                        const obj: DbBaseModel = this.newModel();
-                        obj.platform = this.dbModelApi.platform;
-                        obj.db = this.db;
-                        obj.events = this.events;
-                        obj.downloadService = this.downloadService;
-                        obj.loadFromAttributes(res.rows.item(i));
-                        // console.debug(this.TAG, 'new instance', obj);
-                        entries.push(obj);
-                    }
-                }
-
-                resolve(entries);
-            }).catch((err) => {
-                resolve(entries);
-            });
-        });
-    }
-
     public findByGuides(searchValue): Promise<any> {
-        return new Promise((resolve) => {
-            let query = 'SELECT ' + this.dbModelApi.secure('guide_category') + '.*' + ' from ' + this.dbModelApi.secure('guide_category') +
-                ' JOIN ' + this.dbModelApi.secure('guide_category_binding') +
+        return new Promise(async (resolve) => {
+            const user = await this.authService.getLastUser();
+            if (!user) {
+                resolve([]);
+                return;
+            }
+            const whereCondition = [
+                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+                this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('user_id') + '=' + user.userId,
+                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('user_id') + '=' + user.userId
+            ];
+            if (searchValue) {
+                whereCondition.push(
+                    '(' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%"' +
+                    ' OR ' + this.dbModelApi.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%")'
+                );
+            }
+            const joinCondition = 'JOIN ' + this.dbModelApi.secure('guide_category_binding') +
                 ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_category_id') +
                 '=' +
                 this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id') +
                 ' JOIN ' + this.dbModelApi.secure('guide') +
                 ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') +
                 '=' +
-                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id') +
-                ' WHERE ' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL' +
-                ' AND ' + this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL' +
-                ' AND ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL';
+                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
 
-            if (searchValue) {
-                query += ' AND (' +
-                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%"' +
-                    ' OR ' + this.dbModelApi.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%"' +
-                    ')';
-            }
-
-            query += ' ORDER BY guide_category.name ASC';
+            const selectFrom = 'SELECT ' + this.dbModelApi.secure('guide_category') + '.*' + ' from ' + this.dbModelApi.secure('guide_category');
+            const orderBy = 'guide_category.name ASC';
+            const groupby = this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id');
 
             const entries: any[] = [];
-            this.db.query(query).then((res) => {
-                if (res.rows.length > 0) {
+            this.dbModelApi.searchAllAndGetRowsResult(
+                whereCondition,
+                orderBy,
+                0,
+                joinCondition,
+                selectFrom,
+                groupby
+            ).then((res) => {
+                if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
                         const obj: DbBaseModel = this.newModel();
                         obj.platform = this.dbModelApi.platform;
@@ -114,7 +96,6 @@ export class GuideCategoryService extends ApiService {
                         entries.push(obj);
                     }
                 }
-
                 resolve(entries);
             }).catch((err) => {
                 resolve(entries);
@@ -122,7 +103,91 @@ export class GuideCategoryService extends ApiService {
         });
     }
 
-    findAll() {
-        return this.dbModelApi.findAll('name ASC');
+    async findAll(): Promise<any> {
+        return new Promise(async (resolve) => {
+            const user = await this.authService.getLastUser();
+            if (!user) {
+                resolve([]);
+                return;
+            }
+            const whereCondition = [
+                ['user_id', user.userId],
+                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+            ];
+            const orderBy = 'name ASC';
+
+            const entries: any[] = [];
+            return this.dbModelApi.searchAllAndGetRowsResult(whereCondition, orderBy).then((res) => {
+                if (res && res.rows && res.rows.length > 0) {
+                    for (let i = 0; i < res.rows.length; i++) {
+                        const obj: DbBaseModel = this.newModel();
+                        obj.platform = this.dbModelApi.platform;
+                        obj.db = this.db;
+                        obj.events = this.events;
+                        obj.downloadService = this.downloadService;
+                        obj.loadFromAttributes(res.rows.item(i));
+                        // console.debug(this.TAG, 'new instance', obj);
+                        entries.push(obj);
+                    }
+                }
+                resolve(entries);
+            }).catch((err) => {
+                resolve(entries);
+            });
+        });
+    }
+
+    public getGuides(guideId: number, searchValue?: string): Promise<GuiderModel[]> {
+        return new Promise(async (resolve) => {
+            const user = await this.authService.getLastUser();
+            if (!user) {
+                resolve([]);
+                return;
+            }
+            const whereCondition = [
+                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('user_id') + '=' + user.userId,
+                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('user_id') + '=' + user.userId,
+                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id') + '=' + guideId,
+                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+                this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL'
+            ];
+            if (searchValue) {
+                whereCondition.push(
+                    '(' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%"' +
+                    ' OR ' + this.dbModelApi.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%")'
+                );
+            }
+            const joinCondition =
+                'JOIN ' + this.dbModelApi.secure('guide_category_binding') +
+                ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') +
+                ' = ' +
+                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id') +
+                ' JOIN ' + this.dbModelApi.secure('guide_category') +
+                ' ON ' +
+                this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_category_id') +
+                ' = ' +
+                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id');
+            const selectFrom = 'SELECT ' + this.dbModelApi.secure('guide') + '.*' + ' from ' + this.dbModelApi.secure('guide');
+            const groupby = this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
+
+            const entries: any[] = [];
+            this.dbModelApi.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom, groupby).then((res) => {
+                if (res && res.rows && res.rows.length > 0) {
+                    for (let i = 0; i < res.rows.length; i++) {
+                        const obj: GuiderModel = new GuiderModel(this.p, this.db, this.events, this.downloadService);
+                        obj.platform = this.dbModelApi.platform;
+                        obj.db = this.db;
+                        obj.events = this.events;
+                        obj.downloadService = this.downloadService;
+                        obj.loadFromAttributes(res.rows.item(i));
+                        entries.push(obj);
+                    }
+                }
+                resolve(entries);
+            }).catch((err) => {
+                resolve(entries);
+            });
+        });
     }
 }

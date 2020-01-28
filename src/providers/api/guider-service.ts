@@ -39,7 +39,20 @@ export class GuiderService extends ApiService {
         return new GuiderModel(this.p, this.db, this.events, this.downloadService);
     }
 
-    public getById(id) {
-        return this.dbModelApi.findFirst(['id', id]);
+    public getById(id): Promise<any> {
+        return new Promise(async resolve => {
+            const user = await this.authService.getLastUser();
+            if (!user) {
+                resolve([]);
+                return;
+            }
+            const whereCondition = [['id', id]];
+            if (user.clientId) {
+                whereCondition.push(['user_id', user.userId]);
+            }
+            this.dbModelApi.findFirst(whereCondition).then(result => {
+                resolve(result);
+            });
+        });
     }
 }

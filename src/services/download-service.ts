@@ -67,7 +67,6 @@ export class DownloadService {
 
             this.isExistFile(this.file.dataDirectory + modelFolder + '/', name)
                 .then(isExist => {
-                    console.log('is exist file', isExist, modelFolder, name)
                     if (isExist) {
                         resolve(finalPath);
                         return;
@@ -87,17 +86,14 @@ export class DownloadService {
                                             { replace: true }
                                             )
                                             .then(fe => {
-                                                console.log('file was written');
                                                 resolve(finalPath);
                                                 return;
                                             }).catch(writeFileErr => {
-                                                console.log('writeFile', writeFileErr)
                                                 resolve(false);
                                                 return;
                                             });
                                     });
                             }, downloadErr => {
-                                console.log('file was not downloading', downloadErr);
                                 resolve(false);
                                 // Download failed
                             });
@@ -127,7 +123,6 @@ export class DownloadService {
                     resolve(response);
                     return;
                 }, downloadErr => {
-                    console.log('file was not downloading', downloadErr);
                     resolve(false);
                     return;
                 });

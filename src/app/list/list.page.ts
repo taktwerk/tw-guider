@@ -44,40 +44,43 @@ export class ListPage implements OnInit {
     this.searchValue = $event.detail.value;
 
     this.guideCategoryService.findByGuides(this.searchValue).then(guideCategories => {
-      this.guideCategories = [];
-      this.setGuideInfo(guideCategories);
+      this.guideCategories = guideCategories;
+      this.setGuideInfo();
     });
   }
 
   findAllGuideCategories() {
     if (this.searchValue) {
       this.guideCategoryService.findByGuides(this.searchValue).then(guideCategories => {
-        this.setGuideInfo(guideCategories);
+        this.guideCategories = guideCategories;
+        this.guideCategories.map((guideCategory) => {
+          // this.addGuideCateogry(guideCategory);
+          this.guideCategoryService.getGuides(guideCategory.idApi, this.searchValue).then((guides) => {
+            guideCategory.guides = guides;
+          });
+        });
+        // this.setGuideInfo();
       });
     } else {
       this.guideCategoryService.findAll().then(guideCategories => {
-        this.setGuideInfo(guideCategories);
+        this.guideCategories = guideCategories;
+        this.guideCategories.map((guideCategory) => {
+          // this.addGuideCateogry(guideCategory);
+          this.guideCategoryService.getGuides(guideCategory.idApi, this.searchValue).then((guides) => {
+            guideCategory.guides = guides;
+          });
+        });
+        // this.setGuideInfo();
       });
     }
   }
 
-  setGuideInfo(guideCategories) {
-    guideCategories.map(guideCategory => {
-      this.addToList(guideCategory);
-      guideCategory.setGuides(this.searchValue).then(() => {
-        this.addToList(guideCategory);
-       });
+  setGuideInfo() {
+    this.guideCategories.map(guideCategory => {
+      this.guideCategoryService.getGuides(guideCategory.idApi, this.searchValue).then((guides) => {
+        guideCategory.guides = guides;
+      });
     });
-  }
-
-  public addToList(newData) {
-    const indexApi = this.guideCategories.findIndex(record => newData.idApi && record.idApi === newData.idApi);
-
-    if (indexApi !== -1) {
-      this.guideCategories[indexApi] = newData;
-    } else {
-      this.guideCategories.push(newData);
-    }
   }
 
   detectChanges() {
@@ -88,36 +91,19 @@ export class ListPage implements OnInit {
 
   ngOnInit() {
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
-      this.guideCategoryService.findByGuideBinding(model.adApi, this.searchValue).then(guideCategories => {
-        this.setGuideInfo(guideCategories);
-      });
-      this.detectChanges();
-    });
-    this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':create', (model) => {
-      this.guideCategoryService.findByGuideBinding(model.adApi, this.searchValue).then(guideCategories => {
-        this.setGuideInfo(guideCategories);
-      });
-      this.detectChanges();
+      this.findAllGuideCategories();
     });
     this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
-      this.setGuideInfo([model]);
-      this.detectChanges();
+      this.findAllGuideCategories();
     });
     this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', (model) => {
-      this.setGuideInfo([model]);
-      this.detectChanges();
+      this.findAllGuideCategories();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
-      this.guideCategories.map(guideCategory => {
-        guideCategory.setGuides(this.searchValue);
-        this.detectChanges();
-      });
+      this.setGuideInfo();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
-      this.guideCategories.map(guideCategory => {
-        guideCategory.setGuides(this.searchValue);
-        this.detectChanges();
-      });
+      this.setGuideInfo();
     });
   }
 }

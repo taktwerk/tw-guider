@@ -27,6 +27,8 @@ export abstract class DbBaseModel {
     /** id's column name */
     public COL_ID: string = '_id';
 
+    public UNIQUE_PAIR: string = '';
+
     // db helper's abstract contract
     /**
      * TAG used for Logging.
@@ -172,7 +174,13 @@ export abstract class DbBaseModel {
             rows.push(this.secure(name) + ' ' + schema);
             // query += ', ' + this.secure(name) + ' ' + schema;
         }
-        query += rows.join(', ') + ')';
+        query += rows.join(', ');
+
+        if (this.UNIQUE_PAIR) {
+            query += ', ' + this.UNIQUE_PAIR;
+        }
+
+        query += ')';
 
         return query;
     }
@@ -244,10 +252,14 @@ export abstract class DbBaseModel {
      * @param where optional condition to search
      * @param orderBy optional ORDER BY value
      * @param limit optional LIMIT value
+     * @param join
+     * @param selectFrom
+     * @param groupBy
      * @returns {Promise<any[]>}
      */
-    public searchAll(where?: any, orderBy?: string, limit?: number): Promise<any> {
-        const query = this.searchAllQuery(where, orderBy, limit);
+
+    public searchAllAndGetRowsResult(where?: any, orderBy?: string, limit?: number, join?: string, selectFrom?: string, groupBy?: string): Promise<any> {
+        const query = this.searchAllQuery(where, orderBy, limit, join, selectFrom, groupBy);
         const entries: any[] = [];
 
         return new Promise((resolve) => {
@@ -255,7 +267,30 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
-                    console.log('search all query', query);
+                    db.query(query).then((res) => {
+                        if (res.rows.length > 0) {
+                            resolve(res);
+                            return;
+                        }
+                        resolve(entries);
+                    }).catch((err) => {
+                        resolve(entries);
+                    });
+                }
+
+            });
+        });
+    }
+
+    public searchAll(where?: any, orderBy?: string, limit?: number, join?: string, selectFrom?: string): Promise<any> {
+        const query = this.searchAllQuery(where, orderBy, limit, join, selectFrom);
+        const entries: any[] = [];
+
+        return new Promise((resolve) => {
+            this.dbReady().then((db) => {
+                if (db == null) {
+                    resolve(entries);
+                } else {
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
@@ -309,12 +344,24 @@ export abstract class DbBaseModel {
         });
     }
 
-    public searchAllQuery(where?: any, orderBy?: string, limit?: number): string {
+    public searchAllQuery(where?: any, orderBy?: string, limit?: number, join?: string, selectFrom?: string, groupBy?: string): string {
         // create query
-        let query = 'SELECT * FROM ' + this.secure(this.TABLE_NAME);
+        let query = '';
+        if (selectFrom) {
+            query = selectFrom;
+        } else {
+            query = 'SELECT * FROM ' + this.secure(this.TABLE_NAME);
+        }
         // add where condition
+        if (join) {
+            query = query + ' ' + join;
+        }
         if (where) {
-            query = query + ' ' + this.parseWhere(where);
+            query = query + ' WHERE ' + this.parseWhere(where);
+        }
+        // add group by
+        if (groupBy) {
+            query = query + ' GROUP BY ' + groupBy;
         }
         // add order by
         if (orderBy) {
@@ -347,11 +394,11 @@ export abstract class DbBaseModel {
      * @returns {Promise<any[]>}
      */
     public findAllWhere(condition: any, orderBy?: string, limit?: number): Promise<any[]> {
-        return this.searchAll('WHERE ' + this.parseWhere(condition), orderBy, limit);
+        return this.searchAll(this.parseWhere(condition), orderBy, limit);
     }
 
     public findAllByTemporaryWhere(conditionString: string, orderBy?: string, limit?: number): Promise<any> {
-        return this.searchAll('WHERE ' + conditionString, orderBy, limit);
+        return this.searchAll(conditionString, orderBy, limit);
     }
 
     public findFirst(condition, orderBy  = 'id ASC'): Promise<any> {
@@ -367,13 +414,12 @@ export abstract class DbBaseModel {
     public find(orderBy?: string): Promise<any> {
         return new Promise((resolve) => {
             this.findAll(orderBy, 1).then((res) => {
-                console.log('aqrwqqwrqwrqwr');
                 if (res.length === 1) {
                     resolve(res[0]);
                 } else {
                     resolve(null);
                 }
-            })
+            });
         });
     }
 
@@ -388,10 +434,8 @@ export abstract class DbBaseModel {
         return new Promise((resolve) => {
             this.findAllWhere(this.parseWhere(where), orderBy, 1).then((res) => {
                 if (res.length === 1) {
-                    // console.info(this.TAG, 'found result for condition ' + where);
                     resolve(res[0]);
                 } else {
-                    // console.warn(this.TAG, 'no result found for condition ' + where);
                     resolve(false);
                 }
             });
@@ -409,7 +453,6 @@ export abstract class DbBaseModel {
         }
 
         let conditions = [];
-        // console.info(this.TAG, 'parseWhere', 'condition', condition);
 
         //  One string, just use that
         if (typeof condition === 'string') {
@@ -418,7 +461,6 @@ export abstract class DbBaseModel {
         //  Array gets interesting
         else if (Array.isArray(condition)) {
             //  Just a flat array with two values?
-
             if (condition.length === 2 && !Array.isArray(condition[0]) && !Array.isArray(condition[1])) {
                 conditions.push(this.secure(condition[0]) + ' = ' + condition[1]);
             }
@@ -468,11 +510,16 @@ export abstract class DbBaseModel {
      * Removes all stored entries from this table.
      * @returns {Promise<any>}
      */
-    public removeAll(): Promise<any> {
+    public removeAll(condition?: any[]): Promise<any> {
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) resolve(false);
-                db.query('DELETE FROM ' + this.secure(this.TABLE_NAME)).then(() => {
+                let deleteQuery = 'DELETE FROM ' + this.secure(this.TABLE_NAME);
+                if (condition.length) {
+                    deleteQuery = deleteQuery + ' WHERE ' + this.parseWhere(condition);
+                }
+
+                db.query(deleteQuery).then(() => {
                     resolve(true);
                 }).catch(() => {
                     resolve(false);
@@ -489,7 +536,6 @@ export abstract class DbBaseModel {
     public save(forceCreation?: boolean): Promise<any> {
         return new Promise((resolve) => {
             if (this.id && !forceCreation) {
-                console.log('updating');
                 this.update().then(() => resolve(true));
             } else {
                 this.create().then(() => resolve(true));
@@ -651,7 +697,6 @@ export abstract class DbBaseModel {
                 } else {
                     let query = 'UPDATE ' + this.secure(this.TABLE_NAME) + ' ' +
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
-                    console.log('query', query);
                     db.query(query).then((res) => {
                         this.events.publish(this.TAG + ':update', this);
                         resolve(res);

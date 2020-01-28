@@ -159,6 +159,12 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.events.subscribe('user:logout', () => {
+      if (this.periodicSync) {
+        this.periodicSync.unsubscribe();
+        this.periodicSync = null;
+      }
+    });
     this.syncService.syncMode.subscribe((result) => {
         if (result !== 2 && this.periodicSync) {
           this.periodicSync.unsubscribe();

@@ -14,22 +14,24 @@ export class GuideCategoryModel extends DbApiModel {
     public apiPk = 'id';
 
     //members
-    public client_id: number;
-    public name: string;
+    public user_id: number = null;
+    public name: string = null;
 
     /// relation
     public guides: GuiderModel[] = [];
 
     //db columns
-    static COL_CLIENT_ID = 'client_id';
+    static COL_USER_ID = 'user_id';
     static COL_NAME = 'name';
 
     /** @inheritDoc */
     TABLE_NAME: string = 'guide_category';
 
+    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuideCategoryModel.COL_USER_ID + ')';
+
     /** @inheritDoc */
     TABLE: any = [
-        [GuideCategoryModel.COL_CLIENT_ID, 'INT', DbBaseModel.TYPE_NUMBER],
+        [GuideCategoryModel.COL_USER_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuideCategoryModel.COL_NAME, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
     ];
 
@@ -57,22 +59,33 @@ export class GuideCategoryModel extends DbApiModel {
 
     public setGuides(searchValue?: string) {
         return new Promise((resolve) => {
-            let query = 'SELECT ' + this.secure('guide') + '.*' + ' from ' + this.secure('guide') +
-                ' JOIN ' + this.secure('guide_category_binding') + ' ON ' + this.secure('guide_category_binding') + '.' + this.secure('guide_id') + '=' + this.secure('guide') + '.' + this.secure('id') +
-                ' JOIN ' + this.secure('guide_category') + ' ON ' + this.secure('guide_category_binding') + '.' + this.secure('guide_category_id') + '=' + this.secure('guide_category') + '.' + this.secure('id') +
-                ' WHERE ' + this.secure('guide_category') + '.' + this.secure('id') + ' = ' + this.idApi +
-                ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
-                ' AND ' + this.secure('guide_category') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
-                ' AND ' + this.secure('guide_category_binding') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL';
-
+            const whereCondition = [
+                this.secure('guide_category') + '.' + this.secure('id') + '=' + this.idApi,
+                this.secure('guide') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL',
+                this.secure('guide_category') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL',
+                this.secure('guide_category_binding') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL'
+            ];
             if (searchValue) {
-                query += ' AND (' + this.secure('guide') + '.' + this.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%"' +
-                    ' OR ' + this.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%")';
+                whereCondition.push(
+                    '(' + this.secure('guide') + '.' + this.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%"' +
+                    ' OR ' + this.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%")'
+                );
             }
+            const joinCondition =
+                'JOIN ' + this.secure('guide_category_binding') +
+                ' ON ' + this.secure('guide_category_binding') + '.' + this.secure('guide_id') +
+                ' = ' +
+                this.secure('guide') + '.' + this.secure('id') +
+                ' JOIN ' + this.secure('guide_category') +
+                ' ON ' +
+                this.secure('guide_category_binding') + '.' + this.secure('guide_category_id') +
+                ' = ' +
+                this.secure('guide_category') + '.' + this.secure('id');
+            const selectFrom = 'SELECT ' + this.secure('guide') + '.*' + ' from ' + this.secure('guide');
 
             const entries: any[] = [];
-            this.db.query(query).then((res) => {
-                if (res.rows.length > 0) {
+            this.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom).then((res) => {
+                if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
                         const obj: GuiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService);
                         obj.platform = this.platform;
@@ -80,11 +93,21 @@ export class GuideCategoryModel extends DbApiModel {
                         obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
-                        // console.debug(this.TAG, 'new instance', obj);
                         this.addGuide(obj);
                     }
                 }
-            }).catch((err) => {});
+            }).catch((err) => {
+                console.log('guide category errrorrrr', err);
+            });
         });
+    }
+
+    setUpdateCondition() {
+        super.setUpdateCondition();
+        this.updateCondition.push(['user_id', this.user_id]);
+    }
+
+    removeAll(condition?: []): Promise<any> {
+        return super.removeAll(condition);
     }
 }

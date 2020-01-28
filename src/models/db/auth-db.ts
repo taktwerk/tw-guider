@@ -16,6 +16,7 @@ export class AuthDb extends DbBaseModel {
   TAG: string = 'AuthDb';
 
   userId: number;
+  clientId: number;
   /** auth token from API */
   authToken: string;
   /** username */
@@ -69,7 +70,6 @@ export class AuthDb extends DbBaseModel {
     return new Promise((resolve) => {
       console.log('forceCreation', forceCreation);
       if (this.userId && forceCreation) {
-        console.log('updating');
         this.update().then(() => resolve(true));
       } else {
         this.create().then(() => resolve(true));

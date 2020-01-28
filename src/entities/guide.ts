@@ -8,7 +8,7 @@ export class Guide {
     id: number;
 
     @Column()
-    client_id: number;
+    user_id: number;
 
     @Column({nullable: true})
     short_name: string;

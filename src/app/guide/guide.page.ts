@@ -106,30 +106,43 @@ export class GuidePage implements OnInit {
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     if (this.guideId) {
       this.guiderService.getById(this.guideId).then((result) => {
+        console.log('result for get by id', result);
         if (result.length) {
           this.guide = result[0];
+          this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
+          this.setAssets(this.guide.idApi).then(() => this.detectChanges());
         }
-        this.setGuideSteps(this.guideId).then(() => this.detectChanges());
-        this.setAssets(this.guideId).then(() => this.detectChanges());
       });
     }
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async (model) => {
-      this.setGuideSteps(this.guideId).then(() => this.detectChanges());
+      if (this.guide) {
+        this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
+      }
     });
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async (model) => {
-      this.setGuideSteps(this.guideId).then(() => this.detectChanges());
+      if (this.guide) {
+        this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
+      }
     });
     this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':create', async (model) => {
-      this.setAssets(this.guideId).then(() => this.detectChanges());
+      if (this.guide) {
+        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+      }
     });
     this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':update', async (model) => {
-      this.setAssets(this.guideId).then(() => this.detectChanges());
+      if (this.guide) {
+        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+      }
     });
     this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', async (model) => {
-      this.setAssets(this.guideId).then(() => this.detectChanges());
+      if (this.guide) {
+        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+      }
     });
     this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', async (model) => {
-      this.setAssets(this.guideId).then(() => this.detectChanges());
+      if (this.guide) {
+        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+      }
     });
   }
 }
