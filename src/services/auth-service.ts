@@ -98,8 +98,13 @@ export class AuthService {
                 }
                 const user = result[0];
                 this.cryptoProvider.deriveAesKey(formData.password);
-                const decryptedPassword = this.cryptoProvider.makeDecrypt(user.password);
-                if (decryptedPassword !== formData.password) {
+                try {
+                    const decryptedPassword = this.cryptoProvider.makeDecrypt(user.password);
+                    if (decryptedPassword !== formData.password) {
+                        resolve(false);
+                        return;
+                    }
+                } catch (error) {
                     resolve(false);
                     return;
                 }
