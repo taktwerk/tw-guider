@@ -28,16 +28,16 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-    <div *ngIf="guide.steps && guideSteps.length === 0">
+    <div *ngIf="guideSteps && guideSteps.length === 0">
         No information here yet.
     </div>
-    <div *ngIf="guide.steps && guideSteps.length > 0">
+    <div *ngIf="guideSteps && guideSteps.length > 0">
         <ion-slides pager="true"
                     [options]="slideOpts"
         >
             <ion-slide  class="ion-padding" *ngFor="let step of guideSteps">
                 <img *ngIf="step.isImageAttachedFile()"
-                     (click)="openFile(step.getApiFilePath(), step.getLocalFilePath(), guide.title)"
+                     (click)="openFile(step.getApiFilePath(), step.getLocalFilePath(), step.title)"
                      src="{{ step.getFile() }}"
                      imageViewer
                 >
@@ -48,7 +48,10 @@
                           (click)="openFile(step.getApiFilePath(), step.getLocalFilePath())"
                 >
                 </ion-icon>
-                <img *ngIf="!step.isImageAttachedFile() && !step.isVideoAttachedFile()" src="/assets/placeholder.jpg" imageViewer>
+                <img *ngIf="!step.isImageAttachedFile() && !step.isVideoAttachedFile()"
+                     src="/assets/placeholder.jpg"
+                     imageViewer
+                >
                 <h2>{{step.title}}</h2>
                 <p [innerHTML]="step.description_html"></p>
             </ion-slide>
