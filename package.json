@@ -58,6 +58,7 @@
     "cordova-plugin-video-player": "git+https://github.com/moust/cordova-plugin-videoplayer.git",
     "cordova-sqlite-storage": "^4.0.0",
     "core-js": "^2.5.4",
+    "ionic-material": "^0.4.1",
     "jose-jwe": "^0.2.2",
     "pbkdf2-sha256": "^1.1.1",
     "rxjs": "~6.5.1",

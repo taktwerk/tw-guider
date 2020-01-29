@@ -6,20 +6,22 @@ import { RouterModule } from '@angular/router';
 
 import { ListPage } from './list.page';
 import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
+import {MainPipe} from '../../pipes/main-pipe.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: ListPage
-      }
-    ]),
-    SyncSpinnerComponentModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        RouterModule.forChild([
+            {
+                path: '',
+                component: ListPage
+            }
+        ]),
+        SyncSpinnerComponentModule,
+        MainPipe
+    ],
   declarations: [ListPage]
 })
 export class ListPageModule {}

@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { GuidePage } from './guide.page';
 import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
 import {FeedbackModalComponentModule} from '../../components/feedback-modal-component/feedback-modal-component.module';
+import {MainPipe} from '../../pipes/main-pipe.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import {FeedbackModalComponentModule} from '../../components/feedback-modal-comp
       }
     ]),
     SyncSpinnerComponentModule,
-    FeedbackModalComponentModule
+    FeedbackModalComponentModule,
+    MainPipe
   ],
 })
 export class GuidePageModule {}

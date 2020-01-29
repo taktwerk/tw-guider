@@ -8,6 +8,6 @@
 </ion-header>
 
 <ion-content fullscreen  class="ion-padding">
-    <div [innerHTML]="asset.asset_html"></div>
+    <div style="display: flex;" [innerHTML]="asset.asset_html | safeHtml"></div>
 </ion-content>
 

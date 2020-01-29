@@ -41,9 +41,15 @@ import {SyncSpinnerComponentModule} from '../components/sync-spinner-component/s
 import {ApiPush} from '../providers/api-push';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
+import {SafeHtmlPipe} from '../pipes/safe-html/safe-html';
+import {MainPipe} from '../pipes/main-pipe.module';
 
 @NgModule({
-  declarations: [AppComponent, GuideAssetTextModalComponent, FeedbackModalComponent],
+  declarations: [
+    AppComponent,
+    GuideAssetTextModalComponent,
+    FeedbackModalComponent
+  ],
   entryComponents: [GuideAssetTextModalComponent, FeedbackModalComponent],
   imports: [
     BrowserModule,
@@ -51,7 +57,8 @@ import { FilePath } from '@ionic-native/file-path/ngx';
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
-    SyncSpinnerComponentModule
+    SyncSpinnerComponentModule,
+    MainPipe
   ],
   providers: [
     StatusBar,

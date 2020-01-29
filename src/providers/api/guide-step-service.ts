@@ -8,6 +8,7 @@ import {HttpClient} from '../../services/http-client';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {DownloadService} from '../../services/download-service';
 import {GuideStepModel} from '../../models/db/api/guide-step-model';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Injectable()
 export class GuideStepService extends ApiService {
@@ -24,11 +25,13 @@ export class GuideStepService extends ApiService {
      * @param authService
      * @param events
      * @param downloadService
+     * @param sanitized
      */
     constructor(http: HttpClient, private p: Platform, private db: DbProvider,
         public authService: AuthService,
         public events: Events,
-        public downloadService: DownloadService) {
+        public downloadService: DownloadService,
+        private sanitized: DomSanitizer) {
         super(http, events);
         console.debug('GuideStepService', 'initialized');
     }
@@ -39,5 +42,9 @@ export class GuideStepService extends ApiService {
      */
     public newModel() {
         return new GuideStepModel(this.p, this.db, this.events, this.downloadService);
+    }
+
+    public getDescriptionHtml(descriptionHtml) {
+        return this.sanitized.bypassSecurityTrustHtml(descriptionHtml);
     }
 }

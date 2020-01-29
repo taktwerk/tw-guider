@@ -54,15 +54,18 @@
   <div *ngIf="syncProgressStatus === 'no_sync_data'">No data for sync</div>
 </ion-card>
 
-<ion-progress-bar value="{{ syncedItemsPercent / 100 }}">
-</ion-progress-bar>
-{{ syncedItemsPercent }}% ({{ syncedItemsCount }} / {{ syncAllItemsCount }})
 
-<br>
+<ion-progress-bar value="{{ syncedItemsPercent / 100 }}"></ion-progress-bar>
+<div *ngIf="syncedItemsPercent">
+  {{ syncedItemsPercent }}% ({{ syncedItemsCount }} / {{ syncAllItemsCount }})
+</div>
 
 <section>
   <h4>Sync Modes</h4>
-  <ion-segment (ionChange)="changeSyncMode($event.detail.value)" color="secondary" value="{{ modeSync }}">
+  <ion-segment (ionChange)="changeSyncMode($event.detail.value)"
+               color="secondary"
+               value="{{ modeSync }}"
+  >
     <ion-segment-button value="0">
       <ion-label>Manually</ion-label>
     </ion-segment-button>
@@ -80,48 +83,3 @@
     Re-sync data
   </ion-button>
 </section>
-
-<ion-chip>
-  <ion-label (click)="pushData()" *ngIf="!isStartPush" color="success">Send Data</ion-label>
-  <ion-label (click)="stopPushData()" *ngIf="isStartPush" color="success">Is Sending</ion-label>
-</ion-chip>
-<ion-card>
-  <div *ngIf="pushProgressStatus === 'progress' || pushProgressStatus === 'resume'">In progress</div>
-  <div *ngIf="pushProgressStatus === 'pause'">Pause</div>
-  <div *ngIf="pushProgressStatus === 'failed'">Failed</div>
-  <div *ngIf="pushProgressStatus === 'success'">Success</div>
-  <div *ngIf="pushProgressStatus === 'no_push_data'">No data for push</div>
-</ion-card>
-
-<ion-card *ngIf="isStartPush || (pushProgressStatus !== 'not_push' && pushProgressStatus !== 'failed' && pushProgressStatus !== 'no_push_data'  && pushProgressStatus !== 'initial')">
-  <div class="card">
-    <div class="item item-text-wrap">
-      <div [ngClass]="{loader: true, failed: pushProgressStatus === 'failed', success: (pushProgressStatus === 'success' || pushProgressStatus === 'resume'), pause: pushProgressStatus === 'pause', progress: pushProgressStatus === 'progress'}"
-           [style.width]="pushedItemsPercent + '%'"
-      >
-        <p class="percent">{{ pushedItemsPercent }}%</p>
-      </div>
-    </div>
-  </div>
-</ion-card>
-<hr>
-<!--<ion-card *ngIf="pushProgressStatus === 'progress'">-->
-<!--  <div class="card">-->
-<!--    <div>-->
-<!--      Saving files:-->
-<!--    </div>-->
-<!--    <div *ngFor="let progressFileInformationKey of objectKeys(progressFileInformations)"-->
-<!--         class="item item-text-wrap"-->
-<!--    >-->
-<!--      <div *ngIf="progressFileInformations[progressFileInformationKey]"-->
-<!--           [ngClass]="{loader: true, success: true}"-->
-<!--           [style.width]="progressFileInformations[progressFileInformationKey] + '%'"-->
-<!--      >-->
-<!--        <p class="percent">{{ progressFileInformations[progressFileInformationKey] }}%</p>-->
-<!--      </div>-->
-<!--      <div>-->
-<!--        File: {{ progressFileInformationKey }}-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</ion-card>-->

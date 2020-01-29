@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {ActivatedRoute} from '@angular/router';
@@ -18,7 +18,8 @@ import {FeedbackModalComponent} from '../../components/feedback-modal-component/
 @Component({
   selector: 'app-guide',
   templateUrl: 'guide.page.html',
-  styleUrls: ['guide.page.scss']
+  styleUrls: ['guide.page.scss'],
+  // encapsulation: ViewEncapsulation.None,
 })
 export class GuidePage implements OnInit {
   public guide: GuiderModel = this.guiderService.newModel();

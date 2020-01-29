@@ -33,7 +33,7 @@
               <h2>
                 {{item.title}}
               </h2>
-              <p class="item-note" [innerHTML]="item.description"></p>
+              <p class="item-note" style="display: flex;" [innerHTML]="item.description"></p>
               <p *ngIf="item.duration">
                 Duration: {{ item.getDuration() }}
               </p>
