@@ -118,7 +118,6 @@ export class FeedbackModalComponent implements OnInit {
                 ['user_id', user.userId],
                 // ['reference_model', this.reference_model],
                 'deleted_at IS NULL',
-                // '`description` LIKE \'%terrorka%\''
             ],
             'id ASC'
         ).then(data => {
@@ -127,7 +126,6 @@ export class FeedbackModalComponent implements OnInit {
     }
 
     public openFile(filePath, nativeUrl, title?: string) {
-        console.log('open file');
         if (!nativeUrl) {
             return null;
         }

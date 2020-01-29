@@ -46,6 +46,7 @@ export class SynchronizationComponent implements OnInit {
     public objectKeys = Object.keys;
     public modeSync;
     public userDb: UserDb;
+    public syncAllItemsCount = 0;
 
     public isNetworkSyncMode: BehaviorSubject<boolean>;
 
@@ -56,7 +57,6 @@ export class SynchronizationComponent implements OnInit {
     constructor(public apiSync: ApiSync,
                 public apiPush: ApiPush,
                 private downloadService: DownloadService,
-                public modalCtrl: ModalController,
                 public changeDetectorRef: ChangeDetectorRef,
                 public http: HttpClient,
                 public authService: AuthService,
@@ -222,6 +222,11 @@ export class SynchronizationComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initUser().then(() => {
+        this.apiSync.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
+        this.apiSync.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);
+        this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
+    });
     this.syncService.syncMode.subscribe((result) => {
       if (result === null) {
           return;
@@ -244,6 +249,14 @@ export class SynchronizationComponent implements OnInit {
       this.isPrepareSynData = isPrepareSynData;
       this.detectChanges();
     });
+    this.apiSync.syncedItemsCount.subscribe(syncedItemsCount => {
+        this.syncedItemsCount = syncedItemsCount;
+        this.detectChanges();
+    });
+    this.apiSync.syncAllItemsCount.subscribe(syncAllItemsCount => {
+        this.syncAllItemsCount = syncAllItemsCount;
+        this.detectChanges();
+    });
     this.events.subscribe('UserDb:update', (userDb) => {
         this.userDb = userDb;
     });
@@ -262,7 +275,6 @@ export class SynchronizationComponent implements OnInit {
       this.detectChanges();
     });
     this.downloadService.pushProgressFilesInfo.subscribe(progressInformation => {
-      console.log('progressInformation', progressInformation);
       this.progressFileInformations = progressInformation;
       this.detectChanges();
     });

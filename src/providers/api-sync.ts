@@ -48,6 +48,7 @@ export class ApiSync {
     syncedItemsCount: BehaviorSubject<number>;
     syncProgressStatus: BehaviorSubject<string>;
     syncedItemsPercent: BehaviorSubject<number>;
+    syncAllItemsCount: BehaviorSubject<number>;
     isPrepareSynData: BehaviorSubject<boolean>;
 
     /**
@@ -70,6 +71,7 @@ export class ApiSync {
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);
+        this.syncAllItemsCount = new BehaviorSubject<number>(0);
         this.syncedItemsPercent = new BehaviorSubject<number>(0);
         this.syncProgressStatus = new BehaviorSubject<string>('initial');
         this.isPrepareSynData = new BehaviorSubject<boolean>(false);
@@ -225,6 +227,7 @@ export class ApiSync {
                 }
                 this.userDb.userSetting.syncAllItemsCount = countOfSyncedData;
                 this.userDb.save();
+                this.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);
 
                 if (this.userDb.userSetting.syncAllItemsCount === 0) {
                     this.unsetSyncProgressData().then(() => {
@@ -297,6 +300,7 @@ export class ApiSync {
 
     private saveSyncProgress(): Promise<boolean> {
         this.userDb.userSetting.syncLastElementNumber++;
+        this.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
         this.userDb.userSetting.syncPercent = Math.round(
             (this.userDb.userSetting.syncLastElementNumber / this.userDb.userSetting.syncAllItemsCount) * 100
         );
@@ -307,8 +311,6 @@ export class ApiSync {
             this.isStartSyncBehaviorSubject.next(false);
             this.userDb.userSetting.lastSyncedAt = new Date();
             this.userDb.userSetting.syncStatus = 'success';
-            this.userDb.userSetting.syncLastElementNumber = 0;
-            this.userDb.userSetting.syncAllItemsCount = 0;
         }
 
         return this.userDb.save().then(() => {
@@ -400,6 +402,9 @@ export class ApiSync {
                 if (syncStatus === 'progress') {
                     this.userDb.userSetting.syncPercent = 0;
                     this.userDb.userSetting.syncLastElementNumber = 0;
+                    this.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
+                    this.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);
+                    this.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
                 }
                 this.userDb.userSetting.syncStatus = syncStatus;
                 this.userDb.save().then(() => {
@@ -426,6 +431,8 @@ export class ApiSync {
             this.userDb.userSetting.syncLastElementNumber = 0;
             this.userDb.userSetting.syncAllItemsCount = 0;
             this.userDb.save().then(() => {
+                this.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
+                this.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);
                 resolve(true);
                 return;
             });
