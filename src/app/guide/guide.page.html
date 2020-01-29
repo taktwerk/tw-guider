@@ -35,7 +35,10 @@
         <ion-slides pager="true"
                     [options]="slideOpts"
         >
-            <ion-slide  class="ion-padding" *ngFor="let step of guideSteps">
+            <ion-slide class="ion-padding"
+                       *ngFor="let step of guideSteps; let stepNumber = index;"
+            >
+                <div slot="fixed">{{ stepNumber + 1 }} / {{ guideSteps.length }}</div>
                 <img *ngIf="step.isImageAttachedFile()"
                      (click)="openFile(step.getApiFilePath(), step.getLocalFilePath(), step.title)"
                      src="{{ step.getFile() }}"

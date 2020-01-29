@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {ActivatedRoute} from '@angular/router';
@@ -7,7 +7,7 @@ import {GuideStepModel} from '../../models/db/api/guide-step-model';
 import { File } from '@ionic-native/file/ngx';
 import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import {Events, ModalController} from '@ionic/angular';
+import {Events, ModalController, IonSlides} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {GuideAssetService} from '../../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-service';
@@ -21,11 +21,12 @@ import {FeedbackModalComponent} from '../../components/feedback-modal-component/
   styleUrls: ['guide.page.scss']
 })
 export class GuidePage implements OnInit {
-
   public guide: GuiderModel = this.guiderService.newModel();
   public guideId: number = null;
+  public currentStepNumber: number = 1;
   public guideSteps: GuideStepModel[] = [];
   public guideAssets: GuideAssetModel[] = [];
+  public guideStepSlider;
   public slideOpts = {
     initialSlide: 0,
     speed: 400,
@@ -71,6 +72,12 @@ export class GuidePage implements OnInit {
     if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
     }
+  }
+
+  setCurrentStepIndex(event) {
+    console.log(this.guideStepSlider.getActiveIndex());
+    this.guideStepSlider.getActiveIndex();
+    this.currentStepNumber = event.clickedIndex;
   }
 
   async openAssetTextModal(asset: GuideAssetModel) {
