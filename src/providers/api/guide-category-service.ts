@@ -58,8 +58,7 @@ export class GuideCategoryService extends ApiService {
             ];
             if (searchValue) {
                 whereCondition.push(
-                    '(' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%"' +
-                    ' OR ' + this.dbModelApi.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%")'
+                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
                 );
             }
             const joinCondition = 'JOIN ' + this.dbModelApi.secure('guide_category_binding') +
@@ -154,8 +153,7 @@ export class GuideCategoryService extends ApiService {
             ];
             if (searchValue) {
                 whereCondition.push(
-                    '(' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%"' +
-                    ' OR ' + this.dbModelApi.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%")'
+                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
                 );
             }
             const joinCondition =

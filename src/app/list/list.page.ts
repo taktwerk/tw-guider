@@ -54,23 +54,19 @@ export class ListPage implements OnInit {
       this.guideCategoryService.findByGuides(this.searchValue).then(guideCategories => {
         this.guideCategories = guideCategories;
         this.guideCategories.map((guideCategory) => {
-          // this.addGuideCateogry(guideCategory);
           this.guideCategoryService.getGuides(guideCategory.idApi, this.searchValue).then((guides) => {
             guideCategory.guides = guides;
           });
         });
-        // this.setGuideInfo();
       });
     } else {
       this.guideCategoryService.findAll().then(guideCategories => {
         this.guideCategories = guideCategories;
         this.guideCategories.map((guideCategory) => {
-          // this.addGuideCateogry(guideCategory);
           this.guideCategoryService.getGuides(guideCategory.idApi, this.searchValue).then((guides) => {
             guideCategory.guides = guides;
           });
         });
-        // this.setGuideInfo();
       });
     }
   }
