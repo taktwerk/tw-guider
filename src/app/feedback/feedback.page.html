@@ -3,15 +3,9 @@
         --ion-safe-area-top: 20px;
         --ion-safe-area-bottom: 22px;
     }
-    .swiper-slide {
-        display: block;
-    }
     ion-slide > h2 {
         margin-top: 2.8rem;
     }
-    /*ion-slides {*/
-    /*    height: 50px;*/
-    /*}*/
 </style>
 <ion-header>
   <ion-toolbar>
@@ -27,11 +21,6 @@
 
 <ion-content class="ion-padding">
     <h1>Send Feedback</h1>
-    <ion-item>
-        <ion-label position="floating">Title</ion-label>
-        <ion-input type="text" name="title"  [(ngModel)]="model.title"></ion-input>
-    </ion-item>
-
     <ion-item>
         <ion-label position="floating">Description</ion-label>
         <ion-textarea rows="5" cols="33" name="description" [(ngModel)]="model.description"></ion-textarea>

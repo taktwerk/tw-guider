@@ -10,6 +10,7 @@ import {UserDb} from '../../models/db/user-db';
 import {DbProvider} from '../../providers/db-provider';
 import {SyncService} from '../../services/sync-service';
 import {DatePipe} from '@angular/common';
+import {ApiPush} from '../../providers/api-push';
 
 /**
  * Generated class for the TodoPage page.
@@ -31,12 +32,12 @@ export enum SyncMode {
 export class SynchronizationComponent implements OnInit {
 
     public isStartSync = false;
-    // public isStartPush = false;
-    // public pushItemsCount = 0;
-    // public pushedItemsCount = 0;
-    // public pushedItemsPercent = 0;
-    // public pushProgressStatus = 'not_push';
-    // public pushProgressFilesInfo: BehaviorSubject<any>;
+    public isStartPush = false;
+    public pushItemsCount = 0;
+    public pushedItemsCount = 0;
+    public pushedItemsPercent = 0;
+    public pushProgressStatus = 'not_push';
+    public pushProgressFilesInfo: BehaviorSubject<any>;
     public syncItemsCount = 0;
     public syncedItemsCount = 0;
     public syncedItemsPercent = 0;
@@ -53,6 +54,7 @@ export class SynchronizationComponent implements OnInit {
     public progressFileInformations: {};
 
     constructor(public apiSync: ApiSync,
+                public apiPush: ApiPush,
                 private downloadService: DownloadService,
                 public modalCtrl: ModalController,
                 public changeDetectorRef: ChangeDetectorRef,
@@ -106,14 +108,14 @@ export class SynchronizationComponent implements OnInit {
     });
   }
 
-  // pushData() {
-  //   this.apiSync.pushOneAtTime().then(() => {})
-  //     .catch((err) => console.error('ApiPush', 'Error', 'Push', err));
-  // }
-  //
-  // stopPushData() {
-  //   this.apiSync.isStartPushBehaviorSubject.next(false);
-  // }
+  pushData() {
+    this.apiPush.pushOneAtTime().then(() => {})
+      .catch((err) => console.error('ApiPush', 'Error', 'Push', err));
+  }
+
+  stopPushData() {
+    this.apiPush.isStartPushBehaviorSubject.next(false);
+  }
 
   detectChanges() {
     if (!this.changeDetectorRef['destroyed']) {
@@ -245,24 +247,24 @@ export class SynchronizationComponent implements OnInit {
     this.events.subscribe('UserDb:update', (userDb) => {
         this.userDb = userDb;
     });
-    // this.apiSync.isStartPushBehaviorSubject.subscribe(isPush => {
-    //   this.isStartPush = isPush;
-    //   this.detectChanges();
-    // });
-    /// To work with push
-    // this.apiSync.pushProgressStatus.subscribe(pushProgressStatus => {
-    //   this.pushProgressStatus = pushProgressStatus;
-    //   this.detectChanges();
-    //
-    // });
-    // this.apiSync.pushedItemsPercent.subscribe(pushedItemsPercent => {
-    //   this.pushedItemsPercent = pushedItemsPercent;
-    //   this.detectChanges();
-    // });
-    // this.downloadService.pushProgressFilesInfo.subscribe(progressInformation => {
-    //   console.log('progressInformation', progressInformation);
-    //   this.progressFileInformations = progressInformation;
-    //   this.detectChanges();
-    // });
+    this.apiPush.isStartPushBehaviorSubject.subscribe(isPush => {
+      this.isStartPush = isPush;
+      this.detectChanges();
+    });
+    // To work with push
+    this.apiPush.pushProgressStatus.subscribe(pushProgressStatus => {
+      this.pushProgressStatus = pushProgressStatus;
+      this.detectChanges();
+
+    });
+    this.apiPush.pushedItemsPercent.subscribe(pushedItemsPercent => {
+      this.pushedItemsPercent = pushedItemsPercent;
+      this.detectChanges();
+    });
+    this.downloadService.pushProgressFilesInfo.subscribe(progressInformation => {
+      console.log('progressInformation', progressInformation);
+      this.progressFileInformations = progressInformation;
+      this.detectChanges();
+    });
   }
 }

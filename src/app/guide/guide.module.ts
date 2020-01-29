@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { GuidePage } from './guide.page';
 import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
+import {FeedbackModalComponentModule} from '../../components/feedback-modal-component/feedback-modal-component.module';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import {SyncSpinnerComponentModule} from '../../components/sync-spinner-componen
         component: GuidePage
       }
     ]),
-    SyncSpinnerComponentModule
+    SyncSpinnerComponentModule,
+    FeedbackModalComponentModule
   ],
 })
 export class GuidePageModule {}

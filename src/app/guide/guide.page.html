@@ -9,9 +9,6 @@
     ion-slide > h2 {
         margin-top: 2.8rem;
     }
-    /*ion-slides {*/
-    /*    height: 50px;*/
-    /*}*/
 </style>
 <ion-header>
   <ion-toolbar>
@@ -22,7 +19,9 @@
       Guide: {{ guide.title }}
     </ion-title>
     <ion-buttons slot="primary">
-        Feedback
+        <ion-button color="primary" fill="solid" (click)="openFeedbackModal()">
+            Feedback
+        </ion-button>
     </ion-buttons>
     <sync-spinner-component slot="primary"></sync-spinner-component>
   </ion-toolbar>
@@ -63,7 +62,8 @@
                     <div class="ion-text-center" *ngIf="asset.isFile() && asset.isPdf()">
                         <img (click)="openFile(asset.getApiPdfImageFilePath(), asset.getLocalPdfImageFilePath(), asset.name)"
                              class="pdf-image"
-                             src="{{ asset.getPdf() }}" imageViewer
+                             src="{{ asset.getPdf() }}"
+                             imageViewer
                         >
                     </div>
                     <div *ngIf="asset.isFile() && !asset.isPdf()">
@@ -78,7 +78,6 @@
                 </div>
             </section>
         </ion-card>
-
     </div>
-
 </ion-content>
+

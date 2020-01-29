@@ -1,0 +1,129 @@
+<style>
+    :root {
+        --ion-safe-area-top: 20px;
+        --ion-safe-area-bottom: 22px;
+    }
+    ion-slide > h2 {
+        margin-top: 2.8rem;
+    }
+    ion-fab-button {
+        display: inline-block !important;
+    }
+    ion-fab {
+        top: 16px;
+    }
+    .feedback-description {
+        white-space: pre-line;
+    }
+    .edit-fab-button {
+        float: right;
+    }
+    .top-pannel {
+        position: relative;
+        display: block;
+    }
+    ion-col {
+        padding-top: 0;
+    }
+    .cloud-upload, .videocam {
+        font-size: 70px;
+        color: red;
+    }
+</style>
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            Feedback
+        </ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">Close</ion-button>
+        </ion-buttons>
+        <sync-spinner-component slot="primary"></sync-spinner-component>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+    <div *ngIf="feedbackList.length">
+        <h2>Feddback list</h2>
+        <ion-card *ngFor="let feedback of feedbackList"
+                  class="ion-padding feedback-description"
+        >
+            <div>
+                {{ feedback.description }}
+            </div>
+            <div *ngIf="feedback.attached_file">
+                <div style="width: 70px;height: 70px;">
+                    <img *ngIf="feedback.isImageAttachedFile()"
+                         (click)="openFile(feedback.getApiFilePath(), feedback.getLocalFilePath(), feedback.attached_file)"
+                         src="{{ feedback.getFile() }}"
+                         imageViewer
+                    >
+                    <ion-icon name="videocam"
+                              class="videocam"
+                              slot="start"
+                              *ngIf="feedback.isVideoAttachedFile()"
+                              (click)="openFile(feedback.getApiFilePath(), feedback.getLocalFilePath())"
+                    >
+                    </ion-icon>
+                    <ion-icon class="cloud-upload" *ngIf="!feedback.isImageAttachedFile() && !feedback.isVideoAttachedFile()" name="cloud-upload"></ion-icon>
+                </div>
+                <ion-item>
+                    {{ feedback.attached_file }}
+                </ion-item>
+            </div>
+            <ion-fab-button *ngIf="feedback.isOpenStatus()"
+                            (click)="changeEditModel(feedback)"
+                            class="edit-fab-button"
+                            color="success"
+            >
+                <ion-icon name="create"></ion-icon>
+            </ion-fab-button>
+        </ion-card>
+    </div>
+</ion-content>
+<ion-footer>
+        <ion-grid>
+            <ion-row>
+                <ion-col style="text-align: center;">
+                    Description
+                </ion-col>
+                <ion-col>
+                    <ion-button expand="block" color="success" (click)="changeEditModel()" style="height: 24px;margin-top:0;">
+                        <ion-icon name="add"></ion-icon>
+                    </ion-button>
+                </ion-col>
+                <ion-col>
+                    <ion-button expand="block" (click)="addFile()" style="height: 24px;margin-top:0;">
+                        <ion-icon name="folder"></ion-icon>
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <ion-item>
+            <ion-textarea rows="4" cols="33" name="description" [(ngModel)]="model.description" style="display: block;"></ion-textarea>
+        </ion-item>
+    <div *ngIf="model.attached_file">
+        <div style="width: 70px;height: 70px;">
+            <img *ngIf="model.isImageAttachedFile()"
+                 (click)="openFile(model.getApiFilePath(), model.getLocalFilePath(), model.attached_file)"
+                 src="{{ model.getFile() }}"
+                 imageViewer
+            >
+            <ion-icon name="videocam"
+                      class="videocam"
+                      slot="start"
+                      *ngIf="model.isVideoAttachedFile()"
+                      (click)="openFile(model.getApiFilePath(), model.getLocalFilePath())"
+            >
+            </ion-icon>
+            <ion-icon class="cloud-upload" *ngIf="!model.isImageAttachedFile() && !model.isVideoAttachedFile()" name="cloud-upload"></ion-icon>
+        </div>
+        <ion-item>
+            {{ model.attached_file }}
+        </ion-item>
+    </div>
+        <ion-button expand="block" (click)="save($event)">Send</ion-button>
+</ion-footer>

@@ -146,25 +146,26 @@ export abstract class ApiService {
         return new Promise(resolve => {
             let validation: boolean = true;
             //return current data if service is busy
-            if (!this.isReady) {
-                console.warn('ApiService', 'saveApi', 'Service is busy... Abort HTTP-Request...');
-                validation = false;
-                resolve(false);
-            }
+            // if (!this.isReady) {
+            //     console.warn('ApiService', 'saveApi', 'Service is busy... Abort HTTP-Request...');
+            //     validation = false;
+            //     resolve(false);
+            // }
+            //
+            // if (validation && this.data.length === 0) {
+            //     //data not yet loaded
+            //     //console.warn('ApiService', 'saveApi', 'no data loaded... Abort HTTP-Request...');
+            //     validation = false;
+            //     resolve(false);
+            // }
 
-            if (validation && this.data.length == 0) {
-                //data not yet loaded
-                //console.warn('ApiService', 'saveApi', 'no data loaded... Abort HTTP-Request...');
-                validation = false;
-                resolve(false);
-            }
-
-            if (validation) {
+            // if (validation) {
               this.dbModelApi.searchAll(
-                'WHERE ' + this.dbModelApi.parseWhere([this.dbModelApi.COL_IS_SYNCED, 0])
+                this.dbModelApi.parseWhere([this.dbModelApi.COL_IS_SYNCED, 0])
               )
                 .then((models) => {
-                  if (!models || models.length == 0) {
+                    console.log('models in prepare batch', models);
+                  if (!models || models.length === 0) {
                     //console.warn('ApiService', 'saveApi', 'no not synced data found');
                     resolve(false);
                   } else {
@@ -174,7 +175,7 @@ export abstract class ApiService {
                     });
                   }
                 });
-            }
+            // }
         });
     }
 
@@ -300,19 +301,20 @@ export abstract class ApiService {
      * @param {DbApiModel} model
      * @returns {boolean}
      */
-    public pushFiles(model: DbApiModel) : Promise<boolean>
-    {
+    public pushFiles(model: DbApiModel): Promise<boolean> {
         return new Promise((resolve) => {
+            console.log('push fiels');
           if (/*model.platform.is('core') || */model.platform.is('mobileweb')) {
             resolve(false);
             return;
           }
-
+            console.log('push fiels');
           // Do we have files to upload?
           if (!model.downloadMapping || model.downloadMapping.length <= 0) {
             resolve(false);
             return;
           }
+            console.log('push fiels');
           let url = AppSetting.API_URL + this.loadUrl + '/' + model.idApi + '/upload';
           let authToken = this.http.getAuthorizationToken();
           let uploadFilePromises = [];
@@ -320,8 +322,10 @@ export abstract class ApiService {
             // If we have a local path but no api path, we need to upload the file!
             if (model[fields[2]] && !model[fields[1]]) {
               let fieldUrl = url + '?fileAttribute=' + fields[0];
+                console.log('push fiels');
               uploadFilePromises.push(
-                  model.downloadService.upload(
+                  model.downloadService.startUpload(
+                    model.TABLE_NAME,
                     fields[0],
                     model[fields[0]],
                     model[fields[2]],
@@ -331,7 +335,9 @@ export abstract class ApiService {
                 .then((result) => {
                   console.log('uploadFilePromises push then');
                   resolve(result);
-                })
+                }).catch((err) => {
+                      console.log('errerrerrerrerr', err);
+                  })
               );
             }
           }

@@ -35,16 +35,23 @@ import {GuideAssetPivotService} from '../providers/api/guide-asset-pivot-service
 import {GuideAssetTextModalComponent} from '../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import {CryptoProvider} from '../providers/crypto-provider';
 import {FeedbackService} from '../providers/api/feedback-service';
+import {FeedbackModalComponent} from '../components/feedback-modal-component/feedback-modal-component';
+import {SyncSpinnerComponent} from '../components/sync-spinner-component/sync-spinner-component';
+import {SyncSpinnerComponentModule} from '../components/sync-spinner-component/sync-spinner-component.module';
+import {ApiPush} from '../providers/api-push';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
 
 @NgModule({
-  declarations: [AppComponent, GuideAssetTextModalComponent],
-  entryComponents: [GuideAssetTextModalComponent],
+  declarations: [AppComponent, GuideAssetTextModalComponent, FeedbackModalComponent],
+  entryComponents: [GuideAssetTextModalComponent, FeedbackModalComponent],
   imports: [
     BrowserModule,
     FormsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
+    SyncSpinnerComponentModule
   ],
   providers: [
     StatusBar,
@@ -62,6 +69,7 @@ import {FeedbackService} from '../providers/api/feedback-service';
     HttpClient,
     DownloadService,
     ApiSync,
+    ApiPush,
     Storage,
     File,
     FileTransfer,
@@ -75,6 +83,8 @@ import {FeedbackService} from '../providers/api/feedback-service';
     UserService,
     DatePipe,
     CryptoProvider,
+    FilePath,
+    FileChooser,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

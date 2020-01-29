@@ -15,6 +15,8 @@ import {GuideAssetTextModalComponent} from '../../components/guide-asset-text-mo
 import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
 import {FeedbackService} from '../../providers/api/feedback-service';
 import {FeedbackModel} from '../../models/db/api/feedback-model';
+import {FormControl, Validators} from '@angular/forms';
+import {HttpClient} from '../../services/http-client';
 
 @Component({
   selector: 'app-feedback',
@@ -29,8 +31,7 @@ export class FeedbackPage implements OnInit {
       private feedbackService: FeedbackService,
       public events: Events,
       public authService: AuthService,
-      public changeDetectorRef: ChangeDetectorRef,
-      public modalController: ModalController
+      public http: HttpClient
   ) {
     this.authService.checkAccess();
     if (!this.model) {
@@ -39,6 +40,9 @@ export class FeedbackPage implements OnInit {
   }
 
   public async save() {
+    if (!this.model.description) {
+      this.http.showToast('Description is required', 'Validation error', 'danger');
+    }
     const user = await this.authService.getLastUser();
     if (!user) {
       return;

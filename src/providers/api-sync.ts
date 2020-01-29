@@ -17,6 +17,7 @@ import {GuideStepService} from './api/guide-step-service';
 import {Network} from '@ionic-native/network/ngx';
 import {GuideAssetService} from './api/guide-asset-service';
 import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
+import {FeedbackService} from './api/feedback-service';
 
 @Injectable()
 /**
@@ -37,17 +38,13 @@ export class ApiSync {
         guide_category_binding: this.guideCategoryBindingService,
         guide_step: this.guideStepService,
         guide_asset: this.guideAssetService,
-        guide_asset_pivot: this.guideAssetPivotService
+        guide_asset_pivot: this.guideAssetPivotService,
+        feedback: this.feedbackService
     };
 
     userDb: UserDb;
 
     isStartSyncBehaviorSubject: BehaviorSubject<boolean>;
-    isStartPushBehaviorSubject: BehaviorSubject<boolean>;
-    pushedItemsCount: BehaviorSubject<number>;
-    pushedItemsPercent: BehaviorSubject<number>;
-    pushProgressStatus: BehaviorSubject<string>;
-    syncItemsCount: BehaviorSubject<number>;
     syncedItemsCount: BehaviorSubject<number>;
     syncProgressStatus: BehaviorSubject<string>;
     syncedItemsPercent: BehaviorSubject<number>;
@@ -67,14 +64,11 @@ export class ApiSync {
         private guideStepService: GuideStepService,
         private guideAssetService: GuideAssetService,
         private guideAssetPivotService: GuideAssetPivotService,
+        private feedbackService: FeedbackService,
         private downloadService: DownloadService,
         private network: Network
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
-        this.isStartPushBehaviorSubject = new BehaviorSubject<boolean>(false);
-        this.pushedItemsCount = new BehaviorSubject<number>(0);
-        this.pushedItemsPercent = new BehaviorSubject<number>(0);
-        this.pushProgressStatus = new BehaviorSubject<string>('initial');
         this.syncedItemsCount = new BehaviorSubject<number>(0);
         this.syncedItemsPercent = new BehaviorSubject<number>(0);
         this.syncProgressStatus = new BehaviorSubject<string>('initial');
@@ -158,6 +152,14 @@ export class ApiSync {
     }
 
     public syncMustBeEnd(): boolean {
+        if (this.userDb.userSetting.syncPercent === 100) {
+            this.syncProgressStatus.next('success');
+            this.isStartSyncBehaviorSubject.next(false);
+            this.isPrepareSynData.next(false);
+            this.isBusy = false;
+
+            return true;
+        }
         if (this.willMakeCancel()) {
             this.isStartSyncBehaviorSubject.next(false);
             this.isPrepareSynData.next(false);
@@ -241,6 +243,7 @@ export class ApiSync {
                     resolve(false);
                 }
             }, (err) => {
+                console.log('global errror fro sync', err);
                 this.failSync();
                 resolve(false);
                 return;
@@ -271,6 +274,7 @@ export class ApiSync {
                     return false;
                 }
                 if (this.userDb.userSetting.syncAllItemsCount === 0) {
+                    console.log('this.userDb.userSetting.syncAllItemsCount ==== 0')
                     this.failSync();
                     return false;
                 }

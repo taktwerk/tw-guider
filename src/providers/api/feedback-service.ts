@@ -8,6 +8,7 @@ import {HttpClient} from '../../services/http-client';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {DownloadService} from '../../services/download-service';
 import {FeedbackModel} from '../../models/db/api/feedback-model';
+import {ApiPush} from '../api-push';
 
 @Injectable()
 export class FeedbackService extends ApiService {
@@ -18,16 +19,18 @@ export class FeedbackService extends ApiService {
     /**
      * Constructor
      * @param http
+     * @param apiPush
      * @param p
      * @param db
      * @param authService
      * @param events
      * @param downloadService
      */
-    constructor(http: HttpClient, private p: Platform, private db: DbProvider,
-        public authService: AuthService,
-        public events: Events,
-        public downloadService: DownloadService) {
+    constructor(http: HttpClient,
+                private p: Platform, private db: DbProvider,
+                public authService: AuthService,
+                public events: Events,
+                public downloadService: DownloadService) {
         super(http, events);
         console.debug('GuiderService', 'initialized');
     }

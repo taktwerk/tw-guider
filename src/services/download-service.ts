@@ -6,6 +6,7 @@ import { Toast } from '@ionic-native/toast/ngx';
 import {BehaviorSubject} from 'rxjs';
 import {HttpClient, HttpHeaders as Headers} from '@angular/common/http';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
+import {finalize} from 'rxjs/operators';
 
 /**
  * Download file class
@@ -164,7 +165,7 @@ export class DownloadService {
         path: string,
         url: string,
         authToken: string
-    ) : Promise<boolean> {
+    ): Promise<boolean> {
       return new Promise((resolve) => {
         // Not on cordova
         if (!this.fileTransfer) {
@@ -213,6 +214,71 @@ export class DownloadService {
             resolve(false);
           });
       });
+    }
+
+    startUpload(
+        modelName,
+        fileKey: string,
+        fileName: string,
+        path: string,
+        url: string,
+        authToken: string
+    ): Promise<boolean> {
+        return new Promise(resolve => {
+            this.file.resolveDirectoryUrl(this.file.dataDirectory + modelName).then((directoryEntry) => {
+                console.log('directoryEntry', directoryEntry);
+                this.file.getFile(directoryEntry, fileName, {})
+                    .then(fileEntry => {
+                        fileEntry.file(file => {
+                            this.readFile(fileKey, file, url, authToken);
+                            resolve(true);
+                            return;
+                        });
+                    })
+                    .catch(err => {
+                        console.log('errror', err);
+                        resolve(false);
+                        return;
+                    });
+            }).catch(err => {
+                console.log('directoryEntry errror', err);
+                resolve(false);
+                return;
+            });
+        });
+    }
+
+    readFile(fileKey: string, file: any, url: string, authToken: string) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const formData = new FormData();
+            const imgBlob = new Blob([reader.result], {
+                type: file.type
+            });
+            console.log('imgBlob', imgBlob)
+            formData.append(fileKey, imgBlob, file.name);
+            this.uploadImageData(formData, url);
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    async uploadImageData(formData: FormData, url: string) {
+        this.http.post(url, formData)
+            .pipe(
+                finalize(() => {
+                    console.log('finalize');
+                    // loading.dismiss();
+                })
+            )
+            .subscribe(res => {
+                if (res['success']) {
+                    console.log('succcesss');
+                    // this.presentToast('File upload complete.')
+                } else {
+                    console.log('uploda error', res);
+                    // this.presentToast('File upload failed.')
+                }
+            });
     }
 
     /**

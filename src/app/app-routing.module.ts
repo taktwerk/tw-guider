@@ -24,7 +24,7 @@ const routes: Routes = [
     loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
   },
   {
-    path: 'feedback',
+    path: 'feedback/:guideId',
     loadChildren: () => import('./feedback/feedback.module').then(m => m.FeedbackPageModule)
   },
   {

@@ -13,6 +13,7 @@ import {GuideAssetService} from '../../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-service';
 import {GuideAssetTextModalComponent} from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
+import {FeedbackModalComponent} from '../../components/feedback-modal-component/feedback-modal-component';
 
 @Component({
   selector: 'app-guide',
@@ -77,6 +78,17 @@ export class GuidePage implements OnInit {
       component: GuideAssetTextModalComponent,
       componentProps: {
         asset: asset
+      },
+    });
+    return await modal.present();
+  }
+
+  async openFeedbackModal() {
+    const modal = await this.modalController.create({
+      component: FeedbackModalComponent,
+      componentProps: {
+        reference_id: this.guide.idApi,
+        reference_model: 'app\\\\modules\\\\guide\\\\models\\\\Guide'
       },
     });
     return await modal.present();
