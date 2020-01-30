@@ -23,13 +23,15 @@
           </h1>
         </ion-item>
         <ion-list>
-          <ion-item *ngFor="let item of guideCategory.guides">
-            <ion-thumbnail class="guide-preview" slot="start" [routerLink]="['/guide/' + item.idApi]">
+          <div class="guide-row" *ngFor="let item of guideCategory.guides">
+            <div  class="guide-preview" slot="start" [routerLink]="['/guide/' + item.idApi]">
               <img *ngIf="item.getImage()" src="{{ item.getImage() }}" imageViewer>
               <img *ngIf="!item.getImage()" src="assets/placeholder.jpg" imageViewer>
-              <div class="shortname-label badge badge-secondary">{{ item.short_name }}</div>
-            </ion-thumbnail>
-            <div>
+              <div class="shortname-label badge badge-secondary">
+                {{ item.short_name }}
+              </div>
+            </div>
+            <div class="guide-info">
               <h2>
                 {{item.title}}
               </h2>
@@ -37,12 +39,12 @@
               <p *ngIf="item.duration">
                 Duration: {{ item.getDuration() }}
               </p>
-              <ion-button  [routerLink]="['/guide/' + item.idApi]">
-                <ion-icon slot="start" [name]="play"></ion-icon>
+              <ion-button [routerLink]="['/guide/' + item.idApi]">
+                <ion-icon class="show-guide-play-icon" slot="start" name="arrow-dropright-circle"></ion-icon>
                 SHOW GUIDE
               </ion-button>
             </div>
-          </ion-item>
+          </div>
         </ion-list>
       </div>
     </div>

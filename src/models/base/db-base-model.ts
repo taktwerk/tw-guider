@@ -667,6 +667,7 @@ export abstract class DbBaseModel {
                     console.warn(this.TAG, 'create statement', 'db is null');
                     resolve(false);
                 } else {
+                    console.log('this.columnValues()', this.columnValues());
                     let query = 'INSERT INTO ' + this.secure(this.TABLE_NAME) + ' (`' + this.columnNames().join('`, `') + '`) ' +
                         'VALUES (' + this.columnValues().join(', ') + ') ';
                     console.debug(this.TAG, 'create statement', query);
