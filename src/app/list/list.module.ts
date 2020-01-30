@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { ListPage } from './list.page';
 import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
 import {MainPipe} from '../../pipes/main-pipe.module';
+import {HtmlDescriptionComponentModule} from '../../components/html-description/html-description-component.module';
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import {MainPipe} from '../../pipes/main-pipe.module';
             }
         ]),
         SyncSpinnerComponentModule,
-        MainPipe
+        MainPipe,
+        HtmlDescriptionComponentModule
     ],
   declarations: [ListPage]
 })

@@ -43,6 +43,7 @@ import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import {SafeHtmlPipe} from '../pipes/safe-html/safe-html';
 import {MainPipe} from '../pipes/main-pipe.module';
+import {HtmlDescriptionComponentModule} from '../components/html-description/html-description-component.module';
 
 @NgModule({
   declarations: [
@@ -51,15 +52,16 @@ import {MainPipe} from '../pipes/main-pipe.module';
     FeedbackModalComponent
   ],
   entryComponents: [GuideAssetTextModalComponent, FeedbackModalComponent],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    IonicModule.forRoot(),
-    AppRoutingModule,
-    HttpClientModule,
-    SyncSpinnerComponentModule,
-    MainPipe
-  ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        IonicModule.forRoot(),
+        AppRoutingModule,
+        HttpClientModule,
+        SyncSpinnerComponentModule,
+        MainPipe,
+        HtmlDescriptionComponentModule
+    ],
   providers: [
     StatusBar,
     SplashScreen,
