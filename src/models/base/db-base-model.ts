@@ -670,7 +670,7 @@ export abstract class DbBaseModel {
                     console.log('this.columnValues()', this.columnValues());
                     let query = 'INSERT INTO ' + this.secure(this.TABLE_NAME) + ' (`' + this.columnNames().join('`, `') + '`) ' +
                         'VALUES (' + this.columnValues().join(', ') + ') ';
-                    console.debug(this.TAG, 'create statement', query);
+                    console.log(this.TAG, 'create statement', query);
                     db.query(query).then((res) => {
                         //  Save ID in the model
                         this.id = res.insertId;

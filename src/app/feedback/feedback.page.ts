@@ -62,8 +62,12 @@ export class FeedbackPage implements OnInit {
             return;
         }
         this.model.user_id = user.userId;
-        this.model.reference_id = this.reference_id;
-        this.model.reference_model = this.reference_model;
+        if (this.reference_id) {
+            this.model.reference_id = this.reference_id;
+        }
+        if (this.reference_model) {
+            this.model.reference_model = this.reference_model;
+        }
         this.feedbackService.save(this.model).then(res => {
             this.model = this.feedbackService.newModel();
             this.apiPush.pushOneAtTime();
@@ -162,7 +166,7 @@ export class FeedbackPage implements OnInit {
                 this.isComponentLikeModal = true;
                 return 'app\\modules\\guide\\models\\Guide';
             default:
-                return 'default_model';
+                return null;
         }
     }
 
