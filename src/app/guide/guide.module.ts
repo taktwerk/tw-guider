@@ -29,4 +29,5 @@ import {HtmlDescriptionComponentModule} from '../../components/html-description/
     MainPipe
   ],
 })
+
 export class GuidePageModule {}
