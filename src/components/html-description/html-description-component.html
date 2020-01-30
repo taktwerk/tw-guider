@@ -1,0 +1,19 @@
+<style>
+    table {
+        color: red;
+        max-width: 100% !important;
+    }
+    table td p {
+        font-size: inherit !important;
+        margin: 0;
+    }
+    table td {
+        color: red;
+        padding: 5px;
+    }
+</style>
+
+<div style="position: relative;display: flex;flex-direction: column;min-width: 0;word-wrap: break-word;"
+     [innerHTML]="html | safeHtml"
+>
+</div>

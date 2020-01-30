@@ -7,6 +7,7 @@ import { GuidePage } from './guide.page';
 import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
 import {FeedbackModalComponentModule} from '../../components/feedback-modal-component/feedback-modal-component.module';
 import {MainPipe} from '../../pipes/main-pipe.module';
+import {HtmlDescriptionComponentModule} from '../../components/html-description/html-description-component.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import {MainPipe} from '../../pipes/main-pipe.module';
       }
     ]),
     SyncSpinnerComponentModule,
+    HtmlDescriptionComponentModule,
     FeedbackModalComponentModule,
     MainPipe
   ],

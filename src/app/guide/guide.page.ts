@@ -18,8 +18,7 @@ import {FeedbackModalComponent} from '../../components/feedback-modal-component/
 @Component({
   selector: 'app-guide',
   templateUrl: 'guide.page.html',
-  styleUrls: ['guide.page.scss'],
-  // encapsulation: ViewEncapsulation.None,
+  styleUrls: ['guide.page.scss']
 })
 export class GuidePage implements OnInit {
   public guide: GuiderModel = this.guiderService.newModel();

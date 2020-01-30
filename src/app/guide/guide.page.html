@@ -12,18 +12,6 @@
     ion-slide > h2 {
         margin-top: 2.8rem;
     }
-    table {
-        color: red;
-        max-width: 100% !important;
-    }
-    table td p {
-        font-size: inherit !important;
-        margin: 0;
-    }
-    table td {
-        color: red;
-        padding: 5px;
-    }
 </style>
 <ion-header>
   <ion-toolbar>
@@ -71,10 +59,11 @@
                      imageViewer
                 >
                 <h2>{{step.title}}</h2>
-                <div style="position: relative;display: flex;flex-direction: column;min-width: 0;word-wrap: break-word;"
-                     [innerHTML]="step.description_html | safeHtml"
-                >
-                </div>
+                <html-description-component [html]="step.description_html"></html-description-component>
+<!--                <div style="position: relative;display: flex;flex-direction: column;min-width: 0;word-wrap: break-word;"-->
+<!--                     [innerHTML]="step.description_html | safeHtml"-->
+<!--                >-->
+<!--                </div>-->
             </ion-slide>
         </ion-slides>
         <ion-card class="ion-text-center ion-padding">
