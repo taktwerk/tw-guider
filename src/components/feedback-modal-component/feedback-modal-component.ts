@@ -10,6 +10,7 @@ import {FilePath} from '@ionic-native/file-path/ngx';
 import {FileChooser} from '@ionic-native/file-chooser/ngx';
 import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
+import {ActivatedRoute} from '@angular/router';
 
 /**
  * Generated class for the TodoPage page.
@@ -38,6 +39,7 @@ export class FeedbackModalComponent implements OnInit {
                 public changeDetectorRef: ChangeDetectorRef,
                 private downloadService: DownloadService,
                 private platform: Platform,
+                private activatedRoute: ActivatedRoute,
                 private filePath: FilePath,
                 private streamingMedia: StreamingMedia,
                 private photoViewer: PhotoViewer,
@@ -119,7 +121,7 @@ export class FeedbackModalComponent implements OnInit {
                 // ['reference_model', this.reference_model],
                 'deleted_at IS NULL',
             ],
-            'id ASC'
+            '_id ASC'
         ).then(data => {
             this.feedbackList = data;
         });
@@ -153,7 +155,10 @@ export class FeedbackModalComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.reference_id = +this.activatedRoute.snapshot.paramMap.get('reference_id');
+        this.reference_model = this.activatedRoute.snapshot.paramMap.get('reference_model_alias');
         this.setModels();
+
         this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':create', (model) => {
             this.setModels();
             this.detectChanges();

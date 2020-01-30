@@ -16,6 +16,7 @@ import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from '../services/download-service';
 import {SyncMode} from '../components/synchronization-component/synchronization-component';
 import {UserService} from '../services/user-service';
+import {ApiPush} from '../providers/api-push';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -44,7 +45,8 @@ export class AppComponent implements OnInit {
     private http: HttpClient,
     private syncService: SyncService,
     private downloadService: DownloadService,
-    private db: DbProvider
+    private db: DbProvider,
+    private apiPush: ApiPush
   ) {
     this.initializeApp();
   }
@@ -120,12 +122,15 @@ export class AppComponent implements OnInit {
         this.events.publish('network:online', true);
         this.previousStatus = ConnectionStatusEnum.Online;
         this.http.showToast('Application now online!');
-        if (this.authService.isLoggedin && this.syncService.syncMode.getValue() === 1) {
-          let syncProcessName = this.apiSync.syncProgressStatus.getValue();
-          if (syncProcessName === 'pause') {
-            syncProcessName = 'resume';
+        if (this.authService.isLoggedin) {
+          this.apiPush.pushOneAtTime();
+          if (this.syncService.syncMode.getValue() === 1) {
+            let syncProcessName = this.apiSync.syncProgressStatus.getValue();
+            if (syncProcessName === 'pause') {
+              syncProcessName = 'resume';
+            }
+            this.apiSync.makeSyncProcess(syncProcessName);
           }
-          this.apiSync.makeSyncProcess(syncProcessName);
         }
       }
     });
@@ -140,6 +145,7 @@ export class AppComponent implements OnInit {
       this.appPages.push(
           {title: 'Guides', url: '/guides', icon: 'list'},
           {title: 'Profile', url: '/profile', icon: 'person'},
+          {title: 'Feedback', url: '/feedback', icon: 'person'},
           {title: 'Logout', url: '/logout', icon: 'exit'},
       );
     }

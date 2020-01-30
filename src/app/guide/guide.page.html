@@ -34,7 +34,7 @@
       Guide: {{ guide.title }}
     </ion-title>
     <ion-buttons slot="primary">
-        <ion-button color="primary" fill="solid" (click)="openFeedbackModal()">
+        <ion-button color="primary" fill="solid" [routerLink]="['/guide/' + guide.idApi + '/feedback']">
             Feedback
         </ion-button>
     </ion-buttons>

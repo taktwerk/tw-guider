@@ -20,12 +20,16 @@ const routes: Routes = [
     loadChildren: () => import('./guide/guide.module').then(m => m.GuidePageModule)
   },
   {
+    path: ':reference_model_alias/:reference_id/feedback',
+    loadChildren: () => import('./feedback/feedback.page.module').then(m => m.FeedbackPageModule)
+  },
+  {
     path: 'profile',
     loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
   },
   {
-    path: 'feedback/:guideId',
-    loadChildren: () => import('./feedback/feedback.module').then(m => m.FeedbackPageModule)
+    path: 'feedback',
+    loadChildren: () => import('./feedback/feedback.page.module').then(m => m.FeedbackPageModule)
   },
   {
     path: 'login',
