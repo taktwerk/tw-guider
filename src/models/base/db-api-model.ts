@@ -310,32 +310,4 @@ export abstract class DbApiModel extends DbBaseModel {
         }
         return obj;
     }
-
-    /**
-     * Upload a file to the API
-     *
-     * @param {string} url API where the file should be uploaded
-     * @param {string} authToken
-     * @returns {boolean}
-     */
-    public upload(url: string, authToken: string) {
-        // No use downloading if not on app
-        if (/*this.platform.is('core') || */this.platform.is('mobileweb')) {
-            return false;
-        }
-
-        // Do we have files to upload?
-        if (this.downloadMapping && this.downloadMapping.length > 0) {
-            for (let fields of this.downloadMapping) {
-                // If we have a value for this field
-                if (this[fields[2]] && !this[fields[1]]) {
-                    let fieldUrl = url + '?fileAttribute=' + fields[0];
-                    console.info('DbApiModel', 'upload field', this[fields[2]], 'to', fieldUrl);
-                    this.downloadService.upload(fields[0], this[fields[0]], this[fields[2]], fieldUrl, authToken);
-                }
-            }
-        }
-
-        return true;
-    }
 }

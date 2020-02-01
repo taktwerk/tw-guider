@@ -1,9 +1,8 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {AlertController, Events, ModalController, Platform} from '@ionic/angular';
+import {AlertController, Events, Platform} from '@ionic/angular';
 
 import {ApiSync} from '../../providers/api-sync';
 import {DownloadService} from '../../services/download-service';
-import {BehaviorSubject, Observable} from 'rxjs';
 import {AuthService} from '../../services/auth-service';
 import {HttpClient} from '../../services/http-client';
 import {UserDb} from '../../models/db/user-db';
@@ -33,26 +32,13 @@ export class SynchronizationComponent implements OnInit {
 
     public isStartSync = false;
     public isStartPush = false;
-    public pushItemsCount = 0;
-    public pushedItemsCount = 0;
-    public pushedItemsPercent = 0;
-    public pushProgressStatus = 'not_push';
-    public pushProgressFilesInfo: BehaviorSubject<any>;
-    public syncItemsCount = 0;
     public syncedItemsCount = 0;
     public syncedItemsPercent = 0;
     public syncProgressStatus = 'not_sync';
     public isPrepareSynData = false;
-    public objectKeys = Object.keys;
     public modeSync;
     public userDb: UserDb;
     public syncAllItemsCount = 0;
-
-    public isNetworkSyncMode: BehaviorSubject<boolean>;
-
-    protected syncWithoutDate = false;
-
-    public progressFileInformations: {};
 
     constructor(public apiSync: ApiSync,
                 public apiPush: ApiPush,
@@ -83,38 +69,12 @@ export class SynchronizationComponent implements OnInit {
       });
     }
 
-  syncData() {
-    this.apiSync.makeSyncProcess();
-  }
-
-  syncAllData() {
-    this.apiSync.makeSyncProcess();
-  }
-
-  stopSyncData() {
-    this.apiSync.isStartSyncBehaviorSubject.next(false);
-    this.apiSync.makeSyncPause();
-  }
-
-  resumeSyncData() {
-    this.apiSync.makeSyncProcess('resume');
-  }
-
   cancelSyncData() {
     return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
         if (isCanceled) {
             this.http.showToast('Sync was canceled.');
         }
     });
-  }
-
-  pushData() {
-    this.apiPush.pushOneAtTime().then(() => {})
-      .catch((err) => console.error('ApiPush', 'Error', 'Push', err));
-  }
-
-  stopPushData() {
-    this.apiPush.isStartPushBehaviorSubject.next(false);
   }
 
   detectChanges() {
@@ -212,15 +172,6 @@ export class SynchronizationComponent implements OnInit {
       });
   }
 
-  getLastSyncDate() {
-        if (this.userDb && this.userDb.userSetting && this.userDb.userSetting.lastSyncedAt) {
-            const date = this.userDb.userSetting.lastSyncedAt;
-            return this.datepipe.transform(date, 'yyyy-MM-dd HH:mm:ss');
-        }
-
-        return '-';
-  }
-
   ngOnInit() {
     this.initUser().then(() => {
         this.apiSync.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
@@ -262,20 +213,6 @@ export class SynchronizationComponent implements OnInit {
     });
     this.apiPush.isStartPushBehaviorSubject.subscribe(isPush => {
       this.isStartPush = isPush;
-      this.detectChanges();
-    });
-    // To work with push
-    this.apiPush.pushProgressStatus.subscribe(pushProgressStatus => {
-      this.pushProgressStatus = pushProgressStatus;
-      this.detectChanges();
-
-    });
-    this.apiPush.pushedItemsPercent.subscribe(pushedItemsPercent => {
-      this.pushedItemsPercent = pushedItemsPercent;
-      this.detectChanges();
-    });
-    this.downloadService.pushProgressFilesInfo.subscribe(progressInformation => {
-      this.progressFileInformations = progressInformation;
       this.detectChanges();
     });
   }

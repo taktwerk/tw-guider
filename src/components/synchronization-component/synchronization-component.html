@@ -1,64 +1,9 @@
 <style>
-  ion-progress-bar {
-    height: 30px;
-  }
   section {
     margin-top: 2em;
     margin-bottom: 2.5em;
   }
 </style>
-
-<section>
-  <h5>Last successful sync date:</h5> {{ this.getLastSyncDate() }}
-</section>
-
-<section *ngIf="modeSync === 0">
-  <ion-button *ngIf="!isStartSync && syncProgressStatus !== 'pause'"
-              (click)="syncData()"
-              color="primary"
-  >
-    Synchronize Data
-  </ion-button>
-  <ion-button *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'"
-              (click)="stopSyncData()"
-              color="success"
-  >
-    Stop
-  </ion-button>
-  <ion-button *ngIf="syncProgressStatus === 'pause'"
-              (click)="resumeSyncData()"
-              color="success"
-  >
-    Resume
-  </ion-button>
-  <ion-button *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume' || syncProgressStatus === 'pause'"
-              (click)="cancelSyncData()"
-              color="success"
-  >
-    Cancel
-  </ion-button>
-</section>
-<ion-card>
-  <div *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'">
-    In progress
-    <span *ngIf="syncProgressStatus === 'progress' && isPrepareSynData">
-      (Prepare data)
-    </span>
-    <span *ngIf="syncProgressStatus === 'resume' && isPrepareSynData">
-      (Prepare data for resume)
-    </span>
-  </div>
-  <div *ngIf="syncProgressStatus === 'pause'">Pause</div>
-  <div *ngIf="syncProgressStatus === 'failed'">Failed</div>
-  <div *ngIf="syncProgressStatus === 'success'">Success</div>
-  <div *ngIf="syncProgressStatus === 'no_sync_data'">No data for sync</div>
-</ion-card>
-
-
-<ion-progress-bar value="{{ syncedItemsPercent / 100 }}"></ion-progress-bar>
-<div *ngIf="syncedItemsPercent">
-  {{ syncedItemsPercent }}% ({{ syncedItemsCount }} / {{ syncAllItemsCount }})
-</div>
 
 <section>
   <h4>Sync Modes</h4>

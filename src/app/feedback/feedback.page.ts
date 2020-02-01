@@ -70,6 +70,7 @@ export class FeedbackPage implements OnInit {
         }
         this.feedbackService.save(this.model).then(res => {
             this.model = this.feedbackService.newModel();
+            this.apiPush.setIsPushAvailableData(true);
             this.apiPush.pushOneAtTime();
         });
     }
@@ -82,7 +83,6 @@ export class FeedbackPage implements OnInit {
                 if (this.platform.is('android')) {
                     this.filePath.resolveNativePath(uri)
                         .then(nativeFilePath => {
-                                console.log('this.camera.getPicture in addFile');
                                 // Let's copy the file to our local storage
                                 this.downloadService.copy(nativeFilePath, this.model.TABLE_NAME).then(success => {
                                     if (typeof success === 'string') {

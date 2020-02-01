@@ -1,0 +1,99 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Sync Status
+        </ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">Close</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="vertical-align-content ion-text-center">
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <section>
+                    <h6>Last successful sync date:</h6> {{ this.getLastSyncDate() }}
+                </section>
+
+                <div *ngIf="isNetwork">
+                    <section *ngIf="!(isStartSync && ['progress', 'resume'].includes(syncProgressStatus)) && isAvailableForSyncData"
+                             style="color: green;"
+                    >
+                        There is data available for synchronization from the server.
+                    </section>
+                    <section *ngIf="modeSync === 0">
+                        <span *ngIf="!isStartSync">
+                            <ion-button *ngIf="!['progress', 'resume', 'pause'].includes(syncProgressStatus)"
+                                        (click)="syncData()"
+                                        color="primary"
+                            >
+                                Synchronize Data
+                            </ion-button>
+                            <ion-button *ngIf="syncProgressStatus === 'pause'"
+                                        (click)="resumeSyncData()"
+                                        color="success"
+                            >
+                                Resume
+                            </ion-button>
+                        </span>
+                        <span *ngIf="isStartSync">
+                            <ion-button *ngIf="['progress', 'resume'].includes(syncProgressStatus)"
+                                        (click)="stopSyncData()"
+                                        color="success"
+                            >
+                                Stop
+                            </ion-button>
+                        </span>
+                        <ion-button *ngIf="['progress', 'resume', 'pause'].includes(syncProgressStatus)"
+                                    (click)="cancelSyncData()"
+                                    color="success"
+                        >
+                            Cancel
+                        </ion-button>
+                    </section>
+                    <section>
+                        <ion-card>
+                            <div *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'">
+                                In progress
+                                <span *ngIf="syncProgressStatus === 'progress' && isPrepareSynData">
+                                  (Prepare data)
+                                </span>
+                                <span *ngIf="syncProgressStatus === 'resume' && isPrepareSynData">
+                                  (Prepare data for resume)
+                                </span>
+                            </div>
+                            <div *ngIf="syncProgressStatus === 'pause'">Pause</div>
+                            <div *ngIf="syncProgressStatus === 'failed'">Failed</div>
+                            <div *ngIf="syncProgressStatus === 'success'">Success</div>
+                            <div *ngIf="syncProgressStatus === 'no_sync_data'">No data for sync</div>
+                        </ion-card>
+
+                        <ion-progress-bar value="{{ syncedItemsPercent / 100 }}"
+                                          color="{{ syncProgressStatus === 'failed' ? 'medium' : 'primary' }}"
+                        >
+                        </ion-progress-bar>
+                        <div>
+                            {{ syncedItemsPercent }}% ({{ syncedItemsCount }}/{{ syncAllItemsCount }})
+                        </div>
+                    </section>
+                </div>
+                <div *ngIf="!isNetwork">
+                    <section *ngIf="isAvailableForPushData" style="color: green;">
+                        There is data available for pushing to the server.
+                    </section>
+                    <div>
+                        No network connection.
+                    </div>
+                    <div>
+                        Data synchronization is not yet possible.
+                    </div>
+                </div>
+                <div *ngIf="noDataForSync">
+                    No data for sync.
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

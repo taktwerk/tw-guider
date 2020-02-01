@@ -35,6 +35,7 @@ export class ApiPush {
     pushedItemsCount: BehaviorSubject<number>;
     pushedItemsPercent: BehaviorSubject<number>;
     pushProgressStatus: BehaviorSubject<string>;
+    isAvailableForPushData: BehaviorSubject<boolean>;
 
     /**
      * ApiSync Constructor
@@ -49,6 +50,7 @@ export class ApiPush {
         private network: Network
     ) {
         this.isStartPushBehaviorSubject = new BehaviorSubject<boolean>(false);
+        this.isAvailableForPushData = new BehaviorSubject<boolean>(false);
         this.pushedItemsCount = new BehaviorSubject<number>(0);
         this.pushedItemsPercent = new BehaviorSubject<number>(0);
         this.pushProgressStatus = new BehaviorSubject<string>('initial');
@@ -67,7 +69,6 @@ export class ApiPush {
 
     public isOffNetwork(): boolean {
         if (this.network.type === 'none') {
-            this.http.showToast('No internet connection.');
             this.isStartPushBehaviorSubject.next(false);
 
             return true;
@@ -98,8 +99,14 @@ export class ApiPush {
         });
     }
 
+    public setIsPushAvailableData(isAvailable: boolean) {
+        this.userDb.userSetting.isPushAvailableData = isAvailable;
+        this.userDb.save().then(() => {
+            this.isAvailableForPushData.next(isAvailable);
+        });
+    }
+
     public pushOneAtTime(): Promise<any> {
-        console.log('pushOneAtTime');
         this.isStartPushBehaviorSubject.next(true);
         return new Promise(resolve => {
             if (this.isOffNetwork()) {
@@ -156,7 +163,6 @@ export class ApiPush {
 
                 return allServicesBodies;
             }).then(allServicesBodies => {
-                console.log('promise many time');
                 if (Object.keys(allServicesBodies).length === 0) {
                     this.isStartPushBehaviorSubject.next(false);
                     this.pushProgressStatus.next('no_push_data');
@@ -166,12 +172,11 @@ export class ApiPush {
                 }
                 this.isStartPushBehaviorSubject.next(false);
                 this.pushProgressStatus.next('progress');
-                this.isBusy = false;
+                this.isBusy = true;
+                let promises = [];
                 Object.keys(allServicesBodies).forEach((modelKey) => {
                     let service: ApiService = this.apiServices[modelKey];
                     let url = AppSetting.API_URL + service.loadUrl + '/batch';
-
-                    let promises = [];
 
                     allServicesBodies[modelKey].forEach((body) => {
                         if (!body) {
@@ -181,79 +186,81 @@ export class ApiPush {
                         let jsonBody = JSON.stringify(body);
 
                         promises.push(new Promise((resolve) => {
-                                if (this.pushProgressStatus.getValue() === 'failed') {
-                                    this.isBusy = false;
-                                    return;
-                                }
-                                console.log('post push');
-                                return this.http.post(url, jsonBody)
-                                    .subscribe((data) => {
-                                        console.log('this.pushProgressStatus.getValue()', this.pushProgressStatus.getValue());
-                                        if (this.pushProgressStatus.getValue() === 'failed') {
-                                            this.isBusy = false;
-                                            return;
-                                        }
-                                        //iterate over all received records
-                                        let record = data[0];
-                                        if (record.errors) {
-                                            this.isStartPushBehaviorSubject.next(false);
-                                            this.pushProgressStatus.next('failed');
-                                            this.isBusy = false;
-                                            return;
-                                        }
-
-                                        console.log('push record id', record._id, record);
-                                        //get model by local id and update received primary key from api
-                                        service.dbModelApi.findById(record._id, true).then((dbModel) => {
-                                            console.log('find by id', dbModel);
-                                            if (!dbModel) {
-                                                return;
-                                            }
-                                            //type parse DbBaseModel -> DbApiModel
-                                            let dbModelApi = <DbApiModel>dbModel;
-                                            //load id from api
-                                            dbModelApi.idApi = record[dbModelApi.apiPk];
-                                            dbModelApi.is_synced = true;
-                                            //update isSynced = true and save with special update-condition
-                                            dbModelApi.save(false, true, dbModelApi.COL_ID + '=' + record._id).then((res) => {
-                                                console.log('must be sync with server after push');
-                                                service.pushFiles(dbModelApi).then((result) => {
-                                                    pushedItemsCount++;
-                                                    const savedDataPercent = Math.round((pushedItemsCount / countOfAllChangedItems) * 100);
-                                                    this.pushedItemsCount.next(pushedItemsCount);
-                                                    this.pushedItemsPercent.next(savedDataPercent);
-                                                    this.downloadService.pushProgressFilesInfo.next({});
-                                                });
-                                            });
-                                        });
-                                    }, (err) => {
+                            if (this.pushProgressStatus.getValue() === 'failed') {
+                                this.isBusy = false;
+                                return;
+                            }
+                            return this.http.post(url, jsonBody)
+                                .subscribe((data) => {
+                                    if (this.pushProgressStatus.getValue() === 'failed') {
+                                        this.isBusy = false;
+                                        resolve(false);
+                                        return;
+                                    }
+                                    //iterate over all received records
+                                    let record = data[0];
+                                    if (record.errors) {
                                         this.isStartPushBehaviorSubject.next(false);
                                         this.pushProgressStatus.next('failed');
                                         this.isBusy = false;
+                                        resolve(false);
+                                        return;
+                                    }
+                                    //get model by local id and update received primary key from api
+                                    service.dbModelApi.findById(record._id, true).then((dbModel) => {
+                                        console.log('find by id', dbModel);
+                                        if (!dbModel) {
+                                            return;
+                                        }
+                                        //type parse DbBaseModel -> DbApiModel
+                                        let dbModelApi = <DbApiModel>dbModel;
+                                        //load id from api
+                                        dbModelApi.idApi = record[dbModelApi.apiPk];
+                                        dbModelApi.is_synced = true;
+                                        //update isSynced = true and save with special update-condition
+                                        dbModelApi.save(false, true, dbModelApi.COL_ID + '=' + record._id).then((res) => {
+                                            service.pushFiles(dbModelApi).then((result) => {
+                                                pushedItemsCount++;
+                                                const savedDataPercent = Math.round((pushedItemsCount / countOfAllChangedItems) * 100);
+                                                this.pushedItemsCount.next(pushedItemsCount);
+                                                this.pushedItemsPercent.next(savedDataPercent);
+                                                this.downloadService.pushProgressFilesInfo.next({});
+                                                resolve(true);
+                                            });
+                                        });
                                     });
+                                }, (err) => {
+                                    this.isStartPushBehaviorSubject.next(false);
+                                    this.pushProgressStatus.next('failed');
+                                    this.isBusy = false;
+                                    resolve(false);
+                                });
                             })
                         );
                     });
-                    Promise.all(promises).then((data) => {
-                        if (!data) {
-
-                            this.isStartPushBehaviorSubject.next(false);
-                            this.pushProgressStatus.next('failed');
-                            this.isBusy = false;
-
-                            resolve(false);
-                            return;
-                        }
-                        this.isStartPushBehaviorSubject.next(false);
-                        this.pushProgressStatus.next('success');
-                        this.isBusy = false;
-
-                        resolve(true);
-                    }, (err) => {
+                });
+                console.log('alll promises');
+                Promise.all(promises).then((data) => {
+                    console.log('start all promises');
+                    if (!data) {
+                        console.log('fgauled push');
                         this.isStartPushBehaviorSubject.next(false);
                         this.pushProgressStatus.next('failed');
                         this.isBusy = false;
-                    });
+
+                        resolve(false);
+                        return;
+                    }
+                    console.log('success push');
+                    this.isStartPushBehaviorSubject.next(false);
+                    this.pushProgressStatus.next('success');
+                    this.isBusy = false;
+                    this.setIsPushAvailableData(false);
+                    resolve(true);
+                }, (err) => {
+                    this.isStartPushBehaviorSubject.next(false);
+                    this.pushProgressStatus.next('failed');
+                    this.isBusy = false;
                 });
             });
 

@@ -86,7 +86,6 @@ export class LoginPage {
                 default:
                     this.navCtrl.navigateRoot('home');
                     this.http.showToast('You are logged in.');
-                // this.apiSync.runPull().then((res) => {});
             }
         });
     }

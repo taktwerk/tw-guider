@@ -1,0 +1,30 @@
+::ng-deep .sc-ion-modal-md-h {
+  --height: 80%;
+  --width: 80%;
+  --border-radius: 20px;
+}
+
+.center-data {
+  width: 100%;
+  height: 100%;
+  //overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
+ion-content {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100%;
+}
+
+ion-progress-bar {
+  height: 30px;
+}
+section {
+  margin-top: 2em;
+  margin-bottom: 2.5em;
+  text-align: center;
+}

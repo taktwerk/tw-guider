@@ -14,8 +14,6 @@ import 'rxjs/add/observable/interval';
 import {UserDb} from '../models/db/user-db';
 import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from '../services/download-service';
-import {SyncMode} from '../components/synchronization-component/synchronization-component';
-import {UserService} from '../services/user-service';
 import {ApiPush} from '../providers/api-push';
 
 export enum ConnectionStatusEnum {
@@ -55,13 +53,14 @@ export class AppComponent implements OnInit {
 
   previousStatus = ConnectionStatusEnum.BeforeSet;
   periodicSync: any;
+  checkAvailableSyncChanges: any;
 
   initializeApp() {
     this.platform.ready().then(() => {
       this.initNetwork();
       this.registerEvents();
       this.statusBar.styleDefault();
-      // Do the user login (fake user or previously logged in user)
+      // Do the user login
       this.login().then((result) => {
         this.initUserDB().then(() => {
           this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
@@ -164,6 +163,20 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initUserDB().then(() => {
+      if (this.userDb.userSetting.syncLastElementNumber > 0 &&
+          (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
+      ) {
+        this.userDb.userSetting.syncStatus = 'pause';
+        this.userDb.save();
+      }
+      this.apiSync.syncProgressStatus.next(this.userDb.userSetting.syncStatus);
+      this.apiSync.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
+      this.apiSync.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);
+      this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
+      this.apiSync.isAvailableForSyncData.next(this.userDb.userSetting.isSyncAvailableData);
+      this.apiPush.isAvailableForPushData.next(this.userDb.userSetting.isPushAvailableData);
+    });
     this.events.subscribe('user:logout', () => {
       if (this.periodicSync) {
         this.periodicSync.unsubscribe();
@@ -172,7 +185,6 @@ export class AppComponent implements OnInit {
     });
     this.syncService.syncMode.subscribe((result) => {
         if (result !== 2 && this.periodicSync) {
-          console.log('please unsubscribe this');
           this.periodicSync.unsubscribe();
           this.periodicSync = null;
         }
@@ -183,5 +195,9 @@ export class AppComponent implements OnInit {
               });
         }
     });
+    this.checkAvailableSyncChanges = Observable.interval(30000)
+        .subscribe(() => {
+          this.apiSync.checkAvailableChanges();
+        });
   }
 }

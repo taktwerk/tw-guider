@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Events, Platform} from '@ionic/angular';
-import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer/ngx';
+import {Platform} from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
 import {BehaviorSubject} from 'rxjs';
@@ -13,11 +12,6 @@ import {finalize} from 'rxjs/operators';
  */
 @Injectable()
 export class DownloadService {
-    /**
-     *
-     */
-    private fileTransfer: FileTransferObject = this.transfer.create();
-
     /**
      * Progress % of upload or download
      * @type {number}
@@ -32,24 +26,15 @@ export class DownloadService {
      * @param http
      * @param {File} file
      * @param webview
-     * @param {FileTransfer} transfer
      * @param {Toast} toast
      */
     constructor(public http: HttpClient,
                 public platform: Platform,
                 public file: File,
                 public webview: WebView,
-                public transfer: FileTransfer,
                 private toast: Toast
     ) {
         this.pushProgressFilesInfo = new BehaviorSubject<any>({});
-        // Only use filetransfer on mobile
-        if (/*this.platform.is('core') || */this.platform.is('mobileweb')) {
-            //console.info('DownloadService', 'not on mobile.');
-        } else {
-            // Not web or computer
-            this.fileTransfer = this.transfer.create();
-        }
     }
 
     /**
@@ -149,73 +134,6 @@ export class DownloadService {
         });
     }
 
-    /**
-     * Upload a file
-     *
-     * @param {string} fileKey
-     * @param {string} fileName
-     * @param {string} path
-     * @param {string} url
-     * @param {string} authToken
-     * @returns {boolean}
-     */
-    public upload(
-        fileKey: string,
-        fileName: string,
-        path: string,
-        url: string,
-        authToken: string
-    ): Promise<boolean> {
-      return new Promise((resolve) => {
-        // Not on cordova
-        if (!this.fileTransfer) {
-          console.warn('UPLOAD', 'no fileTransfer object');
-          resolve(false);
-          return;
-        }
-
-        // Upload the file
-        let options: FileUploadOptions = {
-          fileKey: fileKey,
-          fileName: fileName,
-          chunkedMode: false,
-          headers: {
-            'X-Auth-Token': authToken
-          }
-        };
-
-        this.fileTransfer.onProgress((progressEvent: ProgressEvent) => {
-          if (!progressEvent) {
-            return;
-          }
-
-          this.progress = Math.floor(progressEvent.loaded / progressEvent.total * 100);
-
-          let temporaryPushFilesInfo = this.pushProgressFilesInfo.getValue();
-          temporaryPushFilesInfo[fileName] = this.progress;
-          this.pushProgressFilesInfo.next(temporaryPushFilesInfo);
-
-          if (progressEvent.loaded == progressEvent.total) {
-            this.toast.show('File uploaded', '5000', 'center').subscribe(
-              toast => {
-                console.log(toast);
-              }
-            );
-          }
-        });
-
-        this.fileTransfer.upload(path, url, options)
-          .then((data) => {
-            let temporaryPushFilesInfo = this.pushProgressFilesInfo.getValue();
-
-            resolve(true);
-            console.log('DownloadService', 'Upload', data, " Uploaded Successfully");
-          }, (err) => {
-            resolve(false);
-          });
-      });
-    }
-
     startUpload(
         modelName,
         fileKey: string,
@@ -255,7 +173,6 @@ export class DownloadService {
             const imgBlob = new Blob([reader.result], {
                 type: file.type
             });
-            console.log('imgBlob', imgBlob)
             formData.append(fileKey, imgBlob, file.name);
             this.uploadImageData(formData, url);
         };

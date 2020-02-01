@@ -15,7 +15,6 @@ import {AuthService} from '../services/auth-service';
 import {HttpClient} from '../services/http-client';
 import {DownloadService} from '../services/download-service';
 import { File } from '@ionic-native/file/ngx';
-import {FileTransfer} from '@ionic-native/file-transfer/ngx';
 import {Network} from '@ionic-native/network/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
 import { FormsModule } from '@angular/forms';
@@ -35,23 +34,21 @@ import {GuideAssetPivotService} from '../providers/api/guide-asset-pivot-service
 import {GuideAssetTextModalComponent} from '../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import {CryptoProvider} from '../providers/crypto-provider';
 import {FeedbackService} from '../providers/api/feedback-service';
-import {FeedbackModalComponent} from '../components/feedback-modal-component/feedback-modal-component';
-import {SyncSpinnerComponent} from '../components/sync-spinner-component/sync-spinner-component';
 import {SyncSpinnerComponentModule} from '../components/sync-spinner-component/sync-spinner-component.module';
 import {ApiPush} from '../providers/api-push';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
-import {SafeHtmlPipe} from '../pipes/safe-html/safe-html';
 import {MainPipe} from '../pipes/main-pipe.module';
 import {HtmlDescriptionComponentModule} from '../components/html-description/html-description-component.module';
+import {SyncModalComponent} from '../components/sync-modal-component/sync-modal-component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GuideAssetTextModalComponent,
-    FeedbackModalComponent
+    SyncModalComponent,
   ],
-  entryComponents: [GuideAssetTextModalComponent, FeedbackModalComponent],
+  entryComponents: [GuideAssetTextModalComponent, SyncModalComponent],
     imports: [
         BrowserModule,
         FormsModule,
@@ -81,7 +78,6 @@ import {HtmlDescriptionComponentModule} from '../components/html-description/htm
     ApiPush,
     Storage,
     File,
-    FileTransfer,
     Toast,
     WebView,
     Network,

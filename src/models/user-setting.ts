@@ -31,5 +31,7 @@ export class UserSetting{
 
   public syncMode: number;
 
-  public isStartSync: boolean = true;
+  public isSyncAvailableData: boolean = false;
+
+  public isPushAvailableData: boolean = false;
 }
