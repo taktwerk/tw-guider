@@ -290,7 +290,6 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
-                    console.log('queries for all', query)
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
@@ -633,7 +632,6 @@ export abstract class DbBaseModel {
             case DbBaseModel.TYPE_BOOLEAN :
                 return this.getValueBoolean(value);
             case DbBaseModel.TYPE_DATE :
-                console.log('getValueByType value', value);
                 return this.getValueDate(value);
             case DbBaseModel.TYPE_OBJECT :
                 return this.getValueObject(value);
@@ -650,9 +648,7 @@ export abstract class DbBaseModel {
         let values: any[] = [];
         for (let column of this.TABLE) {
             let member = column[3] ? column[3] : column[0];
-            console.log('member', member);
             let value: any = (<any>this)[(member)];
-            console.log('value', value);
             values.push(this.getValueByType(value, column[2]));
         }
         return values;
@@ -666,14 +662,12 @@ export abstract class DbBaseModel {
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
-                    console.warn(this.TAG, 'create statement', 'db is null');
                     resolve(false);
                 } else {
                     console.log('this.columnValues()', this.columnValues());
                     console.log('this.columnNames()', this.columnNames());
                     let query = 'INSERT INTO ' + this.secure(this.TABLE_NAME) + ' (`' + this.columnNames().join('`, `') + '`) ' +
                         'VALUES (' + this.columnValues().join(', ') + ') ';
-                    console.log(this.TAG, 'create statement', query);
                     db.query(query).then((res) => {
                         //  Save ID in the model
                         this.id = res.insertId;
@@ -788,7 +782,6 @@ export abstract class DbBaseModel {
      * @param date
      */
     protected getDateFromString(date: string): Date {
-        console.log('date in getDateFromString', date);
         return date ? new Date(date) : null;
     }
 
