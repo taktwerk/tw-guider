@@ -11,6 +11,7 @@ import {FileChooser} from '@ionic-native/file-chooser/ngx';
 import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute} from '@angular/router';
+import {GuideStepModel} from '../../models/db/api/guide-step-model';
 
 /**
  * Generated class for the TodoPage page.
@@ -132,19 +133,22 @@ export class FeedbackPage implements OnInit {
             });
     }
 
-    public openFile(filePath, nativeUrl, title?: string) {
-        if (!nativeUrl) {
-            return null;
-        }
+    public openFile(basePath: string, modelName: string, title?: string) {
+        const filePath = basePath;
         if (filePath.indexOf('.MOV') > -1 || filePath.indexOf('.mp4') > -1) {
             // E.g: Use the Streaming Media plugin to play a video
-            this.streamingMedia.playVideo(nativeUrl);
+            this.streamingMedia.playVideo(
+                this.downloadService.getNativeFilePath(basePath, modelName),
+            );
         } else if (filePath.indexOf('.jpg') > -1 || filePath.indexOf('.png') > -1) {
-            let photoTitle = 'Guide image';
+            let photoTitle = 'Feedback';
             if (title) {
                 photoTitle = title;
             }
-            this.photoViewer.show(nativeUrl, photoTitle);
+            this.photoViewer.show(
+                this.downloadService.getNativeFilePath(basePath, modelName),
+                photoTitle
+            );
         }
     }
 

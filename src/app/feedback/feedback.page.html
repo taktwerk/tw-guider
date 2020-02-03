@@ -57,17 +57,21 @@
             <div *ngIf="feedback.attached_file">
                 <div style="width: 70px;height: 70px;">
                     <img *ngIf="feedback.isImageAttachedFile()"
-                         (click)="openFile(feedback.getApiFilePath(), feedback.getLocalFilePath(), feedback.attached_file)"
+                         (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME, feedback.attached_file)"
                          [src]="feedback.getFile()"
                     >
                     <ion-icon name="videocam"
                               class="videocam"
                               slot="start"
                               *ngIf="feedback.isVideoAttachedFile()"
-                              (click)="openFile(feedback.getApiFilePath(), feedback.getLocalFilePath())"
+                              (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME)"
                     >
                     </ion-icon>
-                    <ion-icon class="cloud-upload" *ngIf="!feedback.isImageAttachedFile() && !feedback.isVideoAttachedFile()" name="cloud-upload"></ion-icon>
+                    <ion-icon *ngIf="!feedback.isImageAttachedFile() && !feedback.isVideoAttachedFile()"
+                              class="cloud-upload"
+                              name="cloud-upload"
+                    >
+                    </ion-icon>
                 </div>
                 <ion-item>
                     {{ feedback.attached_file }}
