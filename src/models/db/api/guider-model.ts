@@ -131,7 +131,6 @@ export class GuiderModel extends DbApiModel {
         } else {
             this[relationKey].push(newData);
         }
-        console.log(relationKey, this[relationKey]);
     }
 
     public setSteps() {

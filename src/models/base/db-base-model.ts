@@ -201,7 +201,6 @@ export abstract class DbBaseModel {
                         this.dbIsBusy = false;
                         resolve(true);
                     }).catch((err) => {
-                        console.log('when create table', err);
                         this.dbIsBusy = false;
                         resolve(false);
                     });
@@ -853,13 +852,6 @@ export abstract class DbBaseModel {
      * @returns {number} timestamp
      */
     protected getValueDate(date: Date): string {
-        // console.debug(this.TAG, 'try to get value from date', date);
-        if (date instanceof Date && date !== null) {
-            console.log('getValueDate date', date);
-            console.log('getValueDate date.getTime()', date.getTime());
-            console.log('getValueDate Math.floor(date.getTime() / 1000)', Math.floor(date.getTime() / 1000));
-        }
-
         return date instanceof Date && date !== null ? '' + Math.floor(date.getTime() / 1000) : 'null';
     }
 

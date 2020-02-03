@@ -125,8 +125,6 @@ export class ApiPush {
             // iterate over all services
             const bodiesBatchAllPromises = [];
             for (const key of Object.keys(this.apiServices)) {
-                console.log('service foreach');
-
                 // get registered api service for the current model
                 const service: ApiService = this.apiServices[key];
                 // let url = AppSetting.API_URL + service.loadUrl + '/batch';
@@ -149,7 +147,6 @@ export class ApiPush {
             let pushedItemsCount = 0;
             let countOfAllChangedItems = 0;
             Promise.all(bodiesBatchAllPromises).then(values => {
-                console.log('values in promises', values);
                 let allServicesBodies = {};
 
                 values.forEach(function(value) {
@@ -208,7 +205,6 @@ export class ApiPush {
                                     }
                                     //get model by local id and update received primary key from api
                                     service.dbModelApi.findById(record._id, true).then((dbModel) => {
-                                        console.log('find by id', dbModel);
                                         if (!dbModel) {
                                             return;
                                         }
@@ -239,11 +235,8 @@ export class ApiPush {
                         );
                     });
                 });
-                console.log('alll promises');
                 Promise.all(promises).then((data) => {
-                    console.log('start all promises');
                     if (!data) {
-                        console.log('fgauled push');
                         this.isStartPushBehaviorSubject.next(false);
                         this.pushProgressStatus.next('failed');
                         this.isBusy = false;
@@ -251,7 +244,6 @@ export class ApiPush {
                         resolve(false);
                         return;
                     }
-                    console.log('success push');
                     this.isStartPushBehaviorSubject.next(false);
                     this.pushProgressStatus.next('success');
                     this.isBusy = false;

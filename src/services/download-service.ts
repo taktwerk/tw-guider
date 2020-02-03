@@ -159,7 +159,6 @@ export class DownloadService {
                         return;
                     });
             }).catch(err => {
-                console.log('directoryEntry errror', err);
                 resolve(false);
                 return;
             });
@@ -183,18 +182,11 @@ export class DownloadService {
         this.http.post(url, formData)
             .pipe(
                 finalize(() => {
-                    console.log('finalize');
                     // loading.dismiss();
                 })
             )
             .subscribe(res => {
-                if (res['success']) {
-                    console.log('succcesss');
-                    // this.presentToast('File upload complete.')
-                } else {
-                    console.log('uploda error', res);
-                    // this.presentToast('File upload failed.')
-                }
+                //
             });
     }
 
