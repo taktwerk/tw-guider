@@ -176,6 +176,10 @@ export class AppComponent implements OnInit {
       this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
       this.apiSync.isAvailableForSyncData.next(this.userDb.userSetting.isSyncAvailableData);
       this.apiPush.isAvailableForPushData.next(this.userDb.userSetting.isPushAvailableData);
+      this.checkAvailableSyncChanges = Observable.interval(30000)
+          .subscribe(() => {
+            this.apiSync.checkAvailableChanges();
+          });
     });
     this.events.subscribe('user:logout', () => {
       if (this.periodicSync) {
@@ -195,9 +199,5 @@ export class AppComponent implements OnInit {
               });
         }
     });
-    this.checkAvailableSyncChanges = Observable.interval(30000)
-        .subscribe(() => {
-          this.apiSync.checkAvailableChanges();
-        });
   }
 }
