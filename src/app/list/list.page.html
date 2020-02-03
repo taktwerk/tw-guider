@@ -39,7 +39,7 @@
               <p *ngIf="item.duration">
                 Duration: {{ item.getDuration() }}
               </p>
-              <ion-button [routerLink]="['/guide/' + item.idApi]">
+              <ion-button class="show-guide-btn" [routerLink]="['/guide/' + item.idApi]">
                 <ion-icon class="show-guide-play-icon" slot="start" name="arrow-dropright-circle"></ion-icon>
                 SHOW GUIDE
               </ion-button>
