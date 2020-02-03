@@ -308,4 +308,10 @@ export abstract class DbApiModel extends DbBaseModel {
         }
         return obj;
     }
+
+    public getNativePath(columnName:string) {
+        const path = this[columnName];
+
+        return this.downloadService.getNativeFilePath(path, this.TABLE_NAME);
+    }
 }

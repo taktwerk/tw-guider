@@ -43,14 +43,14 @@
             >
                 <div slot="fixed">{{ stepNumber + 1 }} / {{ guideSteps.length }}</div>
                 <img *ngIf="step.isImageAttachedFile()"
-                     (click)="openFile(step.getApiFilePath(), step.getLocalFilePath(), step.title)"
+                     (click)="openFile(step.getApiFilePath(), step.TABLE_NAME, step.title)"
                      [src]="step.getFile()"
                 >
                 <ion-icon name="videocam"
                           class="videocam"
                           slot="start"
                           *ngIf="step.isVideoAttachedFile()"
-                          (click)="openFile(step.getApiFilePath(), step.getLocalFilePath())"
+                          (click)="openFile(step.getApiFilePath(), step.TABLE_NAME)"
                 >
                 </ion-icon>
                 <img *ngIf="!step.isImageAttachedFile() && !step.isVideoAttachedFile()"
@@ -67,13 +67,13 @@
                 </h2>
                 <div *ngFor="let asset of guideAssets; trackBy: trackGuideAsset">
                     <div class="ion-text-center" *ngIf="asset.isFile() && asset.isPdf()">
-                        <img (click)="openFile(asset.getApiPdfImageFilePath(), asset.getLocalPdfImageFilePath(), asset.name)"
+                        <img (click)="openFile(asset.getApiPdfImageFilePath(), asset.TABLE_NAME, asset.name)"
                              class="pdf-image"
                              [src]="asset.getPdf()"
                         >
                     </div>
                     <div *ngIf="asset.isFile() && !asset.isPdf()">
-                        <img (click)="openFile(asset.getApiFilePath(), asset.getLocalFilePath(), asset.name)"
+                        <img (click)="openFile(asset.getApiFilePath(), asset.TABLE_NAME, asset.name)"
                              class="pdf-image"
                              [src]="asset.getAssetFile()"
                         >

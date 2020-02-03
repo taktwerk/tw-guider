@@ -352,14 +352,13 @@ export class DownloadService {
     }
 
     public getNativeFilePath(path, modelName) {
-        path = this.file.dataDirectory + modelName + '/' + path;
-        const convertFileSrc = this.webview.convertFileSrc(path);
-        // const sanitizedUrl = this.domSanitizer.sanitize(
-        //     SecurityContext.HTML,
-        const sanitizedUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
-        // );
-        console.log('sanitizedUrl', sanitizedUrl);
+        return this.file.dataDirectory + modelName + '/' + path;
+    }
 
-        return sanitizedUrl;
+    public getSanitizedFileUrl(path, modelName) {
+        path = this.getNativeFilePath(path, modelName);
+        const convertFileSrc = this.webview.convertFileSrc(path);
+
+        return this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
     }
 }

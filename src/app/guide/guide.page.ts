@@ -13,7 +13,7 @@ import {GuideAssetService} from '../../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-service';
 import {GuideAssetTextModalComponent} from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
-import {FeedbackModalComponent} from '../../components/feedback-modal-component/feedback-modal-component';
+import {DownloadService} from '../../services/download-service';
 
 @Component({
   selector: 'app-guide',
@@ -45,24 +45,28 @@ export class GuidePage implements OnInit {
       public events: Events,
       public authService: AuthService,
       public changeDetectorRef: ChangeDetectorRef,
-      public modalController: ModalController
+      public modalController: ModalController,
+      public downloadService: DownloadService
   ) {
     this.authService.checkAccess();
   }
 
-  public openFile(filePath, nativeUrl, title?: string) {
-    if (!nativeUrl) {
-      return null;
-    }
+  public openFile(basePath: string, modelName: string, title?: string) {
+    const filePath = basePath;
     if (filePath.indexOf('.MOV') > -1 || filePath.indexOf('.mp4') > -1) {
       // E.g: Use the Streaming Media plugin to play a video
-      this.streamingMedia.playVideo(nativeUrl);
+      this.streamingMedia.playVideo(
+          this.downloadService.getNativeFilePath(basePath, modelName),
+      );
     } else if (filePath.indexOf('.jpg') > -1 || filePath.indexOf('.png') > -1) {
       let photoTitle = 'Guide image';
       if (title) {
         photoTitle = title;
       }
-      this.photoViewer.show(nativeUrl, photoTitle);
+      this.photoViewer.show(
+          this.downloadService.getNativeFilePath(basePath, modelName),
+          photoTitle
+      );
     }
   }
 
@@ -72,27 +76,11 @@ export class GuidePage implements OnInit {
     }
   }
 
-  setCurrentStepIndex(event) {
-    this.guideStepSlider.getActiveIndex();
-    this.currentStepNumber = event.clickedIndex;
-  }
-
   async openAssetTextModal(asset: GuideAssetModel) {
     const modal = await this.modalController.create({
       component: GuideAssetTextModalComponent,
       componentProps: {
         asset: asset
-      },
-    });
-    return await modal.present();
-  }
-
-  async openFeedbackModal() {
-    const modal = await this.modalController.create({
-      component: FeedbackModalComponent,
-      componentProps: {
-        reference_id: this.guide.idApi,
-        reference_model: 'app\\\\modules\\\\guide\\\\models\\\\Guide'
       },
     });
     return await modal.present();

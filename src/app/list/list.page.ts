@@ -14,36 +14,6 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
   selector: 'app-list',
   templateUrl: 'list.page.html',
   styleUrls: ['list.page.scss'],
-  // animations: [
-    // trigger(
-    //     'sideMenuFade', [
-    //       transition(':enter', [
-    //         style({opacity: 0}),
-    //         animate('250ms', style({opacity: 1}))
-    //       ]),
-    //       transition(':leave', [
-    //         style({opacity: 1}),
-    //         animate('250ms', style({opacity: 0}))
-    //       ])
-    //     ]
-    // ),
-    // trigger('EnterLeave', [
-    //   state('flyIn', style({ transform: 'translateX(0)' })),
-    //   transition(':enter', [
-    //     style({ transform: 'translateX(-100%)' }),
-    //     animate('0.5s 300ms ease-in')
-    //   ]),
-    //   transition(':leave', [
-    //     animate('0.3s ease-out', style({ transform: 'translateX(100%)' }))
-    //   ])
-    // ]),
-    // trigger('fadeInOutResults', [
-    //   state('void', style({
-    //     opacity: 0,
-    //   })),
-    //   transition('void <=> *', animate(500)),
-    // ]),
-  // ],
 })
 export class ListPage implements OnInit {
   public guiders: GuiderModel[] = [];

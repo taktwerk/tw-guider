@@ -88,7 +88,7 @@ export class FeedbackModel extends DbApiModel {
 
     public getFile() {
         if (this[FeedbackModel.COL_LOCAL_ATTACHED_FILE]) {
-            return this.downloadService.getNativeFilePath(this[FeedbackModel.COL_ATTACHED_FILE], this.TABLE_NAME);
+            return this.downloadService.getSanitizedFileUrl(this[FeedbackModel.COL_ATTACHED_FILE], this.TABLE_NAME);
         } else {
             return this.defaultImage;
         }
