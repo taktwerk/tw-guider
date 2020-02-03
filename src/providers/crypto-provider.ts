@@ -90,90 +90,135 @@
 //         return buf;
 //     }
 // }
-
-
-
+//
+//
+//
+//
+// import { Injectable } from '@angular/core';
+//
+// import { TextEncoder } from 'text-encoding';
+// import { Jose, JoseJWE, Encrypter, Decrypter } from 'jose-jwe/jose-jwe-jws';
+//
+// @Injectable()
+// export class CryptoProvider {
+//
+//     private encoder = new TextEncoder();
+//     private encrypter: Encrypter;
+//     private decrypter: Decrypter;
+//     private alg: string = 'AES-GCM';
+//     private keyUsage: string[] = ['encrypt', 'decrypt'];
+//
+//     constructor(private storage: Storage) {
+//         console.log('Hello CryptoProvider Provider');
+//     }
+//
+//     encodeString(text: string): Uint8Array {
+//         return this.encoder.encode(text);
+//     }
+//
+//     generateKey(password: string): PromiseLike<CryptoKey> {
+//         const passwordUtf8 = this.encodeString(password);
+//         return crypto.subtle.importKey('raw', passwordUtf8, {name: 'PBKDF2'}, false, ['deriveKey']).then((baseKey) => {
+//             const params = {
+//                 name: 'PBKDF2',
+//                 salt: passwordUtf8,
+//                 iterations: 5000,
+//                 hash: 'SHA-256'
+//             } as Pbkdf2Params;
+//
+//             return crypto.subtle.deriveKey(params, baseKey, {name: this.alg, length: 256}, false, this.keyUsage);
+//         });
+//     }
+//
+//     createNewKey(password: string): PromiseLike<void | CryptoKey> {
+//         return this.generateKey(password).then((key) => {
+//             this.initCryptographer(key);
+//         });
+//     }
+//
+//     // recreateKeyFromPassword(password: string): Promise<void> {
+//     //     return this.storage.get('salt').then((salt) => {
+//     //         return this.generateKey(password, salt).then((key) => {
+//     //             this.initCryptographer(key);
+//     //         });
+//     //     });
+//     // }
+//
+//     initCryptographer(key: CryptoKey): void {
+//         const cryptographer = new Jose.WebCryptographer();
+//         cryptographer.setKeyEncryptionAlgorithm('dir');
+//         this.encrypter = new JoseJWE.Encrypter(cryptographer, key);
+//         this.decrypter = new JoseJWE.Decrypter(cryptographer, key);
+//     }
+//
+//     removeKey(): void {
+//         this.encrypter = null;
+//         this.decrypter = null;
+//     }
+//
+//     // returns JWE: HEADER.KEY.IV.TEXT.INTEGRITY
+//     makeEncrypt(plaintext: string): PromiseLike<string> {
+//         return new Promise((resolve) => {
+//            this.createNewKey(plaintext).then(() => {
+//                resolve(this.encrypter.encrypt(plaintext));
+//            });
+//         });
+//     }
+//
+//     makeDecrypt(ciphertext: string): PromiseLike<string> {
+//         return this.decrypter.decrypt(ciphertext);
+//     }
+//
+// }
 
 import { Injectable } from '@angular/core';
-
-import { TextEncoder } from 'text-encoding';
-import { Jose, JoseJWE, Encrypter, Decrypter } from 'jose-jwe-jws';
+import Forge from 'node-forge';
 
 @Injectable()
 export class CryptoProvider {
 
-    private encoder = new TextEncoder();
-    private encrypter: Encrypter;
-    private decrypter: Decrypter;
-    private alg: string = 'AES-GCM';
-    private keyUsage: string[] = ['encrypt', 'decrypt'];
+    public constructor() { }
 
-    constructor(private storage: Storage) {
-        console.log('Hello CryptoProvider Provider');
+    public generateSalt(password) {
+        return Forge.util.encode64(password);
     }
 
-    encodeString(text: string): Uint8Array {
-        return this.encoder.encode(text);
+    public generateIv(password) {
+        return Forge.util.encode64(password);
     }
 
-    generateKey(password: string, salt: ArrayBufferView): PromiseLike<CryptoKey> {
-        let passwordUtf8 = this.encodeString(password);
-        return crypto.subtle.importKey('raw', passwordUtf8, {name: 'PBKDF2'}, false, ['deriveKey']).then((baseKey) => {
-            let params = {
-                name: 'PBKDF2',
-                salt: salt,
-                iterations: 5000,
-                hash: 'SHA-256'
-            }
+    public encrypt(message: string, password: string, salt: any, iv: any) {
+        const key = Forge.pkcs5.pbkdf2(password, Forge.util.decode64(salt), 4096, 16);
+        const cipher = Forge.cipher.createCipher('AES-CBC', key);
+        cipher.start({iv: Forge.util.decode64(iv)});
+        cipher.update(Forge.util.createBuffer(message));
+        cipher.finish();
 
-            return crypto.subtle.deriveKey(params, baseKey, {name: this.alg, length: 256}, false, this.keyUsage)
-        });
+        return Forge.util.encode64(cipher.output.getBytes());
     }
 
-    private str2ab(str) {
-        var buf = new ArrayBufferView(str.length*2); // 2 bytes for each char
-        var bufView = new Uint16Array(buf);
-        for (var i=0, strLen=str.length; i < strLen; i++) {
-            bufView[i] = str.charCodeAt(i);
-        }
+    public decrypt(cipherText: string, password: string, salt: string, iv: string) {
+        const key = Forge.pkcs5.pbkdf2(password, Forge.util.decode64(salt), 4096, 16);
+        const decipher = Forge.cipher.createDecipher('AES-CBC', key);
+        decipher.start({iv: Forge.util.decode64(iv)});
+        decipher.update(Forge.util.createBuffer(Forge.util.decode64(cipherText)));
+        decipher.finish();
 
-        return buf;
+        return decipher.output.toString();
     }
 
-    createNewKey(password: string): Promise<void> {
-        const salt = this.str2ab(password);
-        return this.generateKey(password, salt).then((key) => {
-            this.initCryptographer(key);
-        });
+
+    makeEncrypt(password: string) {
+        const salt = this.generateSalt(password);
+        const iv = this.generateIv(password);
+
+        return this.encrypt(password, password, salt, iv);
     }
 
-    recreateKeyFromPassword(password: string): Promise<void> {
-        return this.storage.get('salt').then((salt) => {
-            return this.generateKey(password, salt).then((key) => {
-                this.initCryptographer(key);
-            });
-        });
-    }
+    makeDecrypt(encryptedPassword: string, userString: string) {
+        const salt = this.generateSalt(userString);
+        const iv = this.generateIv(userString);
 
-    initCryptographer(key: CryptoKey): void {
-        let cryptographer = new Jose.WebCryptographer();
-        cryptographer.setKeyEncryptionAlgorithm('dir');
-        this.encrypter = new JoseJWE.Encrypter(cryptographer,key);
-        this.decrypter = new JoseJWE.Decrypter(cryptographer,key);
+        return this.decrypt(encryptedPassword, userString, salt, iv);
     }
-
-    removeKey(): void {
-        this.encrypter = null;
-        this.decrypter = null;
-    }
-
-    // returns JWE: HEADER.KEY.IV.TEXT.INTEGRITY
-    encryptText(plaintext: string): PromiseLike<string> {
-        return this.encrypter.encrypt(plaintext);
-    }
-
-    decryptText(ciphertext: string): PromiseLike<string> {
-        return this.decrypter.decrypt(ciphertext);
-    }
-
 }
