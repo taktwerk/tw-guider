@@ -68,7 +68,6 @@ export class AuthDb extends DbBaseModel {
 
   public save(forceCreation?: boolean): Promise<any> {
     return new Promise((resolve) => {
-      console.log('forceCreation', forceCreation);
       if (this.userId && forceCreation) {
         this.update().then(() => resolve(true));
       } else {

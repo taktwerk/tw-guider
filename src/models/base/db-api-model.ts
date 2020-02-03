@@ -83,7 +83,6 @@ export abstract class DbApiModel extends DbBaseModel {
         // default boilerplate fields
         obj.idApi = this.getNumberValue(apiObj[this.apiPk]);
         obj.created_at = this.getDateFromString(apiObj.created_at);
-        console.log('obj.created_at', obj.created_at);
         obj.created_by = this.getNumberValue(apiObj.created_by);
         obj.updated_at = this.getDateFromString(apiObj.updated_at);
         obj.updated_by = this.getNumberValue(apiObj.updated_by);
@@ -212,7 +211,6 @@ export abstract class DbApiModel extends DbBaseModel {
         } else {
             this.setUpdateCondition();
         }
-        console.log('in save method');
         return new Promise((resolve) => {
             this.beforeSave(isSynced);
             this.exists().then((res) => {

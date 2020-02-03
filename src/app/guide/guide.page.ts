@@ -51,7 +51,6 @@ export class GuidePage implements OnInit {
   }
 
   public openFile(filePath, nativeUrl, title?: string) {
-    console.log('open file');
     if (!nativeUrl) {
       return null;
     }
@@ -63,7 +62,6 @@ export class GuidePage implements OnInit {
       if (title) {
         photoTitle = title;
       }
-      console.log('nativeUrl', nativeUrl)
       this.photoViewer.show(nativeUrl, photoTitle);
     }
   }
@@ -75,7 +73,6 @@ export class GuidePage implements OnInit {
   }
 
   setCurrentStepIndex(event) {
-    console.log(this.guideStepSlider.getActiveIndex());
     this.guideStepSlider.getActiveIndex();
     this.currentStepNumber = event.clickedIndex;
   }
@@ -125,7 +122,6 @@ export class GuidePage implements OnInit {
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     if (this.guideId) {
       this.guiderService.getById(this.guideId).then((result) => {
-        console.log('result for get by id', result);
         if (result.length) {
           this.guide = result[0];
           this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());

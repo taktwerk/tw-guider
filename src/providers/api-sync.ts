@@ -139,23 +139,9 @@ export class ApiSync {
 
     public syncMustBeEnd(): boolean {
         if (this.isOffNetwork()) {
-            console.log(1);
             return true;
         }
-        // if (this.isAllItemsSynced() && this.syncProgressStatus.getValue() !== 'success') {
-        //     console.log(2);
-        //     this.userDb.userSetting.syncStatus = 'success';
-        //     this.userDb.save().then(() => {
-        //         this.syncProgressStatus.next('success');
-        //         this.isStartSyncBehaviorSubject.next(false);
-        //         this.isPrepareSynData.next(false);
-        //         this.isBusy = false;
-        //     });
-        //
-        //     return true;
-        // }
         if (this.willMakeCancel()) {
-            console.log(3);
             this.isStartSyncBehaviorSubject.next(false);
             this.isPrepareSynData.next(false);
             this.isBusy = false;
@@ -163,7 +149,6 @@ export class ApiSync {
             return true;
         }
         if (this.syncProgressStatus.getValue() === 'pause') {
-            console.log(4);
             this.isStartSyncBehaviorSubject.next(false);
             this.isPrepareSynData.next(false);
             this.isBusy = false;
@@ -390,7 +375,6 @@ export class ApiSync {
     }
 
     async saveModel(apiService, model) {
-        console.log('in save models before load from api');
         const obj = apiService.dbModelApi.loadFromApi(model);
         obj.is_synced = true;
         let oldModel = await apiService.dbModelApi.findFirst(['id', obj.idApi]);
