@@ -58,8 +58,7 @@
                 <div style="width: 70px;height: 70px;">
                     <img *ngIf="feedback.isImageAttachedFile()"
                          (click)="openFile(feedback.getApiFilePath(), feedback.getLocalFilePath(), feedback.attached_file)"
-                         src="{{ feedback.getFile() }}"
-                         imageViewer
+                         [src]="feedback.getFile()"
                     >
                     <ion-icon name="videocam"
                               class="videocam"
@@ -109,8 +108,7 @@
         <div style="width: 70px;height: 70px;">
             <img *ngIf="model.isImageAttachedFile()"
                  (click)="openFile(model.getApiFilePath(), model.getLocalFilePath(), model.attached_file)"
-                 src="{{ model.getFile() }}"
-                 imageViewer
+                 [src]="model.getFile()"
             >
             <ion-icon name="videocam"
                       class="videocam"

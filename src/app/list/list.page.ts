@@ -94,9 +94,11 @@ export class ListPage implements OnInit {
       });
     } else {
       this.guideCategoryService.findAll().then(guideCategories => {
+        console.log('in find all now', guideCategories);
         this.guideCategories = guideCategories;
         this.guideCategories.map((guideCategory) => {
           this.guideCategoryService.getGuides(guideCategory.idApi, this.searchValue).then((guides) => {
+            console.log('guides in category', guides);
             guideCategory.guides = guides;
           });
         });
