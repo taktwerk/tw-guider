@@ -634,6 +634,7 @@ export abstract class DbBaseModel {
             case DbBaseModel.TYPE_BOOLEAN :
                 return this.getValueBoolean(value);
             case DbBaseModel.TYPE_DATE :
+                console.log('getValueByType value', value);
                 return this.getValueDate(value);
             case DbBaseModel.TYPE_OBJECT :
                 return this.getValueObject(value);
