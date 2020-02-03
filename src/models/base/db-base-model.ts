@@ -668,6 +668,7 @@ export abstract class DbBaseModel {
                     resolve(false);
                 } else {
                     console.log('this.columnValues()', this.columnValues());
+                    console.log('this.columnNames()', this.columnNames());
                     let query = 'INSERT INTO ' + this.secure(this.TABLE_NAME) + ' (`' + this.columnNames().join('`, `') + '`) ' +
                         'VALUES (' + this.columnValues().join(', ') + ') ';
                     console.log(this.TAG, 'create statement', query);
@@ -849,6 +850,12 @@ export abstract class DbBaseModel {
      */
     protected getValueDate(date: Date): string {
         // console.debug(this.TAG, 'try to get value from date', date);
+        if (date instanceof Date && date !== null) {
+            console.log('getValueDate date', date);
+            console.log('getValueDate date.getTime()', date.getTime());
+            console.log('getValueDate Math.floor(date.getTime() / 1000)', Math.floor(date.getTime() / 1000));
+        }
+
         return date instanceof Date && date !== null ? '' + Math.floor(date.getTime() / 1000) : 'null';
     }
 
