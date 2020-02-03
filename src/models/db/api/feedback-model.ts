@@ -88,7 +88,7 @@ export class FeedbackModel extends DbApiModel {
 
     public getFile() {
         if (this[FeedbackModel.COL_LOCAL_ATTACHED_FILE]) {
-            return this.downloadService.webview.convertFileSrc(this[FeedbackModel.COL_LOCAL_ATTACHED_FILE]);
+            return this.downloadService.getNativeFilePath(this[FeedbackModel.COL_LOCAL_ATTACHED_FILE]);
         } else {
             return this.defaultImage;
         }

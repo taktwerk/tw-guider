@@ -44,8 +44,7 @@
                 <div slot="fixed">{{ stepNumber + 1 }} / {{ guideSteps.length }}</div>
                 <img *ngIf="step.isImageAttachedFile()"
                      (click)="openFile(step.getApiFilePath(), step.getLocalFilePath(), step.title)"
-                     src="{{ step.getFile() }}"
-                     imageViewer
+                     [src]="step.getFile()"
                 >
                 <ion-icon name="videocam"
                           class="videocam"
@@ -56,14 +55,9 @@
                 </ion-icon>
                 <img *ngIf="!step.isImageAttachedFile() && !step.isVideoAttachedFile()"
                      src="/assets/placeholder.jpg"
-                     imageViewer
                 >
                 <h2>{{step.title}}</h2>
                 <html-description-component [html]="step.description_html"></html-description-component>
-<!--                <div style="position: relative;display: flex;flex-direction: column;min-width: 0;word-wrap: break-word;"-->
-<!--                     [innerHTML]="step.description_html | safeHtml"-->
-<!--                >-->
-<!--                </div>-->
             </ion-slide>
         </ion-slides>
         <ion-card class="ion-text-center ion-padding">
@@ -75,14 +69,13 @@
                     <div class="ion-text-center" *ngIf="asset.isFile() && asset.isPdf()">
                         <img (click)="openFile(asset.getApiPdfImageFilePath(), asset.getLocalPdfImageFilePath(), asset.name)"
                              class="pdf-image"
-                             src="{{ asset.getPdf() }}"
-                             imageViewer
+                             [src]="asset.getPdf()"
                         >
                     </div>
                     <div *ngIf="asset.isFile() && !asset.isPdf()">
                         <img (click)="openFile(asset.getApiFilePath(), asset.getLocalFilePath(), asset.name)"
                              class="pdf-image"
-                             src="{{ asset.getAssetFile() }}" imageViewer
+                             [src]="asset.getAssetFile()"
                         >
                     </div>
                     <ion-button *ngIf="!asset.isFile()" color="medium" (click)="openAssetTextModal(asset)">

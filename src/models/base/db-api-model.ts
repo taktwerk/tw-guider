@@ -79,7 +79,6 @@ export abstract class DbApiModel extends DbBaseModel {
             let memberName = column[3] ? column[3] : columnName;
             obj[memberName] = this.getObjectByType(apiObj[memberName], type);
         }
-
         // default boilerplate fields
         obj.idApi = this.getNumberValue(apiObj[this.apiPk]);
         obj.created_at = this.getDateFromString(apiObj.created_at);

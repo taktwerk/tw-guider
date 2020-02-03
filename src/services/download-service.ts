@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, SecurityContext} from '@angular/core';
 import {Platform} from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
@@ -6,6 +6,7 @@ import {BehaviorSubject} from 'rxjs';
 import {HttpClient, HttpHeaders as Headers} from '@angular/common/http';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
 import {finalize} from 'rxjs/operators';
+import {DomSanitizer} from '@angular/platform-browser';
 
 /**
  * Download file class
@@ -27,12 +28,14 @@ export class DownloadService {
      * @param {File} file
      * @param webview
      * @param {Toast} toast
+     * @param domSanitizer
      */
     constructor(public http: HttpClient,
                 public platform: Platform,
                 public file: File,
                 public webview: WebView,
-                private toast: Toast
+                private toast: Toast,
+                private domSanitizer: DomSanitizer
     ) {
         this.pushProgressFilesInfo = new BehaviorSubject<any>({});
     }
@@ -346,5 +349,16 @@ export class DownloadService {
                 console.error('DownloadService', 'deleteFile', path, fileName, error);
             });
         }
+    }
+
+    public getNativeFilePath(path) {
+        const convertFileSrc = this.webview.convertFileSrc(path);
+        // const sanitizedUrl = this.domSanitizer.sanitize(
+        //     SecurityContext.HTML,
+        const sanitizedUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
+        // );
+        console.log('sanitizedUrl', sanitizedUrl);
+
+        return sanitizedUrl;
     }
 }

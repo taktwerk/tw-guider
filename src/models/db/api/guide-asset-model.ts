@@ -100,7 +100,7 @@ export class GuideAssetModel extends DbApiModel {
 
     public getPdf() {
         if (this[GuideAssetModel.COL_LOCAL_PDF_IMAGE]) {
-            return this.downloadService.webview.convertFileSrc(this[GuideAssetModel.COL_LOCAL_PDF_IMAGE]);
+            return this.downloadService.getNativeFilePath(this[GuideAssetModel.COL_LOCAL_PDF_IMAGE]);
         } else {
             return this.defaultImage;
         }
@@ -108,7 +108,7 @@ export class GuideAssetModel extends DbApiModel {
 
     public getAssetFile() {
         if (this[GuideAssetModel.COL_LOCAL_ASSET_FILE]) {
-            return this.downloadService.webview.convertFileSrc(this[GuideAssetModel.COL_LOCAL_ASSET_FILE]);
+            return this.downloadService.getNativeFilePath(this[GuideAssetModel.COL_LOCAL_ASSET_FILE]);
         } else {
             return this.defaultImage;
         }
