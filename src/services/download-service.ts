@@ -351,8 +351,8 @@ export class DownloadService {
         }
     }
 
-    public getNativeFilePath(path) {
-        path = this.file.dataDirectory + '/' + path;
+    public getNativeFilePath(path, modelName) {
+        path = this.file.dataDirectory + modelName + '/' + path;
         const convertFileSrc = this.webview.convertFileSrc(path);
         // const sanitizedUrl = this.domSanitizer.sanitize(
         //     SecurityContext.HTML,
