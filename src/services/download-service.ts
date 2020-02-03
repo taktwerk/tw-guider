@@ -144,7 +144,6 @@ export class DownloadService {
     ): Promise<boolean> {
         return new Promise(resolve => {
             this.file.resolveDirectoryUrl(this.file.dataDirectory + modelName).then((directoryEntry) => {
-                console.log('directoryEntry', directoryEntry);
                 this.file.getFile(directoryEntry, fileName, {})
                     .then(fileEntry => {
                         fileEntry.file(file => {
@@ -154,7 +153,6 @@ export class DownloadService {
                         });
                     })
                     .catch(err => {
-                        console.log('errror', err);
                         resolve(false);
                         return;
                     });

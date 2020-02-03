@@ -293,7 +293,6 @@ export class AuthService {
             if (!isAuthenticatedUser) {
                 this.ngZone.run(() => {
                     this.navCtrl.navigateRoot('login').then(() => {
-                        console.log('navigate to login');
                         this.showToast('You are not authorized.', 'Please, login', 'danger');
                     });
                 });
@@ -328,8 +327,6 @@ export class AuthService {
             duration: 3000,
             color: toastColor
         };
-
-        console.log('toast showing');
 
         const toast = await this.toastCtrl.create(toastOptions);
         await toast.present();
