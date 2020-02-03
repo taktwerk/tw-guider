@@ -390,6 +390,7 @@ export class ApiSync {
     }
 
     async saveModel(apiService, model) {
+        console.log('in save models before load from api');
         const obj = apiService.dbModelApi.loadFromApi(model);
         obj.is_synced = true;
         let oldModel = await apiService.dbModelApi.findFirst(['id', obj.idApi]);

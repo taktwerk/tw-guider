@@ -651,7 +651,9 @@ export abstract class DbBaseModel {
         let values: any[] = [];
         for (let column of this.TABLE) {
             let member = column[3] ? column[3] : column[0];
+            console.log('member', member);
             let value: any = (<any>this)[(member)];
+            console.log('value', value);
             values.push(this.getValueByType(value, column[2]));
         }
         return values;
@@ -787,6 +789,7 @@ export abstract class DbBaseModel {
      * @param date
      */
     protected getDateFromString(date: string): Date {
+        console.log('date in getDateFromString', date);
         return date ? new Date(date) : null;
     }
 
