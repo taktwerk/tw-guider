@@ -14,7 +14,7 @@
   }
 </style>
 
-<ion-buttons slot="primary">
+<ion-buttons *ngIf="isLoggedUser" slot="primary">
   <div (click)="openSyncModal()"
        class="sync-status"
   >

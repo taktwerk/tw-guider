@@ -3,9 +3,6 @@ import 'rxjs/add/operator/map';
 import {DbApiModel} from "../../../models/base/db-api-model";
 import {HttpClient} from "../../../services/http-client";
 import {AppSetting} from "../../../services/app-setting";
-import {UserDb} from "../../../models/db/user-db";
-import {BehaviorSubject} from 'rxjs';
-import {ApiSync} from '../../api-sync';
 import {Events} from '@ionic/angular';
 
 @Injectable()

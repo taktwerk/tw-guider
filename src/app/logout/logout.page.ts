@@ -18,9 +18,8 @@ export class LogoutPage {
   constructor(public navCtrl: NavController,
               public http: HttpClient,
               public authService: AuthService) {
-      this.authService.checkAccess();
       this.authService.logout().then(data => {
-        this.navCtrl.navigateRoot('/home');
+        this.navCtrl.navigateRoot('/login');
         this.http.showToast('You are logged out.');
       });
   }
