@@ -113,14 +113,12 @@ export class AppComponent implements OnInit {
       if (this.previousStatus === ConnectionStatusEnum.Online) {
         this.events.publish('network:offline', true);
         this.previousStatus = ConnectionStatusEnum.Offline;
-        this.http.showToast('Application now offline!');
       }
     });
     this.network.onConnect().subscribe(() => {
       if (this.previousStatus === ConnectionStatusEnum.Offline) {
         this.events.publish('network:online', true);
         this.previousStatus = ConnectionStatusEnum.Online;
-        this.http.showToast('Application now online!');
         if (this.authService.isLoggedin) {
           this.apiPush.pushOneAtTime();
           if (this.syncService.syncMode.getValue() === 1) {

@@ -37,7 +37,7 @@ export class ListPage implements OnInit {
 
   public getModels() {
     this.guiderService.data.filter(model => {
-      return !model[model.COL_DELETED_AT];
+      return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
     });
 
     return this.guiders;

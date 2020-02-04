@@ -52,7 +52,7 @@ export abstract class ApiService {
      */
     public available() {
         return this.data.filter(model => {
-            return model[model.COL_DELETED_AT] === '';
+            return model[model.COL_DELETED_AT] === '' && model[model.COL_LOCAL_DELETED_AT] === '';
         });
     }
 
@@ -64,7 +64,6 @@ export abstract class ApiService {
     private loadApi(forceReload?: boolean, save?: boolean): Promise<any[]> {
         //return current data if service is busy
         if (!this.isReady) {
-            console.warn('ApiService', 'loadApi', 'Service is busy... Abort HTTP-Request...');
             return Promise.resolve(this.data);
         }
 
@@ -108,7 +107,6 @@ export abstract class ApiService {
                 resolve(false);
               } else {
                 this.dbModelApi.prepareBatchPost(<DbApiModel[]>models).then((res) => {
-                  console.info('ApiService', 'saveApi', 'done');
                   resolve(res);
                 });
               }
@@ -182,10 +180,10 @@ export abstract class ApiService {
                     resolve(res);
                 });
             } else {
-                model[model.COL_DELETED_AT] = new Date();
+                model[model.COL_DELETED_AT] = model[model.COL_LOCAL_DELETED_AT] = new Date();
                 model.save().then(res => {
                     resolve(res);
-                })
+                });
             }
         });
     }

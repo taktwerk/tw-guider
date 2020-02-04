@@ -14,7 +14,6 @@
 </ion-header>
 
 <ion-content>
-<!--  <ion-list>-->
     <div *ngFor="let guideCategory of guideCategories">
       <div *ngIf="guideCategory.guides &&  guideCategory.guides.length">
         <ion-item>
@@ -48,11 +47,4 @@
         </ion-list>
       </div>
     </div>
-
-<!--  </ion-list>-->
-  <!--
-    <div *ngIf="selectedItem" padding>
-      You navigated here from <b>{{selectedItem.title }}</b>
-    </div>
-  -->
 </ion-content>

@@ -480,11 +480,9 @@ export abstract class DbBaseModel {
                     }
                 }
             }
-        }
-        else {
+        } else {
             console.debug(this.TAG, 'findAllWhere condition error', condition);
         }
-        // console.info(this.TAG, 'parseWhere', 'final conditions', conditions);
         return conditions.join(' AND ');
     }
 
@@ -700,7 +698,7 @@ export abstract class DbBaseModel {
                         resolve(false);
                     });
                 }
-            })
+            });
         });
     }
 

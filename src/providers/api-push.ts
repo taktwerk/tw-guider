@@ -179,8 +179,10 @@ export class ApiPush {
                         if (!body) {
                             return;
                         }
+                        console.log('allServicesBodies', body);
 
-                        let jsonBody = JSON.stringify(body);
+                        const jsonBody = JSON.stringify(body);
+                        console.log('jsonBodyshe', jsonBody);
 
                         promises.push(new Promise((resolve) => {
                             if (this.pushProgressStatus.getValue() === 'failed') {
@@ -194,15 +196,22 @@ export class ApiPush {
                                         resolve(false);
                                         return;
                                     }
-                                    //iterate over all received records
-                                    let record = data[0];
-                                    if (record.errors) {
+                                    // search error
+                                    let isError = false;
+                                    Object.keys(data).forEach((key) => {
+                                        const recordResponse = data[key];
+                                        if (recordResponse.errors) {
+                                            isError = true;
+                                        }
+                                    });
+                                    if (isError) {
                                         this.isStartPushBehaviorSubject.next(false);
-                                        this.pushProgressStatus.next('failed');
                                         this.isBusy = false;
                                         resolve(false);
                                         return;
                                     }
+                                    console.log('not ended');
+                                    const record = data[0];
                                     //get model by local id and update received primary key from api
                                     service.dbModelApi.findById(record._id, true).then((dbModel) => {
                                         if (!dbModel) {

@@ -62,8 +62,11 @@ export class GuideCategoryModel extends DbApiModel {
             const whereCondition = [
                 this.secure('guide_category') + '.' + this.secure('id') + '=' + this.idApi,
                 this.secure('guide') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL',
+                this.secure('guide') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL',
                 this.secure('guide_category') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL',
-                this.secure('guide_category_binding') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL'
+                this.secure('guide_category') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL',
+                this.secure('guide_category_binding') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL',
+                this.secure('guide_category_binding') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL'
             ];
             if (searchValue) {
                 whereCondition.push(

@@ -93,7 +93,7 @@ export class GuidePage implements OnInit {
   public setGuideSteps(id) {
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
       this.guideSteps = results.filter(model => {
-        return !model[model.COL_DELETED_AT];
+        return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
     });
   }
@@ -101,7 +101,7 @@ export class GuidePage implements OnInit {
   public setAssets(id) {
     return this.guiderService.dbModelApi.setAssets(id).then(results => {
       this.guideAssets = results.filter(model => {
-        return !model[model.COL_DELETED_AT];
+        return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
     });
   }
