@@ -480,11 +480,9 @@ export abstract class DbBaseModel {
                     }
                 }
             }
-        }
-        else {
+        } else {
             console.debug(this.TAG, 'findAllWhere condition error', condition);
         }
-        // console.info(this.TAG, 'parseWhere', 'final conditions', conditions);
         return conditions.join(' AND ');
     }
 
@@ -664,8 +662,6 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(false);
                 } else {
-                    console.log('this.columnValues()', this.columnValues());
-                    console.log('this.columnNames()', this.columnNames());
                     let query = 'INSERT INTO ' + this.secure(this.TABLE_NAME) + ' (`' + this.columnNames().join('`, `') + '`) ' +
                         'VALUES (' + this.columnValues().join(', ') + ') ';
                     db.query(query).then((res) => {
@@ -676,7 +672,6 @@ export abstract class DbBaseModel {
                         resolve(res);
 
                     }).catch((err) => {
-                        console.log(this.TAG, 'CREATE', 'ERROR', err);
                         resolve(false);
                     });
                 }
@@ -703,7 +698,7 @@ export abstract class DbBaseModel {
                         resolve(false);
                     });
                 }
-            })
+            });
         });
     }
 

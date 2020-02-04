@@ -124,7 +124,8 @@ export class GuiderModel extends DbApiModel {
 
     public addRelativeData(newData, relationKey) {
         const indexApi = this[relationKey].findIndex(record => newData.idApi && record.idApi === newData.idApi);
-        const deletedIndexApi = this[relationKey].findIndex(record => !record.deleted_at);
+        const deletedIndexApi = this[relationKey]
+            .findIndex(record => !record.deleted_at && !record.local_deleted_at);
 
         if (indexApi !== -1) {
             this[relationKey][indexApi] = newData;
@@ -137,7 +138,7 @@ export class GuiderModel extends DbApiModel {
         const guideStepModel = new GuideStepModel(this.platform, this.db, this.events, this.downloadService);
         guideStepModel.findAllWhere(['guide_id', this.idApi], 'order_number ASC').then(results => {
             results.map(model => {
-                if (!model[model.COL_DELETED_AT]) {
+                if (!model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]) {
                     this.addRelativeData(model, 'steps');
                 }
             });
@@ -151,8 +152,11 @@ export class GuiderModel extends DbApiModel {
                 ' JOIN ' + this.secure('guide_asset') + ' ON ' + this.secure('guide_asset_pivot') + '.' + this.secure('guide_asset_id') + '=' + this.secure('guide_asset') + '.' + this.secure('id') +
                 ' WHERE ' + this.secure('guide') + '.' + this.secure('id') + ' = ' + id +
                 ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
+                ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL' +
                 ' AND ' + this.secure('guide_asset') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
+                ' AND ' + this.secure('guide_asset') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL' +
                 ' AND ' + this.secure('guide_asset_pivot') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
+                ' AND ' + this.secure('guide_asset_pivot') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL' +
                 ' GROUP BY guide_asset.id';
 
             this.db.query(query).then((res) => {

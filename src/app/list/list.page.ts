@@ -37,7 +37,7 @@ export class ListPage implements OnInit {
 
   public getModels() {
     this.guiderService.data.filter(model => {
-      return !model[model.COL_DELETED_AT];
+      return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
     });
 
     return this.guiders;
@@ -64,11 +64,9 @@ export class ListPage implements OnInit {
       });
     } else {
       this.guideCategoryService.findAll().then(guideCategories => {
-        console.log('in find all now', guideCategories);
         this.guideCategories = guideCategories;
         this.guideCategories.map((guideCategory) => {
           this.guideCategoryService.getGuides(guideCategory.idApi, this.searchValue).then((guides) => {
-            console.log('guides in category', guides);
             guideCategory.guides = guides;
           });
         });

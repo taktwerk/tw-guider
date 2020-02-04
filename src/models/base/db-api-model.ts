@@ -22,10 +22,13 @@ export abstract class DbApiModel extends DbBaseModel {
 
     //API boilerplate default fields members
     public created_at: Date;
+    public local_created_at: Date;
     public created_by: number;
     public updated_at: Date;
+    public local_updated_at: Date;
     public updated_by: number;
     public deleted_at: Date;
+    public local_deleted_at: Date;
     public deleted_by: number;
 
     // download mapping
@@ -38,12 +41,15 @@ export abstract class DbApiModel extends DbBaseModel {
     public COL_ID_API: string = 'id';
     /** date time when this record was created on API */
     public COL_CREATED_AT: string = 'created_at';
+    public COL_LOCAL_CREATED_AT: string = 'local_created_at';
     public COL_CREATED_BY: string = 'created_by';
     /** date time when this record was updated on API */
     public COL_UPDATED_AT: string = 'updated_at';
+    public COL_LOCAL_UPDATED_AT: string = 'local_updated_at';
     public COL_UPDATED_BY: string = 'updated_by';
     /** date time when this record was deleted on API */
     public COL_DELETED_AT: string = 'deleted_at';
+    public COL_LOCAL_DELETED_AT: string = 'local_deleted_at';
     public COL_DELETED_BY: string = 'deleted_by';
 
     /**
@@ -74,18 +80,21 @@ export abstract class DbApiModel extends DbBaseModel {
 
         // iterate over table fields
         for (let column of this.TABLE) {
-            let columnName = column[0];
-            let type: number = parseInt(column[2]);
-            let memberName = column[3] ? column[3] : columnName;
+            const columnName = column[0];
+            const type: number = parseInt(column[2]);
+            const memberName = column[3] ? column[3] : columnName;
             obj[memberName] = this.getObjectByType(apiObj[memberName], type);
         }
         // default boilerplate fields
         obj.idApi = this.getNumberValue(apiObj[this.apiPk]);
         obj.created_at = this.getDateFromString(apiObj.created_at);
+        obj.local_created_at = this.getDateFromString(apiObj.local_created_at);
         obj.created_by = this.getNumberValue(apiObj.created_by);
         obj.updated_at = this.getDateFromString(apiObj.updated_at);
+        obj.local_updated_at = this.getDateFromString(apiObj.local_updated_at);
         obj.updated_by = this.getNumberValue(apiObj.updated_by);
         obj.deleted_at = this.getDateFromString(apiObj.deleted_at);
+        obj.local_deleted_at = this.getDateFromString(apiObj.local_deleted_at);
         obj.deleted_by = this.getNumberValue(apiObj.deleted_by);
 
         return obj;
@@ -146,13 +155,15 @@ export abstract class DbApiModel extends DbBaseModel {
      * @returns {Promise<any>}
      */
     protected dbCreateTable(): Promise<any> {
-        //init api table columns
         this.TABLE.push([this.COL_IS_SYNCED, 'TINYINT(1) DEFAULT 1', DbBaseModel.TYPE_BOOLEAN, 'is_synced']);
         this.TABLE.push([this.COL_CREATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
+        this.TABLE.push([this.COL_LOCAL_CREATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_CREATED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
         this.TABLE.push([this.COL_UPDATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
+        this.TABLE.push([this.COL_LOCAL_UPDATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_UPDATED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
         this.TABLE.push([this.COL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
+        this.TABLE.push([this.COL_LOCAL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_DELETED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
         if (!this.hasOwnProperty('user_id')) {
             this.TABLE.push([this.COL_ID_API, 'INT UNIQUE', DbBaseModel.TYPE_NUMBER, 'idApi']);
@@ -170,10 +181,13 @@ export abstract class DbApiModel extends DbBaseModel {
         this.idApi = item[this.COL_ID_API];
         this.is_synced = item[this.COL_IS_SYNCED];
         this.created_at = this.getDateValue(item[this.COL_CREATED_AT]);
+        this.local_created_at = this.getDateValue(item[this.COL_LOCAL_CREATED_AT]);
         this.created_by = this.getNumberValue(item[this.COL_CREATED_BY]);
         this.updated_at = this.getDateValue(item[this.COL_UPDATED_AT]);
+        this.local_updated_at = this.getDateValue(item[this.COL_LOCAL_UPDATED_AT]);
         this.updated_by = this.getNumberValue(item[this.COL_UPDATED_BY]);
         this.deleted_at = this.getDateValue(item[this.COL_DELETED_AT]);
+        this.local_deleted_at = this.getDateValue(item[this.COL_LOCAL_DELETED_AT]);
         this.deleted_by = this.getNumberValue(item[this.COL_DELETED_BY]);
         return super.loadFromAttributes(item);
     }
@@ -192,7 +206,7 @@ export abstract class DbApiModel extends DbBaseModel {
      * @param forceCreation optional param to force creation
      */
     public saveSynced(forceCreation?: boolean): Promise<any> {
-        return this.save(forceCreation, true);
+        return this.save(forceCreation, true, null, false);
     }
 
     /**
@@ -203,7 +217,7 @@ export abstract class DbApiModel extends DbBaseModel {
      * @param updateCondition optional fix updateCondition
      * @override
      */
-    public save(forceCreation?: boolean, isSynced?: boolean, updateCondition?: string): Promise<any> {
+    public save(forceCreation?: boolean, isSynced?: boolean, updateCondition?: string, isSaveLocaleDates: boolean = true): Promise<any> {
         if (updateCondition) {
             // Provided by the service
             this.updateCondition = updateCondition;
@@ -214,8 +228,15 @@ export abstract class DbApiModel extends DbBaseModel {
             this.beforeSave(isSynced);
             this.exists().then((res) => {
                 if (res) {
+                    if (isSaveLocaleDates) {
+                        this[this.COL_LOCAL_UPDATED_AT] = new Date();
+                    }
                     this.update().then(() => resolve(true));
                 } else {
+                    if (isSaveLocaleDates) {
+                        this[this.COL_LOCAL_CREATED_AT] = new Date();
+                        this[this.COL_LOCAL_UPDATED_AT] = new Date();
+                    }
                     this.create().then(() => resolve(true));
                 }
             });
@@ -228,6 +249,7 @@ export abstract class DbApiModel extends DbBaseModel {
 
     public remove(): Promise<any> {
         return new Promise(resolve => {
+            this[this.COL_LOCAL_DELETED_AT] = new Date();
             this.delete().then(() => resolve(true));
         });
     }
@@ -238,13 +260,11 @@ export abstract class DbApiModel extends DbBaseModel {
      */
     public prepareBatchPost(models: DbApiModel[]): Promise<any[]> {
         return new Promise((resolve) => {
-            //console.info(this.TAG,'saveApi', 'start api batch sync', models);
             let modelBodies: any[] = [];
             for (let model of models) {
                 // Push the model in the data
                 modelBodies.push(model.getBodyJson());
             }
-            //console.info(this.TAG,'saveApi', 'loaded bodies for batch sync', modelBodies);
             resolve(modelBodies);
         });
     }
@@ -288,8 +308,10 @@ export abstract class DbApiModel extends DbBaseModel {
         obj[this.apiPk] = this.idApi;
         obj['_id'] = this.id;
 
-        // Always add deleted_at for offline deletion support
         obj['deleted_at'] = this.formatApiDate(this[this.COL_DELETED_AT]);
+        obj['local_deleted_at'] = this.formatApiDate(this[this.COL_LOCAL_DELETED_AT]);
+        obj['local_updated_at'] = this.formatApiDate(this[this.COL_LOCAL_UPDATED_AT]);
+        obj['local_created_at'] = this.formatApiDate(this[this.COL_LOCAL_CREATED_AT]);
 
         for (let i = 0; i < columns.length; i++) {
             let type: number = types[i];

@@ -122,7 +122,7 @@ export class FeedbackPage implements OnInit {
         if (!user) {
             return;
         }
-        const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL'];
+        const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
         if (this.reference_id && this.reference_model) {
             feedbackSearchCondition.push(['reference_id', this.reference_id]);
             // feedbackSearchCondition.push(['reference_model', this.reference_model]);

@@ -38,10 +38,6 @@ export class LoginPage {
                 public apiSync: ApiSync,
                 private network: Network) {}
 
-    ionViewDidLoad() {
-        console.log('ionViewDidLoad LoginPage');
-    }
-
     /**
      * Try to login with the current pin-code and redirect the user to the
      * dashboard if the login was successful. Otherwise show fail message.
@@ -57,7 +53,6 @@ export class LoginPage {
     loginOffine(form: NgForm) {
         this.http.showToast('Offline login');
         this.authService.offlineAuthenticate(form.value).then((result) => {
-            console.log('result for offline login', result);
             if (!result) {
                 this.http.showToast('Wrong password or login!');
             } else {

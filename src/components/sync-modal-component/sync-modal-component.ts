@@ -133,20 +133,20 @@ export class SyncModalComponent implements OnInit {
                 this.syncProgressStatus = syncProgressStatus;
                 this.detectChanges();
             });
-        this.apiSync.syncedItemsPercent.subscribe(syncedItemsPercent => {
-            this.syncedItemsPercent = syncedItemsPercent;
-            this.detectChanges();
-        });
         this.apiSync.isPrepareSynData.subscribe(isPrepareSynData => {
             this.isPrepareSynData = isPrepareSynData;
             this.detectChanges();
         });
         this.apiSync.syncedItemsCount.subscribe(syncedItemsCount => {
-            this.syncedItemsCount = syncedItemsCount;
+            this.syncedItemsCount = syncedItemsCount ? syncedItemsCount : 0;
             this.detectChanges();
         });
         this.apiSync.syncAllItemsCount.subscribe(syncAllItemsCount => {
-            this.syncAllItemsCount = syncAllItemsCount;
+            this.syncAllItemsCount = syncAllItemsCount ? syncAllItemsCount : 0;
+            this.detectChanges();
+        });
+        this.apiSync.syncedItemsPercent.subscribe(syncedItemsPercent => {
+            this.syncedItemsPercent = syncedItemsPercent ? syncedItemsPercent : 0;
             this.detectChanges();
         });
         this.apiSync.noDataForSync.subscribe(noDataForSync => {

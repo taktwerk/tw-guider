@@ -16,7 +16,7 @@ export class FeedbackModel extends DbApiModel {
     public user_id: number = null;
     public title: string;
     public description: string;
-    public reference_model: string = 'app\\modules\\guide\\models\\Guide';
+    public reference_model: string = null;
     public feedback_url: string = '';
     public status = 'Open';
     public reference_id: number = null;

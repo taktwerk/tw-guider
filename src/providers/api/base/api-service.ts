@@ -3,9 +3,6 @@ import 'rxjs/add/operator/map';
 import {DbApiModel} from "../../../models/base/db-api-model";
 import {HttpClient} from "../../../services/http-client";
 import {AppSetting} from "../../../services/app-setting";
-import {UserDb} from "../../../models/db/user-db";
-import {BehaviorSubject} from 'rxjs';
-import {ApiSync} from '../../api-sync';
 import {Events} from '@ionic/angular';
 
 @Injectable()
@@ -52,7 +49,7 @@ export abstract class ApiService {
      */
     public available() {
         return this.data.filter(model => {
-            return model[model.COL_DELETED_AT] === '';
+            return model[model.COL_DELETED_AT] === '' && model[model.COL_LOCAL_DELETED_AT] === '';
         });
     }
 
@@ -64,7 +61,6 @@ export abstract class ApiService {
     private loadApi(forceReload?: boolean, save?: boolean): Promise<any[]> {
         //return current data if service is busy
         if (!this.isReady) {
-            console.warn('ApiService', 'loadApi', 'Service is busy... Abort HTTP-Request...');
             return Promise.resolve(this.data);
         }
 
@@ -83,7 +79,6 @@ export abstract class ApiService {
                 .map(res => res.json())
                 .subscribe(data => {
                     this.isReady = true;
-                    //console.log('ApiService', 'loaded', data);
                     for (let record of data) {
                         let obj = this.dbModelApi.loadFromApi(record);
                         this.data.push(obj);
@@ -104,13 +99,11 @@ export abstract class ApiService {
             this.dbModelApi.parseWhere([this.dbModelApi.COL_IS_SYNCED, 0])
           )
             .then((models) => {
-                console.log('models in prepare batch', models);
               if (!models || models.length === 0) {
                 //console.warn('ApiService', 'saveApi', 'no not synced data found');
                 resolve(false);
               } else {
                 this.dbModelApi.prepareBatchPost(<DbApiModel[]>models).then((res) => {
-                  console.info('ApiService', 'saveApi', 'done');
                   resolve(res);
                 });
               }
@@ -147,12 +140,8 @@ export abstract class ApiService {
         let indexApi = this.data.findIndex(record => model.idApi && record.idApi === model.idApi);
         let indexDB = this.data.findIndex(record => model.id && record.id === model.id);
         if (indexApi !== -1) {
-            //update list item
-            //console.log(model.TAG, 'Api-Service', 'RemoveFromList', 'update', 'API', indexApi);
             this.data.splice(indexApi, 1);
         } else if (indexDB !== -1) {
-            //update list item
-            //console.log(model.TAG, 'Api-Service', 'RemoveFromList', 'update', 'DB', indexDB);
             this.data.splice(indexDB, 1);
         }
 
@@ -169,7 +158,6 @@ export abstract class ApiService {
         return new Promise(resolve => {
             model.save().then(res => {
                 if (res) {
-                    console.log(model.TAG, 'Service Save', 'Add to list ready', model);
                     // this.addToList(model);
                 }
                 resolve(res);
@@ -189,10 +177,10 @@ export abstract class ApiService {
                     resolve(res);
                 });
             } else {
-                model[model.COL_DELETED_AT] = new Date();
+                model[model.COL_DELETED_AT] = model[model.COL_LOCAL_DELETED_AT] = new Date();
                 model.save().then(res => {
                     resolve(res);
-                })
+                });
             }
         });
     }

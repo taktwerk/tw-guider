@@ -92,6 +92,7 @@ export class AppComponent implements OnInit {
   protected registerEvents() {
     this.events.subscribe('user:login', (userId) => {
       this.setPages();
+      this.baseProjectSetup();
     });
     this.events.subscribe('user:logout', () => {
       this.setPages();
@@ -113,14 +114,12 @@ export class AppComponent implements OnInit {
       if (this.previousStatus === ConnectionStatusEnum.Online) {
         this.events.publish('network:offline', true);
         this.previousStatus = ConnectionStatusEnum.Offline;
-        this.http.showToast('Application now offline!');
       }
     });
     this.network.onConnect().subscribe(() => {
       if (this.previousStatus === ConnectionStatusEnum.Offline) {
         this.events.publish('network:online', true);
         this.previousStatus = ConnectionStatusEnum.Online;
-        this.http.showToast('Application now online!');
         if (this.authService.isLoggedin) {
           this.apiPush.pushOneAtTime();
           if (this.syncService.syncMode.getValue() === 1) {
@@ -162,8 +161,9 @@ export class AppComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  protected baseProjectSetup() {
     this.initUserDB().then(() => {
+      console.log('this.userDb', this.userDb);
       if (this.userDb.userSetting.syncLastElementNumber > 0 &&
           (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
       ) {
@@ -181,23 +181,40 @@ export class AppComponent implements OnInit {
             this.apiSync.checkAvailableChanges();
           });
     });
+  }
+
+  protected logoutAction() {
+    this.userDb = null;
+    if (this.periodicSync) {
+      this.periodicSync.unsubscribe();
+      this.periodicSync = null;
+    }
+    if (this.checkAvailableSyncChanges) {
+      this.checkAvailableSyncChanges.unsubscribe();
+      this.periodicSync = null;
+    }
+  }
+
+  protected changeSyncModeAction(syncMode) {
+    if (syncMode !== 2 && this.periodicSync) {
+      this.periodicSync.unsubscribe();
+      this.periodicSync = null;
+    }
+    if (syncMode === 2) {
+      this.periodicSync = Observable.interval(15000)
+          .subscribe(() => {
+            this.apiSync.makeSyncProcess();
+          });
+    }
+  }
+
+  ngOnInit(): void {
+    this.baseProjectSetup();
     this.events.subscribe('user:logout', () => {
-      if (this.periodicSync) {
-        this.periodicSync.unsubscribe();
-        this.periodicSync = null;
-      }
+      this.logoutAction();
     });
-    this.syncService.syncMode.subscribe((result) => {
-        if (result !== 2 && this.periodicSync) {
-          this.periodicSync.unsubscribe();
-          this.periodicSync = null;
-        }
-        if (result === 2) {
-          this.periodicSync = Observable.interval(15000)
-              .subscribe(() => {
-                this.apiSync.makeSyncProcess();
-              });
-        }
+    this.syncService.syncMode.subscribe((syncMode) => {
+        this.changeSyncModeAction(syncMode);
     });
   }
 }

@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {AlertController, Events, ModalController, NavController} from '@ionic/angular';
+import {AlertController, Events, ModalController, NavController, Platform} from '@ionic/angular';
 
 import {ApiSync} from '../../providers/api-sync';
 import {AuthService} from '../../services/auth-service';
@@ -8,6 +8,9 @@ import {Network} from '@ionic-native/network/ngx';
 import {SyncModalComponent} from '../sync-modal-component/sync-modal-component';
 import {debounceTime} from 'rxjs/operators';
 import {ApiPush} from '../../providers/api-push';
+import {UserDb} from '../../models/db/user-db';
+import {DownloadService} from '../../services/download-service';
+import {DbProvider} from '../../providers/db-provider';
 
 /**
  * Generated class for the TodoPage page.
@@ -21,15 +24,19 @@ import {ApiPush} from '../../providers/api-push';
   templateUrl: 'sync-spinner-component.html',
 })
 export class SyncSpinnerComponent implements OnInit {
-
+    public userDb: UserDb;
     public isStartSync = false;
     public syncedItemsPercent = 0;
     public isNetwork = false;
     public iconStatus: string = 'unsynced';
     public isAvailableForSyncData: boolean = false;
     public isAvailableForPushData: boolean = false;
+    public isLoggedUser: boolean = false;
 
-    constructor(private apiSync: ApiSync,
+    constructor(private platform: Platform,
+                private downloadService: DownloadService,
+                private db: DbProvider,
+                private apiSync: ApiSync,
                 private apiPush: ApiPush,
                 private modalController: ModalController,
                 private changeDetectorRef: ChangeDetectorRef,
@@ -54,13 +61,47 @@ export class SyncSpinnerComponent implements OnInit {
         return await modal.present();
     }
 
+    protected initUserDB() {
+        if (this.userDb) {
+            return new Promise(resolve => {
+                resolve(true);
+            });
+        }
+
+        return new Promise(resolve => {
+            new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
+                if (userDb) {
+                    this.userDb = userDb;
+
+                    resolve(true);
+                }
+
+                resolve(false);
+            });
+        });
+    }
+
     ngOnInit() {
+        this.initUserDB().then((isLogged) => {
+            if (isLogged) {
+                this.isLoggedUser = true;
+                this.detectChanges();
+            }
+        });
         this.apiSync.isStartSyncBehaviorSubject.subscribe(isSync => {
             this.isStartSync = isSync;
             this.detectChanges();
         });
         this.apiSync.syncedItemsPercent.subscribe(syncedItemsPercent => {
             this.syncedItemsPercent = syncedItemsPercent;
+            this.detectChanges();
+        });
+        this.events.subscribe('user:login', (isNetwork) => {
+            this.isLoggedUser = true;
+            this.detectChanges();
+        });
+        this.events.subscribe('user:logout', (isNetwork) => {
+            this.isLoggedUser = false;
             this.detectChanges();
         });
         this.events.subscribe('network:offline', (isNetwork) => {
