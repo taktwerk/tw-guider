@@ -41,6 +41,7 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import {MainPipe} from '../pipes/main-pipe.module';
 import {HtmlDescriptionComponentModule} from '../components/html-description/html-description-component.module';
 import {SyncModalComponent} from '../components/sync-modal-component/sync-modal-component';
+import {IOSFilePicker} from '@ionic-native/file-picker';
 
 @NgModule({
   declarations: [
@@ -90,6 +91,7 @@ import {SyncModalComponent} from '../components/sync-modal-component/sync-modal-
     CryptoProvider,
     FilePath,
     FileChooser,
+    IOSFilePicker,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
