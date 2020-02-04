@@ -23,7 +23,6 @@ export class NumberLoginButtonComponent {
   }
 
   constructor() {
-    console.log('Hello NumberLoginButtonComponent Component');
   }
 
 }

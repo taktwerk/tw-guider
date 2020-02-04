@@ -30,6 +30,7 @@ export class GuideAssetTextModalComponent implements OnInit{
     }
 
     detectChanges() {
+        
         if (!this.changeDetectorRef['destroyed']) {
             this.changeDetectorRef.detectChanges();
         }

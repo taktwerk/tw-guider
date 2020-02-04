@@ -83,7 +83,6 @@ export abstract class ApiService {
                 .map(res => res.json())
                 .subscribe(data => {
                     this.isReady = true;
-                    //console.log('ApiService', 'loaded', data);
                     for (let record of data) {
                         let obj = this.dbModelApi.loadFromApi(record);
                         this.data.push(obj);
@@ -104,7 +103,6 @@ export abstract class ApiService {
             this.dbModelApi.parseWhere([this.dbModelApi.COL_IS_SYNCED, 0])
           )
             .then((models) => {
-                console.log('models in prepare batch', models);
               if (!models || models.length === 0) {
                 //console.warn('ApiService', 'saveApi', 'no not synced data found');
                 resolve(false);
@@ -147,12 +145,8 @@ export abstract class ApiService {
         let indexApi = this.data.findIndex(record => model.idApi && record.idApi === model.idApi);
         let indexDB = this.data.findIndex(record => model.id && record.id === model.id);
         if (indexApi !== -1) {
-            //update list item
-            //console.log(model.TAG, 'Api-Service', 'RemoveFromList', 'update', 'API', indexApi);
             this.data.splice(indexApi, 1);
         } else if (indexDB !== -1) {
-            //update list item
-            //console.log(model.TAG, 'Api-Service', 'RemoveFromList', 'update', 'DB', indexDB);
             this.data.splice(indexDB, 1);
         }
 
@@ -169,7 +163,6 @@ export abstract class ApiService {
         return new Promise(resolve => {
             model.save().then(res => {
                 if (res) {
-                    console.log(model.TAG, 'Service Save', 'Add to list ready', model);
                     // this.addToList(model);
                 }
                 resolve(res);

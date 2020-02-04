@@ -38,7 +38,6 @@ export class DbProvider {
    * query - executes sql
    */
   query(q: string, params?: any): Promise<any> {
-    //console.log('dbProvider', 'query: ' + q);
     return new Promise((resolve, reject) => {
       params = params || [];
       this.db.transaction((tx) => {

@@ -66,7 +66,6 @@ export class AuthService {
     authenticateLastUser(user: AuthDb): Promise<any> {
         return new Promise(resolve => {
             if (user) {
-                console.log('AuthService', 'Try to log in last user', user);
                 this.authenticate({username: user.username, password: user.password}).then((res) => {
                     resolve(res);
                 });
