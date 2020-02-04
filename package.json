@@ -54,6 +54,7 @@
     "bcryptjs": "^2.4.3",
     "com-sarriaroman-photoviewer": "^1.2.4",
     "cordova-android": "8.1.0",
+    "cordova-ios": "^5.1.1",
     "cordova-plugin-aes256-encryption": "^2.0.0",
     "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-file-transfer": "^1.7.1",
@@ -134,7 +135,8 @@
       "cordova-plugin-filepicker": {}
     },
     "platforms": [
-      "android"
+      "android",
+      "ios"
     ]
   }
 }
