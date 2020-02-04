@@ -11,7 +11,7 @@ import {FileChooser} from '@ionic-native/file-chooser/ngx';
 import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute} from '@angular/router';
-import { IOSFilePicker } from '@ionic-native/file-picker';
+import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 
 /**
  * Generated class for the TodoPage page.

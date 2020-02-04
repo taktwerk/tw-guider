@@ -37,7 +37,7 @@
     "@ionic-native/file": "^5.20.0",
     "@ionic-native/file-chooser": "^5.20.0",
     "@ionic-native/file-path": "^5.20.0",
-    "@ionic-native/file-picker": "^4.20.0",
+    "@ionic-native/file-picker": "^5.20.0",
     "@ionic-native/file-transfer": "^5.20.0",
     "@ionic-native/http": "^5.20.0",
     "@ionic-native/ionic-webview": "^5.20.0",
