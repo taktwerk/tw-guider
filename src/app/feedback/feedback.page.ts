@@ -77,8 +77,10 @@ export class FeedbackPage implements OnInit {
     }
 
     public addFile() {
+        console.log('before file chooser open file');
         this.fileChooser.open()
             .then(uri => {
+                console.log('open file, please', uri);
                 this.model[FeedbackModel.COL_ATTACHED_FILE] = 'File tmp name';
 
                 if (this.platform.is('android')) {
