@@ -11,7 +11,7 @@ import {FileChooser} from '@ionic-native/file-chooser/ngx';
 import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute} from '@angular/router';
-import {GuideStepModel} from '../../models/db/api/guide-step-model';
+import { IOSFilePicker } from '@ionic-native/file-picker';
 
 /**
  * Generated class for the TodoPage page.
@@ -47,7 +47,8 @@ export class FeedbackPage implements OnInit {
                 private streamingMedia: StreamingMedia,
                 private photoViewer: PhotoViewer,
                 private fileChooser: FileChooser,
-                private navCtrl: NavController) {
+                private navCtrl: NavController,
+                private filePicker: IOSFilePicker) {
         if (!this.model) {
             this.model = feedbackService.newModel();
         }
@@ -78,6 +79,25 @@ export class FeedbackPage implements OnInit {
 
     public addFile() {
         console.log('before file chooser open file');
+        console.log('this.platform.is(\'ios\')', this.platform.is('ios'));
+        if (this.platform.is('ios')) {
+            this.filePicker.pickFile()
+                .then(uri => {
+                    console.log('open file on ios, please', uri);
+                    this.model[FeedbackModel.COL_ATTACHED_FILE] = 'File tmp name';
+                    // Let's copy the file to our local storage
+                    this.downloadService.copy(uri, this.model.TABLE_NAME).then(success => {
+                        if (typeof success === 'string') {
+                            this.model[FeedbackModel.COL_ATTACHED_FILE] = success.substr(success.lastIndexOf('/') + 1);
+                            this.model[FeedbackModel.COL_ATTACHED_FILE_PATH] = false;
+                            this.model[FeedbackModel.COL_LOCAL_ATTACHED_FILE] = success;
+                        }
+                    });
+                })
+                .catch(e => console.log('FeedbackModal', 'addFile', e));
+
+            return;
+        }
         this.fileChooser.open()
             .then(uri => {
                 console.log('open file, please', uri);

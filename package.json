@@ -37,6 +37,7 @@
     "@ionic-native/file": "^5.20.0",
     "@ionic-native/file-chooser": "^5.20.0",
     "@ionic-native/file-path": "^5.20.0",
+    "@ionic-native/file-picker": "^4.20.0",
     "@ionic-native/file-transfer": "^5.20.0",
     "@ionic-native/http": "^5.20.0",
     "@ionic-native/ionic-webview": "^5.20.0",
@@ -58,6 +59,7 @@
     "cordova-plugin-file-transfer": "^1.7.1",
     "cordova-plugin-filechooser": "^1.2.0",
     "cordova-plugin-filepath": "^1.5.7",
+    "cordova-plugin-filepicker": "^1.1.6",
     "cordova-plugin-network-information": "^2.0.2",
     "cordova-plugin-streaming-media": "^2.2.0",
     "cordova-plugin-video-player": "git+https://github.com/moust/cordova-plugin-videoplayer.git",
@@ -128,7 +130,8 @@
       "cordova-plugin-filechooser": {},
       "cordova-plugin-filepath": {},
       "cordova-plugin-file-transfer": {},
-      "cordova-plugin-aes256-encryption": {}
+      "cordova-plugin-aes256-encryption": {},
+      "cordova-plugin-filepicker": {}
     },
     "platforms": [
       "android"
