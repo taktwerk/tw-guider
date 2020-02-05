@@ -7,25 +7,29 @@ import { GuidePage } from './guide.page';
 import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
 import {MainPipe} from '../../pipes/main-pipe.module';
 import {HtmlDescriptionComponentModule} from '../../components/html-description/html-description-component.module';
+import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
       GuidePage
   ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: GuidePage
-      }
-    ]),
-    SyncSpinnerComponentModule,
-    HtmlDescriptionComponentModule,
-    MainPipe
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        RouterModule.forChild([
+            {
+                path: '',
+                component: GuidePage
+            }
+        ]),
+        SyncSpinnerComponentModule,
+        HtmlDescriptionComponentModule,
+        MainPipe,
+        LanguageSelectorComponentModule,
+        TranslateModule
+    ],
 })
 
 export class GuidePageModule {}

@@ -6,25 +6,33 @@
 </style>
 
 <section>
-  <h4>Sync Modes</h4>
+  <h4>
+    {{ 'synchronization-component.Sync Modes' | translate:params }}
+  </h4>
   <ion-segment (ionChange)="changeSyncMode($event.detail.value)"
                color="secondary"
                value="{{ modeSync }}"
   >
     <ion-segment-button value="0">
-      <ion-label>Manually</ion-label>
+      <ion-label>
+        {{ 'synchronization-component.Manually' | translate:params }}
+      </ion-label>
     </ion-segment-button>
     <ion-segment-button value="1">
-      <ion-label>Online</ion-label>
+      <ion-label>
+        {{ 'synchronization-component.Online' | translate:params }}
+      </ion-label>
     </ion-segment-button>
     <ion-segment-button value="2">
-      <ion-label>Periodic</ion-label>
+      <ion-label>
+        {{ 'synchronization-component.Periodic' | translate:params }}
+      </ion-label>
     </ion-segment-button>
   </ion-segment>
 </section>
 
 <section>
   <ion-button (click)="showRefreshDataAlert()">
-    Re-sync data
+    {{ 'synchronization-component.Re-sync data' | translate:params }}
   </ion-button>
 </section>

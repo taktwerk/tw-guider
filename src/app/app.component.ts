@@ -15,6 +15,7 @@ import {UserDb} from '../models/db/user-db';
 import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from '../services/download-service';
 import {ApiPush} from '../providers/api-push';
+import {TranslateConfigService} from '../services/translate-config.service';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -44,7 +45,8 @@ export class AppComponent implements OnInit {
     private syncService: SyncService,
     private downloadService: DownloadService,
     private db: DbProvider,
-    private apiPush: ApiPush
+    private apiPush: ApiPush,
+    private translateConfigService: TranslateConfigService
   ) {
     this.initializeApp();
   }
@@ -163,7 +165,6 @@ export class AppComponent implements OnInit {
 
   protected baseProjectSetup() {
     this.initUserDB().then(() => {
-      console.log('this.userDb', this.userDb);
       if (this.userDb.userSetting.syncLastElementNumber > 0 &&
           (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
       ) {

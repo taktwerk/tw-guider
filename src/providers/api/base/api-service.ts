@@ -157,9 +157,6 @@ export abstract class ApiService {
     public save(model: DbApiModel): Promise<any> {
         return new Promise(resolve => {
             model.save().then(res => {
-                if (res) {
-                    // this.addToList(model);
-                }
                 resolve(res);
             });
         });

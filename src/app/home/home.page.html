@@ -4,16 +4,17 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Home
+      {{ 'home.header' | translate:params }}
     </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
+    <language-selector-component slot="primary"></language-selector-component>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-card class="welcome-card">
     <ion-card-header>
-      <ion-card-subtitle>Home page of the Guider</ion-card-subtitle>
+      <ion-card-subtitle>{{ 'home.title' | translate:params }}</ion-card-subtitle>
     </ion-card-header>
   </ion-card>
 </ion-content>

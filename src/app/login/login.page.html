@@ -4,8 +4,9 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Login
+      {{ 'login.Login' | translate:params }}
     </ion-title>
+    <language-selector-component slot="primary"></language-selector-component>
   </ion-toolbar>
 </ion-header>
 
@@ -16,15 +17,15 @@
         <ion-col class="ion-align-self-center" size-md="6" size-lg="5" size-xs="12">
           <div class="ion-padding">
             <ion-item>
-              <ion-input name="username" type="text" placeholder="Username" ngModel required></ion-input>
+              <ion-input name="username" type="text" placeholder="{{ 'login.Username' | translate:params }}" ngModel required></ion-input>
             </ion-item>
             <ion-item>
-              <ion-input name="password" type="password" placeholder="Password" ngModel required></ion-input>
+              <ion-input name="password" type="password" placeholder="{{ 'login.Password' | translate:params }}" ngModel required></ion-input>
             </ion-item>
           </div>
           <div class="ion-padding">
             <ion-button size="large" type="submit" [disabled]="form.invalid" expand="block">
-              Login
+              {{ 'login.Login' | translate:params }}
             </ion-button>
           </div>
         </ion-col>

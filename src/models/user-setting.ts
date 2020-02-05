@@ -34,4 +34,6 @@ export class UserSetting{
   public isSyncAvailableData: boolean = false;
 
   public isPushAvailableData: boolean = false;
+
+  public language: string;
 }

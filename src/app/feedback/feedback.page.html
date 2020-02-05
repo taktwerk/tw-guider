@@ -1,53 +1,26 @@
-<style>
-    :root {
-        --ion-safe-area-top: 20px;
-        --ion-safe-area-bottom: 22px;
-    }
-    ion-slide > h2 {
-        margin-top: 2.8rem;
-    }
-    ion-fab-button {
-        display: inline-block !important;
-    }
-    ion-fab {
-        top: 16px;
-    }
-    .feedback-description {
-        white-space: pre-line;
-    }
-    .edit-fab-button {
-        float: right;
-    }
-    .top-pannel {
-        position: relative;
-        display: block;
-    }
-    ion-col {
-        padding-top: 0;
-    }
-    .cloud-upload, .videocam {
-        font-size: 70px;
-        color: red;
-    }
-</style>
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>
-            Feedback
+            {{ 'feedback.header' | translate:params }}
         </ion-title>
         <ion-buttons *ngIf="isComponentLikeModal" slot="end">
-            <ion-button (click)="dismiss()">Close</ion-button>
+            <ion-button (click)="dismiss()">
+                {{ 'close' | translate:params }}
+            </ion-button>
         </ion-buttons>
         <sync-spinner-component slot="primary"></sync-spinner-component>
+        <language-selector-component slot="primary"></language-selector-component>
     </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
     <div *ngIf="feedbackList.length">
-        <h2>Feedback list</h2>
+        <h2>
+            {{ 'feedback.Feedback list' | translate:params }}
+        </h2>
         <ion-card *ngFor="let feedback of feedbackList"
                   class="ion-padding feedback-description"
         >
@@ -91,7 +64,7 @@
         <ion-grid>
             <ion-row>
                 <ion-col style="text-align: center;">
-                    Description
+                    {{ 'feedback.Description' | translate:params }}
                 </ion-col>
                 <ion-col>
                     <ion-button expand="block" color="success" (click)="changeEditModel()" style="height: 24px;margin-top:0;">
@@ -127,5 +100,7 @@
             {{ model.attached_file }}
         </ion-item>
     </div>
-        <ion-button expand="block" (click)="save($event)">Send</ion-button>
+        <ion-button expand="block" (click)="save($event)">
+            {{ 'send' | translate:params }}
+        </ion-button>
 </ion-footer>

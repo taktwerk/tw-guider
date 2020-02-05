@@ -8,6 +8,8 @@ import { ListPage } from './list.page';
 import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
 import {MainPipe} from '../../pipes/main-pipe.module';
 import {HtmlDescriptionComponentModule} from '../../components/html-description/html-description-component.module';
+import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
     imports: [
@@ -22,7 +24,9 @@ import {HtmlDescriptionComponentModule} from '../../components/html-description/
         ]),
         SyncSpinnerComponentModule,
         MainPipe,
-        HtmlDescriptionComponentModule
+        HtmlDescriptionComponentModule,
+        LanguageSelectorComponentModule,
+        TranslateModule
     ],
   declarations: [ListPage]
 })

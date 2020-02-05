@@ -1,0 +1,63 @@
+{
+  "close": "Close",
+  "search": "Search",
+  "send": "Send",
+  "home": {
+    "header":"Home",
+    "title": "Home page of the Guider"
+  },
+  "sync-modal": {
+    "header": "Sync Status",
+    "Last successful sync date:": "Last successful sync date:",
+    "There is data available for synchronization from the server.": "There is data available for synchronization from the server.",
+    "Synchronize Data": "Synchronize Data",
+    "Resume": "Resume",
+    "Cancel": "Cancel",
+    "Stop": "Stop",
+    "In progress": "In progress",
+    "(Prepare data)": "(Prepare data)",
+    "(Prepare data for resume)": "(Prepare data for resume)",
+    "Pause" : "Pause",
+    "Failed" : "Failed",
+    "Success" : "Success",
+    "No data for sync" : "No data for sync",
+    "There is data available for pushing to the server.": "There is data available for pushing to the server.",
+    "No network connection.": "No network connection.",
+    "Data synchronization is not yet possible.": "Data synchronization is not yet possible."
+  },
+  "guides": {
+    "header": "Guides",
+    "duration": "Duration",
+    "Show Guide": "Show Guide"
+  },
+  "feedback": {
+    "header": "Feedback",
+    "Feedback list": "Feedback list",
+    "Description": "Description"
+  },
+  "guide": {
+    "header": "Guide:",
+    "No information here yet.": "No information here yet.",
+    "Assets": "Assets"
+  },
+  "profile": {
+    "header": "Profile of {{ name }}",
+    "Profile": "Profile",
+    "ID": "ID"
+  },
+  "synchronization-component": {
+    "Sync Modes": "Sync Modes",
+    "Manually": "Manually",
+    "Online": "Online",
+    "Periodic": "Periodic",
+    "Re-sync data": "Re-sync data"
+  },
+  "login": {
+    "Username": "Username",
+    "Password": "Password",
+    "Login": "Login"
+  },
+  "validation": {
+    "Description is required": "Description is required"
+  }
+}

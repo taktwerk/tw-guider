@@ -1,0 +1,63 @@
+{
+  "close": "(De) Close",
+  "search": "(De) Search",
+  "send": "(De) Send",
+  "home": {
+    "header":"(De) Home",
+    "title": "(De) Home page of the Guider"
+  },
+  "sync-modal": {
+    "header": "(De) Sync Status",
+    "Last successful sync date:": "(De) Last successful sync date:",
+    "There is data available for synchronization from the server.": "(De) There is data available for synchronization from the server.",
+    "Synchronize Data": "(De) Synchronize Data",
+    "Resume": "(De) Resume",
+    "Cancel": "(De) Cancel",
+    "Stop": "(De) Stop",
+    "In progress": "(De) In progress",
+    "(Prepare data)": "(De) (Prepare data)",
+    "(Prepare data for resume)": "(De) (Prepare data for resume)",
+    "Pause" : "(De) Pause",
+    "Failed" : "(De) Failed",
+    "Success" : "(De) Success",
+    "No data for sync" : "(De) No data for sync",
+    "There is data available for pushing to the server.": "(De) There is data available for pushing to the server.",
+    "No network connection.": "(De) No network connection.",
+    "Data synchronization is not yet possible.": "(De) Data synchronization is not yet possible."
+  },
+  "guides": {
+    "header": "(De) Guides",
+    "duration": "(De) Duration",
+    "Show Guide": "(De) Show Guide"
+  },
+  "feedback": {
+    "header": "(De) Feedback",
+    "Feedback list": "(De) Feedback list",
+    "Description": "(De) Description"
+  },
+  "guide": {
+    "header": "(De) Guide:",
+    "No information here yet.": "(De) No information here yet.",
+    "Assets": "(De) Assets"
+  },
+  "profile": {
+    "header": "(De) Profile of {{ name }}",
+    "Profile": "(De) Profile",
+    "ID": "(De) ID"
+  },
+  "synchronization-component": {
+    "Sync Modes": "(De) Sync Modes",
+    "Manually": "(De) Manually",
+    "Online": "(De) Online",
+    "Periodic": "(De) Periodic",
+    "Re-sync data": "(De) Re-sync data"
+  },
+  "login": {
+    "Username": "(De) Username",
+    "Password": "(De) Password",
+    "Login": "(De) Login"
+  },
+  "validation": {
+    "Description is required": "Description is required"
+  }
+}

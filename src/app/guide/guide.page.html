@@ -1,38 +1,24 @@
-<style>
-    :root {
-        --ion-safe-area-top: 20px;
-        --ion-safe-area-bottom: 22px;
-    }
-    .swiper-slide {
-        display: block;
-    }
-    .swiper-wrapper {
-        margin-bottom: 15px;
-    }
-    ion-slide > h2 {
-        margin-top: 2.8rem;
-    }
-</style>
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Guide: {{ guide.title }}
+        {{ 'guide.header' | translate:params }} {{ guide.title }}
     </ion-title>
     <ion-buttons slot="primary">
         <ion-button color="primary" fill="solid" [routerLink]="['/guide/' + guide.idApi + '/feedback']">
-            Feedback
+            {{ 'feedback.header' | translate:params }}
         </ion-button>
     </ion-buttons>
     <sync-spinner-component slot="primary"></sync-spinner-component>
+    <language-selector-component slot="primary"></language-selector-component>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
     <div *ngIf="guideSteps && guideSteps.length === 0">
-        No information here yet.
+        {{ 'feedback.No information here yet.' | translate:params }}
     </div>
     <div *ngIf="guideSteps && guideSteps.length > 0">
         <ion-slides pager="true"
@@ -63,7 +49,7 @@
         <ion-card class="ion-text-center ion-padding">
             <section *ngIf="guideAssets.length">
                 <h2>
-                    Assets
+                    {{ 'feedback.Assets.' | translate:params }}
                 </h2>
                 <div *ngFor="let asset of guideAssets; trackBy: trackGuideAsset">
                     <div class="ion-text-center" *ngIf="asset.isFile() && asset.isPdf()">

@@ -18,7 +18,7 @@ import { File } from '@ionic-native/file/ngx';
 import {Network} from '@ionic-native/network/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
 import { FormsModule } from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClient as Http, HttpClientModule} from '@angular/common/http';
 import {GuideCategoryService} from '../providers/api/guide-category-service';
 import {GuideCategoryBindingService} from '../providers/api/guide-category-binding-service';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
@@ -42,6 +42,14 @@ import {MainPipe} from '../pipes/main-pipe.module';
 import {HtmlDescriptionComponentModule} from '../components/html-description/html-description-component.module';
 import {SyncModalComponent} from '../components/sync-modal-component/sync-modal-component';
 import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import {TranslateConfigService} from '../services/translate-config.service';
+import {LanguageSelectorComponentModule} from '../components/language-selector-component/language-selector-component.module';
+
+export function LanguageLoader(http: Http) {
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -56,7 +64,15 @@ import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
         IonicModule.forRoot(),
         AppRoutingModule,
         HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: (LanguageLoader),
+            deps: [Http]
+          }
+        }),
         SyncSpinnerComponentModule,
+        LanguageSelectorComponentModule,
         MainPipe,
         HtmlDescriptionComponentModule
     ],
@@ -92,6 +108,7 @@ import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
     FilePath,
     FileChooser,
     IOSFilePicker,
+    TranslateConfigService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
