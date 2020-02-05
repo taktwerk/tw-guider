@@ -12,7 +12,6 @@ import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute} from '@angular/router';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
-import {_} from '@biesbjerg/ngx-translate-extract/dist/utils/utils';
 
 /**
  * Generated class for the TodoPage page.
