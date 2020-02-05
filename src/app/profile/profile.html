@@ -4,9 +4,10 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Profile of {{ authService.auth.username}}
+      {{ 'profile.header' | translate:{name:authService.auth.username} }}
     </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
+    <language-selector-component slot="primary"></language-selector-component>
   </ion-toolbar>
 </ion-header>
 
@@ -19,12 +20,12 @@
 <ion-content class="ion-padding">
   <ion-card>
     <ion-card-header>
-      Profile
+      {{ 'profile.Profile' | translate:params }}
     </ion-card-header>
     <ion-card-content>
       <ion-item>
         <ion-icon name="logo-twitter" item-start></ion-icon>
-        ID
+        {{ 'profile.ID' | translate:params }}
         <ion-badge item-end>{{ authService.auth.userId }}</ion-badge>
       </ion-item>
     </ion-card-content>

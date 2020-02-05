@@ -12,6 +12,7 @@ import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute} from '@angular/router';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
+import {_} from '@biesbjerg/ngx-translate-extract/dist/utils/utils';
 
 /**
  * Generated class for the TodoPage page.
@@ -23,6 +24,7 @@ import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 @Component({
   selector: 'feedback-page',
   templateUrl: 'feedback.page.html',
+  styleUrls: ['feedback.page.scss']
 })
 export class FeedbackPage implements OnInit {
 
@@ -78,12 +80,9 @@ export class FeedbackPage implements OnInit {
     }
 
     public addFile() {
-        console.log('before file chooser open file');
-        console.log('this.platform.is(\'ios\')', this.platform.is('ios'));
         if (this.platform.is('ios')) {
             this.filePicker.pickFile()
                 .then(uri => {
-                    console.log('open file on ios, please', uri);
                     this.model[FeedbackModel.COL_ATTACHED_FILE] = 'File tmp name';
                     // Let's copy the file to our local storage
                     this.downloadService.copy(uri, this.model.TABLE_NAME).then(success => {

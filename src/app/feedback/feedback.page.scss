@@ -1,6 +1,30 @@
+:root {
+  --ion-safe-area-top: 20px;
+  --ion-safe-area-bottom: 22px;
+}
+ion-slide > h2 {
+  margin-top: 2.8rem;
+}
+ion-fab-button {
+  display: inline-block !important;
+}
+ion-fab {
+  top: 16px;
+}
 .feedback-description {
   white-space: pre-line;
 }
 .edit-fab-button {
   float: right;
+}
+.top-pannel {
+  position: relative;
+  display: block;
+}
+ion-col {
+  padding-top: 0;
+}
+.cloud-upload, .videocam {
+  font-size: 70px;
+  color: red;
 }

@@ -4,12 +4,19 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Guides
+      {{ 'guides.header' | translate:params }}
     </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
+    <language-selector-component slot="primary"></language-selector-component>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-searchbar animated="true" autocomplete="on" debounce="250" (ionChange)="searchGuides($event)"></ion-searchbar>
+    <ion-searchbar animated="true"
+                   autocomplete="on"
+                   debounce="250"
+                   placeholder="{{ 'search' | translate:params }}"
+                   (ionChange)="searchGuides($event)"
+    >
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -36,11 +43,11 @@
               </h2>
               <html-description-component [html]="item.description"></html-description-component>
               <p *ngIf="item.duration">
-                Duration: {{ item.getDuration() }}
+                {{ 'guides.duration' | translate:params }}: {{ item.getDuration() }}
               </p>
               <ion-button class="show-guide-btn" [routerLink]="['/guide/' + item.idApi]">
                 <ion-icon class="show-guide-play-icon" slot="start" name="arrow-dropright-circle"></ion-icon>
-                SHOW GUIDE
+                {{ 'guides.Show Guide' | translate:params }}
               </ion-button>
             </div>
           </div>
