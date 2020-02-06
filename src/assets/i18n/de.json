@@ -2,6 +2,8 @@
   "close": "(De) Close",
   "search": "(De) Search",
   "send": "(De) Send",
+  "Logout": "(De) Logout",
+  "Wrong password!": "(De) Wrong password!",
   "home": {
     "header":"(De) Home",
     "title": "(De) Home page of the Guider"
@@ -50,14 +52,29 @@
     "Manually": "(De) Manually",
     "Online": "(De) Online",
     "Periodic": "(De) Periodic",
-    "Re-sync data": "(De) Re-sync data"
+    "Re-sync data": "(De) Re-sync data",
+    "Sync was canceled.": "(De) Sync was canceled.",
+    "Now is manually mode.": "(De) Now is manually mode.",
+    "Now is network connection mode.": "(De) Now is network connection mode.",
+    "Now is periodic mode (every 15 seconds)": "(De) Now is periodic mode (every 15 seconds)",
+    "Failed to remove data": "(De) Failed to remove data",
+    "All files was deleted": "(De) All files was deleted",
+    "The database is cleared.": "(De) The database is cleared.",
+    "All data was cleared": "(De) All data was cleared",
+    "Are you sure you want to overwrite the data?": "(De) Are you sure you want to overwrite the data?"
   },
   "login": {
     "Username": "(De) Username",
     "Password": "(De) Password",
-    "Login": "(De) Login"
+    "Login": "(De) Login",
+    "You are logged in.": "(De) You are logged in.",
+    "You are logged out.": "(De) You are logged out.",
+    "Please, login": "(De) Please, login"
   },
   "validation": {
-    "Description is required": "Description is required"
+    "Description is required": "(De) Description is required",
+    "Validation error": "(De) Validation error",
+    "Wrong password or login!": "(De) Wrong password or login!",
+    "You are not authorized.": "(De) You are not authorized."
   }
 }

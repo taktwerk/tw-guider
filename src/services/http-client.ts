@@ -4,6 +4,7 @@ import 'rxjs/add/operator/catch';
 import {AuthService} from './auth-service';
 import { Observable } from 'rxjs/Observable';
 import {NavController, ToastController} from '@ionic/angular';
+import {TranslateConfigService} from './translate-config.service';
 
 @Injectable()
 export class HttpClient {
@@ -13,7 +14,8 @@ export class HttpClient {
       private http: Http,
       private authService: AuthService,
       public toastCtrl: ToastController,
-      public navCtrl: NavController) {
+      public navCtrl: NavController,
+      private translateConfigService: TranslateConfigService) {
     this.initHeaders();
   }
 
@@ -66,23 +68,34 @@ export class HttpClient {
       if (error.status === 401) {
           this.authService.logout().then(() => {
               this.navCtrl.navigateRoot('/login').then(() => {
-                  this.showToast('You are not authorized.', 'Please, login', 'danger');
+                  this.showToast(
+                      'validation.You are not authorized.',
+                      'login.Please, login',
+                      'danger'
+                  );
               });
           });
       } else {
           errMsg = error.message ? error.message : error.toString();
-          this.showToast(errMsg, 'header', 'danger');
+          this.showToast(errMsg, '', 'danger');
       }
     }
 
     return Promise.reject(errMsg);
   }
 
-  showToast(msg?: string, header = '' , toastColor?: string) {
+  async showToast(msg?: string, header?: string , toastColor?: string, withLocalization: boolean = true) {
     if (!msg) {
         msg = 'Fehler: Keine Verbindung zum Server.';
     }
-    let toastOptions = {
+    if (withLocalization) {
+        msg = await this.translateConfigService.translate(msg);
+        if (header) {
+            header = await this.translateConfigService.translate(header);
+        }
+    }
+
+    const toastOptions = {
         header: header,
         showCloseButton: true,
         closeButtonText: 'OK',

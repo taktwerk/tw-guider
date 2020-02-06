@@ -51,13 +51,12 @@ export class LoginPage {
     }
 
     loginOffine(form: NgForm) {
-        this.http.showToast('Offline login');
         this.authService.offlineAuthenticate(form.value).then((result) => {
             if (!result) {
-                this.http.showToast('Wrong password or login!');
+                this.http.showToast('validation.Wrong password or login!');
             } else {
                 this.navCtrl.navigateRoot('home');
-                this.http.showToast('You are logged in.');
+                this.http.showToast('login.You are logged in.');
             }
         });
     }
@@ -80,7 +79,7 @@ export class LoginPage {
                     break;
                 default:
                     this.navCtrl.navigateRoot('home');
-                    this.http.showToast('You are logged in.');
+                    this.http.showToast('login.You are logged in.');
             }
         });
     }

@@ -53,7 +53,6 @@ export class LanguageSelectorComponent implements OnInit {
     ) {
         this.isNetwork = (this.network.type !== 'none');
         this.initUserDB().then((isExist) => {
-            console.log('isExist user', isExist);
             if (this.userDb && isExist) {
                 if (this.userDb.userSetting &&
                     this.userDb.userSetting.language &&

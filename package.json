@@ -9,7 +9,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "extract": "ngx-translate-extract -i ./src -o ./src/assets/i18n/en.json --clean --sort --format namespaced-json --format-indentation=\"\t\""
   },
   "config": {
     "ionic_webpack": "./config/webpack.config.js"
@@ -91,6 +92,7 @@
     "@angular/compiler": "~8.1.2",
     "@angular/compiler-cli": "~8.1.2",
     "@angular/language-service": "~8.1.2",
+    "@biesbjerg/ngx-translate-extract": "^4.2.0",
     "@ionic/angular-toolkit": "^2.1.2",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
