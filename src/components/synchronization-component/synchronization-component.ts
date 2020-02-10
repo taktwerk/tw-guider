@@ -60,14 +60,7 @@ export class SynchronizationComponent implements OnInit {
           } else {
               this.modeSync = SyncMode.Manual;
           }
-          if (this.userDb.userSetting.syncLastElementNumber > 0 &&
-              (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
-          ) {
-              this.userDb.userSetting.syncStatus = 'pause';
-              this.userDb.save();
-          }
           this.syncProgressStatus = this.userDb.userSetting.syncStatus;
-
       });
     }
 
@@ -159,6 +152,7 @@ export class SynchronizationComponent implements OnInit {
           this.userDb.userSetting.syncAllItemsCount = 0;
           this.userDb.userSetting.syncPercent = 0;
           this.userDb.userSetting.lastSyncedAt = null;
+          this.userDb.userSetting.lastSyncProcessId = null;
           this.userDb.save().then(() => {
               this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
               this.apiSync.syncProgressStatus.next('success');

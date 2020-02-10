@@ -70,6 +70,15 @@ export class AppComponent implements OnInit {
               currentLanguage = this.userDb.userSetting.language;
             }
             this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
+            if (this.userDb.userSetting.syncLastElementNumber > 0 &&
+                (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
+            ) {
+              this.userDb.userSetting.syncStatus = 'pause';
+              this.userDb.save().then(() => {
+                this.apiSync.sendSyncProgress();
+              });
+            }
+            this.apiSync.syncProgressStatus.next(this.userDb.userSetting.syncStatus);
           } catch (e) {
             console.log('login errror', e);
           }

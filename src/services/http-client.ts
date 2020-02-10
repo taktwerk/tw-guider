@@ -3,20 +3,45 @@ import {HttpClient as Http, HttpHeaders as Headers, HttpResponse as Response} fr
 import 'rxjs/add/operator/catch';
 import {AuthService} from './auth-service';
 import { Observable } from 'rxjs/Observable';
-import {NavController, ToastController} from '@ionic/angular';
+import {NavController, Platform, ToastController} from '@ionic/angular';
 import {TranslateConfigService} from './translate-config.service';
+import { Device } from '@ionic-native/device/ngx';
 
 @Injectable()
 export class HttpClient {
   headers: Headers = null;
 
+  deviceInfo: any = {
+      model: this.device.model,
+      platform: this.device.platform,
+      uuid: this.device.uuid,
+      version: this.device.version,
+      manufacturer: this.device.manufacturer,
+      isVirtual: this.device.isVirtual,
+      serial: this.device.serial
+  };
+
   constructor(
       private http: Http,
+      private platform: Platform,
       private authService: AuthService,
       public toastCtrl: ToastController,
       public navCtrl: NavController,
-      private translateConfigService: TranslateConfigService) {
-    this.initHeaders();
+      private translateConfigService: TranslateConfigService,
+      private device: Device
+  ) {
+      this.platform.ready().then(() => {
+          this.deviceInfo = {
+              model: this.device.model,
+              platform: this.device.platform,
+              uuid: this.device.uuid,
+              version: this.device.version,
+              manufacturer: this.device.manufacturer,
+              isVirtual: this.device.isVirtual,
+              serial: this.device.serial
+          };
+          this.initHeaders();
+      });
   }
 
   previousToast = null;
@@ -25,16 +50,17 @@ export class HttpClient {
      * Init the headers
      */
   public initHeaders() {
-      // if (this.headers === null) {
-        let headers = {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'X-CURRENT-DATETIME': new Date().toISOString()
-        };
-        if (this.authService.auth && this.authService.auth.authToken) {
-            headers['X-Auth-Token'] = this.getAuthorizationToken();
-        }
-        this.headers = new Headers(headers);
+    let headers = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'X-CURRENT-DATETIME': new Date().toISOString()
+    };
+    if (this.authService.auth && this.authService.auth.authToken) {
+        headers['X-Auth-Token'] = this.getAuthorizationToken();
+        /// send current device info with uuid and etc.
+        headers['X-Device-Info'] = JSON.stringify(this.deviceInfo);
+    }
+    this.headers = new Headers(headers);
   }
 
     /**
@@ -60,7 +86,6 @@ export class HttpClient {
   }
 
   private handleError(error: any) {
-    // In a real world app, we might use a remote logging infrastructure
     let errMsg: string;
     if (error instanceof Response) {
         console.log('errrorrr', error);

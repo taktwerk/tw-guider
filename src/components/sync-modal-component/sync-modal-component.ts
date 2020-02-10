@@ -76,9 +76,10 @@ export class SyncModalComponent implements OnInit {
     }
 
     cancelSyncData() {
+        this.apiSync.sendSyncProgress('', true);
         return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
             if (isCanceled) {
-                this.http.showToast('Sync was canceled.');
+                this.http.showToast('synchronization-component.Sync was canceled.');
             }
         });
     }

@@ -18,7 +18,7 @@
 
 <ion-content class="ion-padding">
     <div *ngIf="guideSteps && guideSteps.length === 0">
-        {{ 'feedback.No information here yet.' | translate:params }}
+        {{ 'guide.No information here yet.' | translate:params }}
     </div>
     <div *ngIf="guideSteps && guideSteps.length > 0">
         <ion-slides pager="true"
@@ -46,8 +46,9 @@
                 <html-description-component [html]="step.description_html"></html-description-component>
             </ion-slide>
         </ion-slides>
-        <ion-card class="ion-text-center ion-padding">
-            <section *ngIf="guideAssets.length">
+        <ion-card *ngIf="guideAssets.length"
+                  class="ion-text-center ion-padding">
+            <section>
                 <h2>
                     {{ 'feedback.Assets.' | translate:params }}
                 </h2>
