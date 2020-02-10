@@ -292,7 +292,7 @@ export class AuthService {
             if (!isAuthenticatedUser) {
                 this.ngZone.run(() => {
                     this.navCtrl.navigateRoot('login').then(() => {
-                        this.showToast('You are not authorized.', 'Please, login', 'danger');
+                        this.showToast('validation.You are not authorized.', 'login.Please, login', 'danger');
                     });
                 });
             } else {
@@ -304,7 +304,11 @@ export class AuthService {
                         this.logout().then(() => {
                             this.ngZone.run(() => {
                                 this.navCtrl.navigateRoot('login').then(() => {
-                                    this.showToast('You are not authorized.', 'Please, login', 'danger');
+                                    this.showToast(
+                                        'validation.You are not authorized.',
+                                        'login.Please, login',
+                                        'danger'
+                                    );
                                 });
                             });
                         });

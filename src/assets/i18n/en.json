@@ -2,6 +2,8 @@
   "close": "Close",
   "search": "Search",
   "send": "Send",
+  "Logout": "Logout",
+  "Wrong password!": "Wrong password!",
   "home": {
     "header":"Home",
     "title": "Home page of the Guider"
@@ -50,14 +52,31 @@
     "Manually": "Manually",
     "Online": "Online",
     "Periodic": "Periodic",
-    "Re-sync data": "Re-sync data"
+    "Re-sync data": "Re-sync data",
+    "Sync was canceled.": "Sync was canceled.",
+    "Now is manually mode.": "Now is manually mode.",
+    "Now is network connection mode.": "Now is network connection mode.",
+    "Now is periodic mode (every 15 seconds)": "Now is periodic mode (every 15 seconds)",
+    "Failed to remove data": "Failed to remove data",
+    "All files was deleted": "All files was deleted",
+    "The database is cleared.": "The database is cleared.",
+    "All data was cleared": "All data was cleared",
+    "Synchronize Data": "Synchronize Data",
+    "Are you sure you want to overwrite the data?": "Are you sure you want to overwrite the data?"
   },
   "login": {
     "Username": "Username",
     "Password": "Password",
-    "Login": "Login"
+    "Login": "Login",
+    "You are logged in.": "You are logged in.",
+    "You are logged out.": "You are logged out.",
+    "Please, login": "Please, login"
   },
   "validation": {
-    "Description is required": "Description is required"
+    "Description is required": "Description is required",
+    "Validation error": "Validation error",
+    "Wrong password or login!": "Wrong password or login!",
+    "Wrong password!": "Wrong password!",
+    "You are not authorized.": "You are not authorized."
   }
 }

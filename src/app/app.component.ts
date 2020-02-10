@@ -57,18 +57,38 @@ export class AppComponent implements OnInit {
   periodicSync: any;
   checkAvailableSyncChanges: any;
 
+  //// TODO in future save device info via API in this place
   initializeApp() {
     this.platform.ready().then(() => {
-      this.initNetwork();
-      this.registerEvents();
-      this.statusBar.styleDefault();
-      // Do the user login
-      this.login().then((result) => {
-        this.initUserDB().then(() => {
-          this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
-        });
-        this.splashScreen.hide();
+      this.translateConfigService.setLanguage();
+      this.login().then(async (result) => {
+        let currentLanguage = '';
+        if (result) {
+          try {
+            await this.initUserDB();
+            if (this.userDb.userSetting.language) {
+              currentLanguage = this.userDb.userSetting.language;
+            }
+            this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
+            if (this.userDb.userSetting.syncLastElementNumber > 0 &&
+                (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
+            ) {
+              this.userDb.userSetting.syncStatus = 'pause';
+              this.userDb.save().then(() => {
+                this.apiSync.sendSyncProgress();
+              });
+            }
+            this.apiSync.syncProgressStatus.next(this.userDb.userSetting.syncStatus);
+          } catch (e) {
+            console.log('login errror', e);
+          }
+        }
+        this.translateConfigService.setLanguage(currentLanguage);
         this.setPages();
+        this.initNetwork();
+        this.registerEvents();
+        this.statusBar.styleDefault();
+        this.splashScreen.hide();
       });
     });
   }
@@ -136,17 +156,17 @@ export class AppComponent implements OnInit {
     });
   }
 
-  protected setPages() {
-    this.appPages = [{title: 'Home', url: '/home', icon: 'home'}];
+  protected async setPages() {
+    this.appPages = [{title: this.translateConfigService.translateWord('home.header'), url: '/home', icon: 'home'}];
 
     if (!this.authService.isLoggedin) {
-      this.appPages.push({title: 'Login', url: '/login', icon: 'list'});
+      this.appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'list'});
     } else {
       this.appPages.push(
-          {title: 'Guides', url: '/guides', icon: 'list'},
-          {title: 'Profile', url: '/profile', icon: 'person'},
-          {title: 'Feedback', url: '/feedback', icon: 'person'},
-          {title: 'Logout', url: '/logout', icon: 'exit'},
+          {title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'},
+          {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
+          {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'},
+          {title: this.translateConfigService.translateWord('Logout'), url: '/logout', icon: 'exit'},
       );
     }
   }
@@ -154,7 +174,7 @@ export class AppComponent implements OnInit {
   private login(): Promise<any> {
     return new Promise((resolve) => {
       this.authService.getLastUser().then((res) => {
-        resolve(true);
+        resolve(res);
         let lastUser: AuthDb = null;
         if (res) {
           lastUser = res;
@@ -165,6 +185,11 @@ export class AppComponent implements OnInit {
 
   protected baseProjectSetup() {
     this.initUserDB().then(() => {
+      if (this.userDb.userSetting.language &&
+          this.translateConfigService.isLanguageAvailable(this.userDb.userSetting.language)
+      ) {
+        this.translateConfigService.setLanguage(this.userDb.userSetting.language);
+      }
       if (this.userDb.userSetting.syncLastElementNumber > 0 &&
           (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
       ) {
@@ -216,6 +241,9 @@ export class AppComponent implements OnInit {
     });
     this.syncService.syncMode.subscribe((syncMode) => {
         this.changeSyncModeAction(syncMode);
+    });
+    this.translateConfigService.onLangChange().subscribe(() => {
+      this.setPages();
     });
   }
 }

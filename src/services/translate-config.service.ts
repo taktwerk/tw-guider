@@ -1,44 +1,63 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import defaultLanguageObject from './../assets/i18n/en.json';
+import germanyLanguageObject from './../assets/i18n/de.json';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TranslateConfigService {
 
-    static AVAILABLE_LANGUAGES: string[] = [
-        'en',
-        'de'
-    ];
+    static AVAILABLE_LANGUAGES = {
+        en: defaultLanguageObject,
+        de: germanyLanguageObject
+    };
 
     static DEFAULT_LANGUAGE: string = 'en';
 
     constructor(
-        private translate: TranslateService
+        private translator: TranslateService
     ) {}
 
     getDefaultLanguage() {
-        //// TODO save to database in user setting and get first of all from database
-        if (this.translate.currentLang && this.isLanguageAvailable(this.translate.currentLang)) {
-            return this.translate.currentLang;
+        if (this.translator.currentLang && this.isLanguageAvailable(this.translator.currentLang)) {
+            return this.translator.currentLang;
         }
-        let language = this.translate.getBrowserLang();
+        let language = this.translator.getBrowserLang();
         if (!this.isLanguageAvailable(language)) {
             language = TranslateConfigService.DEFAULT_LANGUAGE;
         }
-        this.translate.setDefaultLang(language);
+        this.setLanguage(language);
 
         return language;
     }
 
-    setLanguage(setLang) {
-        if (!this.isLanguageAvailable(setLang)) {
+    setLanguage(setLang?: string) {
+        if (!setLang || !this.isLanguageAvailable(setLang)) {
             setLang = TranslateConfigService.DEFAULT_LANGUAGE;
         }
-        this.translate.use(setLang);
+        this.translator.use(setLang);
+        this.translator.setTranslation(setLang, TranslateConfigService.AVAILABLE_LANGUAGES[setLang]);
+        this.translator.setDefaultLang(setLang);
     }
 
     isLanguageAvailable(language) {
-        return TranslateConfigService.AVAILABLE_LANGUAGES.includes(language);
+        return Object.keys(TranslateConfigService.AVAILABLE_LANGUAGES).includes(language);
+    }
+
+    translateWord(key): string {
+        return this.translator.instant(key);
+    }
+
+    translate<T extends string | string[]>(key: T): Promise<string> {
+        return new Promise<any>((resolve => {
+            this.translator.get(key).toPromise().then((result) => {
+                resolve(result);
+            });
+        }));
+    }
+
+    onLangChange() {
+        return this.translator.onLangChange;
     }
 }

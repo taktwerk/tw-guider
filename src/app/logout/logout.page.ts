@@ -20,7 +20,7 @@ export class LogoutPage {
               public authService: AuthService) {
       this.authService.logout().then(data => {
         this.navCtrl.navigateRoot('/login');
-        this.http.showToast('You are logged out.');
+        this.http.showToast('login.You are logged out.');
       });
   }
 }

@@ -46,6 +46,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {TranslateConfigService} from '../services/translate-config.service';
 import {LanguageSelectorComponentModule} from '../components/language-selector-component/language-selector-component.module';
+import { Device } from '@ionic-native/device/ngx';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -109,6 +110,7 @@ export function LanguageLoader(http: Http) {
     FileChooser,
     IOSFilePicker,
     TranslateConfigService,
+    Device,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

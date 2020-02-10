@@ -26,6 +26,7 @@ import {FeedbackService} from './api/feedback-service';
  */
 export class ApiSync {
     private isBusy: boolean = false;
+    public syncData: any;
 
     /**
      * Contains all services to sync.
@@ -178,16 +179,23 @@ export class ApiSync {
                 return;
             }
             this.http.get(this.getSyncUrl()).subscribe(async (data) => {
-                const dataForSavings = await this.prepareDataForSavingSyncData(data);
-                if (!dataForSavings) {
+                if (!data.syncProcessId) {
+                    this.failSync('There was no property syncProcessId in the response of ' + AppSetting.API_SYNC_URL);
+                    resolve(false);
+                    return;
+                }
+                this.userDb.userSetting.lastSyncProcessId = data.syncProcessId;
+                await this.userDb.save();
+                this.syncData = await this.prepareDataForSavingSyncData(data);
+                if (!this.syncData) {
                     resolve(false);
                 }
-                const isSavedSyncData = this.saveModels(dataForSavings);
+                const isSavedSyncData = this.saveModels(this.syncData);
                 if (!isSavedSyncData) {
                     resolve(false);
                 }
             }, (err) => {
-                this.failSync();
+                this.failSync(err);
                 resolve(false);
                 return;
             });
@@ -294,7 +302,7 @@ export class ApiSync {
                     return false;
                 }
                 if (this.userDb.userSetting.syncAllItemsCount === 0) {
-                    this.failSync();
+                    this.failSync('this.userDb.userSetting.syncAllItemsCount is 0');
                     return false;
                 }
                 savedDataCount++;
@@ -332,6 +340,7 @@ export class ApiSync {
         }
 
         return this.userDb.save().then(() => {
+            this.sendSyncProgress();
             if (this.isAllItemsSynced()) {
                 this.isBusy = false;
 
@@ -345,15 +354,63 @@ export class ApiSync {
             this.syncAllItemsCount.getValue() === this.syncedItemsCount.getValue();
     }
 
-    private failSync() {
+    private async failSync(error?: string) {
         this.syncProgressStatus.next('failed');
         this.userDb.userSetting.syncStatus = 'failed';
-        this.userDb.save();
+        this.userDb.userSetting.lastSyncProcessId = null;
+        await this.userDb.save();
+        this.sendSyncProgress(error);
         this.isStartSyncBehaviorSubject.next(false);
         this.isBusy = false;
     }
 
-    private getSyncUrl(isCheckAvailableData = false) {
+    public sendSyncProgress(description?: string, isCancel = false) {
+        return new Promise(resolve => {
+            if (!this.userDb.userSetting.lastSyncProcessId) {
+                resolve(false);
+                return;
+            }
+
+            let url = AppSetting.API_SYNC_URL + '/save-progress';
+            url += '?syncProcessId=' + this.userDb.userSetting.lastSyncProcessId;
+
+            let data = null;
+            if (isCancel) {
+                data = {
+                    id: this.userDb.userSetting.lastSyncProcessId,
+                    uuid: this.http.deviceInfo.uuid,
+                    status: 'cancel'
+                };
+            } else {
+                data = this.getSyncProcessInfo();
+                if (description) {
+                    data.description = description;
+                }
+            }
+
+            this.http.post(url, data).subscribe((response) => {
+                resolve(true);
+                return;
+            }, (err) => {
+                resolve(false);
+                return;
+            });
+        });
+    }
+
+    public getSyncProcessInfo() {
+        return {
+            id: this.userDb.userSetting.lastSyncProcessId,
+            uuid: this.http.deviceInfo.uuid,
+            progress: this.userDb.userSetting.syncPercent,
+            all_items_count: this.userDb.userSetting.syncAllItemsCount,
+            synced_items_count: this.userDb.userSetting.syncLastElementNumber,
+            status: this.userDb.userSetting.syncStatus,
+            description: null
+        };
+    }
+
+    private getSyncUrl(isCheckAvailableData = false): string {
         let url = AppSetting.API_SYNC_URL;
 
         if (isCheckAvailableData) {
@@ -363,7 +420,11 @@ export class ApiSync {
         if (this.userDb.userSetting.lastSyncedAt) {
             // Need to recast the saved date to get the ISOString, which will give us the correct offset to sync with the ser
             const lastUpdatedAt = this.getUTCDate(new Date(this.userDb.userSetting.lastSyncedAt));
-            url = url + '?lastUpdatedAt=' + lastUpdatedAt.toISOString();
+            url += '?lastUpdatedAt=' + lastUpdatedAt.toISOString();
+        }
+        if (!isCheckAvailableData && this.userDb.userSetting.lastSyncProcessId) {
+            url += !this.userDb.userSetting.lastSyncedAt ? '?' : '&';
+            url += 'syncProcessId=' + this.userDb.userSetting.lastSyncProcessId;
         }
         // if (this.userDb.userSetting.syncLastElementNumber && this.syncProgressStatus.getValue() === 'resume') {
         //     if (this.userDb.userSetting.lastSyncedAt) {
@@ -404,6 +465,7 @@ export class ApiSync {
             this.userDb.userSetting.syncStatus = 'pause';
             this.isPrepareSynData.next(false);
             this.userDb.save().then(() => {
+                this.sendSyncProgress();
                 resolve(true);
             });
         });
@@ -434,7 +496,7 @@ export class ApiSync {
         });
     }
 
-    public unsetSyncProgressData(resetAllData = true): Promise<true> {
+    public unsetSyncProgressData(): Promise<true> {
       return new Promise(resolve => {
         this.init().then((data) => {
           if (data && this.userDb) {
@@ -444,6 +506,7 @@ export class ApiSync {
             this.userDb.userSetting.syncPercent = 0;
             this.userDb.userSetting.syncLastElementNumber = 0;
             this.userDb.userSetting.syncAllItemsCount = 0;
+            this.userDb.userSetting.lastSyncProcessId = null;
             this.userDb.save().then(() => {
                 this.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
                 this.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);

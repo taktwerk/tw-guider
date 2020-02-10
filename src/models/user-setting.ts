@@ -5,7 +5,7 @@
  *
  * NOTE: Make sure to store only settings and that are not needed on multiple devices for the same user.
  */
-export class UserSetting{
+export class UserSetting {
   /** last known access token for a user */
   public accessToken: string;
   /** last sync date */
@@ -20,6 +20,8 @@ export class UserSetting{
   public syncLastElementNumber: number;
 
   public syncAllItemsCount: number;
+
+  public lastSyncProcessId: number = null;
 
   public pushStatus: string;
 

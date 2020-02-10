@@ -14,6 +14,7 @@ import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-serv
 import {GuideAssetTextModalComponent} from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
 import {DownloadService} from '../../services/download-service';
+import {ApiSync} from '../../providers/api-sync';
 
 @Component({
   selector: 'app-guide',
@@ -42,11 +43,12 @@ export class GuidePage implements OnInit {
       private file: File,
       private streamingMedia: StreamingMedia,
       private photoViewer: PhotoViewer,
+      private apiSync: ApiSync,
       public events: Events,
       public authService: AuthService,
       public changeDetectorRef: ChangeDetectorRef,
       public modalController: ModalController,
-      public downloadService: DownloadService
+      public downloadService: DownloadService,
   ) {
     this.authService.checkAccess();
   }
@@ -107,6 +109,7 @@ export class GuidePage implements OnInit {
   }
 
   ngOnInit() {
+    this.apiSync.syncData
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     if (this.guideId) {
       this.guiderService.getById(this.guideId).then((result) => {

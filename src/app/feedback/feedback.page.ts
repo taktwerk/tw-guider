@@ -13,6 +13,8 @@ import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute} from '@angular/router';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+
 /**
  * Generated class for the TodoPage page.
  *
@@ -57,7 +59,7 @@ export class FeedbackPage implements OnInit {
 
     public async save() {
         if (!this.model.description) {
-            this.http.showToast('Description is required', 'Validation error', 'danger');
+            this.http.showToast('validation.Description is required', 'validation.Validation error', 'danger');
             return;
         }
         const user = await this.authService.getLastUser();
@@ -98,7 +100,6 @@ export class FeedbackPage implements OnInit {
         }
         this.fileChooser.open()
             .then(uri => {
-                console.log('open file, please', uri);
                 this.model[FeedbackModel.COL_ATTACHED_FILE] = 'File tmp name';
 
                 if (this.platform.is('android')) {
@@ -145,7 +146,6 @@ export class FeedbackPage implements OnInit {
         const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
         if (this.reference_id && this.reference_model) {
             feedbackSearchCondition.push(['reference_id', this.reference_id]);
-            // feedbackSearchCondition.push(['reference_model', this.reference_model]);
         }
         this.feedbackService.dbModelApi.findAllWhere(feedbackSearchCondition, '_id ASC')
             .then(data => {

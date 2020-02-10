@@ -10,6 +10,7 @@ import {DbProvider} from '../../providers/db-provider';
 import {SyncService} from '../../services/sync-service';
 import {DatePipe} from '@angular/common';
 import {ApiPush} from '../../providers/api-push';
+import {TranslateConfigService} from '../../services/translate-config.service';
 
 /**
  * Generated class for the TodoPage page.
@@ -51,28 +52,22 @@ export class SynchronizationComponent implements OnInit {
                 private events: Events,
                 private syncService: SyncService,
                 public alertController: AlertController,
-                public datepipe: DatePipe) {
+                public datepipe: DatePipe,
+                private translateConfigService: TranslateConfigService) {
       this.initUser().then(() => {
           if ([0, 1, 2].includes(this.userDb.userSetting.syncMode)) {
               this.modeSync = this.userDb.userSetting.syncMode;
           } else {
               this.modeSync = SyncMode.Manual;
           }
-          if (this.userDb.userSetting.syncLastElementNumber > 0 &&
-              (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
-          ) {
-              this.userDb.userSetting.syncStatus = 'pause';
-              this.userDb.save();
-          }
           this.syncProgressStatus = this.userDb.userSetting.syncStatus;
-
       });
     }
 
   cancelSyncData() {
     return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
         if (isCanceled) {
-            this.http.showToast('Sync was canceled.');
+            this.http.showToast('synchronization-component.Sync was canceled.');
         }
     });
   }
@@ -86,13 +81,13 @@ export class SynchronizationComponent implements OnInit {
   changeSyncMode(mode) {
       this.modeSync = +mode;
       if (this.modeSync === SyncMode.Manual) {
-          this.http.showToast('Now is manually mode.');
+          this.http.showToast('synchronization-component.Now is manually mode.');
       }
       if (this.modeSync === SyncMode.NetworkConnect) {
-          this.http.showToast('Now is network connection mode.');
+          this.http.showToast('synchronization-component.Now is network connection mode.');
       }
       if (this.modeSync === SyncMode.Periodic) {
-          this.http.showToast('Now is periodic mode (every 15 seconds)');
+          this.http.showToast('synchronization-component.Now is periodic mode (every 15 seconds)');
       }
       this.initUser().then(() => {
           this.userDb.userSetting.syncMode = this.modeSync;
@@ -103,7 +98,7 @@ export class SynchronizationComponent implements OnInit {
 
   async showRefreshDataAlert() {
       const alert = await this.alertController.create({
-        message: 'Are you sure you want to overwrite the data?',
+        message: this.translateConfigService.translateWord('synchronization-component.Are you sure you want to overwrite the data?'),
         buttons: [
           {
             text: 'Yes',
@@ -143,11 +138,11 @@ export class SynchronizationComponent implements OnInit {
         }
         const isRemovedAllApiFiles = await this.downloadService.removeAllAppFiles();
         if (!isRemovedAllApiFiles) {
-            this.http.showToast('Failed to remove data');
+            this.http.showToast('synchronization-component.Failed to remove data');
             resolve(false);
             return;
         }
-        this.http.showToast('All files was deleted');
+        this.http.showToast('synchronization-component.All files was deleted');
 
         await this.apiSync.resetSyncedData();
         this.initUser().then(() => {
@@ -157,18 +152,19 @@ export class SynchronizationComponent implements OnInit {
           this.userDb.userSetting.syncAllItemsCount = 0;
           this.userDb.userSetting.syncPercent = 0;
           this.userDb.userSetting.lastSyncedAt = null;
+          this.userDb.userSetting.lastSyncProcessId = null;
           this.userDb.save().then(() => {
               this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
               this.apiSync.syncProgressStatus.next('success');
               this.apiSync.isStartSyncBehaviorSubject.next(false);
-              this.http.showToast('The database is cleared.');
+              this.http.showToast('synchronization-component.The database is cleared.');
               this.apiSync.makeSyncProcess();
 
               resolve(true);
           });
         });
       }).then((res) => {
-        this.http.showToast('All data was cleared');
+        this.http.showToast('synchronization-component.All data was cleared');
       });
   }
 
