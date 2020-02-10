@@ -57,6 +57,7 @@ export class AppComponent implements OnInit {
   periodicSync: any;
   checkAvailableSyncChanges: any;
 
+  //// TODO in future save device info via API in this place
   initializeApp() {
     this.platform.ready().then(() => {
       this.translateConfigService.setLanguage();

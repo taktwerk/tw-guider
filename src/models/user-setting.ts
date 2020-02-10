@@ -21,6 +21,8 @@ export class UserSetting{
 
   public syncAllItemsCount: number;
 
+  public syncProcessId: number = null;
+
   public pushStatus: string;
 
   public pushPercent: number;

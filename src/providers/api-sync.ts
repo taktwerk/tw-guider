@@ -18,6 +18,7 @@ import {Network} from '@ionic-native/network/ngx';
 import {GuideAssetService} from './api/guide-asset-service';
 import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
 import {FeedbackService} from './api/feedback-service';
+import { Device } from '@ionic-native/device/ngx';
 
 @Injectable()
 /**
@@ -40,6 +41,16 @@ export class ApiSync {
         guide_asset: this.guideAssetService,
         guide_asset_pivot: this.guideAssetPivotService,
         feedback: this.feedbackService
+    };
+
+    deviceInfo: any = {
+        model: this.device.model,
+        platform: this.device.platform,
+        uuid: this.device.uuid,
+        version: this.device.version,
+        manufacturer: this.device.manufacturer,
+        isVirtual: this.device.isVirtual,
+        serial: this.device.serial
     };
 
     userDb: UserDb;
@@ -69,7 +80,8 @@ export class ApiSync {
         private guideAssetPivotService: GuideAssetPivotService,
         private feedbackService: FeedbackService,
         private downloadService: DownloadService,
-        private network: Network
+        private network: Network,
+        private device: Device
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);
@@ -79,6 +91,17 @@ export class ApiSync {
         this.isPrepareSynData = new BehaviorSubject<boolean>(false);
         this.noDataForSync = new BehaviorSubject<boolean>(false);
         this.isAvailableForSyncData = new BehaviorSubject<boolean>(false);
+        this.platform.ready().then(() => {
+            this.deviceInfo = {
+                model: this.device.model,
+                platform: this.device.platform,
+                uuid: this.device.uuid,
+                version: this.device.version,
+                manufacturer: this.device.manufacturer,
+                isVirtual: this.device.isVirtual,
+                serial: this.device.serial
+            };
+        });
         this.init();
         this.initializeEvents();
     }
@@ -192,6 +215,18 @@ export class ApiSync {
                 return;
             });
         });
+    }
+
+    protected getDeviceInfo() {
+        return {
+            model: this.device.model,
+            platform: this.device.platform,
+            uuid: this.device.uuid,
+            version: this.device.version,
+            manufacturer: this.device.manufacturer,
+            isVirtual: this.device.isVirtual,
+            serial: this.device.serial
+        };
     }
 
     protected async prepareDataForSavingSyncData(dataFromApi) {
