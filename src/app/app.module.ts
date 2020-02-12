@@ -28,7 +28,7 @@ import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { VideoPlayer } from '@ionic-native/video-player/ngx';
 import {SyncService} from '../services/sync-service';
 import {UserService} from '../services/user-service';
-import {DatePipe} from '@angular/common';
+import {DatePipe as BaseDatePipe, registerLocaleData} from '@angular/common';
 import {GuideAssetService} from '../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../providers/api/guide-asset-pivot-service';
 import {GuideAssetTextModalComponent} from '../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
@@ -48,9 +48,15 @@ import {TranslateConfigService} from '../services/translate-config.service';
 import {LanguageSelectorComponentModule} from '../components/language-selector-component/language-selector-component.module';
 import { Device } from '@ionic-native/device/ngx';
 
+// import localeFr from '@angular/common/locales/fr';
+// import localeFrExtra from '@angular/common/locales/extra/fr';
+import {DatePipe} from '../pipes/date-pipe/date-pipe';
+
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
+
+// registerLocaleData(localeFr, 'fr-FR', localeFrExtra);
 
 @NgModule({
   declarations: [
@@ -104,13 +110,14 @@ export function LanguageLoader(http: Http) {
     VideoPlayer,
     SyncService,
     UserService,
-    DatePipe,
+    BaseDatePipe,
     CryptoProvider,
     FilePath,
     FileChooser,
     IOSFilePicker,
     TranslateConfigService,
     Device,
+    DatePipe,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

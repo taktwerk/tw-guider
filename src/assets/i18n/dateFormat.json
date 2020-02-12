@@ -1,0 +1,8 @@
+{
+  "en": {
+    "yyyy-MM-dd HH:mm:ss": "dd.M.yyyy hh:mm:ss a"
+  },
+  "de": {
+    "yyyy-MM-dd HH:mm:ss": "yyyy-MM-dd HH:mm:ss"
+  }
+}

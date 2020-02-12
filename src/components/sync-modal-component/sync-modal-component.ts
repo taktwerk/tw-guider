@@ -8,9 +8,9 @@ import {HttpClient} from '../../services/http-client';
 import {AuthService} from '../../services/auth-service';
 import {DbProvider} from '../../providers/db-provider';
 import {SyncService} from '../../services/sync-service';
-import {DatePipe} from '@angular/common';
 import {Network} from '@ionic-native/network/ngx';
 import {debounceTime} from 'rxjs/operators';
+import {DatePipe} from '../../pipes/date-pipe/date-pipe';
 
 /**
  * Generated class for the TodoPage page.

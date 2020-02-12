@@ -22,7 +22,7 @@
     "Pause" : "(De) Pause",
     "Failed" : "(De) Failed",
     "Success" : "(De) Success",
-    "No data for sync" : "(De) No data for sync",
+    "No data for sync." : "(De) No data for sync",
     "There is data available for pushing to the server.": "(De) There is data available for pushing to the server.",
     "No network connection.": "(De) No network connection.",
     "Data synchronization is not yet possible.": "(De) Data synchronization is not yet possible."
