@@ -47,9 +47,7 @@ export class UserDb extends DbBaseModel {
     public getCurrent(): Promise<any | boolean> {
         return new Promise((resolve) => {
             new AuthDb(this.platform, this.db, this.events, this.downloadService).loadLast().then((authDb) => {
-                console.log('authDb is ready', authDb);
                 if (!authDb) {
-                    console.warn(this.TAG, 'could not load last auth db', authDb);
                     resolve(null);
                 } else {
                     this.findWhere(['user_id', authDb.userId]).then((userDb) => {

@@ -179,10 +179,8 @@ export class ApiPush {
                         if (!body) {
                             return;
                         }
-                        console.log('allServicesBodies', body);
 
                         const jsonBody = JSON.stringify(body);
-                        console.log('jsonBodyshe', jsonBody);
 
                         promises.push(new Promise((resolve) => {
                             if (this.pushProgressStatus.getValue() === 'failed') {
@@ -210,7 +208,6 @@ export class ApiPush {
                                         resolve(false);
                                         return;
                                     }
-                                    console.log('not ended');
                                     const record = data[0];
                                     //get model by local id and update received primary key from api
                                     service.dbModelApi.findById(record._id, true).then((dbModel) => {

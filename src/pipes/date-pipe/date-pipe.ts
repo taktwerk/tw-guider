@@ -12,13 +12,9 @@ export class DatePipe extends BaseDatePipe implements PipeTransform {
 
     transform(value: any, format?: string, timezone?: string, locale?: string): string | null {
         const language = this.translateConfigService.getDefaultLanguage();
-        console.log('dateFormats', dateFormats);
         const dateFormatsByLanguage = dateFormats[language];
-        console.log('language', language);
-        console.log('dateFormatsByLanguage', dateFormatsByLanguage);
         if (dateFormatsByLanguage) {
             const languageFormat = dateFormatsByLanguage[format];
-            console.log('languageFormat', languageFormat);
             if (languageFormat) {
                 format = languageFormat;
             }

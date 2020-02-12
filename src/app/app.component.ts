@@ -80,7 +80,6 @@ export class AppComponent implements OnInit {
             }
             this.apiSync.syncProgressStatus.next(this.userDb.userSetting.syncStatus);
           } catch (e) {
-            console.log('login errror', e);
           }
         }
         this.translateConfigService.setLanguage(currentLanguage);
