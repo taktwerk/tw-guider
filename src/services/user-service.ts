@@ -28,6 +28,10 @@ export class UserService {
         return true;
     }
 
+    setUser(userDb: UserDb) {
+        this.userDb = userDb;
+    }
+
     getUser(): Promise<UserDb> {
         if (this.userDb) {
             return new Promise(resolve => {

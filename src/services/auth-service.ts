@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from '@angular/core';
 import {HttpClient, HttpHeaders as Headers, HttpHeaders} from '@angular/common/http';
 import {AppSetting} from './app-setting';
-import {Platform, LoadingController, ToastController} from '@ionic/angular';
+import {Platform, LoadingController, ToastController, AlertController} from '@ionic/angular';
 import {DbProvider} from '../providers/db-provider';
 import {AuthDb} from '../models/db/auth-db';
 import {UserDb} from '../models/db/user-db';
@@ -10,6 +10,9 @@ import { Events, NavController } from '@ionic/angular';
 import {DownloadService} from './download-service';
 import {CryptoProvider} from '../providers/crypto-provider';
 import {Network} from '@ionic-native/network/ngx';
+import {Device} from '@ionic-native/device/ngx';
+import {AppVersion} from '@ionic-native/app-version/ngx';
+import {UserService} from './user-service';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +31,10 @@ export class AuthService {
      * @param network
      * @param ngZone
      * @param appSetting
+     * @param device
+     * @param appVersion
+     * @param alertController
+     * @param userService
      */
     constructor(private http: HttpClient,
                 public platform: Platform,
@@ -40,7 +47,11 @@ export class AuthService {
                 private toastCtrl: ToastController,
                 private network: Network,
                 private ngZone: NgZone,
-                private appSetting: AppSetting
+                private appSetting: AppSetting,
+                private device: Device,
+                private appVersion: AppVersion,
+                private alertController: AlertController,
+                private userService: UserService
     ) {
         // Create a tmp user until everything has properly been loaded
         this.auth = this.newAuthModel();
@@ -95,50 +106,6 @@ export class AuthService {
         });
     }
 
-    offlineAuthenticate(formData: any): Promise<any> {
-        return new Promise((resolve) => {
-            this.auth.findFirst(['username', '"' + formData.username + '"'], 'user_id DESC').then((result) => {
-                if (!result || !result[0]) {
-                    resolve(false);
-                    return;
-                }
-                const user = result[0];
-                try {
-                    const decryptedPassword = this.cryptoProvider.makeDecrypt(user.password, formData.password);
-                    if (decryptedPassword !== formData.password) {
-                        resolve(false);
-                        return;
-                    }
-                } catch (error) {
-                    resolve(false);
-                    return;
-                }
-                user.loginDate = new Date();
-                user.save(true).then((authSaveResult) => {
-                    if (authSaveResult) {
-                        this.isLoggedin = true;
-                        // create user setting
-                        this.createUserSettingsIfNotExists().then((res) => {
-                            if (res) {
-                                // send a notification to the rest of the app
-                                this.events.publish('user:login', user.userId);
-                                resolve(user.userId);
-                                return;
-                            } else {
-                                resolve(false);
-                                return;
-                            }
-                        });
-                    } else {
-                        // User creation error?
-                        resolve(false);
-                        return;
-                    }
-                });
-            });
-        });
-    }
-
     /**
      * Tries to authenticate with a given pin and returns whether the authentification was successful or not.
      * @returns {Promise<boolean>}
@@ -170,6 +137,96 @@ export class AuthService {
         });
     }
 
+    offlineAuthenticate(formData: any): Promise<any> {
+        return new Promise((resolve) => {
+            this.auth.findFirst(['username', '"' + formData.username + '"'], 'user_id DESC').then((result) => {
+                if (!result || !result[0]) {
+                    resolve(false);
+                    return;
+                }
+                const user = result[0];
+                try {
+                    if (!this.cryptoProvider.comparePassword(formData.password, user.password)) {
+                        resolve(false);
+                        return;
+                    }
+                } catch (error) {
+                    resolve(false);
+                    return;
+                }
+                user.password = this.cryptoProvider.hashPassword(formData.password);
+                user.loginDate = new Date();
+                user.save(true).then((authSaveResult) => {
+                    if (authSaveResult) {
+                        this.isLoggedin = true;
+                        // create user setting
+                        this.createUserSettingsIfNotExists().then((res) => {
+                            if (res) {
+                                // send a notification to the rest of the app
+                                this.events.publish('user:login', user.userId);
+                                resolve(user.userId);
+                                return;
+                            } else {
+                                resolve(false);
+                                return;
+                            }
+                        });
+                    } else {
+                        // User creation error?
+                        resolve(false);
+                        return;
+                    }
+                });
+            });
+        });
+    }
+
+    loginByIdentifier(type: string, identifier: string, currentUser) {
+        return new Promise(async (resolve) => {
+            let appConfirmUrl = this.appSetting.apiUrl + '/login/';
+
+            if (type === 'client') {
+                const version = await this.appVersion.getVersionNumber();
+                if (!version) {
+                    resolve(false);
+                    return false;
+                }
+                appConfirmUrl += 'by-client-identifier?client=' + identifier;
+                appConfirmUrl += '&device_key=' + this.device.uuid + '&device_name=' + this.device.model + '&version=' + version;
+            } else if (type === 'user') {
+                appConfirmUrl += 'by-user-identifier?user=' + identifier;
+            }
+
+            this.http.get(appConfirmUrl)
+                .subscribe(async data => {
+                    if (data) {
+                        if (currentUser) {
+                            const isLogouted = await this.logout();
+                            console.log('is loguted previous user', isLogouted);
+                            if (!isLogouted) {
+                                resolve(false);
+                                return false;
+                            }
+                        }
+                        console.log('data', data);
+                        await this.saveAuthenticatedUser(data).then(() => {
+                            resolve(data);
+                            return true;
+                        });
+                    }
+                }, error => {
+                    console.log(error);
+                    // loader.dismiss();
+                    this.presentAlert(
+                        'Config Error',
+                        null,
+                        'There was an error setting up the application. Please try again.<br><br>Error: ' + error + '<br>',
+                        ['OK']
+                    );
+                });
+        });
+    }
+
     saveAuthenticatedUser(user, formData?: any) {
         return new Promise(resolve => {
             const findAuthModel = this.newAuthModel();
@@ -178,7 +235,7 @@ export class AuthService {
                     this.auth = existUser[0];
                     this.auth.authToken = user.access_token;
                     if (formData) {
-                        this.auth.password = this.cryptoProvider.makeEncrypt(formData.password);
+                        this.auth.password = this.cryptoProvider.hashPassword(formData.password);
                     }
                     this.auth.loginDate = new Date();
                 } else {
@@ -191,29 +248,36 @@ export class AuthService {
                     this.auth.authToken = user.access_token;
                     if (formData) {
                         this.auth.username = formData.username;
-                        this.auth.password = this.cryptoProvider.makeEncrypt(formData.password);
+                        this.auth.password = this.cryptoProvider.hashPassword(formData.password);
                     } else {
                         this.auth.username = user.username;
                     }
                     this.auth.loginDate = new Date();
                 }
+                console.log('existUser', existUser)
                 this.auth.save(!!(existUser.length)).then((authSaveResult) => {
+                    console.log('authSaveResult', authSaveResult);
                     if (authSaveResult) {
                         this.isLoggedin = true;
                         // create user setting
+                        console.log('createUserSettingsIfNotExists');
                         this.createUserSettingsIfNotExists().then((res) => {
+                            console.log('createUserSettingsIfNotExists result', res);
                             if (res) {
                                 // send a notification to the rest of the app
                                 this.events.publish('user:login', user.user_id);
+                                this.userService.userDb = res;
                                 resolve(user.user_id);
+                                return true;
                             } else {
                                 resolve(false);
                                 return false;
                             }
                         });
+                    } else {
+                        resolve(false);
+                        return false;
                     }
-                    resolve(false);
-                    return false;
                 });
             });
         });
@@ -232,7 +296,7 @@ export class AuthService {
                     user.userId = this.auth.userId;
                     user.userSetting = new UserSetting();
                     user.userSetting.accessToken = this.auth.authToken;
-                    user.save(true).then((res) => resolve(res));
+                    user.save(true).then((res) => resolve(user));
                 } else {
                     resolve(user);
                 }
@@ -348,6 +412,16 @@ export class AuthService {
 
         const toast = await this.toastCtrl.create(toastOptions);
         await toast.present();
+    }
+
+    async presentAlert(header: string, subHeader: string, message: string, buttons: Array<string> ) {
+        const alert = await this.alertController.create({
+            header,
+            subHeader,
+            message,
+            buttons
+        });
+        await alert.present();
     }
 
     /**

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 
 import {Events, Platform} from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -46,7 +46,8 @@ export class AppComponent implements OnInit {
     private downloadService: DownloadService,
     private db: DbProvider,
     private apiPush: ApiPush,
-    private translateConfigService: TranslateConfigService
+    private translateConfigService: TranslateConfigService,
+    public changeDetectorRef: ChangeDetectorRef
   ) {
     this.initializeApp();
   }
@@ -114,6 +115,7 @@ export class AppComponent implements OnInit {
     this.events.subscribe('user:login', (userId) => {
       this.setPages();
       this.baseProjectSetup();
+      this.detectChanges();
     });
     this.events.subscribe('user:logout', () => {
       this.setPages();
@@ -201,6 +203,7 @@ export class AppComponent implements OnInit {
       this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
       this.apiSync.isAvailableForSyncData.next(this.userDb.userSetting.isSyncAvailableData);
       this.apiPush.isAvailableForPushData.next(this.userDb.userSetting.isPushAvailableData);
+      this.detectChanges();
       this.checkAvailableSyncChanges = Observable.interval(30000)
           .subscribe(() => {
             this.apiSync.checkAvailableChanges();
@@ -210,6 +213,7 @@ export class AppComponent implements OnInit {
 
   protected logoutAction() {
     this.userDb = null;
+    this.translateConfigService.setLanguage();
     if (this.periodicSync) {
       this.periodicSync.unsubscribe();
       this.periodicSync = null;
@@ -230,6 +234,12 @@ export class AppComponent implements OnInit {
           .subscribe(() => {
             this.apiSync.makeSyncProcess();
           });
+    }
+  }
+
+  detectChanges() {
+    if (!this.changeDetectorRef['destroyed']) {
+      this.changeDetectorRef.detectChanges();
     }
   }
 

@@ -16,11 +16,17 @@ export class AppSetting {
     public mode = AppConfigurationModeEnum.ONLY_CONFIGURE;
     public taktwerk = environment.taktwerk;
     public host = environment.host;
+    private defaultData = {
+        apiUrl : environment.apiUrl,
+        mode : AppConfigurationModeEnum.ONLY_CONFIGURE,
+        taktwerk : environment.taktwerk,
+        host : environment.host
+    };
 
     constructor(private userService: UserService) {
     }
 
-    private validateData(data) {
+    validateData(data) {
         if (!data) {
             return false;
         }
@@ -38,9 +44,6 @@ export class AppSetting {
     }
 
     async save(data) {
-        if (!this.validateData(data)) {
-            return false;
-        }
         const userSettingsObject = {};
         Object.keys(data).map((key) => {
             if (this[key] === undefined) {
@@ -51,6 +54,8 @@ export class AppSetting {
         });
 
         const user = await this.userService.getUser();
+        console.log('user for app setting', user);
+        console.log('userSettingsObject for app setting', userSettingsObject);
         user.userSetting.appSetting = userSettingsObject;
         user.save();
 

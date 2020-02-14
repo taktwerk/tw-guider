@@ -6,6 +6,7 @@
  * NOTE: Make sure to store only settings and that are not needed on multiple devices for the same user.
  */
 import {AppSetting} from '../services/app-setting';
+import {TranslateConfigService} from '../services/translate-config.service';
 
 export class UserSetting {
   /** last known access token for a user */
@@ -39,7 +40,7 @@ export class UserSetting {
 
   public isPushAvailableData: boolean = false;
 
-  public language: string;
+  public language: string = TranslateConfigService.DEFAULT_LANGUAGE;
 
   public appSetting: object;
 }
