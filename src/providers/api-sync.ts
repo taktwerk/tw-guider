@@ -70,7 +70,8 @@ export class ApiSync {
         private guideAssetPivotService: GuideAssetPivotService,
         private feedbackService: FeedbackService,
         private downloadService: DownloadService,
-        private network: Network
+        private network: Network,
+        private appSetting: AppSetting
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);
@@ -180,7 +181,7 @@ export class ApiSync {
             }
             this.http.get(this.getSyncUrl()).subscribe(async (data) => {
                 if (!data.syncProcessId) {
-                    this.failSync('There was no property syncProcessId in the response of ' + AppSetting.API_SYNC_URL);
+                    this.failSync('There was no property syncProcessId in the response');
                     resolve(false);
                     return;
                 }
@@ -371,7 +372,7 @@ export class ApiSync {
                 return;
             }
 
-            let url = AppSetting.API_SYNC_URL + '/save-progress';
+            let url = this.appSetting.apiUrl + '/sync/save-progress';
             url += '?syncProcessId=' + this.userDb.userSetting.lastSyncProcessId;
 
             let data = null;
@@ -411,7 +412,7 @@ export class ApiSync {
     }
 
     private getSyncUrl(isCheckAvailableData = false): string {
-        let url = AppSetting.API_SYNC_URL;
+        let url = this.appSetting.apiUrl + '/sync';
 
         if (isCheckAvailableData) {
             url += '/check-available-data';

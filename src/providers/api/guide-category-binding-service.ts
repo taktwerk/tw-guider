@@ -8,6 +8,7 @@ import {HttpClient} from '../../services/http-client';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {DownloadService} from '../../services/download-service';
 import {GuideCategoryBindingModel} from '../../models/db/api/guide-category-binding-model';
+import {AppSetting} from '../../services/app-setting';
 
 @Injectable()
 export class GuideCategoryBindingService extends ApiService {
@@ -23,12 +24,16 @@ export class GuideCategoryBindingService extends ApiService {
      * @param authService
      * @param events
      * @param downloadService
+     * @param appSetting
      */
-    constructor(http: HttpClient, private p: Platform, private db: DbProvider,
-        public authService: AuthService,
-        public events: Events,
-        public downloadService: DownloadService) {
-        super(http, events);
+    constructor(http: HttpClient,
+                private p: Platform,
+                private db: DbProvider,
+                public authService: AuthService,
+                public events: Events,
+                public downloadService: DownloadService,
+                public appSetting: AppSetting) {
+        super(http, events, appSetting);
         console.debug('GuideCategoryBindingService', 'initialized');
     }
 

@@ -5,7 +5,6 @@ import {HttpClient} from '../../services/http-client';
 import { NgForm } from '@angular/forms';
 import {ApiSync} from '../../providers/api-sync';
 import {Network} from '@ionic-native/network/ngx';
-import {ConnectionStatusEnum} from '../app.component';
 
 /**
  * Generated class for the LoginPage page.

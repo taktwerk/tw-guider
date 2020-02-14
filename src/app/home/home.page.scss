@@ -1,4 +1,9 @@
-.welcome-card img {
-  max-height: 35vh;
-  overflow: hidden;
+.bg-camera {
+  --background: var(--ion-background-color, transparent);
+}
+#close-scanner-button {
+  font-size: 20px;
+}
+.bg-none {
+  background: none transparent;
 }

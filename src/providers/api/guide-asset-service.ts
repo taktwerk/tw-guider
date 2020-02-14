@@ -8,11 +8,12 @@ import {HttpClient} from '../../services/http-client';
 import {DownloadService} from '../../services/download-service';
 import {GuideAssetPivotModel} from '../../models/db/api/guide-asset-pivot-model';
 import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
+import {AppSetting} from '../../services/app-setting';
 
 @Injectable()
 export class GuideAssetService extends ApiService {
     data: GuideAssetModel[] = [];
-    loadUrl: string = '/guide-asset';
+    loadUrl = '/guide-asset';
     dbModelApi: GuideAssetModel = new GuideAssetModel(this.p, this.db, this.events, this.downloadService);
 
     /**
@@ -23,12 +24,16 @@ export class GuideAssetService extends ApiService {
      * @param authService
      * @param events
      * @param downloadService
+     * @param appSetting
      */
-    constructor(http: HttpClient, private p: Platform, private db: DbProvider,
-        public authService: AuthService,
-        public events: Events,
-        public downloadService: DownloadService) {
-        super(http, events);
+    constructor(public http: HttpClient,
+                private p: Platform,
+                private db: DbProvider,
+                public authService: AuthService,
+                public events: Events,
+                public downloadService: DownloadService,
+                public appSetting: AppSetting) {
+        super(http, events, appSetting);
         console.debug('GuideAssetService', 'initialized');
     }
 

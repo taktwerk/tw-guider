@@ -73,28 +73,28 @@ export abstract class DbBaseModel {
      */
     public loadFromAttributes(item: any): DbBaseModel {
         this.id = item[this.COL_ID];
-        for (let column of this.TABLE) {
+        for (const column of this.TABLE) {
             // get column name (if defined in 4th column - otherwise get column name defined in 1st column)
-            let columnName = column[3] ? column[3] : column[0];
-            let value: any = item[column[0]];
+            const columnName = column[3] ? column[3] : column[0];
+            const value: any = item[column[0]];
             switch (column[2]) {
                 case DbBaseModel.TYPE_NUMBER :
-                    (<any>this)[columnName] = this.getNumberValue(value);
+                    (<any> this)[columnName] = this.getNumberValue(value);
                     break;
                 case DbBaseModel.TYPE_DECIMAL :
-                    (<any>this)[columnName] = this.getDecimalValue(value);
+                    (<any> this)[columnName] = this.getDecimalValue(value);
                     break;
                 case DbBaseModel.TYPE_STRING :
-                    (<any>this)[columnName] = this.getStringValue(value);
+                    (<any> this)[columnName] = this.getStringValue(value);
                     break;
                 case DbBaseModel.TYPE_DATE :
-                    (<any>this)[columnName] = this.getDateValue(value);
+                    (<any> this)[columnName] = this.getDateValue(value);
                     break;
                 case DbBaseModel.TYPE_BOOLEAN :
-                    (<any>this)[columnName] = this.getBooleanValue(value);
+                    (<any> this)[columnName] = this.getBooleanValue(value);
                     break;
                 case DbBaseModel.TYPE_OBJECT :
-                    (<any>this)[columnName] = this.getObjectValue(value);
+                    (<any> this)[columnName] = this.getObjectValue(value);
                     break;
             }
         }

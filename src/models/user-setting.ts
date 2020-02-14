@@ -5,6 +5,8 @@
  *
  * NOTE: Make sure to store only settings and that are not needed on multiple devices for the same user.
  */
+import {AppSetting} from '../services/app-setting';
+
 export class UserSetting {
   /** last known access token for a user */
   public accessToken: string;
@@ -38,4 +40,6 @@ export class UserSetting {
   public isPushAvailableData: boolean = false;
 
   public language: string;
+
+  public appSetting: object;
 }
