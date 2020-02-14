@@ -656,7 +656,7 @@ export abstract class DbBaseModel {
      * Creates this base model instances via INSERT SQL statement
      * in the local SQLite database.
      */
-    protected create(): Promise<any> {
+    public create(): Promise<any> {
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {

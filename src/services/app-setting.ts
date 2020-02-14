@@ -1,6 +1,10 @@
 import {Injectable} from '@angular/core';
 import { environment } from '../environments/environment';
 import {UserService} from './user-service';
+import {AppSettingsDb} from '../models/db/app-settings-db';
+import {Events, Platform} from '@ionic/angular';
+import {DbProvider} from '../providers/db-provider';
+import {DownloadService} from './download-service';
 
 export enum AppConfigurationModeEnum {
     ONLY_CONFIGURE,
@@ -23,10 +27,32 @@ export class AppSetting {
         host : environment.host
     };
 
-    constructor(private userService: UserService) {
+    appSetting: AppSettingsDb;
+
+    constructor(private userService: UserService,
+                public platform: Platform,
+                public db: DbProvider,
+                public events: Events,
+                public downloadService: DownloadService
+    ) {
+        this.appSetting = new AppSettingsDb(platform, db, events, downloadService);
+        this.appSetting.find().then((result) => {
+            if (result) {
+                Object.keys(result.settings).map((key) => {
+                    if (this[key] === undefined) {
+                        return;
+                    }
+                    this[key] = result.settings[key];
+                });
+            } else {
+                this.appSetting.settings = this.defaultData;
+                this.appSetting.save();
+            }
+        });
     }
 
     validateData(data) {
+        console.log('data', data);
         if (!data) {
             return false;
         }
@@ -44,7 +70,7 @@ export class AppSetting {
     }
 
     async save(data) {
-        const userSettingsObject = {};
+        let userSettingsObject = {};
         Object.keys(data).map((key) => {
             if (this[key] === undefined) {
                 return;
@@ -52,12 +78,24 @@ export class AppSetting {
             this[key] = data[key];
             userSettingsObject[key] = data[key];
         });
+        if (!userSettingsObject) {
+            userSettingsObject = this.defaultData;
+        }
 
         const user = await this.userService.getUser();
-        console.log('user for app setting', user);
-        console.log('userSettingsObject for app setting', userSettingsObject);
-        user.userSetting.appSetting = userSettingsObject;
-        user.save();
+        this.appSetting.settings = userSettingsObject;
+        this.appSetting.find().then((result) => {
+            if (result) {
+                result.settings = userSettingsObject;
+                result.save();
+            } else {
+                this.appSetting.create();
+            }
+        });
+        if (user) {
+            user.userSetting.appSetting = userSettingsObject;
+            user.save();
+        }
 
         return true;
     }
