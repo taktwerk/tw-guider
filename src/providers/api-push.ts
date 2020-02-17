@@ -165,7 +165,7 @@ export class ApiPush {
                 const promises = [];
                 Object.keys(allServicesBodies).forEach((modelKey) => {
                     const service: ApiService = this.apiServices[modelKey];
-                    const url = this.appSetting.apiUrl + service.loadUrl + '/batch';
+                    const url = this.appSetting.getApiUrl() + service.loadUrl + '/batch';
 
                     allServicesBodies[modelKey].forEach((body) => {
                         if (!body) {
@@ -280,7 +280,7 @@ export class ApiPush {
             for (const key of Object.keys(this.apiServices)) {
                 // get registered api service for the current model
                 const service: ApiService = this.apiServices[key];
-                const url = this.appSetting.apiUrl + service.loadUrl + '/batch';
+                const url = this.appSetting.getApiUrl() + service.loadUrl + '/batch';
                 service.prepareBatchPost().then((bodies) => {
                     if (!bodies || bodies.length <= 0) {
                         return;
@@ -371,7 +371,7 @@ export class ApiPush {
           if (!Object.keys(allServicesBodies).length) {
             return;
           }
-          const url = this.appSetting.apiUrl + '/sync/batch-all';
+          const url = this.appSetting.getApiUrl() + '/sync/batch-all';
           const jsonBody = JSON.stringify(allServicesBodies);
           this.http.post(url, jsonBody)
             .map(res => res.json())

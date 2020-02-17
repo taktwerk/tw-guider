@@ -372,7 +372,7 @@ export class ApiSync {
                 return;
             }
 
-            let url = this.appSetting.apiUrl + '/sync/save-progress';
+            let url = this.appSetting.getApiUrl() + '/sync/save-progress';
             url += '?syncProcessId=' + this.userDb.userSetting.lastSyncProcessId;
 
             let data = null;
@@ -412,7 +412,7 @@ export class ApiSync {
     }
 
     private getSyncUrl(isCheckAvailableData = false): string {
-        let url = this.appSetting.apiUrl + '/sync';
+        let url = this.appSetting.getApiUrl() + '/sync';
 
         if (isCheckAvailableData) {
             url += '/check-available-data';

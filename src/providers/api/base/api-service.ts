@@ -76,7 +76,7 @@ export abstract class ApiService {
         // don't have the data yet
         return new Promise(resolve => {
             this.isReady = false;
-            this.http.get(this.appSetting.apiUrl + this.loadUrl)
+            this.http.get(this.appSetting.getApiUrl() + this.loadUrl)
                 .map(res => res.json())
                 .subscribe(data => {
                     this.isReady = true;
@@ -199,7 +199,7 @@ export abstract class ApiService {
             resolve(false);
             return;
           }
-          const url = this.appSetting.apiUrl+ this.loadUrl + '/' + model.idApi + '/upload';
+          const url = this.appSetting.getApiUrl() + this.loadUrl + '/' + model.idApi + '/upload';
           const authToken = this.http.getAuthorizationToken();
           const uploadFilePromises = [];
           for (const fields of model.downloadMapping) {

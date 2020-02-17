@@ -16,12 +16,11 @@ export enum AppConfigurationModeEnum {
 export class AppSetting {
     static DB_NAME: string = environment.dbName;
 
-    public apiUrl = environment.apiUrl;
     public mode = AppConfigurationModeEnum.ONLY_CONFIGURE;
     public taktwerk = environment.taktwerk;
     public host = environment.host;
+
     private defaultData = {
-        apiUrl : environment.apiUrl,
         mode : AppConfigurationModeEnum.ONLY_CONFIGURE,
         taktwerk : environment.taktwerk,
         host : environment.host
@@ -52,8 +51,10 @@ export class AppSetting {
     }
 
     validateData(data) {
-        console.log('data', data);
         if (!data) {
+            return false;
+        }
+        if (!data.host) {
             return false;
         }
         if (!data.taktwerk) {
@@ -67,6 +68,10 @@ export class AppSetting {
         }
 
         return true;
+    }
+
+    public getApiUrl() {
+        return this.host + environment.apiUrlPath;
     }
 
     async save(data) {
