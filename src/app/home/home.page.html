@@ -25,14 +25,14 @@
     <ion-card-header>
       <ion-card-subtitle>{{ 'home.title' | translate:params }}</ion-card-subtitle>
       <p>
-        Die Guider App ermöglicht die Anzeige von digitalen Anleitungen (Montage, Schulungen, etc.)
+        {{ 'qr.The Guider app enables the display of digital instructions (assembly, training, etc.)' | translate:params }}
       </p>
       <p>
-        Die App funktioniert nur mit einem Kundenkonto. Bitte kontaktieren Sie dafür die taktwerk GmbH: <a href="mailto:support@taktwerk.ch">support@taktwerk.ch</a>
+        {{ 'qr.The app only works with a customer account. Please contact taktwerk GmbH for this' | translate:params }}: <a href="mailto:support@taktwerk.ch">support@taktwerk.ch</a>
       </p>
 
       <h1>Setup</h1>
-      <p>Scannen Sie den erhaltenen <strong>QR-Code</strong></p>
+      <p>{{ 'qr.Scan the received one' | translate:params }}<strong>QR-Code</strong></p>
 
 
       <ion-button size="large" expand="full" (click)="scanQrcode()">

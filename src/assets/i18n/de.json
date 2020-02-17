@@ -76,5 +76,11 @@
     "Validation error": "(De) Validation error",
     "Wrong password or login!": "(De) Wrong password or login!",
     "You are not authorized.": "(De) You are not authorized."
+  },
+  "qr": {
+    "Application was successfully configured": "(DE) Application was successfully configured",
+    "The Guider app enables the display of digital instructions (assembly, training, etc.)": "Die Guider App ermöglicht die Anzeige von digitalen Anleitungen (Montage, Schulungen, etc.)",
+    "The app only works with a customer account. Please contact taktwerk GmbH for this": "Die App funktioniert nur mit einem Kundenkonto. Bitte kontaktieren Sie dafür die taktwerk GmbH",
+    "Scan the received one": "Scannen Sie den erhaltenen"
   }
 }
