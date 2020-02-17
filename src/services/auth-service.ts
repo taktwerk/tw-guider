@@ -118,7 +118,7 @@ export class AuthService {
         });
 
         return new Promise((resolve) => {
-            this.http.get<any>(this.appSetting.apiUrl + '/login?' + creds, {headers}).subscribe(
+            this.http.get<any>(this.appSetting.getApiUrl() + '/login?' + creds, {headers}).subscribe(
                 async (data) => {
                     if (data) {
                         const isSavedUser = await this.saveAuthenticatedUser(data, formData);
@@ -181,10 +181,8 @@ export class AuthService {
         });
     }
 
-    loginByIdentifier(type: string, identifier: string, currentUser) {
+    loginByIdentifier(appConfirmUrl, type: string, identifier: string) {
         return new Promise(async (resolve) => {
-            let appConfirmUrl = this.appSetting.apiUrl + '/login/';
-
             if (type === 'client') {
                 const version = await this.appVersion.getVersionNumber();
                 if (!version) {
@@ -200,15 +198,6 @@ export class AuthService {
             this.http.get(appConfirmUrl)
                 .subscribe(async data => {
                     if (data) {
-                        if (currentUser) {
-                            const isLogouted = await this.logout();
-                            console.log('is loguted previous user', isLogouted);
-                            if (!isLogouted) {
-                                resolve(false);
-                                return false;
-                            }
-                        }
-                        console.log('data', data);
                         await this.saveAuthenticatedUser(data).then(() => {
                             resolve(data);
                             return true;
@@ -343,7 +332,7 @@ export class AuthService {
             }
             const headersObject = new Headers(headers);
 
-            this.http.get(this.appSetting.apiUrl + '/login/check', {headers: headersObject}).subscribe(
+            this.http.get(this.appSetting.getApiUrl() + '/login/check', {headers: headersObject}).subscribe(
                 (data) => {
                     if (data) {
                         resolve(true);
@@ -367,7 +356,7 @@ export class AuthService {
      * Check if a user has access to a page
      */
     public checkAccess(): void {
-        this.getLastUser().then(isAuthenticatedUser => {
+        this.userService.getUser().then(isAuthenticatedUser => {
             if (!isAuthenticatedUser) {
                 this.ngZone.run(() => {
                     this.navCtrl.navigateRoot('login').then(() => {

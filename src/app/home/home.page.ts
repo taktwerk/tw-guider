@@ -8,6 +8,7 @@ import {AppConfigurationModeEnum, AppSetting} from '../../services/app-setting';
 import {UserService} from '../../services/user-service';
 import { Device } from '@ionic-native/device/ngx';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import {environment} from '../../environments/environment';
 
 /**
  * Generated class for the TodoPage page.
@@ -62,14 +63,25 @@ export class HomePage {
               this.http.showToast('validation.QR-scanner has wrong information');
             }
             const user = this.userService.getUser();
-            if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
-              console.log('in client condition');
-              await this.authServ.loginByIdentifier('client', config.clientIdentifier, user);
-            } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
-              await this.authServ.loginByIdentifier('user', config.userIdentifier, user);
+            if (user) {
+              await this.authServ.logout();
             }
-            console.log('before app setting saving');
-            this.appSetting.save(config);
+            const appConfirmUrl =  config.host + environment.apiUrlPath + '/login/';
+            if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
+              await this.authServ.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
+            } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
+              await this.authServ.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
+            }
+            this.appSetting.save(config).then(() => {
+              this.userService.getUser().then(loggedUser => {
+                const isUserLoggedIn = !!loggedUser;
+                if (!isUserLoggedIn) {
+                  this.navCtrl.navigateRoot('/login');
+                }
+              });
+
+              this.http.showToast('qr.Application was successfully configured');
+            });
             this.closeScanner();
             scanSub.unsubscribe();
             this.detectChanges();
