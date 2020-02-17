@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   host: 'http://192.168.0.180:8015',
-  apiUrl: 'http://192.168.0.180:8015/api/v1',
+  apiUrlPath: '/api/v1',
   taktwerk: 'taktwerk',
   dbName: 'guider'
 };
