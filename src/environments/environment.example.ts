@@ -6,7 +6,6 @@ export const environment = {
   production: false,
   host: 'http://192.168.0.180:8015',
   apiUrl: 'http://192.168.0.180:8015/api/v1',
-  apiSyncUrl: 'http://192.168.0.180:8015/api/v1/sync',
   taktwerk: 'taktwerk',
   dbName: 'guider'
 };
