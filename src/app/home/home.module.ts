@@ -8,7 +8,6 @@ import { HomePage } from './home.page';
 import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
 import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
 import {TranslateModule} from '@ngx-translate/core';
-import {QrScannerComponentModule} from '../../components/qr-scanner-component/qr-scanner-component.module';
 
 @NgModule({
     imports: [
@@ -23,8 +22,7 @@ import {QrScannerComponentModule} from '../../components/qr-scanner-component/qr
         ]),
         SyncSpinnerComponentModule,
         LanguageSelectorComponentModule,
-        TranslateModule.forChild(),
-        QrScannerComponentModule
+        TranslateModule.forChild()
     ],
   declarations: [HomePage]
 })
