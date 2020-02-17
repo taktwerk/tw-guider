@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 import {AlertController, LoadingController, NavController, Platform} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {QRScanner, QRScannerStatus} from '@ionic-native/qr-scanner/ngx';
@@ -36,7 +36,8 @@ export class HomePage {
       private appSetting: AppSetting,
       private userService: UserService,
       public navCtrl: NavController,
-      public changeDetectorRef: ChangeDetectorRef
+      public changeDetectorRef: ChangeDetectorRef,
+      private ngZone: NgZone
   ) {}
 
   public scanQrcode() {
@@ -62,7 +63,7 @@ export class HomePage {
             if (!this.appSetting.validateData(config)) {
               this.http.showToast('validation.QR-scanner has wrong information');
             }
-            const user = this.userService.getUser();
+            const user = await this.userService.getUser();
             if (user) {
               await this.authServ.logout();
             }
@@ -74,9 +75,12 @@ export class HomePage {
             }
             this.appSetting.save(config).then(() => {
               this.userService.getUser().then(loggedUser => {
+                console.log('userService.getUser()', loggedUser, !!loggedUser);
                 const isUserLoggedIn = !!loggedUser;
                 if (!isUserLoggedIn) {
-                  this.navCtrl.navigateRoot('/login');
+                  this.ngZone.run(() => {
+                    this.navCtrl.navigateRoot('/login');
+                  });
                 }
               });
 

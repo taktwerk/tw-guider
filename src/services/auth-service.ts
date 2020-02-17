@@ -303,6 +303,7 @@ export class AuthService {
             this.auth.loginDate = null;
             this.auth.save(true).then(() => {
                 this.isLoggedin = false;
+                this.userService.userDb = null;
                 this.events.publish('user:logout');
                 resolve(true);
             });
