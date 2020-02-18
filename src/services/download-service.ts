@@ -174,13 +174,16 @@ export class DownloadService {
                 type: file.type
             });
             formData.append(fileKey, imgBlob, file.name);
-            this.uploadImageData(formData, url);
+            this.uploadImageData(formData, url, authToken);
         };
         reader.readAsArrayBuffer(file);
     }
 
-    async uploadImageData(formData: FormData, url: string) {
-        this.http.post(url, formData)
+    async uploadImageData(formData: FormData, url: string, authToken: string) {
+        const headers = new Headers({
+            'X-Auth-Token': authToken
+        });
+        this.http.post(url, formData, {headers: headers})
             .pipe(
                 finalize(() => {
                     // loading.dismiss();
