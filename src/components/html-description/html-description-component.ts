@@ -23,6 +23,7 @@ import {ApiPush} from '../../providers/api-push';
 @Component({
   selector: 'html-description-component',
   templateUrl: 'html-description-component.html',
+  styleUrls: ['html-description-component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class HtmlDescriptionComponent {
