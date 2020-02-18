@@ -30,9 +30,6 @@
         <span *ngIf="(isStartSync && iconStatus === 'progress')">
           <section>
             <ion-spinner name="lines" color="primary"></ion-spinner>
-            <span class="sync-percents">
-              {{ syncedItemsPercent }}
-            </span>
           </section>
         </span>
         <span *ngIf="!(isStartSync && iconStatus === 'progress')">
