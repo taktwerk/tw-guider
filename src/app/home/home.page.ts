@@ -75,7 +75,6 @@ export class HomePage {
             }
             this.appSetting.save(config).then(() => {
               this.userService.getUser().then(loggedUser => {
-                console.log('userService.getUser()', loggedUser, !!loggedUser);
                 const isUserLoggedIn = !!loggedUser;
                 if (!isUserLoggedIn) {
                   this.ngZone.run(() => {

@@ -1,25 +1,18 @@
 <style>
-    ion-buttons {
-        margin-right: 20px;
-    }
     .language-icon {
         font-size: 25px;
     }
 </style>
 
-<ion-buttons>
-    <ion-button (click)="openLanguageSelector()">
-        <ion-icon class="language-icon" name="globe" color="success"></ion-icon>
-        <span style="color: #10dc60;">{{ selectedLanguage }}</span>
-    </ion-button>
-
-    <ion-select [hidden]="true"
-                interface="popover"
-                #languageSelector
-                [(ngModel)]="selectedLanguage"
+<ion-item>
+    <ion-icon class="language-icon" name="globe" color="success"></ion-icon>
+    <ion-label>
+        {{ 'language-selector.Language' | translate:params }}
+    </ion-label>
+    <ion-select [(ngModel)]="selectedLanguage"
                 (ionChange)="languageChanged()"
     >
         <ion-select-option value="en">English</ion-select-option>
         <ion-select-option value="de">Deutsch</ion-select-option>
     </ion-select>
-</ion-buttons>
+</ion-item>
