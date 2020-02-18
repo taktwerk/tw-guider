@@ -4,9 +4,9 @@
   "send": "Send",
   "Logout": "Logout",
   "Wrong password!": "Wrong password!",
-  "home": {
-    "header":"Home",
-    "title": "Home page of the Guider"
+  "start": {
+    "header":"Start",
+    "title": "Start page of the Guider"
   },
   "sync-modal": {
     "header": "Sync Status",
@@ -79,13 +79,16 @@
     "Wrong password or login!": "Wrong password or login!",
     "Wrong password!": "Wrong password!",
     "You are not authorized.": "You are not authorized.",
-    "QR-scanner has wrong information": "QR-scanner has wrong information"
+    "QR-code has wrong information": "QR-code has wrong information"
   },
   "qr": {
     "Application was successfully configured": "Application was successfully configured",
     "The Guider app enables the display of digital instructions (assembly, training, etc.)": "The Guider app enables the display of digital instructions (assembly, training, etc.)",
     "The app only works with a customer account. Please contact taktwerk GmbH for this": "The app only works with a customer account. Please contact taktwerk GmbH for this",
-    "Scan the received one": "Scan the received one"
+    "Scan the received one": "Scan the received one",
+    "QR-Code": "QR-Code",
+    "Setup": "Setup",
+    "Close Scanner": "Close Scanner"
   },
   "language-selector": {
     "Language": "Language"

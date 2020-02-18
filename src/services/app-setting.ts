@@ -18,12 +18,13 @@ export class AppSetting {
 
     public mode = AppConfigurationModeEnum.ONLY_CONFIGURE;
     public taktwerk = environment.taktwerk;
-    public host = environment.host;
+    public host = null;
+    public isWasQrCodeSetup = false;
 
     private defaultData = {
         mode : AppConfigurationModeEnum.ONLY_CONFIGURE,
         taktwerk : environment.taktwerk,
-        host : environment.host
+        isWasQrCodeSetup: false
     };
 
     appSetting: AppSettingsDb;
@@ -51,23 +52,27 @@ export class AppSetting {
     }
 
     validateData(data) {
+        const errors = [];
         if (!data) {
-            return false;
+            errors.push('Empty data');
         }
         if (!data.host) {
-            return false;
+            errors.push('Property \'host\' is required');
+        }
+        if (this.isWasQrCodeSetup && this.host !== data.host) {
+            errors.push('Data from another server');
         }
         if (!data.taktwerk) {
-            return false;
+            errors.push('Property \'taktwerk\' is required');
         }
         if (data.taktwerk !== 'guider') {
-            return false;
+            errors.push('Wrong value of the property \'taktwerk\'');
         }
         if (data.mode === undefined || !Object.values(AppConfigurationModeEnum).includes(data.mode)) {
-            return false;
+            errors.push('Undefined mode');
         }
 
-        return true;
+        return errors;
     }
 
     public getApiUrl() {

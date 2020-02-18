@@ -76,7 +76,6 @@ export class FeedbackPage implements OnInit {
         this.feedbackService.save(this.model).then(res => {
             this.model = this.feedbackService.newModel();
             this.apiPush.setIsPushAvailableData(true);
-            this.apiPush.pushOneAtTime();
         });
     }
 

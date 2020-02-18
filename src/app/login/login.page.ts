@@ -54,7 +54,7 @@ export class LoginPage {
             if (!result) {
                 this.http.showToast('validation.Wrong password or login!');
             } else {
-                this.navCtrl.navigateRoot('home');
+                this.navCtrl.navigateRoot('/guides');
                 this.http.showToast('login.You are logged in.');
             }
         });
@@ -77,7 +77,7 @@ export class LoginPage {
                     this.http.showToast('Wrong password!');
                     break;
                 default:
-                    this.navCtrl.navigateRoot('home');
+                    this.navCtrl.navigateRoot('/guides');
                     this.http.showToast('login.You are logged in.');
             }
         });

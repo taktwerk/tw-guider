@@ -18,6 +18,7 @@ import {Network} from '@ionic-native/network/ngx';
 import {GuideAssetService} from './api/guide-asset-service';
 import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
 import {FeedbackService} from './api/feedback-service';
+import {ApiPush} from './api-push';
 
 @Injectable()
 /**
@@ -71,7 +72,8 @@ export class ApiSync {
         private feedbackService: FeedbackService,
         private downloadService: DownloadService,
         private network: Network,
-        private appSetting: AppSetting
+        private appSetting: AppSetting,
+        private apiPush: ApiPush
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);
@@ -167,11 +169,12 @@ export class ApiSync {
      * @returns {Promise<T>}
      */
     private pull(status = 'progress'): Promise<any> {
-        return new Promise(resolve => {
+        return new Promise(async (resolve) => {
             if (this.isOffNetwork() || this.isBusy) {
                 resolve(false);
                 return;
             }
+            await this.apiPush.pushOneAtTime();
             this.isBusy = true;
             this.syncProgressStatus.next(status);
             this.isPrepareSynData.next(true);

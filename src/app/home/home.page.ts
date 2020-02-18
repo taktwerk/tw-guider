@@ -28,7 +28,7 @@ export class HomePage {
 
   constructor(
       private loadingCtrl: LoadingController,
-      private authServ: AuthService,
+      private authService: AuthService,
       private alertController: AlertController,
       private qrScanner: QRScanner,
       private http: HttpClient,
@@ -38,7 +38,15 @@ export class HomePage {
       public navCtrl: NavController,
       public changeDetectorRef: ChangeDetectorRef,
       private ngZone: NgZone
-  ) {}
+  ) {
+    this.userService.getUser().then(user => {
+      if (user) {
+        this.ngZone.run(() => {
+          this.navCtrl.navigateRoot('/guides');
+        });
+      }
+    });
+  }
 
   public scanQrcode() {
     if (this.isScanning) {
@@ -60,34 +68,41 @@ export class HomePage {
           // start scanning
           const scanSub = this.qrScanner.scan().subscribe(async (text: string) => {
             const config = JSON.parse(text);
-            if (!this.appSetting.validateData(config)) {
-              this.http.showToast('validation.QR-scanner has wrong information');
-            }
-            const user = await this.userService.getUser();
-            if (user) {
-              await this.authServ.logout();
-            }
-            const appConfirmUrl =  config.host + environment.apiUrlPath + '/login/';
-            if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
-              await this.authServ.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
-            } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
-              await this.authServ.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
-            }
-            this.appSetting.save(config).then(() => {
-              this.userService.getUser().then(loggedUser => {
-                const isUserLoggedIn = !!loggedUser;
-                if (!isUserLoggedIn) {
-                  this.ngZone.run(() => {
-                    this.navCtrl.navigateRoot('/login');
-                  });
-                }
-              });
+            const scanErrors = this.appSetting.validateData(config);
+            if (scanErrors.length) {
+              this.http.showToast('validation.QR-code has wrong information', '', 'danger');
+            } else {
+              const user = await this.userService.getUser();
+              if (user) {
+                await this.authService.logout();
+              }
+              const appConfirmUrl =  config.host + environment.apiUrlPath + '/login/';
+              if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
+                await this.authService.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
+              } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
+                await this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
+              }
+              config.isWasQrCodeSetup = true;
+              this.appSetting.save(config).then(() => {
+                this.userService.getUser().then(loggedUser => {
+                  const isUserLoggedIn = !!loggedUser;
+                  if (!isUserLoggedIn) {
+                    this.ngZone.run(() => {
+                      this.navCtrl.navigateRoot('/login');
+                    });
+                  } else {
+                    this.ngZone.run(() => {
+                      this.navCtrl.navigateRoot('/guides');
+                    });
+                  }
+                });
 
-              this.http.showToast('qr.Application was successfully configured');
-            });
-            this.closeScanner();
-            scanSub.unsubscribe();
-            this.detectChanges();
+                this.http.showToast('qr.Application was successfully configured');
+              });
+              this.closeScanner();
+              scanSub.unsubscribe();
+              this.detectChanges();
+            }
           });
         })
         .catch((e: any) => {

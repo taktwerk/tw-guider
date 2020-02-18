@@ -16,6 +16,7 @@ import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from '../services/download-service';
 import {ApiPush} from '../providers/api-push';
 import {TranslateConfigService} from '../services/translate-config.service';
+import {AppSetting} from '../services/app-setting';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -29,16 +30,14 @@ export enum ConnectionStatusEnum {
   styleUrls: ['app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public appPages = [
-    {title: 'Home', url: '/home', icon: 'home'}
-  ];
+  public appPages = [];
 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    public events: Events,
-    public apiSync: ApiSync,
+    private events: Events,
+    private apiSync: ApiSync,
     private authService: AuthService,
     private network: Network,
     private http: HttpClient,
@@ -47,7 +46,8 @@ export class AppComponent implements OnInit {
     private db: DbProvider,
     private apiPush: ApiPush,
     private translateConfigService: TranslateConfigService,
-    public changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private appSetting: AppSetting
   ) {
     this.initializeApp();
   }
@@ -158,18 +158,21 @@ export class AppComponent implements OnInit {
   }
 
   protected async setPages() {
-    this.appPages = [{title: this.translateConfigService.translateWord('home.header'), url: '/home', icon: 'home'}];
+    this.appPages = [];
 
+    if (!this.appSetting.isWasQrCodeSetup || !this.authService.isLoggedin) {
+      this.appPages.push({title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'});
+    }
     if (!this.authService.isLoggedin) {
       this.appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'list'});
-    } else {
-      this.appPages.push(
-          {title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'},
-          {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
-          {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'},
-          {title: this.translateConfigService.translateWord('Logout'), url: '/logout', icon: 'exit'},
-      );
+      return;
     }
+    this.appPages.push(
+        {title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'},
+        {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
+        {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'},
+        {title: this.translateConfigService.translateWord('Logout'), url: '/logout', icon: 'exit'},
+    );
   }
 
   private login(): Promise<any> {
