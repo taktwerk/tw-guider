@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import {NavController, Platform, ToastController} from '@ionic/angular';
 import {TranslateConfigService} from './translate-config.service';
 import { Device } from '@ionic-native/device/ngx';
+import {Network} from '@ionic-native/network/ngx';
 
 @Injectable()
 export class HttpClient {
@@ -28,7 +29,8 @@ export class HttpClient {
       public toastCtrl: ToastController,
       public navCtrl: NavController,
       private translateConfigService: TranslateConfigService,
-      private device: Device
+      private device: Device,
+      private network: Network
   ) {
       this.platform.ready().then(() => {
           this.deviceInfo = {
@@ -87,7 +89,9 @@ export class HttpClient {
 
   private handleError(error: any) {
     let errMsg: string;
-    if (error instanceof Response) {
+    if (this.network.type === 'none') {
+        console.log('no network');
+    } else if (error instanceof Response) {
         console.log('errrorrr', error);
     } else {
       if (error.status === 401) {
@@ -102,7 +106,7 @@ export class HttpClient {
           });
       } else {
           errMsg = error.message ? error.message : error.toString();
-          this.showToast(errMsg, '', 'danger');
+          console.log('errMsg', error);
       }
     }
 

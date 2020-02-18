@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {AlertController, Events, ModalController, NavController, Platform} from '@ionic/angular';
+import {Events, ModalController, Platform} from '@ionic/angular';
 
 import {ApiSync} from '../../providers/api-sync';
 import {AuthService} from '../../services/auth-service';
@@ -26,7 +26,6 @@ import {DbProvider} from '../../providers/db-provider';
 export class SyncSpinnerComponent implements OnInit {
     public userDb: UserDb;
     public isStartSync = false;
-    public syncedItemsPercent = 0;
     public isNetwork = false;
     public iconStatus: string = 'unsynced';
     public isAvailableForSyncData: boolean = false;
@@ -90,10 +89,6 @@ export class SyncSpinnerComponent implements OnInit {
         });
         this.apiSync.isStartSyncBehaviorSubject.subscribe(isSync => {
             this.isStartSync = isSync;
-            this.detectChanges();
-        });
-        this.apiSync.syncedItemsPercent.subscribe(syncedItemsPercent => {
-            this.syncedItemsPercent = syncedItemsPercent;
             this.detectChanges();
         });
         this.events.subscribe('user:login', (isNetwork) => {
