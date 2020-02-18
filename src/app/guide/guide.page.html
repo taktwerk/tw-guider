@@ -26,7 +26,7 @@
   <div *ngIf="guideSteps && guideSteps.length > 0">
     <ion-slides pager="true" [options]="slideOpts">
       <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">
-        <div class="ion-padding">
+        <div>
           <p slot="fixed">{{ guide.short_name }} {{ guide.title }}</p>
           <div slot="fixed">
             {{ stepNumber + 1 }} / {{ guideSteps.length }} {{ step.title }}
@@ -52,49 +52,45 @@
             src="/assets/placeholder.jpg"
           />
         </ion-card>
-        <ion-card color="light">
+        <ion-card *ngIf="step.description_html" class="ion-text-left" color="light">
           <html-description-component [html]="step.description_html"></html-description-component>
         </ion-card>
       </ion-slide>
     </ion-slides>
-    <ion-card *ngIf="guideAssets.length" class="ion-text-center" color="light">
+    <ion-card *ngIf="guideAssets.length" color="light">
       <section>
-        <p>
+        <p class="ion-text-center">
           {{ "guide.Assets" | translate: params }}
         </p>
-        <ion-row *ngFor="let asset of guideAssets; trackBy: trackGuideAsset">
-          <ion-col *ngIf="asset.isFile() && asset.isPdf()" class="ion-padding">
-            <img
-              (click)="
-                openFile(
-                  asset.getApiPdfImageFilePath(),
-                  asset.TABLE_NAME,
-                  asset.name
-                )
-              "
-              class="pdf-image"
-              [src]="asset.getPdf()"
-            />
-          </ion-col>
-          <ion-col *ngIf="asset.isFile() && !asset.isPdf()" class="ion-padding">
-            <img
-              (click)="
-                openFile(asset.getApiFilePath(), asset.TABLE_NAME, asset.name)
-              "
-              class="pdf-image"
-              [src]="asset.getAssetFile()"
-            />
-          </ion-col>
-          <ion-col class="ion-padding">
-            <ion-button
-              *ngIf="!asset.isFile()"
-              color="medium"
-              (click)="openAssetTextModal(asset)"
-            >
-              {{ asset.name }}
-            </ion-button>
-          </ion-col>
-        </ion-row>
+        <ion-row class="guide-assets">
+          <span *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" class="ion-padding">
+              <img *ngIf="asset.isFile() && asset.isPdf()"
+                (click)="
+                  openFile(
+                    asset.getApiPdfImageFilePath(),
+                    asset.TABLE_NAME,
+                    asset.name
+                  )
+                "
+                class="pdf-image"
+                [src]="asset.getPdf()"
+              />
+              <img *ngIf="asset.isFile() && !asset.isPdf()"
+                (click)="
+                  openFile(asset.getApiFilePath(), asset.TABLE_NAME, asset.name)
+                "
+                class="pdf-image"
+                [src]="asset.getAssetFile()"
+              />
+              <ion-button
+                *ngIf="!asset.isFile()"
+                color="medium"
+                (click)="openAssetTextModal(asset)"
+              >
+                {{ asset.name }}
+              </ion-button>
+          </span>
+      </ion-row>
       </section>
     </ion-card>
   </div>
