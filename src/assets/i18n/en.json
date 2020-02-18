@@ -45,7 +45,8 @@
   "profile": {
     "header": "Profile of {{ name }}",
     "Profile": "Profile",
-    "ID": "ID"
+    "ID": "ID",
+    "Name": "Name"
   },
   "synchronization-component": {
     "Sync Modes": "Sync Modes",
@@ -85,5 +86,8 @@
     "The Guider app enables the display of digital instructions (assembly, training, etc.)": "The Guider app enables the display of digital instructions (assembly, training, etc.)",
     "The app only works with a customer account. Please contact taktwerk GmbH for this": "The app only works with a customer account. Please contact taktwerk GmbH for this",
     "Scan the received one": "Scan the received one"
+  },
+  "language-selector": {
+    "Language": "Language"
   }
 }

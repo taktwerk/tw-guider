@@ -7,7 +7,6 @@
       {{ 'profile.header' | translate:{name:authService.auth.username} }}
     </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
-    <language-selector-component slot="primary"></language-selector-component>
   </ion-toolbar>
 </ion-header>
 
@@ -18,17 +17,24 @@
 </style>
 
 <ion-content class="ion-padding">
-  <ion-card>
-    <ion-card-header>
-      {{ 'profile.Profile' | translate:params }}
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-icon name="logo-twitter" item-start></ion-icon>
-        {{ 'profile.ID' | translate:params }}
-        <ion-badge item-end>{{ authService.auth.userId }}</ion-badge>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+  <ion-item>
+    <ion-label>
+      <ion-icon name="logo-twitter"></ion-icon>
+      <span>
+          {{ 'profile.ID' | translate:params }}
+      </span>
+    </ion-label>
+    <ion-badge class="ion-align-items-end">{{ authService.auth.userId }}</ion-badge>
+  </ion-item>
+  <ion-item>
+    <ion-label>
+      <ion-icon name="person"></ion-icon>
+      <span>
+          {{ 'profile.Name' | translate:params }}
+      </span>
+    </ion-label>
+    <span class="ion-align-items-end">{{ authService.auth.username }}</span>
+  </ion-item>
+  <language-selector-component></language-selector-component>
   <synchronization-component></synchronization-component>
 </ion-content>

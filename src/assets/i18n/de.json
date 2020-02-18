@@ -43,16 +43,17 @@
     "Assets": "(De) Assets"
   },
   "profile": {
-    "header": "(De) Profile of {{ name }}",
-    "Profile": "(De) Profile",
-    "ID": "(De) ID"
+    "header": "Profil des {{ name }}",
+    "Profile": "Profil",
+    "ID": "ID",
+    "Name": "Name"
   },
   "synchronization-component": {
-    "Sync Modes": "(De) Sync Modes",
-    "Manually": "(De) Manually",
-    "Online": "(De) Online",
-    "Periodic": "(De) Periodic",
-    "Re-sync data": "(De) Re-sync data",
+    "Sync Modes": "Synchronisierungsmodi",
+    "Manually": "Manuell",
+    "Online": "Online",
+    "Periodic": "Periodisch",
+    "Re-sync data": "Daten erneut synchronisieren",
     "Sync was canceled.": "(De) Sync was canceled.",
     "Now is manually mode.": "(De) Now is manually mode.",
     "Now is network connection mode.": "(De) Now is network connection mode.",
@@ -82,5 +83,8 @@
     "The Guider app enables the display of digital instructions (assembly, training, etc.)": "Die Guider App ermöglicht die Anzeige von digitalen Anleitungen (Montage, Schulungen, etc.)",
     "The app only works with a customer account. Please contact taktwerk GmbH for this": "Die App funktioniert nur mit einem Kundenkonto. Bitte kontaktieren Sie dafür die taktwerk GmbH",
     "Scan the received one": "Scannen Sie den erhaltenen"
+  },
+  "language-selector": {
+    "Language": "Sprache"
   }
 }
