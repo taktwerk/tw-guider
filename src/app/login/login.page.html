@@ -1,30 +1,63 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      {{ 'login.Login' | translate:params }}
+      {{ "login.Login" | translate: params }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="primary" class="ion-padding">
+<ion-content color="light" class="ion-padding">
+  <div align="center">
+    <img
+      src="/assets/icon/icon.png"
+      height="100"
+      slot
+      [ngStyle]="center"
+      vspace="10"
+    />
+    <h1>Guider</h1>
+  </div>
+
   <form #form="ngForm" (ngSubmit)="login(form)">
     <ion-grid>
       <ion-row color="primary" class="ion-justify-content-center">
-        <ion-col class="ion-align-self-center" size-md="6" size-lg="5" size-xs="12">
+        <ion-col
+          class="ion-align-self-center"
+          size-md="6"
+          size-lg="5"
+          size-xs="12"
+        >
           <div class="ion-padding">
             <ion-item>
-              <ion-input name="username" type="text" placeholder="{{ 'login.Username' | translate:params }}" ngModel required></ion-input>
+              <ion-input
+                name="username"
+                type="text"
+                placeholder="{{ 'login.Username' | translate: params }}"
+                ngModel
+                required
+              ></ion-input>
             </ion-item>
             <ion-item>
-              <ion-input name="password" type="password" placeholder="{{ 'login.Password' | translate:params }}" ngModel required></ion-input>
+              <ion-input
+                name="password"
+                type="password"
+                placeholder="{{ 'login.Password' | translate: params }}"
+                ngModel
+                required
+              ></ion-input>
             </ion-item>
           </div>
           <div class="ion-padding">
-            <ion-button size="large" type="submit" [disabled]="form.invalid" expand="block">
-              {{ 'login.Login' | translate:params }}
+            <ion-button
+              size="large"
+              type="submit"
+              [disabled]="form.invalid"
+              expand="block"
+            >
+              {{ "login.Login" | translate: params }}
             </ion-button>
           </div>
           <div class="ion-padding">
@@ -36,4 +69,8 @@
       </ion-row>
     </ion-grid>
   </form>
+  <p align="center">
+    Guider 2.1 | 2020 @
+    <a href="https://www.taktwerk.ch">taktwerk.ch</a>
+  </p>
 </ion-content>
