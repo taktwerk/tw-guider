@@ -206,6 +206,7 @@ export abstract class ApiService {
             // If we have a local path but no api path, we need to upload the file!
             if (model[fields[2]] && !model[fields[1]]) {
               const fieldUrl = url + '?fileAttribute=' + fields[0];
+              console.log('this.http.getAuthorizationToken()', this.http.getAuthorizationToken());
               uploadFilePromises.push(
                   model.downloadService.startUpload(
                     model.TABLE_NAME,
