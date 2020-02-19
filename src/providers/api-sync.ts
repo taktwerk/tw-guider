@@ -421,7 +421,10 @@ export class ApiSync {
         let url = this.appSetting.getApiUrl() + '/sync';
 
         if (isCheckAvailableData) {
-            url += '/check-available-data?appDataVersion=' + this.userDb.userSetting.appDataVersion;
+            url += '/check-available-data';
+            if (this.userDb.userSetting.appDataVersion) {
+                url += '?appDataVersion=' + this.userDb.userSetting.appDataVersion;
+            }
 
             return url;
         }
