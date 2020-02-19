@@ -174,7 +174,6 @@ export class ApiSync {
                 resolve(false);
                 return;
             }
-            await this.apiPush.pushOneAtTime();
             this.isBusy = true;
             this.syncProgressStatus.next(status);
             this.isPrepareSynData.next(true);
@@ -197,6 +196,10 @@ export class ApiSync {
                 const isSavedSyncData = this.saveModels(this.syncData);
                 if (!isSavedSyncData) {
                     resolve(false);
+                } else {
+                    this.userDb.userSetting.appDataVersion = data.version;
+                    this.userDb.save();
+                    resolve(true);
                 }
             }, (err) => {
                 this.failSync(err);
@@ -418,7 +421,9 @@ export class ApiSync {
         let url = this.appSetting.getApiUrl() + '/sync';
 
         if (isCheckAvailableData) {
-            url += '/check-available-data';
+            url += '/check-available-data?appDataVersion=' + this.userDb.userSetting.appDataVersion;
+
+            return url;
         }
 
         if (this.userDb.userSetting.lastSyncedAt) {

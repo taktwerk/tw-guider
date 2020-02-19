@@ -368,21 +368,21 @@ export class AuthService {
                 if (this.network.type === 'none') {
                     return;
                 }
-                this.checkUserToken().then(res => {
-                    if (!res) {
-                        this.logout().then(() => {
-                            this.ngZone.run(() => {
-                                this.navCtrl.navigateRoot('login').then(() => {
-                                    this.showToast(
-                                        'validation.You are not authorized.',
-                                        'login.Please, login',
-                                        'danger'
-                                    );
-                                });
-                            });
-                        });
-                    }
-                });
+                // this.checkUserToken().then(res => {
+                //     if (!res) {
+                //         this.logout().then(() => {
+                //             this.ngZone.run(() => {
+                //                 this.navCtrl.navigateRoot('login').then(() => {
+                //                     this.showToast(
+                //                         'validation.You are not authorized.',
+                //                         'login.Please, login',
+                //                         'danger'
+                //                     );
+                //                 });
+                //             });
+                //         });
+                //     }
+                // });
             }
         });
     }

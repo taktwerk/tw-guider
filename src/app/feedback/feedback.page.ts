@@ -12,8 +12,7 @@ import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute} from '@angular/router';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
-
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import {Network} from '@ionic-native/network/ngx';
 
 /**
  * Generated class for the TodoPage page.
@@ -51,7 +50,8 @@ export class FeedbackPage implements OnInit {
                 private photoViewer: PhotoViewer,
                 private fileChooser: FileChooser,
                 private navCtrl: NavController,
-                private filePicker: IOSFilePicker) {
+                private filePicker: IOSFilePicker,
+                private network: Network) {
         if (!this.model) {
             this.model = feedbackService.newModel();
         }
@@ -75,7 +75,11 @@ export class FeedbackPage implements OnInit {
         }
         this.feedbackService.save(this.model).then(res => {
             this.model = this.feedbackService.newModel();
-            this.apiPush.setIsPushAvailableData(true);
+            if (this.network.type === 'none') {
+                this.apiPush.setIsPushAvailableData(true);
+            } else {
+                this.apiPush.pushOneAtTime();
+            }
         });
     }
 

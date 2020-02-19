@@ -207,12 +207,11 @@ export class ApiPush {
                                             return;
                                         }
                                         // type parse DbBaseModel -> DbApiModel
-                                        const dbModelApi = <DbApiModel> dbModel;
-                                        // load id from api
-                                        dbModelApi.idApi = record[dbModelApi.apiPk];
+                                        const dbModelApi = dbModel.loadFromApi(record, dbModel);
                                         dbModelApi.is_synced = true;
-                                        // update isSynced = true and save with special update-condition
                                         dbModelApi.save(false, true, dbModelApi.COL_ID + '=' + record._id).then((res) => {
+                                            this.userDb.userSetting.appDataVersion++;
+                                            this.userDb.save();
                                             service.pushFiles(dbModelApi).then((result) => {
                                                 pushedItemsCount++;
                                                 const savedDataPercent = Math.round((pushedItemsCount / countOfAllChangedItems) * 100);

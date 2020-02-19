@@ -43,4 +43,6 @@ export class UserSetting {
   public language: string = TranslateConfigService.DEFAULT_LANGUAGE;
 
   public appSetting: object;
+
+  public appDataVersion: number;
 }

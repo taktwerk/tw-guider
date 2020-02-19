@@ -70,20 +70,28 @@ export abstract class DbApiModel extends DbBaseModel {
     /**
      * Loads an instance of this from a row received from the API.
      * @param apiObj row received from API
+     * @param existObj
      */
-    public loadFromApi(apiObj: any): DbApiModel {
-        let obj: DbApiModel = new (<any>this.constructor);
-        obj.platform = this.platform;
-        obj.db = this.db;
-        obj.events = this.events;
-        obj.downloadService = this.downloadService;
+    public loadFromApi(apiObj: any, existObj ?: any): DbApiModel {
+        let obj: DbApiModel = null;
+        if (existObj) {
+            obj = existObj;
+        } else {
+            obj = new (<any>this.constructor);
+            obj.platform = this.platform;
+            obj.db = this.db;
+            obj.events = this.events;
+            obj.downloadService = this.downloadService;
+        }
 
         // iterate over table fields
-        for (let column of this.TABLE) {
+        for (const column of this.TABLE) {
             const columnName = column[0];
             const type: number = parseInt(column[2]);
             const memberName = column[3] ? column[3] : columnName;
-            obj[memberName] = this.getObjectByType(apiObj[memberName], type);
+            if (apiObj[memberName] !== undefined) {
+                obj[memberName] = this.getObjectByType(apiObj[memberName], type);
+            }
         }
         // default boilerplate fields
         obj.idApi = this.getNumberValue(apiObj[this.apiPk]);
@@ -96,6 +104,9 @@ export abstract class DbApiModel extends DbBaseModel {
         obj.deleted_at = this.getDateFromString(apiObj.deleted_at);
         obj.local_deleted_at = this.getDateFromString(apiObj.local_deleted_at);
         obj.deleted_by = this.getNumberValue(apiObj.deleted_by);
+
+        console.log('objobj', obj);
+        console.log('apiObj', apiObj);
 
         return obj;
     }
@@ -234,8 +245,7 @@ export abstract class DbApiModel extends DbBaseModel {
                     this.update().then(() => resolve(true));
                 } else {
                     if (isSaveLocaleDates) {
-                        this[this.COL_LOCAL_CREATED_AT] = new Date();
-                        this[this.COL_LOCAL_UPDATED_AT] = new Date();
+                        this[this.COL_LOCAL_CREATED_AT] = this[this.COL_LOCAL_UPDATED_AT] = new Date();
                     }
                     this.create().then(() => resolve(true));
                 }
