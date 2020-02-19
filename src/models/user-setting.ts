@@ -44,5 +44,5 @@ export class UserSetting {
 
   public appSetting: object;
 
-  public appDataVersion: number;
+  public appDataVersion = null;
 }

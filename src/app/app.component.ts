@@ -117,6 +117,11 @@ export class AppComponent implements OnInit {
       this.baseProjectSetup();
       this.detectChanges();
     });
+    this.events.subscribe('qr-code:setup', () => {
+      this.setPages();
+      this.baseProjectSetup();
+      this.detectChanges();
+    });
     this.events.subscribe('user:logout', () => {
       this.setPages();
     });
@@ -160,8 +165,13 @@ export class AppComponent implements OnInit {
   protected async setPages() {
     this.appPages = [];
 
+    console.log('this.appSetting.isWasQrCodeSetup', this.appSetting.isWasQrCodeSetup);
+
     if (!this.appSetting.isWasQrCodeSetup || !this.authService.isLoggedin) {
       this.appPages.push({title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'});
+    }
+    if (!this.appSetting.isWasQrCodeSetup) {
+      return;
     }
     if (!this.authService.isLoggedin) {
       this.appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'list'});

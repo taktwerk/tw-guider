@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
-import {AlertController, LoadingController, NavController, Platform} from '@ionic/angular';
+import {AlertController, Events, LoadingController, NavController, Platform} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {QRScanner, QRScannerStatus} from '@ionic-native/qr-scanner/ngx';
 import {HttpClient} from '../../services/http-client';
@@ -37,7 +37,8 @@ export class HomePage {
       private userService: UserService,
       public navCtrl: NavController,
       public changeDetectorRef: ChangeDetectorRef,
-      private ngZone: NgZone
+      private ngZone: NgZone,
+      private events: Events
   ) {
     this.userService.getUser().then(user => {
       if (user) {
@@ -91,6 +92,7 @@ export class HomePage {
                       this.navCtrl.navigateRoot('/login');
                     });
                   } else {
+                    this.events.publish('qr-code:setup');
                     this.ngZone.run(() => {
                       this.navCtrl.navigateRoot('/guides');
                     });
