@@ -59,7 +59,7 @@ export class FeedbackPage implements OnInit {
         if (this.reference_id && this.reference_model) {
             feedbackSearchCondition.push(['reference_id', this.reference_id]);
         }
-        this.feedbackService.dbModelApi.findAllWhere(feedbackSearchCondition, '_id ASC')
+        this.feedbackService.dbModelApi.findAllWhere(feedbackSearchCondition, '_id DESC')
             .then(data => {
                 this.feedbackList = data;
             });
@@ -68,7 +68,6 @@ export class FeedbackPage implements OnInit {
     public openFile(basePath: string, modelName: string, title?: string) {
         const filePath = basePath;
         if (filePath.indexOf('.MOV') > -1 || filePath.indexOf('.mp4') > -1) {
-            // E.g: Use the Streaming Media plugin to play a video
             this.streamingMedia.playVideo(
                 this.downloadService.getNativeFilePath(basePath, modelName),
             );
