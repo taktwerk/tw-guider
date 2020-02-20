@@ -11,6 +11,7 @@ import {SyncService} from '../../services/sync-service';
 import {DatePipe} from '@angular/common';
 import {ApiPush} from '../../providers/api-push';
 import {TranslateConfigService} from '../../services/translate-config.service';
+import {UserService} from '../../services/user-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -53,7 +54,8 @@ export class SynchronizationComponent implements OnInit {
                 private syncService: SyncService,
                 public alertController: AlertController,
                 public datepipe: DatePipe,
-                private translateConfigService: TranslateConfigService) {
+                private translateConfigService: TranslateConfigService,
+                private userService: UserService) {
       this.initUser().then(() => {
           if ([0, 1, 2].includes(this.userDb.userSetting.syncMode)) {
               this.modeSync = this.userDb.userSetting.syncMode;
@@ -114,21 +116,9 @@ export class SynchronizationComponent implements OnInit {
   }
 
    protected initUser() {
-        if (this.userDb) {
-            return new Promise(resolve => {
-                resolve(true);
-            });
-        }
-
-        return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
-                if (userDb) {
-                    this.userDb = userDb;
-
-                    resolve(true);
-                }
-            });
-        });
+       return this.userService.getUser().then(result => {
+           this.userDb = result;
+       });
     }
 
   refreshAppData() {
@@ -153,6 +143,7 @@ export class SynchronizationComponent implements OnInit {
           this.userDb.userSetting.syncPercent = 0;
           this.userDb.userSetting.lastSyncedAt = null;
           this.userDb.userSetting.lastSyncProcessId = null;
+          this.userDb.userSetting.appDataVersion = null;
           this.userDb.save().then(() => {
               this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
               this.apiSync.syncProgressStatus.next('success');

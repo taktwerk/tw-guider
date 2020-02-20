@@ -213,11 +213,13 @@ export class AppComponent implements OnInit {
       this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
       this.apiSync.isAvailableForSyncData.next(this.userDb.userSetting.isSyncAvailableData);
       this.apiPush.isAvailableForPushData.next(this.userDb.userSetting.isPushAvailableData);
+      this.apiSync.checkAvailableChanges().then(() => {
+        this.checkAvailableSyncChanges = Observable.interval(30000)
+            .subscribe(() => {
+              this.apiSync.checkAvailableChanges();
+            });
+      });
       this.detectChanges();
-      this.checkAvailableSyncChanges = Observable.interval(30000)
-          .subscribe(() => {
-            this.apiSync.checkAvailableChanges();
-          });
     });
   }
 

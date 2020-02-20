@@ -19,6 +19,7 @@ import {GuideAssetService} from './api/guide-asset-service';
 import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
 import {FeedbackService} from './api/feedback-service';
 import {ApiPush} from './api-push';
+import {UserService} from '../services/user-service';
 
 @Injectable()
 /**
@@ -73,7 +74,7 @@ export class ApiSync {
         private downloadService: DownloadService,
         private network: Network,
         private appSetting: AppSetting,
-        private apiPush: ApiPush
+        private userService: UserService
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);
@@ -100,14 +101,8 @@ export class ApiSync {
      * Loads the current logged in user.
      */
     private init(): Promise<any> {
-        if (this.userDb) {
-          return new Promise(resolve => {
-              resolve(true);
-          });
-        }
-
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
+            this.userService.getUser().then(userDb => {
                 if (userDb) {
                     this.userDb = userDb;
                     if (
@@ -260,7 +255,8 @@ export class ApiSync {
     }
 
     public checkAvailableChanges() {
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
+            await this.init();
             if (this.isAvailableForSyncData.getValue()) {
                 resolve(true);
                 return;
