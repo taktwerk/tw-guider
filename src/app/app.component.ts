@@ -244,7 +244,13 @@ export class AppComponent implements OnInit {
     if (syncMode === 2) {
       this.periodicSync = Observable.interval(15000)
           .subscribe(() => {
-            this.apiSync.makeSyncProcess();
+            let syncProcessStatus = this.apiSync.syncProgressStatus.getValue();
+            if (['pause'].includes(syncProcessStatus)) {
+              syncProcessStatus = 'resume';
+            } else {
+              syncProcessStatus = 'progress';
+            }
+            this.apiSync.makeSyncProcess(syncProcessStatus);
           });
     }
   }
