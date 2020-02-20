@@ -17,6 +17,7 @@ import {DownloadService} from '../services/download-service';
 import {ApiPush} from '../providers/api-push';
 import {TranslateConfigService} from '../services/translate-config.service';
 import {AppSetting} from '../services/app-setting';
+import {UserService} from '../services/user-service';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -47,7 +48,8 @@ export class AppComponent implements OnInit {
     private apiPush: ApiPush,
     private translateConfigService: TranslateConfigService,
     private changeDetectorRef: ChangeDetectorRef,
-    private appSetting: AppSetting
+    private appSetting: AppSetting,
+    private userService: UserService
   ) {
     this.initializeApp();
   }
@@ -67,6 +69,9 @@ export class AppComponent implements OnInit {
         if (result) {
           try {
             await this.initUserDB();
+            if (!this.userDb) {
+              return;
+            }
             if (this.userDb.userSetting.language) {
               currentLanguage = this.userDb.userSetting.language;
             }
@@ -94,20 +99,8 @@ export class AppComponent implements OnInit {
   }
 
   protected initUserDB() {
-    if (this.userDb) {
-      return new Promise(resolve => {
-        resolve(true);
-      });
-    }
-
-    return new Promise(resolve => {
-      new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
-        if (userDb) {
-          this.userDb = userDb;
-
-          resolve(true);
-        }
-      });
+    return this.userService.getUser().then(result => {
+      this.userDb = result;
     });
   }
 
@@ -199,6 +192,9 @@ export class AppComponent implements OnInit {
 
   protected baseProjectSetup() {
     this.initUserDB().then(() => {
+      if (!this.userDb) {
+        return;
+      }
       if (this.userDb.userSetting.language &&
           this.translateConfigService.isLanguageAvailable(this.userDb.userSetting.language)
       ) {
@@ -210,6 +206,7 @@ export class AppComponent implements OnInit {
         this.userDb.userSetting.syncStatus = 'pause';
         this.userDb.save();
       }
+      this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
       this.apiSync.syncProgressStatus.next(this.userDb.userSetting.syncStatus);
       this.apiSync.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
       this.apiSync.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);
