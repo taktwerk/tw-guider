@@ -691,6 +691,7 @@ export abstract class DbBaseModel {
                 } else {
                     let query = 'UPDATE ' + this.secure(this.TABLE_NAME) + ' ' +
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
+                    console.log('queryquery', query);
                     db.query(query).then((res) => {
                         this.events.publish(this.TAG + ':update', this);
                         resolve(res);

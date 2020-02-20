@@ -206,9 +206,12 @@ export class ApiPush {
                                         if (!dbModel) {
                                             return;
                                         }
-                                        // type parse DbBaseModel -> DbApiModel
-                                        const dbModelApi = dbModel.loadFromApi(record, dbModel);
+                                        //type parse DbBaseModel -> DbApiModel
+                                        let dbModelApi = <DbApiModel>dbModel;
+                                        //load id from api
+                                        dbModelApi.idApi = record[dbModelApi.apiPk];
                                         dbModelApi.is_synced = true;
+                                        //update isSynced = true and save with special update-condition
                                         dbModelApi.save(false, true, dbModelApi.COL_ID + '=' + record._id).then((res) => {
                                             this.userDb.userSetting.appDataVersion++;
                                             this.userDb.save();

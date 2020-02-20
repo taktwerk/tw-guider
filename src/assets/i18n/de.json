@@ -35,7 +35,11 @@
   "feedback": {
     "header": "(De) Feedback",
     "Feedback list": "(De) Feedback list",
-    "Description": "(De) Description"
+    "Description": "(De) Description",
+    "Feedback will be sent as soon as the Internet appears": "(De) Feedback will be sent as soon as the Internet appears",
+    "Feedback was sent": "(De) Feedback was sent",
+    "Feedback was deleted": "(De) Feedback was deleted",
+    "Are you sure you want to delete this feedback?": "(De) Are you sure you want to delete this feedback?"
   },
   "guide": {
     "header": "(De) Guide:",

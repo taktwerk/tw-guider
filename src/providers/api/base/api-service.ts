@@ -190,7 +190,7 @@ export abstract class ApiService {
      */
     public pushFiles(model: DbApiModel): Promise<boolean> {
         return new Promise((resolve) => {
-          if (/*model.platform.is('core') || */model.platform.is('mobileweb')) {
+          if (model.platform.is('mobileweb')) {
             resolve(false);
             return;
           }

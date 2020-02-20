@@ -20,16 +20,33 @@ const routes: Routes = [
     loadChildren: () => import('./guide/guide.module').then(m => m.GuidePageModule)
   },
   {
-    path: ':reference_model_alias/:reference_id/feedback',
-    loadChildren: () => import('./feedback/feedback.page.module').then(m => m.FeedbackPageModule)
-  },
-  {
     path: 'profile',
     loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
   },
   {
     path: 'feedback',
     loadChildren: () => import('./feedback/feedback.page.module').then(m => m.FeedbackPageModule)
+  },
+  {
+    path: ':reference_model_alias/:reference_id/feedback',
+    loadChildren: () => import('./feedback/feedback.page.module').then(m => m.FeedbackPageModule)
+  },
+   /// add/edit feedback
+  {
+    path: 'feedback/save',
+    loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
+  },
+  {
+    path: ':reference_model_alias/:reference_id/feedback/save',
+    loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
+  },
+  {
+    path: 'feedback/save/:feedbackId',
+    loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
+  },
+  {
+    path: ':reference_model_alias/:reference_id/feedback/save/:feedbackId',
+    loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
   },
   {
     path: 'login',

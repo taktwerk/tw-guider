@@ -72,17 +72,13 @@ export abstract class DbApiModel extends DbBaseModel {
      * @param apiObj row received from API
      * @param existObj
      */
-    public loadFromApi(apiObj: any, existObj ?: any): DbApiModel {
+    public loadFromApi(apiObj: any): DbApiModel {
         let obj: DbApiModel = null;
-        if (existObj) {
-            obj = existObj;
-        } else {
-            obj = new (<any>this.constructor);
-            obj.platform = this.platform;
-            obj.db = this.db;
-            obj.events = this.events;
-            obj.downloadService = this.downloadService;
-        }
+        obj = new (<any>this.constructor);
+        obj.platform = this.platform;
+        obj.db = this.db;
+        obj.events = this.events;
+        obj.downloadService = this.downloadService;
 
         // iterate over table fields
         for (const column of this.TABLE) {
@@ -104,9 +100,6 @@ export abstract class DbApiModel extends DbBaseModel {
         obj.deleted_at = this.getDateFromString(apiObj.deleted_at);
         obj.local_deleted_at = this.getDateFromString(apiObj.local_deleted_at);
         obj.deleted_by = this.getNumberValue(apiObj.deleted_by);
-
-        console.log('objobj', obj);
-        console.log('apiObj', apiObj);
 
         return obj;
     }
