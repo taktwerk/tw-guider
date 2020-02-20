@@ -53,7 +53,9 @@
       <ion-icon slot="start" name="save"></ion-icon>
       Save
     </ion-button>
-    <ion-button color="danger" size="default" fill="outline" slot="end"  (click)="showDeleteAlert()">
+    <ion-button *ngIf="model.id"
+                color="danger" size="default" fill="outline" slot="end"
+                (click)="showDeleteAlert()">
       <ion-icon slot="start" name="trash"></ion-icon>
       Delete
     </ion-button>
