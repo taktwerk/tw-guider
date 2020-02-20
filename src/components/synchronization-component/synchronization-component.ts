@@ -81,6 +81,9 @@ export class SynchronizationComponent implements OnInit {
   }
 
   changeSyncMode(mode) {
+      if (this.modeSync === +mode) {
+          return;
+      }
       this.modeSync = +mode;
       if (this.modeSync === SyncMode.Manual) {
           this.http.showToast('synchronization-component.Now is manually mode.');
