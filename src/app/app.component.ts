@@ -158,8 +158,6 @@ export class AppComponent implements OnInit {
   protected async setPages() {
     this.appPages = [];
 
-    console.log('this.appSetting.isWasQrCodeSetup', this.appSetting.isWasQrCodeSetup);
-
     if (!this.appSetting.isWasQrCodeSetup || !this.authService.isLoggedin) {
       this.appPages.push({title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'});
     }

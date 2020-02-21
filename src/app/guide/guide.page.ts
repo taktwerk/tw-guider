@@ -109,7 +109,6 @@ export class GuidePage implements OnInit {
   }
 
   ngOnInit() {
-    this.apiSync.syncData
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     if (this.guideId) {
       this.guiderService.getById(this.guideId).then((result) => {

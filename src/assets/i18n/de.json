@@ -4,6 +4,8 @@
   "send": "(De) Send",
   "Logout": "(De) Logout",
   "Wrong password!": "(De) Wrong password!",
+  "save": "Save",
+  "delete": "Delete",
   "start": {
     "header":"(De) Start",
     "title": "(De) Start page of the Guider"
@@ -81,7 +83,9 @@
     "Validation error": "(De) Validation error",
     "Wrong password or login!": "(De) Wrong password or login!",
     "You are not authorized.": "(De) You are not authorized.",
-    "QR-code has wrong information": "(De) QR-code has wrong information"
+    "QR-code has wrong information": "(De) QR-code has wrong information",
+    "max_characters": "(De) The maximum number of characters in a {{property_name}} should be {{max}} characters.",
+    "Title is required": "(De) Title is required"
   },
   "qr": {
     "Application was successfully configured": "(DE) Application was successfully configured",

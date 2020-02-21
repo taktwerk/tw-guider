@@ -41,7 +41,21 @@
   <form>
     <ion-list>
       <ion-item>
-        <ion-label>Description</ion-label>
+        <ion-label>
+          {{ 'title' | translate:params }}
+        </ion-label>
+        <ion-input
+                [(ngModel)]="model.title"
+                name="title"
+                placeholder="{{ 'title' | translate:params }}"
+                clear-input
+        >
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          {{ 'feedback.Description' | translate:params }}
+        </ion-label>
         <ion-textarea rows="8" cols="33" name="description" [(ngModel)]="model.description"
                       style="display: block;"
         >
@@ -51,13 +65,13 @@
 
     <ion-button slot="start" (click)="save()">
       <ion-icon slot="start" name="save"></ion-icon>
-      Save
+      {{ 'save' | translate:params }}
     </ion-button>
     <ion-button *ngIf="model.id"
                 color="danger" size="default" fill="outline" slot="end"
                 (click)="showDeleteAlert()">
       <ion-icon slot="start" name="trash"></ion-icon>
-      Delete
+      {{ 'delete' | translate:params }}
     </ion-button>
   </form>
 </ion-content>

@@ -208,9 +208,7 @@ export class DownloadService {
         // Web
         if (/*this.platform.is('core') || */this.platform.is('mobileweb')) {
             return apiPath;
-        }
-        // App
-        else {
+        } else {
             return localPath;
         }
     }
@@ -223,19 +221,14 @@ export class DownloadService {
      * @param {string} modelName
      * @returns {Promise<string | boolean>}
      */
-    public copy(
-        fullPath: string,
-        modelName: string
-    ): Promise< string | boolean >
-    {
+    public copy(fullPath: string, modelName: string): Promise< string | boolean > {
         return new Promise(resolve => {
-            let d = new Date();
-            let correctPath = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
-            let currentName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
-            let currentExt = fullPath.substring(fullPath.lastIndexOf('.') + 1, fullPath.length);
-
-            let newFilePath = this.file.dataDirectory + modelName;
-            let newFileName = d.getTime() + "." + currentExt;
+            const date = new Date();
+            const correctPath = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
+            const currentName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
+            const currentExt = fullPath.substring(fullPath.lastIndexOf('.') + 1, fullPath.length);
+            const newFilePath = this.file.dataDirectory + modelName;
+            const newFileName = date.getTime() + '.' + currentExt;
 
             this.checkDir(modelName).then(
                 suc => {
@@ -348,6 +341,7 @@ export class DownloadService {
             let fileName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
 
             this.file.removeFile(path, fileName).then(success => {
+                console.log('is removed file', success);
             }, error => {
                 console.error('DownloadService', 'deleteFile', path, fileName, error);
             });
@@ -358,9 +352,13 @@ export class DownloadService {
         return this.file.dataDirectory + modelName + '/' + path;
     }
 
+    public getWebviewFileSrc(path) {
+        return this.webview.convertFileSrc(path);
+    }
+
     public getSanitizedFileUrl(path, modelName) {
         path = this.getNativeFilePath(path, modelName);
-        const convertFileSrc = this.webview.convertFileSrc(path);
+        const convertFileSrc = this.getWebviewFileSrc(path);
 
         return this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
     }

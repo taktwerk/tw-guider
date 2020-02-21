@@ -179,8 +179,10 @@ export class ApiPush {
                                 this.isBusy = false;
                                 return;
                             }
+                            console.log('before pist');
                             return this.http.post(url, jsonBody)
                                 .subscribe((data) => {
+                                    console.log('show me data', data);
                                     if (this.pushProgressStatus.getValue() === 'failed') {
                                         this.isBusy = false;
                                         resolve(false);
@@ -206,16 +208,20 @@ export class ApiPush {
                                         if (!dbModel) {
                                             return;
                                         }
-                                        //type parse DbBaseModel -> DbApiModel
-                                        let dbModelApi = <DbApiModel>dbModel;
-                                        //load id from api
-                                        dbModelApi.idApi = record[dbModelApi.apiPk];
+                                        const dbModelApi = service.newModel();
+                                        dbModel.idApi = record[dbModelApi.apiPk];
+                                        dbModelApi.loadFromApiToCurrentObject(dbModel);
+                                        dbModelApi.loadFromApiToCurrentObject(record);
                                         dbModelApi.is_synced = true;
-                                        //update isSynced = true and save with special update-condition
-                                        dbModelApi.save(false, true, dbModelApi.COL_ID + '=' + record._id).then((res) => {
+                                        dbModelApi.save(
+                                            false,
+                                            true,
+                                            dbModelApi.COL_ID + '=' + record._id,
+                                            false
+                                        ).then((res) => {
                                             this.userDb.userSetting.appDataVersion++;
                                             this.userDb.save();
-                                            service.pushFiles(dbModelApi).then((result) => {
+                                            service.pushFiles(dbModel).then((result) => {
                                                 pushedItemsCount++;
                                                 const savedDataPercent = Math.round((pushedItemsCount / countOfAllChangedItems) * 100);
                                                 this.pushedItemsCount.next(pushedItemsCount);
@@ -226,6 +232,7 @@ export class ApiPush {
                                         });
                                     });
                                 }, (err) => {
+                                    console.log('error in push', err);
                                     this.isStartPushBehaviorSubject.next(false);
                                     this.pushProgressStatus.next('failed');
                                     this.isBusy = false;

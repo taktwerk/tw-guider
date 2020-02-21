@@ -25,6 +25,7 @@ export class FeedbackModel extends DbApiModel {
     public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + FeedbackModel.COL_USER_ID + ')';
 
     //db columns
+    static COL_TITLE = 'title';
     static COL_DESCRIPTION = 'description';
     static COL_REFERENCE_MODEL = 'reference_model';
     static COL_FEEDBACK_URL = 'feedback_url';
@@ -40,6 +41,7 @@ export class FeedbackModel extends DbApiModel {
 
     /** @inheritDoc */
     TABLE: any = [
+        [FeedbackModel.COL_TITLE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [FeedbackModel.COL_DESCRIPTION, 'TEXT', DbBaseModel.TYPE_STRING],
         [FeedbackModel.COL_REFERENCE_MODEL, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [FeedbackModel.COL_FEEDBACK_URL, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'feedback_url'],
@@ -89,6 +91,10 @@ export class FeedbackModel extends DbApiModel {
     public getFile() {
         if (this[FeedbackModel.COL_LOCAL_ATTACHED_FILE]) {
             return this.downloadService.getSanitizedFileUrl(this[FeedbackModel.COL_ATTACHED_FILE], this.TABLE_NAME);
+            // In future for ion-img
+            // return this.downloadService.getWebviewFileSrc(
+            //     this.downloadService.getNativeFilePath(this[FeedbackModel.COL_ATTACHED_FILE], this.TABLE_NAME)
+            // );
         } else {
             return this.defaultImage;
         }

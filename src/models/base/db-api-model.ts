@@ -80,28 +80,32 @@ export abstract class DbApiModel extends DbBaseModel {
         obj.events = this.events;
         obj.downloadService = this.downloadService;
 
+        obj.loadFromApiToCurrentObject(apiObj);
+
+        return obj;
+    }
+
+    loadFromApiToCurrentObject(apiObj: any) {
         // iterate over table fields
         for (const column of this.TABLE) {
             const columnName = column[0];
             const type: number = parseInt(column[2]);
             const memberName = column[3] ? column[3] : columnName;
             if (apiObj[memberName] !== undefined) {
-                obj[memberName] = this.getObjectByType(apiObj[memberName], type);
+                this[memberName] = this.getObjectByType(apiObj[memberName], type);
             }
         }
         // default boilerplate fields
-        obj.idApi = this.getNumberValue(apiObj[this.apiPk]);
-        obj.created_at = this.getDateFromString(apiObj.created_at);
-        obj.local_created_at = this.getDateFromString(apiObj.local_created_at);
-        obj.created_by = this.getNumberValue(apiObj.created_by);
-        obj.updated_at = this.getDateFromString(apiObj.updated_at);
-        obj.local_updated_at = this.getDateFromString(apiObj.local_updated_at);
-        obj.updated_by = this.getNumberValue(apiObj.updated_by);
-        obj.deleted_at = this.getDateFromString(apiObj.deleted_at);
-        obj.local_deleted_at = this.getDateFromString(apiObj.local_deleted_at);
-        obj.deleted_by = this.getNumberValue(apiObj.deleted_by);
-
-        return obj;
+        this.idApi = this.getNumberValue(apiObj[this.apiPk]);
+        this.created_at = this.getDateFromString(apiObj.created_at);
+        this.local_created_at = this.getDateFromString(apiObj.local_created_at);
+        this.created_by = this.getNumberValue(apiObj.created_by);
+        this.updated_at = this.getDateFromString(apiObj.updated_at);
+        this.local_updated_at = this.getDateFromString(apiObj.local_updated_at);
+        this.updated_by = this.getNumberValue(apiObj.updated_by);
+        this.deleted_at = this.getDateFromString(apiObj.deleted_at);
+        this.local_deleted_at = this.getDateFromString(apiObj.local_deleted_at);
+        this.deleted_by = this.getNumberValue(apiObj.deleted_by);
     }
 
     /**
@@ -238,7 +242,8 @@ export abstract class DbApiModel extends DbBaseModel {
                     this.update().then(() => resolve(true));
                 } else {
                     if (isSaveLocaleDates) {
-                        this[this.COL_LOCAL_CREATED_AT] = this[this.COL_LOCAL_UPDATED_AT] = new Date();
+                        this[this.COL_LOCAL_CREATED_AT] = new Date();
+                        this[this.COL_LOCAL_UPDATED_AT] = new Date();
                     }
                     this.create().then(() => resolve(true));
                 }

@@ -99,7 +99,6 @@ export abstract class DbBaseModel {
             }
         }
         this.updateCondition = [[this.COL_ID, this.id]];
-        // console.debug(this.TAG, 'loadFromAttributes', item, this);
         return this;
     }
 
@@ -691,7 +690,6 @@ export abstract class DbBaseModel {
                 } else {
                     let query = 'UPDATE ' + this.secure(this.TABLE_NAME) + ' ' +
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
-                    console.log('queryquery', query);
                     db.query(query).then((res) => {
                         this.events.publish(this.TAG + ':update', this);
                         resolve(res);
@@ -777,7 +775,13 @@ export abstract class DbBaseModel {
      * Returns the Date value from a given date string.
      * @param date
      */
-    protected getDateFromString(date: string): Date {
+    protected getDateFromString(date: string | number): Date {
+        if (Number.isInteger(date as number)) {
+            console.log('is integer date');
+            /// if date is integer that it is seconds
+            date = +date * 1000;
+        }
+
         return date ? new Date(date) : null;
     }
 
@@ -840,8 +844,17 @@ export abstract class DbBaseModel {
      * @param date
      * @returns {number} timestamp
      */
-    protected getValueDate(date: Date): string {
-        return date instanceof Date && date !== null ? '' + Math.floor(date.getTime() / 1000) : 'null';
+    protected getValueDate(date: Date | number): string {
+        if (!date) {
+            return 'null';
+        }
+        if ((date instanceof Date)) {
+            return '' + Math.floor(date.getTime() / 1000);
+        } else if (Number.isInteger(date)) {
+            return '' + date;
+        }
+
+        return 'null';
     }
 
     /**
@@ -902,7 +915,7 @@ export abstract class DbBaseModel {
         // date
         let month: string = '' + (date.getMonth() + 1);
         if (month.length == 1) month = '0' + month;
-        let day: string = '' + (date.getDay());
+        let day: string = '' + (date.getDate());
         if (day.length == 1) day = '0' + day;
         let year: string = '' + date.getFullYear();
 

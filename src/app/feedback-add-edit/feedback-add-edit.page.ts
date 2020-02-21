@@ -107,10 +107,6 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   public async save() {
-    if (!this.model.description) {
-      this.http.showToast('validation.Description is required', 'validation.Validation error', 'danger');
-      return;
-    }
     const user = await this.authService.getLastUser();
     if (!user) {
       return;
@@ -122,25 +118,51 @@ export class FeedbackAddEditPage implements OnInit {
     if (this.reference_model) {
       this.model.reference_model = this.reference_model;
     }
-    console.log('this.model in add edit page', this.model);
+    if (!(await this.isValidFeedback())) {
+      return;
+    }
     this.feedbackService.save(this.model).then(res => {
       if (this.network.type === 'none') {
         this.apiPush.setIsPushAvailableData(true);
         this.http.showToast('feedback.Feedback will be sent as soon as the Internet appears');
         if (this.attachedFileForDelete) {
-          console.log('delete file here');
+          this.downloadService.deleteFile(this.attachedFileForDelete);
         }
         this.dismiss();
       } else {
         this.apiPush.pushOneAtTime().then(() => {
           this.http.showToast('feedback.Feedback was sent');
           if (this.attachedFileForDelete) {
-            console.log('delete file here');
+            this.downloadService.deleteFile(this.attachedFileForDelete);
           }
           this.dismiss();
         });
       }
     });
+  }
+
+  private async isValidFeedback() {
+    let errorMessage = '';
+    if (!this.model.description) {
+      errorMessage = await this.translateConfigService.translate('validation.Description is required');
+    }
+    if (!this.model.title) {
+      errorMessage = await this.translateConfigService.translate('validation.Title is required');
+    }
+    if (this.model.title && this.model.title.length > 255) {
+      errorMessage = await this.translateConfigService.translate(
+          'validation.max_characters',
+          {property_name: 'title', max: 255}
+      );
+    }
+    if (errorMessage) {
+      const headerMessage = await this.translateConfigService.translate('validation.Validation error');
+      this.http.showToast(errorMessage, headerMessage, 'danger', false);
+
+      return false;
+    }
+
+    return true;
   }
 
   public delete() {
@@ -184,12 +206,14 @@ export class FeedbackAddEditPage implements OnInit {
     if (this.platform.is('ios')) {
       this.filePicker.pickFile()
           .then(uri => {
-            this.model[FeedbackModel.COL_ATTACHED_FILE] = 'File tmp name';
             // Let's copy the file to our local storage
             this.downloadService.copy(uri, this.model.TABLE_NAME).then(success => {
               if (typeof success === 'string') {
-                if (this.model[FeedbackModel.COL_ATTACHED_FILE_PATH]) {
-                  this.attachedFileForDelete = this.model[FeedbackModel.COL_LOCAL_ATTACHED_FILE];
+                if (this.model[FeedbackModel.COL_ATTACHED_FILE]) {
+                  this.attachedFileForDelete = this.downloadService.getNativeFilePath(
+                      this.model[FeedbackModel.COL_ATTACHED_FILE],
+                      this.feedbackService.dbModelApi.TABLE_NAME
+                  );
                 }
                 this.model[FeedbackModel.COL_ATTACHED_FILE] = success.substr(success.lastIndexOf('/') + 1);
                 this.model[FeedbackModel.COL_ATTACHED_FILE_PATH] = '';
@@ -203,16 +227,17 @@ export class FeedbackAddEditPage implements OnInit {
     }
     this.fileChooser.open()
         .then(uri => {
-          this.model[FeedbackModel.COL_ATTACHED_FILE] = 'File tmp name';
-
           if (this.platform.is('android')) {
             this.filePath.resolveNativePath(uri)
                 .then(nativeFilePath => {
                       // Let's copy the file to our local storage
                       this.downloadService.copy(nativeFilePath, this.model.TABLE_NAME).then(success => {
                         if (typeof success === 'string') {
-                          if (this.model[FeedbackModel.COL_ATTACHED_FILE_PATH]) {
-                            this.attachedFileForDelete = this.model[FeedbackModel.COL_LOCAL_ATTACHED_FILE];
+                          if (this.model[FeedbackModel.COL_ATTACHED_FILE]) {
+                            this.attachedFileForDelete = this.downloadService.getNativeFilePath(
+                                this.model[FeedbackModel.COL_ATTACHED_FILE],
+                                this.feedbackService.dbModelApi.TABLE_NAME
+                            );
                           }
                           this.model[FeedbackModel.COL_ATTACHED_FILE] = success.substr(success.lastIndexOf('/') + 1);
                           this.model[FeedbackModel.COL_ATTACHED_FILE_PATH] = '';
@@ -225,8 +250,11 @@ export class FeedbackAddEditPage implements OnInit {
             // Let's copy the file to our local storage
             this.downloadService.copy(uri, this.model.TABLE_NAME).then(success => {
               if (typeof success === 'string') {
-                if (this.model[FeedbackModel.COL_ATTACHED_FILE_PATH]) {
-                  this.attachedFileForDelete = this.model[FeedbackModel.COL_LOCAL_ATTACHED_FILE];
+                if (this.model[FeedbackModel.COL_ATTACHED_FILE]) {
+                  this.attachedFileForDelete = this.downloadService.getNativeFilePath(
+                      this.model[FeedbackModel.COL_ATTACHED_FILE],
+                      this.feedbackService.dbModelApi.TABLE_NAME
+                  );
                 }
                 this.model[FeedbackModel.COL_ATTACHED_FILE] = success.substr(success.lastIndexOf('/') + 1);
                 this.model[FeedbackModel.COL_ATTACHED_FILE_PATH] = '';

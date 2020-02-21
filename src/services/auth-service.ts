@@ -243,15 +243,11 @@ export class AuthService {
                     }
                     this.auth.loginDate = new Date();
                 }
-                console.log('existUser', existUser)
                 this.auth.save(!!(existUser.length)).then((authSaveResult) => {
-                    console.log('authSaveResult', authSaveResult);
                     if (authSaveResult) {
                         this.isLoggedin = true;
                         // create user setting
-                        console.log('createUserSettingsIfNotExists');
                         this.createUserSettingsIfNotExists().then((res) => {
-                            console.log('createUserSettingsIfNotExists result', res);
                             if (res) {
                                 // send a notification to the rest of the app
                                 this.events.publish('user:login', user.user_id);
