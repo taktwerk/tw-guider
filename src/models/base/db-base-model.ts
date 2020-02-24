@@ -692,6 +692,7 @@ export abstract class DbBaseModel {
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
                     db.query(query).then((res) => {
                         this.events.publish(this.TAG + ':update', this);
+                        console.log(this.TAG + 'update');
                         resolve(res);
                     }).catch((err) => {
                         resolve(false);

@@ -189,6 +189,7 @@ export class AppComponent implements OnInit {
   }
 
   protected baseProjectSetup() {
+    console.log('base project setup');
     this.initUserDB().then(() => {
       if (!this.userDb) {
         return;
@@ -214,7 +215,10 @@ export class AppComponent implements OnInit {
       this.apiSync.checkAvailableChanges().then(() => {
         this.checkAvailableSyncChanges = Observable.interval(30000)
             .subscribe(() => {
-              this.apiSync.checkAvailableChanges();
+              console.log('subscribing checkAvailableSyncChanges');
+              this.apiSync.checkAvailableChanges().then(() => {
+                console.log('check avaialble changes then');
+              });
             });
       });
       this.detectChanges();
@@ -254,6 +258,7 @@ export class AppComponent implements OnInit {
   }
 
   detectChanges() {
+    console.log('in detect changes');
     if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
     }

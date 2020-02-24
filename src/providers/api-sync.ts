@@ -93,6 +93,7 @@ export class ApiSync {
             this.userDb = userDb;
         });
         this.events.subscribe('UserDb:update', (userDb) => {
+            console.log('UserDb:update');
             this.userDb = userDb;
         });
     }
@@ -256,7 +257,9 @@ export class ApiSync {
 
     public checkAvailableChanges() {
         return new Promise(async resolve => {
+            console.log('checkAvailableChanges before init');
             await this.init();
+            console.log('checkAvailableChanges after init');
             if (this.isAvailableForSyncData.getValue()) {
                 resolve(true);
                 return;
@@ -268,6 +271,7 @@ export class ApiSync {
                 return;
             }
             this.http.get(this.getSyncUrl(true)).subscribe(async (response) => {
+                console.log('get method checkAvailable changes');
                 const isAvailableData = !!response.result;
                 this.isAvailableForSyncData.next(isAvailableData);
                 this.userDb.userSetting.isSyncAvailableData = isAvailableData;

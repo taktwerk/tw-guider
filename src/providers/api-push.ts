@@ -59,6 +59,7 @@ export class ApiPush {
             this.userDb = userDb;
         });
         this.events.subscribe('UserDb:update', (userDb) => {
+            console.log('UserDb:update');
             this.userDb = userDb;
         });
     }

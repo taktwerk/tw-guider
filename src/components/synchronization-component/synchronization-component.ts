@@ -199,6 +199,7 @@ export class SynchronizationComponent implements OnInit {
         this.detectChanges();
     });
     this.events.subscribe('UserDb:update', (userDb) => {
+        console.log('UserDb:update');
         this.userDb = userDb;
     });
     this.apiPush.isStartPushBehaviorSubject.subscribe(isPush => {

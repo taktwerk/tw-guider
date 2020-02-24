@@ -56,6 +56,8 @@ import {QRScanner} from '@ionic-native/qr-scanner/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import {AppSetting} from '../services/app-setting';
 import {AppVersion} from '@ionic-native/app-version/ngx';
+import {VirtualScrollerModule} from 'ngx-virtual-scroller';
+import {IonicImageLoader} from 'ionic-image-loader';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -84,7 +86,9 @@ export function LanguageLoader(http: Http) {
         SyncSpinnerComponentModule,
         LanguageSelectorComponentModule,
         MainPipe,
-        HtmlDescriptionComponentModule
+        HtmlDescriptionComponentModule,
+        VirtualScrollerModule,
+        IonicImageLoader.forRoot()
     ],
   providers: [
     StatusBar,

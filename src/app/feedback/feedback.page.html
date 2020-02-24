@@ -16,9 +16,10 @@
 </ion-header>
 
 <ion-content>
-<!--    <ion-virtual-scroll [items]="feedbackList">-->
-<!--        <ion-list  *virtualItem="let feedback;">-->
-        <ion-list *ngFor="let feedback of feedbackList">
+<!--    <ion-virtual-scroll [items]="feedbackList" [approxItemHeight]="'100px'">-->
+<!--        <ion-list *virtualItem="let feedback;">-->
+    <virtual-scroller #scroll [items]="feedbackList" enableUnequalChildrenSizes="true" bufferAmount="10">
+        <ion-list *ngFor="let feedback  of scroll.viewPortItems" style="display: block;width: 100%;height: 100px;">
             <ion-item>
                 <ion-thumbnail slot="start">
                     <div *ngIf="feedback.attached_file">
@@ -62,6 +63,7 @@
                 </ion-button>
             </ion-item>
         </ion-list>
+    </virtual-scroller>
 <!--    </ion-virtual-scroll>-->
     <div style="height: 70px;">
     </div>

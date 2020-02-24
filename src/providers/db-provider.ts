@@ -14,9 +14,12 @@ export class DbProvider {
    */
   init(): Promise<any> {
     return new Promise((resolve) => {
+      console.log('init database in db provider');
       if (typeof window.sqlitePlugin !== 'undefined') {
+        console.log('not undefined');
         this.db = window.sqlitePlugin.openDatabase({ name: AppSetting.DB_NAME, location: 'default' });
       } else {
+        console.log('is undefined');
         this.db = window.openDatabase(AppSetting.DB_NAME, '1.0', 'Test DB', -1);
       }
       resolve(true);
