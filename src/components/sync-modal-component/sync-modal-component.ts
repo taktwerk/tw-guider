@@ -71,6 +71,7 @@ export class SyncModalComponent implements OnInit {
     }
 
     stopSyncData() {
+        console.log('stopSyncData')
         this.apiSync.makeSyncPause();
     }
 
@@ -79,6 +80,7 @@ export class SyncModalComponent implements OnInit {
     }
 
     cancelSyncData() {
+        console.log('cancelSyncData sendSyncProgress');
         this.apiSync.sendSyncProgress('', true);
         return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
             if (isCanceled) {

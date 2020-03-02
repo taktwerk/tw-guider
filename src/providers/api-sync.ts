@@ -139,6 +139,7 @@ export class ApiSync {
 
     public syncMustBeEnd(): boolean {
         if (this.isOffNetwork()) {
+            console.log('syncMustBeEnd is off network');
             return true;
         }
         if (this.willMakeCancel()) {
@@ -167,6 +168,7 @@ export class ApiSync {
     private pull(status = 'progress'): Promise<any> {
         return new Promise(async (resolve) => {
             if (this.isOffNetwork() || this.isBusy) {
+                console.log('is off network in just pull');
                 resolve(false);
                 return;
             }
@@ -257,21 +259,17 @@ export class ApiSync {
 
     public checkAvailableChanges() {
         return new Promise(async resolve => {
-            console.log('checkAvailableChanges before init');
             await this.init();
-            console.log('checkAvailableChanges after init');
             if (this.isAvailableForSyncData.getValue()) {
                 resolve(true);
                 return;
             }
-            if (this.isOffNetwork()) {
-                this.isAvailableForSyncData.next(false);
-
+            if (this.network.type === 'none') {
+                console.log('isOffNetwork in checkAvailableChanges')
                 resolve(false);
                 return;
             }
             this.http.get(this.getSyncUrl(true)).subscribe(async (response) => {
-                console.log('get method checkAvailable changes');
                 const isAvailableData = !!response.result;
                 this.isAvailableForSyncData.next(isAvailableData);
                 this.userDb.userSetting.isSyncAvailableData = isAvailableData;
@@ -347,6 +345,7 @@ export class ApiSync {
         }
 
         return this.userDb.save().then(() => {
+            console.log('saveSyncProgress sendSyncProgress');
             this.sendSyncProgress();
             if (this.isAllItemsSynced()) {
                 this.isBusy = false;
@@ -366,6 +365,7 @@ export class ApiSync {
         this.userDb.userSetting.syncStatus = 'failed';
         this.userDb.userSetting.lastSyncProcessId = null;
         await this.userDb.save();
+        console.log('failSync sendSyncProgress');
         this.sendSyncProgress(error);
         this.isStartSyncBehaviorSubject.next(false);
         this.isBusy = false;
@@ -373,11 +373,11 @@ export class ApiSync {
 
     public sendSyncProgress(description?: string, isCancel = false) {
         return new Promise(resolve => {
-            if (!this.userDb.userSetting.lastSyncProcessId) {
+            console.log('sendSyncProgress');
+            if (!this.userDb.userSetting.lastSyncProcessId || this.network.type === 'none') {
                 resolve(false);
                 return;
             }
-
             let url = this.appSetting.getApiUrl() + '/sync/save-progress';
             url += '?syncProcessId=' + this.userDb.userSetting.lastSyncProcessId;
 
@@ -460,6 +460,7 @@ export class ApiSync {
 
     public isOffNetwork(): boolean {
         if (this.network.type === 'none') {
+            console.log('is off network call makeSyncPause');
             this.makeSyncPause().then(() => {
                 this.isBusy = false;
             });
@@ -477,6 +478,7 @@ export class ApiSync {
             this.userDb.userSetting.syncStatus = 'pause';
             this.isPrepareSynData.next(false);
             this.userDb.save().then(() => {
+                console.log('makeSyncPause sendSyncProgress');
                 this.sendSyncProgress();
                 resolve(true);
             });
@@ -486,6 +488,7 @@ export class ApiSync {
     public makeSyncProcess(syncStatus = 'progress') {
         return new Promise(resolve => {
             if (this.isOffNetwork() || this.isBusy) {
+                console.log('makeSyncProcess isOffNetwork');
                 resolve(false);
                 return;
             }

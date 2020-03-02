@@ -180,7 +180,6 @@ export class ApiPush {
                                 this.isBusy = false;
                                 return;
                             }
-                            console.log('before pist');
                             return this.http.post(url, jsonBody)
                                 .subscribe((data) => {
                                     console.log('show me data', data);
@@ -219,10 +218,10 @@ export class ApiPush {
                                             true,
                                             dbModelApi.COL_ID + '=' + record._id,
                                             false
-                                        ).then((res) => {
+                                        ).then(async (res) => {
                                             this.userDb.userSetting.appDataVersion++;
-                                            this.userDb.save();
-                                            service.pushFiles(dbModel).then((result) => {
+                                            await this.userDb.save();
+                                            service.pushFiles(dbModel, this.userDb).then((result) => {
                                                 pushedItemsCount++;
                                                 const savedDataPercent = Math.round((pushedItemsCount / countOfAllChangedItems) * 100);
                                                 this.pushedItemsCount.next(pushedItemsCount);
@@ -301,7 +300,7 @@ export class ApiPush {
                         .subscribe((data) => {
                             //iterate over all received records
                             Object.keys(data).forEach(function (key) {
-                                let record =  data[key];
+                                let record = data[key];
                                 if (record.errors) {
                                     return;
                                 }

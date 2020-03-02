@@ -1,3 +1,8 @@
+<style>
+    .isRed {
+        color: red;
+    }
+</style>
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
@@ -16,11 +21,12 @@
 </ion-header>
 
 <ion-content>
-<!--    <ion-virtual-scroll [items]="feedbackList" [approxItemHeight]="'100px'">-->
-<!--        <ion-list *virtualItem="let feedback;">-->
-    <virtual-scroller #scroll [items]="feedbackList" enableUnequalChildrenSizes="true" bufferAmount="10">
-        <ion-list *ngFor="let feedback  of scroll.viewPortItems" style="display: block;width: 100%;height: 100px;">
-            <ion-item>
+    <div class="list-spinner" *ngIf="feedbackList.length > 30"></div>
+    <ion-virtual-scroll [items]="feedbackList" [approxItemHeight]="'79px'" [itemHeight]="itemHeightFn" [trackBy]="trackByFn">
+<!--    <virtual-scroller *ngIf="feedbackList.length" #scroll [items]="feedbackList" enableUnequalChildrenSizes="true" bufferAmount="10">-->
+<!--        <ion-list *virtualItem="let feedback;" style="opacity:1;">-->
+<!--        <ion-list *ngFor="let feedback  of scroll.viewPortItems" style="display: block;width: 100%;height: 100px;">-->
+            <ion-item *virtualItem="let feedback;" style="opacity:1;">
                 <ion-thumbnail slot="start">
                     <div *ngIf="feedback.attached_file">
                         <div style="width: 70px;height: 70px;">
@@ -48,7 +54,7 @@
                 </ion-thumbnail>
                 <ion-label>
                     <h2>
-                        {{ (feedback.local_created_at || feedback.created_at) | datePipe: 'dd.M.yyyy' }}
+                        {{ (feedback.local_created_at || feedback.created_at) | datePipe: 'dd.M.yyyy H:m:s' }}
                         <span *ngIf="feedback.title"> - {{ feedback.title }}</span>
                     </h2>
                     <p>
@@ -62,9 +68,9 @@
                     <ion-icon slot="icon-only" name="create"></ion-icon>
                 </ion-button>
             </ion-item>
-        </ion-list>
-    </virtual-scroller>
-<!--    </ion-virtual-scroll>-->
+<!--        </ion-list>-->
+<!--    </virtual-scroller>-->
+    </ion-virtual-scroll>
     <div style="height: 70px;">
     </div>
     <ion-fab vertical="bottom" horizontal="end" slot="fixed"

@@ -4,6 +4,7 @@ import {DbApiModel} from '../../../models/base/db-api-model';
 import {HttpClient} from '../../../services/http-client';
 import {AppSetting} from '../../../services/app-setting';
 import {Events} from '@ionic/angular';
+import {UserDb} from '../../../models/db/user-db';
 
 @Injectable()
 export abstract class ApiService {
@@ -186,9 +187,10 @@ export abstract class ApiService {
      * Sync the files of a model. Download or upload new files.
      *
      * @param {DbApiModel} model
+     * @param userForSaving
      * @returns {boolean}
      */
-    public pushFiles(model: DbApiModel): Promise<boolean> {
+    public pushFiles(model: DbApiModel, userForSaving?: UserDb): Promise<boolean> {
         return new Promise((resolve) => {
           if (model.platform.is('mobileweb')) {
             resolve(false);
@@ -216,6 +218,10 @@ export abstract class ApiService {
                     authToken
                   )
                 .then((result) => {
+                  if (userForSaving) {
+                      userForSaving.userSetting.appDataVersion++;
+                      userForSaving.save();
+                  }
                   resolve(result);
                 }).catch((err) => {
                       console.log('upload file', err);

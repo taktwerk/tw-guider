@@ -52,10 +52,12 @@ export class HttpClient {
      * Init the headers
      */
   public initHeaders() {
+
+
     let headers = {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        'X-CURRENT-DATETIME': new Date().toISOString()
+        'X-CURRENT-DATETIME': this.getCurrentDateTime()
     };
     if (this.authService.auth && this.authService.auth.authToken) {
         headers['X-Auth-Token'] = this.getAuthorizationToken();
@@ -63,6 +65,38 @@ export class HttpClient {
         headers['X-Device-Info'] = JSON.stringify(this.deviceInfo);
     }
     this.headers = new Headers(headers);
+  }
+
+  public getCurrentDateTime() {
+      let timezone_offset_min = new Date().getTimezoneOffset();
+      let offset_hrs = parseInt(String(Math.abs(timezone_offset_min / 60)));
+      let offset_min = Math.abs(timezone_offset_min % 60);
+      let timezone_standard = '';
+
+      const offsetMinString = offset_min < 10 ? '0' + offset_min : '' + offset_min;
+      const offsetHrsString = offset_hrs < 10 ? '0' + offset_hrs : '' + offset_hrs;
+      if (timezone_offset_min < 0) {
+          timezone_standard = '+' + offsetHrsString + ':' + offsetMinString;
+      } else if (timezone_offset_min > 0) {
+          timezone_standard = '-' + offsetHrsString + ':' + offsetMinString;
+      } else if (timezone_offset_min === 0) {
+          timezone_standard = 'Z';
+      }
+
+      let dt = new Date(),
+          current_date = dt.getDate(),
+          current_month = dt.getMonth() + 1,
+          current_hrs = dt.getHours(),
+          current_mins = dt.getMinutes(),
+          current_secs = dt.getSeconds();
+      const currentDate = current_date < 10 ? '0' + current_date : '' + current_date;
+      const currentMonth = current_month < 10 ? '0' + current_month : '' + current_month;
+      const currentHrs = current_hrs < 10 ? '0' + current_hrs : '' + current_hrs;
+      const currentMins = current_mins < 10 ? '0' + current_mins : '' + current_mins;
+      const currentSecs = current_secs < 10 ? '0' + current_secs : '' + current_secs;
+      const currentDatetime = dt.getFullYear() + '-' + currentMonth + '-' + currentDate + 'T' + currentHrs + ':' + currentMins + ':' + currentSecs;
+
+      return currentDatetime + timezone_standard;
   }
 
     /**

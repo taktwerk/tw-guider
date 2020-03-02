@@ -37,6 +37,9 @@
               },
               {
                 "input": "src/global.scss"
+              },
+              {
+                "input": "src/theme/virtual-scroll.scss"
               }
             ],
             "scripts": []

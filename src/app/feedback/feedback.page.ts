@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Events, ModalController, NavController} from '@ionic/angular';
 import {FeedbackService} from '../../providers/api/feedback-service';
 import {FeedbackModel} from '../../models/db/api/feedback-model';
@@ -28,7 +28,6 @@ export class FeedbackPage implements OnInit {
     public reference_model_alias: string = null;
     public feedbackList: FeedbackModel[] = [];
     public isComponentLikeModal = false;
-    public saveUrl = '/save-feedback/';
 
     constructor(private feedbackService: FeedbackService,
                 private modalController: ModalController,
@@ -59,7 +58,10 @@ export class FeedbackPage implements OnInit {
         if (this.reference_id && this.reference_model) {
             feedbackSearchCondition.push(['reference_id', this.reference_id]);
         }
-        this.feedbackService.dbModelApi.findAllWhere(feedbackSearchCondition, '_id DESC')
+        this.feedbackService.dbModelApi.findAllWhere(
+            feedbackSearchCondition,
+            'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC'
+        )
             .then(data => {
                 this.feedbackList = data;
             });
@@ -103,6 +105,18 @@ export class FeedbackPage implements OnInit {
             default:
                 return null;
         }
+    }
+
+    itemHeightFn(item, index) {
+        return 79;
+    }
+
+    trackByFn(index, item) {
+        return item.id;
+    }
+
+    ionViewDidLoad() {
+        this.setModels();
     }
 
     ngOnInit() {

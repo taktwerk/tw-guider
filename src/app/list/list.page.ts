@@ -12,15 +12,7 @@ import {GuideCategoryBindingService} from '../../providers/api/guide-category-bi
   templateUrl: 'list.page.html',
   styleUrls: ['list.page.scss']
 })
-export class ListPage implements OnInit, DoCheck, AfterViewChecked {
-
-  ngAfterViewChecked(): void {
-    console.log('ngAfterViewChecked on event');
-  }
-
-  ngDoCheck(): void {
-      console.log('ngDoCheck on event');
-  }
+export class ListPage implements OnInit {
   public guiders: GuiderModel[] = [];
   public guideCategories: GuideCategoryModel[] = [];
   public searchValue: string;
@@ -34,13 +26,11 @@ export class ListPage implements OnInit, DoCheck, AfterViewChecked {
       public events: Events,
       public changeDetectorRef: ChangeDetectorRef
   ) {
-    console.log('guide list constructor');
     this.authService.checkAccess();
     this.findAllGuideCategories();
   }
 
   public getModels() {
-    console.log('get models guide list');
     this.guiderService.data.filter(model => {
       return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
     });
@@ -58,7 +48,6 @@ export class ListPage implements OnInit, DoCheck, AfterViewChecked {
   }
 
   findAllGuideCategories() {
-    console.log('findAllGuideCategories');
     if (this.searchValue) {
       this.guideCategoryService.findByGuides(this.searchValue).then(guideCategories => {
         this.guideCategories = guideCategories;
@@ -94,8 +83,11 @@ export class ListPage implements OnInit, DoCheck, AfterViewChecked {
     }
   }
 
+  trackByFn(item, index) {
+    return item.id;
+  }
+
   ngOnInit() {
-    console.log('on init');
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
       console.log('updating ' + this.guideCategoryBindingService.dbModelApi.TAG + ':update')
       this.findAllGuideCategories();
