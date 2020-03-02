@@ -38,15 +38,27 @@
             (click)="
               openFile(step.getApiFilePath(), step.TABLE_NAME, step.title)
             "
-            [src]="step.getFile()"
+            [src]="step.getAttachedFileImagePath()"
           />
-          <ion-icon
-            name="videocam"
-            class="videocam"
-            slot="start"
-            *ngIf="step.isVideoAttachedFile()"
-            (click)="openFile(step.getApiFilePath(), step.TABLE_NAME)"
-          ></ion-icon>
+          <div *ngIf="step.isVideoAttachedFile()"
+               (click)="openFile(step.getApiFilePath(), step.TABLE_NAME)"
+          >
+            <div *ngIf="step.isExistThumbOfFile()">
+              <img [src]="step.getAttachedFileImagePath()"/>
+              <ion-icon name="videocam"
+                        class="videocam-icon"
+                        slot="end"
+                        style="font-size: 50px;"
+              >
+              </ion-icon>
+            </div>
+            <ion-icon *ngIf="!step.isExistThumbOfFile()"
+                      name="videocam"
+                      class="videocam-icon"
+                      slot="start"
+            >
+            </ion-icon>
+          </div>
           <img
             *ngIf="!step.isImageAttachedFile() && !step.isVideoAttachedFile()"
             src="/assets/placeholder.jpg"

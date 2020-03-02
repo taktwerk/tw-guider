@@ -19,6 +19,7 @@ export class GuideStepModel extends DbApiModel {
     public title: string;
     public description_html: string;
     public attached_file: string;
+    public local_attached_file: string;
 
     //db columns
     static COL_GUIDE_ID = 'guide_id';
@@ -28,6 +29,9 @@ export class GuideStepModel extends DbApiModel {
     static COL_ATTACHED_FILE = 'attached_file';
     static COL_API_ATTACHED_FILE_PATH = 'attached_file_path';
     static COL_LOCAL_ATTACHED_FILE = 'local_attached_file';
+    static COL_THUMB_ATTACHED_FILE = 'thumb_attached_file';
+    static COL_API_THUMB_ATTACHED_FILE_PATH = 'thumb_attached_file_path';
+    static COL_LOCAL_THUMB_ATTACHED_FILE = 'local_thumb_attached_file';
 
     public downloadMapping: any = [
         [
@@ -37,6 +41,14 @@ export class GuideStepModel extends DbApiModel {
             GuideStepModel.COL_API_ATTACHED_FILE_PATH,
             // Local path
             GuideStepModel.COL_LOCAL_ATTACHED_FILE
+        ],
+        [
+            // Name of the file
+            GuideStepModel.COL_THUMB_ATTACHED_FILE,
+            // Url of the file
+            GuideStepModel.COL_API_THUMB_ATTACHED_FILE_PATH,
+            // Local path
+            GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE
         ]
     ];
 
@@ -49,9 +61,14 @@ export class GuideStepModel extends DbApiModel {
         [GuideStepModel.COL_ORDER_NUMBER, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuideStepModel.COL_TITLE, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
         [GuideStepModel. COL_DESCRIPTION_HTML, 'TEXT', DbBaseModel.TYPE_STRING],
+        /// attached file columns
         [GuideStepModel.COL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuideStepModel.COL_API_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuideStepModel.COL_LOCAL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        /// thumb attached file columns
+        [GuideStepModel.COL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [GuideStepModel.COL_API_THUMB_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
     ];
 
     /**
@@ -69,12 +86,29 @@ export class GuideStepModel extends DbApiModel {
         return this[GuideStepModel.COL_ATTACHED_FILE];
     }
 
-    public getFile() {
-        if (this[GuideStepModel.COL_LOCAL_ATTACHED_FILE]) {
-            return this.downloadService.getSanitizedFileUrl(this[GuideStepModel.COL_ATTACHED_FILE], this.TABLE_NAME);
-        } else {
+    public getApiThumbFilePath() {
+        return this[GuideStepModel.COL_THUMB_ATTACHED_FILE];
+    }
+
+    public getAttachedFileImagePath() {
+        if (!this[GuideStepModel.COL_LOCAL_ATTACHED_FILE]) {
             return this.defaultImage;
         }
+        let imageName = null;
+
+        if (this.isImageAttachedFile()) {
+            imageName = this.getApiFilePath();
+        } else if (this.isExistThumbOfFile()) {
+            imageName = this.getApiThumbFilePath();
+        } else {
+            return null;
+        }
+
+        return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME);
+    }
+
+    public isExistThumbOfFile() {
+        return !!this[GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE];
     }
 
     public isVideoAttachedFile() {
