@@ -73,33 +73,32 @@ export abstract class DbBaseModel {
      */
     public loadFromAttributes(item: any): DbBaseModel {
         this.id = item[this.COL_ID];
-        for (let column of this.TABLE) {
+        for (const column of this.TABLE) {
             // get column name (if defined in 4th column - otherwise get column name defined in 1st column)
-            let columnName = column[3] ? column[3] : column[0];
-            let value: any = item[column[0]];
+            const columnName = column[3] ? column[3] : column[0];
+            const value: any = item[column[0]];
             switch (column[2]) {
                 case DbBaseModel.TYPE_NUMBER :
-                    (<any>this)[columnName] = this.getNumberValue(value);
+                    (<any> this)[columnName] = this.getNumberValue(value);
                     break;
                 case DbBaseModel.TYPE_DECIMAL :
-                    (<any>this)[columnName] = this.getDecimalValue(value);
+                    (<any> this)[columnName] = this.getDecimalValue(value);
                     break;
                 case DbBaseModel.TYPE_STRING :
-                    (<any>this)[columnName] = this.getStringValue(value);
+                    (<any> this)[columnName] = this.getStringValue(value);
                     break;
                 case DbBaseModel.TYPE_DATE :
-                    (<any>this)[columnName] = this.getDateValue(value);
+                    (<any> this)[columnName] = this.getDateValue(value);
                     break;
                 case DbBaseModel.TYPE_BOOLEAN :
-                    (<any>this)[columnName] = this.getBooleanValue(value);
+                    (<any> this)[columnName] = this.getBooleanValue(value);
                     break;
                 case DbBaseModel.TYPE_OBJECT :
-                    (<any>this)[columnName] = this.getObjectValue(value);
+                    (<any> this)[columnName] = this.getObjectValue(value);
                     break;
             }
         }
         this.updateCondition = [[this.COL_ID, this.id]];
-        // console.debug(this.TAG, 'loadFromAttributes', item, this);
         return this;
     }
 
@@ -172,7 +171,6 @@ export abstract class DbBaseModel {
             const name = column[0];
             const schema = column[1];
             rows.push(this.secure(name) + ' ' + schema);
-            // query += ', ' + this.secure(name) + ' ' + schema;
         }
         query += rows.join(', ');
 
@@ -293,13 +291,12 @@ export abstract class DbBaseModel {
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
-                                const obj: DbBaseModel = new (<any>this.constructor);
+                                const obj = new (this.constructor as any);
                                 obj.platform = this.platform;
                                 obj.db = this.db;
                                 obj.events = this.events;
                                 obj.downloadService = this.downloadService;
                                 obj.loadFromAttributes(res.rows.item(i));
-                                // console.debug(this.TAG, 'new instance', obj);
                                 entries.push(obj);
                             }
                         }
@@ -656,7 +653,7 @@ export abstract class DbBaseModel {
      * Creates this base model instances via INSERT SQL statement
      * in the local SQLite database.
      */
-    protected create(): Promise<any> {
+    public create(): Promise<any> {
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
@@ -776,7 +773,13 @@ export abstract class DbBaseModel {
      * Returns the Date value from a given date string.
      * @param date
      */
-    protected getDateFromString(date: string): Date {
+    protected getDateFromString(date: string | number): Date {
+        if (Number.isInteger(date as number)) {
+            console.log('is integer date');
+            /// if date is integer that it is seconds
+            date = +date * 1000;
+        }
+
         return date ? new Date(date) : null;
     }
 
@@ -839,8 +842,17 @@ export abstract class DbBaseModel {
      * @param date
      * @returns {number} timestamp
      */
-    protected getValueDate(date: Date): string {
-        return date instanceof Date && date !== null ? '' + Math.floor(date.getTime() / 1000) : 'null';
+    protected getValueDate(date: Date | number): string {
+        if (!date) {
+            return 'null';
+        }
+        if ((date instanceof Date)) {
+            return '' + Math.floor(date.getTime() / 1000);
+        } else if (Number.isInteger(date)) {
+            return '' + date;
+        }
+
+        return 'null';
     }
 
     /**
@@ -901,7 +913,7 @@ export abstract class DbBaseModel {
         // date
         let month: string = '' + (date.getMonth() + 1);
         if (month.length == 1) month = '0' + month;
-        let day: string = '' + (date.getDay());
+        let day: string = '' + (date.getDate());
         if (day.length == 1) day = '0' + day;
         let year: string = '' + date.getFullYear();
 

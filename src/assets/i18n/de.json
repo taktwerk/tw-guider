@@ -4,9 +4,11 @@
   "send": "(De) Send",
   "Logout": "(De) Logout",
   "Wrong password!": "(De) Wrong password!",
-  "home": {
-    "header":"(De) Home",
-    "title": "(De) Home page of the Guider"
+  "save": "Save",
+  "delete": "Delete",
+  "start": {
+    "header":"(De) Start",
+    "title": "(De) Start page of the Guider"
   },
   "sync-modal": {
     "header": "(De) Sync Status",
@@ -22,7 +24,7 @@
     "Pause" : "(De) Pause",
     "Failed" : "(De) Failed",
     "Success" : "(De) Success",
-    "No data for sync" : "(De) No data for sync",
+    "No data for sync." : "(De) No data for sync",
     "There is data available for pushing to the server.": "(De) There is data available for pushing to the server.",
     "No network connection.": "(De) No network connection.",
     "Data synchronization is not yet possible.": "(De) Data synchronization is not yet possible."
@@ -35,7 +37,11 @@
   "feedback": {
     "header": "(De) Feedback",
     "Feedback list": "(De) Feedback list",
-    "Description": "(De) Description"
+    "Description": "(De) Description",
+    "Feedback will be sent as soon as the Internet appears": "(De) Feedback will be sent as soon as the Internet appears",
+    "Feedback was sent": "(De) Feedback was sent",
+    "Feedback was deleted": "(De) Feedback was deleted",
+    "Are you sure you want to delete this feedback?": "(De) Are you sure you want to delete this feedback?"
   },
   "guide": {
     "header": "(De) Guide:",
@@ -43,16 +49,17 @@
     "Assets": "(De) Assets"
   },
   "profile": {
-    "header": "(De) Profile of {{ name }}",
-    "Profile": "(De) Profile",
-    "ID": "(De) ID"
+    "header": "Profil des {{ name }}",
+    "Profile": "Profil",
+    "ID": "ID",
+    "Name": "Name"
   },
   "synchronization-component": {
-    "Sync Modes": "(De) Sync Modes",
-    "Manually": "(De) Manually",
-    "Online": "(De) Online",
-    "Periodic": "(De) Periodic",
-    "Re-sync data": "(De) Re-sync data",
+    "Sync Modes": "Synchronisierungsmodi",
+    "Manually": "Manuell",
+    "Online": "Online",
+    "Periodic": "Periodisch",
+    "Re-sync data": "Daten erneut synchronisieren",
     "Sync was canceled.": "(De) Sync was canceled.",
     "Now is manually mode.": "(De) Now is manually mode.",
     "Now is network connection mode.": "(De) Now is network connection mode.",
@@ -75,6 +82,21 @@
     "Description is required": "(De) Description is required",
     "Validation error": "(De) Validation error",
     "Wrong password or login!": "(De) Wrong password or login!",
-    "You are not authorized.": "(De) You are not authorized."
+    "You are not authorized.": "(De) You are not authorized.",
+    "QR-code has wrong information": "(De) QR-code has wrong information",
+    "max_characters": "(De) The maximum number of characters in a {{property_name}} should be {{max}} characters.",
+    "Title is required": "(De) Title is required"
+  },
+  "qr": {
+    "Application was successfully configured": "(DE) Application was successfully configured",
+    "The Guider app enables the display of digital instructions (assembly, training, etc.)": "Die Guider App ermöglicht die Anzeige von digitalen Anleitungen (Montage, Schulungen, etc.)",
+    "The app only works with a customer account. Please contact taktwerk GmbH for this": "Die App funktioniert nur mit einem Kundenkonto. Bitte kontaktieren Sie dafür die taktwerk GmbH",
+    "Scan the received one": "Scannen Sie den erhaltenen",
+    "QR-Code": "(De) QR-Code",
+    "Setup": "(De) Setup",
+    "Close Scanner": "(De) Close Scanner"
+  },
+  "language-selector": {
+    "Language": "Sprache"
   }
 }

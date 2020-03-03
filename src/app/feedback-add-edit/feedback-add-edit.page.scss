@@ -1,0 +1,31 @@
+$big-fab-width: 70px;
+$big-fab-list-left-padding: 10px;
+$big-fab-list-width: calc(#{$big-fab-width} - 2 * #{$big-fab-list-left-padding});
+$big-fab-list-margin-bottom: calc(#{$big-fab-width} + 10px);
+
+.video-icon {
+  height: 70vh;
+  width: auto;
+  margin: auto;
+  display: block;
+}
+
+.videocam-icon {
+  font-size: 100px;
+  color: red;
+}
+
+.big-fab {
+  ion-fab-list {
+    padding-left: $big-fab-list-left-padding;
+    margin-bottom: $big-fab-list-margin-bottom;
+    ion-fab-button {
+      width: $big-fab-list-width;
+      height: $big-fab-list-width;
+    }
+  }
+  ion-fab-button {
+    width: $big-fab-width;
+    height: $big-fab-width;
+  }
+}

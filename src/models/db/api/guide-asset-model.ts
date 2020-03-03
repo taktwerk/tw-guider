@@ -1,5 +1,5 @@
 import {Platform, Events} from '@ionic/angular';
-import {DbApiModel} from '../../base/db-api-model';
+import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
@@ -32,17 +32,17 @@ export class GuideAssetModel extends DbApiModel {
     static COL_API_PDF_IMAGE_PATH = 'pdf_image_path';
     static COL_LOCAL_PDF_IMAGE = 'local_pdf_image';
 
-    public downloadMapping: any = [
-        [
-            GuideAssetModel.COL_ASSET_FILE,
-            GuideAssetModel.COL_API_ASSET_FILE_PATH,
-            GuideAssetModel.COL_LOCAL_ASSET_FILE
-        ],
-        [
-            GuideAssetModel.COL_PDF_IMAGE,
-            GuideAssetModel.COL_API_PDF_IMAGE_PATH,
-            GuideAssetModel.COL_LOCAL_PDF_IMAGE
-        ]
+    public downloadMapping: FileMapInModel[] = [
+        {
+            name: GuideAssetModel.COL_ASSET_FILE,
+            url: GuideAssetModel.COL_API_ASSET_FILE_PATH,
+            localPath: GuideAssetModel.COL_LOCAL_ASSET_FILE
+        },
+        {
+            name: GuideAssetModel.COL_PDF_IMAGE,
+            url: GuideAssetModel.COL_API_PDF_IMAGE_PATH,
+            localPath: GuideAssetModel.COL_LOCAL_PDF_IMAGE
+        }
     ];
 
     /** @inheritDoc */

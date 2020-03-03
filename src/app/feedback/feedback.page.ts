@@ -1,19 +1,12 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {Events, ModalController, NavController, Platform} from '@ionic/angular';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {Events, ModalController, NavController} from '@ionic/angular';
 import {FeedbackService} from '../../providers/api/feedback-service';
 import {FeedbackModel} from '../../models/db/api/feedback-model';
-import {HttpClient} from '../../services/http-client';
 import {AuthService} from '../../services/auth-service';
-import {ApiPush} from '../../providers/api-push';
 import {DownloadService} from '../../services/download-service';
-import {FilePath} from '@ionic-native/file-path/ngx';
-import {FileChooser} from '@ionic-native/file-chooser/ngx';
 import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute} from '@angular/router';
-import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
-
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 
 /**
  * Generated class for the TodoPage page.
@@ -37,97 +30,15 @@ export class FeedbackPage implements OnInit {
     public isComponentLikeModal = false;
 
     constructor(private feedbackService: FeedbackService,
-                private apiPush: ApiPush,
                 private modalController: ModalController,
-                public http: HttpClient,
                 public events: Events,
                 public authService: AuthService,
                 public changeDetectorRef: ChangeDetectorRef,
                 private downloadService: DownloadService,
-                private platform: Platform,
                 private activatedRoute: ActivatedRoute,
-                private filePath: FilePath,
                 private streamingMedia: StreamingMedia,
                 private photoViewer: PhotoViewer,
-                private fileChooser: FileChooser,
-                private navCtrl: NavController,
-                private filePicker: IOSFilePicker) {
-        if (!this.model) {
-            this.model = feedbackService.newModel();
-        }
-    }
-
-    public async save() {
-        if (!this.model.description) {
-            this.http.showToast('validation.Description is required', 'validation.Validation error', 'danger');
-            return;
-        }
-        const user = await this.authService.getLastUser();
-        if (!user) {
-            return;
-        }
-        this.model.user_id = user.userId;
-        if (this.reference_id) {
-            this.model.reference_id = this.reference_id;
-        }
-        if (this.reference_model) {
-            this.model.reference_model = this.reference_model;
-        }
-        this.feedbackService.save(this.model).then(res => {
-            this.model = this.feedbackService.newModel();
-            this.apiPush.setIsPushAvailableData(true);
-            this.apiPush.pushOneAtTime();
-        });
-    }
-
-    public addFile() {
-        if (this.platform.is('ios')) {
-            this.filePicker.pickFile()
-                .then(uri => {
-                    this.model[FeedbackModel.COL_ATTACHED_FILE] = 'File tmp name';
-                    // Let's copy the file to our local storage
-                    this.downloadService.copy(uri, this.model.TABLE_NAME).then(success => {
-                        if (typeof success === 'string') {
-                            this.model[FeedbackModel.COL_ATTACHED_FILE] = success.substr(success.lastIndexOf('/') + 1);
-                            this.model[FeedbackModel.COL_ATTACHED_FILE_PATH] = false;
-                            this.model[FeedbackModel.COL_LOCAL_ATTACHED_FILE] = success;
-                        }
-                    });
-                })
-                .catch(e => console.log('FeedbackModal', 'addFile', e));
-
-            return;
-        }
-        this.fileChooser.open()
-            .then(uri => {
-                this.model[FeedbackModel.COL_ATTACHED_FILE] = 'File tmp name';
-
-                if (this.platform.is('android')) {
-                    this.filePath.resolveNativePath(uri)
-                        .then(nativeFilePath => {
-                                // Let's copy the file to our local storage
-                                this.downloadService.copy(nativeFilePath, this.model.TABLE_NAME).then(success => {
-                                    if (typeof success === 'string') {
-                                        this.model[FeedbackModel.COL_ATTACHED_FILE] = success.substr(success.lastIndexOf('/') + 1);
-                                        this.model[FeedbackModel.COL_ATTACHED_FILE_PATH] = false;
-                                        this.model[FeedbackModel.COL_LOCAL_ATTACHED_FILE] = success;
-                                    }
-                                });
-                            }
-                        );
-                } else {
-                    // Let's copy the file to our local storage
-                    this.downloadService.copy(uri, this.model.TABLE_NAME).then(success => {
-                        if (typeof success === 'string') {
-                            this.model[FeedbackModel.COL_ATTACHED_FILE] = success.substr(success.lastIndexOf('/') + 1);
-                            this.model[FeedbackModel.COL_ATTACHED_FILE_PATH] = false;
-                            this.model[FeedbackModel.COL_LOCAL_ATTACHED_FILE] = success;
-                        }
-                    });
-                }
-
-            })
-            .catch(e => console.log('FeedbackModal', 'addFile', e));
+                private navCtrl: NavController) {
     }
 
     public changeEditModel(model?: FeedbackModel) {
@@ -147,7 +58,10 @@ export class FeedbackPage implements OnInit {
         if (this.reference_id && this.reference_model) {
             feedbackSearchCondition.push(['reference_id', this.reference_id]);
         }
-        this.feedbackService.dbModelApi.findAllWhere(feedbackSearchCondition, '_id ASC')
+        this.feedbackService.dbModelApi.findAllWhere(
+            feedbackSearchCondition,
+            'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC'
+        )
             .then(data => {
                 this.feedbackList = data;
             });
@@ -156,7 +70,6 @@ export class FeedbackPage implements OnInit {
     public openFile(basePath: string, modelName: string, title?: string) {
         const filePath = basePath;
         if (filePath.indexOf('.MOV') > -1 || filePath.indexOf('.mp4') > -1) {
-            // E.g: Use the Streaming Media plugin to play a video
             this.streamingMedia.playVideo(
                 this.downloadService.getNativeFilePath(basePath, modelName),
             );
@@ -192,6 +105,18 @@ export class FeedbackPage implements OnInit {
             default:
                 return null;
         }
+    }
+
+    itemHeightFn(item, index) {
+        return 79;
+    }
+
+    trackByFn(index, item) {
+        return item.id;
+    }
+
+    ionViewDidLoad() {
+        this.setModels();
     }
 
     ngOnInit() {

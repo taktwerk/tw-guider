@@ -8,9 +8,6 @@ ion-slide > h2 {
 ion-fab-button {
   display: inline-block !important;
 }
-ion-fab {
-  top: 16px;
-}
 .feedback-description {
   white-space: pre-line;
 }
@@ -24,7 +21,11 @@ ion-fab {
 ion-col {
   padding-top: 0;
 }
-.cloud-upload, .videocam {
+.cloud-upload, .videocam-icon {
   font-size: 70px;
   color: red;
+}
+virtual-scroller {
+  width: 100%;
+  height: 100%;
 }

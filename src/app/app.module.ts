@@ -28,7 +28,7 @@ import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { VideoPlayer } from '@ionic-native/video-player/ngx';
 import {SyncService} from '../services/sync-service';
 import {UserService} from '../services/user-service';
-import {DatePipe} from '@angular/common';
+import {DatePipe as BaseDatePipe} from '@angular/common';
 import {GuideAssetService} from '../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../providers/api/guide-asset-pivot-service';
 import {GuideAssetTextModalComponent} from '../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
@@ -47,6 +47,20 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {TranslateConfigService} from '../services/translate-config.service';
 import {LanguageSelectorComponentModule} from '../components/language-selector-component/language-selector-component.module';
 import { Device } from '@ionic-native/device/ngx';
+
+// import localeFr from '@angular/common/locales/fr';
+// import localeFrExtra from '@angular/common/locales/extra/fr';
+import {DatePipe} from '../pipes/date-pipe/date-pipe';
+import {QRScanner} from '@ionic-native/qr-scanner/ngx';
+
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import {AppSetting} from '../services/app-setting';
+import {AppVersion} from '@ionic-native/app-version/ngx';
+import {VirtualScrollerModule} from 'ngx-virtual-scroller';
+import {IonicImageLoader} from 'ionic-image-loader';
+import {Camera} from '@ionic-native/camera/ngx';
+import {MediaCapture} from '@ionic-native/media-capture/ngx';
+import { VideoEditor } from '@ionic-native/video-editor/ngx';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -75,7 +89,9 @@ export function LanguageLoader(http: Http) {
         SyncSpinnerComponentModule,
         LanguageSelectorComponentModule,
         MainPipe,
-        HtmlDescriptionComponentModule
+        HtmlDescriptionComponentModule,
+        VirtualScrollerModule,
+        IonicImageLoader.forRoot()
     ],
   providers: [
     StatusBar,
@@ -104,13 +120,21 @@ export function LanguageLoader(http: Http) {
     VideoPlayer,
     SyncService,
     UserService,
-    DatePipe,
+    BaseDatePipe,
     CryptoProvider,
     FilePath,
     FileChooser,
     IOSFilePicker,
     TranslateConfigService,
     Device,
+    DatePipe,
+    QRScanner,
+    BarcodeScanner,
+    AppSetting,
+    AppVersion,
+    Camera,
+    MediaCapture,
+    VideoEditor,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

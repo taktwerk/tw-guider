@@ -1,26 +1,21 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit} from '@angular/core';
 import {GuideCategoryService} from '../../providers/api/guide-category-service';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
-import {BehaviorSubject} from 'rxjs';
 import {AuthService} from '../../services/auth-service';
 import {GuideCategoryModel} from '../../models/db/api/guide-category-model';
 import {Events} from '@ionic/angular';
-import {DbApiModel} from '../../models/base/db-api-model';
 import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
-import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-list',
   templateUrl: 'list.page.html',
-  styleUrls: ['list.page.scss'],
+  styleUrls: ['list.page.scss']
 })
 export class ListPage implements OnInit {
   public guiders: GuiderModel[] = [];
   public guideCategories: GuideCategoryModel[] = [];
   public searchValue: string;
-
-
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
@@ -88,20 +83,29 @@ export class ListPage implements OnInit {
     }
   }
 
+  trackByFn(item, index) {
+    return item.id;
+  }
+
   ngOnInit() {
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
+      console.log('updating ' + this.guideCategoryBindingService.dbModelApi.TAG + ':update')
       this.findAllGuideCategories();
     });
     this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
+      console.log('updating ' + this.guideCategoryService.dbModelApi.TAG + ':update')
       this.findAllGuideCategories();
     });
     this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', (model) => {
+      console.log('updating ' + this.guideCategoryService.dbModelApi.TAG + ':create')
       this.findAllGuideCategories();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
+      console.log('updating ' + this.guiderService.dbModelApi.TAG + ':update')
       this.setGuideInfo();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
+      console.log('updating ' + this.guiderService.dbModelApi.TAG + ':create')
       this.setGuideInfo();
     });
     this.events.subscribe('network:online', (isNetwork) => {

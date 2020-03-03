@@ -15,16 +15,27 @@ export class UserService {
     constructor(private platform: Platform,
                 public events: Events,
                 private db: DbProvider,
-                private downloadService: DownloadService) {}
-
-    saveUser(data: UserDb) {
-        this.user.next(data);
+                private downloadService: DownloadService) {
     }
 
-    getUser() {
+    async saveUser(data: UserDb) {
+        await this.getUser();
+        if (!this.userDb) {
+            return false;
+        }
+        this.userDb.save();
+
+        return true;
+    }
+
+    setUser(userDb: UserDb) {
+        this.userDb = userDb;
+    }
+
+    getUser(): Promise<UserDb> {
         if (this.userDb) {
             return new Promise(resolve => {
-                resolve(true);
+                resolve(this.userDb);
             });
         }
 
@@ -33,10 +44,10 @@ export class UserService {
                 if (userDb) {
                     this.userDb = userDb;
 
-                    resolve(true);
+                    resolve(this.userDb);
                 }
 
-                resolve(false);
+                resolve(null);
             });
         });
     }

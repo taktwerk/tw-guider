@@ -100,7 +100,7 @@ export class GuideCategoryModel extends DbApiModel {
                     }
                 }
             }).catch((err) => {
-                console.log('guide category errror', err);
+                console.log('guide category error', err);
             });
         });
     }

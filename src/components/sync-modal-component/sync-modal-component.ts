@@ -8,9 +8,11 @@ import {HttpClient} from '../../services/http-client';
 import {AuthService} from '../../services/auth-service';
 import {DbProvider} from '../../providers/db-provider';
 import {SyncService} from '../../services/sync-service';
-import {DatePipe} from '@angular/common';
 import {Network} from '@ionic-native/network/ngx';
 import {debounceTime} from 'rxjs/operators';
+import {DatePipe} from '../../pipes/date-pipe/date-pipe';
+import {UserService} from '../../services/user-service';
+import {SyncMode} from '../synchronization-component/synchronization-component';
 
 /**
  * Generated class for the TodoPage page.
@@ -33,7 +35,7 @@ export class SyncModalComponent implements OnInit {
     public syncedItemsPercent = 0;
     public syncProgressStatus = 'not_sync';
     public isPrepareSynData = false;
-    public modeSync;
+    public modeSync = SyncMode.Manual;
     public userDb: UserDb;
     public syncAllItemsCount = 0;
     public isNetwork = false;
@@ -52,7 +54,8 @@ export class SyncModalComponent implements OnInit {
                 private events: Events,
                 private syncService: SyncService,
                 public network: Network,
-                public datepipe: DatePipe) {
+                public datepipe: DatePipe,
+                private userService: UserService) {
         this.isNetwork = (this.network.type !== 'none');
         this.initUser().then(() => {
             this.syncProgressStatus = this.userDb.userSetting.syncStatus;
@@ -68,6 +71,7 @@ export class SyncModalComponent implements OnInit {
     }
 
     stopSyncData() {
+        console.log('stopSyncData')
         this.apiSync.makeSyncPause();
     }
 
@@ -76,6 +80,7 @@ export class SyncModalComponent implements OnInit {
     }
 
     cancelSyncData() {
+        console.log('cancelSyncData sendSyncProgress');
         this.apiSync.sendSyncProgress('', true);
         return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
             if (isCanceled) {
@@ -91,20 +96,8 @@ export class SyncModalComponent implements OnInit {
     }
 
     protected initUser() {
-        if (this.userDb) {
-            return new Promise(resolve => {
-                resolve(true);
-            });
-        }
-
-        return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
-                if (userDb) {
-                    this.userDb = userDb;
-
-                    resolve(true);
-                }
-            });
+        return this.userService.getUser().then(result => {
+            this.userDb = result;
         });
     }
 
@@ -119,10 +112,11 @@ export class SyncModalComponent implements OnInit {
 
     ngOnInit() {
         this.syncService.syncMode.subscribe((result) => {
-            if (result === null) {
+            if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
                 return;
             }
             this.modeSync = result;
+            this.detectChanges();
         });
         this.apiSync.isStartSyncBehaviorSubject.subscribe(isSync => {
             this.isStartSync = isSync;
@@ -131,7 +125,9 @@ export class SyncModalComponent implements OnInit {
         this.apiSync.syncProgressStatus
             .pipe(debounceTime(200))
             .subscribe(syncProgressStatus => {
-                this.syncProgressStatus = syncProgressStatus;
+                if (syncProgressStatus) {
+                    this.syncProgressStatus = syncProgressStatus;
+                }
                 this.detectChanges();
             });
         this.apiSync.isPrepareSynData.subscribe(isPrepareSynData => {

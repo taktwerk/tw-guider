@@ -8,13 +8,8 @@ import {Platform, Events} from '@ionic/angular';
 import {BehaviorSubject} from 'rxjs';
 import {ApiService} from './api/base/api-service';
 import {DbApiModel} from '../models/base/db-api-model';
-
-import {GuiderService} from './api/guider-service';
 import {DownloadService} from '../services/download-service';
 import 'rxjs/add/observable/forkJoin';
-import {GuideCategoryService} from './api/guide-category-service';
-import {GuideCategoryBindingService} from './api/guide-category-binding-service';
-import {GuideStepService} from './api/guide-step-service';
 import {FeedbackService} from './api/feedback-service';
 import {Network} from '@ionic-native/network/ngx';
 
@@ -47,7 +42,8 @@ export class ApiPush {
         private events: Events,
         private feedbackService: FeedbackService,
         private downloadService: DownloadService,
-        private network: Network
+        private network: Network,
+        private appSetting: AppSetting
     ) {
         this.isStartPushBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.isAvailableForPushData = new BehaviorSubject<boolean>(false);
@@ -127,10 +123,6 @@ export class ApiPush {
             for (const key of Object.keys(this.apiServices)) {
                 // get registered api service for the current model
                 const service: ApiService = this.apiServices[key];
-                // let url = AppSetting.API_URL + service.loadUrl + '/batch';
-
-
-                // make POST request
                 const batchPromise = new Promise(resolve => {
                     service.prepareBatchPost().then((bodies) => {
                         if (bodies && bodies.length > 0) {
@@ -170,19 +162,17 @@ export class ApiPush {
                 this.isStartPushBehaviorSubject.next(false);
                 this.pushProgressStatus.next('progress');
                 this.isBusy = true;
-                let promises = [];
+                const promises = [];
                 Object.keys(allServicesBodies).forEach((modelKey) => {
-                    let service: ApiService = this.apiServices[modelKey];
-                    let url = AppSetting.API_URL + service.loadUrl + '/batch';
+                    const service: ApiService = this.apiServices[modelKey];
+                    const url = this.appSetting.getApiUrl() + service.loadUrl + '/batch';
 
                     allServicesBodies[modelKey].forEach((body) => {
                         if (!body) {
                             return;
                         }
-                        console.log('allServicesBodies', body);
 
                         const jsonBody = JSON.stringify(body);
-                        console.log('jsonBodyshe', jsonBody);
 
                         promises.push(new Promise((resolve) => {
                             if (this.pushProgressStatus.getValue() === 'failed') {
@@ -191,6 +181,7 @@ export class ApiPush {
                             }
                             return this.http.post(url, jsonBody)
                                 .subscribe((data) => {
+                                    console.log('show me data', data);
                                     if (this.pushProgressStatus.getValue() === 'failed') {
                                         this.isBusy = false;
                                         resolve(false);
@@ -210,21 +201,26 @@ export class ApiPush {
                                         resolve(false);
                                         return;
                                     }
-                                    console.log('not ended');
                                     const record = data[0];
-                                    //get model by local id and update received primary key from api
+                                    // get model by local id and update received primary key from api
                                     service.dbModelApi.findById(record._id, true).then((dbModel) => {
                                         if (!dbModel) {
                                             return;
                                         }
-                                        //type parse DbBaseModel -> DbApiModel
-                                        let dbModelApi = <DbApiModel>dbModel;
-                                        //load id from api
-                                        dbModelApi.idApi = record[dbModelApi.apiPk];
+                                        const dbModelApi = service.newModel();
+                                        dbModel.idApi = record[dbModelApi.apiPk];
+                                        dbModelApi.loadFromApiToCurrentObject(dbModel);
+                                        dbModelApi.loadFromApiToCurrentObject(record);
                                         dbModelApi.is_synced = true;
-                                        //update isSynced = true and save with special update-condition
-                                        dbModelApi.save(false, true, dbModelApi.COL_ID + '=' + record._id).then((res) => {
-                                            service.pushFiles(dbModelApi).then((result) => {
+                                        dbModelApi.save(
+                                            false,
+                                            true,
+                                            dbModelApi.COL_ID + '=' + record._id,
+                                            false
+                                        ).then(async (res) => {
+                                            this.userDb.userSetting.appDataVersion++;
+                                            await this.userDb.save();
+                                            service.pushFiles(dbModel, this.userDb).then((result) => {
                                                 pushedItemsCount++;
                                                 const savedDataPercent = Math.round((pushedItemsCount / countOfAllChangedItems) * 100);
                                                 this.pushedItemsCount.next(pushedItemsCount);
@@ -287,23 +283,22 @@ export class ApiPush {
             }
             this.isBusy = true;
 
-            //iterate over all services
-            for (let key of Object.keys(this.apiServices)) {
-                //get registered api service for the current model
-                let service: ApiService = this.apiServices[key];
-                let url = AppSetting.API_URL + service.loadUrl + '/batch';
-                //make POST request
+            // iterate over all services
+            for (const key of Object.keys(this.apiServices)) {
+                // get registered api service for the current model
+                const service: ApiService = this.apiServices[key];
+                const url = this.appSetting.getApiUrl() + service.loadUrl + '/batch';
                 service.prepareBatchPost().then((bodies) => {
                     if (!bodies || bodies.length <= 0) {
                         return;
                     }
-                    let jsonBody = JSON.stringify(bodies);
+                    const jsonBody = JSON.stringify(bodies);
                     this.http.post(url, jsonBody)
                         .map(res => res.json())
                         .subscribe((data) => {
                             //iterate over all received records
                             Object.keys(data).forEach(function (key) {
-                                let record =  data[key];
+                                let record = data[key];
                                 if (record.errors) {
                                     return;
                                 }
@@ -357,13 +352,10 @@ export class ApiPush {
         for (let key of Object.keys(this.apiServices)) {
           //get registered api service for the current model
           let service: ApiService = this.apiServices[key];
-          // let url = AppSetting.API_URL + service.loadUrl + '/batch';
-
-          //make POST request
           const batchPromise = new Promise(resolve => {
             service.prepareBatchPost().then((bodies) => {
               if (bodies && bodies.length > 0) {
-                let resolveObject = {};
+                const resolveObject = {};
                 resolveObject[key] = bodies;
                 resolve(resolveObject);
               } else {
@@ -386,39 +378,39 @@ export class ApiPush {
           if (!Object.keys(allServicesBodies).length) {
             return;
           }
-          let url = AppSetting.API_URL + '/sync/batch-all';
-          let jsonBody = JSON.stringify(allServicesBodies);
+          const url = this.appSetting.getApiUrl() + '/sync/batch-all';
+          const jsonBody = JSON.stringify(allServicesBodies);
           this.http.post(url, jsonBody)
             .map(res => res.json())
             .subscribe((models) => {
-              //iterate over all received records
+              // iterate over all received records
               Object.keys(models).forEach((modelKey) => {
                 Object.keys(models[modelKey]).forEach((key) => {
-                  let record =  models[modelKey][key];
+                  const record =  models[modelKey][key];
                   if (record.errors) {
                     console.error('ApiSync', 'push', 'Error', {id: key, errors: record.errors});
                     return;
                   }
-                  let modelService: ApiService = this.apiServices[modelKey];
-                  //get model by local id and update received primary key from api
+                  const modelService: ApiService = this.apiServices[modelKey];
+                  // get model by local id and update received primary key from api
                   modelService.dbModelApi.findById(record._id, true).then((dbModel) => {
                     if (!dbModel) {
                       return;
                     }
-                    //type parse DbBaseModel -> DbApiModel
-                    let dbModelApi = <DbApiModel>dbModel;
-                    //load id from api
+                    // type parse DbBaseModel -> DbApiModel
+                    const dbModelApi = <DbApiModel> dbModel;
+                    // load id from api
                     dbModelApi.idApi = record[dbModelApi.apiPk];
                     dbModelApi.is_synced = true;
-                    //update isSynced = true and save with special update-condition
+                    // update isSynced = true and save with special update-condition
                     dbModelApi.save(false, true, dbModelApi.COL_ID + '=' + record._id).then((res) => {
                       if (res) {
-                        //console.info('ApiSync', 'push', 'record', 'saved', record);
+                        // console.info('ApiSync', 'push', 'record', 'saved', record);
                         modelService.dbModelApi.findById(record._id, true).then((m) => {
-                          //console.info('ApiSync', 'push', 'record', 'saved', 'object', m);
+                          // console.info('ApiSync', 'push', 'record', 'saved', 'object', m);
                         });
 
-                        //console.warn('ApiSync', 'Push', 'Pushing and syncing', dbModelApi);
+                        // console.warn('ApiSync', 'Push', 'Pushing and syncing', dbModelApi);
                         modelService.pushFiles(dbModelApi);
                       } else {
                         console.warn('ApiSync', 'push', 'record', 'could not save record', record);

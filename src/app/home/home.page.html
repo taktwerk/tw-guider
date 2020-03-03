@@ -4,17 +4,42 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      {{ 'home.header' | translate:params }}
+      {{ 'start.header' | translate:params }}
     </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
-    <language-selector-component slot="primary"></language-selector-component>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-card class="welcome-card">
+<ion-content [ngClass]="{'bg-camera': isScanning}">
+  <div class="ion-text-center">
+    <ion-button *ngIf="isScanning"
+                id="close-scanner-button"
+                (click)="closeScanner()"
+                color="warning"
+    >
+      {{ 'qr.Close Scanner' | translate:params }}
+    </ion-button>
+  </div>
+  <ion-card *ngIf="!isScanning" [ngClass]="{'bg-none': isScanning}">
     <ion-card-header>
-      <ion-card-subtitle>{{ 'home.title' | translate:params }}</ion-card-subtitle>
+      <p>
+        {{ 'qr.The Guider app enables the display of digital instructions (assembly, training, etc.)' | translate:params }}
+      </p>
+      <p>
+        {{ 'qr.The app only works with a customer account. Please contact taktwerk GmbH for this' | translate:params }}: <a href="mailto:support@taktwerk.ch">support@taktwerk.ch</a>
+      </p>
+      <div class="ion-text-center">
+        <h1>
+          {{ 'qr.Setup' | translate:params }}
+        </h1>
+        <p>{{ 'qr.Scan the received one' | translate:params }}<strong>
+          {{ 'qr.QR-Code' | translate:params }}</strong>
+        </p>
+        <ion-button size="large" expand="full" (click)="scanQrcode()">
+          <ion-icon name="qr-scanner"></ion-icon>
+          {{ 'qr.QR-Code' | translate:params }}
+        </ion-button>
+      </div>
     </ion-card-header>
   </ion-card>
 </ion-content>

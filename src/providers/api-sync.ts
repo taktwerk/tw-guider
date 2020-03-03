@@ -18,6 +18,8 @@ import {Network} from '@ionic-native/network/ngx';
 import {GuideAssetService} from './api/guide-asset-service';
 import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
 import {FeedbackService} from './api/feedback-service';
+import {ApiPush} from './api-push';
+import {UserService} from '../services/user-service';
 
 @Injectable()
 /**
@@ -70,7 +72,9 @@ export class ApiSync {
         private guideAssetPivotService: GuideAssetPivotService,
         private feedbackService: FeedbackService,
         private downloadService: DownloadService,
-        private network: Network
+        private network: Network,
+        private appSetting: AppSetting,
+        private userService: UserService
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);
@@ -97,14 +101,8 @@ export class ApiSync {
      * Loads the current logged in user.
      */
     private init(): Promise<any> {
-        if (this.userDb) {
-          return new Promise(resolve => {
-              resolve(true);
-          });
-        }
-
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
+            this.userService.getUser().then(userDb => {
                 if (userDb) {
                     this.userDb = userDb;
                     if (
@@ -140,6 +138,7 @@ export class ApiSync {
 
     public syncMustBeEnd(): boolean {
         if (this.isOffNetwork()) {
+            console.log('syncMustBeEnd is off network');
             return true;
         }
         if (this.willMakeCancel()) {
@@ -166,8 +165,9 @@ export class ApiSync {
      * @returns {Promise<T>}
      */
     private pull(status = 'progress'): Promise<any> {
-        return new Promise(resolve => {
+        return new Promise(async (resolve) => {
             if (this.isOffNetwork() || this.isBusy) {
+                console.log('is off network in just pull');
                 resolve(false);
                 return;
             }
@@ -180,7 +180,7 @@ export class ApiSync {
             }
             this.http.get(this.getSyncUrl()).subscribe(async (data) => {
                 if (!data.syncProcessId) {
-                    this.failSync('There was no property syncProcessId in the response of ' + AppSetting.API_SYNC_URL);
+                    this.failSync('There was no property syncProcessId in the response');
                     resolve(false);
                     return;
                 }
@@ -193,6 +193,10 @@ export class ApiSync {
                 const isSavedSyncData = this.saveModels(this.syncData);
                 if (!isSavedSyncData) {
                     resolve(false);
+                } else {
+                    this.userDb.userSetting.appDataVersion = data.version;
+                    this.userDb.save();
+                    resolve(true);
                 }
             }, (err) => {
                 this.failSync(err);
@@ -253,14 +257,14 @@ export class ApiSync {
     }
 
     public checkAvailableChanges() {
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
+            await this.init();
             if (this.isAvailableForSyncData.getValue()) {
                 resolve(true);
                 return;
             }
-            if (this.isOffNetwork()) {
-                this.isAvailableForSyncData.next(false);
-
+            if (this.network.type === 'none') {
+                console.log('isOffNetwork in checkAvailableChanges')
                 resolve(false);
                 return;
             }
@@ -340,6 +344,7 @@ export class ApiSync {
         }
 
         return this.userDb.save().then(() => {
+            console.log('saveSyncProgress sendSyncProgress');
             this.sendSyncProgress();
             if (this.isAllItemsSynced()) {
                 this.isBusy = false;
@@ -359,6 +364,7 @@ export class ApiSync {
         this.userDb.userSetting.syncStatus = 'failed';
         this.userDb.userSetting.lastSyncProcessId = null;
         await this.userDb.save();
+        console.log('failSync sendSyncProgress');
         this.sendSyncProgress(error);
         this.isStartSyncBehaviorSubject.next(false);
         this.isBusy = false;
@@ -366,12 +372,12 @@ export class ApiSync {
 
     public sendSyncProgress(description?: string, isCancel = false) {
         return new Promise(resolve => {
-            if (!this.userDb.userSetting.lastSyncProcessId) {
+            console.log('sendSyncProgress');
+            if (!this.userDb.userSetting.lastSyncProcessId || this.network.type === 'none') {
                 resolve(false);
                 return;
             }
-
-            let url = AppSetting.API_SYNC_URL + '/save-progress';
+            let url = this.appSetting.getApiUrl() + '/sync/save-progress';
             url += '?syncProcessId=' + this.userDb.userSetting.lastSyncProcessId;
 
             let data = null;
@@ -411,10 +417,15 @@ export class ApiSync {
     }
 
     private getSyncUrl(isCheckAvailableData = false): string {
-        let url = AppSetting.API_SYNC_URL;
+        let url = this.appSetting.getApiUrl() + '/sync';
 
         if (isCheckAvailableData) {
             url += '/check-available-data';
+            if (this.userDb.userSetting.appDataVersion) {
+                url += '?appDataVersion=' + this.userDb.userSetting.appDataVersion;
+            }
+
+            return url;
         }
 
         if (this.userDb.userSetting.lastSyncedAt) {
@@ -426,11 +437,6 @@ export class ApiSync {
             url += !this.userDb.userSetting.lastSyncedAt ? '?' : '&';
             url += 'syncProcessId=' + this.userDb.userSetting.lastSyncProcessId;
         }
-        // if (this.userDb.userSetting.syncLastElementNumber && this.syncProgressStatus.getValue() === 'resume') {
-        //     if (this.userDb.userSetting.lastSyncedAt) {
-        //         url = url + '&lastUpdatedNumber=' + this.userDb.userSetting.syncLastElementNumber;
-        //     }
-        // }
 
         return url;
     }
@@ -448,6 +454,7 @@ export class ApiSync {
 
     public isOffNetwork(): boolean {
         if (this.network.type === 'none') {
+            console.log('is off network call makeSyncPause');
             this.makeSyncPause().then(() => {
                 this.isBusy = false;
             });
@@ -465,6 +472,7 @@ export class ApiSync {
             this.userDb.userSetting.syncStatus = 'pause';
             this.isPrepareSynData.next(false);
             this.userDb.save().then(() => {
+                console.log('makeSyncPause sendSyncProgress');
                 this.sendSyncProgress();
                 resolve(true);
             });
@@ -474,6 +482,7 @@ export class ApiSync {
     public makeSyncProcess(syncStatus = 'progress') {
         return new Promise(resolve => {
             if (this.isOffNetwork() || this.isBusy) {
+                console.log('makeSyncProcess isOffNetwork');
                 resolve(false);
                 return;
             }

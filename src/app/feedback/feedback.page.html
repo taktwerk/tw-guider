@@ -1,3 +1,8 @@
+<style>
+    .isRed {
+        color: red;
+    }
+</style>
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
@@ -12,95 +17,74 @@
             </ion-button>
         </ion-buttons>
         <sync-spinner-component slot="primary"></sync-spinner-component>
-        <language-selector-component slot="primary"></language-selector-component>
     </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-    <div *ngIf="feedbackList.length">
-        <h2>
-            {{ 'feedback.Feedback list' | translate:params }}
-        </h2>
-        <ion-card *ngFor="let feedback of feedbackList"
-                  class="ion-padding feedback-description"
-        >
-            <div>
-                {{ feedback.description }}
-            </div>
-            <div *ngIf="feedback.attached_file">
-                <div style="width: 70px;height: 70px;">
-                    <img *ngIf="feedback.isImageAttachedFile()"
-                         (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME, feedback.attached_file)"
-                         [src]="feedback.getFile()"
-                    >
-                    <ion-icon name="videocam"
-                              class="videocam"
-                              slot="start"
-                              *ngIf="feedback.isVideoAttachedFile()"
-                              (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME)"
-                    >
-                    </ion-icon>
-                    <ion-icon *ngIf="!feedback.isImageAttachedFile() && !feedback.isVideoAttachedFile()"
-                              class="cloud-upload"
-                              name="cloud-upload"
-                    >
-                    </ion-icon>
-                </div>
-                <ion-item>
-                    {{ feedback.attached_file }}
-                </ion-item>
-            </div>
-            <ion-fab-button *ngIf="feedback.isOpenStatus()"
-                            (click)="changeEditModel(feedback)"
-                            class="edit-fab-button"
-                            color="success"
-            >
-                <ion-icon name="create"></ion-icon>
-            </ion-fab-button>
-        </ion-card>
+<ion-content>
+    <div class="list-spinner" *ngIf="feedbackList.length > 30"></div>
+    <ion-virtual-scroll [items]="feedbackList" [approxItemHeight]="'79px'" [itemHeight]="itemHeightFn" [trackBy]="trackByFn">
+<!--    <virtual-scroller *ngIf="feedbackList.length" #scroll [items]="feedbackList" enableUnequalChildrenSizes="true" bufferAmount="10">-->
+<!--        <ion-list *virtualItem="let feedback;" style="opacity:1;">-->
+<!--        <ion-list *ngFor="let feedback  of scroll.viewPortItems" style="display: block;width: 100%;height: 100px;">-->
+            <ion-item *virtualItem="let feedback;" style="opacity:1;">
+                <ion-thumbnail slot="start">
+                    <div *ngIf="feedback.attached_file">
+                        <div style="width: 70px;height: 70px;">
+                            <ion-icon name="musical-notes"
+                                      class="videocam-icon"
+                                      slot="start"
+                                      *ngIf="feedback.isAudioFile()"
+                            >
+                            </ion-icon>
+                            <img *ngIf="feedback.isImageFile()"
+                                 (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME, feedback.attached_file)"
+                                 [src]="feedback.getFile()"
+                            >
+                            <ion-icon name="videocam"
+                                      class="videocam-icon"
+                                      slot="start"
+                                      *ngIf="feedback.isVideoFile()"
+                                      (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME)"
+                            >
+                            </ion-icon>
+                            <ion-icon *ngIf="!feedback.isExistFormatFile()"
+                                      class="cloud-upload"
+                                      name="cloud-upload"
+                            >
+                            </ion-icon>
+                        </div>
+                        <ion-item>
+                            {{ feedback.attached_file }}
+                        </ion-item>
+                    </div>
+                </ion-thumbnail>
+                <ion-label>
+                    <h2>
+                        {{ (feedback.local_created_at || feedback.created_at) | datePipe: 'dd.M.yyyy H:m:s' }}
+                        <span *ngIf="feedback.title"> - {{ feedback.title }}</span>
+                    </h2>
+                    <p>
+                        {{ feedback.description }}
+                    </p>
+                </ion-label>
+                <ion-button slot="end" fill="clear"
+                            *ngIf="feedback.isOpenStatus()"
+                            [routerLink]="['save/' + feedback.idApi]"
+                >
+                    <ion-icon slot="icon-only" name="create"></ion-icon>
+                </ion-button>
+            </ion-item>
+<!--        </ion-list>-->
+<!--    </virtual-scroller>-->
+    </ion-virtual-scroll>
+    <div style="height: 70px;">
     </div>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed"
+             [routerLink]="['save']"
+    >
+        <ion-fab-button>
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
 </ion-content>
-<ion-footer>
-        <ion-grid>
-            <ion-row>
-                <ion-col style="text-align: center;">
-                    {{ 'feedback.Description' | translate:params }}
-                </ion-col>
-                <ion-col>
-                    <ion-button expand="block" color="success" (click)="changeEditModel()" style="height: 24px;margin-top:0;">
-                        <ion-icon name="add"></ion-icon>
-                    </ion-button>
-                </ion-col>
-                <ion-col>
-                    <ion-button expand="block" (click)="addFile()" style="height: 24px;margin-top:0;">
-                        <ion-icon name="folder"></ion-icon>
-                    </ion-button>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-        <ion-item>
-            <ion-textarea rows="4" cols="33" name="description" [(ngModel)]="model.description" style="display: block;"></ion-textarea>
-        </ion-item>
-    <div *ngIf="model.attached_file">
-        <div style="width: 70px;height: 70px;">
-            <img *ngIf="model.isImageAttachedFile()"
-                 (click)="openFile(model.getApiFilePath(), model.getLocalFilePath(), model.attached_file)"
-                 [src]="model.getFile()"
-            >
-            <ion-icon name="videocam"
-                      class="videocam"
-                      slot="start"
-                      *ngIf="model.isVideoAttachedFile()"
-                      (click)="openFile(model.getApiFilePath(), model.getLocalFilePath())"
-            >
-            </ion-icon>
-            <ion-icon class="cloud-upload" *ngIf="!model.isImageAttachedFile() && !model.isVideoAttachedFile()" name="cloud-upload"></ion-icon>
-        </div>
-        <ion-item>
-            {{ model.attached_file }}
-        </ion-item>
-    </div>
-        <ion-button expand="block" (click)="save($event)">
-            {{ 'send' | translate:params }}
-        </ion-button>
-</ion-footer>
+

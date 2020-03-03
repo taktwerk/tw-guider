@@ -1,5 +1,5 @@
 import {Platform, Events} from '@ionic/angular';
-import {DbApiModel} from '../../base/db-api-model';
+import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
@@ -46,15 +46,12 @@ export class GuiderModel extends DbApiModel {
     static COL_TEMPLATE_ID = 'template_id';
     static COL_PROTOCOL_TEMPLATE_ID = 'protocol_template_id';
 
-    public downloadMapping: any = [
-        [
-            // Name of the file
-            GuiderModel.COL_PREVIEW_FILE,
-            // Url of the file
-            GuiderModel.COL_API_PREVIEW_FILE_PATH,
-            // Local path
-            GuiderModel.COL_LOCAL_PREVIEW_FILE
-        ]
+    public downloadMapping: FileMapInModel[] = [
+        {
+            name: GuiderModel.COL_PREVIEW_FILE,
+            url: GuiderModel.COL_API_PREVIEW_FILE_PATH,
+            localPath: GuiderModel.COL_LOCAL_PREVIEW_FILE
+        }
     ];
 
     /** @inheritDoc */

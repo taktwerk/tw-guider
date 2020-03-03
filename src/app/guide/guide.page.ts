@@ -7,14 +7,13 @@ import {GuideStepModel} from '../../models/db/api/guide-step-model';
 import { File } from '@ionic-native/file/ngx';
 import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import {Events, ModalController, IonSlides} from '@ionic/angular';
+import {Events, ModalController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {GuideAssetService} from '../../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-service';
 import {GuideAssetTextModalComponent} from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
 import {DownloadService} from '../../services/download-service';
-import {ApiSync} from '../../providers/api-sync';
 
 @Component({
   selector: 'app-guide',
@@ -27,7 +26,6 @@ export class GuidePage implements OnInit {
   public currentStepNumber: number = 1;
   public guideSteps: GuideStepModel[] = [];
   public guideAssets: GuideAssetModel[] = [];
-  public guideStepSlider;
   public slideOpts = {
     initialSlide: 0,
     speed: 400,
@@ -43,7 +41,6 @@ export class GuidePage implements OnInit {
       private file: File,
       private streamingMedia: StreamingMedia,
       private photoViewer: PhotoViewer,
-      private apiSync: ApiSync,
       public events: Events,
       public authService: AuthService,
       public changeDetectorRef: ChangeDetectorRef,
@@ -109,7 +106,6 @@ export class GuidePage implements OnInit {
   }
 
   ngOnInit() {
-    this.apiSync.syncData
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     if (this.guideId) {
       this.guiderService.getById(this.guideId).then((result) => {

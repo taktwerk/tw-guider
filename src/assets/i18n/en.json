@@ -4,9 +4,12 @@
   "send": "Send",
   "Logout": "Logout",
   "Wrong password!": "Wrong password!",
-  "home": {
-    "header":"Home",
-    "title": "Home page of the Guider"
+  "save": "Save",
+  "delete": "Delete",
+  "title": "Title",
+  "start": {
+    "header":"Start",
+    "title": "Start page of the Guider"
   },
   "sync-modal": {
     "header": "Sync Status",
@@ -35,7 +38,11 @@
   "feedback": {
     "header": "Feedback",
     "Feedback list": "Feedback list",
-    "Description": "Description"
+    "Description": "Description",
+    "Feedback will be sent as soon as the Internet appears": "Feedback will be sent as soon as the Internet appears",
+    "Feedback was sent": "Feedback was sent",
+    "Feedback was deleted": "Feedback was deleted",
+    "Are you sure you want to delete this feedback?": "Are you sure you want to delete this feedback?"
   },
   "guide": {
     "header": "Guide:",
@@ -45,7 +52,8 @@
   "profile": {
     "header": "Profile of {{ name }}",
     "Profile": "Profile",
-    "ID": "ID"
+    "ID": "ID",
+    "Name": "Name"
   },
   "synchronization-component": {
     "Sync Modes": "Sync Modes",
@@ -77,6 +85,21 @@
     "Validation error": "Validation error",
     "Wrong password or login!": "Wrong password or login!",
     "Wrong password!": "Wrong password!",
-    "You are not authorized.": "You are not authorized."
+    "You are not authorized.": "You are not authorized.",
+    "QR-code has wrong information": "QR-code has wrong information",
+    "max_characters": "The maximum number of characters in a {{property_name}} should be {{max}} characters.",
+    "Title is required": "Title is required"
+  },
+  "qr": {
+    "Application was successfully configured": "Application was successfully configured",
+    "The Guider app enables the display of digital instructions (assembly, training, etc.)": "The Guider app enables the display of digital instructions (assembly, training, etc.)",
+    "The app only works with a customer account. Please contact taktwerk GmbH for this": "The app only works with a customer account. Please contact taktwerk GmbH for this",
+    "Scan the received one": "Scan the received one",
+    "QR-Code": "QR-Code",
+    "Setup": "Setup",
+    "Close Scanner": "Close Scanner"
+  },
+  "language-selector": {
+    "Language": "Language"
   }
 }

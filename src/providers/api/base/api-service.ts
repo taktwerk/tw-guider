@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import {DbApiModel} from "../../../models/base/db-api-model";
-import {HttpClient} from "../../../services/http-client";
-import {AppSetting} from "../../../services/app-setting";
+import {DbApiModel} from '../../../models/base/db-api-model';
+import {HttpClient} from '../../../services/http-client';
+import {AppSetting} from '../../../services/app-setting';
 import {Events} from '@ionic/angular';
+import {UserDb} from '../../../models/db/user-db';
 
 @Injectable()
 export abstract class ApiService {
     /** holds all loaded model instances together */
     public data: DbApiModel[];
+    // tslint:disable-next-line:jsdoc-format
     /** holds the current "query" data **/
     public currentData: DbApiModel[];
 
@@ -17,16 +19,16 @@ export abstract class ApiService {
     /** new instance of a DbHelperApi Model to load records into model instances */
     abstract dbModelApi: DbApiModel;
 
-    private isReady: boolean = true;
+    private isReady = true;
 
     /**
      * Version of the data
-     * @type {number}
      */
-    public dataVersion: number = 0;
+    public dataVersion = 0;
 
-    constructor(public http: HttpClient,
-                public events: Events) {
+    protected constructor(public http: HttpClient,
+                          public events: Events,
+                          public appSetting: AppSetting) {
         this.data = [];
         this.currentData = [];
     }
@@ -59,13 +61,13 @@ export abstract class ApiService {
      * @returns {any}
      */
     private loadApi(forceReload?: boolean, save?: boolean): Promise<any[]> {
-        //return current data if service is busy
+        // return current data if service is busy
         if (!this.isReady) {
             return Promise.resolve(this.data);
         }
 
-        //clean data if forceReload required
-        if (forceReload) this.data = [];
+        // clean data if forceReload required
+        if (forceReload) { this.data = []; }
 
         if (this.data.length > 0) {
             // already loaded data
@@ -75,14 +77,14 @@ export abstract class ApiService {
         // don't have the data yet
         return new Promise(resolve => {
             this.isReady = false;
-            this.http.get(AppSetting.API_URL + this.loadUrl)
+            this.http.get(this.appSetting.getApiUrl() + this.loadUrl)
                 .map(res => res.json())
                 .subscribe(data => {
                     this.isReady = true;
-                    for (let record of data) {
-                        let obj = this.dbModelApi.loadFromApi(record);
+                    for (const record of data) {
+                        const obj = this.dbModelApi.loadFromApi(record);
                         this.data.push(obj);
-                        if (save) obj.save();
+                        if (save) { obj.save(); }
                     }
                     resolve(this.data);
                 });
@@ -100,10 +102,9 @@ export abstract class ApiService {
           )
             .then((models) => {
               if (!models || models.length === 0) {
-                //console.warn('ApiService', 'saveApi', 'no not synced data found');
                 resolve(false);
               } else {
-                this.dbModelApi.prepareBatchPost(<DbApiModel[]>models).then((res) => {
+                this.dbModelApi.prepareBatchPost(<DbApiModel[]> models).then((res) => {
                   resolve(res);
                 });
               }
@@ -137,7 +138,7 @@ export abstract class ApiService {
      * @param {DbApiModel} model
      */
     public removeFromList(model: DbApiModel) {
-        let indexApi = this.data.findIndex(record => model.idApi && record.idApi === model.idApi);
+        const indexApi = this.data.findIndex(record => model.idApi && record.idApi === model.idApi);
         let indexDB = this.data.findIndex(record => model.id && record.id === model.id);
         if (indexApi !== -1) {
             this.data.splice(indexApi, 1);
@@ -170,12 +171,14 @@ export abstract class ApiService {
             // No sync with the API yet? Only local? Delete it
             if (model[model.COL_ID_API] == null) {
                 model.remove().then(res => {
+                    model.deleteAllFiles();
                     this.removeFromList(model);
                     resolve(res);
                 });
             } else {
                 model[model.COL_DELETED_AT] = model[model.COL_LOCAL_DELETED_AT] = new Date();
                 model.save().then(res => {
+                    model.deleteAllFiles();
                     resolve(res);
                 });
             }
@@ -186,11 +189,12 @@ export abstract class ApiService {
      * Sync the files of a model. Download or upload new files.
      *
      * @param {DbApiModel} model
+     * @param userForSaving
      * @returns {boolean}
      */
-    public pushFiles(model: DbApiModel): Promise<boolean> {
+    public pushFiles(model: DbApiModel, userForSaving?: UserDb): Promise<boolean> {
         return new Promise((resolve) => {
-          if (/*model.platform.is('core') || */model.platform.is('mobileweb')) {
+          if (model.platform.is('mobileweb')) {
             resolve(false);
             return;
           }
@@ -199,23 +203,27 @@ export abstract class ApiService {
             resolve(false);
             return;
           }
-          const url = AppSetting.API_URL + this.loadUrl + '/' + model.idApi + '/upload';
+          const url = this.appSetting.getApiUrl() + this.loadUrl + '/' + model.idApi + '/upload';
           const authToken = this.http.getAuthorizationToken();
           const uploadFilePromises = [];
-          for (let fields of model.downloadMapping) {
+          for (const fields of model.downloadMapping) {
             // If we have a local path but no api path, we need to upload the file!
-            if (model[fields[2]] && !model[fields[1]]) {
-              const fieldUrl = url + '?fileAttribute=' + fields[0];
+            if (model[fields.localPath] && !model[fields.url]) {
+              const fieldUrl = url + '?fileAttribute=' + fields.name;
               uploadFilePromises.push(
                   model.downloadService.startUpload(
                     model.TABLE_NAME,
-                    fields[0],
-                    model[fields[0]],
-                    model[fields[2]],
+                    fields.name,
+                    model[fields.name],
+                    model[fields.localPath],
                     fieldUrl,
                     authToken
                   )
                 .then((result) => {
+                  if (userForSaving) {
+                      userForSaving.userSetting.appDataVersion++;
+                      userForSaving.save();
+                  }
                   resolve(result);
                 }).catch((err) => {
                       console.log('upload file', err);

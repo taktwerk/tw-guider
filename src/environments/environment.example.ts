@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://192.168.0.180:8015/api/v1',
-  apiSyncUrl: 'http://192.168.0.180:8015/api/v1/sync',
+  apiUrlPath: '/api/v1',
+  taktwerk: 'taktwerk',
   dbName: 'guider'
 };
 

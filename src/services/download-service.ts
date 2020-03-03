@@ -1,4 +1,4 @@
-import {Injectable, SecurityContext} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Platform} from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
@@ -7,6 +7,12 @@ import {HttpClient, HttpHeaders as Headers} from '@angular/common/http';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
 import {finalize} from 'rxjs/operators';
 import {DomSanitizer} from '@angular/platform-browser';
+import {FileChooser} from '@ionic-native/file-chooser/ngx';
+import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
+import {FilePath} from '@ionic-native/file-path/ngx';
+import {MediaCapture} from '@ionic-native/media-capture/ngx';
+import {Camera} from '@ionic-native/camera/ngx';
+import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
 
 /**
  * Download file class
@@ -29,13 +35,25 @@ export class DownloadService {
      * @param webview
      * @param {Toast} toast
      * @param domSanitizer
+     * @param fileChooser
+     * @param filePicker
+     * @param filePath
+     * @param mediaCapture
+     * @param camera
+     * @param videoEditor
      */
     constructor(public http: HttpClient,
                 public platform: Platform,
                 public file: File,
                 public webview: WebView,
                 private toast: Toast,
-                private domSanitizer: DomSanitizer
+                private domSanitizer: DomSanitizer,
+                private fileChooser: FileChooser,
+                private filePicker: IOSFilePicker,
+                private filePath: FilePath,
+                private mediaCapture: MediaCapture,
+                private camera: Camera,
+                private videoEditor: VideoEditor
     ) {
         this.pushProgressFilesInfo = new BehaviorSubject<any>({});
     }
@@ -174,13 +192,16 @@ export class DownloadService {
                 type: file.type
             });
             formData.append(fileKey, imgBlob, file.name);
-            this.uploadImageData(formData, url);
+            this.uploadImageData(formData, url, authToken);
         };
         reader.readAsArrayBuffer(file);
     }
 
-    async uploadImageData(formData: FormData, url: string) {
-        this.http.post(url, formData)
+    async uploadImageData(formData: FormData, url: string, authToken: string) {
+        const headers = new Headers({
+            'X-Auth-Token': authToken
+        });
+        this.http.post(url, formData, {headers: headers})
             .pipe(
                 finalize(() => {
                     // loading.dismiss();
@@ -205,9 +226,7 @@ export class DownloadService {
         // Web
         if (/*this.platform.is('core') || */this.platform.is('mobileweb')) {
             return apiPath;
-        }
-        // App
-        else {
+        } else {
             return localPath;
         }
     }
@@ -220,19 +239,14 @@ export class DownloadService {
      * @param {string} modelName
      * @returns {Promise<string | boolean>}
      */
-    public copy(
-        fullPath: string,
-        modelName: string
-    ): Promise< string | boolean >
-    {
+    public copy(fullPath: string, modelName: string): Promise< string > {
         return new Promise(resolve => {
-            let d = new Date();
-            let correctPath = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
-            let currentName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
-            let currentExt = fullPath.substring(fullPath.lastIndexOf('.') + 1, fullPath.length);
-
-            let newFilePath = this.file.dataDirectory + modelName;
-            let newFileName = d.getTime() + "." + currentExt;
+            const date = new Date();
+            const correctPath = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
+            const currentName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
+            const currentExt = fullPath.substring(fullPath.lastIndexOf('.') + 1, fullPath.length);
+            const newFilePath = this.file.dataDirectory + modelName;
+            const newFileName = date.getTime() + '.' + currentExt;
 
             this.checkDir(modelName).then(
                 suc => {
@@ -240,14 +254,14 @@ export class DownloadService {
                         if (success) {
                             resolve(newFilePath + '/' + newFileName);
                         } else {
-                            resolve(false);
+                            resolve('');
                         }
                     }, error => {
-                        resolve(false);
+                        resolve('');
                     });
                 },
                 err => {
-                    resolve(false);
+                    resolve('');
                 });
         });
     }
@@ -345,6 +359,7 @@ export class DownloadService {
             let fileName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
 
             this.file.removeFile(path, fileName).then(success => {
+                console.log('is removed file', success);
             }, error => {
                 console.error('DownloadService', 'deleteFile', path, fileName, error);
             });
@@ -355,10 +370,88 @@ export class DownloadService {
         return this.file.dataDirectory + modelName + '/' + path;
     }
 
+    public getWebviewFileSrc(path) {
+        return this.webview.convertFileSrc(path);
+    }
+
     public getSanitizedFileUrl(path, modelName) {
         path = this.getNativeFilePath(path, modelName);
-        const convertFileSrc = this.webview.convertFileSrc(path);
+        const convertFileSrc = this.getWebviewFileSrc(path);
 
         return this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
+    }
+
+    public async chooseFile() {
+        if (this.platform.is('ios')) {
+            if (!this.filePicker) {
+                throw new Error('IOSFilePicker plugin is not defined');
+            }
+            return this.filePicker.pickFile();
+        } else {
+            if (!this.fileChooser) {
+                throw new Error('FileChooser plugin is not defined');
+            }
+            const uri = await this.fileChooser.open();
+
+            return this.getResolvedNativeFilePath(uri);
+        }
+    }
+
+    public async recordVideo() {
+        if (!this.mediaCapture) {
+            throw new Error('MediaCapture plugin is not defined');
+        }
+        const videoFile = await this.mediaCapture.captureVideo({limit: 1});
+        if (!videoFile || !videoFile[0]) {
+            throw new Error('Video was not uploaded.');
+        }
+        const fullPath = videoFile[0].fullPath;
+
+        return this.getResolvedNativeFilePath(fullPath);
+    }
+
+    public async makeVideoThumbnail(videoFileUri) {
+        const option: CreateThumbnailOptions = {
+            fileUri: videoFileUri,
+            width: 160,
+            height: 206,
+            atTime: 1,
+            outputFileName: 'sample'
+        };
+        let videoThumbnailPath = await this.videoEditor.createThumbnail(option);
+        if (videoThumbnailPath) {
+            videoThumbnailPath = 'file://' +  videoThumbnailPath;
+        }
+
+        return this.getResolvedNativeFilePath(videoThumbnailPath);
+    }
+
+    public async makePhoto(targetWidth = 1000, targetHeight = 1000) {
+        if (!this.camera) {
+            throw new Error('MediaCapture plugin is not defined');
+        }
+        const cameraOptions = {
+            targetWidth: targetWidth,
+            targetHeight: targetHeight,
+            sourceType: this.camera.PictureSourceType.CAMERA,
+            destinationType: this.camera.DestinationType.FILE_URI,
+            encodingType: this.camera.EncodingType.JPEG,
+            mediaType: this.camera.MediaType.PICTURE
+        };
+        const photoFullPath = await this.camera.getPicture(cameraOptions);
+
+        return this.getResolvedNativeFilePath(photoFullPath);
+    }
+
+    public getResolvedNativeFilePath(uri) {
+        if (!this.filePath) {
+            throw new Error('FilePath plugin is not defined');
+        }
+        console.log('uri', uri);
+        if (this.platform.is('android')) {
+            return this.filePath.resolveNativePath(uri);
+        }
+
+        return new Promise((resolve) => resolve(uri));
     }
 }

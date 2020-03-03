@@ -49,9 +49,9 @@ export class TranslateConfigService {
         return this.translator.instant(key);
     }
 
-    translate<T extends string | string[]>(key: T): Promise<string> {
+    translate<T extends string | string[]>(key: string | Array<string>, interpolateParams?: Object): Promise<string> {
         return new Promise<any>((resolve => {
-            this.translator.get(key).toPromise().then((result) => {
+            this.translator.get(key, interpolateParams).toPromise().then((result) => {
                 resolve(result);
             });
         }));

@@ -7,7 +7,6 @@
       {{ 'guides.header' | translate:params }}
     </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
-    <language-selector-component slot="primary"></language-selector-component>
   </ion-toolbar>
   <ion-toolbar>
     <ion-searchbar animated="true"
@@ -30,7 +29,7 @@
         </ion-item>
         <ion-list>
           <div class="guide-row" *ngFor="let item of guideCategory.guides">
-            <div  class="guide-preview" slot="start" [routerLink]="['/guide/' + item.idApi]">
+            <div class="guide-preview" slot="start" [routerLink]="['/guide/' + item.idApi]">
               <img *ngIf="item.getImage()" [src]="item.getImage()">
               <img *ngIf="!item.getImage()" src="assets/placeholder.jpg">
               <div class="shortname-label badge badge-secondary">

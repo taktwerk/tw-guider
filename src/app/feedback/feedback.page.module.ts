@@ -7,6 +7,8 @@ import {FeedbackPage} from './feedback.page';
 import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
 import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
 import {TranslateModule} from '@ngx-translate/core';
+import {MainPipe} from '../../pipes/main-pipe.module';
+import {VirtualScrollerModule} from 'ngx-virtual-scroller';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import {TranslateModule} from '@ngx-translate/core';
         ]),
         SyncSpinnerComponentModule,
         LanguageSelectorComponentModule,
-        TranslateModule
+        TranslateModule,
+        MainPipe,
+        VirtualScrollerModule
     ],
   exports: [
   ],

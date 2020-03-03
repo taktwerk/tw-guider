@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 
 import {Events, Platform} from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -16,6 +16,8 @@ import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from '../services/download-service';
 import {ApiPush} from '../providers/api-push';
 import {TranslateConfigService} from '../services/translate-config.service';
+import {AppSetting} from '../services/app-setting';
+import {UserService} from '../services/user-service';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -29,16 +31,14 @@ export enum ConnectionStatusEnum {
   styleUrls: ['app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public appPages = [
-    {title: 'Home', url: '/home', icon: 'home'}
-  ];
+  public appPages = [];
 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    public events: Events,
-    public apiSync: ApiSync,
+    private events: Events,
+    private apiSync: ApiSync,
     private authService: AuthService,
     private network: Network,
     private http: HttpClient,
@@ -46,7 +46,10 @@ export class AppComponent implements OnInit {
     private downloadService: DownloadService,
     private db: DbProvider,
     private apiPush: ApiPush,
-    private translateConfigService: TranslateConfigService
+    private translateConfigService: TranslateConfigService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private appSetting: AppSetting,
+    private userService: UserService
   ) {
     this.initializeApp();
   }
@@ -66,6 +69,9 @@ export class AppComponent implements OnInit {
         if (result) {
           try {
             await this.initUserDB();
+            if (!this.userDb) {
+              return;
+            }
             if (this.userDb.userSetting.language) {
               currentLanguage = this.userDb.userSetting.language;
             }
@@ -75,12 +81,12 @@ export class AppComponent implements OnInit {
             ) {
               this.userDb.userSetting.syncStatus = 'pause';
               this.userDb.save().then(() => {
+                console.log('initializeApp where pause');
                 this.apiSync.sendSyncProgress();
               });
             }
             this.apiSync.syncProgressStatus.next(this.userDb.userSetting.syncStatus);
           } catch (e) {
-            console.log('login errror', e);
           }
         }
         this.translateConfigService.setLanguage(currentLanguage);
@@ -94,20 +100,8 @@ export class AppComponent implements OnInit {
   }
 
   protected initUserDB() {
-    if (this.userDb) {
-      return new Promise(resolve => {
-        resolve(true);
-      });
-    }
-
-    return new Promise(resolve => {
-      new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
-        if (userDb) {
-          this.userDb = userDb;
-
-          resolve(true);
-        }
-      });
+    return this.userService.getUser().then(result => {
+      this.userDb = result;
     });
   }
 
@@ -115,6 +109,12 @@ export class AppComponent implements OnInit {
     this.events.subscribe('user:login', (userId) => {
       this.setPages();
       this.baseProjectSetup();
+      this.detectChanges();
+    });
+    this.events.subscribe('qr-code:setup', () => {
+      this.setPages();
+      this.baseProjectSetup();
+      this.detectChanges();
     });
     this.events.subscribe('user:logout', () => {
       this.setPages();
@@ -157,18 +157,24 @@ export class AppComponent implements OnInit {
   }
 
   protected async setPages() {
-    this.appPages = [{title: this.translateConfigService.translateWord('home.header'), url: '/home', icon: 'home'}];
+    this.appPages = [];
 
+    if (!this.appSetting.isWasQrCodeSetup || !this.authService.isLoggedin) {
+      this.appPages.push({title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'});
+    }
+    if (!this.appSetting.isWasQrCodeSetup) {
+      return;
+    }
     if (!this.authService.isLoggedin) {
       this.appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'list'});
-    } else {
-      this.appPages.push(
-          {title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'},
-          {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
-          {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'},
-          {title: this.translateConfigService.translateWord('Logout'), url: '/logout', icon: 'exit'},
-      );
+      return;
     }
+    this.appPages.push(
+        {title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'},
+        {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
+        {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'},
+        {title: this.translateConfigService.translateWord('Logout'), url: '/logout', icon: 'exit'},
+    );
   }
 
   private login(): Promise<any> {
@@ -185,6 +191,9 @@ export class AppComponent implements OnInit {
 
   protected baseProjectSetup() {
     this.initUserDB().then(() => {
+      if (!this.userDb) {
+        return;
+      }
       if (this.userDb.userSetting.language &&
           this.translateConfigService.isLanguageAvailable(this.userDb.userSetting.language)
       ) {
@@ -196,21 +205,26 @@ export class AppComponent implements OnInit {
         this.userDb.userSetting.syncStatus = 'pause';
         this.userDb.save();
       }
+      this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
       this.apiSync.syncProgressStatus.next(this.userDb.userSetting.syncStatus);
       this.apiSync.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
       this.apiSync.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);
       this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
       this.apiSync.isAvailableForSyncData.next(this.userDb.userSetting.isSyncAvailableData);
       this.apiPush.isAvailableForPushData.next(this.userDb.userSetting.isPushAvailableData);
-      this.checkAvailableSyncChanges = Observable.interval(30000)
-          .subscribe(() => {
-            this.apiSync.checkAvailableChanges();
-          });
+      this.apiSync.checkAvailableChanges().then(() => {
+        this.checkAvailableSyncChanges = Observable.interval(30000)
+            .subscribe(() => {
+              this.apiSync.checkAvailableChanges();
+            });
+      });
+      this.detectChanges();
     });
   }
 
   protected logoutAction() {
     this.userDb = null;
+    this.translateConfigService.setLanguage();
     if (this.periodicSync) {
       this.periodicSync.unsubscribe();
       this.periodicSync = null;
@@ -229,8 +243,20 @@ export class AppComponent implements OnInit {
     if (syncMode === 2) {
       this.periodicSync = Observable.interval(15000)
           .subscribe(() => {
-            this.apiSync.makeSyncProcess();
+            let syncProcessStatus = this.apiSync.syncProgressStatus.getValue();
+            if (['pause'].includes(syncProcessStatus)) {
+              syncProcessStatus = 'resume';
+            } else {
+              syncProcessStatus = 'progress';
+            }
+            this.apiSync.makeSyncProcess(syncProcessStatus);
           });
+    }
+  }
+
+  detectChanges() {
+    if (!this.changeDetectorRef['destroyed']) {
+      this.changeDetectorRef.detectChanges();
     }
   }
 

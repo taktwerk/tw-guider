@@ -4,73 +4,106 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-        {{ 'guide.header' | translate:params }} {{ guide.title }}
+      {{ "guide.header" | translate: params }} {{ guide.title }}
     </ion-title>
     <ion-buttons slot="primary">
-        <ion-button color="primary" fill="solid" [routerLink]="['/guide/' + guide.idApi + '/feedback']">
-            {{ 'feedback.header' | translate:params }}
-        </ion-button>
+      <ion-button
+        color="primary"
+        fill="solid"
+        [routerLink]="['/guide/' + guide.idApi + '/feedback']"
+      >
+        {{ "feedback.header" | translate: params }}
+      </ion-button>
     </ion-buttons>
     <sync-spinner-component slot="primary"></sync-spinner-component>
-    <language-selector-component slot="primary"></language-selector-component>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-    <div *ngIf="guideSteps && guideSteps.length === 0">
-        {{ 'guide.No information here yet.' | translate:params }}
-    </div>
-    <div *ngIf="guideSteps && guideSteps.length > 0">
-        <ion-slides pager="true"
-                    [options]="slideOpts"
-        >
-            <ion-slide class="ion-padding"
-                       *ngFor="let step of guideSteps; let stepNumber = index;"
+<ion-content color="primary">
+  <div *ngIf="guideSteps && guideSteps.length === 0">
+    {{ "guide.No information here yet." | translate: params }}
+  </div>
+  <div *ngIf="guideSteps && guideSteps.length > 0">
+    <ion-slides pager="true" [options]="slideOpts">
+      <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">
+        <div>
+          <p slot="fixed">{{ guide.short_name }} {{ guide.title }}</p>
+          <div slot="fixed">
+            {{ stepNumber + 1 }} / {{ guideSteps.length }} {{ step.title }}
+          </div>
+        </div>
+        <ion-card color="light">
+          <img
+            *ngIf="step.isImageFile()"
+            (click)="
+              openFile(step.getApiFilePath(), step.TABLE_NAME, step.title)
+            "
+            [src]="step.getFileImagePath()"
+          />
+          <div *ngIf="step.isVideoFile()"
+               (click)="openFile(step.getApiFilePath(), step.TABLE_NAME)"
+          >
+            <div *ngIf="step.isExistThumbOfFile()">
+              <img [src]="step.getFileImagePath()"/>
+              <ion-icon name="videocam"
+                        class="videocam-icon"
+                        slot="end"
+                        style="font-size: 50px;"
+              >
+              </ion-icon>
+            </div>
+            <ion-icon *ngIf="!step.isExistThumbOfFile()"
+                      name="videocam"
+                      class="videocam-icon"
+                      slot="start"
             >
-                <div slot="fixed">{{ stepNumber + 1 }} / {{ guideSteps.length }}</div>
-                <img *ngIf="step.isImageAttachedFile()"
-                     (click)="openFile(step.getApiFilePath(), step.TABLE_NAME, step.title)"
-                     [src]="step.getFile()"
-                >
-                <ion-icon name="videocam"
-                          class="videocam"
-                          slot="start"
-                          *ngIf="step.isVideoAttachedFile()"
-                          (click)="openFile(step.getApiFilePath(), step.TABLE_NAME)"
-                >
-                </ion-icon>
-                <img *ngIf="!step.isImageAttachedFile() && !step.isVideoAttachedFile()"
-                     src="/assets/placeholder.jpg"
-                >
-                <h2>{{step.title}}</h2>
-                <html-description-component [html]="step.description_html"></html-description-component>
-            </ion-slide>
-        </ion-slides>
-        <ion-card *ngIf="guideAssets.length"
-                  class="ion-text-center ion-padding">
-            <section>
-                <h2>
-                    {{ 'feedback.Assets.' | translate:params }}
-                </h2>
-                <div *ngFor="let asset of guideAssets; trackBy: trackGuideAsset">
-                    <div class="ion-text-center" *ngIf="asset.isFile() && asset.isPdf()">
-                        <img (click)="openFile(asset.getApiPdfImageFilePath(), asset.TABLE_NAME, asset.name)"
-                             class="pdf-image"
-                             [src]="asset.getPdf()"
-                        >
-                    </div>
-                    <div *ngIf="asset.isFile() && !asset.isPdf()">
-                        <img (click)="openFile(asset.getApiFilePath(), asset.TABLE_NAME, asset.name)"
-                             class="pdf-image"
-                             [src]="asset.getAssetFile()"
-                        >
-                    </div>
-                    <ion-button *ngIf="!asset.isFile()" color="medium" (click)="openAssetTextModal(asset)">
-                        {{ asset.name }}
-                    </ion-button>
-                </div>
-            </section>
+            </ion-icon>
+          </div>
+          <img
+            *ngIf="!step.isExistFormatFile()"
+            src="/assets/placeholder.jpg"
+          />
         </ion-card>
-    </div>
+        <ion-card *ngIf="step.description_html" class="ion-text-left" color="light">
+          <html-description-component [html]="step.description_html"></html-description-component>
+        </ion-card>
+      </ion-slide>
+    </ion-slides>
+    <ion-card *ngIf="guideAssets.length" color="light">
+      <section>
+        <p class="ion-text-center">
+          {{ "guide.Assets" | translate: params }}
+        </p>
+        <ion-row class="guide-assets">
+          <span *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" class="ion-padding">
+              <img *ngIf="asset.isFile() && asset.isPdf()"
+                (click)="
+                  openFile(
+                    asset.getApiPdfImageFilePath(),
+                    asset.TABLE_NAME,
+                    asset.name
+                  )
+                "
+                class="pdf-image"
+                [src]="asset.getPdf()"
+              />
+              <img *ngIf="asset.isFile() && !asset.isPdf()"
+                (click)="
+                  openFile(asset.getApiFilePath(), asset.TABLE_NAME, asset.name)
+                "
+                class="pdf-image"
+                [src]="asset.getAssetFile()"
+              />
+              <ion-button
+                *ngIf="!asset.isFile()"
+                color="medium"
+                (click)="openAssetTextModal(asset)"
+              >
+                {{ asset.name }}
+              </ion-button>
+          </span>
+      </ion-row>
+      </section>
+    </ion-card>
+  </div>
 </ion-content>
-
