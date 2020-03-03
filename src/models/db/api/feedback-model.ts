@@ -1,9 +1,12 @@
 import {Platform, Events} from '@ionic/angular';
-import {DbApiModel} from '../../base/db-api-model';
+import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
 
+export enum FeedbackModelDownloadMapEnum {
+    ATTACHED_FILE
+}
 /**
  * API Db Model for 'Feedback Model'.
  */
@@ -21,6 +24,7 @@ export class FeedbackModel extends DbApiModel {
     public status = 'Open';
     public reference_id: number = null;
     public attached_file: string;
+    public local_attached_file: string;
 
     public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + FeedbackModel.COL_USER_ID + ')';
 
@@ -35,6 +39,9 @@ export class FeedbackModel extends DbApiModel {
     static COL_ATTACHED_FILE = 'attached_file';
     static COL_ATTACHED_FILE_PATH = 'attached_file_path';
     static COL_LOCAL_ATTACHED_FILE = 'local_attached_file';
+    static COL_THUMB_ATTACHED_FILE = 'thumb_attached_file';
+    static COL_API_THUMB_ATTACHED_FILE_PATH = 'thumb_attached_file_path';
+    static COL_LOCAL_THUMB_ATTACHED_FILE = 'local_thumb_attached_file';
 
     /** @inheritDoc */
     TABLE_NAME: string = 'feedback';
@@ -48,20 +55,27 @@ export class FeedbackModel extends DbApiModel {
         [FeedbackModel.COL_STATUS, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'status'],
         [FeedbackModel.COL_REFERNCE_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [FeedbackModel.COL_USER_ID, 'INT', DbBaseModel.TYPE_NUMBER],
+        /// attached file columns
         [FeedbackModel.COL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [FeedbackModel.COL_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [FeedbackModel.COL_LOCAL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        /// thumb attached file columns
+        [FeedbackModel.COL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [FeedbackModel.COL_API_THUMB_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [FeedbackModel.COL_LOCAL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
     ];
 
-    public downloadMapping: any = [
-        [
-            // Name of the file
-            FeedbackModel.COL_ATTACHED_FILE,
-            // Url of the file
-            FeedbackModel.COL_ATTACHED_FILE_PATH,
-            // Local path
-            FeedbackModel.COL_LOCAL_ATTACHED_FILE
-        ]
+    public downloadMapping: FileMapInModel[] = [
+            {
+                name: FeedbackModel.COL_ATTACHED_FILE,
+                url: FeedbackModel.COL_ATTACHED_FILE_PATH,
+                localPath: FeedbackModel.COL_LOCAL_ATTACHED_FILE,
+                thumbnail: {
+                    name: FeedbackModel.COL_THUMB_ATTACHED_FILE,
+                    url: FeedbackModel.COL_API_THUMB_ATTACHED_FILE_PATH,
+                    localPath: FeedbackModel.COL_LOCAL_THUMB_ATTACHED_FILE
+                }
+            }
     ];
 
     /**
@@ -80,39 +94,49 @@ export class FeedbackModel extends DbApiModel {
         this.updateCondition.push(['user_id', this.user_id]);
     }
 
-    public getLocalFilePath() {
-        return this[FeedbackModel.COL_LOCAL_ATTACHED_FILE];
-    }
-
-    public getApiFilePath() {
-        return this[FeedbackModel.COL_ATTACHED_FILE];
-    }
-
-    public getFile() {
-        if (this[FeedbackModel.COL_LOCAL_ATTACHED_FILE]) {
-            // return this.downloadService.getSanitizedFileUrl(this[FeedbackModel.COL_ATTACHED_FILE], this.TABLE_NAME);
-            // In future for ion-img
+    public getFile(fileTypeInDownloadMap = FeedbackModelDownloadMapEnum.ATTACHED_FILE) {
+        if (this.getLocalFilePath()) {
             return this.downloadService.getWebviewFileSrc(
-                this.downloadService.getNativeFilePath(this[FeedbackModel.COL_ATTACHED_FILE], this.TABLE_NAME)
+                this.downloadService.getNativeFilePath(
+                    this[this.downloadMapping[fileTypeInDownloadMap].name],
+                    this.TABLE_NAME
+                )
             );
         } else {
             return this.defaultImage;
         }
     }
 
-    public isVideoAttachedFile() {
-        const localFilePath = this.getLocalFilePath();
-        const apiFilePath = this.getApiFilePath();
-
-        return (localFilePath && (localFilePath.indexOf('.MOV') > -1 || localFilePath.indexOf('.mp4') > -1)) ||
-            (apiFilePath && (apiFilePath.indexOf('.MOV') > -1 || apiFilePath.indexOf('.mp4') > -1));
+    public getLocalFilePath(fileTypeInDownloadMap = FeedbackModelDownloadMapEnum.ATTACHED_FILE) {
+        return this[this.downloadMapping[fileTypeInDownloadMap].localPath];
     }
 
-    public isImageAttachedFile() {
-        const localFilePath = this.getLocalFilePath();
-        const apiFilePath = this.getApiFilePath();
+    public getApiFilePath(fileTypeInDownloadMap = FeedbackModelDownloadMapEnum.ATTACHED_FILE) {
+        return this[this.downloadMapping[fileTypeInDownloadMap].name];
+    }
 
-        return (localFilePath && (localFilePath.indexOf('.jpg') > -1 || localFilePath.indexOf('.png') > -1)) ||
-            (apiFilePath && (apiFilePath.indexOf('.jpg') > -1 || apiFilePath.indexOf('.png') > -1));
+    public getApiThumbFilePath() {
+        return this[FeedbackModel.COL_THUMB_ATTACHED_FILE];
+    }
+
+    public getAttachedFileImagePath() {
+        if (!this[FeedbackModel.COL_LOCAL_ATTACHED_FILE]) {
+            return this.defaultImage;
+        }
+        let imageName = null;
+
+        if (this.isImageFile()) {
+            imageName = this.getApiFilePath();
+        } else if (this.isExistThumbOfFile()) {
+            imageName = this.getApiThumbFilePath();
+        } else {
+            return null;
+        }
+
+        return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME);
+    }
+
+    public isExistThumbOfFile() {
+        return !!this[FeedbackModel.COL_LOCAL_THUMB_ATTACHED_FILE];
     }
 }

@@ -162,7 +162,6 @@ export class SyncModalComponent implements OnInit {
             this.isAvailableForPushData = isAvailableForPushData;
         });
         this.events.subscribe('UserDb:update', (userDb) => {
-            console.log('UserDb:update');
             this.userDb = userDb;
         });
         this.events.subscribe('network:offline', (isNetwork) => {

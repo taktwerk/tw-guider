@@ -93,7 +93,6 @@ export class ApiSync {
             this.userDb = userDb;
         });
         this.events.subscribe('UserDb:update', (userDb) => {
-            console.log('UserDb:update');
             this.userDb = userDb;
         });
     }
@@ -438,11 +437,6 @@ export class ApiSync {
             url += !this.userDb.userSetting.lastSyncedAt ? '?' : '&';
             url += 'syncProcessId=' + this.userDb.userSetting.lastSyncProcessId;
         }
-        // if (this.userDb.userSetting.syncLastElementNumber && this.syncProgressStatus.getValue() === 'resume') {
-        //     if (this.userDb.userSetting.lastSyncedAt) {
-        //         url = url + '&lastUpdatedNumber=' + this.userDb.userSetting.syncLastElementNumber;
-        //     }
-        // }
 
         return url;
     }

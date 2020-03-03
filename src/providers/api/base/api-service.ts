@@ -171,12 +171,14 @@ export abstract class ApiService {
             // No sync with the API yet? Only local? Delete it
             if (model[model.COL_ID_API] == null) {
                 model.remove().then(res => {
+                    model.deleteAllFiles();
                     this.removeFromList(model);
                     resolve(res);
                 });
             } else {
                 model[model.COL_DELETED_AT] = model[model.COL_LOCAL_DELETED_AT] = new Date();
                 model.save().then(res => {
+                    model.deleteAllFiles();
                     resolve(res);
                 });
             }
@@ -206,14 +208,14 @@ export abstract class ApiService {
           const uploadFilePromises = [];
           for (const fields of model.downloadMapping) {
             // If we have a local path but no api path, we need to upload the file!
-            if (model[fields[2]] && !model[fields[1]]) {
-              const fieldUrl = url + '?fileAttribute=' + fields[0];
+            if (model[fields.localPath] && !model[fields.url]) {
+              const fieldUrl = url + '?fileAttribute=' + fields.name;
               uploadFilePromises.push(
                   model.downloadService.startUpload(
                     model.TABLE_NAME,
-                    fields[0],
-                    model[fields[0]],
-                    model[fields[2]],
+                    fields.name,
+                    model[fields.name],
+                    model[fields.localPath],
                     fieldUrl,
                     authToken
                   )

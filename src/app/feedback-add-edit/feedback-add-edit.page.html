@@ -16,28 +16,42 @@
 </ion-header>
 
 <ion-content>
-  <ion-fab vertical="bottom" horizontal="end" slot (click)="addFile()">
+  <ion-fab class="big-fab" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
-      <ion-icon name="camera"></ion-icon>
+      <ion-icon name="attach"></ion-icon>
     </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button (click)="addFile()" color="primary">
+        <ion-icon name="folder"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="addPhotoUsingCamera()" color="primary">
+        <ion-icon name="camera"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="addVideoUsingCamera()" color="primary">
+        <ion-icon name="videocam"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
   </ion-fab>
   <div *ngIf="model.attached_file">
     <div class="ion-text-center">
-      <img *ngIf="model.isImageAttachedFile()"
+      <img *ngIf="model.isImageFile()"
            (click)="openFile(model.getApiFilePath(), model.TABLE_NAME, model.attached_file)"
            [src]="model.getFile()"
       >
       <ion-icon name="videocam"
                 class="videocam-icon"
                 slot="start"
-                *ngIf="model.isVideoAttachedFile()"
+                *ngIf="model.isVideoFile()"
                 (click)="openFile(model.getApiFilePath(), model.TABLE_NAME)"
       >
       </ion-icon>
-      <ion-icon class="cloud-upload" *ngIf="!model.isImageAttachedFile() && !model.isVideoAttachedFile()" name="cloud-upload"></ion-icon>
+      <ion-icon *ngIf="!model.isImageFile() && !model.isVideoFile()"
+                class="cloud-upload"
+                name="cloud-upload"
+      >
+      </ion-icon>
     </div>
   </div>
-<!--  <img slot />-->
   <form>
     <ion-list>
       <ion-item>
@@ -56,20 +70,26 @@
         <ion-label>
           {{ 'feedback.Description' | translate:params }}
         </ion-label>
-        <ion-textarea rows="8" cols="33" name="description" [(ngModel)]="model.description"
+        <ion-textarea [(ngModel)]="model.description"
+                      name="description"
+                      rows="8"
+                      cols="33"
                       style="display: block;"
         >
         </ion-textarea>
       </ion-item>
     </ion-list>
-
     <ion-button slot="start" (click)="save()">
       <ion-icon slot="start" name="save"></ion-icon>
       {{ 'save' | translate:params }}
     </ion-button>
     <ion-button *ngIf="model.id"
-                color="danger" size="default" fill="outline" slot="end"
-                (click)="showDeleteAlert()">
+                color="danger"
+                size="default"
+                fill="outline"
+                slot="end"
+                (click)="showDeleteAlert()"
+    >
       <ion-icon slot="start" name="trash"></ion-icon>
       {{ 'delete' | translate:params }}
     </ion-button>

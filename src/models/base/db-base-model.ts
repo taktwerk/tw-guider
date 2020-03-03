@@ -171,7 +171,6 @@ export abstract class DbBaseModel {
             const name = column[0];
             const schema = column[1];
             rows.push(this.secure(name) + ' ' + schema);
-            // query += ', ' + this.secure(name) + ' ' + schema;
         }
         query += rows.join(', ');
 
@@ -692,7 +691,6 @@ export abstract class DbBaseModel {
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
                     db.query(query).then((res) => {
                         this.events.publish(this.TAG + ':update', this);
-                        console.log(this.TAG + 'update');
                         resolve(res);
                     }).catch((err) => {
                         resolve(false);

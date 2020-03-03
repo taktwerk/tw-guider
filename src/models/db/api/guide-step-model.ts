@@ -1,9 +1,8 @@
 import {Platform, Events} from '@ionic/angular';
-import {DbApiModel} from '../../base/db-api-model';
+import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
-import {WebView} from '@ionic-native/ionic-webview/ngx';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -33,23 +32,17 @@ export class GuideStepModel extends DbApiModel {
     static COL_API_THUMB_ATTACHED_FILE_PATH = 'thumb_attached_file_path';
     static COL_LOCAL_THUMB_ATTACHED_FILE = 'local_thumb_attached_file';
 
-    public downloadMapping: any = [
-        [
-            // Name of the file
-            GuideStepModel.COL_ATTACHED_FILE,
-            // Url of the file
-            GuideStepModel.COL_API_ATTACHED_FILE_PATH,
-            // Local path
-            GuideStepModel.COL_LOCAL_ATTACHED_FILE
-        ],
-        [
-            // Name of the file
-            GuideStepModel.COL_THUMB_ATTACHED_FILE,
-            // Url of the file
-            GuideStepModel.COL_API_THUMB_ATTACHED_FILE_PATH,
-            // Local path
-            GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE
-        ]
+    public downloadMapping: FileMapInModel[] = [
+        {
+            name: GuideStepModel.COL_ATTACHED_FILE,
+            url: GuideStepModel.COL_API_ATTACHED_FILE_PATH,
+            localPath: GuideStepModel.COL_LOCAL_ATTACHED_FILE,
+            thumbnail: {
+                name: GuideStepModel.COL_THUMB_ATTACHED_FILE,
+                url: GuideStepModel.COL_API_THUMB_ATTACHED_FILE_PATH,
+                localPath: GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE
+            }
+        },
     ];
 
     /** @inheritDoc */
@@ -78,14 +71,6 @@ export class GuideStepModel extends DbApiModel {
         super(platform, db, events, downloadService);
     }
 
-    public getLocalFilePath() {
-        return this[GuideStepModel.COL_LOCAL_ATTACHED_FILE];
-    }
-
-    public getApiFilePath() {
-        return this[GuideStepModel.COL_ATTACHED_FILE];
-    }
-
     public getApiThumbFilePath() {
         return this[GuideStepModel.COL_THUMB_ATTACHED_FILE];
     }
@@ -96,7 +81,7 @@ export class GuideStepModel extends DbApiModel {
         }
         let imageName = null;
 
-        if (this.isImageAttachedFile()) {
+        if (this.isImageFile()) {
             imageName = this.getApiFilePath();
         } else if (this.isExistThumbOfFile()) {
             imageName = this.getApiThumbFilePath();
@@ -111,19 +96,11 @@ export class GuideStepModel extends DbApiModel {
         return !!this[GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE];
     }
 
-    public isVideoAttachedFile() {
-        const localFilePath = this.getLocalFilePath();
-        const apiFilePath = this.getApiFilePath();
-
-        return (localFilePath && (localFilePath.indexOf('.MOV') > -1 || localFilePath.indexOf('.mp4') > -1)) ||
-            (apiFilePath && (apiFilePath.indexOf('.MOV') > -1 || apiFilePath.indexOf('.mp4') > -1));
+    public getLocalFilePath() {
+        return this[GuideStepModel.COL_LOCAL_ATTACHED_FILE];
     }
 
-    public isImageAttachedFile() {
-        const localFilePath = this.getLocalFilePath();
-        const apiFilePath = this.getApiFilePath();
-
-        return (localFilePath && (localFilePath.indexOf('.jpg') > -1 || localFilePath.indexOf('.png') > -1)) ||
-            (apiFilePath && (apiFilePath.indexOf('.jpg') > -1 || apiFilePath.indexOf('.png') > -1));
+    public getApiFilePath() {
+        return this[GuideStepModel.COL_ATTACHED_FILE];
     }
 }

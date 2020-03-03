@@ -7,6 +7,11 @@ import {HttpClient, HttpHeaders as Headers} from '@angular/common/http';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
 import {finalize} from 'rxjs/operators';
 import {DomSanitizer} from '@angular/platform-browser';
+import {FileChooser} from '@ionic-native/file-chooser/ngx';
+import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
+import {FilePath} from '@ionic-native/file-path/ngx';
+import {MediaCapture} from '@ionic-native/media-capture/ngx';
+import {Camera} from '@ionic-native/camera/ngx';
 
 /**
  * Download file class
@@ -29,13 +34,23 @@ export class DownloadService {
      * @param webview
      * @param {Toast} toast
      * @param domSanitizer
+     * @param fileChooser
+     * @param filePicker
+     * @param filePath
+     * @param mediaCapture
+     * @param camera
      */
     constructor(public http: HttpClient,
                 public platform: Platform,
                 public file: File,
                 public webview: WebView,
                 private toast: Toast,
-                private domSanitizer: DomSanitizer
+                private domSanitizer: DomSanitizer,
+                private fileChooser: FileChooser,
+                private filePicker: IOSFilePicker,
+                private filePath: FilePath,
+                private mediaCapture: MediaCapture,
+                private camera: Camera
     ) {
         this.pushProgressFilesInfo = new BehaviorSubject<any>({});
     }
@@ -361,5 +376,62 @@ export class DownloadService {
         const convertFileSrc = this.getWebviewFileSrc(path);
 
         return this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
+    }
+
+    public async chooseFile() {
+        if (this.platform.is('ios')) {
+            if (!this.filePicker) {
+                throw new Error('IOSFilePicker plugin is not defined');
+            }
+            return this.filePicker.pickFile();
+        } else {
+            if (!this.fileChooser) {
+                throw new Error('FileChooser plugin is not defined');
+            }
+            const uri = await this.fileChooser.open();
+
+            return this.getResolvedNativeFilePath(uri);
+        }
+    }
+
+    public async recordVideo() {
+        if (!this.mediaCapture) {
+            throw new Error('MediaCapture plugin is not defined');
+        }
+        const videoFile = await this.mediaCapture.captureVideo({limit: 1});
+        if (!videoFile || !videoFile[0]) {
+            throw new Error('Video was not uploaded.');
+        }
+        const fullPath = videoFile[0].fullPath;
+
+        return this.getResolvedNativeFilePath(fullPath);
+    }
+
+    public async makePhoto(targetWidth = 1000, targetHeight = 1000) {
+        if (!this.camera) {
+            throw new Error('MediaCapture plugin is not defined');
+        }
+        const cameraOptions = {
+            targetWidth: targetWidth,
+            targetHeight: targetHeight,
+            sourceType: this.camera.PictureSourceType.CAMERA,
+            destinationType: this.camera.DestinationType.FILE_URI,
+            encodingType: this.camera.EncodingType.JPEG,
+            mediaType: this.camera.MediaType.PICTURE
+        };
+        const photoFullPath = await this.camera.getPicture(cameraOptions);
+
+        return this.getResolvedNativeFilePath(photoFullPath);
+    }
+
+    public getResolvedNativeFilePath(uri) {
+        if (!this.filePath) {
+            throw new Error('FilePath plugin is not defined');
+        }
+        if (this.platform.is('android')) {
+            return this.filePath.resolveNativePath(uri);
+        }
+
+        return new Promise((resolve) => resolve(uri));
     }
 }

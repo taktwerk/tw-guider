@@ -30,18 +30,24 @@
                 <ion-thumbnail slot="start">
                     <div *ngIf="feedback.attached_file">
                         <div style="width: 70px;height: 70px;">
-                            <img *ngIf="feedback.isImageAttachedFile()"
+                            <ion-icon name="musical-notes"
+                                      class="videocam-icon"
+                                      slot="start"
+                                      *ngIf="feedback.isAudioFile()"
+                            >
+                            </ion-icon>
+                            <img *ngIf="feedback.isImageFile()"
                                  (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME, feedback.attached_file)"
                                  [src]="feedback.getFile()"
                             >
                             <ion-icon name="videocam"
                                       class="videocam-icon"
                                       slot="start"
-                                      *ngIf="feedback.isVideoAttachedFile()"
+                                      *ngIf="feedback.isVideoFile()"
                                       (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME)"
                             >
                             </ion-icon>
-                            <ion-icon *ngIf="!feedback.isImageAttachedFile() && !feedback.isVideoAttachedFile()"
+                            <ion-icon *ngIf="!feedback.isExistFormatFile()"
                                       class="cloud-upload"
                                       name="cloud-upload"
                             >

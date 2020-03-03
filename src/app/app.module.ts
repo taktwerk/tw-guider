@@ -58,6 +58,8 @@ import {AppSetting} from '../services/app-setting';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {VirtualScrollerModule} from 'ngx-virtual-scroller';
 import {IonicImageLoader} from 'ionic-image-loader';
+import {Camera} from '@ionic-native/camera/ngx';
+import {MediaCapture} from '@ionic-native/media-capture/ngx';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -129,6 +131,8 @@ export function LanguageLoader(http: Http) {
     BarcodeScanner,
     AppSetting,
     AppVersion,
+    Camera,
+    MediaCapture,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

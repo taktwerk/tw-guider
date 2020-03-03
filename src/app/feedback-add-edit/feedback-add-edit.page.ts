@@ -1,25 +1,14 @@
-import {ChangeDetectorRef, Component, NgZone, OnInit, ViewEncapsulation} from '@angular/core';
-import {GuiderService} from '../../providers/api/guider-service';
-import {GuiderModel} from '../../models/db/api/guider-model';
+import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {GuideStepService} from '../../providers/api/guide-step-service';
-import {GuideStepModel} from '../../models/db/api/guide-step-model';
 import { File } from '@ionic-native/file/ngx';
 import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import {Events, ModalController, IonSlides, NavController, Platform, AlertController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
-import {GuideAssetService} from '../../providers/api/guide-asset-service';
-import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-service';
-import {GuideAssetTextModalComponent} from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
-import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
 import {DownloadService} from '../../services/download-service';
-import {ApiSync} from '../../providers/api-sync';
-import {FeedbackModel} from '../../models/db/api/feedback-model';
+import {FeedbackModel, FeedbackModelDownloadMapEnum} from '../../models/db/api/feedback-model';
 import {FeedbackService} from '../../providers/api/feedback-service';
-import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
 import {Network} from '@ionic-native/network/ngx';
-import {FileChooser} from '@ionic-native/file-chooser/ngx';
 import {HttpClient} from '../../services/http-client';
 import {ApiPush} from '../../providers/api-push';
 import {FilePath} from '@ionic-native/file-path/ngx';
@@ -41,7 +30,6 @@ export class FeedbackAddEditPage implements OnInit {
   public reference_id: number = null;
   public reference_model: string = null;
   public reference_model_alias: string = null;
-  public attachedFileForDelete: string;
 
   constructor(
       private activatedRoute: ActivatedRoute,
@@ -56,9 +44,7 @@ export class FeedbackAddEditPage implements OnInit {
       public downloadService: DownloadService,
       private feedbackService: FeedbackService,
       private navCtrl: NavController,
-      private filePicker: IOSFilePicker,
       private network: Network,
-      private fileChooser: FileChooser,
       private apiPush: ApiPush,
       private platform: Platform,
       private filePath: FilePath,
@@ -73,6 +59,8 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   dismiss() {
+    this.model.deleteAttachedFilesForDelete();
+
     this.ngZone.run(() => {
       if (this.reference_model_alias && this.reference_id) {
         this.navCtrl.navigateRoot(this.reference_model_alias + '/' + this.reference_id + '/feedback');
@@ -125,16 +113,10 @@ export class FeedbackAddEditPage implements OnInit {
       if (this.network.type === 'none') {
         this.apiPush.setIsPushAvailableData(true);
         this.http.showToast('feedback.Feedback will be sent as soon as the Internet appears');
-        if (this.attachedFileForDelete) {
-          this.downloadService.deleteFile(this.attachedFileForDelete);
-        }
         this.dismiss();
       } else {
         this.apiPush.pushOneAtTime().then(() => {
           this.http.showToast('feedback.Feedback was sent');
-          if (this.attachedFileForDelete) {
-            this.downloadService.deleteFile(this.attachedFileForDelete);
-          }
           this.dismiss();
         });
       }
@@ -169,15 +151,9 @@ export class FeedbackAddEditPage implements OnInit {
     this.feedbackService.remove(this.model).then(res => {
       if (this.network.type === 'none') {
         this.apiPush.setIsPushAvailableData(true);
-        // if (this.attachedFileForDelete) {
-        //   console.log('delete file here');
-        // }
         this.dismiss();
       } else {
         this.apiPush.pushOneAtTime().then(() => {
-          // if (this.attachedFileForDelete) {
-          //   console.log('delete file here');
-          // }
           this.dismiss();
         });
       }
@@ -202,69 +178,30 @@ export class FeedbackAddEditPage implements OnInit {
     await alert.present();
   }
 
-  public addFile() {
-    if (this.platform.is('ios')) {
-      this.filePicker.pickFile()
-          .then(uri => {
-            // Let's copy the file to our local storage
-            this.downloadService.copy(uri, this.model.TABLE_NAME).then(success => {
-              if (typeof success === 'string') {
-                if (this.model[FeedbackModel.COL_ATTACHED_FILE]) {
-                  this.attachedFileForDelete = this.downloadService.getNativeFilePath(
-                      this.model[FeedbackModel.COL_ATTACHED_FILE],
-                      this.feedbackService.dbModelApi.TABLE_NAME
-                  );
-                }
-                this.model[FeedbackModel.COL_ATTACHED_FILE] = success.substr(success.lastIndexOf('/') + 1);
-                this.model[FeedbackModel.COL_ATTACHED_FILE_PATH] = '';
-                this.model[FeedbackModel.COL_LOCAL_ATTACHED_FILE] = success;
-              }
-            });
-          })
-          .catch(e => console.log('FeedbackModal', 'addFile', e));
-
-      return;
-    }
-    this.fileChooser.open()
-        .then(uri => {
-          if (this.platform.is('android')) {
-            this.filePath.resolveNativePath(uri)
-                .then(nativeFilePath => {
-                      // Let's copy the file to our local storage
-                      this.downloadService.copy(nativeFilePath, this.model.TABLE_NAME).then(success => {
-                        if (typeof success === 'string') {
-                          if (this.model[FeedbackModel.COL_ATTACHED_FILE]) {
-                            this.attachedFileForDelete = this.downloadService.getNativeFilePath(
-                                this.model[FeedbackModel.COL_ATTACHED_FILE],
-                                this.feedbackService.dbModelApi.TABLE_NAME
-                            );
-                          }
-                          this.model[FeedbackModel.COL_ATTACHED_FILE] = success.substr(success.lastIndexOf('/') + 1);
-                          this.model[FeedbackModel.COL_ATTACHED_FILE_PATH] = '';
-                          this.model[FeedbackModel.COL_LOCAL_ATTACHED_FILE] = success;
-                        }
-                      });
-                    }
-                );
-          } else {
-            // Let's copy the file to our local storage
-            this.downloadService.copy(uri, this.model.TABLE_NAME).then(success => {
-              if (typeof success === 'string') {
-                if (this.model[FeedbackModel.COL_ATTACHED_FILE]) {
-                  this.attachedFileForDelete = this.downloadService.getNativeFilePath(
-                      this.model[FeedbackModel.COL_ATTACHED_FILE],
-                      this.feedbackService.dbModelApi.TABLE_NAME
-                  );
-                }
-                this.model[FeedbackModel.COL_ATTACHED_FILE] = success.substr(success.lastIndexOf('/') + 1);
-                this.model[FeedbackModel.COL_ATTACHED_FILE_PATH] = '';
-                this.model[FeedbackModel.COL_LOCAL_ATTACHED_FILE] = success;
-              }
-            });
-          }
-
-        })
+  addFile() {
+    this.downloadService.chooseFile()
+        .then(uri => this.copyFeedbackFileToLocalStorage(uri))
         .catch(e => console.log('FeedbackModal', 'addFile', e));
+  }
+
+  addVideoUsingCamera() {
+    this.downloadService.recordVideo()
+        .then(uri => this.copyFeedbackFileToLocalStorage(uri))
+        .catch(e => console.log('FeedbackModal', 'addVideoUsingCamera', e));
+  }
+
+  addPhotoUsingCamera() {
+    this.downloadService.makePhoto(1000, 1000)
+        .then(uri => this.copyFeedbackFileToLocalStorage(uri))
+        .catch(e => console.log('FeedbackModal', 'addPhotoUsingCamera', e));
+  }
+
+  copyFeedbackFileToLocalStorage(uri) {
+    this.downloadService.copy(uri, this.model.TABLE_NAME).then(fileName => {
+      if (typeof fileName === 'string') {
+        this.model.setFileProperty(FeedbackModelDownloadMapEnum.ATTACHED_FILE, fileName, true);
+      }
+    });
   }
 
   getReferenceModel(referenceModelAlias) {
