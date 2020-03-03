@@ -38,13 +38,13 @@
             (click)="
               openFile(step.getApiFilePath(), step.TABLE_NAME, step.title)
             "
-            [src]="step.getAttachedFileImagePath()"
+            [src]="step.getFileImagePath()"
           />
           <div *ngIf="step.isVideoFile()"
                (click)="openFile(step.getApiFilePath(), step.TABLE_NAME)"
           >
             <div *ngIf="step.isExistThumbOfFile()">
-              <img [src]="step.getAttachedFileImagePath()"/>
+              <img [src]="step.getFileImagePath()"/>
               <ion-icon name="videocam"
                         class="videocam-icon"
                         slot="end"

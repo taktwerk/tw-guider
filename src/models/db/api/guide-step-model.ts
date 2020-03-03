@@ -70,37 +70,4 @@ export class GuideStepModel extends DbApiModel {
     constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
         super(platform, db, events, downloadService);
     }
-
-    public getApiThumbFilePath() {
-        return this[GuideStepModel.COL_THUMB_ATTACHED_FILE];
-    }
-
-    public getAttachedFileImagePath() {
-        if (!this[GuideStepModel.COL_LOCAL_ATTACHED_FILE]) {
-            return this.defaultImage;
-        }
-        let imageName = null;
-
-        if (this.isImageFile()) {
-            imageName = this.getApiFilePath();
-        } else if (this.isExistThumbOfFile()) {
-            imageName = this.getApiThumbFilePath();
-        } else {
-            return null;
-        }
-
-        return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME);
-    }
-
-    public isExistThumbOfFile() {
-        return !!this[GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE];
-    }
-
-    public getLocalFilePath() {
-        return this[GuideStepModel.COL_LOCAL_ATTACHED_FILE];
-    }
-
-    public getApiFilePath() {
-        return this[GuideStepModel.COL_ATTACHED_FILE];
-    }
 }

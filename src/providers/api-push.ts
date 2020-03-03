@@ -231,7 +231,6 @@ export class ApiPush {
                                         });
                                     });
                                 }, (err) => {
-                                    console.log('error in push', err);
                                     this.isStartPushBehaviorSubject.next(false);
                                     this.pushProgressStatus.next('failed');
                                     this.isBusy = false;

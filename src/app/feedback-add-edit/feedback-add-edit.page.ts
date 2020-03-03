@@ -184,10 +184,14 @@ export class FeedbackAddEditPage implements OnInit {
         .catch(e => console.log('FeedbackModal', 'addFile', e));
   }
 
-  addVideoUsingCamera() {
-    this.downloadService.recordVideo()
-        .then(uri => this.copyFeedbackFileToLocalStorage(uri))
-        .catch(e => console.log('FeedbackModal', 'addVideoUsingCamera', e));
+  async addVideoUsingCamera() {
+    try {
+      const videoFileUri = await this.downloadService.recordVideo();
+      const videoThumbnailPath = await this.downloadService.makeVideoThumbnail(videoFileUri);
+      this.copyFeedbackFileToLocalStorage(videoFileUri, videoThumbnailPath);
+    } catch (error) {
+      console.log('FeedbackModal', 'addVideoUsingCamera', error);
+    }
   }
 
   addPhotoUsingCamera() {
@@ -196,12 +200,15 @@ export class FeedbackAddEditPage implements OnInit {
         .catch(e => console.log('FeedbackModal', 'addPhotoUsingCamera', e));
   }
 
-  copyFeedbackFileToLocalStorage(uri) {
-    this.downloadService.copy(uri, this.model.TABLE_NAME).then(fileName => {
-      if (typeof fileName === 'string') {
-        this.model.setFileProperty(FeedbackModelDownloadMapEnum.ATTACHED_FILE, fileName, true);
-      }
-    });
+  async copyFeedbackFileToLocalStorage(uri, thumbnailUri?: any) {
+    const fileName = await this.downloadService.copy(uri, this.model.TABLE_NAME);
+    let thumbnailFileName = '';
+    if (thumbnailUri) {
+      thumbnailFileName = await this.downloadService.copy(thumbnailUri, this.model.TABLE_NAME);
+    }
+    if (typeof fileName === 'string') {
+      this.model.setFileProperty(FeedbackModelDownloadMapEnum.ATTACHED_FILE, fileName, thumbnailFileName, true);
+    }
   }
 
   getReferenceModel(referenceModelAlias) {

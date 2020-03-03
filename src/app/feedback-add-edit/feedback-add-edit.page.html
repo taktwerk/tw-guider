@@ -38,14 +38,32 @@
            (click)="openFile(model.getApiFilePath(), model.TABLE_NAME, model.attached_file)"
            [src]="model.getFile()"
       >
-      <ion-icon name="videocam"
+      <div *ngIf="model.isVideoFile()"
+           (click)="openFile(model.getApiFilePath(), model.TABLE_NAME)"
+      >
+        <div *ngIf="model.isExistThumbOfFile()">
+          <img [src]="model.getFileImagePath()"/>
+          <ion-icon name="videocam"
+                    class="videocam-icon"
+                    slot="end"
+                    style="font-size: 50px;"
+          >
+          </ion-icon>
+        </div>
+        <ion-icon *ngIf="!model.isExistThumbOfFile()"
+                  name="videocam"
+                  class="videocam-icon"
+                  slot="start"
+        >
+        </ion-icon>
+      </div>
+      <ion-icon name="musical-notes"
                 class="videocam-icon"
                 slot="start"
-                *ngIf="model.isVideoFile()"
-                (click)="openFile(model.getApiFilePath(), model.TABLE_NAME)"
+                *ngIf="model.isAudioFile()"
       >
       </ion-icon>
-      <ion-icon *ngIf="!model.isImageFile() && !model.isVideoFile()"
+      <ion-icon *ngIf="!model.isExistFormatFile()"
                 class="cloud-upload"
                 name="cloud-upload"
       >

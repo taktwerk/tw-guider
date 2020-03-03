@@ -7,11 +7,11 @@ export class BaseFileMapInModel {
     public name: string;
     public url: string;
     public localPath: string;
+    public attachedFilesForDelete?: string[] = [];
+    public notSavedModelUploadedFilePath?: string;
 }
 
 export class FileMapInModel extends BaseFileMapInModel {
-    public attachedFilesForDelete?: string[] = [];
-    public notSavedModelUploadedFilePath?: string;
     public thumbnail?: BaseFileMapInModel;
 }
 
@@ -385,7 +385,7 @@ export abstract class DbApiModel extends DbBaseModel {
             this[fileMap.thumbnail.url];
     }
 
-    setFileProperty(columnNameIndex, fileName, willDeleteFile = false) {
+    setFileProperty(columnNameIndex, fileName, thumbnailFileName = '', willDeleteFile = false) {
         if (!this.downloadMapping || !this.downloadMapping[columnNameIndex]) {
             return;
         }
@@ -403,6 +403,12 @@ export abstract class DbApiModel extends DbBaseModel {
         this[modelFileMap.url] = '';
         this[modelFileMap.localPath] = fileName;
         this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = fileName;
+        if (thumbnailFileName && modelFileMap.thumbnail) {
+            this[modelFileMap.thumbnail.name] = thumbnailFileName.substr(thumbnailFileName.lastIndexOf('/') + 1);
+            this[modelFileMap.thumbnail.url] = '';
+            this[modelFileMap.thumbnail.localPath] = thumbnailFileName;
+            this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = thumbnailFileName;
+        }
     }
 
     deleteAttachedFilesForDelete() {
@@ -463,39 +469,75 @@ export abstract class DbApiModel extends DbBaseModel {
         this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = '';
     }
 
-    public getLocalFilePath(fileTypeInDownloadMap = 0) {
-        return this[this.downloadMapping[fileTypeInDownloadMap].localPath];
+    public isExistFormatFile(fileMapIndex = 0) {
+        return this.isVideoFile(fileMapIndex) ||
+            this.isImageFile(fileMapIndex) ||
+            this.isAudioFile(fileMapIndex);
     }
 
-    public getApiFilePath(fileTypeInDownloadMap = 0) {
-        return this[this.downloadMapping[fileTypeInDownloadMap].name];
-    }
-
-    public isExistFormatFile() {
-        return this.isVideoFile() || this.isImageFile() || this.isAudioFile();
-    }
-
-    public isAudioFile() {
-        const localFilePath = this.getLocalFilePath();
-        const apiFilePath = this.getApiFilePath();
+    public isAudioFile(fileMapIndex = 0) {
+        const localFilePath = this.getLocalFilePath(fileMapIndex);
+        const apiFilePath = this.getApiFilePath(fileMapIndex);
 
         return (localFilePath && (localFilePath.indexOf('.mp3') > -1)) ||
             (apiFilePath && (apiFilePath.indexOf('.mp3') > -1));
     }
 
-    public isVideoFile() {
-        const localFilePath = this.getLocalFilePath();
-        const apiFilePath = this.getApiFilePath();
+    public isVideoFile(fileMapIndex = 0) {
+        const localFilePath = this.getLocalFilePath(fileMapIndex);
+        const apiFilePath = this.getApiFilePath(fileMapIndex);
 
         return (localFilePath && (localFilePath.indexOf('.MOV') > -1 || localFilePath.indexOf('.mp4') > -1)) ||
             (apiFilePath && (apiFilePath.indexOf('.MOV') > -1 || apiFilePath.indexOf('.mp4') > -1));
     }
 
-    public isImageFile() {
-        const localFilePath = this.getLocalFilePath();
-        const apiFilePath = this.getApiFilePath();
+    public isImageFile(fileMapIndex = 0) {
+        const localFilePath = this.getLocalFilePath(fileMapIndex);
+        const apiFilePath = this.getApiFilePath(fileMapIndex);
 
         return (localFilePath && (localFilePath.indexOf('.jpg') > -1 || localFilePath.indexOf('.png') > -1)) ||
             (apiFilePath && (apiFilePath.indexOf('.jpg') > -1 || apiFilePath.indexOf('.png') > -1));
+    }
+
+    public getLocalFilePath(fileMapIndex = 0) {
+        return this[this.downloadMapping[fileMapIndex].localPath];
+    }
+
+    public getApiFilePath(fileMapIndex = 0) {
+        return this[this.downloadMapping[fileMapIndex].name];
+    }
+
+    public getApiThumbFilePath(fileMapIndex = 0) {
+        return this[this.downloadMapping[fileMapIndex].thumbnail.name];
+    }
+
+    public isExistThumbOfFile(fileMapIndex = 0) {
+        return this.downloadMapping &&
+            this.downloadMapping.length &&
+            this.downloadMapping[fileMapIndex] &&
+            this.downloadMapping[fileMapIndex].thumbnail &&
+            this.downloadMapping[fileMapIndex].thumbnail.name &&
+            this[this.downloadMapping[fileMapIndex].thumbnail.name];
+    }
+
+    public getFileImagePath(fileMapIndex = 0) {
+        if (!this.downloadMapping ||
+            !this.downloadMapping[fileMapIndex] ||
+            !this.downloadMapping[fileMapIndex].name ||
+            !this[this.downloadMapping[fileMapIndex].name]
+        ) {
+            return this.defaultImage;
+        }
+        let imageName = null;
+
+        if (this.isImageFile()) {
+            imageName = this.getApiFilePath(fileMapIndex);
+        } else if (this.isExistThumbOfFile(fileMapIndex)) {
+            imageName = this.getApiThumbFilePath();
+        } else {
+            return null;
+        }
+
+        return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME);
     }
 }

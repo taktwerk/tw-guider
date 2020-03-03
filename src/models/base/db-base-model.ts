@@ -291,13 +291,12 @@ export abstract class DbBaseModel {
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
-                                const obj: DbBaseModel = new (<any>this.constructor);
+                                const obj = new (this.constructor as any);
                                 obj.platform = this.platform;
                                 obj.db = this.db;
                                 obj.events = this.events;
                                 obj.downloadService = this.downloadService;
                                 obj.loadFromAttributes(res.rows.item(i));
-                                // console.debug(this.TAG, 'new instance', obj);
                                 entries.push(obj);
                             }
                         }

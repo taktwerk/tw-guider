@@ -60,6 +60,7 @@ import {VirtualScrollerModule} from 'ngx-virtual-scroller';
 import {IonicImageLoader} from 'ionic-image-loader';
 import {Camera} from '@ionic-native/camera/ngx';
 import {MediaCapture} from '@ionic-native/media-capture/ngx';
+import { VideoEditor } from '@ionic-native/video-editor/ngx';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -133,6 +134,7 @@ export function LanguageLoader(http: Http) {
     AppVersion,
     Camera,
     MediaCapture,
+    VideoEditor,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

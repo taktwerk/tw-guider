@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {ActivatedRoute} from '@angular/router';

@@ -1,4 +1,4 @@
-import {Injectable, SecurityContext} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Platform} from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
@@ -12,6 +12,7 @@ import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
 import {FilePath} from '@ionic-native/file-path/ngx';
 import {MediaCapture} from '@ionic-native/media-capture/ngx';
 import {Camera} from '@ionic-native/camera/ngx';
+import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
 
 /**
  * Download file class
@@ -39,6 +40,7 @@ export class DownloadService {
      * @param filePath
      * @param mediaCapture
      * @param camera
+     * @param videoEditor
      */
     constructor(public http: HttpClient,
                 public platform: Platform,
@@ -50,7 +52,8 @@ export class DownloadService {
                 private filePicker: IOSFilePicker,
                 private filePath: FilePath,
                 private mediaCapture: MediaCapture,
-                private camera: Camera
+                private camera: Camera,
+                private videoEditor: VideoEditor
     ) {
         this.pushProgressFilesInfo = new BehaviorSubject<any>({});
     }
@@ -236,7 +239,7 @@ export class DownloadService {
      * @param {string} modelName
      * @returns {Promise<string | boolean>}
      */
-    public copy(fullPath: string, modelName: string): Promise< string | boolean > {
+    public copy(fullPath: string, modelName: string): Promise< string > {
         return new Promise(resolve => {
             const date = new Date();
             const correctPath = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
@@ -251,14 +254,14 @@ export class DownloadService {
                         if (success) {
                             resolve(newFilePath + '/' + newFileName);
                         } else {
-                            resolve(false);
+                            resolve('');
                         }
                     }, error => {
-                        resolve(false);
+                        resolve('');
                     });
                 },
                 err => {
-                    resolve(false);
+                    resolve('');
                 });
         });
     }
@@ -407,6 +410,22 @@ export class DownloadService {
         return this.getResolvedNativeFilePath(fullPath);
     }
 
+    public async makeVideoThumbnail(videoFileUri) {
+        const option: CreateThumbnailOptions = {
+            fileUri: videoFileUri,
+            width: 160,
+            height: 206,
+            atTime: 1,
+            outputFileName: 'sample'
+        };
+        let videoThumbnailPath = await this.videoEditor.createThumbnail(option);
+        if (videoThumbnailPath) {
+            videoThumbnailPath = 'file://' +  videoThumbnailPath;
+        }
+
+        return this.getResolvedNativeFilePath(videoThumbnailPath);
+    }
+
     public async makePhoto(targetWidth = 1000, targetHeight = 1000) {
         if (!this.camera) {
             throw new Error('MediaCapture plugin is not defined');
@@ -428,6 +447,7 @@ export class DownloadService {
         if (!this.filePath) {
             throw new Error('FilePath plugin is not defined');
         }
+        console.log('uri', uri);
         if (this.platform.is('android')) {
             return this.filePath.resolveNativePath(uri);
         }
