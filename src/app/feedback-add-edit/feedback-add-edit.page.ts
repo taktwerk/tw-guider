@@ -206,6 +206,8 @@ export class FeedbackAddEditPage implements OnInit {
     if (thumbnailUri) {
       thumbnailFileName = await this.downloadService.copy(thumbnailUri, this.model.TABLE_NAME);
     }
+    console.log('fileName copyFeedbackFileToLocalStorage', fileName);
+    console.log('thumbnailFileName copyFeedbackFileToLocalStorage', thumbnailFileName);
     if (typeof fileName === 'string') {
       this.model.setFileProperty(FeedbackModelDownloadMapEnum.ATTACHED_FILE, fileName, thumbnailFileName, true);
     }
