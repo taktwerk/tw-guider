@@ -284,6 +284,10 @@ export class DownloadService {
         newFileName: string
     ): Promise<boolean> {
         return new Promise(resolve => {
+            console.log('namePath', namePath);
+            console.log('currentName', currentName);
+            console.log('newFilePath', newFilePath);
+            console.log('newFileName', newFileName);
             this.file.copyFile(namePath, currentName, newFilePath, newFileName).then(success => {
                 resolve(true);
             }, error => {
