@@ -414,7 +414,10 @@ export class DownloadService {
             throw new Error('Video was not uploaded.');
         }
         console.log('videoFile', videoFile);
-        const fullPath = videoFile[0].fullPath;
+        let fullPath = videoFile[0].fullPath;
+        if (fullPath.indexOf('file://') < 0) {
+            fullPath = 'file://' + fullPath;
+        }
 
         return this.getResolvedNativeFilePath(fullPath);
     }
