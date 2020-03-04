@@ -414,10 +414,7 @@ export class DownloadService {
             throw new Error('Video was not uploaded.');
         }
         console.log('videoFile', videoFile);
-        let fullPath = videoFile[0].fullPath;
-        if (fullPath.indexOf('file://') < 0) {
-            fullPath = 'file://' + fullPath;
-        }
+        const fullPath = videoFile[0].fullPath;
 
         return this.getResolvedNativeFilePath(fullPath);
     }
@@ -458,6 +455,9 @@ export class DownloadService {
     public getResolvedNativeFilePath(uri) {
         if (!this.filePath) {
             throw new Error('FilePath plugin is not defined');
+        }
+        if (uri.indexOf('file://') < 0) {
+            uri = 'file://' + uri;
         }
         console.log('uri', uri);
         if (this.platform.is('android')) {
