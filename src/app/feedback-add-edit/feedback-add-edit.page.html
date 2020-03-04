@@ -36,7 +36,7 @@
     <div class="ion-text-center">
       <img *ngIf="model.isImageFile()"
            (click)="openFile(model.getApiFilePath(), model.TABLE_NAME, model.attached_file)"
-           [src]="model.getFile()"
+           [src]="model.getFileImagePath()"
       >
       <div *ngIf="model.isVideoFile()"
            (click)="openFile(model.getApiFilePath(), model.TABLE_NAME)"

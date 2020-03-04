@@ -38,7 +38,7 @@
                             </ion-icon>
                             <img *ngIf="feedback.isImageFile()"
                                  (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME, feedback.attached_file)"
-                                 [src]="feedback.getFile()"
+                                 [src]="feedback.getFileImagePath()"
                             >
                             <ion-icon name="videocam"
                                       class="videocam-icon"

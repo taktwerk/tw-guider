@@ -119,23 +119,6 @@ export class FeedbackModel extends DbApiModel {
         return this[FeedbackModel.COL_THUMB_ATTACHED_FILE];
     }
 
-    public getAttachedFileImagePath() {
-        if (!this[FeedbackModel.COL_LOCAL_ATTACHED_FILE]) {
-            return this.defaultImage;
-        }
-        let imageName = null;
-
-        if (this.isImageFile()) {
-            imageName = this.getApiFilePath();
-        } else if (this.isExistThumbOfFile()) {
-            imageName = this.getApiThumbFilePath();
-        } else {
-            return null;
-        }
-
-        return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME);
-    }
-
     public isExistThumbOfFile() {
         return !!this[FeedbackModel.COL_LOCAL_THUMB_ATTACHED_FILE];
     }
