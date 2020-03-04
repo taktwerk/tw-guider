@@ -403,6 +403,7 @@ export abstract class DbApiModel extends DbBaseModel {
         this[modelFileMap.url] = '';
         this[modelFileMap.localPath] = fileName;
         this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = fileName;
+        console.log('set file propertry', this);
         if (thumbnailFileName && modelFileMap.thumbnail) {
             this[modelFileMap.thumbnail.name] = thumbnailFileName.substr(thumbnailFileName.lastIndexOf('/') + 1);
             this[modelFileMap.thumbnail.url] = '';
