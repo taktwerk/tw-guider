@@ -254,13 +254,16 @@ export class DownloadService {
                         if (success) {
                             resolve(newFilePath + '/' + newFileName);
                         } else {
+                            console.log('is not success copy dir');
                             resolve('');
                         }
                     }, error => {
+                        console.log('copyToLocalDir error', error);
                         resolve('');
                     });
                 },
                 err => {
+                    console.log('checkDir error', err);
                     resolve('');
                 });
         });
@@ -284,6 +287,7 @@ export class DownloadService {
             this.file.copyFile(namePath, currentName, newFilePath, newFileName).then(success => {
                 resolve(true);
             }, error => {
+                console.log('copyFile error', error);
                 resolve(false);
             });
         });
