@@ -394,7 +394,9 @@ export class DownloadService {
             if (!this.filePicker) {
                 throw new Error('IOSFilePicker plugin is not defined');
             }
-            return this.filePicker.pickFile();
+            const uri = await this.filePicker.pickFile();
+
+            return this.getResolvedNativeFilePath(uri);
         } else {
             if (!this.fileChooser) {
                 throw new Error('FileChooser plugin is not defined');
