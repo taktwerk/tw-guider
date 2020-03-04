@@ -413,6 +413,7 @@ export class DownloadService {
         if (!videoFile || !videoFile[0]) {
             throw new Error('Video was not uploaded.');
         }
+        console.log('videoFile', videoFile);
         const fullPath = videoFile[0].fullPath;
 
         return this.getResolvedNativeFilePath(fullPath);
