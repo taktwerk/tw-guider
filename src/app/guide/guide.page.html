@@ -36,12 +36,12 @@
           <img
             *ngIf="step.isImageFile()"
             (click)="
-              openFile(step.getApiFilePath(), step.TABLE_NAME, step.title)
+              openFile(step.getFileName(), step.TABLE_NAME, step.title)
             "
             [src]="step.getFileImagePath()"
           />
           <div *ngIf="step.isVideoFile()"
-               (click)="openFile(step.getApiFilePath(), step.TABLE_NAME)"
+               (click)="openFile(step.getFileName(), step.TABLE_NAME)"
           >
             <div *ngIf="step.isExistThumbOfFile()">
               <img [src]="step.getFileImagePath()"/>
@@ -76,28 +76,25 @@
         </p>
         <ion-row class="guide-assets">
           <span *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" class="ion-padding">
-              <img *ngIf="asset.isFile() && asset.isPdf()"
-                (click)="
-                  openFile(
-                    asset.getApiPdfImageFilePath(),
-                    asset.TABLE_NAME,
-                    asset.name
-                  )
-                "
-                class="pdf-image"
-                [src]="asset.getPdf()"
+              <span *ngIf="asset.isExistFileByIndex()">
+                <img *ngIf="asset.isPdf()"
+                     (click)="openFile(
+                     asset.getFileName(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE),
+                     asset.TABLE_NAME,
+                     asset.name
+                     )"
+                     class="pdf-image"
+                     [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
+                />
+              <img *ngIf="!asset.isPdf()"
+                   (click)="openFile(asset.getFileName(), asset.TABLE_NAME, asset.name)"
+                   class="pdf-image"
+                   [src]="asset.getFileImagePath()"
               />
-              <img *ngIf="asset.isFile() && !asset.isPdf()"
-                (click)="
-                  openFile(asset.getApiFilePath(), asset.TABLE_NAME, asset.name)
-                "
-                class="pdf-image"
-                [src]="asset.getAssetFile()"
-              />
-              <ion-button
-                *ngIf="!asset.isFile()"
-                color="medium"
-                (click)="openAssetTextModal(asset)"
+              </span>
+              <ion-button *ngIf="!asset.isExistFileByIndex()"
+                          color="medium"
+                          (click)="openAssetTextModal(asset)"
               >
                 {{ asset.name }}
               </ion-button>

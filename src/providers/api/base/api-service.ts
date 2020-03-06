@@ -5,6 +5,7 @@ import {HttpClient} from '../../../services/http-client';
 import {AppSetting} from '../../../services/app-setting';
 import {Events} from '@ionic/angular';
 import {UserDb} from '../../../models/db/user-db';
+import {HttpHeaders as Headers} from '@angular/common/http';
 
 @Injectable()
 export abstract class ApiService {
@@ -199,12 +200,12 @@ export abstract class ApiService {
             return;
           }
           // Do we have files to upload?
-          if (!model.downloadMapping || model.downloadMapping.length <= 0) {
+          if (!model.canThereBeFiles()) {
             resolve(false);
             return;
           }
           const url = this.appSetting.getApiUrl() + this.loadUrl + '/' + model.idApi + '/upload';
-          const authToken = this.http.getAuthorizationToken();
+          const headers = new Headers({'X-Auth-Token': this.http.getAuthorizationToken()});
           const uploadFilePromises = [];
           for (const fields of model.downloadMapping) {
             // If we have a local path but no api path, we need to upload the file!
@@ -217,7 +218,7 @@ export abstract class ApiService {
                     model[fields.name],
                     model[fields.localPath],
                     fieldUrl,
-                    authToken
+                    headers
                   )
                 .then((result) => {
                   if (userForSaving) {

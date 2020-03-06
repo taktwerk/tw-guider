@@ -3,6 +3,12 @@ import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
+
+export enum GuideAssetModelFileMapIndexEnum {
+    ASSET_FILE,
+    PDF_FILE_IMAGE
+}
+
 /**
  * API Db Model for 'Guider Model'.
  */
@@ -67,51 +73,6 @@ export class GuideAssetModel extends DbApiModel {
      */
     constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
         super(platform, db, events, downloadService);
-    }
-
-    public getLocalFilePath() {
-        return this[GuideAssetModel.COL_LOCAL_ASSET_FILE];
-    }
-
-    public getApiFilePath() {
-        return this[GuideAssetModel.COL_ASSET_FILE];
-    }
-
-    public getLocalPdfImageFilePath() {
-        return this[GuideAssetModel.COL_LOCAL_PDF_IMAGE];
-    }
-
-    public getApiPdfImageFilePath() {
-        return this[GuideAssetModel.COL_PDF_IMAGE];
-    }
-
-    public isFile() {
-        return !!this[GuideAssetModel.COL_ASSET_FILE];
-    }
-
-    public isPdf() {
-        if (!this.isFile()) {
-            return false;
-        }
-        const apiFilePath = this.getApiFilePath();
-
-        return apiFilePath.indexOf('.pdf') > -1;
-    }
-
-    public getPdf() {
-        if (this[GuideAssetModel.COL_LOCAL_PDF_IMAGE]) {
-            return this.downloadService.getSanitizedFileUrl(this[GuideAssetModel.COL_PDF_IMAGE], this.TABLE_NAME);
-        } else {
-            return this.defaultImage;
-        }
-    }
-
-    public getAssetFile() {
-        if (this[GuideAssetModel.COL_LOCAL_ASSET_FILE]) {
-            return this.downloadService.getSanitizedFileUrl(this[GuideAssetModel.COL_ASSET_FILE], this.TABLE_NAME);
-        } else {
-            return this.defaultImage;
-        }
     }
 
     setUpdateCondition() {

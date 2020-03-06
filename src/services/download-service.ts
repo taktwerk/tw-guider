@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {Platform} from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
-import {BehaviorSubject} from 'rxjs';
 import {HttpClient, HttpHeaders as Headers} from '@angular/common/http';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
 import {finalize} from 'rxjs/operators';
@@ -14,19 +13,16 @@ import {MediaCapture} from '@ionic-native/media-capture/ngx';
 import {Camera} from '@ionic-native/camera/ngx';
 import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
 
+export class RecordedFile {
+    uri: string;
+    thumbnailUri?: string;
+    type?: string;
+}
 /**
  * Download file class
  */
 @Injectable()
 export class DownloadService {
-    /**
-     * Progress % of upload or download
-     * @type {number}
-     */
-    private progress: any = false;
-
-    public pushProgressFilesInfo: BehaviorSubject<any>;
-
     /**
      *
      * @param {Platform} platform
@@ -55,7 +51,6 @@ export class DownloadService {
                 private camera: Camera,
                 private videoEditor: VideoEditor
     ) {
-        this.pushProgressFilesInfo = new BehaviorSubject<any>({});
     }
 
     /**
@@ -69,7 +64,6 @@ export class DownloadService {
      */
     async downloadAndSaveFile(url: string, name: string, modelFolder: string, authToken = ''): Promise<any> {
         const promise = new Promise(resolve => {
-            // Not on cordova
             const finalPath = this.file.dataDirectory + modelFolder + '/' + name;
 
             this.isExistFile(this.file.dataDirectory + modelFolder + '/', name)
@@ -119,12 +113,8 @@ export class DownloadService {
         return new Promise((resolve) => {
             this.http.get(
                 url,
-                {
-                    headers: headers,
-                    observe: 'response',
-                    responseType: 'blob'
-                }
-            )
+                {headers: headers, observe: 'response', responseType: 'blob'}
+                )
                 .toPromise()
                 .then(response => {
                     resolve(response);
@@ -138,11 +128,8 @@ export class DownloadService {
 
     protected isExistFile(directory, name): Promise<boolean> {
         return new Promise(resolve => {
-            this.file.checkFile(directory, name).then(existFile => {
-                resolve(true);
-            }).catch(err => {
-                resolve(false);
-            });
+            this.file.checkFile(directory, name).then(existFile => resolve(existFile))
+                .catch(err => resolve(false));
         });
     }
 
@@ -155,20 +142,13 @@ export class DownloadService {
         });
     }
 
-    startUpload(
-        modelName,
-        fileKey: string,
-        fileName: string,
-        path: string,
-        url: string,
-        authToken: string
-    ): Promise<boolean> {
+    startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<boolean> {
         return new Promise(resolve => {
-            this.file.resolveDirectoryUrl(this.file.dataDirectory + modelName).then((directoryEntry) => {
+            this.file.resolveDirectoryUrl(this.file.dataDirectory + directoryName).then((directoryEntry) => {
                 this.file.getFile(directoryEntry, fileName, {})
                     .then(fileEntry => {
                         fileEntry.file(file => {
-                            this.readFile(fileKey, file, url, authToken);
+                            this.readFile(fileKey, file, url, headers);
                             resolve(true);
                             return;
                         });
@@ -184,32 +164,23 @@ export class DownloadService {
         });
     }
 
-    readFile(fileKey: string, file: any, url: string, authToken: string) {
+    readFile(fileKey: string, file: any, url: string, headers?: Headers) {
         const reader = new FileReader();
         reader.onload = () => {
             const formData = new FormData();
-            const imgBlob = new Blob([reader.result], {
-                type: file.type
-            });
+            const imgBlob = new Blob([reader.result], {type: file.type});
             formData.append(fileKey, imgBlob, file.name);
-            this.uploadImageData(formData, url, authToken);
+            this.uploadFile(formData, url, headers);
         };
         reader.readAsArrayBuffer(file);
     }
 
-    async uploadImageData(formData: FormData, url: string, authToken: string) {
-        const headers = new Headers({
-            'X-Auth-Token': authToken
-        });
+    uploadFile(formData: FormData, url: string, headers?: Headers) {
         this.http.post(url, formData, {headers: headers})
             .pipe(
-                finalize(() => {
-                    // loading.dismiss();
-                })
+                finalize(() => {})
             )
-            .subscribe(res => {
-                //
-            });
+            .subscribe(res => {});
     }
 
     /**
@@ -284,10 +255,6 @@ export class DownloadService {
         newFileName: string
     ): Promise<boolean> {
         return new Promise(resolve => {
-            console.log('namePath', namePath);
-            console.log('currentName', currentName);
-            console.log('newFilePath', newFilePath);
-            console.log('newFileName', newFileName);
             this.file.copyFile(namePath, currentName, newFilePath, newFileName).then(success => {
                 resolve(true);
             }, error => {
@@ -363,8 +330,8 @@ export class DownloadService {
      */
     public deleteFile(fullPath: string) {
         if (fullPath) {
-            let path = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
-            let fileName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
+            const path = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
+            const fileName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
 
             this.file.removeFile(path, fileName).then(success => {
                 console.log('is removed file', success);
@@ -389,25 +356,46 @@ export class DownloadService {
         return this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
     }
 
-    public async chooseFile() {
+    public async chooseFile(withThumbnailForVideo = false): Promise<RecordedFile> {
+        const recordedFile = new RecordedFile();
+        let uri = '';
         if (this.platform.is('ios')) {
             if (!this.filePicker) {
                 throw new Error('IOSFilePicker plugin is not defined');
             }
-            const uri = await this.filePicker.pickFile();
-
-            return this.getResolvedNativeFilePath(uri);
+            uri = await this.filePicker.pickFile();
         } else {
             if (!this.fileChooser) {
                 throw new Error('FileChooser plugin is not defined');
             }
-            const uri = await this.fileChooser.open();
+            uri = await this.fileChooser.open();
+        }
+        if (uri) {
+            recordedFile.uri = await this.getResolvedNativeFilePath(uri);
+            if (withThumbnailForVideo && this.checkFileTypeByExtension(recordedFile.uri, 'video')) {
+                recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
+            }
+        }
 
-            return this.getResolvedNativeFilePath(uri);
+        return recordedFile;
+    }
+
+    checkFileTypeByExtension(fileName: string, type: string): boolean {
+        switch (type) {
+            case 'image':
+                return (fileName && (fileName.indexOf('.jpg') > -1 || fileName.indexOf('.png') > -1));
+            case 'pdf':
+                return (fileName && (fileName.indexOf('.pdf') > -1));
+            case 'video':
+                return (fileName && (fileName.indexOf('.MOV') > -1 || fileName.indexOf('.mp4') > -1));
+            case 'audio':
+                return (fileName && (fileName.indexOf('.mp3') > -1));
+            default:
+                return false;
         }
     }
 
-    public async recordVideo() {
+    public async recordVideo(withThumbnail = false): Promise<RecordedFile> {
         if (!this.mediaCapture) {
             throw new Error('MediaCapture plugin is not defined');
         }
@@ -415,13 +403,37 @@ export class DownloadService {
         if (!videoFile || !videoFile[0]) {
             throw new Error('Video was not uploaded.');
         }
-        console.log('videoFile', videoFile);
         const fullPath = videoFile[0].fullPath;
+        const recordedFile = new RecordedFile();
+        recordedFile.uri = await this.getResolvedNativeFilePath(fullPath);
+        if (recordedFile.uri && withThumbnail) {
+            recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
+        }
 
-        return this.getResolvedNativeFilePath(fullPath);
+        return recordedFile;
     }
 
-    public async makeVideoThumbnail(videoFileUri) {
+    public async makePhoto(targetWidth = 1000, targetHeight = 1000): Promise<RecordedFile> {
+        if (!this.camera) {
+            throw new Error('MediaCapture plugin is not defined');
+        }
+        const cameraOptions = {
+            targetWidth: targetWidth,
+            targetHeight: targetHeight,
+            sourceType: this.camera.PictureSourceType.CAMERA,
+            destinationType: this.camera.DestinationType.FILE_URI,
+            encodingType: this.camera.EncodingType.JPEG,
+            mediaType: this.camera.MediaType.PICTURE
+        };
+        const photoFullPath = await this.camera.getPicture(cameraOptions);
+
+        const recordedFile = new RecordedFile();
+        recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath);
+
+        return recordedFile;
+    }
+
+    public async makeVideoThumbnail(videoFileUri: string): Promise<string> {
         const option: CreateThumbnailOptions = {
             fileUri: videoFileUri,
             width: 160,
@@ -437,31 +449,13 @@ export class DownloadService {
         return this.getResolvedNativeFilePath(videoThumbnailPath);
     }
 
-    public async makePhoto(targetWidth = 1000, targetHeight = 1000) {
-        if (!this.camera) {
-            throw new Error('MediaCapture plugin is not defined');
-        }
-        const cameraOptions = {
-            targetWidth: targetWidth,
-            targetHeight: targetHeight,
-            sourceType: this.camera.PictureSourceType.CAMERA,
-            destinationType: this.camera.DestinationType.FILE_URI,
-            encodingType: this.camera.EncodingType.JPEG,
-            mediaType: this.camera.MediaType.PICTURE
-        };
-        const photoFullPath = await this.camera.getPicture(cameraOptions);
-
-        return this.getResolvedNativeFilePath(photoFullPath);
-    }
-
-    public getResolvedNativeFilePath(uri) {
+    public getResolvedNativeFilePath(uri): Promise<string> {
         if (!this.filePath) {
             throw new Error('FilePath plugin is not defined');
         }
-        if (uri.indexOf('file://') < 0) {
+        if (this.platform.is('ios') && uri.indexOf('file://') < 0) {
             uri = 'file://' + uri;
         }
-        console.log('uri', uri);
         if (this.platform.is('android')) {
             return this.filePath.resolveNativePath(uri);
         }

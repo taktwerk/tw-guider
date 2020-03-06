@@ -2,6 +2,7 @@ $big-fab-width: 70px;
 $big-fab-list-left-padding: 10px;
 $big-fab-list-width: calc(#{$big-fab-width} - 2 * #{$big-fab-list-left-padding});
 $big-fab-list-margin-bottom: calc(#{$big-fab-width} + 10px);
+$videocam-font-size: 50px;
 
 .video-icon {
   height: 70vh;
@@ -28,4 +29,31 @@ $big-fab-list-margin-bottom: calc(#{$big-fab-width} + 10px);
     width: $big-fab-width;
     height: $big-fab-width;
   }
+}
+
+.videocam-icon {
+  font-size: 50px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.top-file {
+  max-height: 30%;
+  display: flex;
+  flex-direction: column;
+  .wrapper {
+    overflow-y: auto;
+    flex-direction: column;
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 30%;
+    img {
+      flex: 0 1 auto;
+      position: relative;
+      overflow-y: auto;
+    }
+  }
+
 }

@@ -56,12 +56,15 @@ export abstract class DbBaseModel {
      * 1st position: column name (in db)
      * 2nd position: column type (SQLite Schema Type)
      * 3th position: variable type (DbBaseModel.TYPE_<x>
+     * 4th position: column name (in object) (optional)
+     * 5th position: column not changed after push data to the server API. Must be boolean (optional)
      *
      * Example of TABLE declaration:
      * ```
      * TABLE: any = [
      *   [UserDb.COL_USER_SETTING, 'TEXT', DbBaseModel.TYPE_OBJECT ],
      *   [UserDb.COL_USER_ID, 'INT UNIQUE', DbBaseModel.TYPE_NUMBER, 'userId' ],
+     *   [UserDb.COL_USER_ID, 'INT UNIQUE', DbBaseModel.TYPE_NUMBER, 'userId', true ],
      * ];
      * ```
      */
@@ -775,7 +778,6 @@ export abstract class DbBaseModel {
      */
     protected getDateFromString(date: string | number): Date {
         if (Number.isInteger(date as number)) {
-            console.log('is integer date');
             /// if date is integer that it is seconds
             date = +date * 1000;
         }

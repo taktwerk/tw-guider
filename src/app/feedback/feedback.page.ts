@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Events, ModalController, NavController} from '@ionic/angular';
 import {FeedbackService} from '../../providers/api/feedback-service';
 import {FeedbackModel} from '../../models/db/api/feedback-model';
@@ -7,13 +7,6 @@ import {DownloadService} from '../../services/download-service';
 import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute} from '@angular/router';
-
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 
 @Component({
   selector: 'feedback-page',
@@ -41,14 +34,6 @@ export class FeedbackPage implements OnInit {
                 private navCtrl: NavController) {
     }
 
-    public changeEditModel(model?: FeedbackModel) {
-        if (!model) {
-            this.model = this.feedbackService.newModel();
-        } else {
-            this.model = model;
-        }
-    }
-
     public async setModels()  {
         const user = await this.authService.getLastUser();
         if (!user) {
@@ -58,13 +43,10 @@ export class FeedbackPage implements OnInit {
         if (this.reference_id && this.reference_model) {
             feedbackSearchCondition.push(['reference_id', this.reference_id]);
         }
-        this.feedbackService.dbModelApi.findAllWhere(
+        this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(
             feedbackSearchCondition,
             'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC'
-        )
-            .then(data => {
-                this.feedbackList = data;
-            });
+        );
     }
 
     public openFile(basePath: string, modelName: string, title?: string) {
@@ -78,10 +60,7 @@ export class FeedbackPage implements OnInit {
             if (title) {
                 photoTitle = title;
             }
-            this.photoViewer.show(
-                this.downloadService.getNativeFilePath(basePath, modelName),
-                photoTitle
-            );
+            this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), photoTitle);
         }
     }
 

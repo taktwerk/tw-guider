@@ -32,26 +32,17 @@
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
-  <div *ngIf="model.attached_file">
-    <div class="ion-text-center">
+  <div *ngIf="model.attached_file" class="top-file">
+    <div class="ion-text-center wrapper" style="height: 100%;">
       <img *ngIf="model.isImageFile()"
-           (click)="openFile(model.getApiFilePath(), model.TABLE_NAME, model.attached_file)"
+           (click)="openFile(model.getFileName(), model.TABLE_NAME, model.attached_file)"
            [src]="model.getFileImagePath()"
       >
       <div *ngIf="model.isVideoFile()"
-           (click)="openFile(model.getApiFilePath(), model.TABLE_NAME)"
+           (click)="openFile(model.getFileName(), model.TABLE_NAME)"
       >
-        <div *ngIf="model.isExistThumbOfFile()">
-          <img [src]="model.getFileImagePath()"/>
-          <ion-icon name="videocam"
-                    class="videocam-icon"
-                    slot="end"
-                    style="font-size: 50px;"
-          >
-          </ion-icon>
-        </div>
-        <ion-icon *ngIf="!model.isExistThumbOfFile()"
-                  name="videocam"
+        <img *ngIf="model.isExistThumbOfFile()" [src]="model.getFileImagePath()"/>
+        <ion-icon name="videocam"
                   class="videocam-icon"
                   slot="start"
         >

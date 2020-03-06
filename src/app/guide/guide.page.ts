@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {ActivatedRoute} from '@angular/router';
@@ -12,7 +12,7 @@ import {AuthService} from '../../services/auth-service';
 import {GuideAssetService} from '../../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-service';
 import {GuideAssetTextModalComponent} from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
-import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
+import {GuideAssetModel, GuideAssetModelFileMapIndexEnum} from '../../models/db/api/guide-asset-model';
 import {DownloadService} from '../../services/download-service';
 
 @Component({
@@ -21,6 +21,8 @@ import {DownloadService} from '../../services/download-service';
   styleUrls: ['guide.page.scss']
 })
 export class GuidePage implements OnInit {
+  guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
+
   public guide: GuiderModel = this.guiderService.newModel();
   public guideId: number = null;
   public currentStepNumber: number = 1;
@@ -53,7 +55,6 @@ export class GuidePage implements OnInit {
   public openFile(basePath: string, modelName: string, title?: string) {
     const filePath = basePath;
     if (filePath.indexOf('.MOV') > -1 || filePath.indexOf('.mp4') > -1) {
-      // E.g: Use the Streaming Media plugin to play a video
       this.streamingMedia.playVideo(
           this.downloadService.getNativeFilePath(basePath, modelName),
       );
@@ -62,10 +63,7 @@ export class GuidePage implements OnInit {
       if (title) {
         photoTitle = title;
       }
-      this.photoViewer.show(
-          this.downloadService.getNativeFilePath(basePath, modelName),
-          photoTitle
-      );
+      this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), photoTitle);
     }
   }
 

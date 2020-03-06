@@ -441,11 +441,17 @@ export class ApiSync {
         return url;
     }
 
-    async saveModel(apiService, model) {
-        const obj = apiService.dbModelApi.loadFromApi(model);
-        obj.is_synced = true;
-        let oldModel = await apiService.dbModelApi.findFirst(['id', obj.idApi]);
+    async saveModel(apiService, newModel) {
+        let oldModel = await apiService.dbModelApi.findFirst(['id', newModel[apiService.dbModelApi.apiPk]]);
+        console.log('oldModel', oldModel);
         oldModel = oldModel[0] ? oldModel[0] : null;
+        const obj = apiService.newModel();
+        if (oldModel) {
+            obj.loadFromApiToCurrentObject(oldModel);
+        }
+        obj.loadFromApiToCurrentObject(newModel, oldModel);
+        obj.is_synced = true;
+        // const obj = apiService.dbModelApi.loadFromApi(newModel, oldModel);
         if (!oldModel || oldModel.updated_at !== obj.updated_at) {
             await obj.saveSynced();
         }
@@ -454,7 +460,6 @@ export class ApiSync {
 
     public isOffNetwork(): boolean {
         if (this.network.type === 'none') {
-            console.log('is off network call makeSyncPause');
             this.makeSyncPause().then(() => {
                 this.isBusy = false;
             });
@@ -472,7 +477,6 @@ export class ApiSync {
             this.userDb.userSetting.syncStatus = 'pause';
             this.isPrepareSynData.next(false);
             this.userDb.save().then(() => {
-                console.log('makeSyncPause sendSyncProgress');
                 this.sendSyncProgress();
                 resolve(true);
             });
@@ -482,7 +486,6 @@ export class ApiSync {
     public makeSyncProcess(syncStatus = 'progress') {
         return new Promise(resolve => {
             if (this.isOffNetwork() || this.isBusy) {
-                console.log('makeSyncProcess isOffNetwork');
                 resolve(false);
                 return;
             }

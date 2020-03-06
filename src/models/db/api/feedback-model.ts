@@ -58,11 +58,11 @@ export class FeedbackModel extends DbApiModel {
         /// attached file columns
         [FeedbackModel.COL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [FeedbackModel.COL_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
-        [FeedbackModel.COL_LOCAL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [FeedbackModel.COL_LOCAL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
         /// thumb attached file columns
-        [FeedbackModel.COL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
-        [FeedbackModel.COL_API_THUMB_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
-        [FeedbackModel.COL_LOCAL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [FeedbackModel.COL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
+        [FeedbackModel.COL_API_THUMB_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
+        [FeedbackModel.COL_LOCAL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
     ];
 
     public downloadMapping: FileMapInModel[] = [
@@ -92,34 +92,5 @@ export class FeedbackModel extends DbApiModel {
     setUpdateCondition() {
         super.setUpdateCondition();
         this.updateCondition.push(['user_id', this.user_id]);
-    }
-
-    public getFile(fileTypeInDownloadMap = FeedbackModelDownloadMapEnum.ATTACHED_FILE) {
-        if (this.getLocalFilePath()) {
-            return this.downloadService.getWebviewFileSrc(
-                this.downloadService.getNativeFilePath(
-                    this[this.downloadMapping[fileTypeInDownloadMap].name],
-                    this.TABLE_NAME
-                )
-            );
-        } else {
-            return this.defaultImage;
-        }
-    }
-
-    public getLocalFilePath(fileTypeInDownloadMap = FeedbackModelDownloadMapEnum.ATTACHED_FILE) {
-        return this[this.downloadMapping[fileTypeInDownloadMap].localPath];
-    }
-
-    public getApiFilePath(fileTypeInDownloadMap = FeedbackModelDownloadMapEnum.ATTACHED_FILE) {
-        return this[this.downloadMapping[fileTypeInDownloadMap].name];
-    }
-
-    public getApiThumbFilePath() {
-        return this[FeedbackModel.COL_THUMB_ATTACHED_FILE];
-    }
-
-    public isExistThumbOfFile() {
-        return !!this[FeedbackModel.COL_LOCAL_THUMB_ATTACHED_FILE];
     }
 }

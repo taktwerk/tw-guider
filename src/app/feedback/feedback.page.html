@@ -37,14 +37,14 @@
                             >
                             </ion-icon>
                             <img *ngIf="feedback.isImageFile()"
-                                 (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME, feedback.attached_file)"
+                                 (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.attached_file)"
                                  [src]="feedback.getFileImagePath()"
                             >
                             <ion-icon name="videocam"
                                       class="videocam-icon"
                                       slot="start"
                                       *ngIf="feedback.isVideoFile()"
-                                      (click)="openFile(feedback.getApiFilePath(), feedback.TABLE_NAME)"
+                                      (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME)"
                             >
                             </ion-icon>
                             <ion-icon *ngIf="!feedback.isExistFormatFile()"

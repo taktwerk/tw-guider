@@ -102,6 +102,12 @@ export class ApiPush {
         });
     }
 
+    /**
+     * Pushes not synced local records to remote api
+     * and updates received primary keys in local db.
+     *
+     * @returns {Promise<any>}
+     */
     public pushOneAtTime(): Promise<any> {
         this.isStartPushBehaviorSubject.next(true);
         return new Promise(resolve => {
@@ -209,8 +215,10 @@ export class ApiPush {
                                         }
                                         const dbModelApi = service.newModel();
                                         dbModel.idApi = record[dbModelApi.apiPk];
+                                        /// load data from current model
                                         dbModelApi.loadFromApiToCurrentObject(dbModel);
-                                        dbModelApi.loadFromApiToCurrentObject(record);
+                                        /// load data from push API response
+                                        dbModelApi.loadFromApiToCurrentObject(record, dbModel);
                                         dbModelApi.is_synced = true;
                                         dbModelApi.save(
                                             false,
@@ -225,7 +233,6 @@ export class ApiPush {
                                                 const savedDataPercent = Math.round((pushedItemsCount / countOfAllChangedItems) * 100);
                                                 this.pushedItemsCount.next(pushedItemsCount);
                                                 this.pushedItemsPercent.next(savedDataPercent);
-                                                this.downloadService.pushProgressFilesInfo.next({});
                                                 resolve(true);
                                             });
                                         });
@@ -261,77 +268,6 @@ export class ApiPush {
                 });
             });
 
-            this.isBusy = false;
-            resolve(true);
-        });
-    }
-
-    /**
-     * Pushes not synced local records to remote api
-     * and updates received primary keys in local db.
-     *
-     * @returns {Promise<T>}
-     */
-    public push(): Promise<any> {
-        this.isStartPushBehaviorSubject.next(true);
-        return new Promise(resolve => {
-            if (this.isBusy) {
-                this.isStartPushBehaviorSubject.next(false);
-                resolve(false);
-
-                return;
-            }
-            this.isBusy = true;
-
-            // iterate over all services
-            for (const key of Object.keys(this.apiServices)) {
-                // get registered api service for the current model
-                const service: ApiService = this.apiServices[key];
-                const url = this.appSetting.getApiUrl() + service.loadUrl + '/batch';
-                service.prepareBatchPost().then((bodies) => {
-                    if (!bodies || bodies.length <= 0) {
-                        return;
-                    }
-                    const jsonBody = JSON.stringify(bodies);
-                    this.http.post(url, jsonBody)
-                        .map(res => res.json())
-                        .subscribe((data) => {
-                            //iterate over all received records
-                            Object.keys(data).forEach(function (key) {
-                                let record = data[key];
-                                if (record.errors) {
-                                    return;
-                                }
-                                //get model by local id and update received primary key from api
-                                service.dbModelApi.findById(record._id, true).then((dbModel) => {
-                                    if (!dbModel) {
-                                        return;
-                                    }
-                                    //type parse DbBaseModel -> DbApiModel
-                                    let dbModelApi = <DbApiModel>dbModel;
-                                    //load id from api
-                                    dbModelApi.idApi = record[dbModelApi.apiPk];
-                                    dbModelApi.is_synced = true;
-                                    //update isSynced = true and save with special update-condition
-                                    dbModelApi.save(false, true, dbModelApi.COL_ID + '=' + record._id).then((res) => {
-                                        if (res) {
-                                            service.dbModelApi.findById(record._id, true).then((m) => {
-                                            });
-                                            service.pushFiles(dbModelApi);
-                                        } else {
-                                            console.warn('ApiSync', 'push', 'record', 'could not save record', record);
-                                        }
-                                    });
-                                });
-                            });
-                        },(err) => {
-                            this.isStartPushBehaviorSubject.next(false);
-                            console.error('ApiSync', 'push', 'failed', {'error' : err});
-                            this.isBusy = false;
-                        });
-                });
-            }
-            this.isStartPushBehaviorSubject.next(false);
             this.isBusy = false;
             resolve(true);
         });
