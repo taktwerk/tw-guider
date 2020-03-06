@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import { File } from '@ionic-native/file/ngx';
 import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
@@ -50,7 +50,8 @@ export class FeedbackAddEditPage implements OnInit {
       private filePath: FilePath,
       private ngZone: NgZone,
       public alertController: AlertController,
-      private translateConfigService: TranslateConfigService
+      private translateConfigService: TranslateConfigService,
+      private router: Router
   ) {
     this.authService.checkAccess();
     if (!this.model) {
@@ -62,11 +63,15 @@ export class FeedbackAddEditPage implements OnInit {
     this.model.deleteAttachedFilesForDelete();
 
     this.ngZone.run(() => {
-      if (this.reference_model_alias && this.reference_id) {
-        this.navCtrl.navigateRoot(this.reference_model_alias + '/' + this.reference_id + '/feedback');
-      } else {
-        this.navCtrl.navigateRoot('/feedback');
-      }
+      // this.navCtrl.navigateBack('/feedback');
+      const feedbackNavigationExtras: NavigationExtras = {
+        queryParams: {
+          referenceModelAlias: this.reference_model_alias,
+          referenceId: this.reference_id
+        }
+      };
+      console.log('feedbackNavigationExtras', feedbackNavigationExtras);
+      this.router.navigate(['feedback'], feedbackNavigationExtras);
     });
   }
 
@@ -196,24 +201,18 @@ export class FeedbackAddEditPage implements OnInit {
         .catch(e => console.log('FeedbackModal', 'addPhotoUsingCamera', e));
   }
 
-  getReferenceModel(referenceModelAlias) {
-    switch (referenceModelAlias) {
-      case 'guide':
-        return 'app\\modules\\guide\\models\\Guide';
-      default:
-        return null;
-    }
-  }
-
   ngOnInit() {
-    this.feedbackId = +this.activatedRoute.snapshot.paramMap.get('feedbackId');
-    this.reference_id = +this.activatedRoute.snapshot.paramMap.get('reference_id');
-    this.reference_model_alias = this.activatedRoute.snapshot.paramMap.get('reference_model_alias');
-    this.reference_model = this.getReferenceModel(this.reference_model_alias);
-    if (this.feedbackId) {
-      this.feedbackService.dbModelApi.findFirst(['id', this.feedbackId]).then((result) => {
-        this.model = result[0];
-      });
-    }
+    this.activatedRoute.queryParams.subscribe(params => {
+      const feedbackData = params;
+      this.reference_id = +feedbackData.referenceId;
+      this.reference_model_alias = feedbackData.referenceModelAlias;
+      this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
+      this.feedbackId = +feedbackData.feedbackId;
+      if (this.feedbackId) {
+        this.feedbackService.dbModelApi.findFirst(['id', this.feedbackId]).then((result) => {
+          this.model = result[0];
+        });
+      }
+    });
   }
 }

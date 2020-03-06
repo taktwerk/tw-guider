@@ -6,7 +6,7 @@ import {AuthService} from '../../services/auth-service';
 import {DownloadService} from '../../services/download-service';
 import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 
 @Component({
   selector: 'feedback-page',
@@ -14,8 +14,7 @@ import {ActivatedRoute} from '@angular/router';
   styleUrls: ['feedback.page.scss']
 })
 export class FeedbackPage implements OnInit {
-
-    public model: FeedbackModel;
+    public backDefaultHref: string;
     public reference_id: number = null;
     public reference_model: string = null;
     public reference_model_alias: string = null;
@@ -31,7 +30,8 @@ export class FeedbackPage implements OnInit {
                 private activatedRoute: ActivatedRoute,
                 private streamingMedia: StreamingMedia,
                 private photoViewer: PhotoViewer,
-                private navCtrl: NavController) {
+                private navCtrl: NavController,
+                private router: Router) {
     }
 
     public async setModels()  {
@@ -41,6 +41,7 @@ export class FeedbackPage implements OnInit {
         }
         const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
         if (this.reference_id && this.reference_model) {
+            feedbackSearchCondition.push(['reference_model', this.reference_model]);
             feedbackSearchCondition.push(['reference_id', this.reference_id]);
         }
         this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(
@@ -76,16 +77,6 @@ export class FeedbackPage implements OnInit {
         }
     }
 
-    getReferenceModel(referenceModelAlias) {
-        switch (referenceModelAlias) {
-            case 'guide':
-                this.isComponentLikeModal = true;
-                return 'app\\modules\\guide\\models\\Guide';
-            default:
-                return null;
-        }
-    }
-
     itemHeightFn(item, index) {
         return 79;
     }
@@ -94,15 +85,30 @@ export class FeedbackPage implements OnInit {
         return item.id;
     }
 
-    ionViewDidLoad() {
-        this.setModels();
+    openAddEditPage(feedbackId?: number) {
+        const feedbackNavigationExtras: NavigationExtras = {
+            queryParams: {
+                feedbackId,
+                // backUrl: this.router.url,
+                referenceModelAlias: this.reference_model_alias,
+                referenceId: this.reference_id
+            }
+        };
+        this.router.navigate(['/feedback/save/' + feedbackId], feedbackNavigationExtras);
     }
 
     ngOnInit() {
-        this.reference_id = +this.activatedRoute.snapshot.paramMap.get('reference_id');
-        this.reference_model_alias = this.activatedRoute.snapshot.paramMap.get('reference_model_alias');
-        this.reference_model = this.getReferenceModel(this.reference_model_alias);
-        this.setModels();
+        this.activatedRoute.queryParams.subscribe(params => {
+            const feedbackData = params;
+            this.reference_id = +feedbackData.referenceId;
+            this.reference_model_alias = feedbackData.referenceModelAlias;
+            this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
+            if (this.reference_model) {
+                this.isComponentLikeModal = true;
+            }
+            this.backDefaultHref = feedbackData.backUrl;
+            this.setModels();
+        });
 
         this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':create', (model) => {
             this.setModels();

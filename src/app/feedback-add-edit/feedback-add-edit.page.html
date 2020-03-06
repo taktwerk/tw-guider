@@ -7,9 +7,12 @@
       {{ 'feedback.header' | translate:params }}
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">
-        {{ 'close' | translate:params }}
-      </ion-button>
+      <ion-back-button text="{{ 'close' | translate:params }}"
+                       type="button"
+                       icon="null"
+                       defaultHref="/feedback"
+      >
+      </ion-back-button>
     </ion-buttons>
     <sync-spinner-component slot="primary"></sync-spinner-component>
   </ion-toolbar>

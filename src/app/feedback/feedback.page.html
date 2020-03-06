@@ -12,9 +12,12 @@
             {{ 'feedback.header' | translate:params }}
         </ion-title>
         <ion-buttons *ngIf="isComponentLikeModal" slot="end">
-            <ion-button (click)="dismiss()">
-                {{ 'close' | translate:params }}
-            </ion-button>
+            <ion-back-button text="{{ 'close' | translate:params }}"
+                             type="button"
+                             icon="null"
+                             defaultHref="{{ backDefaultHref || '/guides' }}"
+            >
+            </ion-back-button>
         </ion-buttons>
         <sync-spinner-component slot="primary"></sync-spinner-component>
     </ion-toolbar>
@@ -75,7 +78,7 @@
                 </ion-label>
                 <ion-button slot="end" fill="clear"
                             *ngIf="feedback.isOpenStatus()"
-                            [routerLink]="['save/' + feedback.idApi]"
+                            (click)="openAddEditPage(feedback.idApi)"
                 >
                     <ion-icon slot="icon-only" name="create"></ion-icon>
                 </ion-button>
@@ -86,7 +89,7 @@
     <div style="height: 70px;">
     </div>
     <ion-fab vertical="bottom" horizontal="end" slot="fixed"
-             [routerLink]="['save']"
+             (click)="openAddEditPage()"
     >
         <ion-fab-button>
             <ion-icon name="add"></ion-icon>

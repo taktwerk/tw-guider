@@ -1,7 +1,7 @@
-import {ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {GuideStepService} from '../../providers/api/guide-step-service';
 import {GuideStepModel} from '../../models/db/api/guide-step-model';
 import { File } from '@ionic-native/file/ngx';
@@ -48,6 +48,7 @@ export class GuidePage implements OnInit {
       public changeDetectorRef: ChangeDetectorRef,
       public modalController: ModalController,
       public downloadService: DownloadService,
+      private router: Router
   ) {
     this.authService.checkAccess();
   }
@@ -101,6 +102,17 @@ export class GuidePage implements OnInit {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
     });
+  }
+
+  openFeedback(referenceModelAlias, referenceId) {
+    const feedbackNavigationExtras: NavigationExtras = {
+      queryParams: {
+        backUrl: this.router.url,
+        referenceModelAlias: referenceModelAlias,
+        referenceId: referenceId
+      }
+    };
+    this.router.navigate(['feedback'], feedbackNavigationExtras);
   }
 
   ngOnInit() {

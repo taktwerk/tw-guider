@@ -93,4 +93,15 @@ export class FeedbackModel extends DbApiModel {
         super.setUpdateCondition();
         this.updateCondition.push(['user_id', this.user_id]);
     }
+
+    getReferenceModelByAlias(referenceModelAlias) {
+        switch (referenceModelAlias) {
+            case 'guide':
+                return 'app\\modules\\guide\\models\\GuideStep';
+            case 'guide_step':
+                return 'app\\modules\\guide\\models\\Guide';
+            default:
+                return null;
+        }
+    }
 }

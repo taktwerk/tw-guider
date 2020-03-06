@@ -9,6 +9,7 @@ import {MainPipe} from '../../pipes/main-pipe.module';
 import {HtmlDescriptionComponentModule} from '../../components/html-description/html-description-component.module';
 import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
 import {TranslateModule} from '@ngx-translate/core';
+import {DefaultFilePreviewComponentModule} from '../../components/default-file-preview-component/default-file-preview-component.module';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {TranslateModule} from '@ngx-translate/core';
         HtmlDescriptionComponentModule,
         MainPipe,
         LanguageSelectorComponentModule,
-        TranslateModule
+        TranslateModule,
+        DefaultFilePreviewComponentModule
     ],
 })
 

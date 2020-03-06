@@ -370,6 +370,7 @@ export abstract class DbBaseModel {
         if (limit) {
             query = query + ' LIMIT ' + limit;
         }
+        console.log('where query', query);
 
         return query;
     }
