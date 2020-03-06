@@ -130,9 +130,6 @@ export class FeedbackAddEditPage implements OnInit {
 
   private async isValidFeedback() {
     let errorMessage = '';
-    if (!this.model.description) {
-      errorMessage = await this.translateConfigService.translate('validation.Description is required');
-    }
     if (!this.model.title) {
       errorMessage = await this.translateConfigService.translate('validation.Title is required');
     }
