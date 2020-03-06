@@ -33,15 +33,18 @@
     </ion-fab-list>
   </ion-fab>
   <div *ngIf="model.attached_file" class="top-file">
-    <div class="ion-text-center wrapper" style="height: 100%;">
+    <div class="ion-text-center wrapper">
       <img *ngIf="model.isImageFile()"
            (click)="openFile(model.getFileName(), model.TABLE_NAME, model.attached_file)"
            [src]="model.getFileImagePath()"
       >
       <div *ngIf="model.isVideoFile()"
            (click)="openFile(model.getFileName(), model.TABLE_NAME)"
+           [ngClass]="{'video-with-thumbnail': model.isExistThumbOfFile()}"
       >
-        <img *ngIf="model.isExistThumbOfFile()" [src]="model.getFileImagePath()"/>
+        <img *ngIf="model.isExistThumbOfFile()"
+             [src]="model.getFileImagePath()"
+        />
         <ion-icon name="videocam"
                   class="videocam-icon"
                   slot="start"
@@ -55,7 +58,7 @@
       >
       </ion-icon>
       <ion-icon *ngIf="!model.isExistFormatFile()"
-                class="cloud-upload"
+                class="videocam-icon"
                 name="cloud-upload"
       >
       </ion-icon>

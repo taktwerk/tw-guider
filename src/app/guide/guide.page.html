@@ -33,36 +33,34 @@
           </div>
         </div>
         <ion-card color="light">
-          <img
-            *ngIf="step.isImageFile()"
-            (click)="
-              openFile(step.getFileName(), step.TABLE_NAME, step.title)
-            "
-            [src]="step.getFileImagePath()"
-          />
+          <img *ngIf="step.isImageFile()"
+               (click)="openFile(step.getFileName(), step.TABLE_NAME, step.attached_file)"
+               [src]="step.getFileImagePath()"
+          >
           <div *ngIf="step.isVideoFile()"
                (click)="openFile(step.getFileName(), step.TABLE_NAME)"
+               [ngClass]="{'video-with-thumbnail': step.isExistThumbOfFile()}"
           >
-            <div *ngIf="step.isExistThumbOfFile()">
-              <img [src]="step.getFileImagePath()"/>
-              <ion-icon name="videocam"
-                        class="videocam-icon"
-                        slot="end"
-                        style="font-size: 50px;"
-              >
-              </ion-icon>
-            </div>
-            <ion-icon *ngIf="!step.isExistThumbOfFile()"
-                      name="videocam"
+            <img *ngIf="step.isExistThumbOfFile()"
+                 [src]="step.getFileImagePath()"
+            />
+            <ion-icon name="videocam"
                       class="videocam-icon"
                       slot="start"
             >
             </ion-icon>
           </div>
-          <img
-            *ngIf="!step.isExistFormatFile()"
-            src="/assets/placeholder.jpg"
-          />
+          <ion-icon name="musical-notes"
+                    class="videocam-icon"
+                    slot="start"
+                    *ngIf="step.isAudioFile()"
+          >
+          </ion-icon>
+          <ion-icon *ngIf="!step.isExistFormatFile()"
+                    class="videocam-icon"
+                    name="cloud-upload"
+          >
+          </ion-icon>
         </ion-card>
         <ion-card *ngIf="step.description_html" class="ion-text-left" color="light">
           <html-description-component [html]="step.description_html"></html-description-component>

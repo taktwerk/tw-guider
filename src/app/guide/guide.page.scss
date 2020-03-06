@@ -58,3 +58,12 @@ table td {
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
 }
+.video-with-thumbnail {
+  position: relative;
+  .videocam-icon {
+    position: absolute;
+    font-size: 7vh;
+    right: 0;
+    top: 0;
+  }
+}

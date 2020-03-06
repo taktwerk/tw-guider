@@ -40,13 +40,19 @@
                                  (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.attached_file)"
                                  [src]="feedback.getFileImagePath()"
                             >
-                            <ion-icon name="videocam"
-                                      class="videocam-icon"
-                                      slot="start"
-                                      *ngIf="feedback.isVideoFile()"
-                                      (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME)"
+                            <div *ngIf="feedback.isVideoFile()"
+                                 (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME)"
+                                 [ngClass]="{'video-with-thumbnail': feedback.isExistThumbOfFile()}"
                             >
-                            </ion-icon>
+                                <img *ngIf="feedback.isExistThumbOfFile()"
+                                     [src]="feedback.getFileImagePath()"
+                                />
+                                <ion-icon name="videocam"
+                                          class="videocam-icon"
+                                          slot="start"
+                                >
+                                </ion-icon>
+                            </div>
                             <ion-icon *ngIf="!feedback.isExistFormatFile()"
                                       class="cloud-upload"
                                       name="cloud-upload"

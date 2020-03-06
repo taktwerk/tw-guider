@@ -32,28 +32,39 @@ $videocam-font-size: 50px;
 }
 
 .videocam-icon {
-  font-size: 50px;
+  font-size: 100px;
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
 .top-file {
-  max-height: 30%;
+  max-height: 35%;
   display: flex;
   flex-direction: column;
   .wrapper {
     overflow-y: auto;
     flex-direction: column;
     display: flex;
-    margin-right: auto;
+    position: relative;
     margin-left: auto;
-    max-width: 30%;
+    margin-right: auto;
     img {
       flex: 0 1 auto;
       position: relative;
       overflow-y: auto;
+      object-fit: scale-down;
+    }
+    .video-with-thumbnail {
+      .videocam-icon {
+        font-size: 5vh;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
     }
   }
-
 }
