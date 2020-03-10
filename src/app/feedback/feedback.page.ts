@@ -4,9 +4,9 @@ import {FeedbackService} from '../../providers/api/feedback-service';
 import {FeedbackModel} from '../../models/db/api/feedback-model';
 import {AuthService} from '../../services/auth-service';
 import {DownloadService} from '../../services/download-service';
-import {StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import {VideoService} from '../../services/video-service';
 
 @Component({
   selector: 'feedback-page',
@@ -28,10 +28,10 @@ export class FeedbackPage implements OnInit {
                 public changeDetectorRef: ChangeDetectorRef,
                 private downloadService: DownloadService,
                 private activatedRoute: ActivatedRoute,
-                private streamingMedia: StreamingMedia,
                 private photoViewer: PhotoViewer,
                 private navCtrl: NavController,
-                private router: Router) {
+                private router: Router,
+                private videoService: VideoService) {
     }
 
     public async setModels()  {
@@ -53,9 +53,8 @@ export class FeedbackPage implements OnInit {
     public openFile(basePath: string, modelName: string, title?: string) {
         const filePath = basePath;
         if (filePath.indexOf('.MOV') > -1 || filePath.indexOf('.mp4') > -1) {
-            this.streamingMedia.playVideo(
-                this.downloadService.getNativeFilePath(basePath, modelName),
-            );
+            const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+            this.videoService.playVideo(fileUrl);
         } else if (filePath.indexOf('.jpg') > -1 || filePath.indexOf('.png') > -1) {
             let photoTitle = 'Feedback';
             if (title) {

@@ -107,15 +107,11 @@ export abstract class DbApiModel extends DbBaseModel {
                 for (const file of this.downloadMapping) {
                     if (file.thumbnail && (file.thumbnail.name === column[0] || file.thumbnail.url === column[0])) {
                         let memberNameOfFile = file.name;
-                        console.log('memberNameOfFile', memberNameOfFile);
                         for (const columnForFile of this.TABLE) {
                             if (file.name === columnForFile[0]) {
                                 memberNameOfFile = columnForFile[3] ? columnForFile[3] : memberNameOfFile;
                             }
                         }
-                        console.log('memberNameOfFile2', memberNameOfFile);
-                        console.log('apiObj[memberNameOfFile]', apiObj[memberNameOfFile]);
-                        console.log('this[memberNameOfFile]', this[memberNameOfFile]);
                         if (apiObj[memberNameOfFile] !== undefined && this[memberNameOfFile] === apiObj[memberNameOfFile]) {
                             willChangeColumn = false;
                         }
@@ -123,7 +119,6 @@ export abstract class DbApiModel extends DbBaseModel {
                 }
             }
             if (willChangeColumn) {
-                console.log('will change column', column[0]);
                 const columnName = column[0];
                 const type: number = parseInt(column[2]);
                 const memberName = column[3] ? column[3] : columnName;
@@ -395,9 +390,11 @@ export abstract class DbApiModel extends DbBaseModel {
         // Delete old file
         if (oldModel && oldModel[fileMap.localPath] !== this[fileMap.localPath]) {
             await this.downloadService.deleteFile(oldModel[fileMap.localPath]);
-            if (this.isExistThumbnail(fileMap)) {
-                await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
-            }
+        }
+        if (this.isExistThumbnail(fileMap) &&
+            (!oldModel || oldModel[fileMap.localPath] !== this[fileMap.localPath])
+        ) {
+            await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
         }
 
         return true;

@@ -6,7 +6,6 @@ import {AuthService} from '../../services/auth-service';
 import {HttpClient} from '../../services/http-client';
 import {Network} from '@ionic-native/network/ngx';
 import {SyncModalComponent} from '../sync-modal-component/sync-modal-component';
-import {debounceTime} from 'rxjs/operators';
 import {ApiPush} from '../../providers/api-push';
 import {UserDb} from '../../models/db/user-db';
 import {DownloadService} from '../../services/download-service';

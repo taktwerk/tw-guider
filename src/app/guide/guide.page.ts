@@ -5,7 +5,6 @@ import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {GuideStepService} from '../../providers/api/guide-step-service';
 import {GuideStepModel} from '../../models/db/api/guide-step-model';
 import { File } from '@ionic-native/file/ngx';
-import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import {Events, ModalController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
@@ -14,6 +13,7 @@ import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-serv
 import {GuideAssetTextModalComponent} from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import {GuideAssetModel, GuideAssetModelFileMapIndexEnum} from '../../models/db/api/guide-asset-model';
 import {DownloadService} from '../../services/download-service';
+import {VideoService} from '../../services/video-service';
 
 @Component({
   selector: 'app-guide',
@@ -41,14 +41,14 @@ export class GuidePage implements OnInit {
       private guideAssetPivotService: GuideAssetPivotService,
       private activatedRoute: ActivatedRoute,
       private file: File,
-      private streamingMedia: StreamingMedia,
       private photoViewer: PhotoViewer,
       public events: Events,
       public authService: AuthService,
       public changeDetectorRef: ChangeDetectorRef,
       public modalController: ModalController,
       public downloadService: DownloadService,
-      private router: Router
+      private router: Router,
+      private videoService: VideoService
   ) {
     this.authService.checkAccess();
   }
@@ -56,9 +56,8 @@ export class GuidePage implements OnInit {
   public openFile(basePath: string, modelName: string, title?: string) {
     const filePath = basePath;
     if (filePath.indexOf('.MOV') > -1 || filePath.indexOf('.mp4') > -1) {
-      this.streamingMedia.playVideo(
-          this.downloadService.getNativeFilePath(basePath, modelName),
-      );
+      const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+      this.videoService.playVideo(fileUrl);
     } else if (filePath.indexOf('.jpg') > -1 || filePath.indexOf('.png') > -1) {
       let photoTitle = 'Guide image';
       if (title) {

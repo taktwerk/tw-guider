@@ -443,7 +443,6 @@ export class ApiSync {
 
     async saveModel(apiService, newModel) {
         let oldModel = await apiService.dbModelApi.findFirst(['id', newModel[apiService.dbModelApi.apiPk]]);
-        console.log('oldModel', oldModel);
         oldModel = oldModel[0] ? oldModel[0] : null;
         const obj = apiService.newModel();
         if (oldModel) {

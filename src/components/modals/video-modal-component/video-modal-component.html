@@ -1,0 +1,22 @@
+<ion-header *ngIf="this.canPlayVideoViaHtml5VideoTag()"
+            class="black-background"
+>
+    <ion-toolbar>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">
+                {{ 'close' | translate:params }}
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="vertical-align-content ion-text-center black-background">
+    <ion-grid>
+        <ion-row>
+            <video #video
+                   [ngStyle]="{display: !this.canPlayVideoViaHtml5VideoTag() ? 'none' : 'block'}"
+                   controls
+            >
+            </video>
+        </ion-row>
+    </ion-grid>
+</ion-content>

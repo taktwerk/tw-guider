@@ -61,6 +61,9 @@ import {IonicImageLoader} from 'ionic-image-loader';
 import {Camera} from '@ionic-native/camera/ngx';
 import {MediaCapture} from '@ionic-native/media-capture/ngx';
 import { VideoEditor } from '@ionic-native/video-editor/ngx';
+import {VideoService} from '../services/video-service';
+import {VideoModalComponent} from '../components/modals/video-modal-component/video-modal-component';
+import {ToastService} from '../services/toast-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -71,8 +74,9 @@ export function LanguageLoader(http: Http) {
     AppComponent,
     GuideAssetTextModalComponent,
     SyncModalComponent,
+    VideoModalComponent,
   ],
-  entryComponents: [GuideAssetTextModalComponent, SyncModalComponent],
+  entryComponents: [GuideAssetTextModalComponent, SyncModalComponent, VideoModalComponent],
     imports: [
         BrowserModule,
         FormsModule,
@@ -108,6 +112,8 @@ export function LanguageLoader(http: Http) {
     AuthService,
     HttpClient,
     DownloadService,
+    VideoService,
+    ToastService,
     ApiSync,
     ApiPush,
     Storage,

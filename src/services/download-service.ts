@@ -5,7 +5,7 @@ import { Toast } from '@ionic-native/toast/ngx';
 import {HttpClient, HttpHeaders as Headers} from '@angular/common/http';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
 import {finalize} from 'rxjs/operators';
-import {DomSanitizer} from '@angular/platform-browser';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {FileChooser} from '@ionic-native/file-chooser/ngx';
 import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
 import {FilePath} from '@ionic-native/file-path/ngx';
@@ -349,7 +349,7 @@ export class DownloadService {
         return this.webview.convertFileSrc(path);
     }
 
-    public getSanitizedFileUrl(path, modelName) {
+    public getSanitizedFileUrl(path, modelName): SafeResourceUrl {
         path = this.getNativeFilePath(path, modelName);
         const convertFileSrc = this.getWebviewFileSrc(path);
 
