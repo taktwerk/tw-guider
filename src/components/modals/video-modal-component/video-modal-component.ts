@@ -60,7 +60,9 @@ export class VideoModalComponent implements OnInit {
     openVideoViaMediaStreamingPlugin(fileUrl) {
         const options: StreamingVideoOptions = {
             successCallback: () => { console.log('Video played'); },
-            errorCallback: (e) => { console.log('Error streaming'); },
+            errorCallback: (e) => {
+                this.toastService.showToast('Sorry, can\'t open file', 'Error', 'danger');
+            },
             controls: true,
             shouldAutoClose: false
         };
