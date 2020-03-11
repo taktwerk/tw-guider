@@ -31,6 +31,7 @@ export class FeedbackAddEditPage implements OnInit {
   public reference_id: number = null;
   public reference_model: string = null;
   public reference_model_alias: string = null;
+  public defaultTitle = 'Feedback';
 
   constructor(
       private activatedRoute: ActivatedRoute,
@@ -65,14 +66,12 @@ export class FeedbackAddEditPage implements OnInit {
     this.model.deleteAttachedFilesForDelete();
 
     this.ngZone.run(() => {
-      // this.navCtrl.navigateBack('/feedback');
       const feedbackNavigationExtras: NavigationExtras = {
         queryParams: {
           referenceModelAlias: this.reference_model_alias,
           referenceId: this.reference_id
         }
       };
-      console.log('feedbackNavigationExtras', feedbackNavigationExtras);
       this.router.navigate(['feedback'], feedbackNavigationExtras);
     });
   }
@@ -112,6 +111,9 @@ export class FeedbackAddEditPage implements OnInit {
     if (!(await this.isValidFeedback())) {
       return;
     }
+    if (!this.model.title) {
+      this.model.title = this.defaultTitle;
+    }
     this.feedbackService.save(this.model).then(res => {
       if (this.network.type === 'none') {
         this.apiPush.setIsPushAvailableData(true);
@@ -128,8 +130,8 @@ export class FeedbackAddEditPage implements OnInit {
 
   private async isValidFeedback() {
     let errorMessage = '';
-    if (!this.model.title) {
-      errorMessage = await this.translateConfigService.translate('validation.Title is required');
+    if (!(this.model.title || this.model.description || this.model.attached_file)) {
+      errorMessage = await this.translateConfigService.translate('validation.nothing_to_save');
     }
     if (this.model.title && this.model.title.length > 255) {
       errorMessage = await this.translateConfigService.translate(
@@ -196,18 +198,38 @@ export class FeedbackAddEditPage implements OnInit {
         .catch(e => console.log('FeedbackModal', 'addPhotoUsingCamera', e));
   }
 
+  async getDefaultTitle() {
+    if (this.model.id && this.model.reference_model && this.model.reference_id) {
+      return `${this.model.reference_model}:${this.model.reference_id}`;
+    }
+    if (this.model.idApi) {
+      return `Feedback:${this.model.idApi}`;
+    }
+    if (this.reference_model_alias && this.reference_id) {
+      return `${this.reference_model_alias}:${this.reference_id}`;
+    }
+    if (this.model.id) {
+      return `Feedback:${this.model.id}`;
+    }
+
+    const lastRecordLocalId = await this.model.getLastRecordLocalId();
+
+    return `Feedback:${lastRecordLocalId}`;
+  }
+
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.subscribe(async params => {
       const feedbackData = params;
+      console.log('feedbackData', feedbackData);
       this.reference_id = +feedbackData.referenceId;
       this.reference_model_alias = feedbackData.referenceModelAlias;
-      this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
+      this.reference_model = this.reference_model_alias;
       this.feedbackId = +feedbackData.feedbackId;
       if (this.feedbackId) {
-        this.feedbackService.dbModelApi.findFirst(['id', this.feedbackId]).then((result) => {
-          this.model = result[0];
-        });
+        const result = await this.feedbackService.dbModelApi.findFirst([this.model.COL_ID, this.feedbackId]);
+        this.model = result[0];
       }
+      this.defaultTitle = await this.getDefaultTitle();
     });
   }
 }

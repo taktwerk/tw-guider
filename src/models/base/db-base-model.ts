@@ -404,6 +404,12 @@ export abstract class DbBaseModel {
         return this.findAllWhere(condition, orderBy, 1);
     }
 
+    public async getLastRecordLocalId() {
+        const lastRecord = await this.find('_id DESC');
+
+        return lastRecord ? lastRecord.id + 1 : 1;
+    }
+
     /**
      * Returns one instance from this db model by an optional ordering
      * and a fix LIMIT which is 1.

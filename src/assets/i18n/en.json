@@ -88,7 +88,8 @@
     "You are not authorized.": "You are not authorized.",
     "QR-code has wrong information": "QR-code has wrong information",
     "max_characters": "The maximum number of characters in a {{property_name}} should be {{max}} characters.",
-    "Title is required": "Title is required"
+    "Title is required": "Title is required",
+    "nothing_to_save": "Nothing to save"
   },
   "qr": {
     "Application was successfully configured": "Application was successfully configured",

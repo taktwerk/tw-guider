@@ -88,7 +88,6 @@ export class FeedbackPage implements OnInit {
         const feedbackNavigationExtras: NavigationExtras = {
             queryParams: {
                 feedbackId,
-                // backUrl: this.router.url,
                 referenceModelAlias: this.reference_model_alias,
                 referenceId: this.reference_id
             }
