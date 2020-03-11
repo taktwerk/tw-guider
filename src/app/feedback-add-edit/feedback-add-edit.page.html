@@ -38,11 +38,11 @@
   <div *ngIf="model.attached_file" class="top-file">
     <div class="ion-text-center wrapper">
       <img *ngIf="model.isImageFile()"
-           (click)="openFile(model.getFileName(), model.TABLE_NAME, model.attached_file)"
+           (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
            [src]="model.getFileImagePath()"
       >
       <div *ngIf="model.isVideoFile()"
-           (click)="openFile(model.getFileName(), model.TABLE_NAME)"
+           (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
            [ngClass]="{'video-with-thumbnail': model.isExistThumbOfFile()}"
       >
         <img *ngIf="model.isExistThumbOfFile()"

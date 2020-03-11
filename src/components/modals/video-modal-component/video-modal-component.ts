@@ -18,10 +18,11 @@ import {DownloadService} from '../../../services/download-service';
   styleUrls: ['video-modal-component.scss']
 })
 
-export class VideoModalComponent {
+export class VideoModalComponent implements OnInit {
     @ViewChild('video', {static: false}) video: ElementRef; // binds to #video in video.html
     videoElement: HTMLVideoElement;
     @Input() fileUrl: string;
+    @Input() fileTitle: string;
 
     constructor(private modalController: ModalController,
                 private platform: Platform,
@@ -40,7 +41,7 @@ export class VideoModalComponent {
             await this.videoElement.play();
         } catch (e) {
             this.openVideoViaMediaStreamingPlugin(this.fileUrl);
-            /// in this plugin is not exist promise
+            /// in this plugin is not exist promise that why setTimeout
             setTimeout(() => this.dismiss(), 1000);
         }
     }

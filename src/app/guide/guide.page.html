@@ -26,11 +26,11 @@
         <ion-card color="light">
 <!--          <default-file-preview-component [model]="step"></default-file-preview-component>-->
           <img *ngIf="step.isImageFile()"
-               (click)="openFile(step.getFileName(), step.TABLE_NAME, step.attached_file)"
+               (click)="openFile(step.getFileName(), step.TABLE_NAME, step.title)"
                [src]="step.getFileImagePath()"
           >
           <div *ngIf="step.isVideoFile()"
-               (click)="openFile(step.getFileName(), step.TABLE_NAME)"
+               (click)="openFile(step.getFileName(), step.TABLE_NAME, step.title)"
                [ngClass]="{'video-with-thumbnail': step.isExistThumbOfFile()}"
           >
             <img *ngIf="step.isExistThumbOfFile()"

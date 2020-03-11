@@ -55,15 +55,15 @@ export class GuidePage implements OnInit {
 
   public openFile(basePath: string, modelName: string, title?: string) {
     const filePath = basePath;
+    let fileTitle = 'Guide';
+    if (title) {
+      fileTitle = title;
+    }
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
       const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-      this.videoService.playVideo(fileUrl);
+      this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
-      let photoTitle = 'Guide image';
-      if (title) {
-        photoTitle = title;
-      }
-      this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), photoTitle);
+      this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
     }
   }
 
