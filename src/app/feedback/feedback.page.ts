@@ -52,10 +52,10 @@ export class FeedbackPage implements OnInit {
 
     public openFile(basePath: string, modelName: string, title?: string) {
         const filePath = basePath;
-        if (filePath.indexOf('.MOV') > -1 || filePath.indexOf('.mp4') > -1) {
+        if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
             const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
             this.videoService.playVideo(fileUrl);
-        } else if (filePath.indexOf('.jpg') > -1 || filePath.indexOf('.png') > -1) {
+        } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
             let photoTitle = 'Feedback';
             if (title) {
                 photoTitle = title;

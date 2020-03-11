@@ -14,6 +14,7 @@ export class VideoService {
                 private downloadService: DownloadService) {}
 
     async playVideo(fileUrl: string) {
+        console.log('playVideo, please');
         const modal = await this.modalController.create({
             component: VideoModalComponent,
             componentProps: {

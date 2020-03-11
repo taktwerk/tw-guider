@@ -387,7 +387,9 @@ export class DownloadService {
             case 'pdf':
                 return (fileName && (fileName.indexOf('.pdf') > -1));
             case 'video':
-                return (fileName && (fileName.indexOf('.MOV') > -1 || fileName.indexOf('.mp4') > -1));
+                return (fileName && (fileName.indexOf('.MOV') > -1 ||
+                    fileName.indexOf('.mp4') > -1 ||
+                    fileName.indexOf('.wmv') > -1));
             case 'audio':
                 return (fileName && (fileName.indexOf('.mp3') > -1));
             default:

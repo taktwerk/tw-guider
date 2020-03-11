@@ -13,6 +13,7 @@ import {HttpClient} from '../../services/http-client';
 import {ApiPush} from '../../providers/api-push';
 import {FilePath} from '@ionic-native/file-path/ngx';
 import {TranslateConfigService} from '../../services/translate-config.service';
+import {VideoService} from '../../services/video-service';
 
 @Component({
   selector: 'feedback-add-edit-page',
@@ -51,7 +52,8 @@ export class FeedbackAddEditPage implements OnInit {
       private ngZone: NgZone,
       public alertController: AlertController,
       private translateConfigService: TranslateConfigService,
-      private router: Router
+      private router: Router,
+      private videoService: VideoService
   ) {
     this.authService.checkAccess();
     if (!this.model) {
@@ -77,11 +79,10 @@ export class FeedbackAddEditPage implements OnInit {
 
   public openFile(basePath: string, modelName: string, title?: string) {
     const filePath = basePath;
-    if (filePath.indexOf('.MOV') > -1 || filePath.indexOf('.mp4') > -1) {
-      this.streamingMedia.playVideo(
-          this.downloadService.getNativeFilePath(basePath, modelName),
-      );
-    } else if (filePath.indexOf('.jpg') > -1 || filePath.indexOf('.png') > -1) {
+    if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
+      const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+      this.videoService.playVideo(fileUrl);
+    } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       let photoTitle = 'Feedback';
       if (title) {
         photoTitle = title;
