@@ -2,7 +2,6 @@ import {Platform, Events} from '@ionic/angular';
 import {DbBaseModel} from './db-base-model';
 import {DbProvider} from '../../providers/db-provider';
 import {DownloadService, RecordedFile} from '../../services/download-service';
-import {FeedbackModelDownloadMapEnum} from '../db/api/feedback-model';
 
 export class BaseFileMapInModel {
     public name: string;
@@ -104,16 +103,18 @@ export abstract class DbApiModel extends DbBaseModel {
             let willChangeColumn = true;
             if (oldModel) {
                 /// prevent change thumbnail if file name was not changed
-                for (const file of this.downloadMapping) {
-                    if (file.thumbnail && (file.thumbnail.name === column[0] || file.thumbnail.url === column[0])) {
-                        let memberNameOfFile = file.name;
-                        for (const columnForFile of this.TABLE) {
-                            if (file.name === columnForFile[0]) {
-                                memberNameOfFile = columnForFile[3] ? columnForFile[3] : memberNameOfFile;
+                if (this.downloadMapping && this.downloadMapping.length) {
+                    for (const file of this.downloadMapping) {
+                        if (file.thumbnail && (file.thumbnail.name === column[0] || file.thumbnail.url === column[0])) {
+                            let memberNameOfFile = file.name;
+                            for (const columnForFile of this.TABLE) {
+                                if (file.name === columnForFile[0]) {
+                                    memberNameOfFile = columnForFile[3] ? columnForFile[3] : memberNameOfFile;
+                                }
                             }
-                        }
-                        if (apiObj[memberNameOfFile] !== undefined && this[memberNameOfFile] === apiObj[memberNameOfFile]) {
-                            willChangeColumn = false;
+                            if (apiObj[memberNameOfFile] !== undefined && this[memberNameOfFile] === apiObj[memberNameOfFile]) {
+                                willChangeColumn = false;
+                            }
                         }
                     }
                 }

@@ -13,7 +13,6 @@
     <ion-grid>
         <ion-row>
             <video #video
-                   [muted]="true"
                    [ngStyle]="{display: !this.canPlayVideoViaHtml5VideoTag() ? 'none' : 'block'}"
                    controls
             >

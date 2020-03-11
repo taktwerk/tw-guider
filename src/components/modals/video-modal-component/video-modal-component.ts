@@ -18,7 +18,7 @@ import {DownloadService} from '../../../services/download-service';
   styleUrls: ['video-modal-component.scss']
 })
 
-export class VideoModalComponent implements OnInit {
+export class VideoModalComponent {
     @ViewChild('video', {static: false}) video: ElementRef; // binds to #video in video.html
     videoElement: HTMLVideoElement;
     @Input() fileUrl: string;
@@ -30,9 +30,7 @@ export class VideoModalComponent implements OnInit {
                 private downloadService: DownloadService) {}
 
     dismiss() {
-        if (!this.videoElement || this.videoElement.paused) {
-            this.modalController.dismiss();
-        }
+        this.modalController.dismiss();
     }
 
     async playVideo() {
@@ -67,11 +65,5 @@ export class VideoModalComponent implements OnInit {
             shouldAutoClose: false
         };
         this.streamingMedia.playVideo(fileUrl, options);
-    }
-
-    ngOnInit() {
-        this.platform.ready().then(async () => {
-            this.platform.backButton.subscribeWithPriority(9999, () => this.dismiss());
-        });
     }
 }
