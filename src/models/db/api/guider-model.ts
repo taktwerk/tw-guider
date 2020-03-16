@@ -18,10 +18,10 @@ export class GuiderModel extends DbApiModel {
     steps: GuideStepModel[] = [];
     assets: GuideAssetModel[] = [];
 
-    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_USER_ID + ')';
+    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_CLIENT_ID + ')';
 
     //members
-    public user_id: number = null;
+    public client_id: number = null;
     public short_name: string;
     public title: string;
     public description: string;
@@ -33,7 +33,7 @@ export class GuiderModel extends DbApiModel {
     public protocol_template_id: number;
 
     //db columns
-    static COL_USER_ID = 'user_id';
+    static COL_CLIENT_ID = 'client_id';
     static COL_SHORT_NAME = 'short_name';
     static COL_TITLE = 'title';
     static COL_DESCRIPTION = 'description';
@@ -59,7 +59,7 @@ export class GuiderModel extends DbApiModel {
 
     /** @inheritDoc */
     TABLE: any = [
-        [GuiderModel.COL_USER_ID, 'INT', DbBaseModel.TYPE_NUMBER],
+        [GuiderModel.COL_CLIENT_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuiderModel.COL_SHORT_NAME, 'VARCHAR(4)', DbBaseModel.TYPE_STRING],
         [GuiderModel.COL_TITLE, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
         [GuiderModel. COL_DESCRIPTION, 'TEXT', DbBaseModel.TYPE_STRING],
@@ -178,6 +178,6 @@ export class GuiderModel extends DbApiModel {
 
     setUpdateCondition() {
         super.setUpdateCondition();
-        this.updateCondition.push(['user_id', this.user_id]);
+        this.updateCondition.push(['client_id', this.client_id]);
     }
 }

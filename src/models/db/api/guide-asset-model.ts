@@ -17,17 +17,17 @@ export class GuideAssetModel extends DbApiModel {
     TAG: string = 'GuideAssetModel';
     public apiPk = 'id';
 
-    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuideAssetModel.COL_USER_ID + ')';
+    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuideAssetModel.COL_CLIENT_ID + ')';
 
     //members
-    public user_id: number = null;
     public name: string;
     public asset_file: string;
     public asset_html: string;
     public pdf_image: string;
+    public client_id: number;
 
     //db columns
-    static COL_USER_ID = 'user_id';
+    static COL_CLIENT_ID = 'client_id';
     static COL_NAME = 'name';
     static COL_ASSET_HTML = 'asset_html';
     static COL_ORDER_NUMBER = 'order_number';
@@ -56,7 +56,7 @@ export class GuideAssetModel extends DbApiModel {
 
     /** @inheritDoc */
     TABLE: any = [
-        [GuideAssetModel.COL_USER_ID, 'INT', DbBaseModel.TYPE_NUMBER],
+        [GuideAssetModel.COL_CLIENT_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
         [GuideAssetModel.COL_NAME, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
         [GuideAssetModel.COL_ASSET_HTML, 'TEXT', DbBaseModel.TYPE_STRING],
         [GuideAssetModel.COL_ORDER_NUMBER, 'INT', DbBaseModel.TYPE_NUMBER],
@@ -77,6 +77,6 @@ export class GuideAssetModel extends DbApiModel {
 
     setUpdateCondition() {
         super.setUpdateCondition();
-        this.updateCondition.push(['user_id', this.user_id]);
+        this.updateCondition.push(['client_id', this.client_id]);
     }
 }

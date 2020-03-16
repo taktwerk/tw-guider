@@ -223,6 +223,7 @@ export class AuthService {
                 if (existUser.length) {
                     this.auth = existUser[0];
                     this.auth.authToken = user.access_token;
+                    this.auth.client_id = user.client_id;
                     if (formData) {
                         this.auth.password = this.cryptoProvider.hashPassword(formData.password);
                     }
@@ -234,6 +235,8 @@ export class AuthService {
                     }
                     this.auth = this.newAuthModel();
                     this.auth.userId = user.user_id;
+                    this.auth.client_id = user.client_id;
+                    this.auth.isAuthority = user.isAuthority;
                     this.auth.authToken = user.access_token;
                     if (formData) {
                         this.auth.username = formData.username;
@@ -296,6 +299,7 @@ export class AuthService {
      */
     logout() {
         return new Promise((resolve) => {
+            console.log('logout', this.auth);
             this.auth.loginDate = null;
             this.auth.save(true).then(() => {
                 this.isLoggedin = false;

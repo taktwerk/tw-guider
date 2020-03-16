@@ -34,7 +34,7 @@ export class FeedbackService extends ApiService {
                 public downloadService: DownloadService,
                 public appSetting: AppSetting) {
         super(http, events, appSetting);
-        console.debug('GuiderService', 'initialized');
+        console.debug('FeedbackService', 'initialized');
     }
 
     /**

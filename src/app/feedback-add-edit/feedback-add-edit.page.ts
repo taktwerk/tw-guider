@@ -102,6 +102,7 @@ export class FeedbackAddEditPage implements OnInit {
       return;
     }
     this.model.user_id = user.userId;
+    this.model.client_id = user.client_id;
     if (this.reference_id) {
       this.model.reference_id = this.reference_id;
     }

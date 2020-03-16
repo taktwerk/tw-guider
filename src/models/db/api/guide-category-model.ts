@@ -14,24 +14,24 @@ export class GuideCategoryModel extends DbApiModel {
     public apiPk = 'id';
 
     //members
-    public user_id: number = null;
+    public client_id: number = null;
     public name: string = null;
 
     /// relation
     public guides: GuiderModel[] = [];
 
     //db columns
-    static COL_USER_ID = 'user_id';
+    static COL_CLIENT_ID = 'client_id';
     static COL_NAME = 'name';
 
     /** @inheritDoc */
     TABLE_NAME: string = 'guide_category';
 
-    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuideCategoryModel.COL_USER_ID + ')';
+    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuideCategoryModel.COL_CLIENT_ID + ')';
 
     /** @inheritDoc */
     TABLE: any = [
-        [GuideCategoryModel.COL_USER_ID, 'INT', DbBaseModel.TYPE_NUMBER],
+        [GuideCategoryModel.COL_CLIENT_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuideCategoryModel.COL_NAME, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
     ];
 
@@ -107,7 +107,7 @@ export class GuideCategoryModel extends DbApiModel {
 
     setUpdateCondition() {
         super.setUpdateCondition();
-        this.updateCondition.push(['user_id', this.user_id]);
+        this.updateCondition.push(['client_id', this.client_id]);
     }
 
     removeAll(condition?: []): Promise<any> {

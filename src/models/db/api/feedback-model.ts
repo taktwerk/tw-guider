@@ -25,12 +25,14 @@ export class FeedbackModel extends DbApiModel {
     public reference_id: number = null;
     public attached_file: string;
     public local_attached_file: string;
+    public client_id: number;
 
     public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + FeedbackModel.COL_USER_ID + ')';
 
     //db columns
     static COL_TITLE = 'title';
     static COL_DESCRIPTION = 'description';
+    static COL_CLIENT_ID = 'client_id';
     static COL_REFERENCE_MODEL = 'reference_model';
     static COL_FEEDBACK_URL = 'feedback_url';
     static COL_STATUS = 'status';
@@ -48,13 +50,14 @@ export class FeedbackModel extends DbApiModel {
 
     /** @inheritDoc */
     TABLE: any = [
+        [FeedbackModel.COL_CLIENT_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
+        [FeedbackModel.COL_USER_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'user_id'],
         [FeedbackModel.COL_TITLE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [FeedbackModel.COL_DESCRIPTION, 'TEXT', DbBaseModel.TYPE_STRING],
         [FeedbackModel.COL_REFERENCE_MODEL, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [FeedbackModel.COL_FEEDBACK_URL, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'feedback_url'],
         [FeedbackModel.COL_STATUS, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'status'],
         [FeedbackModel.COL_REFERNCE_ID, 'INT', DbBaseModel.TYPE_NUMBER],
-        [FeedbackModel.COL_USER_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         /// attached file columns
         [FeedbackModel.COL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [FeedbackModel.COL_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],

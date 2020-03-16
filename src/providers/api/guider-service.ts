@@ -52,8 +52,8 @@ export class GuiderService extends ApiService {
                 return;
             }
             const whereCondition = [['id', id]];
-            if (user.clientId) {
-                whereCondition.push(['user_id', user.userId]);
+            if (!user.isAuthority && user.client_id) {
+                whereCondition.push(['client_id', user.client_id]);
             }
             this.dbModelApi.findFirst(whereCondition).then(result => {
                 resolve(result);

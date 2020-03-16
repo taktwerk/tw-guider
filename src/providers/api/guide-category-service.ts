@@ -60,9 +60,16 @@ export class GuideCategoryService extends ApiService {
                 this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
-                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('user_id') + '=' + user.userId,
-                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('user_id') + '=' + user.userId
             ];
+            console.log('user.isAuthority', user.isAuthority);
+            if (!user.isAuthority) {
+                whereCondition.push(
+                    this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
+                );
+                whereCondition.push(
+                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
+                );
+            }
             if (searchValue) {
                 whereCondition.push(
                     this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
@@ -116,15 +123,19 @@ export class GuideCategoryService extends ApiService {
                 resolve([]);
                 return;
             }
-            const whereCondition = [
-                ['user_id', user.userId],
-                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+            const whereCondition: any[] = [
+                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL AND ' +
                 this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
             ];
+            console.log('user.isAuthority', user.isAuthority);
+            if (!user.isAuthority) {
+                whereCondition.push(['client_id', user.client_id]);
+            }
             const orderBy = 'name ASC';
 
             const entries: any[] = [];
             return this.dbModelApi.searchAllAndGetRowsResult(whereCondition, orderBy).then((res) => {
+                console.log('findAll res', res);
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
                         const obj: DbBaseModel = this.newModel();
@@ -151,9 +162,7 @@ export class GuideCategoryService extends ApiService {
                 resolve([]);
                 return;
             }
-            const whereCondition = [
-                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('user_id') + '=' + user.userId,
-                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('user_id') + '=' + user.userId,
+            const whereCondition: any[] = [
                 this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id') + '=' + guideId,
                 this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
@@ -162,6 +171,15 @@ export class GuideCategoryService extends ApiService {
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
             ];
+            console.log('user.isAuthority', user.isAuthority);
+            if (!user.isAuthority) {
+                whereCondition.push(
+                    this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
+                );
+                whereCondition.push(
+                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
+                );
+            }
             if (searchValue) {
                 whereCondition.push(
                     this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'

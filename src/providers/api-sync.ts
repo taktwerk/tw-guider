@@ -256,33 +256,6 @@ export class ApiSync {
         return data;
     }
 
-    public checkAvailableChanges() {
-        return new Promise(async resolve => {
-            await this.init();
-            if (this.isAvailableForSyncData.getValue()) {
-                resolve(true);
-                return;
-            }
-            if (this.network.type === 'none') {
-                console.log('isOffNetwork in checkAvailableChanges')
-                resolve(false);
-                return;
-            }
-            this.http.get(this.getSyncUrl(true)).subscribe(async (response) => {
-                const isAvailableData = !!response.result;
-                this.isAvailableForSyncData.next(isAvailableData);
-                this.userDb.userSetting.isSyncAvailableData = isAvailableData;
-                this.userDb.save();
-                resolve(isAvailableData);
-                return;
-            }, (err) => {
-                this.isAvailableForSyncData.next(false);
-                resolve(false);
-                return;
-            });
-        });
-    }
-
     private async saveModels(data) {
         let savedDataCount = 0;
         for (const key of Object.keys(data)) {
@@ -291,7 +264,6 @@ export class ApiSync {
             }
             const apiService = this.apiServices[key];
             if (!apiService) {
-                console.warn('ApiSync', 'Sync for ' + key + ' not supported for now.');
                 continue;
             }
             for (const model of data[key]) {
@@ -351,6 +323,33 @@ export class ApiSync {
 
                 return true;
             }
+        });
+    }
+
+    public checkAvailableChanges() {
+        return new Promise(async resolve => {
+            await this.init();
+            if (this.isAvailableForSyncData.getValue()) {
+                resolve(true);
+                return;
+            }
+            if (this.network.type === 'none') {
+                console.log('isOffNetwork in checkAvailableChanges')
+                resolve(false);
+                return;
+            }
+            this.http.get(this.getSyncUrl(true)).subscribe(async (response) => {
+                const isAvailableData = !!response.result;
+                this.isAvailableForSyncData.next(isAvailableData);
+                this.userDb.userSetting.isSyncAvailableData = isAvailableData;
+                this.userDb.save();
+                resolve(isAvailableData);
+                return;
+            }, (err) => {
+                this.isAvailableForSyncData.next(false);
+                resolve(false);
+                return;
+            });
         });
     }
 
@@ -450,7 +449,6 @@ export class ApiSync {
         }
         obj.loadFromApiToCurrentObject(newModel, oldModel);
         obj.is_synced = true;
-        // const obj = apiService.dbModelApi.loadFromApi(newModel, oldModel);
         if (!oldModel || oldModel.updated_at !== obj.updated_at) {
             await obj.saveSynced();
         }

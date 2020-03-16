@@ -678,6 +678,8 @@ export abstract class DbBaseModel {
                         resolve(res);
 
                     }).catch((err) => {
+                        console.log('query', query);
+                        console.log('errrr', err);
                         resolve(false);
                     });
                 }
@@ -701,6 +703,7 @@ export abstract class DbBaseModel {
                         this.events.publish(this.TAG + ':update', this);
                         resolve(res);
                     }).catch((err) => {
+                        console.log('errrr', err);
                         resolve(false);
                     });
                 }

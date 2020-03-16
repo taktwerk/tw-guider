@@ -16,11 +16,12 @@ export class AuthDb extends DbBaseModel {
   TAG: string = 'AuthDb';
 
   userId: number;
-  clientId: number;
+  client_id: number;
   /** auth token from API */
   authToken: string;
   /** username */
   username: string;
+  isAuthority: boolean;
 
   /** password */
   password: string;
@@ -29,6 +30,8 @@ export class AuthDb extends DbBaseModel {
 
   static COL_ID = '_id';
   static COL_USER_ID = 'user_id';
+  static COL_CLIENT_ID = 'client_id';
+  static COL_IS_AUTHORITY = 'is_authority';
   static COL_AUTH_TOKEN = 'auth_token';
   static COL_USERNAME = 'username';
   static COL_PASSWORD = 'password';
@@ -40,6 +43,8 @@ export class AuthDb extends DbBaseModel {
   /** @inheritDoc */
   TABLE: any = [
     [AuthDb.COL_USER_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'userId' ],
+    [AuthDb.COL_CLIENT_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
+    [AuthDb.COL_IS_AUTHORITY, 'TINYINT(1) DEFAULT 0', DbBaseModel.TYPE_BOOLEAN, 'isAuthority'],
     [AuthDb.COL_USERNAME, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'username' ],
     [AuthDb.COL_PASSWORD, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'password' ],
     [AuthDb.COL_AUTH_TOKEN, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'authToken' ],
