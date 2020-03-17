@@ -84,7 +84,6 @@ export class AppComponent implements OnInit {
             ) {
               this.userDb.userSetting.syncStatus = 'pause';
               this.userDb.save().then(() => {
-                console.log('initializeApp where pause');
                 this.apiSync.sendSyncProgress();
               });
             }
@@ -169,11 +168,11 @@ export class AppComponent implements OnInit {
       appPages.push({title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'});
     }
     if (!this.appSetting.isWasQrCodeSetup) {
-      return;
+      return appPages;
     }
     if (!this.authService.isLoggedin) {
       appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'list'});
-      return;
+      return appPages;
     }
     appPages.push(
         {title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'},
@@ -269,11 +268,14 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.appVersion) {
-      this.appVersion.getVersionNumber().then((versionNumber) => {
-        this.versionNumber = versionNumber;
-      });
-    }
+    this.platform.ready().then(() => {
+      if (this.appVersion) {
+        console.log('aooVersion');
+        this.appVersion.getVersionNumber().then((versionNumber) => {
+          this.versionNumber = versionNumber;
+        });
+      }
+    });
     this.baseProjectSetup();
     this.events.subscribe('user:logout', () => {
       this.logoutAction();

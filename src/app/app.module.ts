@@ -141,6 +141,7 @@ export function LanguageLoader(http: Http) {
     Camera,
     MediaCapture,
     VideoEditor,
+    AppVersion,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

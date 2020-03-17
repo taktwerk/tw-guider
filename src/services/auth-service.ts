@@ -224,6 +224,7 @@ export class AuthService {
                     this.auth = existUser[0];
                     this.auth.authToken = user.access_token;
                     this.auth.client_id = user.client_id;
+                    this.auth.isAuthority = user.isAuthority;
                     if (formData) {
                         this.auth.password = this.cryptoProvider.hashPassword(formData.password);
                     }
