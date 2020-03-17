@@ -62,12 +62,13 @@
     "@ionic/app-scripts": "^3.2.4",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
+    "@sentry/cli": "^1.51.1",
     "@types/bcryptjs": "^2.4.2",
     "asmcrypto.js": "^2.3.2",
     "bcryptjs": "^2.4.3",
     "com-sarriaroman-photoviewer": "^1.2.4",
     "cordova-android": "^8.1.0",
-    "cordova-ios": "5.1.1",
+    "cordova-ios": "^5.1.1",
     "cordova-plugin-aes256-encryption": "^2.0.0",
     "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-camera": "^4.1.0",
@@ -163,8 +164,8 @@
       "cordova-plugin-video-editor": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }
