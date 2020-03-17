@@ -18,6 +18,7 @@ import {ApiPush} from '../providers/api-push';
 import {TranslateConfigService} from '../services/translate-config.service';
 import {AppSetting} from '../services/app-setting';
 import {UserService} from '../services/user-service';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -32,6 +33,7 @@ export enum ConnectionStatusEnum {
 })
 export class AppComponent implements OnInit {
   public appPages = [];
+  public versionNumber = '0.0.1';
 
   constructor(
     private platform: Platform,
@@ -49,7 +51,8 @@ export class AppComponent implements OnInit {
     private translateConfigService: TranslateConfigService,
     private changeDetectorRef: ChangeDetectorRef,
     private appSetting: AppSetting,
-    private userService: UserService
+    private userService: UserService,
+    private appVersion: AppVersion
   ) {
     this.initializeApp();
   }
@@ -157,24 +160,29 @@ export class AppComponent implements OnInit {
   }
 
   protected async setPages() {
-    this.appPages = [];
+    this.appPages = this.getTopMenuPages();
+  }
 
+  protected getTopMenuPages() {
+    const appPages = [];
     if (!this.appSetting.isWasQrCodeSetup || !this.authService.isLoggedin) {
-      this.appPages.push({title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'});
+      appPages.push({title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'});
     }
     if (!this.appSetting.isWasQrCodeSetup) {
       return;
     }
     if (!this.authService.isLoggedin) {
-      this.appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'list'});
+      appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'list'});
       return;
     }
-    this.appPages.push(
+    appPages.push(
         {title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'},
         {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
         {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'},
         {title: this.translateConfigService.translateWord('Logout'), url: '/logout', icon: 'exit'},
     );
+
+    return appPages;
   }
 
   private login(): Promise<any> {
@@ -261,6 +269,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.appVersion) {
+      this.appVersion.getVersionNumber().then((versionNumber) => {
+        this.versionNumber = versionNumber;
+      });
+    }
     this.baseProjectSetup();
     this.events.subscribe('user:logout', () => {
       this.logoutAction();
