@@ -64,6 +64,8 @@ import { VideoEditor } from '@ionic-native/video-editor/ngx';
 import {VideoService} from '../services/video-service';
 import {VideoModalComponent} from '../components/modals/video-modal-component/video-modal-component';
 import {ToastService} from '../services/toast-service';
+import {PdftronModalComponent} from '../components/modals/pdftron-modal-component/pdftron-modal-component';
+import {PictureService} from '../services/picture-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -75,8 +77,9 @@ export function LanguageLoader(http: Http) {
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
+    PdftronModalComponent
   ],
-  entryComponents: [GuideAssetTextModalComponent, SyncModalComponent, VideoModalComponent],
+  entryComponents: [GuideAssetTextModalComponent, SyncModalComponent, VideoModalComponent, PdftronModalComponent],
     imports: [
         BrowserModule,
         FormsModule,
@@ -113,6 +116,7 @@ export function LanguageLoader(http: Http) {
     HttpClient,
     DownloadService,
     VideoService,
+    PictureService,
     ToastService,
     ApiSync,
     ApiPush,

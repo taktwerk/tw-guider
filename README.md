@@ -21,3 +21,11 @@ public void onBackPressed() {
     this.appView.loadUrl("javascript:if (document.webkitIsFullScreen === true) {document.webkitExitFullscreen();}");
 }
 ```
+
+Install PSPDFKit
+
+ionic cordova plugin add https://github.com/PSPDFKit/PSPDFKit-Cordova.git --force
+
+Create file platforms/android/local.properties and add next:
+pspdfkit.password=YOUR_PASSWORD
+pspdfkit.license=LICENSE_STRING

@@ -19,6 +19,7 @@
 </ion-header>
 
 <ion-content>
+    <ion-button (click)="testPdfFile()">Test PDF File Editing</ion-button>
     <div class="list-spinner" *ngIf="feedbackList.length > 30"></div>
     <ion-virtual-scroll [items]="feedbackList" [approxItemHeight]="'79px'" [itemHeight]="itemHeightFn" [trackBy]="trackByFn">
 <!--    <virtual-scroller *ngIf="feedbackList.length" #scroll [items]="feedbackList" enableUnequalChildrenSizes="true" bufferAmount="10">-->
@@ -34,6 +35,15 @@
                                       *ngIf="feedback.isAudioFile()"
                             >
                             </ion-icon>
+                            <div *ngIf="feedback.isPdf()"
+                                 (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.title)"
+                            >
+                                <ion-icon name="document"
+                                          class="videocam-icon"
+                                          slot="start"
+                                >
+                                </ion-icon>
+                            </div>
                             <img *ngIf="feedback.isImageFile()"
                                  (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.title)"
                                  [src]="feedback.getFileImagePath()"

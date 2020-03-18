@@ -7,6 +7,7 @@ import {DownloadService} from '../../services/download-service';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {VideoService} from '../../services/video-service';
+import {PictureService} from '../../services/picture-service';
 
 @Component({
   selector: 'feedback-page',
@@ -31,7 +32,8 @@ export class FeedbackPage implements OnInit {
                 private photoViewer: PhotoViewer,
                 private navCtrl: NavController,
                 private router: Router,
-                private videoService: VideoService) {
+                private videoService: VideoService,
+                private pictureService: PictureService) {
     }
 
     public async setModels()  {
@@ -60,8 +62,18 @@ export class FeedbackPage implements OnInit {
             const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
             this.videoService.playVideo(fileUrl, fileTitle);
         } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
-            this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+            // this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+            const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+            this.pictureService.openFile(fileUrl, fileTitle);
+        } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
+            // this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+            const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+            this.pictureService.openFile(fileUrl, fileTitle);
         }
+    }
+
+    public testPdfFile() {
+        this.pictureService.openFileAsset('www/documents/test.pdf', 'testPdf');
     }
 
     dismiss() {
