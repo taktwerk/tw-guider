@@ -96,6 +96,7 @@
     "ngx-virtual-scroller": "^3.0.3",
     "node-forge": "git://github.com/digitalbazaar/forge.git#ef835fafe",
     "pbkdf2-sha256": "^1.1.1",
+    "pdftron-cordova": "git+https://github.com/PDFTron/pdftron-cordova.git",
     "pspdfkit-cordova": "git+https://github.com/PSPDFKit/PSPDFKit-Cordova.git",
     "rxjs": "~6.5.1",
     "rxjs-compat": "^6.5.4",
@@ -175,6 +176,7 @@
         "ANDROID_SUPPORT_VERSION": "27.+"
       },
       "cordova-plugin-androidx": {},
+      "pdftron-cordova": {},
       "pspdfkit-cordova": {}
     },
     "platforms": [
