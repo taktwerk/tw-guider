@@ -51,6 +51,11 @@
                                 >
                                 </ion-icon>
                             </div>
+                            <ion-icon *ngIf="feedback.isPdf()"
+                                      class="videocam-icon"
+                                      name="document"
+                            >
+                            </ion-icon>
                             <ion-icon *ngIf="!feedback.isExistFormatFile()"
                                       class="cloud-upload"
                                       name="cloud-upload"

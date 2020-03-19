@@ -20,8 +20,6 @@ export class DatePipe extends BaseDatePipe implements PipeTransform {
             }
         }
 
-        console.log('format', format);
-
         return super.transform(value, format, timezone, locale);
     }
 }

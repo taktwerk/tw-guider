@@ -177,7 +177,6 @@ export class AppComponent implements OnInit {
     appPages.push(
         {title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'},
         {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
-        {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'},
         {title: this.translateConfigService.translateWord('Logout'), url: '/logout', icon: 'exit'},
     );
 
@@ -270,7 +269,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.platform.ready().then(() => {
       if (this.appVersion) {
-        console.log('aooVersion');
         this.appVersion.getVersionNumber().then((versionNumber) => {
           this.versionNumber = versionNumber;
         });
