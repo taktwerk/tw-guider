@@ -381,17 +381,28 @@ export class DownloadService {
     }
 
     checkFileTypeByExtension(fileName: string, type: string): boolean {
+        if (!fileName) {
+            return false;
+        }
         switch (type) {
             case 'image':
-                return (fileName && (fileName.indexOf('.jpg') > -1 || fileName.indexOf('.png') > -1));
+                return fileName.indexOf('.jpg') > -1 ||
+                    fileName.indexOf('.JPG') > -1 ||
+                    fileName.indexOf('.jpeg') > -1 ||
+                    fileName.indexOf('.png') > -1 ||
+                    fileName.indexOf('.PNG') > -1;
             case 'pdf':
-                return (fileName && (fileName.indexOf('.pdf') > -1));
+                return fileName.indexOf('.pdf') > -1;
             case 'video':
-                return (fileName && (fileName.indexOf('.MOV') > -1 ||
+                return fileName.indexOf('.MOV') > -1 ||
+                    fileName.indexOf('.mov') > -1 ||
                     fileName.indexOf('.mp4') > -1 ||
-                    fileName.indexOf('.wmv') > -1));
+                    fileName.indexOf('.MP4') > -1 ||
+                    fileName.indexOf('.wmv') > -1 ||
+                    fileName.indexOf('.WMV') > -1;
             case 'audio':
-                return (fileName && (fileName.indexOf('.mp3') > -1));
+                return fileName.indexOf('.mp3') > -1 ||
+                    fileName.indexOf('.MP3') > -1;
             default:
                 return false;
         }
