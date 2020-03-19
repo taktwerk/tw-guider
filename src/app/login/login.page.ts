@@ -42,6 +42,18 @@ export class LoginPage {
      * dashboard if the login was successful. Otherwise show fail message.
      */
     login(form: NgForm) {
+        if (!form.value.password && !form.value.username) {
+            this.http.showToast('validation.Username and password is required');
+            return;
+        }
+        if (!form.value.password) {
+            this.http.showToast('validation.Password is required');
+            return;
+        }
+        if (!form.value.username) {
+            this.http.showToast('validation.Username is required');
+            return;
+        }
         if (this.network.type === 'none') {
             this.loginOffine(form);
         } else {

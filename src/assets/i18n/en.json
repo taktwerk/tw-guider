@@ -82,6 +82,9 @@
   },
   "validation": {
     "Description is required": "Description is required",
+    "Username is required": "Username is required",
+    "Password is required": "Password is required",
+    "Username and password is required": "Username and password is required",
     "Validation error": "Validation error",
     "Wrong password or login!": "Wrong password or login!",
     "Wrong password!": "Wrong password!",

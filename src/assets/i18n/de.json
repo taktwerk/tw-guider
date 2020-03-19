@@ -80,6 +80,9 @@
   },
   "validation": {
     "Description is required": "(De) Description is required",
+    "Username is required": "(De) Username is required",
+    "Password is required": "(De) Password is required",
+    "Username and password is required": "(De) Username and password is required",
     "Validation error": "(De) Validation error",
     "Wrong password or login!": "(De) Wrong password or login!",
     "You are not authorized.": "(De) You are not authorized.",
