@@ -1,13 +1,11 @@
 import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
-import {AlertController, Events, LoadingController, NavController, Platform} from '@ionic/angular';
+import {AlertController, Events, LoadingController, NavController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {QRScanner, QRScannerStatus} from '@ionic-native/qr-scanner/ngx';
 import {HttpClient} from '../../services/http-client';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import {AppConfigurationModeEnum, AppSetting} from '../../services/app-setting';
 import {UserService} from '../../services/user-service';
-import { Device } from '@ionic-native/device/ngx';
-import { AppVersion } from '@ionic-native/app-version/ngx';
 import {environment} from '../../environments/environment';
 
 /**
@@ -22,8 +20,6 @@ import {environment} from '../../environments/environment';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  public clientId: string | number;
-  public hostId: string;
   public isScanning: boolean;
 
   constructor(
@@ -38,16 +34,8 @@ export class HomePage {
       public navCtrl: NavController,
       public changeDetectorRef: ChangeDetectorRef,
       private ngZone: NgZone,
-      private events: Events
-  ) {
-    this.userService.getUser().then(user => {
-      if (user) {
-        this.ngZone.run(() => {
-          this.navCtrl.navigateRoot('/guides');
-        });
-      }
-    });
-  }
+      private events: Events,
+  ) {}
 
   public scanQrcode() {
     if (this.isScanning) {
@@ -85,6 +73,8 @@ export class HomePage {
               }
               config.isWasQrCodeSetup = true;
               this.appSetting.save(config).then(() => {
+                console.log('appSetting.save')
+                this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
                 this.userService.getUser().then(loggedUser => {
                   const isUserLoggedIn = !!loggedUser;
                   if (!isUserLoggedIn) {

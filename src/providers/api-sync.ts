@@ -18,7 +18,6 @@ import {Network} from '@ionic-native/network/ngx';
 import {GuideAssetService} from './api/guide-asset-service';
 import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
 import {FeedbackService} from './api/feedback-service';
-import {ApiPush} from './api-push';
 import {UserService} from '../services/user-service';
 
 @Injectable()

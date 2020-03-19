@@ -1,6 +1,6 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 
-import {Events, Platform} from '@ionic/angular';
+import {Events, NavController, Platform} from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import {ApiSync} from '../providers/api-sync';
@@ -52,7 +52,9 @@ export class AppComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private appSetting: AppSetting,
     private userService: UserService,
-    private appVersion: AppVersion
+    private appVersion: AppVersion,
+    public navCtrl: NavController,
+    private ngZone: NgZone
   ) {
     this.initializeApp();
   }
@@ -267,6 +269,25 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userService.getUser().then(user => {
+      if (user) {
+        this.ngZone.run(() => {
+          this.navCtrl.navigateRoot('/guides');
+        });
+      } else {
+        if (this.appSetting.isWasQrCodeSetup) {
+          this.ngZone.run(() => {
+            this.navCtrl.navigateRoot('/login');
+          });
+        }
+      }
+    });
+    this.appSetting.isWasQrCodeSetupSubscribtion.subscribe(isWasQrCodeSetup => {
+      console.log('isWasQrCodeSetup', isWasQrCodeSetup);
+      if (isWasQrCodeSetup) {
+        this.setPages();
+      }
+    });
     this.platform.ready().then(() => {
       if (this.appVersion) {
         this.appVersion.getVersionNumber().then((versionNumber) => {

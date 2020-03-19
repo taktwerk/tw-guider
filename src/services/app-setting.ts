@@ -5,6 +5,7 @@ import {AppSettingsDb} from '../models/db/app-settings-db';
 import {Events, Platform} from '@ionic/angular';
 import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from './download-service';
+import {BehaviorSubject} from 'rxjs';
 
 export enum AppConfigurationModeEnum {
     ONLY_CONFIGURE,
@@ -20,6 +21,7 @@ export class AppSetting {
     public taktwerk = environment.taktwerk;
     public host = null;
     public isWasQrCodeSetup = false;
+    public isWasQrCodeSetupSubscribtion: BehaviorSubject<boolean>;
 
     private defaultData = {
         mode : AppConfigurationModeEnum.ONLY_CONFIGURE,
@@ -35,6 +37,7 @@ export class AppSetting {
                 public events: Events,
                 public downloadService: DownloadService
     ) {
+        this.isWasQrCodeSetupSubscribtion = new BehaviorSubject<boolean>(false);
         this.appSetting = new AppSettingsDb(platform, db, events, downloadService);
         this.appSetting.find().then((result) => {
             if (result) {
@@ -44,8 +47,10 @@ export class AppSetting {
                     }
                     this[key] = result.settings[key];
                 });
+                this.isWasQrCodeSetupSubscribtion.next(result.settings.isWasQrCodeSetup);
             } else {
                 this.appSetting.settings = this.defaultData;
+                this.isWasQrCodeSetupSubscribtion.next(this.defaultData.isWasQrCodeSetup);
                 this.appSetting.save();
             }
         });
