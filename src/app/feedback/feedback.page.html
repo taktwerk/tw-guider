@@ -19,7 +19,7 @@
 </ion-header>
 
 <ion-content>
-    <div class="list-spinner" *ngIf="feedbackList.length > 30"></div>
+<!--    <div class="list-spinner" *ngIf="feedbackList.length > 30"></div>-->
     <ion-virtual-scroll [items]="feedbackList" [approxItemHeight]="'79px'" [itemHeight]="itemHeightFn" [trackBy]="trackByFn">
 <!--    <virtual-scroller *ngIf="feedbackList.length" #scroll [items]="feedbackList" enableUnequalChildrenSizes="true" bufferAmount="10">-->
 <!--        <ion-list *virtualItem="let feedback;" style="opacity:1;">-->
