@@ -159,7 +159,9 @@
       "cordova-plugin-filepicker": {},
       "cordova-plugin-qrscanner": {},
       "cordova-plugin-app-version": {},
-      "cordova-plugin-camera": {},
+      "cordova-plugin-camera": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
       "cordova-plugin-media-capture": {},
       "cordova-plugin-video-editor": {}
     },
