@@ -7,10 +7,6 @@
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
-<ion-content class="vertical-align-content ion-text-center black-background">
-    <div id="viewer"></div>
-    <div id="deviceready" class="blink">
-        <p class="event listening">Connecting to Device</p>
-        <p class="event received">Device is Ready</p>
-    </div>
+<ion-content class="black-background">
+    <div #viewer class="viewer" [ngStyle]="{width: '100%', height: '100%'}"></div>
 </ion-content>

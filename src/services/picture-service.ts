@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {StreamingMedia, StreamingVideoOptions} from '@ionic-native/streaming-media/ngx';
-import {ModalController} from '@ionic/angular';
+import {ModalController, Platform} from '@ionic/angular';
 import {VideoModalComponent} from '../components/modals/video-modal-component/video-modal-component';
 import {DownloadService} from './download-service';
 import {PdftronModalComponent} from '../components/modals/pdftron-modal-component/pdftron-modal-component';
+import {AppSetting} from './app-setting';
 
 /**
  * Download file class
@@ -15,10 +16,12 @@ declare var PSPDFKit: any;
 export class PictureService {
     constructor(private streamingMedia: StreamingMedia,
                 private modalController: ModalController,
-                private downloadService: DownloadService) {}
+                private downloadService: DownloadService,
+                public platform: Platform) {}
 
     async openFile(fileUrl: string, fileTitle?: string) {
         this.initializePspdfkit(fileUrl, fileTitle);
+
         // const modal = await this.modalController.create({
         //     component: PdftronModalComponent,
         //     componentProps: {

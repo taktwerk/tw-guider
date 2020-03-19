@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ModalController, Platform} from '@ionic/angular';
 import {ToastService} from '../../../services/toast-service';
 import {StreamingMedia, StreamingVideoOptions} from '@ionic-native/streaming-media/ngx';
@@ -13,6 +13,7 @@ import {DownloadService} from '../../../services/download-service';
 
 declare var PDFTron: any;
 declare var PSPDFKit: any;
+declare const WebViewer: any;
 
 @Component({
   selector: 'pdftron-modal-component',
@@ -23,7 +24,8 @@ declare var PSPDFKit: any;
 export class PdftronModalComponent implements OnInit, OnDestroy {
     @Input() fileUrl: string;
     @Input() fileTitle: string;
-    backButtonSubscribe;
+    @ViewChild('viewer', { static: false }) viewer: ElementRef;
+    wvInstance: any;
 
     constructor(private modalController: ModalController,
                 private platform: Platform) {
@@ -38,12 +40,6 @@ export class PdftronModalComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.platform.ready().then(() => {
-            this.initializePspdfkit(this.fileUrl, this.fileTitle)
-            console.log('on init');
-            /// PDFTron NativeViwer
-            // this.initializePdftronNativeViewer(this.fileUrl);
-        });
         // this.platform.ready().then(async () => {
         //     this.backButtonSubscribe = this.platform.backButton.subscribeWithPriority(9999, () => {
         //         document.addEventListener('backbutton', () => this.backbuttonAction());
@@ -52,7 +48,6 @@ export class PdftronModalComponent implements OnInit, OnDestroy {
     }
 
     initializePspdfkit(fileUrl, fileTitle) {
-        console.log('PSPDFKit', PSPDFKit);
         PSPDFKit.present(fileUrl, {
             title: fileTitle,
             scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,
