@@ -179,7 +179,7 @@ export class AppComponent implements OnInit {
     appPages.push(
         {title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'},
         {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
-        {title: this.translateConfigService.translateWord('Logout'), url: '/logout', icon: 'exit'},
+        {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'}
     );
 
     return appPages;
