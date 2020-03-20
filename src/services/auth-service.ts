@@ -224,7 +224,8 @@ export class AuthService {
                     this.auth = existUser[0];
                     this.auth.authToken = user.access_token;
                     this.auth.client_id = user.client_id;
-                    this.auth.isAuthority = user.isAuthority;
+                    this.auth.client_id = user.client_id;
+                    this.auth.lastAuthItemChangedAt = user.lastAuthItemChangedAt;
                     if (formData) {
                         this.auth.password = this.cryptoProvider.hashPassword(formData.password);
                     }
@@ -238,6 +239,7 @@ export class AuthService {
                     this.auth.userId = user.user_id;
                     this.auth.client_id = user.client_id;
                     this.auth.isAuthority = user.isAuthority;
+                    this.auth.lastAuthItemChangedAt = user.lastAuthItemChangedAt;
                     this.auth.authToken = user.access_token;
                     if (formData) {
                         this.auth.username = formData.username;

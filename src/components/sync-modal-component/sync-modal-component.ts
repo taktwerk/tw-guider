@@ -172,5 +172,8 @@ export class SyncModalComponent implements OnInit {
             this.isNetwork = true;
             this.detectChanges();
         });
+        this.events.subscribe('user:logout', () => {
+            this.dismiss();
+        });
     }
 }

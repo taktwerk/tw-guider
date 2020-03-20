@@ -61,10 +61,16 @@ export class HttpClient {
         'Access-Control-Allow-Origin': '*',
         'X-CURRENT-DATETIME': this.getCurrentDateTime()
     };
-    if (this.authService.auth && this.authService.auth.authToken) {
-        headers['X-Auth-Token'] = this.getAuthorizationToken();
-        /// send current device info with uuid and etc.
-        headers['X-Device-Info'] = JSON.stringify(this.deviceInfo);
+    if (this.authService.auth) {
+        if (this.authService.auth.authToken) {
+            headers['X-Auth-Token'] = this.getAuthorizationToken();
+            /// send current device info with uuid and etc.
+            headers['X-Device-Info'] = JSON.stringify(this.deviceInfo);
+            if (this.authService.auth.lastAuthItemChangedAt) {
+                console.log('this.authService.auth.lastAuthItemChangedAt', this.authService.auth.lastAuthItemChangedAt);
+                headers['X-Auth-Item-Last-Changed-At'] = '' + this.authService.auth.lastAuthItemChangedAt;
+            }
+        }
     }
     this.headers = new Headers(headers);
   }
