@@ -226,6 +226,7 @@ export class AuthService {
                     this.auth.client_id = user.client_id;
                     this.auth.client_id = user.client_id;
                     this.auth.lastAuthItemChangedAt = user.lastAuthItemChangedAt;
+                    this.auth.isAuthority = user.isAuthority;
                     if (formData) {
                         this.auth.password = this.cryptoProvider.hashPassword(formData.password);
                     }
