@@ -13,6 +13,7 @@ import {debounceTime} from 'rxjs/operators';
 import {DatePipe} from '../../pipes/date-pipe/date-pipe';
 import {UserService} from '../../services/user-service';
 import {SyncMode} from '../synchronization-component/synchronization-component';
+import {AppSetting} from '../../services/app-setting';
 
 /**
  * Generated class for the TodoPage page.
@@ -55,7 +56,8 @@ export class SyncModalComponent implements OnInit {
                 private syncService: SyncService,
                 public network: Network,
                 public datepipe: DatePipe,
-                private userService: UserService) {
+                private userService: UserService,
+                private appSetting: AppSetting) {
         this.isNetwork = (this.network.type !== 'none');
         this.initUser().then(() => {
             this.syncProgressStatus = this.userDb.userSetting.syncStatus;
@@ -67,11 +69,15 @@ export class SyncModalComponent implements OnInit {
     }
 
     syncData() {
+        if (!this.appSetting.isMigratedDatabase()) {
+            this.appSetting.showIsNotMigratedDbPopup();
+
+            return;
+        }
         this.apiSync.makeSyncProcess();
     }
 
     stopSyncData() {
-        console.log('stopSyncData')
         this.apiSync.makeSyncPause();
     }
 
@@ -80,7 +86,6 @@ export class SyncModalComponent implements OnInit {
     }
 
     cancelSyncData() {
-        console.log('cancelSyncData sendSyncProgress');
         this.apiSync.sendSyncProgress('', true);
         return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
             if (isCanceled) {

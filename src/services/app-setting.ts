@@ -2,10 +2,11 @@ import {Injectable} from '@angular/core';
 import { environment } from '../environments/environment';
 import {UserService} from './user-service';
 import {AppSettingsDb} from '../models/db/app-settings-db';
-import {Events, Platform} from '@ionic/angular';
+import {AlertController, Events, Platform} from '@ionic/angular';
 import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from './download-service';
 import {BehaviorSubject} from 'rxjs';
+import {TranslateConfigService} from './translate-config.service';
 
 export enum AppConfigurationModeEnum {
     ONLY_CONFIGURE,
@@ -22,11 +23,13 @@ export class AppSetting {
     public host = null;
     public isWasQrCodeSetup = false;
     public isWasQrCodeSetupSubscribtion: BehaviorSubject<boolean>;
+    public dbMigrationVersion = 1;
 
     private defaultData = {
         mode : AppConfigurationModeEnum.ONLY_CONFIGURE,
         taktwerk : environment.taktwerk,
-        isWasQrCodeSetup: false
+        isWasQrCodeSetup: false,
+        dbMigrationVersion: 1,
     };
 
     appSetting: AppSettingsDb;
@@ -35,7 +38,9 @@ export class AppSetting {
                 public platform: Platform,
                 public db: DbProvider,
                 public events: Events,
-                public downloadService: DownloadService
+                public downloadService: DownloadService,
+                public alertController: AlertController,
+                private translateConfigService: TranslateConfigService
     ) {
         this.isWasQrCodeSetupSubscribtion = new BehaviorSubject<boolean>(false);
         this.appSetting = new AppSettingsDb(platform, db, events, downloadService);
@@ -96,6 +101,7 @@ export class AppSetting {
         if (!userSettingsObject) {
             userSettingsObject = this.defaultData;
         }
+        userSettingsObject['dbMigrationVersion'] = environment.dbMigrationVersion;
 
         const user = await this.userService.getUser();
         this.appSetting.settings = userSettingsObject;
@@ -113,6 +119,27 @@ export class AppSetting {
         }
 
         return true;
+    }
+
+    public isMigratedDatabase() {
+        return this.dbMigrationVersion === environment.dbMigrationVersion;
+    }
+
+    async showIsNotMigratedDbPopup() {
+        if (!this.isWasQrCodeSetup) {
+            return;
+        }
+        const alert = await this.alertController.create({
+            message: this.translateConfigService.translateWord('app.You needs to swipe data and reinstall app'),
+            buttons: [
+                {
+                    text: 'Ok',
+                    cssClass: 'primary',
+                }
+            ]
+        });
+
+        await alert.present();
     }
 }
 

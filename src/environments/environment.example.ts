@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   apiUrlPath: '/api/v1',
   taktwerk: 'taktwerk',
-  dbName: 'guider'
+  dbName: 'guider',
+  dbMigrationVersion: 1
 };
 
 /*

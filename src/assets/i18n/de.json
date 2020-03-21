@@ -102,5 +102,8 @@
   },
   "language-selector": {
     "Language": "Sprache"
+  },
+  "app": {
+    "You needs to swipe data and reinstall app": "You needs to swipe data and reinstall app"
   }
 }

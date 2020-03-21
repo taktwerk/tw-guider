@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 
-import {Events, NavController, Platform} from '@ionic/angular';
+import {AlertController, Events, NavController, Platform} from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import {ApiSync} from '../providers/api-sync';
@@ -56,7 +56,6 @@ export class AppComponent implements OnInit {
     public navCtrl: NavController,
     private ngZone: NgZone
   ) {
-    this.initializeApp();
   }
 
   public userDb: UserDb;
@@ -94,6 +93,9 @@ export class AppComponent implements OnInit {
           }
         }
         this.translateConfigService.setLanguage(currentLanguage);
+        if (!this.appSetting.isMigratedDatabase()) {
+          this.appSetting.showIsNotMigratedDbPopup();
+        }
         this.setPages();
         this.initNetwork();
         this.registerEvents();
@@ -269,6 +271,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initializeApp();
     this.userService.getUser().then(user => {
       if (user) {
         this.ngZone.run(() => {
@@ -283,7 +286,6 @@ export class AppComponent implements OnInit {
       }
     });
     this.appSetting.isWasQrCodeSetupSubscribtion.subscribe(isWasQrCodeSetup => {
-      console.log('isWasQrCodeSetup', isWasQrCodeSetup);
       if (isWasQrCodeSetup) {
         this.setPages();
       }

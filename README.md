@@ -21,3 +21,9 @@ public void onBackPressed() {
     this.appView.loadUrl("javascript:if (document.webkitIsFullScreen === true) {document.webkitExitFullscreen();}");
 }
 ```
+
+## Changes in database
+
+After changes to the database structure have been made in the code,
+you need to increase the value of the property dbMigrationVersion in the file `src/environments/environment.ts`.
+(See an example in the file  `src/environments/environment.example.ts`)

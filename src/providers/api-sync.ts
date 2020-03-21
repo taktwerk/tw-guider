@@ -165,8 +165,11 @@ export class ApiSync {
      */
     private pull(status = 'progress'): Promise<any> {
         return new Promise(async (resolve) => {
+            if (!this.appSetting.isMigratedDatabase()) {
+                resolve(false);
+                return;
+            }
             if (this.isOffNetwork() || this.isBusy) {
-                console.log('is off network in just pull');
                 resolve(false);
                 return;
             }

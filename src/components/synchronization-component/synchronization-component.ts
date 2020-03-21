@@ -12,6 +12,7 @@ import {DatePipe} from '@angular/common';
 import {ApiPush} from '../../providers/api-push';
 import {TranslateConfigService} from '../../services/translate-config.service';
 import {UserService} from '../../services/user-service';
+import {AppSetting} from '../../services/app-setting';
 
 /**
  * Generated class for the TodoPage page.
@@ -55,7 +56,8 @@ export class SynchronizationComponent implements OnInit {
                 public alertController: AlertController,
                 public datepipe: DatePipe,
                 private translateConfigService: TranslateConfigService,
-                private userService: UserService) {
+                private userService: UserService,
+                private appSetting: AppSetting) {
       this.initUser().then(() => {
           if ([0, 1, 2].includes(this.userDb.userSetting.syncMode)) {
               this.modeSync = this.userDb.userSetting.syncMode;
@@ -102,19 +104,23 @@ export class SynchronizationComponent implements OnInit {
   }
 
   async showRefreshDataAlert() {
-      const alert = await this.alertController.create({
-        message: this.translateConfigService.translateWord('synchronization-component.Are you sure you want to overwrite the data?'),
-        buttons: [
-          {
-            text: 'Yes',
-            cssClass: 'primary',
-            handler: (blah) => this.refreshAppData()
-          }, {
-            text: 'No'
-          }
-        ]
-      });
+      if (!this.appSetting.isMigratedDatabase()) {
+          await this.appSetting.showIsNotMigratedDbPopup();
 
+          return;
+      }
+      const alert = await this.alertController.create({
+          message: this.translateConfigService.translateWord('synchronization-component.Are you sure you want to overwrite the data?'),
+          buttons: [
+              {
+                  text: 'Yes',
+                  cssClass: 'primary',
+                  handler: (blah) => this.refreshAppData()
+              }, {
+                  text: 'No'
+              }
+          ]
+      });
       await alert.present();
   }
 
