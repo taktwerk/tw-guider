@@ -19,6 +19,7 @@ import {GuideAssetService} from './api/guide-asset-service';
 import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
 import {FeedbackService} from './api/feedback-service';
 import {UserService} from '../services/user-service';
+import {ApiPush} from './api-push';
 
 @Injectable()
 /**
@@ -73,7 +74,8 @@ export class ApiSync {
         private downloadService: DownloadService,
         private network: Network,
         private appSetting: AppSetting,
-        private userService: UserService
+        private userService: UserService,
+        private apiPush: ApiPush
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);
@@ -173,6 +175,7 @@ export class ApiSync {
                 resolve(false);
                 return;
             }
+            await this.apiPush.pushOneAtTime();
             this.isBusy = true;
             this.syncProgressStatus.next(status);
             this.isPrepareSynData.next(true);

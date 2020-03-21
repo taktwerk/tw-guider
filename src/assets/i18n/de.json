@@ -27,7 +27,8 @@
     "No data for sync." : "(De) No data for sync",
     "There is data available for pushing to the server.": "(De) There is data available for pushing to the server.",
     "No network connection.": "(De) No network connection.",
-    "Data synchronization is not yet possible.": "(De) Data synchronization is not yet possible."
+    "Data synchronization is not yet possible.": "(De) Data synchronization is not yet possible.",
+    "Data is sent to the server.": "(De) Data is sent to the server."
   },
   "guides": {
     "header": "(De) Guides",
@@ -40,6 +41,7 @@
     "Description": "(De) Description",
     "Feedback will be sent as soon as the Internet appears": "(De) Feedback will be sent as soon as the Internet appears",
     "Feedback was sent": "(De) Feedback was sent",
+    "Feedback was saved": "(De) Feedback was saved",
     "Feedback was deleted": "(De) Feedback was deleted",
     "Are you sure you want to delete this feedback?": "(De) Are you sure you want to delete this feedback?"
   },

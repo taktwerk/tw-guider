@@ -27,6 +27,7 @@ export class ApiPush {
     userDb: UserDb;
 
     isStartPushBehaviorSubject: BehaviorSubject<boolean>;
+    isStartPushDataBehaviorSubject: BehaviorSubject<boolean>;
     pushedItemsCount: BehaviorSubject<number>;
     pushedItemsPercent: BehaviorSubject<number>;
     pushProgressStatus: BehaviorSubject<string>;
@@ -46,6 +47,7 @@ export class ApiPush {
         private appSetting: AppSetting
     ) {
         this.isStartPushBehaviorSubject = new BehaviorSubject<boolean>(false);
+        this.isStartPushDataBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.isAvailableForPushData = new BehaviorSubject<boolean>(false);
         this.pushedItemsCount = new BehaviorSubject<number>(0);
         this.pushedItemsPercent = new BehaviorSubject<number>(0);
@@ -66,6 +68,7 @@ export class ApiPush {
     public isOffNetwork(): boolean {
         if (this.network.type === 'none') {
             this.isStartPushBehaviorSubject.next(false);
+            this.isStartPushDataBehaviorSubject.nex(false);
 
             return true;
         }
@@ -109,7 +112,6 @@ export class ApiPush {
      * @returns {Promise<any>}
      */
     public pushOneAtTime(): Promise<any> {
-        console.log('pushOneAtTime');
         this.isStartPushBehaviorSubject.next(true);
         return new Promise(resolve => {
             if (this.isOffNetwork()) {

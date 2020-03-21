@@ -116,16 +116,17 @@ export class FeedbackAddEditPage implements OnInit {
       this.model.title = this.defaultTitle;
     }
     this.feedbackService.save(this.model).then(res => {
-      if (this.network.type === 'none') {
+      // if (this.network.type === 'none') {
         this.apiPush.setIsPushAvailableData(true);
-        this.http.showToast('feedback.Feedback will be sent as soon as the Internet appears');
+        // this.http.showToast('feedback.Feedback will be sent as soon as the Internet appears');
+        this.http.showToast('feedback.Feedback was saved');
         this.dismiss();
-      } else {
-        this.apiPush.pushOneAtTime().then(() => {
-          this.http.showToast('feedback.Feedback was sent');
-          this.dismiss();
-        });
-      }
+      // } else {
+      //   this.apiPush.pushOneAtTime().then(() => {
+      //     this.http.showToast('feedback.Feedback was saved');
+      //     this.dismiss();
+      //   });
+      // }
     });
   }
 
@@ -152,14 +153,14 @@ export class FeedbackAddEditPage implements OnInit {
 
   public delete() {
     this.feedbackService.remove(this.model).then(res => {
-      if (this.network.type === 'none') {
+      // if (this.network.type === 'none') {
         this.apiPush.setIsPushAvailableData(true);
         this.dismiss();
-      } else {
-        this.apiPush.pushOneAtTime().then(() => {
-          this.dismiss();
-        });
-      }
+      // } else {
+      //   this.apiPush.pushOneAtTime().then(() => {
+      //     this.dismiss();
+      //   });
+      // }
       this.http.showToast('feedback.Feedback was deleted');
     });
   }

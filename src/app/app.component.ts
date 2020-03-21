@@ -149,7 +149,7 @@ export class AppComponent implements OnInit {
         this.events.publish('network:online', true);
         this.previousStatus = ConnectionStatusEnum.Online;
         if (this.authService.isLoggedin) {
-          this.apiPush.pushOneAtTime();
+          // this.apiPush.pushOneAtTime();
           if (this.syncService.syncMode.getValue() === 1) {
             let syncProcessName = this.apiSync.syncProgressStatus.getValue();
             if (syncProcessName === 'pause') {

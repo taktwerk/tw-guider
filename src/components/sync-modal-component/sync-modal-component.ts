@@ -41,7 +41,8 @@ export class SyncModalComponent implements OnInit {
     public syncAllItemsCount = 0;
     public isNetwork = false;
     public isAvailableForSyncData: boolean = false;
-    public isAvailableForPushData: boolean = false;
+    public pushProgressStatus: string;
+    private isAvailableForPushData: boolean;
 
     constructor(private modalController: ModalController,
                 public apiSync: ApiSync,
@@ -165,6 +166,9 @@ export class SyncModalComponent implements OnInit {
         });
         this.apiPush.isAvailableForPushData.subscribe(isAvailableForPushData => {
             this.isAvailableForPushData = isAvailableForPushData;
+        });
+        this.apiPush.pushProgressStatus.subscribe(pushProgressStatus => {
+            this.pushProgressStatus = pushProgressStatus;
         });
         this.events.subscribe('UserDb:update', (userDb) => {
             this.userDb = userDb;
