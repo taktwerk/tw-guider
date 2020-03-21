@@ -172,7 +172,6 @@ export abstract class ApiService {
             // No sync with the API yet? Only local? Delete it
             if (model[model.COL_ID_API] == null) {
                 model.remove().then(res => {
-                    model.deleteAllFiles();
                     this.removeFromList(model);
                     resolve(res);
                 });

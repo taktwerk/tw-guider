@@ -221,7 +221,6 @@ export class FeedbackAddEditPage implements OnInit {
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(async params => {
       const feedbackData = params;
-      console.log('feedbackData', feedbackData);
       this.reference_id = +feedbackData.referenceId;
       this.reference_model_alias = feedbackData.referenceModelAlias;
       this.reference_model = this.reference_model_alias;

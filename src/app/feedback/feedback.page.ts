@@ -116,5 +116,9 @@ export class FeedbackPage implements OnInit {
             this.setModels();
             this.detectChanges();
         });
+        this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':delete', (model) => {
+            this.setModels();
+            this.detectChanges();
+        });
     }
 }

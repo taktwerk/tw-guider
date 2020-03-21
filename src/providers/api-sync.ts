@@ -442,6 +442,12 @@ export class ApiSync {
     async saveModel(apiService, newModel) {
         let oldModel = await apiService.dbModelApi.findFirst(['id', newModel[apiService.dbModelApi.apiPk]]);
         oldModel = oldModel[0] ? oldModel[0] : null;
+        if (newModel.deleted_at) {
+            if (oldModel) {
+                oldModel.remove();
+            }
+            return true;
+        }
         const obj = apiService.newModel();
         if (oldModel) {
             obj.loadFromApiToCurrentObject(oldModel);

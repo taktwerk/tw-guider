@@ -109,6 +109,7 @@ export class ApiPush {
      * @returns {Promise<any>}
      */
     public pushOneAtTime(): Promise<any> {
+        console.log('pushOneAtTime');
         this.isStartPushBehaviorSubject.next(true);
         return new Promise(resolve => {
             if (this.isOffNetwork()) {
@@ -187,7 +188,6 @@ export class ApiPush {
                             }
                             return this.http.post(url, jsonBody)
                                 .subscribe((data) => {
-                                    console.log('show me data', data);
                                     if (this.pushProgressStatus.getValue() === 'failed') {
                                         this.isBusy = false;
                                         resolve(false);
@@ -211,8 +211,22 @@ export class ApiPush {
                                     // get model by local id and update received primary key from api
                                     service.dbModelApi.findById(record._id, true).then((dbModel) => {
                                         if (!dbModel) {
+                                            resolve(false);
                                             return;
                                         }
+                                        if (dbModel.deleted_at || dbModel.local_deleted_at) {
+                                            dbModel.remove().then(async () => {
+                                                this.userDb.userSetting.appDataVersion++;
+                                                await this.userDb.save();
+                                            });
+                                            pushedItemsCount++;
+                                            const savedDataPercent = Math.round((pushedItemsCount / countOfAllChangedItems) * 100);
+                                            this.pushedItemsCount.next(pushedItemsCount);
+                                            this.pushedItemsPercent.next(savedDataPercent);
+                                            resolve(true);
+                                            return;
+                                        }
+                                        console.log('after deleted at');
                                         const dbModelApi = service.newModel();
                                         dbModel.idApi = record[dbModelApi.apiPk];
                                         /// load data from current model

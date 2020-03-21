@@ -246,8 +246,13 @@ export abstract class DbApiModel extends DbBaseModel {
 
     public remove(): Promise<any> {
         return new Promise(resolve => {
-            this[this.COL_LOCAL_DELETED_AT] = new Date();
-            this.delete().then(() => resolve(true));
+            try {
+                this.deleteAllFiles();
+                this.delete().then(() => resolve(true));
+            } catch (error) {
+                console.log('error in remove', error);
+                resolve(false);
+            }
         });
     }
 

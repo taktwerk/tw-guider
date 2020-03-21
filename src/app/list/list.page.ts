@@ -89,23 +89,27 @@ export class ListPage implements OnInit {
 
   ngOnInit() {
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
-      console.log('updating ' + this.guideCategoryBindingService.dbModelApi.TAG + ':update')
+      this.findAllGuideCategories();
+    });
+    this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
       this.findAllGuideCategories();
     });
     this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
-      console.log('updating ' + this.guideCategoryService.dbModelApi.TAG + ':update')
       this.findAllGuideCategories();
     });
     this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', (model) => {
-      console.log('updating ' + this.guideCategoryService.dbModelApi.TAG + ':create')
+      this.findAllGuideCategories();
+    });
+    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', (model) => {
       this.findAllGuideCategories();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
-      console.log('updating ' + this.guiderService.dbModelApi.TAG + ':update')
       this.setGuideInfo();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
-      console.log('updating ' + this.guiderService.dbModelApi.TAG + ':create')
+      this.setGuideInfo();
+    });
+    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
       this.setGuideInfo();
     });
     this.events.subscribe('network:online', (isNetwork) => {

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
@@ -6,7 +6,7 @@ import {GuideStepService} from '../../providers/api/guide-step-service';
 import {GuideStepModel} from '../../models/db/api/guide-step-model';
 import { File } from '@ionic-native/file/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import {Events, ModalController} from '@ionic/angular';
+import {Events, ModalController, NavController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {GuideAssetService} from '../../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-service';
@@ -14,6 +14,8 @@ import {GuideAssetTextModalComponent} from '../../components/guide-asset-text-mo
 import {GuideAssetModel, GuideAssetModelFileMapIndexEnum} from '../../models/db/api/guide-asset-model';
 import {DownloadService} from '../../services/download-service';
 import {VideoService} from '../../services/video-service';
+import {GuideCategoryService} from '../../providers/api/guide-category-service';
+import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
 
 @Component({
   selector: 'app-guide',
@@ -25,7 +27,6 @@ export class GuidePage implements OnInit {
 
   public guide: GuiderModel = this.guiderService.newModel();
   public guideId: number = null;
-  public currentStepNumber: number = 1;
   public guideSteps: GuideStepModel[] = [];
   public guideAssets: GuideAssetModel[] = [];
   public slideOpts = {
@@ -35,6 +36,8 @@ export class GuidePage implements OnInit {
   };
 
   constructor(
+      private guideCategoryService: GuideCategoryService,
+      private guideCategoryBindingService: GuideCategoryBindingService,
       private guiderService: GuiderService,
       private guideStepService: GuideStepService,
       private guideAssetService: GuideAssetService,
@@ -48,7 +51,9 @@ export class GuidePage implements OnInit {
       public modalController: ModalController,
       public downloadService: DownloadService,
       private router: Router,
-      private videoService: VideoService
+      private videoService: VideoService,
+      public navCtrl: NavController,
+      private ngZone: NgZone
   ) {
     this.authService.checkAccess();
   }
@@ -130,6 +135,11 @@ export class GuidePage implements OnInit {
         this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
       }
     });
+    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async (model) => {
+      if (this.guide) {
+        this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
+      }
+    });
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async (model) => {
       if (this.guide) {
         this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
@@ -145,6 +155,11 @@ export class GuidePage implements OnInit {
         this.setAssets(this.guide.idApi).then(() => this.detectChanges());
       }
     });
+    this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':delete', async (model) => {
+      if (this.guide) {
+        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+      }
+    });
     this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', async (model) => {
       if (this.guide) {
         this.setAssets(this.guide.idApi).then(() => this.detectChanges());
@@ -154,6 +169,31 @@ export class GuidePage implements OnInit {
       if (this.guide) {
         this.setAssets(this.guide.idApi).then(() => this.detectChanges());
       }
+    });
+    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async (model) => {
+      if (this.guide) {
+        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+      }
+    });
+    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async (model) => {
+      if (this.guide) {
+        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+      }
+    });
+    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', async (model) => {
+      this.ngZone.run(() => {
+        this.navCtrl.navigateRoot('/guides');
+      });
+    });
+    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', async (model) => {
+      this.ngZone.run(() => {
+        this.navCtrl.navigateRoot('/guides');
+      });
+    });
+    this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
+      this.ngZone.run(() => {
+        this.navCtrl.navigateRoot('/guides');
+      });
     });
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess();

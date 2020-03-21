@@ -723,6 +723,7 @@ export abstract class DbBaseModel {
                         this.events.publish(this.TAG + ':delete', this);
                         resolve(res);
                     }).catch((err) => {
+                        console.log('delete error', err);
                         resolve(false);
                     });
                 }
