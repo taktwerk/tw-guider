@@ -68,7 +68,7 @@ export class ApiPush {
     public isOffNetwork(): boolean {
         if (this.network.type === 'none') {
             this.isStartPushBehaviorSubject.next(false);
-            this.isStartPushDataBehaviorSubject.nex(false);
+            this.isStartPushDataBehaviorSubject.next(false);
 
             return true;
         }
