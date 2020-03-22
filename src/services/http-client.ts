@@ -139,6 +139,33 @@ export class HttpClient {
       if (error.status === 401) {
           this.authService.logout().then(() => {
               this.navCtrl.navigateRoot('/login').then(() => {
+                  if (error.error && error.error.message) {
+                      try {
+                          const errorResponse = JSON.parse(error.error.message);
+                          if (errorResponse.error) {
+                              if (errorResponse.user_id) {
+                                  this.authService.newAuthModel().findWhere(['user_id', errorResponse.user_id]).then((user) => {
+                                      if (user) {
+                                          user.password = '';
+                                          user.auth_token = '';
+                                          user.save(true);
+                                      }
+                                  });
+                              }
+                              if (errorResponse.error === 'User was blocked') {
+                                  this.authService.presentAlert(
+                                      'Config Error',
+                                      null,
+                                      this.translateConfigService.translateWord('validation.user_blocked'),
+                                      ['OK']
+                                  );
+                                  return;
+                              }
+                          }
+                      } catch (e) {
+                          //
+                      }
+                  }
                   this.showToast(
                       'validation.You are not authorized.',
                       'login.Please, login',

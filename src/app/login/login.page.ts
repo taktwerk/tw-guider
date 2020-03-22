@@ -88,6 +88,12 @@ export class LoginPage {
                     this.isLoginFailed = true;
                     this.http.showToast('Wrong password!');
                     break;
+                case AuthService.STATE_ERROR_USER_BLOCKED:
+                    this.username = '';
+                    this.password = '';
+                    this.isLoginFailed = true;
+                    this.http.showToast('validation.user_blocked');
+                    break;
                 default:
                     this.navCtrl.navigateRoot('/guides');
                     this.http.showToast('login.You are logged in.');
