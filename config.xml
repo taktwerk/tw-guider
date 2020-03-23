@@ -3,7 +3,7 @@
     <name>Guider 2</name>
     <description>The Guider app from taktwerk GmbH</description>
     <author email="support@taktwerk.ch" href="https://www.taktwerk.ch/guider">taktwerk GmbH</author>
-    <content original-src="index.html" src="http://localhost:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-navigation href="data:*" />
