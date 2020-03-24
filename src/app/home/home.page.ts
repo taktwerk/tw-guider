@@ -7,6 +7,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import {AppConfigurationModeEnum, AppSetting} from '../../services/app-setting';
 import {UserService} from '../../services/user-service';
 import {environment} from '../../environments/environment';
+import {TranslateConfigService} from '../../services/translate-config.service';
 
 /**
  * Generated class for the TodoPage page.
@@ -34,7 +35,7 @@ export class HomePage {
       public navCtrl: NavController,
       public changeDetectorRef: ChangeDetectorRef,
       private ngZone: NgZone,
-      private events: Events,
+      private events: Events
   ) {}
 
   public scanQrcode() {
@@ -73,7 +74,6 @@ export class HomePage {
               }
               config.isWasQrCodeSetup = true;
               this.appSetting.save(config).then(() => {
-                console.log('appSetting.save')
                 this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
                 this.userService.getUser().then(loggedUser => {
                   const isUserLoggedIn = !!loggedUser;
@@ -97,13 +97,13 @@ export class HomePage {
             }
           });
         })
-        .catch((e: any) => {
-          this.presentAlert(
-              'Config Error',
-              null,
-              'There was an error using the camera. Please try again.<br><br>Error: ' + e,
-              ['OK']
-          );
+        .catch((err: any) => {
+            this.presentAlert(
+                'Config Error',
+                null,
+                'There was an error using the camera. Please try again.<br><br>Error: ' + err,
+                ['OK']
+            );
         });
   }
 

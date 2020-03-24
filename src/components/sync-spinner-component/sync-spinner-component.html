@@ -18,13 +18,11 @@
   <div (click)="openSyncModal()"
        class="sync-status"
   >
+      <span *ngIf="isAvailableForPushData">
+        <ion-icon color="success" name="send"></ion-icon>
+      </span>
       <span *ngIf="!isNetwork">
-        <span *ngIf="isAvailableForPushData">
-            <ion-icon color="success" name="sync"></ion-icon>
-        </span>
-        <span *ngIf="!isAvailableForPushData">
-          <ion-icon name="cloud-outline"></ion-icon>
-        </span>
+          <ion-icon *ngIf="!isAvailableForPushData" name="cloud-outline"></ion-icon>
       </span>
       <span *ngIf="isNetwork">
         <span *ngIf="(isStartSync && iconStatus === 'progress')">

@@ -13,6 +13,7 @@ import {Network} from '@ionic-native/network/ngx';
 import {Device} from '@ionic-native/device/ngx';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {UserService} from './user-service';
+import {TranslateConfigService} from './translate-config.service';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +36,7 @@ export class AuthService {
      * @param appVersion
      * @param alertController
      * @param userService
+     * @param translateConfigService
      */
     constructor(private http: HttpClient,
                 public platform: Platform,
@@ -51,7 +53,8 @@ export class AuthService {
                 private device: Device,
                 private appVersion: AppVersion,
                 private alertController: AlertController,
-                private userService: UserService
+                private userService: UserService,
+                private translateConfigService: TranslateConfigService
     ) {
         // Create a tmp user until everything has properly been loaded
         this.auth = this.newAuthModel();
@@ -60,6 +63,7 @@ export class AuthService {
 
     static STATE_ERROR_INVALID_LOGIN = -1;
     static STATE_ERROR_NETWORK = -2;
+    static STATE_ERROR_USER_BLOCKED = -3;
     /** AuthDb instance that holds the login data and is stored in the local sql lite db */
     public auth: AuthDb;
     /** successful auth state info */
@@ -129,6 +133,20 @@ export class AuthService {
                         // loading.dismiss();
                         resolve(AuthService.STATE_ERROR_NETWORK);
                     } else {
+                        if (err.error && err.error.error) {
+                            if (err.error.error === 'User was blocked') {
+                                if (err.error.blocked_user_id) {
+                                    this.newAuthModel().findWhere(['user_id', err.error.blocked_user_id]).then((user) => {
+                                        if (user) {
+                                            user.password = '';
+                                            user.auth_token = '';
+                                            user.save(true).then((result) => {console.log('Was saved user', (result)); });
+                                        }
+                                    });
+                                }
+                                resolve(AuthService.STATE_ERROR_USER_BLOCKED);
+                            }
+                        }
                         // loading.dismiss();
                         resolve(AuthService.STATE_ERROR_INVALID_LOGIN);
                     }
@@ -203,13 +221,31 @@ export class AuthService {
                             return true;
                         });
                     }
-                }, error => {
-                    console.log(error);
-                    // loader.dismiss();
+                }, err => {
+                    if (err.error && err.error.error) {
+                        if (err.error.error === 'User was blocked') {
+                            if (err.error.blocked_user_id) {
+                                this.newAuthModel().findWhere(['user_id', err.error.blocked_user_id]).then((user) => {
+                                    if (user) {
+                                        user.password = '';
+                                        user.auth_token = '';
+                                        user.save(true).then((result) => {console.log('Was saved user', (result)); });
+                                    }
+                                });
+                            }
+                            this.presentAlert(
+                                'Config Error',
+                                null,
+                                this.translateConfigService.translateWord('validation.user_blocked'),
+                                ['OK']
+                            );
+                            return;
+                        }
+                    }
                     this.presentAlert(
                         'Config Error',
                         null,
-                        'There was an error setting up the application. Please try again.<br><br>Error: ' + error + '<br>',
+                        'There was an error setting up the application. Please try again.<br><br>Error: ' + err + '<br>',
                         ['OK']
                     );
                 });

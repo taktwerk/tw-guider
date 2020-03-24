@@ -18,13 +18,7 @@
                 <section>
                     <h6>{{ 'sync-modal.Last successful sync date:' | translate:params }}</h6> {{ this.getLastSyncDate() }}
                 </section>
-
                 <div *ngIf="isNetwork">
-                    <section *ngIf="!(isStartSync && ['progress', 'resume'].includes(syncProgressStatus)) && isAvailableForSyncData"
-                             style="color: green;"
-                    >
-                        {{ 'sync-modal.There is data available for synchronization from the server.' | translate:params }}
-                    </section>
                     <section *ngIf="modeSync === 0" class="modeSync0">
                         <span *ngIf="!isStartSync" class="notStartSync">
                             <ion-button *ngIf="!['progress', 'resume', 'pause'].includes(syncProgressStatus)"
@@ -83,9 +77,6 @@
                     </section>
                 </div>
                 <div *ngIf="!isNetwork">
-                    <section *ngIf="isAvailableForPushData" style="color: green;">
-                        {{ 'sync-modal.There is data available for pushing to the server.' | translate:params }}
-                    </section>
                     <div>
                         {{ 'sync-modal.No network connection.' | translate:params }}
                     </div>
@@ -93,6 +84,14 @@
                         {{ 'sync-modal.Data synchronization is not yet possible.' | translate:params }}
                     </div>
                 </div>
+                <section *ngIf="isAvailableForPushData" style="color: green;">
+                    {{ 'sync-modal.There is data available for pushing to the server.' | translate:params }}
+                </section>
+                <section *ngIf="!(isStartSync && ['progress', 'resume'].includes(syncProgressStatus)) && isAvailableForSyncData"
+                         style="color: green;"
+                >
+                    {{ 'sync-modal.There is data available for synchronization from the server.' | translate:params }}
+                </section>
                 <div *ngIf="pushProgressStatus === 'progress'">
                     {{ 'sync-modal.Data is sent to the server.' | translate:params }}
                 </div>
