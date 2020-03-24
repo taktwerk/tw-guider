@@ -92,7 +92,8 @@
     "max_characters": "(De) The maximum number of characters in a {{property_name}} should be {{max}} characters.",
     "Title is required": "(De) Title is required",
     "nothing_to_save": "(De) Nothing to save",
-    "user_blocked": "You are blocked, contact an administrator"
+    "user_blocked": "You are blocked, contact an administrator",
+    "is_app_version_old": "(De) The application version is outdated. Please update the application."
   },
   "qr": {
     "Application was successfully configured": "(DE) Application was successfully configured",

@@ -8,10 +8,12 @@ import {TranslateConfigService} from './translate-config.service';
 import { Device } from '@ionic-native/device/ngx';
 import {Network} from '@ionic-native/network/ngx';
 import {ToastService} from './toast-service';
+import {AppVersion} from '@ionic-native/app-version/ngx';
 
 @Injectable()
 export class HttpClient {
   headers: Headers = null;
+  versionNumber = '0.0.1';
 
   deviceInfo: any = {
       model: this.device.model,
@@ -27,12 +29,12 @@ export class HttpClient {
       private http: Http,
       private platform: Platform,
       private authService: AuthService,
-      public toastCtrl: ToastController,
       public navCtrl: NavController,
       private translateConfigService: TranslateConfigService,
       private device: Device,
       private network: Network,
-      private toastService: ToastService
+      private toastService: ToastService,
+      private appVersion: AppVersion
   ) {
       this.platform.ready().then(() => {
           this.deviceInfo = {
@@ -44,6 +46,11 @@ export class HttpClient {
               isVirtual: this.device.isVirtual,
               serial: this.device.serial
           };
+          if (this.appVersion) {
+              this.appVersion.getVersionNumber().then((versionNumber) => {
+                  this.versionNumber = versionNumber;
+              });
+          }
           this.initHeaders();
       });
   }
@@ -54,8 +61,6 @@ export class HttpClient {
      * Init the headers
      */
   public initHeaders() {
-
-
     let headers = {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
@@ -70,6 +75,7 @@ export class HttpClient {
                 console.log('this.authService.auth.lastAuthItemChangedAt', this.authService.auth.lastAuthItemChangedAt);
                 headers['X-Auth-Item-Last-Changed-At'] = '' + this.authService.auth.lastAuthItemChangedAt;
             }
+            headers['X-VERSION-NUMBER'] = this.versionNumber;
         }
     }
     this.headers = new Headers(headers);
@@ -173,6 +179,13 @@ export class HttpClient {
                   );
               });
           });
+      } else if (error.status === 426) {
+          this.authService.presentAlert(
+              '',
+              null,
+              this.translateConfigService.translateWord('validation.is_app_version_old'),
+              ['OK']
+          );
       } else {
           errMsg = error.message ? error.message : error.toString();
           console.log('errMsg', error);
