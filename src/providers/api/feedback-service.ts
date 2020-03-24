@@ -5,10 +5,8 @@ import {ApiService} from './base/api-service';
 import {DbProvider} from '../db-provider';
 import {AuthService} from '../../services/auth-service';
 import {HttpClient} from '../../services/http-client';
-import {GuiderModel} from '../../models/db/api/guider-model';
 import {DownloadService} from '../../services/download-service';
 import {FeedbackModel} from '../../models/db/api/feedback-model';
-import {ApiPush} from '../api-push';
 import {AppSetting} from '../../services/app-setting';
 
 @Injectable()

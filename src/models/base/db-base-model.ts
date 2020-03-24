@@ -57,7 +57,6 @@ export abstract class DbBaseModel {
      * 2nd position: column type (SQLite Schema Type)
      * 3th position: variable type (DbBaseModel.TYPE_<x>
      * 4th position: column name (in object) (optional)
-     * 5th position: column not changed after push data to the server API. Must be boolean (optional)
      *
      * Example of TABLE declaration:
      * ```
