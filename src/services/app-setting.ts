@@ -102,6 +102,7 @@ export class AppSetting {
             userSettingsObject = this.defaultData;
         }
         userSettingsObject['dbMigrationVersion'] = environment.dbMigrationVersion;
+        this.dbMigrationVersion = environment.dbMigrationVersion;
 
         const user = await this.userService.getUser();
         this.appSetting.settings = userSettingsObject;
