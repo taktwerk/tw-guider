@@ -139,7 +139,6 @@ export class ApiSync {
 
     public syncMustBeEnd(): boolean {
         if (this.isOffNetwork()) {
-            console.log('syncMustBeEnd is off network');
             return true;
         }
         if (this.willMakeCancel()) {

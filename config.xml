@@ -24,6 +24,7 @@
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <preference name="UseSwiftLanguageVersion" value="4.2" />
     <platform name="android">
+        <preference name="android-manifest/@android:installLocation" value="auto" />
         <access origin="*" />
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application" xmlns:android="http://schemas.android.com/apk/res/android">
             <application android:networkSecurityConfig="@xml/network_security_config" />
