@@ -68,6 +68,7 @@
     "bcryptjs": "^2.4.3",
     "com-sarriaroman-photoviewer": "^1.2.4",
     "cordova-android": "^8.1.0",
+    "cordova-custom-config": "^5.1.0",
     "cordova-ios": "^5.1.1",
     "cordova-plugin-aes256-encryption": "^2.0.0",
     "cordova-plugin-app-version": "^0.1.9",
@@ -163,7 +164,8 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-plugin-media-capture": {},
-      "cordova-plugin-video-editor": {}
+      "cordova-plugin-video-editor": {},
+      "cordova-custom-config": {}
     },
     "platforms": [
       "android",
