@@ -75,7 +75,7 @@
               <span *ngIf="asset.isExistFileByIndex()">
                 <img *ngIf="asset.isPdf()"
                      (click)="openFile(
-                     asset.getFileName(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE),
+                     asset.getFileName(),
                      asset.TABLE_NAME,
                      asset.name
                      )"

@@ -64,6 +64,8 @@ import { VideoEditor } from '@ionic-native/video-editor/ngx';
 import {VideoService} from '../services/video-service';
 import {VideoModalComponent} from '../components/modals/video-modal-component/video-modal-component';
 import {ToastService} from '../services/toast-service';
+import {DocumentViewer} from '@ionic-native/document-viewer/ngx';
+import {FileOpener} from '@ionic-native/file-opener/ngx';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -142,6 +144,8 @@ export function LanguageLoader(http: Http) {
     MediaCapture,
     VideoEditor,
     AppVersion,
+    DocumentViewer,
+    FileOpener,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

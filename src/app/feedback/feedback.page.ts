@@ -7,6 +7,7 @@ import {DownloadService} from '../../services/download-service';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {VideoService} from '../../services/video-service';
+import {FileOpener} from '@ionic-native/file-opener/ngx';
 
 @Component({
   selector: 'feedback-page',
@@ -31,7 +32,8 @@ export class FeedbackPage implements OnInit {
                 private photoViewer: PhotoViewer,
                 private navCtrl: NavController,
                 private router: Router,
-                private videoService: VideoService) {
+                private videoService: VideoService,
+                private fileOpener: FileOpener) {
     }
 
     public async setModels()  {
@@ -61,6 +63,8 @@ export class FeedbackPage implements OnInit {
             this.videoService.playVideo(fileUrl, fileTitle);
         } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
             this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+        } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
+            this.fileOpener.showOpenWithDialog(this.downloadService.getNativeFilePath(basePath, modelName), 'application/pdf');
         }
     }
 

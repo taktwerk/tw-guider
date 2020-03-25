@@ -52,6 +52,7 @@
                                 </ion-icon>
                             </div>
                             <ion-icon *ngIf="feedback.isPdf()"
+                                      (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.title)"
                                       class="videocam-icon"
                                       name="document"
                             >
