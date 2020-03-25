@@ -16,6 +16,8 @@ import {DownloadService} from '../../services/download-service';
 import {VideoService} from '../../services/video-service';
 import {GuideCategoryService} from '../../providers/api/guide-category-service';
 import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
+import {DocumentViewer, DocumentViewerOptions} from '@ionic-native/document-viewer/ngx';
+import {FileOpener} from '@ionic-native/file-opener/ngx';
 
 @Component({
   selector: 'app-guide',
@@ -53,7 +55,9 @@ export class GuidePage implements OnInit {
       private router: Router,
       private videoService: VideoService,
       public navCtrl: NavController,
-      private ngZone: NgZone
+      private ngZone: NgZone,
+      private documentViewer: DocumentViewer,
+      private fileOpener: FileOpener
   ) {
     this.authService.checkAccess();
   }
@@ -69,6 +73,16 @@ export class GuidePage implements OnInit {
       this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+    } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
+      this.fileOpener.showOpenWithDialog(this.downloadService.getNativeFilePath(basePath, modelName), 'application/pdf');
+      // const documentViewerOptions: DocumentViewerOptions = {
+      //   title: fileTitle
+      // }
+      // this.documentViewer.viewDocument(
+      //     this.downloadService.getNativeFilePath(basePath, modelName),
+      //     'application/pdf',
+      //     documentViewerOptions
+      // );
     }
   }
 

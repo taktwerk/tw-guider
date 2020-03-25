@@ -14,6 +14,7 @@ import {ApiPush} from '../../providers/api-push';
 import {FilePath} from '@ionic-native/file-path/ngx';
 import {TranslateConfigService} from '../../services/translate-config.service';
 import {VideoService} from '../../services/video-service';
+import {FileOpener} from '@ionic-native/file-opener/ngx';
 
 @Component({
   selector: 'feedback-add-edit-page',
@@ -42,7 +43,6 @@ export class FeedbackAddEditPage implements OnInit {
       public http: HttpClient,
       public authService: AuthService,
       public changeDetectorRef: ChangeDetectorRef,
-      public modalController: ModalController,
       public downloadService: DownloadService,
       private feedbackService: FeedbackService,
       private navCtrl: NavController,
@@ -54,7 +54,8 @@ export class FeedbackAddEditPage implements OnInit {
       public alertController: AlertController,
       private translateConfigService: TranslateConfigService,
       private router: Router,
-      private videoService: VideoService
+      private videoService: VideoService,
+      private fileOpener: FileOpener
   ) {
     this.authService.checkAccess();
     if (!this.model) {
@@ -87,6 +88,8 @@ export class FeedbackAddEditPage implements OnInit {
       this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+    } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
+      this.fileOpener.showOpenWithDialog(this.downloadService.getNativeFilePath(basePath, modelName), 'application/pdf');
     }
   }
 

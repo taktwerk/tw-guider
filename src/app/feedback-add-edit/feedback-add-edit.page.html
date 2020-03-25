@@ -57,6 +57,7 @@
       <ion-icon *ngIf="model.isPdf()"
                 class="videocam-icon"
                 name="document"
+                (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
       >
       </ion-icon>
       <ion-icon name="musical-notes"

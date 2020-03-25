@@ -677,7 +677,6 @@ export abstract class DbBaseModel {
                         resolve(res);
 
                     }).catch((err) => {
-                        console.log('query', query);
                         console.log('errrr', err);
                         resolve(false);
                     });
