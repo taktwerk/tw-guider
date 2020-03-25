@@ -44,6 +44,9 @@
               <p *ngIf="item.duration">
                 {{ 'guides.duration' | translate:params }}: {{ item.getDuration() }}
               </p>
+              <p *ngIf="item.revision">
+                {{ 'guides.revision' | translate:params }}: {{ item.revision }}
+              </p>
               <ion-button class="show-guide-btn" [routerLink]="['/guide/' + item.idApi]">
                 <ion-icon class="show-guide-play-icon" slot="start" name="arrow-dropright-circle"></ion-icon>
                 {{ 'guides.Show Guide' | translate:params }}

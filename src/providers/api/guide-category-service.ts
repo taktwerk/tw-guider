@@ -72,7 +72,9 @@ export class GuideCategoryService extends ApiService {
             }
             if (searchValue) {
                 whereCondition.push(
-                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
+                    '(' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
+                    + ' OR ' +
+                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%")'
                 );
             }
             const joinCondition = 'JOIN ' + this.dbModelApi.secure('guide_category_binding') +
@@ -135,7 +137,6 @@ export class GuideCategoryService extends ApiService {
 
             const entries: any[] = [];
             return this.dbModelApi.searchAllAndGetRowsResult(whereCondition, orderBy).then((res) => {
-                console.log('findAll res', res);
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
                         const obj: DbBaseModel = this.newModel();
@@ -182,7 +183,9 @@ export class GuideCategoryService extends ApiService {
             }
             if (searchValue) {
                 whereCondition.push(
-                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
+                    '(' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
+                    + ' OR ' +
+                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%")'
                 );
             }
             const joinCondition =

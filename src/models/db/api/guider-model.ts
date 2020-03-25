@@ -31,6 +31,7 @@ export class GuiderModel extends DbApiModel {
     public duration: number;
     public template_id: number;
     public protocol_template_id: number;
+    public revision: string;
 
     //db columns
     static COL_CLIENT_ID = 'client_id';
@@ -45,6 +46,7 @@ export class GuiderModel extends DbApiModel {
     static COL_DURATION = 'duration';
     static COL_TEMPLATE_ID = 'template_id';
     static COL_PROTOCOL_TEMPLATE_ID = 'protocol_template_id';
+    static COL_REVISION = 'revision';
 
     public downloadMapping: FileMapInModel[] = [
         {
@@ -71,6 +73,7 @@ export class GuiderModel extends DbApiModel {
         [GuiderModel.COL_DURATION, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuiderModel.COL_TEMPLATE_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuiderModel.COL_PROTOCOL_TEMPLATE_ID, 'INT', DbBaseModel.TYPE_NUMBER],
+        [GuiderModel.COL_REVISION, 'VARCHAR(255)', DbBaseModel.TYPE_STRING]
     ];
 
     /**
