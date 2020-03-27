@@ -66,6 +66,8 @@ import {VideoModalComponent} from '../components/modals/video-modal-component/vi
 import {ToastService} from '../services/toast-service';
 import {DocumentViewer} from '@ionic-native/document-viewer/ngx';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
+import {PdftronModalComponent} from '../components/modals/pdftron-modal-component/pdftron-modal-component';
+import {PictureService} from '../services/picture-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -77,8 +79,9 @@ export function LanguageLoader(http: Http) {
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
+    PdftronModalComponent
   ],
-  entryComponents: [GuideAssetTextModalComponent, SyncModalComponent, VideoModalComponent],
+  entryComponents: [GuideAssetTextModalComponent, SyncModalComponent, VideoModalComponent, PdftronModalComponent],
     imports: [
         BrowserModule,
         FormsModule,
@@ -115,6 +118,7 @@ export function LanguageLoader(http: Http) {
     HttpClient,
     DownloadService,
     VideoService,
+    PictureService,
     ToastService,
     ApiSync,
     ApiPush,

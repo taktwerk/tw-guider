@@ -22,6 +22,11 @@ public void onBackPressed() {
 }
 ```
 
+## Set up project:
+- add file local.properties from local.properties.example
+- npm run-script taktwerk
+- some ionic command (for example ionic cordova run android -l)
+
 ## Changes in database
 
 After changes to the database structure have been made in the code,
@@ -68,3 +73,8 @@ you need to increase the value of the property dbMigrationVersion in the file `s
 - add to providers `FeedbackService`
 
 
+- npm install
+- ionic cordova plugin add https://github.com/moust/cordova-plugin-videoplayer.git
+- npm install @ionic-native/video-player
+- ionic cordova prepare android
+- cp local.properties platforms/android/local.properties
