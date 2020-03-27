@@ -43,7 +43,7 @@ export class GuideStepService extends ApiService {
 
     /**
      * Create a new instance of the service model
-     * @returns {TimerTrackingModel}
+     * @returns {GuideStepModel}
      */
     public newModel() {
         return new GuideStepModel(this.p, this.db, this.events, this.downloadService);

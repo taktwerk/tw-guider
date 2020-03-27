@@ -39,7 +39,7 @@ export class GuideCategoryBindingService extends ApiService {
 
     /**
      * Create a new instance of the service model
-     * @returns {TimerTrackingModel}
+     * @returns {GuideCategoryBindingModel}
      */
     public newModel() {
         return new GuideCategoryBindingModel(this.p, this.db, this.events, this.downloadService);

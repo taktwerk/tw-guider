@@ -20,6 +20,7 @@ import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
 import {FeedbackService} from './api/feedback-service';
 import {UserService} from '../services/user-service';
 import {ApiPush} from './api-push';
+import {ProtocolTemplateService} from './api/protocol-template-service';
 
 @Injectable()
 /**
@@ -42,7 +43,8 @@ export class ApiSync {
         guide_step: this.guideStepService,
         guide_asset: this.guideAssetService,
         guide_asset_pivot: this.guideAssetPivotService,
-        feedback: this.feedbackService
+        feedback: this.feedbackService,
+        protocol_template: this.protocolTemplateService
     };
 
     userDb: UserDb;
@@ -70,6 +72,7 @@ export class ApiSync {
         private guideStepService: GuideStepService,
         private guideAssetService: GuideAssetService,
         private guideAssetPivotService: GuideAssetPivotService,
+        private protocolTemplateService: ProtocolTemplateService,
         private feedbackService: FeedbackService,
         private downloadService: DownloadService,
         private network: Network,

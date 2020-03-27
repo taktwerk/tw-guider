@@ -38,7 +38,7 @@ export class GuiderService extends ApiService {
 
     /**
      * Create a new instance of the service model
-     * @returns {TimerTrackingModel}
+     * @returns {GuiderModel}
      */
     public newModel() {
         return new GuiderModel(this.p, this.db, this.events, this.downloadService);

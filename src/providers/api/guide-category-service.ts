@@ -40,7 +40,7 @@ export class GuideCategoryService extends ApiService {
 
     /**
      * Create a new instance of the service model
-     * @returns {TimerTrackingModel}
+     * @returns {GuideCategoryModel}
      */
     public newModel() {
         return new GuideCategoryModel(this.p, this.db, this.events, this.downloadService);
@@ -61,7 +61,6 @@ export class GuideCategoryService extends ApiService {
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
             ];
-            console.log('user.isAuthority', user.isAuthority);
             if (!user.isAuthority) {
                 whereCondition.push(
                     this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
@@ -129,7 +128,6 @@ export class GuideCategoryService extends ApiService {
                 this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL AND ' +
                 this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
             ];
-            console.log('user.isAuthority', user.isAuthority);
             if (!user.isAuthority) {
                 whereCondition.push(['client_id', user.client_id]);
             }
@@ -172,7 +170,6 @@ export class GuideCategoryService extends ApiService {
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
             ];
-            console.log('user.isAuthority', user.isAuthority);
             if (!user.isAuthority) {
                 whereCondition.push(
                     this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id

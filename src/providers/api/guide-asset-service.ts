@@ -39,7 +39,7 @@ export class GuideAssetService extends ApiService {
 
     /**
      * Create a new instance of the service model
-     * @returns {TimerTrackingModel}
+     * @returns {GuideAssetModel}
      */
     public newModel() {
         return new GuideAssetModel(this.p, this.db, this.events, this.downloadService);

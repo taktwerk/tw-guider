@@ -37,7 +37,7 @@ export class FeedbackService extends ApiService {
 
     /**
      * Create a new instance of the service model
-     * @returns {TimerTrackingModel}
+     * @returns {FeedbackModel}
      */
     public newModel() {
         return new FeedbackModel(this.p, this.db, this.events, this.downloadService);

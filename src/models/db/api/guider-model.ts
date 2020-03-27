@@ -18,6 +18,7 @@ export class GuiderModel extends DbApiModel {
     steps: GuideStepModel[] = [];
     assets: GuideAssetModel[] = [];
 
+
     public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_CLIENT_ID + ')';
 
     //members

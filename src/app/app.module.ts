@@ -68,6 +68,7 @@ import {DocumentViewer} from '@ionic-native/document-viewer/ngx';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {PdftronModalComponent} from '../components/modals/pdftron-modal-component/pdftron-modal-component';
 import {PictureService} from '../services/picture-service';
+import {ProtocolTemplateService} from '../providers/api/protocol-template-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -113,6 +114,7 @@ export function LanguageLoader(http: Http) {
     GuideAssetService,
     GuideAssetPivotService,
     FeedbackService,
+    ProtocolTemplateService,
     DbProvider,
     AuthService,
     HttpClient,

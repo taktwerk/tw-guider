@@ -6,14 +6,14 @@ import {DbProvider} from '../db-provider';
 import {AuthService} from '../../services/auth-service';
 import {HttpClient} from '../../services/http-client';
 import {DownloadService} from '../../services/download-service';
-import {GuideAssetPivotModel} from '../../models/db/api/guide-asset-pivot-model';
 import {AppSetting} from '../../services/app-setting';
+import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model';
 
 @Injectable()
-export class GuideAssetPivotService extends ApiService {
-    data: GuideAssetPivotModel[] = [];
-    loadUrl: string = '/guide-asset-pivot';
-    dbModelApi: GuideAssetPivotModel = new GuideAssetPivotModel(this.p, this.db, this.events, this.downloadService);
+export class ProtocolTemplateService extends ApiService {
+    data: ProtocolTemplateModel[] = [];
+    loadUrl: string = '/protocol_template';
+    dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService);
 
     /**
      * Constructor
@@ -26,21 +26,19 @@ export class GuideAssetPivotService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-                private p: Platform,
-                private db: DbProvider,
+                private p: Platform, private db: DbProvider,
                 public authService: AuthService,
                 public events: Events,
                 public downloadService: DownloadService,
                 public appSetting: AppSetting) {
         super(http, events, appSetting);
-        console.debug('GuideAssetPivotService', 'initialized');
     }
 
     /**
      * Create a new instance of the service model
-     * @returns {GuideAssetPivotModel}
+     * @returns {ProtocolTemplateModel}
      */
     public newModel() {
-        return new GuideAssetPivotModel(this.p, this.db, this.events, this.downloadService);
+        return new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService);
     }
 }
