@@ -51,6 +51,14 @@
                 <ion-icon class="show-guide-play-icon" slot="start" name="arrow-dropright-circle"></ion-icon>
                 {{ 'guides.Show Guide' | translate:params }}
               </ion-button>
+              <ion-button *ngIf="item.protocol_template"
+                          class="show-guide-btn"
+                          color="medium"
+                          (click)="editProtocol(item.protocol_template)"
+              >
+                <ion-icon class="show-guide-play-icon" slot="start" name="list"></ion-icon>
+                {{ 'guides.New Protocol' | translate:params }}
+              </ion-button>
             </div>
           </div>
         </ion-list>

@@ -106,7 +106,6 @@ export class GuideCategoryService extends ApiService {
                         obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
-                        // console.debug(this.TAG, 'new instance', obj);
                         entries.push(obj);
                     }
                 }
@@ -143,7 +142,6 @@ export class GuideCategoryService extends ApiService {
                         obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
-                        // console.debug(this.TAG, 'new instance', obj);
                         entries.push(obj);
                     }
                 }
@@ -208,6 +206,7 @@ export class GuideCategoryService extends ApiService {
                         obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
+                        obj.setProtocolTemplate();
                         entries.push(obj);
                     }
                 }

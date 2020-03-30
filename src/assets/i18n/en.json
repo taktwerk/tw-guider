@@ -35,7 +35,8 @@
     "header": "Guides",
     "duration": "Duration",
     "revision": "Revision",
-    "Show Guide": "Show Guide"
+    "Show Guide": "Show Guide",
+    "New Protocol": "New Protocol"
   },
   "feedback": {
     "header": "Feedback",

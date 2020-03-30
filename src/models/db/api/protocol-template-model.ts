@@ -14,7 +14,7 @@ export class ProtocolTemplateModel extends DbApiModel {
 
     //members
     public client_id: number;
-    public name: number;
+    public name: string;
     public workflow_id: number;
 
     //db columns

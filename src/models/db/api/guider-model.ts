@@ -5,6 +5,7 @@ import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
 import {GuideStepModel} from './guide-step-model';
 import {GuideAssetModel} from './guide-asset-model';
+import {ProtocolTemplateModel} from './protocol-template-model';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -17,7 +18,7 @@ export class GuiderModel extends DbApiModel {
     /// relations
     steps: GuideStepModel[] = [];
     assets: GuideAssetModel[] = [];
-
+    protocol_template: ProtocolTemplateModel;
 
     public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_CLIENT_ID + ')';
 
@@ -176,6 +177,39 @@ export class GuiderModel extends DbApiModel {
                 resolve(this.assets);
             }).catch((err) => {
                 resolve(this.assets);
+            });
+        });
+    }
+
+    setProtocolTemplate() {
+        return new Promise((resolve) => {
+            if (!this.protocol_template_id) {
+                resolve(this.protocol_template);
+            }
+            const query = 'SELECT ' + this.secure('protocol_template') + '.*' + ' from ' + this.secure('guide') +
+                ' JOIN ' + this.secure('protocol_template') + ' ON ' + this.secure('protocol_template') + '.' + this.secure('id') + '=' + this.secure('guide') + '.' + this.secure('protocol_template_id') +
+                ' WHERE ' + this.secure('guide') + '.' + this.secure('id') + ' = ' + this.idApi +
+                ' GROUP BY guide.id';
+
+            console.log('query for tamplate', query);
+
+            this.db.query(query).then((res) => {
+                this.protocol_template = null;
+                if (res.rows.length > 0) {
+                    console.log('resresres', res);
+                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.events, this.downloadService);
+                    obj.platform = this.platform;
+                    obj.db = this.db;
+                    obj.events = this.events;
+                    obj.downloadService = this.downloadService;
+                    obj.loadFromAttributes(res.rows.item(0));
+                    this.protocol_template = obj;
+                }
+                console.log('this.protocol_template', this.protocol_template);
+                resolve(this.protocol_template);
+            }).catch((err) => {
+                console.log('errrr', err);
+                resolve(this.protocol_template);
             });
         });
     }

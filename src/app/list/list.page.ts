@@ -6,6 +6,10 @@ import {AuthService} from '../../services/auth-service';
 import {GuideCategoryModel} from '../../models/db/api/guide-category-model';
 import {Events} from '@ionic/angular';
 import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
+import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
+import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model';
+import {DownloadService} from '../../services/download-service';
+import {PictureService} from '../../services/picture-service';
 
 @Component({
   selector: 'app-list',
@@ -22,20 +26,15 @@ export class ListPage implements OnInit {
       private guideCategoryBindingService: GuideCategoryBindingService,
       private guideCategoryService: GuideCategoryService,
       private guiderService: GuiderService,
+      private protocolTemplateService: ProtocolTemplateService,
       public authService: AuthService,
       public events: Events,
-      public changeDetectorRef: ChangeDetectorRef
+      public changeDetectorRef: ChangeDetectorRef,
+      private downloadService: DownloadService,
+      private pictureService: PictureService
   ) {
     this.authService.checkAccess();
     this.findAllGuideCategories();
-  }
-
-  public getModels() {
-    this.guiderService.data.filter(model => {
-      return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
-    });
-
-    return this.guiders;
   }
 
   public searchGuides($event) {
@@ -87,6 +86,17 @@ export class ListPage implements OnInit {
     return item.id;
   }
 
+  public editProtocol(protocolTemplate: ProtocolTemplateModel) {
+    console.log('ProtocolTemplateModel.COL_THUMB_PROTOCOL_FILE', ProtocolTemplateModel.COL_PROTOCOL_FILE);
+    console.log('protocolTemplate', protocolTemplate);
+    console.log('protocolTemplate[ProtocolTemplateModel.COL_THUMB_PROTOCOL_FILE]', protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE])
+    if (!protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE]) {
+      return;
+    }
+    const fileUrl = this.downloadService.getNativeFilePath(protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE], protocolTemplate.TABLE_NAME);
+    this.pictureService.editFile(fileUrl, protocolTemplate.name);
+  }
+
   ngOnInit() {
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
       this.findAllGuideCategories();
@@ -111,6 +121,9 @@ export class ListPage implements OnInit {
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
       this.setGuideInfo();
+    });
+    this.events.subscribe(this.guiderService.dbModelApi + ':create', (model) => {
+
     });
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess();

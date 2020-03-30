@@ -14,18 +14,39 @@ declare var PSPDFKit: any;
 
 @Injectable()
 export class PictureService {
-    constructor(private streamingMedia: StreamingMedia,
-                private modalController: ModalController,
-                private downloadService: DownloadService,
-                public platform: Platform) {}
+    constructor(public platform: Platform) {}
 
     async openFile(fileUrl: string, fileTitle?: string) {
         this.initializePspdfkit(fileUrl, fileTitle);
     }
 
-    initializePspdfkit(fileUrl, fileTitle) {
-        PSPDFKit.present(fileUrl, {
-            title: fileTitle,
+    async editFile(fileUrl: string, fileTitle?: string) {
+        this.initializePspdfkit(fileUrl, fileTitle, true);
+    }
+
+    initializePspdfkit(fileUrl, fileTitle, isEdit = false) {
+        const config = this.getPspdfkitConfig(isEdit);
+        config['title'] = fileTitle;
+
+        PSPDFKit.present(fileUrl, config, () => {
+            console.log('success');
+        }, () => {
+            console.log('failed');
+        });
+    }
+
+    getPspdfkitConfig(isEdit = false) {
+        if (isEdit) {
+            return {
+                scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,
+                scrollMode: PSPDFKit.ScrollMode.CONTINUOUS,
+                autosaveEnabled: true,
+                useImmersiveMode: true,
+                shareFeatures: [],
+            };
+        }
+
+        return {
             scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,
             scrollMode: PSPDFKit.ScrollMode.CONTINUOUS,
             disableSearch: true,
@@ -37,6 +58,6 @@ export class PictureService {
                 enabled: false, // activate annotation editing (default: true)
                 creatorName: null
             }
-        });
+        };
     }
 }
