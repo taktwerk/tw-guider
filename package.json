@@ -105,7 +105,7 @@
     "ngx-virtual-scroller": "^3.0.3",
     "node-forge": "git://github.com/digitalbazaar/forge.git#ef835fafe",
     "pbkdf2-sha256": "^1.1.1",
-    "pspdfkit-cordova": "git+https://github.com/PSPDFKit/PSPDFKit-Cordova.git",
+    "pspdfkit-cordova": "^1.0.9",
     "rxjs": "~6.5.1",
     "rxjs-compat": "^6.5.4",
     "scrypt-async": "^2.0.1",
