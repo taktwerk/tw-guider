@@ -68,6 +68,7 @@ import {DocumentViewer} from '@ionic-native/document-viewer/ngx';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {PdftronModalComponent} from '../components/modals/pdftron-modal-component/pdftron-modal-component';
 import {PictureService} from '../services/picture-service';
+import {Insomnia} from '@ionic-native/insomnia/ngx';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -150,6 +151,7 @@ export function LanguageLoader(http: Http) {
     AppVersion,
     DocumentViewer,
     FileOpener,
+    Insomnia,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
