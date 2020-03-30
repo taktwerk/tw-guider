@@ -143,12 +143,16 @@ export class DownloadService {
     }
 
     startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<boolean> {
+        fileName = path.substring(path.lastIndexOf('/') + 1, path.length)
         return new Promise(resolve => {
             this.file.resolveDirectoryUrl(this.file.dataDirectory + directoryName).then((directoryEntry) => {
                 this.file.getFile(directoryEntry, fileName, {})
                     .then(fileEntry => {
-                        fileEntry.file(file => {
-                            this.readFile(fileKey, file, url, headers);
+                        fileEntry.file(async file => {
+                            const imgBlob = await this.readFile(fileKey, file, url, headers);
+                            const formData = new FormData();
+                            formData.append(fileKey, imgBlob, file.name);
+                            this.uploadFile(formData, url, headers);
                             resolve(true);
                             return;
                         });
@@ -164,19 +168,19 @@ export class DownloadService {
         });
     }
 
-    readFile(fileKey: string, file: any, url: string, headers?: Headers) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            const formData = new FormData();
-            const imgBlob = new Blob([reader.result], {type: file.type});
-            formData.append(fileKey, imgBlob, file.name);
-            this.uploadFile(formData, url, headers);
-        };
-        reader.readAsArrayBuffer(file);
+    readFile(fileKey: string, file: any, url: string, headers?: Headers): Promise<Blob> {
+        return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const imgBlob = new Blob([reader.result], {type: file.type});
+                resolve(imgBlob);
+            };
+            reader.readAsArrayBuffer(file);
+        });
     }
 
     uploadFile(formData: FormData, url: string, headers?: Headers) {
-        this.http.post(url, formData, {headers: headers})
+        return this.http.post(url, formData, {headers: headers})
             .pipe(
                 finalize(() => {})
             )
@@ -206,18 +210,23 @@ export class DownloadService {
      * Copy a file to the app storage
      *
      * @param {string} fullPath
-     * @param {string} nativePath
      * @param {string} modelName
+     * @param isDuplicate
      * @returns {Promise<string | boolean>}
      */
-    public copy(fullPath: string, modelName: string): Promise< string > {
+    public copy(fullPath: string, modelName: string, isDuplicate = false): Promise< string > {
         return new Promise(resolve => {
             const date = new Date();
             const correctPath = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
             const currentName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
             const currentExt = fullPath.substring(fullPath.lastIndexOf('.') + 1, fullPath.length);
             const newFilePath = this.file.dataDirectory + modelName;
-            const newFileName = date.getTime() + '.' + currentExt;
+            let newFileName = '';
+            if (isDuplicate) {
+                newFileName = `duplicated_${currentName}`;
+            } else {
+                newFileName = date.getTime() + '.' + currentExt;
+            }
 
             this.checkDir(modelName).then(
                 suc => {
@@ -248,7 +257,7 @@ export class DownloadService {
      * @param {string} newFileName
      * @returns {Promise<boolean>}
      */
-    private copyToLocalDir(
+    public copyToLocalDir(
         namePath: string,
         currentName: string,
         newFilePath: string,

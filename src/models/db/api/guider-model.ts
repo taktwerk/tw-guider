@@ -191,12 +191,9 @@ export class GuiderModel extends DbApiModel {
                 ' WHERE ' + this.secure('guide') + '.' + this.secure('id') + ' = ' + this.idApi +
                 ' GROUP BY guide.id';
 
-            console.log('query for tamplate', query);
-
             this.db.query(query).then((res) => {
                 this.protocol_template = null;
                 if (res.rows.length > 0) {
-                    console.log('resresres', res);
                     const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.events, this.downloadService);
                     obj.platform = this.platform;
                     obj.db = this.db;
@@ -205,7 +202,6 @@ export class GuiderModel extends DbApiModel {
                     obj.loadFromAttributes(res.rows.item(0));
                     this.protocol_template = obj;
                 }
-                console.log('this.protocol_template', this.protocol_template);
                 resolve(this.protocol_template);
             }).catch((err) => {
                 console.log('errrr', err);

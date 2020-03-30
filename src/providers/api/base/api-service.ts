@@ -193,7 +193,7 @@ export abstract class ApiService {
      * @returns {boolean}
      */
     public pushFiles(model: DbApiModel, userForSaving?: UserDb): Promise<boolean> {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
           if (model.platform.is('mobileweb')) {
             resolve(false);
             return;
@@ -209,32 +209,30 @@ export abstract class ApiService {
           for (const fields of model.downloadMapping) {
             // If we have a local path but no api path, we need to upload the file!
             if (model[fields.localPath] && !model[fields.url]) {
-              const fieldUrl = url + '?fileAttribute=' + fields.name;
-              uploadFilePromises.push(
-                  model.downloadService.startUpload(
-                    model.TABLE_NAME,
-                    fields.name,
-                    model[fields.name],
-                    model[fields.localPath],
-                    fieldUrl,
-                    headers
-                  )
-                .then((result) => {
-                  if (userForSaving) {
-                      userForSaving.userSetting.appDataVersion++;
-                      userForSaving.save();
-                  }
-                  resolve(result);
-                }).catch((err) => {
-                      console.log('upload file', err);
-                  })
-              );
+                const fieldUrl = url + '?fileAttribute=' + fields.name;
+                // uploadFilePromises.push(
+                try {
+                    const uploadResult = await model.downloadService.startUpload(
+                        model.TABLE_NAME,
+                        fields.name,
+                        model[fields.name],
+                        model[fields.localPath],
+                        fieldUrl,
+                        headers
+                    );
+                    if (uploadResult) {
+                        if (userForSaving) {
+                            userForSaving.userSetting.appDataVersion++;
+                            userForSaving.save();
+                        }
+                    }
+                } catch (err) {
+                    console.log('upload file', err);
+                }
             }
           }
 
-          Promise.all(uploadFilePromises).then(() => {
-            resolve(true);
-          });
+          resolve(true);
         });
     }
 }

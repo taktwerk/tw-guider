@@ -14,6 +14,7 @@ import {DatePipe} from '../../pipes/date-pipe/date-pipe';
 import {UserService} from '../../services/user-service';
 import {SyncMode} from '../synchronization-component/synchronization-component';
 import {AppSetting} from '../../services/app-setting';
+import {Insomnia} from '@ionic-native/insomnia/ngx';
 
 /**
  * Generated class for the TodoPage page.
@@ -58,7 +59,8 @@ export class SyncModalComponent implements OnInit {
                 public network: Network,
                 public datepipe: DatePipe,
                 private userService: UserService,
-                private appSetting: AppSetting) {
+                private appSetting: AppSetting,
+                private insomnia: Insomnia) {
         this.isNetwork = (this.network.type !== 'none');
         this.initUser().then(() => {
             this.syncProgressStatus = this.userDb.userSetting.syncStatus;
@@ -66,7 +68,13 @@ export class SyncModalComponent implements OnInit {
     }
 
     dismiss() {
-        this.modalController.dismiss();
+        this.modalController.dismiss().then(() => {
+            this.insomnia.allowSleepAgain()
+                .then(
+                    () => console.log('insomnia.allowSleepAgain success'),
+                    () => console.log('insomnia.allowSleepAgain error')
+                );
+        });
     }
 
     syncData() {
@@ -117,6 +125,11 @@ export class SyncModalComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.insomnia.keepAwake()
+            .then(
+                () => console.log('insomnia.keepAwake success'),
+                () => console.log('insomnia.keepAwake error')
+            );
         this.syncService.syncMode.subscribe((result) => {
             if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
                 return;

@@ -12,6 +12,7 @@ import {DownloadService} from '../services/download-service';
 import 'rxjs/add/observable/forkJoin';
 import {FeedbackService} from './api/feedback-service';
 import {Network} from '@ionic-native/network/ngx';
+import {ProtocolTemplateService} from './api/protocol-template-service';
 
 @Injectable()
 /**
@@ -22,7 +23,8 @@ export class ApiPush {
     private isBusy: boolean = false;
 
     apiServices: any = {
-        feedback: this.feedbackService
+        feedback: this.feedbackService,
+        protocol_template: this.protocolTemplateService
     };
     userDb: UserDb;
 
@@ -32,6 +34,8 @@ export class ApiPush {
     pushedItemsPercent: BehaviorSubject<number>;
     pushProgressStatus: BehaviorSubject<string>;
     isAvailableForPushData: BehaviorSubject<boolean>;
+    pushedItemsCountNumber = 0;
+    countOfAllChangedItems = 0;
 
     /**
      * ApiSync Constructor
@@ -44,7 +48,8 @@ export class ApiPush {
         private feedbackService: FeedbackService,
         private downloadService: DownloadService,
         private network: Network,
-        private appSetting: AppSetting
+        private appSetting: AppSetting,
+        private protocolTemplateService: ProtocolTemplateService
     ) {
         this.isStartPushBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.isStartPushDataBehaviorSubject = new BehaviorSubject<boolean>(false);
@@ -113,7 +118,7 @@ export class ApiPush {
      */
     public pushOneAtTime(): Promise<any> {
         this.isStartPushBehaviorSubject.next(true);
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
             if (this.isOffNetwork()) {
                 resolve(false);
 
@@ -128,143 +133,47 @@ export class ApiPush {
             this.isBusy = true;
 
             // iterate over all services
+            let allServicesBodies = {};
             const bodiesBatchAllPromises = [];
             for (const key of Object.keys(this.apiServices)) {
                 // get registered api service for the current model
                 const service: ApiService = this.apiServices[key];
-                const batchPromise = new Promise(resolve => {
-                    service.prepareBatchPost().then((bodies) => {
-                        if (bodies && bodies.length > 0) {
-                            let resolveObject = {};
-                            resolveObject[key] = bodies;
-                            resolve(resolveObject);
-                        } else {
-                            resolve(false);
-                        }
-                    });
-                });
-                bodiesBatchAllPromises.push(batchPromise);
-            }
-            let pushedItemsCount = 0;
-            let countOfAllChangedItems = 0;
-            Promise.all(bodiesBatchAllPromises).then(values => {
-                let allServicesBodies = {};
-
-                values.forEach(function(value) {
-                    if (value) {
-                        allServicesBodies = {...allServicesBodies, ...value};
-                        for (const models in value) {
-                            countOfAllChangedItems += value[models].length;
-                        }
-                    }
-                });
-
-                return allServicesBodies;
-            }).then(allServicesBodies => {
-                if (Object.keys(allServicesBodies).length === 0) {
-                    this.isStartPushBehaviorSubject.next(false);
-                    this.pushProgressStatus.next('no_push_data');
-                    this.isBusy = false;
-                    resolve(false);
-                    return;
+                const bodies = await service.prepareBatchPost();
+                if (bodies && bodies.length > 0) {
+                    const modelBody = {};
+                    modelBody[key] = bodies;
+                    allServicesBodies = {...allServicesBodies, ...modelBody};
+                    this.countOfAllChangedItems += modelBody[key].length;
                 }
+            }
+
+            this.pushedItemsCountNumber = 0;
+            this.countOfAllChangedItems = 0;
+
+            if (Object.keys(allServicesBodies).length === 0) {
                 this.isStartPushBehaviorSubject.next(false);
-                this.pushProgressStatus.next('progress');
-                this.isBusy = true;
-                const promises = [];
-                Object.keys(allServicesBodies).forEach((modelKey) => {
-                    const service: ApiService = this.apiServices[modelKey];
-                    const url = this.appSetting.getApiUrl() + service.loadUrl + '/batch';
+                this.pushProgressStatus.next('no_push_data');
+                this.isBusy = false;
+                resolve(false);
+                return;
+            }
+            this.isStartPushBehaviorSubject.next(false);
+            this.pushProgressStatus.next('progress');
+            this.isBusy = true;
+            console.log('allServicesBodies', allServicesBodies);
+            Object.keys(allServicesBodies).forEach((modelKey) => {
+                const service: ApiService = this.apiServices[modelKey];
+                const url = this.appSetting.getApiUrl() + service.loadUrl + '/batch';
 
-                    allServicesBodies[modelKey].forEach((body) => {
-                        if (!body) {
-                            return;
-                        }
+                allServicesBodies[modelKey].forEach(async (body) => {
+                    if (!body) {
+                        return;
+                    }
 
-                        const jsonBody = JSON.stringify(body);
+                    const jsonBody = JSON.stringify(body);
 
-                        promises.push(new Promise((resolve) => {
-                            if (this.pushProgressStatus.getValue() === 'failed') {
-                                this.isBusy = false;
-                                return;
-                            }
-                            return this.http.post(url, jsonBody)
-                                .subscribe((data) => {
-                                    if (this.pushProgressStatus.getValue() === 'failed') {
-                                        this.isBusy = false;
-                                        resolve(false);
-                                        return;
-                                    }
-                                    // search error
-                                    let isError = false;
-                                    Object.keys(data).forEach((key) => {
-                                        const recordResponse = data[key];
-                                        if (recordResponse.errors) {
-                                            isError = true;
-                                        }
-                                    });
-                                    if (isError) {
-                                        this.isStartPushBehaviorSubject.next(false);
-                                        this.isBusy = false;
-                                        resolve(false);
-                                        return;
-                                    }
-                                    const record = data[0];
-                                    // get model by local id and update received primary key from api
-                                    service.dbModelApi.findById(record._id, true).then((dbModel) => {
-                                        if (!dbModel) {
-                                            resolve(false);
-                                            return;
-                                        }
-                                        if (dbModel.deleted_at || dbModel.local_deleted_at) {
-                                            dbModel.remove().then(async () => {
-                                                this.userDb.userSetting.appDataVersion++;
-                                                await this.userDb.save();
-                                            });
-                                            pushedItemsCount++;
-                                            const savedDataPercent = Math.round((pushedItemsCount / countOfAllChangedItems) * 100);
-                                            this.pushedItemsCount.next(pushedItemsCount);
-                                            this.pushedItemsPercent.next(savedDataPercent);
-                                            resolve(true);
-                                            return;
-                                        }
-                                        console.log('after deleted at');
-                                        const dbModelApi = service.newModel();
-                                        dbModel.idApi = record[dbModelApi.apiPk];
-                                        /// load data from current model
-                                        dbModelApi.loadFromApiToCurrentObject(dbModel);
-                                        /// load data from push API response
-                                        dbModelApi.loadFromApiToCurrentObject(record, dbModel);
-                                        dbModelApi.is_synced = true;
-                                        dbModelApi.save(
-                                            false,
-                                            true,
-                                            dbModelApi.COL_ID + '=' + record._id,
-                                            false
-                                        ).then(async (res) => {
-                                            this.userDb.userSetting.appDataVersion++;
-                                            await this.userDb.save();
-                                            service.pushFiles(dbModel, this.userDb).then((result) => {
-                                                pushedItemsCount++;
-                                                const savedDataPercent = Math.round((pushedItemsCount / countOfAllChangedItems) * 100);
-                                                this.pushedItemsCount.next(pushedItemsCount);
-                                                this.pushedItemsPercent.next(savedDataPercent);
-                                                resolve(true);
-                                            });
-                                        });
-                                    });
-                                }, (err) => {
-                                    this.isStartPushBehaviorSubject.next(false);
-                                    this.pushProgressStatus.next('failed');
-                                    this.isBusy = false;
-                                    resolve(false);
-                                });
-                            })
-                        );
-                    });
-                });
-                Promise.all(promises).then((data) => {
-                    if (!data) {
+                    const isPushedData = await this.pushDataToServer(url, jsonBody, service);
+                    if (!isPushedData) {
                         this.isStartPushBehaviorSubject.next(false);
                         this.pushProgressStatus.next('failed');
                         this.isBusy = false;
@@ -272,20 +181,97 @@ export class ApiPush {
                         resolve(false);
                         return;
                     }
-                    this.isStartPushBehaviorSubject.next(false);
-                    this.pushProgressStatus.next('success');
-                    this.isBusy = false;
-                    this.setIsPushAvailableData(false);
-                    resolve(true);
-                }, (err) => {
-                    this.isStartPushBehaviorSubject.next(false);
-                    this.pushProgressStatus.next('failed');
-                    this.isBusy = false;
                 });
             });
+            this.isStartPushBehaviorSubject.next(false);
+            this.pushProgressStatus.next('success');
+            this.isBusy = false;
+            this.setIsPushAvailableData(false);
+            resolve(true);
 
             this.isBusy = false;
             resolve(true);
+            console.log('resolver');
+            return;
+        });
+    }
+
+    private pushDataToServer(url, jsonBody, service) {
+        return new Promise(resolve => {
+            if (this.pushProgressStatus.getValue() === 'failed') {
+                this.isBusy = false;
+                resolve(false);
+                return;
+            }
+            return this.http.post(url, jsonBody)
+                .subscribe(async (data) => {
+                    if (this.pushProgressStatus.getValue() === 'failed') {
+                        this.isBusy = false;
+                        resolve(false);
+                        return;
+                    }
+                    // search error
+                    let isError = false;
+                    Object.keys(data).forEach((key) => {
+                        const recordResponse = data[key];
+                        if (recordResponse.errors) {
+                            isError = true;
+                        }
+                    });
+                    if (isError) {
+                        this.isStartPushBehaviorSubject.next(false);
+                        this.isBusy = false;
+                        resolve(false);
+                        return;
+                    }
+                    const record = data[0];
+                    // get model by local id and update received primary key from api
+                    try {
+                        const dbModel = await service.dbModelApi.findById(record._id, true);
+                        if (!dbModel) {
+                            resolve(false);
+                            return;
+                        }
+                        if (dbModel.deleted_at || dbModel.local_deleted_at) {
+                            dbModel.remove().then(async () => {
+                                this.userDb.userSetting.appDataVersion++;
+                                await this.userDb.save();
+                            });
+                            this.pushedItemsCountNumber++;
+                            const savedDataPercent = Math.round((this.pushedItemsCountNumber / this.countOfAllChangedItems) * 100);
+                            this.pushedItemsCount.next(this.pushedItemsCountNumber);
+                            this.pushedItemsPercent.next(savedDataPercent);
+                            resolve(true);
+                            return;
+                        }
+                        const dbModelApi = service.newModel();
+                        dbModel.idApi = record[dbModelApi.apiPk];
+                        /// load data from current model
+                        dbModelApi.loadFromApiToCurrentObject(dbModel);
+                        /// load data from push API response
+                        dbModelApi.loadFromApiToCurrentObject(record, dbModel);
+                        dbModelApi.is_synced = true;
+                        await dbModelApi.save(
+                            false,
+                            true,
+                            dbModelApi.COL_ID + '=' + record._id,
+                            false
+                        );
+                        this.userDb.userSetting.appDataVersion++;
+                        await this.userDb.save();
+                        await service.pushFiles(dbModel, this.userDb);
+                        this.pushedItemsCountNumber++;
+                        const savedDataPercent = Math.round((this.pushedItemsCountNumber / this.countOfAllChangedItems) * 100);
+                        this.pushedItemsCount.next(this.pushedItemsCountNumber);
+                        this.pushedItemsPercent.next(savedDataPercent);
+                        resolve(true);
+                    } catch (e) {
+                        this.isStartPushBehaviorSubject.next(false);
+                        this.pushProgressStatus.next('failed');
+                        this.isBusy = false;
+                        resolve(false);
+                    }
+                });
         });
     }
 

@@ -87,14 +87,19 @@ export class ListPage implements OnInit {
   }
 
   public editProtocol(protocolTemplate: ProtocolTemplateModel) {
-    console.log('ProtocolTemplateModel.COL_THUMB_PROTOCOL_FILE', ProtocolTemplateModel.COL_PROTOCOL_FILE);
-    console.log('protocolTemplate', protocolTemplate);
-    console.log('protocolTemplate[ProtocolTemplateModel.COL_THUMB_PROTOCOL_FILE]', protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE])
     if (!protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE]) {
       return;
     }
-    const fileUrl = this.downloadService.getNativeFilePath(protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE], protocolTemplate.TABLE_NAME);
-    this.pictureService.editFile(fileUrl, protocolTemplate.name);
+    const fileUrl = this.downloadService.getNativeFilePath(
+        protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE],
+        protocolTemplate.TABLE_NAME
+    );
+    this.pictureService.editFile(
+        protocolTemplate.getLocalFilePath(),
+        protocolTemplate.name,
+        protocolTemplate,
+        0
+    );
   }
 
   ngOnInit() {
@@ -122,8 +127,17 @@ export class ListPage implements OnInit {
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
       this.setGuideInfo();
     });
-    this.events.subscribe(this.guiderService.dbModelApi + ':create', (model) => {
-
+    this.events.subscribe(this.protocolTemplateService.dbModelApi + ':create', (model) => {
+      console.log('this.protocolTemplateService.dbModelApi + \':create\'');
+      this.setGuideInfo();
+    });
+    this.events.subscribe(this.protocolTemplateService.dbModelApi + ':update', (model) => {
+      console.log('this.protocolTemplateService.dbModelApi + \':update\'');
+      this.setGuideInfo();
+    });
+    this.events.subscribe(this.protocolTemplateService.dbModelApi + ':delete', (model) => {
+      console.log('this.protocolTemplateService.dbModelApi + \':delete\'');
+      this.setGuideInfo();
     });
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess();

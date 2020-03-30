@@ -50,6 +50,7 @@
     "@ionic-native/file-picker": "^5.20.0",
     "@ionic-native/file-transfer": "^5.20.0",
     "@ionic-native/http": "^5.20.0",
+    "@ionic-native/insomnia": "^5.23.0",
     "@ionic-native/ionic-webview": "^5.20.0",
     "@ionic-native/media-capture": "^5.22.0",
     "@ionic-native/network": "^5.20.0",
@@ -88,6 +89,7 @@
     "cordova-plugin-filechooser": "^1.2.0",
     "cordova-plugin-filepath": "^1.5.8",
     "cordova-plugin-filepicker": "^1.1.6",
+    "cordova-plugin-insomnia": "^4.3.0",
     "cordova-plugin-media-capture": "^3.0.3",
     "cordova-plugin-network-information": "^2.0.2",
     "cordova-plugin-qrscanner": "^3.0.1",
@@ -103,7 +105,7 @@
     "ngx-virtual-scroller": "^3.0.3",
     "node-forge": "git://github.com/digitalbazaar/forge.git#ef835fafe",
     "pbkdf2-sha256": "^1.1.1",
-    "pspdfkit-cordova": "git+https://github.com/PSPDFKit/PSPDFKit-Cordova.git",
+    "pspdfkit-cordova": "^1.0.9",
     "rxjs": "~6.5.1",
     "rxjs-compat": "^6.5.4",
     "scrypt-async": "^2.0.1",
@@ -188,7 +190,8 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "com.moust.cordova.videoplayer": {},
-      "pspdfkit-cordova": {}
+      "pspdfkit-cordova": {},
+      "cordova-plugin-insomnia": {}
     },
     "platforms": [
       "android",

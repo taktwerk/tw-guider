@@ -178,6 +178,7 @@ export class ApiSync {
                 return;
             }
             await this.apiPush.pushOneAtTime();
+            console.log('push one at time');
             this.isBusy = true;
             this.syncProgressStatus.next(status);
             this.isPrepareSynData.next(true);
@@ -463,6 +464,7 @@ export class ApiSync {
         obj.loadFromApiToCurrentObject(newModel, oldModel);
         obj.is_synced = true;
         if (!oldModel || oldModel.updated_at !== obj.updated_at) {
+            console.log('save synced');
             await obj.saveSynced();
         }
         return await obj.pullFiles(oldModel, this.http.getAuthorizationToken());

@@ -209,6 +209,7 @@ export abstract class DbApiModel extends DbBaseModel {
      * @override
      */
     public save(forceCreation?: boolean, isSynced?: boolean, updateCondition?: string, isSaveLocaleDates: boolean = true): Promise<any> {
+        console.log('save db api models');
         if (updateCondition) {
             // Provided by the service
             this.updateCondition = updateCondition;
@@ -223,8 +224,11 @@ export abstract class DbApiModel extends DbBaseModel {
                         this[this.COL_LOCAL_UPDATED_AT] = new Date();
                     }
                     this.update().then(() => {
+                        console.log('updating model');
                         this.unsetNotSavedModelUploadedFilePaths();
+                        console.log('after up[dating');
                         resolve(true);
+                        return;
                     });
                 } else {
                     if (isSaveLocaleDates) {
@@ -234,6 +238,7 @@ export abstract class DbApiModel extends DbBaseModel {
                     this.create().then(() => {
                         this.unsetNotSavedModelUploadedFilePaths();
                         resolve(true);
+                        return;
                     });
                 }
             });

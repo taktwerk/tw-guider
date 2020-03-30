@@ -12,7 +12,7 @@ import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model
 @Injectable()
 export class ProtocolTemplateService extends ApiService {
     data: ProtocolTemplateModel[] = [];
-    loadUrl: string = '/protocol_template';
+    loadUrl: string = '/protocol-template';
     dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService);
 
     /**

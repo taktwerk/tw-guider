@@ -72,7 +72,6 @@ export class HttpClient {
             /// send current device info with uuid and etc.
             headers['X-Device-Info'] = JSON.stringify(this.deviceInfo);
             if (this.authService.auth.lastAuthItemChangedAt) {
-                console.log('this.authService.auth.lastAuthItemChangedAt', this.authService.auth.lastAuthItemChangedAt);
                 headers['X-Auth-Item-Last-Changed-At'] = '' + this.authService.auth.lastAuthItemChangedAt;
             }
             headers['X-VERSION-NUMBER'] = this.versionNumber;
