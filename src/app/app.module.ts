@@ -35,7 +35,6 @@ import {GuideAssetTextModalComponent} from '../components/guide-asset-text-modal
 import {CryptoProvider} from '../providers/crypto-provider';
 import {FeedbackService} from '../providers/api/feedback-service';
 import {SyncSpinnerComponentModule} from '../components/sync-spinner-component/sync-spinner-component.module';
-import {ApiPush} from '../providers/api-push';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import {MainPipe} from '../pipes/main-pipe.module';
@@ -124,7 +123,6 @@ export function LanguageLoader(http: Http) {
     PictureService,
     ToastService,
     ApiSync,
-    ApiPush,
     Storage,
     File,
     Toast,

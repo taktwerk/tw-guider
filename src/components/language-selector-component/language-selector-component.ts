@@ -6,7 +6,6 @@ import {AuthService} from '../../services/auth-service';
 import {HttpClient} from '../../services/http-client';
 import {Network} from '@ionic-native/network/ngx';
 import {SyncModalComponent} from '../sync-modal-component/sync-modal-component';
-import {ApiPush} from '../../providers/api-push';
 import {UserDb} from '../../models/db/user-db';
 import {DownloadService} from '../../services/download-service';
 import {DbProvider} from '../../providers/db-provider';
@@ -42,7 +41,6 @@ export class LanguageSelectorComponent implements OnInit {
                 private downloadService: DownloadService,
                 private db: DbProvider,
                 private apiSync: ApiSync,
-                private apiPush: ApiPush,
                 private modalController: ModalController,
                 private changeDetectorRef: ChangeDetectorRef,
                 private http: HttpClient,

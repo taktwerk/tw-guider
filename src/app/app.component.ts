@@ -14,7 +14,6 @@ import 'rxjs/add/observable/interval';
 import {UserDb} from '../models/db/user-db';
 import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from '../services/download-service';
-import {ApiPush} from '../providers/api-push';
 import {TranslateConfigService} from '../services/translate-config.service';
 import {AppSetting} from '../services/app-setting';
 import {UserService} from '../services/user-service';
@@ -47,7 +46,6 @@ export class AppComponent implements OnInit {
     private syncService: SyncService,
     private downloadService: DownloadService,
     private db: DbProvider,
-    private apiPush: ApiPush,
     private translateConfigService: TranslateConfigService,
     private changeDetectorRef: ChangeDetectorRef,
     private appSetting: AppSetting,
@@ -149,7 +147,7 @@ export class AppComponent implements OnInit {
         this.events.publish('network:online', true);
         this.previousStatus = ConnectionStatusEnum.Online;
         if (this.authService.isLoggedin) {
-          // this.apiPush.pushOneAtTime();
+          // this.apiSync.pushOneAtTime();
           if (this.syncService.syncMode.getValue() === 1) {
             let syncProcessName = this.apiSync.syncProgressStatus.getValue();
             if (syncProcessName === 'pause') {
@@ -221,7 +219,7 @@ export class AppComponent implements OnInit {
       this.apiSync.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);
       this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
       this.apiSync.isAvailableForSyncData.next(this.userDb.userSetting.isSyncAvailableData);
-      this.apiPush.isAvailableForPushData.next(this.userDb.userSetting.isPushAvailableData);
+      this.apiSync.isAvailableForPushData.next(this.userDb.userSetting.isPushAvailableData);
       this.apiSync.checkAvailableChanges().then(() => {
         this.checkAvailableSyncChanges = Observable.interval(30000)
             .subscribe(() => {

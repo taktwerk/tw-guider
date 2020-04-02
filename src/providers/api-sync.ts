@@ -19,8 +19,8 @@ import {GuideAssetService} from './api/guide-asset-service';
 import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
 import {FeedbackService} from './api/feedback-service';
 import {UserService} from '../services/user-service';
-import {ApiPush} from './api-push';
 import {ProtocolTemplateService} from './api/protocol-template-service';
+import {DbApiModel} from '../models/base/db-api-model';
 
 @Injectable()
 /**
@@ -30,6 +30,8 @@ import {ProtocolTemplateService} from './api/protocol-template-service';
 export class ApiSync {
     private isBusy: boolean = false;
     public syncData: any;
+
+    userDb: UserDb;
 
     /**
      * Contains all services to sync.
@@ -47,8 +49,6 @@ export class ApiSync {
         protocol_template: this.protocolTemplateService
     };
 
-    userDb: UserDb;
-
     isStartSyncBehaviorSubject: BehaviorSubject<boolean>;
     syncedItemsCount: BehaviorSubject<number>;
     syncProgressStatus: BehaviorSubject<string>;
@@ -57,6 +57,22 @@ export class ApiSync {
     isPrepareSynData: BehaviorSubject<boolean>;
     noDataForSync: BehaviorSubject<boolean>;
     isAvailableForSyncData: BehaviorSubject<boolean>;
+
+    /// push
+    private isBusyPush: boolean = false;
+    isStartPushBehaviorSubject: BehaviorSubject<boolean>;
+    isStartPushDataBehaviorSubject: BehaviorSubject<boolean>;
+    pushedItemsCount: BehaviorSubject<number>;
+    pushedItemsPercent: BehaviorSubject<number>;
+    pushProgressStatus: BehaviorSubject<string>;
+    isAvailableForPushData: BehaviorSubject<boolean>;
+    pushedItemsCountNumber = 0;
+    countOfAllChangedItems = 0;
+
+    apiPushServices: any = {
+        feedback: this.feedbackService,
+        protocol_template: this.protocolTemplateService
+    };
 
     /**
      * ApiSync Constructor
@@ -77,8 +93,7 @@ export class ApiSync {
         private downloadService: DownloadService,
         private network: Network,
         private appSetting: AppSetting,
-        private userService: UserService,
-        private apiPush: ApiPush
+        private userService: UserService
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);
@@ -88,6 +103,15 @@ export class ApiSync {
         this.isPrepareSynData = new BehaviorSubject<boolean>(false);
         this.noDataForSync = new BehaviorSubject<boolean>(false);
         this.isAvailableForSyncData = new BehaviorSubject<boolean>(false);
+
+        ///push
+        this.isStartPushBehaviorSubject = new BehaviorSubject<boolean>(false);
+        this.isStartPushDataBehaviorSubject = new BehaviorSubject<boolean>(false);
+        this.isAvailableForPushData = new BehaviorSubject<boolean>(false);
+        this.pushedItemsCount = new BehaviorSubject<number>(0);
+        this.pushedItemsPercent = new BehaviorSubject<number>(0);
+        this.pushProgressStatus = new BehaviorSubject<string>('initial');
+
         this.init();
         this.initializeEvents();
     }
@@ -167,7 +191,7 @@ export class ApiSync {
      *
      * @returns {Promise<T>}
      */
-    private pull(status = 'progress'): Promise<any> {
+    public pull(status = 'progress'): Promise<any> {
         return new Promise(async (resolve) => {
             if (!this.appSetting.isMigratedDatabase()) {
                 resolve(false);
@@ -177,8 +201,6 @@ export class ApiSync {
                 resolve(false);
                 return;
             }
-            await this.apiPush.pushOneAtTime();
-            console.log('push one at time');
             this.isBusy = true;
             this.syncProgressStatus.next(status);
             this.isPrepareSynData.next(true);
@@ -186,7 +208,8 @@ export class ApiSync {
                 resolve(false);
                 return;
             }
-            this.http.get(this.getSyncUrl()).subscribe(async (data) => {
+            try {
+                const data = await this.http.get(this.getSyncUrl()).toPromise();
                 if (!data.syncProcessId) {
                     this.failSync('There was no property syncProcessId in the response');
                     resolve(false);
@@ -199,18 +222,17 @@ export class ApiSync {
                     resolve(false);
                 }
                 const isSavedSyncData = this.saveModels(this.syncData);
-                if (!isSavedSyncData) {
-                    resolve(false);
-                } else {
+                if (isSavedSyncData) {
+                    console.log('set app data version');
                     this.userDb.userSetting.appDataVersion = data.version;
-                    this.userDb.save();
-                    resolve(true);
+                    await this.userDb.save();
                 }
-            }, (err) => {
+                resolve(isSavedSyncData);
+            } catch (err) {
                 this.failSync(err);
                 resolve(false);
                 return;
-            });
+            }
         });
     }
 
@@ -321,6 +343,7 @@ export class ApiSync {
             this.userDb.userSetting.lastSyncedAt = new Date();
             this.userDb.userSetting.syncStatus = 'success';
             this.userDb.userSetting.isSyncAvailableData = false;
+            console.log('is all items synced');
         }
 
         return this.userDb.save().then(() => {
@@ -342,7 +365,6 @@ export class ApiSync {
                 return;
             }
             if (this.network.type === 'none') {
-                console.log('isOffNetwork in checkAvailableChanges')
                 resolve(false);
                 return;
             }
@@ -449,25 +471,8 @@ export class ApiSync {
     }
 
     async saveModel(apiService, newModel) {
-        let oldModel = await apiService.dbModelApi.findFirst(['id', newModel[apiService.dbModelApi.apiPk]]);
-        oldModel = oldModel[0] ? oldModel[0] : null;
-        if (newModel.deleted_at) {
-            if (oldModel) {
-                oldModel.remove();
-            }
-            return true;
-        }
-        const obj = apiService.newModel();
-        if (oldModel) {
-            obj.loadFromApiToCurrentObject(oldModel);
-        }
-        obj.loadFromApiToCurrentObject(newModel, oldModel);
-        obj.is_synced = true;
-        if (!oldModel || oldModel.updated_at !== obj.updated_at) {
-            console.log('save synced');
-            await obj.saveSynced();
-        }
-        return await obj.pullFiles(oldModel, this.http.getAuthorizationToken());
+        console.log('call save model');
+        return apiService.saveSyncedModel(newModel);
     }
 
     public isOffNetwork(): boolean {
@@ -496,27 +501,31 @@ export class ApiSync {
     }
 
     public makeSyncProcess(syncStatus = 'progress') {
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
+            const data = await this.init();
+            if (!data) {
+                this.isStartSyncBehaviorSubject.next(false);
+                resolve(false);
+                return;
+            }
             if (this.isOffNetwork() || this.isBusy) {
                 resolve(false);
                 return;
             }
-            this.init().then((data) => {
-                if (!data) {
+            console.log('this.userDb.userSetting.isSyncAvailableData', this.userDb.userSetting.isSyncAvailableData);
+            if (!this.userDb.userSetting.isSyncAvailableData) {
+                this.noDataForSync.next(true);
+            } else {
+                this.userDb.userSetting.syncStatus = syncStatus;
+                await this.userDb.save();
+                try {
+                    await this.pull(syncStatus);
+                } catch (err) {
                     this.isStartSyncBehaviorSubject.next(false);
                     resolve(false);
-                    return;
                 }
-                this.userDb.userSetting.syncStatus = syncStatus;
-                this.userDb.save().then(() => {
-                    this.pull(syncStatus).then((res) => {
-                        resolve(res);
-                    }).catch((err) => {
-                        this.isStartSyncBehaviorSubject.next(false);
-                        resolve(false);
-                    });
-                });
-            });
+            }
+            await this.pushOneAtTime();
         });
     }
 
@@ -554,6 +563,196 @@ export class ApiSync {
         });
 
         return Promise.all(apiSyncServicesPromises);
+    }
+
+    /// push
+
+    public setIsPushAvailableData(isAvailable: boolean) {
+        this.userDb.userSetting.isPushAvailableData = isAvailable;
+        this.userDb.save().then(() => {
+            this.isAvailableForPushData.next(isAvailable);
+        });
+    }
+
+    /**
+     * Pushes not synced local records to remote api
+     * and updates received primary keys in local db.
+     *
+     * @returns {Promise<any>}
+     */
+    public pushOneAtTime(): Promise<any> {
+        console.log('pushOneAtTime');
+        this.isStartPushBehaviorSubject.next(true);
+        return new Promise(async resolve => {
+            if (this.isOffNetwork()) {
+                resolve(false);
+
+                return;
+            }
+            if (this.isBusyPush) {
+                resolve(false);
+
+                return;
+            }
+
+            this.isBusyPush = true;
+
+            // iterate over all services
+            let allServicesBodies = {};
+            const bodiesBatchAllPromises = [];
+            for (const key of Object.keys(this.apiPushServices)) {
+                // get registered api service for the current model
+                const service: ApiService = this.apiPushServices[key];
+                const bodies = await service.prepareBatchPost();
+                if (bodies && bodies.length > 0) {
+                    const modelBody = {};
+                    modelBody[key] = bodies;
+                    allServicesBodies = {...allServicesBodies, ...modelBody};
+                    this.countOfAllChangedItems += modelBody[key].length;
+                }
+            }
+
+            this.pushedItemsCountNumber = 0;
+            this.countOfAllChangedItems = 0;
+
+            console.log('allServicesBodies');
+            if (Object.keys(allServicesBodies).length === 0) {
+                this.isStartPushBehaviorSubject.next(false);
+                this.pushProgressStatus.next('no_push_data');
+                this.setIsPushAvailableData(false);
+                this.isBusyPush = false;
+                resolve(false);
+                return;
+            }
+            this.isStartPushBehaviorSubject.next(false);
+            this.pushProgressStatus.next('progress');
+            this.isBusyPush = true;
+            console.log('allServicesBodies', allServicesBodies);
+            Object.keys(allServicesBodies).forEach((modelKey) => {
+                const service: ApiService = this.apiPushServices[modelKey];
+                const url = this.appSetting.getApiUrl() + service.loadUrl + '/batch';
+
+                allServicesBodies[modelKey].forEach(async (body) => {
+                    if (!body) {
+                        return;
+                    }
+
+                    const jsonBody = JSON.stringify(body);
+
+                    const isPushedData = await this.pushDataToServer(url, jsonBody, service);
+                    if (!isPushedData) {
+                        console.log('is not pushed');
+                        this.isStartPushBehaviorSubject.next(false);
+                        this.pushProgressStatus.next('failed');
+                        this.isBusyPush = false;
+
+                        resolve(false);
+                        return;
+                    } else {
+                        // await this.pull(this.userDb.userSetting.syncStatus);
+                    }
+                });
+            });
+            console.log('end push');
+            this.isStartPushBehaviorSubject.next(false);
+            this.pushProgressStatus.next('success');
+            this.isBusyPush = false;
+            this.setIsPushAvailableData(false);
+            resolve(true);
+
+            this.isBusyPush = false;
+            resolve(true);
+            console.log('resolver');
+            return;
+        });
+    }
+
+    private pushDataToServer(url, jsonBody, service) {
+        return new Promise(resolve => {
+            if (this.pushProgressStatus.getValue() === 'failed') {
+                this.isBusyPush = false;
+                resolve(false);
+                return;
+            }
+            return this.http.post(url, jsonBody)
+                .subscribe(async (data) => {
+                    console.log('push data to server');
+                    if (this.pushProgressStatus.getValue() === 'failed') {
+                        this.isBusyPush = false;
+                        resolve(false);
+                        return;
+                    }
+                    // search error
+                    let isError = false;
+                    Object.keys(data).forEach((key) => {
+                        const recordResponse = data[key];
+                        if (recordResponse.errors) {
+                            isError = true;
+                        }
+                    });
+                    if (isError) {
+                        this.isStartPushBehaviorSubject.next(false);
+                        this.isBusyPush = false;
+                        resolve(false);
+                        return;
+                    }
+                    const record = data[0];
+                    // get model by local id and update received primary key from api
+                    try {
+                        console.log('work with id ', record._id);
+                        const dbModel = await service.dbModelApi.findById(record._id, true);
+                        if (!dbModel) {
+                            resolve(false);
+                            return;
+                        }
+                        if (dbModel.deleted_at || dbModel.local_deleted_at) {
+                            dbModel.remove().then(async () => {
+                                this.userDb.userSetting.appDataVersion++;
+                                await this.userDb.save();
+                            });
+                            this.pushedItemsCountNumber++;
+                            const savedDataPercent = Math.round((this.pushedItemsCountNumber / this.countOfAllChangedItems) * 100);
+                            this.pushedItemsCount.next(this.pushedItemsCountNumber);
+                            this.pushedItemsPercent.next(savedDataPercent);
+                            resolve(true);
+                            return;
+                        }
+                        // const dbModelApi = service.newModel();
+                        const dbModelApi = dbModel as DbApiModel;
+                        dbModelApi.idApi = record[dbModelApi.apiPk];
+                        // dbModelApi.is_synced = true;
+
+                        // dbModel.idApi = record[dbModelApi.apiPk];
+                        // /// load data from current model
+                        // dbModelApi.loadFromApiToCurrentObject(dbModel);
+                        // /// load data from push API response
+                        // dbModelApi.loadFromApiToCurrentObject(record, dbModel);
+                        // dbModelApi.is_synced = true;
+                        dbModelApi.updateCondition = [[dbModelApi.COL_ID, record._id]];
+                        await dbModelApi.save(
+                            false,
+                            true,
+                            dbModelApi.COL_ID + '=' + record._id,
+                            false
+                        );
+                        this.userDb.userSetting.appDataVersion++;
+                        await this.userDb.save();
+                        console.log('push files');
+                        await service.pushFiles(dbModel, this.userDb);
+                        console.log('after push files');
+                        this.pushedItemsCountNumber++;
+                        const savedDataPercent = Math.round((this.pushedItemsCountNumber / this.countOfAllChangedItems) * 100);
+                        this.pushedItemsCount.next(this.pushedItemsCountNumber);
+                        this.pushedItemsPercent.next(savedDataPercent);
+                        resolve(true);
+                    } catch (e) {
+                        this.isStartPushBehaviorSubject.next(false);
+                        this.pushProgressStatus.next('failed');
+                        this.isBusyPush = false;
+                        resolve(false);
+                    }
+                });
+        });
     }
 }
 

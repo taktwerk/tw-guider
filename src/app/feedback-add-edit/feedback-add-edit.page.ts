@@ -3,19 +3,19 @@ import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import { File } from '@ionic-native/file/ngx';
 import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import {Events, ModalController, IonSlides, NavController, Platform, AlertController} from '@ionic/angular';
+import {Events, NavController, Platform, AlertController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {DownloadService} from '../../services/download-service';
-import {FeedbackModel, FeedbackModelDownloadMapEnum} from '../../models/db/api/feedback-model';
+import {FeedbackModel} from '../../models/db/api/feedback-model';
 import {FeedbackService} from '../../providers/api/feedback-service';
 import {Network} from '@ionic-native/network/ngx';
 import {HttpClient} from '../../services/http-client';
-import {ApiPush} from '../../providers/api-push';
 import {FilePath} from '@ionic-native/file-path/ngx';
 import {TranslateConfigService} from '../../services/translate-config.service';
 import {VideoService} from '../../services/video-service';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {PictureService} from '../../services/picture-service';
+import {ApiSync} from '../../providers/api-sync';
 
 @Component({
   selector: 'feedback-add-edit-page',
@@ -48,7 +48,6 @@ export class FeedbackAddEditPage implements OnInit {
       private feedbackService: FeedbackService,
       private navCtrl: NavController,
       private network: Network,
-      private apiPush: ApiPush,
       private platform: Platform,
       private filePath: FilePath,
       private ngZone: NgZone,
@@ -57,7 +56,8 @@ export class FeedbackAddEditPage implements OnInit {
       private router: Router,
       private videoService: VideoService,
       private fileOpener: FileOpener,
-      private pictureService: PictureService
+      private pictureService: PictureService,
+      private apiSync: ApiSync
   ) {
     this.authService.checkAccess();
     if (!this.model) {
@@ -123,17 +123,9 @@ export class FeedbackAddEditPage implements OnInit {
       this.model.title = this.defaultTitle;
     }
     this.feedbackService.save(this.model).then(res => {
-      // if (this.network.type === 'none') {
-        this.apiPush.setIsPushAvailableData(true);
-        // this.http.showToast('feedback.Feedback will be sent as soon as the Internet appears');
-        this.http.showToast('feedback.Feedback was saved');
-        this.dismiss();
-      // } else {
-      //   this.apiPush.pushOneAtTime().then(() => {
-      //     this.http.showToast('feedback.Feedback was saved');
-      //     this.dismiss();
-      //   });
-      // }
+      this.apiSync.setIsPushAvailableData(true);
+      this.http.showToast('feedback.Feedback was saved');
+      this.dismiss();
     });
   }
 
@@ -160,14 +152,8 @@ export class FeedbackAddEditPage implements OnInit {
 
   public delete() {
     this.feedbackService.remove(this.model).then(res => {
-      // if (this.network.type === 'none') {
-        this.apiPush.setIsPushAvailableData(true);
-        this.dismiss();
-      // } else {
-      //   this.apiPush.pushOneAtTime().then(() => {
-      //     this.dismiss();
-      //   });
-      // }
+      this.apiSync.setIsPushAvailableData(true);
+      this.dismiss();
       this.http.showToast('feedback.Feedback was deleted');
     });
   }
@@ -179,7 +165,7 @@ export class FeedbackAddEditPage implements OnInit {
         {
           text: 'Yes',
           cssClass: 'primary',
-          handler: (blah) => this.delete()
+          handler: () => this.delete()
         }, {
           text: 'No'
         }
@@ -237,6 +223,7 @@ export class FeedbackAddEditPage implements OnInit {
         const result = await this.feedbackService.dbModelApi.findFirst([this.model.COL_ID, this.feedbackId]);
         this.model = result[0];
       }
+      console.log('this.model', this.model);
       this.defaultTitle = await this.getDefaultTitle();
     });
   }

@@ -9,7 +9,6 @@ import {UserDb} from '../../models/db/user-db';
 import {DbProvider} from '../../providers/db-provider';
 import {SyncService} from '../../services/sync-service';
 import {DatePipe} from '@angular/common';
-import {ApiPush} from '../../providers/api-push';
 import {TranslateConfigService} from '../../services/translate-config.service';
 import {UserService} from '../../services/user-service';
 import {AppSetting} from '../../services/app-setting';
@@ -44,7 +43,6 @@ export class SynchronizationComponent implements OnInit {
     public syncAllItemsCount = 0;
 
     constructor(public apiSync: ApiSync,
-                public apiPush: ApiPush,
                 private downloadService: DownloadService,
                 public changeDetectorRef: ChangeDetectorRef,
                 public http: HttpClient,
@@ -207,7 +205,7 @@ export class SynchronizationComponent implements OnInit {
     this.events.subscribe('UserDb:update', (userDb) => {
         this.userDb = userDb;
     });
-    this.apiPush.isStartPushBehaviorSubject.subscribe(isPush => {
+    this.apiSync.isStartPushBehaviorSubject.subscribe(isPush => {
       this.isStartPush = isPush;
       this.detectChanges();
     });

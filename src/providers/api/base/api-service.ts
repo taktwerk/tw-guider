@@ -220,10 +220,13 @@ export abstract class ApiService {
                         fieldUrl,
                         headers
                     );
+                    console.log('uploadResult', uploadResult);
                     if (uploadResult) {
+                        console.log('in upload result');
+                        await this.saveSyncedModel(uploadResult, true);
                         if (userForSaving) {
                             userForSaving.userSetting.appDataVersion++;
-                            userForSaving.save();
+                            await userForSaving.save();
                         }
                     }
                 } catch (err) {
@@ -234,5 +237,54 @@ export abstract class ApiService {
 
           resolve(true);
         });
+    }
+
+    async saveSyncedModel(newModel, canUpdateNotSyncedData = false) {
+        let oldModel = await this.dbModelApi.findFirst(['id', newModel[this.dbModelApi.apiPk]]);
+        oldModel = oldModel[0] ? oldModel[0] : null;
+        if (newModel.deleted_at) {
+            if (oldModel) {
+                oldModel.remove();
+            }
+            return true;
+        }
+        const obj = this.newModel();
+        if (oldModel) {
+            obj.loadFromApiToCurrentObject(oldModel);
+        }
+        obj.loadFromApiToCurrentObject(newModel, oldModel);
+        let isSynced = true;
+        if (!canUpdateNotSyncedData && !oldModel.is_synced && oldModel.doesHaveFilesForPush()) {
+            const fieldsForPush = oldModel.getFieldsForPushFiles();
+
+            for (let i = 0; i < fieldsForPush.length; i++) {
+                const fieldForPush = fieldsForPush[i];
+                obj[fieldForPush.name] = oldModel[fieldForPush.name];
+                obj[fieldForPush.url] = oldModel[fieldForPush.url];
+                obj[fieldForPush.localPath] = oldModel[fieldForPush.localPath];
+                if (fieldForPush.thumbnail) {
+                    obj[fieldForPush.thumbnail.name] = oldModel[fieldForPush.thumbnail.name];
+                    obj[fieldForPush.thumbnail.url] = oldModel[fieldForPush.thumbnail.url];
+                    obj[fieldForPush.thumbnail.localPath] = oldModel[fieldForPush.thumbnail.localPath];
+                }
+            }
+
+            isSynced = false;
+            console.log('fieldsForPush', fieldsForPush);
+        }
+        obj.is_synced = isSynced;
+        let updateCondition = null;
+        if (obj.idApi) {
+            if (!isSynced) {
+                updateCondition = `${obj.COL_ID_API} = ${obj.idApi}`;
+            } else {
+                obj.updateCondition = [[obj.COL_ID_API, obj.idApi]];
+            }
+        }
+        if (!oldModel || oldModel.updated_at !== obj.updated_at) {
+            console.log('save synced');
+            await obj.save(false, isSynced, updateCondition, false);
+        }
+        return await obj.pullFiles(oldModel, this.http.getAuthorizationToken());
     }
 }

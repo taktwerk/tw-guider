@@ -195,9 +195,10 @@ export abstract class DbApiModel extends DbBaseModel {
      * Stores this api synced instance in sql lite db and creates
      * a new entry or updates this entry if the primary key is not empty.
      * @param forceCreation optional param to force creation
+     * @param updateCondition
      */
-    public saveSynced(forceCreation?: boolean): Promise<any> {
-        return this.save(forceCreation, true, null, false);
+    public saveSynced(forceCreation?: boolean, updateCondition?: string): Promise<any> {
+        return this.save(forceCreation, true, updateCondition, false);
     }
 
     /**
@@ -206,31 +207,32 @@ export abstract class DbApiModel extends DbBaseModel {
      * @param forceCreation optional param to force creation
      * @param isSynced optional param that indicates whether this record is synced with api or not
      * @param updateCondition optional fix updateCondition
+     * @param isSaveLocaleDates
      * @override
      */
     public save(forceCreation?: boolean, isSynced?: boolean, updateCondition?: string, isSaveLocaleDates: boolean = true): Promise<any> {
-        console.log('save db api models');
-        if (updateCondition) {
-            // Provided by the service
-            this.updateCondition = updateCondition;
-        } else {
-            this.setUpdateCondition();
+        if (!isSynced || !this.updateCondition) {
+            if (updateCondition) {
+                this.updateCondition = updateCondition;
+            } else {
+                this.setUpdateCondition();
+            }
         }
         return new Promise((resolve) => {
             this.beforeSave(isSynced);
             this.exists().then((res) => {
+                console.log('exists res', res);
                 if (res) {
                     if (isSaveLocaleDates) {
                         this[this.COL_LOCAL_UPDATED_AT] = new Date();
                     }
                     this.update().then(() => {
-                        console.log('updating model');
                         this.unsetNotSavedModelUploadedFilePaths();
-                        console.log('after up[dating');
                         resolve(true);
                         return;
                     });
                 } else {
+                    console.log('not exists res')
                     if (isSaveLocaleDates) {
                         this[this.COL_LOCAL_CREATED_AT] = new Date();
                         this[this.COL_LOCAL_UPDATED_AT] = new Date();
@@ -246,7 +248,7 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     public setUpdateCondition() {
-        this.updateCondition = [[this.COL_ID_API, this.idApi]];
+        this.updateCondition = [[this.COL_ID, this.id]];
     }
 
     public remove(): Promise<any> {
@@ -288,6 +290,7 @@ export abstract class DbApiModel extends DbBaseModel {
                     resolve(false);
                 } else {
                     let query = "SELECT * FROM " + this.TABLE_NAME + " WHERE " + this.parseWhere(this.updateCondition);
+                    console.log('query', query);
                     if (query.indexOf('undefined') >= 0) {
                         resolve(false);
                     } else {
@@ -339,6 +342,27 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     /// Model file part
+    doesHaveFilesForPush() {
+        for (const fields of this.downloadMapping) {
+            if (this[fields.localPath] && !this[fields.url]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    getFieldsForPushFiles(): any[] {
+        const fieldsForPush = [];
+        for (const fields of this.downloadMapping) {
+            if (this[fields.localPath] && !this[fields.url]) {
+                fieldsForPush.push(fields);
+            }
+        }
+
+        return fieldsForPush;
+    }
+
     canThereBeFiles(): boolean {
         return this.downloadMapping && this.downloadMapping.length > 0;
     }
@@ -362,7 +386,7 @@ export abstract class DbApiModel extends DbBaseModel {
     pullFiles(oldModel: any, authorizationToken: string) {
         return new Promise(async (resolve) => {
             // No use downloading if not on app
-            if (/*model.platform.is('core') || */ this.platform.is('mobileweb')) {
+            if (this.platform.is('mobileweb')) {
                 resolve(true);
             }
 

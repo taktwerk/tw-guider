@@ -1,13 +1,8 @@
 import {Injectable} from '@angular/core';
-import {StreamingMedia, StreamingVideoOptions} from '@ionic-native/streaming-media/ngx';
 import {AlertController, ModalController, Platform} from '@ionic/angular';
-import {VideoModalComponent} from '../components/modals/video-modal-component/video-modal-component';
 import {DownloadService} from './download-service';
-import {PdftronModalComponent} from '../components/modals/pdftron-modal-component/pdftron-modal-component';
-import {AppSetting} from './app-setting';
-import {ProtocolTemplateModel} from '../models/db/api/protocol-template-model';
 import {TranslateConfigService} from './translate-config.service';
-import {ApiPush} from '../providers/api-push';
+import {ApiSync} from '../providers/api-sync';
 
 /**
  * Download file class
@@ -28,7 +23,7 @@ export class PictureService {
                 private downloadService: DownloadService,
                 public alertController: AlertController,
                 private translateConfigService: TranslateConfigService,
-                private apiPush: ApiPush) {}
+                private apiSync: ApiSync) {}
 
     async openFile(fileUrl: string, fileTitle?: string) {
         this.initializePspdfkit(fileUrl, fileTitle);
@@ -92,7 +87,7 @@ export class PictureService {
             this.model[modelFileMap.localPath] = savedFilePath;
             this.model.save().then(res => {
                 if (res) {
-                    this.apiPush.setIsPushAvailableData(true);
+                    this.apiSync.setIsPushAvailableData(true);
                 }
             });
         });

@@ -19,7 +19,7 @@ export abstract class DbBaseModel {
     private dbIsReady: boolean = false;
     private dbIsBusy: boolean = false;
 
-    protected updateCondition: any = [];
+    public updateCondition: any = [];
 
     // db helper's public and protected members
     /** primary key */

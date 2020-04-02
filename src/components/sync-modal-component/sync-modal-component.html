@@ -64,7 +64,6 @@
                             <div *ngIf="syncProgressStatus === 'pause'">{{ 'sync-modal.Pause' | translate:params }}</div>
                             <div *ngIf="syncProgressStatus === 'failed'">{{ 'sync-modal.Failed' | translate:params }}</div>
                             <div *ngIf="syncProgressStatus === 'success'">{{ 'sync-modal.Success' | translate:params }}</div>
-                            <div *ngIf="syncProgressStatus === 'no_sync_data'">{{ 'sync-modal.No data for sync' | translate:params }}</div>
                         </ion-card>
 
                         <ion-progress-bar value="{{ syncedItemsPercent / 100 }}"

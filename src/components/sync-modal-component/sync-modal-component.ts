@@ -2,7 +2,6 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Events, ModalController, Platform} from '@ionic/angular';
 import {UserDb} from '../../models/db/user-db';
 import {ApiSync} from '../../providers/api-sync';
-import {ApiPush} from '../../providers/api-push';
 import {DownloadService} from '../../services/download-service';
 import {HttpClient} from '../../services/http-client';
 import {AuthService} from '../../services/auth-service';
@@ -47,7 +46,6 @@ export class SyncModalComponent implements OnInit {
 
     constructor(private modalController: ModalController,
                 public apiSync: ApiSync,
-                public apiPush: ApiPush,
                 private downloadService: DownloadService,
                 public changeDetectorRef: ChangeDetectorRef,
                 public http: HttpClient,
@@ -177,10 +175,11 @@ export class SyncModalComponent implements OnInit {
         this.apiSync.isAvailableForSyncData.subscribe(isAvailableForSyncData => {
             this.isAvailableForSyncData = isAvailableForSyncData;
         });
-        this.apiPush.isAvailableForPushData.subscribe(isAvailableForPushData => {
+        this.apiSync.isAvailableForPushData.subscribe(isAvailableForPushData => {
             this.isAvailableForPushData = isAvailableForPushData;
         });
-        this.apiPush.pushProgressStatus.subscribe(pushProgressStatus => {
+        this.apiSync.pushProgressStatus.subscribe(pushProgressStatus => {
+            console.log('pushProgressStatus subscribe', pushProgressStatus);
             this.pushProgressStatus = pushProgressStatus;
         });
         this.events.subscribe('UserDb:update', (userDb) => {

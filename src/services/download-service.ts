@@ -142,26 +142,29 @@ export class DownloadService {
         });
     }
 
-    startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<boolean> {
+    startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<any> {
         fileName = path.substring(path.lastIndexOf('/') + 1, path.length)
         return new Promise(resolve => {
             this.file.resolveDirectoryUrl(this.file.dataDirectory + directoryName).then((directoryEntry) => {
                 this.file.getFile(directoryEntry, fileName, {})
                     .then(fileEntry => {
                         fileEntry.file(async file => {
+                            console.log('before read file');
                             const imgBlob = await this.readFile(fileKey, file, url, headers);
                             const formData = new FormData();
                             formData.append(fileKey, imgBlob, file.name);
-                            this.uploadFile(formData, url, headers);
-                            resolve(true);
+                            const isUploadedFile = await this.uploadFile(formData, url, headers);
+                            resolve(isUploadedFile);
                             return;
                         });
                     })
                     .catch(err => {
+                        console.log('errr', err);
                         resolve(false);
                         return;
                     });
             }).catch(err => {
+                console.log('errr', err);
                 resolve(false);
                 return;
             });
@@ -179,12 +182,19 @@ export class DownloadService {
         });
     }
 
-    uploadFile(formData: FormData, url: string, headers?: Headers) {
-        return this.http.post(url, formData, {headers: headers})
-            .pipe(
-                finalize(() => {})
-            )
-            .subscribe(res => {});
+    uploadFile(formData: FormData, url: string, headers?: Headers): Promise<any> {
+        return new Promise((resolve) => {
+            this.http.post(url, formData, {headers: headers})
+                .toPromise()
+                .then((res) => {
+                    console.log('subscribe file uploading', res);
+                    resolve(res);
+                })
+                .catch(err => {
+                    console.log('subscribe file uploading', err);
+                    resolve(false);
+                });
+        });
     }
 
     /**

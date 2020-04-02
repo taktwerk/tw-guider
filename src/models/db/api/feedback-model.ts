@@ -27,8 +27,6 @@ export class FeedbackModel extends DbApiModel {
     public local_attached_file: string;
     public client_id: number;
 
-    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + FeedbackModel.COL_USER_ID + ')';
-
     //db columns
     static COL_TITLE = 'title';
     static COL_DESCRIPTION = 'description';
@@ -90,11 +88,6 @@ export class FeedbackModel extends DbApiModel {
 
     public isOpenStatus() {
         return this.status === 'Open';
-    }
-
-    setUpdateCondition() {
-        super.setUpdateCondition();
-        this.updateCondition.push(['user_id', this.user_id]);
     }
 
     getReferenceModelByAlias(referenceModelAlias) {
