@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 
-import {AlertController, Events, NavController, Platform} from '@ionic/angular';
+import {Events, NavController, Platform} from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import {ApiSync} from '../providers/api-sync';
@@ -97,8 +97,10 @@ export class AppComponent implements OnInit {
         this.setPages();
         this.initNetwork();
         this.registerEvents();
-        this.statusBar.styleDefault();
+        // this.statusBar.styleDefault();
         this.splashScreen.hide();
+        this.statusBar.overlaysWebView(false);
+        this.statusBar.show();
       });
     });
   }

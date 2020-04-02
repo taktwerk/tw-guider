@@ -23,6 +23,7 @@
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <preference name="UseSwiftLanguageVersion" value="4.2" />
+    <preference name="StatusBarOverlaysWebView" value="true" />
     <platform name="android">
         <preference name="android-manifest/@android:installLocation" value="auto" />
         <access origin="*" />
