@@ -1,12 +1,14 @@
-console.log('BEFORREEEEEEEE PLATRORM ADDDDDDD');
-
 var exec = require('child_process').exec, child;
 
 module.exports = function(ctx) {
-    exec('ionic cordova plugin add https://github.com/PSPDFKit/PSPDFKit-Cordova.git --force', function (error, stdout, stderr) {
-        console.log('child 55555555555555555');
-    });
-    exec('ionic cordova plugin add https://github.com/moust/cordova-plugin-videoplayer.git --no-save', function (error, stdout, stderr) {
-        console.log('child 6666666666666666666666666');
-    });
+    return new Promise(async resolve => {
+        exec('ionic cordova plugin add https://github.com/PSPDFKit/PSPDFKit-Cordova.git --force', function (error, stdout, stderr) {
+            console.log('add plugin pspdfkit-cordova')
+            exec('ionic cordova plugin add https://github.com/moust/cordova-plugin-videoplayer.git --no-save', function (error, stdout, stderr) {
+                console.log('add plugin com.moust.cordova.videoplayer')
+                resolve(true);
+            });
+        });
+    }).then(msWaited => {});
 };
+

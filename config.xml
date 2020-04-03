@@ -25,6 +25,7 @@
     <preference name="UseSwiftLanguageVersion" value="4.2" />
     <preference name="StatusBarOverlaysWebView" value="true" />
     <hook src="scripts/before_compile.js" type="before_compile" />
+    <hook src="scripts/before_platform_add.js" type="before_platform_add" />
     <platform name="android">
         <preference name="android-manifest/@android:installLocation" value="auto" />
         <access origin="*" />

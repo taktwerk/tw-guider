@@ -23,8 +23,7 @@ public void onBackPressed() {
 ```
 
 ## Set up project:
-- add file local.properties from local.properties.example
-- npm run-script taktwerk
+- npm install
 - some ionic command (for example ionic cordova run android -l)
 
 ## Changes in database
