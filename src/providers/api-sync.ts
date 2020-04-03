@@ -720,14 +720,6 @@ export class ApiSync {
                         // const dbModelApi = service.newModel();
                         const dbModelApi = dbModel as DbApiModel;
                         dbModelApi.idApi = record[dbModelApi.apiPk];
-                        // dbModelApi.is_synced = true;
-
-                        // dbModel.idApi = record[dbModelApi.apiPk];
-                        // /// load data from current model
-                        // dbModelApi.loadFromApiToCurrentObject(dbModel);
-                        // /// load data from push API response
-                        // dbModelApi.loadFromApiToCurrentObject(record, dbModel);
-                        // dbModelApi.is_synced = true;
                         dbModelApi.updateCondition = [[dbModelApi.COL_ID, record._id]];
                         await dbModelApi.save(
                             false,

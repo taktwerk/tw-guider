@@ -77,7 +77,7 @@ export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
-Sentry.init({ dsn: environment.sentryDsn });
+// Sentry.init({ dsn: environment.sentryDsn });
 
 @NgModule({
   declarations: [
@@ -158,7 +158,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     FileOpener,
     Insomnia,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
+    // {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
   ],
   bootstrap: [AppComponent]
 })
