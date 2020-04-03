@@ -58,12 +58,16 @@ export class AppComponent implements OnInit {
 
   public userDb: UserDb;
 
+  b: any;
+
   previousStatus = ConnectionStatusEnum.BeforeSet;
   periodicSync: any;
   checkAvailableSyncChanges: any;
 
   //// TODO in future save device info via API in this place
   initializeApp() {
+    const a = this.b.c;
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
     this.platform.ready().then(() => {
       this.translateConfigService.setLanguage();
       this.login().then(async (result) => {

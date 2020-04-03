@@ -1,0 +1,6 @@
+defaults.url=https://sentry.io/
+defaults.org={ORGANIZATION}
+defaults.project={PROJECT_NAME}
+auth.token={AUTH_TOKEN}
+cli.executable=node_modules/@sentry/cli/bin/sentry-cli
+sentry.properties

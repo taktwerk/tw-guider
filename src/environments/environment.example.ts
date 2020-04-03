@@ -7,7 +7,8 @@ export const environment = {
   apiUrlPath: '/api/v1',
   taktwerk: 'taktwerk',
   dbName: 'guider',
-  dbMigrationVersion: 1
+  dbMigrationVersion: 1,
+  sentryDsn: '{SENTRY_DSN}'
 };
 
 /*

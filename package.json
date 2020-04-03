@@ -14,6 +14,7 @@
     "extract": "ngx-translate-extract -i ./src -o ./src/assets/i18n/en.json --clean --sort --format namespaced-json --format-indentation=\"\t\""
   },
   "config": {
+    "ionic_generate_source_map": "true",
     "ionic_webpack": "./config/webpack.config.js"
   },
   "browser": {
@@ -109,6 +110,7 @@
     "rxjs": "~6.5.1",
     "rxjs-compat": "^6.5.4",
     "scrypt-async": "^2.0.1",
+    "sentry-cordova": "^0.17.0",
     "sql.js": "^1.1.0",
     "text-encoding": "^0.7.0",
     "tslib": "^1.9.0",
@@ -191,7 +193,8 @@
       },
       "com.moust.cordova.videoplayer": {},
       "pspdfkit-cordova": {},
-      "cordova-plugin-insomnia": {}
+      "cordova-plugin-insomnia": {},
+      "sentry-cordova": {}
     },
     "platforms": [
       "android",
