@@ -7,7 +7,6 @@ import {DownloadService} from '../../services/download-service';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {VideoService} from '../../services/video-service';
-import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {PictureService} from '../../services/picture-service';
 
 @Component({

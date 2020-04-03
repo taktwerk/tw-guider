@@ -3,6 +3,8 @@ import {AlertController, ModalController, Platform} from '@ionic/angular';
 import {DownloadService} from './download-service';
 import {TranslateConfigService} from './translate-config.service';
 import {ApiSync} from '../providers/api-sync';
+import {UserService} from './user-service';
+import {AuthService} from './auth-service';
 
 /**
  * Download file class
@@ -23,7 +25,8 @@ export class PictureService {
                 private downloadService: DownloadService,
                 public alertController: AlertController,
                 private translateConfigService: TranslateConfigService,
-                private apiSync: ApiSync) {}
+                private apiSync: ApiSync,
+                private authService: AuthService) {}
 
     async openFile(fileUrl: string, fileTitle?: string) {
         this.initializePspdfkit(fileUrl, fileTitle);
@@ -46,8 +49,8 @@ export class PictureService {
         this.initializePspdfkit(editFileUrl, fileTitle, true);
     }
 
-    initializePspdfkit(fileUrl, fileTitle, isEdit = false) {
-        const config = this.getPspdfkitConfig(isEdit);
+    async initializePspdfkit(fileUrl, fileTitle, isEdit = false) {
+        const config = await this.getPspdfkitConfig(isEdit);
         config['title'] = fileTitle;
 
         PSPDFKit.present(fileUrl, config);
@@ -93,14 +96,21 @@ export class PictureService {
         });
     }
 
-    getPspdfkitConfig(isEdit = false) {
+    async getPspdfkitConfig(isEdit = false) {
         if (isEdit) {
+            const user = await this.authService.getLastUser();
+            console.log('userrrr', user);
+
             return {
                 scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,
                 scrollMode: PSPDFKit.ScrollMode.CONTINUOUS,
                 autosaveEnabled: true,
                 useImmersiveMode: true,
                 shareFeatures: [],
+                annotationEditing: {
+                    enabled: true,
+                    creatorName: user.username
+                }
             };
         }
 

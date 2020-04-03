@@ -127,15 +127,15 @@ export class ListPage implements OnInit {
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
       this.setGuideInfo();
     });
-    this.events.subscribe(this.protocolTemplateService.dbModelApi + ':create', (model) => {
+    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':create', (model) => {
       console.log('this.protocolTemplateService.dbModelApi + \':create\'');
       this.setGuideInfo();
     });
-    this.events.subscribe(this.protocolTemplateService.dbModelApi + ':update', (model) => {
+    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
       console.log('this.protocolTemplateService.dbModelApi + \':update\'');
       this.setGuideInfo();
     });
-    this.events.subscribe(this.protocolTemplateService.dbModelApi + ':delete', (model) => {
+    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', (model) => {
       console.log('this.protocolTemplateService.dbModelApi + \':delete\'');
       this.setGuideInfo();
     });

@@ -188,6 +188,7 @@ export class GuiderModel extends DbApiModel {
             }
             const query = 'SELECT ' + this.secure('protocol_template') + '.*' + ' from ' + this.secure('guide') +
                 ' JOIN ' + this.secure('protocol_template') + ' ON ' + this.secure('protocol_template') + '.' + this.secure('id') + '=' + this.secure('guide') + '.' + this.secure('protocol_template_id') +
+                ' AND ' + this.secure('guide') + '.' + this.secure('client_id') + ' = ' + this.secure('protocol_template') + '.' + this.secure('client_id') +
                 ' WHERE ' + this.secure('guide') + '.' + this.secure('id') + ' = ' + this.idApi +
                 ' GROUP BY guide.id';
 
