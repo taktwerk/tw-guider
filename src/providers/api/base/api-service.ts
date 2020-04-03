@@ -254,7 +254,6 @@ export abstract class ApiService {
         }
         obj.loadFromApiToCurrentObject(newModel, oldModel);
         let isSynced = true;
-        console.log('oldModel', oldModel);
         if (!canUpdateNotSyncedData && oldModel && !oldModel.is_synced && oldModel.doesHaveFilesForPush()) {
             const fieldsForPush = oldModel.getFieldsForPushFiles();
 

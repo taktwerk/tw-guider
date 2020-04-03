@@ -71,8 +71,3 @@ you need to increase the value of the property dbMigrationVersion in the file `s
 
 5. File src/app/app.module.ts
 - add to providers `FeedbackService`
-
-SENTRY:
-- add to environment sentryDsn: '{SENTRY_DSN}'
-- If you want to skip the automatic release version and set the release completely for yourself. You have to add this env var to disable it e.g.:
-    - SENTRY_SKIP_AUTO_RELEASE=true ionic cordova run android -l
