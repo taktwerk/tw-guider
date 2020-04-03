@@ -72,9 +72,7 @@ you need to increase the value of the property dbMigrationVersion in the file `s
 5. File src/app/app.module.ts
 - add to providers `FeedbackService`
 
-
-- npm install
-- ionic cordova plugin add https://github.com/moust/cordova-plugin-videoplayer.git
-- npm install @ionic-native/video-player
-- ionic cordova prepare android
-- cp local.properties platforms/android/local.properties
+SENTRY:
+- add to environment sentryDsn: '{SENTRY_DSN}'
+- If you want to skip the automatic release version and set the release completely for yourself. You have to add this env var to disable it e.g.:
+    - SENTRY_SKIP_AUTO_RELEASE=true ionic cordova run android -l
