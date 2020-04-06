@@ -70,3 +70,13 @@ you need to increase the value of the property dbMigrationVersion in the file `s
 
 5. File src/app/app.module.ts
 - add to providers `FeedbackService`
+
+## Set up Sentry:
+1) set sentryDsn in src/environments/environment.ts
+
+## Set up PSPDFKIT:
+#### For android:
+1) create file local.properties from local.properties.example and set up fields;
+#### For iOS:
+1) set pspdfkitIosLicenseKey in src/environments/environment.ts
+2) create file scripts/cli_env.js from scripts/cli_env.js.example and set process.env.PSPDFKIT_IOS_COCOAPOD_KEY

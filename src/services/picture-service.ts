@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {AlertController, ModalController, Platform} from '@ionic/angular';
+import {AlertController, Platform} from '@ionic/angular';
 import {DownloadService} from './download-service';
 import {TranslateConfigService} from './translate-config.service';
 import {ApiSync} from '../providers/api-sync';
-import {UserService} from './user-service';
 import {AuthService} from './auth-service';
+import {environment} from '../environments/environment';
 
 /**
  * Download file class
@@ -50,6 +50,9 @@ export class PictureService {
     }
 
     async initializePspdfkit(fileUrl, fileTitle, isEdit = false) {
+        if (this.platform.is('ios')) {
+            PSPDFKit.setLicenseKey(environment.pspdfkitIosLicenseKey);
+        }
         const config = await this.getPspdfkitConfig(isEdit);
         config['title'] = fileTitle;
 
@@ -57,7 +60,6 @@ export class PictureService {
         if (isEdit && !this.wasAddedEditEventListenner) {
             PSPDFKit.addEventListener('onDocumentSaved', () => {
                 this.showSavePopup();
-                // return false;
             });
             this.wasAddedEditEventListenner = true;
         }
@@ -84,7 +86,6 @@ export class PictureService {
             return;
         }
         this.downloadService.copy(this.editFilePath, this.model.TABLE_NAME).then((savedFilePath) => {
-            console.log('savedFilePath', savedFilePath);
             const modelFileMap = this.model.downloadMapping[this.fileMapIndex];
             this.model[modelFileMap.url] = '';
             this.model[modelFileMap.localPath] = savedFilePath;
@@ -99,7 +100,6 @@ export class PictureService {
     async getPspdfkitConfig(isEdit = false) {
         if (isEdit) {
             const user = await this.authService.getLastUser();
-            console.log('userrrr', user);
 
             return {
                 scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,

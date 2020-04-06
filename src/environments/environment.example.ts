@@ -8,7 +8,8 @@ export const environment = {
   taktwerk: 'taktwerk',
   dbName: 'guider',
   dbMigrationVersion: 1,
-  sentryDsn: '{SENTRY_DSN}'
+  sentryDsn: '{SENTRY_DSN}',
+  pspdfkitIosLicenseKey: '{pspdfkitIosLicenseKey}'
 };
 
 /*
