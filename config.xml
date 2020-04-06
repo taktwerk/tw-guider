@@ -25,6 +25,7 @@
     <preference name="UseSwiftLanguageVersion" value="4.2" />
     <preference name="StatusBarOverlaysWebView" value="true" />
     <hook src="scripts/before_compile.js" type="before_compile" />
+    <hook src="scripts/cli_env.js" type="before_platform_add" />
     <hook src="scripts/before_platform_add.js" type="before_platform_add" />
     <platform name="android">
         <preference name="android-manifest/@android:installLocation" value="auto" />
@@ -70,6 +71,7 @@
         </edit-config>
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
+        <preference name="deployment-target" value="11.0" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />
         <icon height="29" src="resources/ios/icon/icon-small.png" width="29" />

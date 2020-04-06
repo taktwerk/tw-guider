@@ -34,4 +34,5 @@ npm-debug.log*
 /src/environments/environment.prod.ts
 resources/android/xml/network_security_config.xml
 local.properties
+scripts/cli_env.js
 sentry.properties
