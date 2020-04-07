@@ -80,3 +80,13 @@ you need to increase the value of the property dbMigrationVersion in the file `s
 #### For iOS:
 1) set pspdfkitIosLicenseKey in src/environments/environment.ts
 2) create file scripts/cli_env.js from scripts/cli_env.js.example and set process.env.PSPDFKIT_IOS_COCOAPOD_KEY
+3) ionic cordova platform add ios
+4) ionic cordova prepare ios
+5) If your application is targeting iOS versions prior to iOS 12.2 and your application does not already contain any Swift code, then you need to make sure Xcode bundles Swift standard libraries with your application distribution. To to so, open your target Build Settings and enable Always Embed Swift Standard Libraries.
+6) Open platforms/ios/MyApp.xcworkspace in Xcode
+7) If you followed the steps in our guide but still see an issue like this one:
+   `dyld: Library not loaded: @rpath/PSPDFKit.framework/PSPDFKit
+   Referenced from: /Users/username/Library/Developer/CoreSimulator/Devices/51AB3B8F-37EA-454E-B9B3-3FCE92F9FD56/data/Containers/Bundle/Application/6D84096F-4239-450C-A3E2-48820ACC42EE/product.app/product
+   Reason: image not found`
+   
+   Then it’s likely you have an older Xcode project where the Runpath Search Paths in your project settings are not correctly configured. Make sure they are set to the following value: $(inherited) @executable_path/Frameworks @loader_path/Frameworks.
