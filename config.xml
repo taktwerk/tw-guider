@@ -6,6 +6,7 @@
     <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
+    <allow-navigation href="ionic://*" />
     <allow-navigation href="data:*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -13,6 +14,7 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <allow-intent href="ionic://*" />
     <preference name="ScrollEnabled" value="false" />
     <preference name="android-minSdkVersion" value="19" />
     <preference name="BackupWebStorage" value="none" />
