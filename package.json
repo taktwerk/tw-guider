@@ -67,7 +67,6 @@
     "@ionic/app-scripts": "^3.2.4",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
-    "@sentry/cli": "^1.51.1",
     "@types/bcryptjs": "^2.4.2",
     "asmcrypto.js": "^2.3.2",
     "bcryptjs": "^2.4.3",
@@ -110,7 +109,6 @@
     "rxjs": "~6.5.1",
     "rxjs-compat": "^6.5.4",
     "scrypt-async": "^2.0.1",
-    "sentry-cordova": "^0.17.0",
     "sql.js": "^1.1.0",
     "text-encoding": "^0.7.0",
     "tslib": "^1.9.0",
@@ -193,10 +191,7 @@
       },
       "com.moust.cordova.videoplayer": {},
       "pspdfkit-cordova": {},
-      "cordova-plugin-insomnia": {},
-      "sentry-cordova": {
-        "SENTRY_ANDROID_SDK_VERSION": "1+"
-      }
+      "cordova-plugin-insomnia": {}
     },
     "platforms": [
       "android",

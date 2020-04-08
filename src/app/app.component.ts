@@ -58,8 +58,6 @@ export class AppComponent implements OnInit {
 
   public userDb: UserDb;
 
-  b: any;
-
   previousStatus = ConnectionStatusEnum.BeforeSet;
   periodicSync: any;
   checkAvailableSyncChanges: any;

@@ -46,7 +46,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {TranslateConfigService} from '../services/translate-config.service';
 import {LanguageSelectorComponentModule} from '../components/language-selector-component/language-selector-component.module';
 import { Device } from '@ionic-native/device/ngx';
-import * as Sentry from 'sentry-cordova';
+// import * as Sentry from 'sentry-cordova';
 
 // import localeFr from '@angular/common/locales/fr';
 // import localeFrExtra from '@angular/common/locales/extra/fr';
@@ -71,13 +71,13 @@ import {PictureService} from '../services/picture-service';
 import {ProtocolTemplateService} from '../providers/api/protocol-template-service';
 import {Insomnia} from '@ionic-native/insomnia/ngx';
 import {environment} from '../environments/environment';
-import {SentryIonicErrorHandler} from '../providers/sentry-ionic-error-handler';
+// import {SentryIonicErrorHandler} from '../providers/sentry-ionic-error-handler';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
-Sentry.init({ dsn: environment.sentryDsn });
+// Sentry.init({ dsn: environment.sentryDsn });
 
 @NgModule({
   declarations: [
@@ -158,7 +158,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     FileOpener,
     Insomnia,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
+    // {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
   ],
   bootstrap: [AppComponent]
 })
