@@ -5,7 +5,7 @@ import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
 
 /**
- * API Db Model for 'Guider Model'.
+ * API Db Model for 'Protocol Template Model'.
  */
 export class ProtocolTemplateModel extends DbApiModel {
     /** @inheritDoc */
@@ -16,11 +16,13 @@ export class ProtocolTemplateModel extends DbApiModel {
     public client_id: number;
     public name: string;
     public workflow_id: number;
+    public protocol_form_table: string;
 
     //db columns
     static COL_CLIENT_ID = 'client_id';
     static COL_NAME = 'name';
     static COL_WORKFLOW_ID = 'workflow_id';
+    static COL_PROTOCOL_FORM_TABLE = 'protocol_form_table';
     static COL_PROTOCOL_FILE = 'protocol_file';
     static COL_API_PROTOCOL_FILE_PATH = 'protocol_file_path';
     static COL_LOCAL_PROTOCOL_FILE = 'local_protocol_file';
@@ -36,6 +38,7 @@ export class ProtocolTemplateModel extends DbApiModel {
         [ProtocolTemplateModel.COL_CLIENT_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
         [ProtocolTemplateModel.COL_NAME, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
         [ProtocolTemplateModel.COL_WORKFLOW_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
+        [ProtocolTemplateModel.COL_PROTOCOL_FORM_TABLE, 'VARCHAR(191)', DbBaseModel.TYPE_STRING],
         /// attached file columns
         [ProtocolTemplateModel.COL_PROTOCOL_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [ProtocolTemplateModel.COL_API_PROTOCOL_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],

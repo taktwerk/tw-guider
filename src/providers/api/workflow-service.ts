@@ -7,13 +7,13 @@ import {AuthService} from '../../services/auth-service';
 import {HttpClient} from '../../services/http-client';
 import {DownloadService} from '../../services/download-service';
 import {AppSetting} from '../../services/app-setting';
-import {ProtocolModel} from '../../models/db/api/protocol-model';
+import {WorkflowModel} from '../../models/db/api/workflow-model';
 
 @Injectable()
-export class ProtocolService extends ApiService {
-    data: ProtocolModel[] = [];
-    loadUrl: string = '/protocol';
-    dbModelApi: ProtocolModel = new ProtocolModel(this.p, this.db, this.events, this.downloadService);
+export class WorkflowService extends ApiService {
+    data: WorkflowModel[] = [];
+    loadUrl: string = '/workflow';
+    dbModelApi: WorkflowModel = new WorkflowModel(this.p, this.db, this.events, this.downloadService);
 
     /**
      * Constructor
@@ -36,9 +36,9 @@ export class ProtocolService extends ApiService {
 
     /**
      * Create a new instance of the service model
-     * @returns {ProtocolModel}
+     * @returns {WorkflowModel}
      */
     public newModel() {
-        return new ProtocolModel(this.p, this.db, this.events, this.downloadService);
+        return new WorkflowModel(this.p, this.db, this.events, this.downloadService);
     }
 }

@@ -72,6 +72,10 @@ import {ProtocolTemplateService} from '../providers/api/protocol-template-servic
 import {Insomnia} from '@ionic-native/insomnia/ngx';
 import {environment} from '../environments/environment';
 import {SentryIonicErrorHandler} from '../providers/sentry-ionic-error-handler';
+import {ProtocolService} from '../providers/api/protocol-service';
+import {ProtocolDefaultService} from '../providers/api/protocol-default-service';
+import {WorkflowService} from '../providers/api/workflow-service';
+import {WorkflowStepService} from '../providers/api/workflow-step-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -120,6 +124,10 @@ Sentry.init({ dsn: environment.sentryDsn });
     GuideAssetPivotService,
     FeedbackService,
     ProtocolTemplateService,
+    ProtocolService,
+    ProtocolDefaultService,
+    WorkflowService,
+    WorkflowStepService,
     DbProvider,
     AuthService,
     HttpClient,

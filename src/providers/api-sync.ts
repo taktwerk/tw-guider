@@ -21,6 +21,10 @@ import {FeedbackService} from './api/feedback-service';
 import {UserService} from '../services/user-service';
 import {ProtocolTemplateService} from './api/protocol-template-service';
 import {DbApiModel} from '../models/base/db-api-model';
+import {ProtocolService} from './api/protocol-service';
+import {ProtocolDefaultService} from './api/protocol-default-service';
+import {WorkflowService} from './api/workflow-service';
+import {WorkflowStepService} from './api/workflow-step-service';
 
 @Injectable()
 /**
@@ -46,7 +50,11 @@ export class ApiSync {
         guide_asset: this.guideAssetService,
         guide_asset_pivot: this.guideAssetPivotService,
         feedback: this.feedbackService,
-        protocol_template: this.protocolTemplateService
+        protocol_template: this.protocolTemplateService,
+        protocol: this.protocolService,
+        protocol_default: this.protocolDefaultService,
+        workflow: this.workflowService,
+        workflow_step: this.workflowStepService
     };
 
     isStartSyncBehaviorSubject: BehaviorSubject<boolean>;
@@ -71,7 +79,8 @@ export class ApiSync {
 
     apiPushServices: any = {
         feedback: this.feedbackService,
-        protocol_template: this.protocolTemplateService
+        protocol: this.protocolService,
+        protocol_default: this.protocolDefaultService
     };
 
     /**
@@ -82,18 +91,23 @@ export class ApiSync {
         private platform: Platform,
         private db: DbProvider,
         private events: Events,
+        private downloadService: DownloadService,
+        private network: Network,
+        private appSetting: AppSetting,
+        private userService: UserService,
+        /// sync services injection
         private guideService: GuiderService,
         private guideCategoryService: GuideCategoryService,
         private guideCategoryBindingService: GuideCategoryBindingService,
         private guideStepService: GuideStepService,
         private guideAssetService: GuideAssetService,
         private guideAssetPivotService: GuideAssetPivotService,
-        private protocolTemplateService: ProtocolTemplateService,
         private feedbackService: FeedbackService,
-        private downloadService: DownloadService,
-        private network: Network,
-        private appSetting: AppSetting,
-        private userService: UserService
+        private protocolTemplateService: ProtocolTemplateService,
+        private protocolService: ProtocolService,
+        private protocolDefaultService: ProtocolDefaultService,
+        private workflowService: WorkflowService,
+        private workflowStepService: WorkflowStepService
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);

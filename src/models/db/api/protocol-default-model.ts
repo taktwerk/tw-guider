@@ -5,7 +5,7 @@ import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
 
 /**
- * API Db Model for 'Guider Model'.
+ * API Db Model for 'Protocol Default Model'.
  */
 export class ProtocolDefaultModel extends DbApiModel {
     /** @inheritDoc */
@@ -13,12 +13,10 @@ export class ProtocolDefaultModel extends DbApiModel {
     public apiPk = 'id';
 
     //members
-    public client_id: number;
-    public name: string;
-    public workflow_id: number;
+    public protocol_id: number;
 
     //db columns
-    static COL_PROTOCOL_ID = 'workflow_id';
+    static COL_PROTOCOL_ID = 'protocol_id';
     static COL_PROTOCOL_FILE = 'protocol_file';
     static COL_API_PROTOCOL_FILE_PATH = 'protocol_file_path';
     static COL_LOCAL_PROTOCOL_FILE = 'local_protocol_file';
