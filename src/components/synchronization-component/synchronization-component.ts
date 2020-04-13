@@ -52,7 +52,6 @@ export class SynchronizationComponent implements OnInit {
                 private events: Events,
                 private syncService: SyncService,
                 public alertController: AlertController,
-                public datepipe: DatePipe,
                 private translateConfigService: TranslateConfigService,
                 private userService: UserService,
                 private appSetting: AppSetting) {
@@ -151,6 +150,8 @@ export class SynchronizationComponent implements OnInit {
           this.userDb.userSetting.lastSyncedAt = null;
           this.userDb.userSetting.lastSyncProcessId = null;
           this.userDb.userSetting.appDataVersion = null;
+          this.apiSync.isAvailableForSyncData.next(true);
+          this.userDb.userSetting.isSyncAvailableData = true;
           this.userDb.save().then(() => {
               this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
               this.apiSync.syncProgressStatus.next('success');

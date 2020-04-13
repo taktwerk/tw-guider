@@ -10,6 +10,7 @@ import {ProtocolTemplateService} from '../../providers/api/protocol-template-ser
 import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model';
 import {DownloadService} from '../../services/download-service';
 import {PictureService} from '../../services/picture-service';
+import {NavigationExtras, Router} from '@angular/router';
 
 @Component({
   selector: 'app-list',
@@ -17,7 +18,6 @@ import {PictureService} from '../../services/picture-service';
   styleUrls: ['list.page.scss']
 })
 export class ListPage implements OnInit {
-  public guiders: GuiderModel[] = [];
   public guideCategories: GuideCategoryModel[] = [];
   public searchValue: string;
 
@@ -30,6 +30,7 @@ export class ListPage implements OnInit {
       public authService: AuthService,
       public events: Events,
       public changeDetectorRef: ChangeDetectorRef,
+      private router: Router,
       private downloadService: DownloadService,
       private pictureService: PictureService
   ) {
@@ -86,20 +87,17 @@ export class ListPage implements OnInit {
     return item.id;
   }
 
-  public editProtocol(protocolTemplate: ProtocolTemplateModel) {
-    if (!protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE]) {
-      return;
-    }
-    const fileUrl = this.downloadService.getNativeFilePath(
-        protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE],
-        protocolTemplate.TABLE_NAME
-    );
-    this.pictureService.editFile(
-        protocolTemplate.getLocalFilePath(),
-        protocolTemplate.name,
-        protocolTemplate,
-        0
-    );
+  openProtocol(guide: GuiderModel) {
+    const feedbackNavigationExtras: NavigationExtras = {
+      queryParams: {
+        templateId: guide.protocol_template_id,
+        referenceModelAlias: 'guide',
+        referenceId: guide.idApi,
+        clientId: guide.client_id,
+        backUrl: this.router.url
+      }
+    };
+    this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }
 
   ngOnInit() {

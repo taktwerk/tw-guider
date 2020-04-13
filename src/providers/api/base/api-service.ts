@@ -105,9 +105,10 @@ export abstract class ApiService {
               if (!models || models.length === 0) {
                 resolve(false);
               } else {
-                this.dbModelApi.prepareBatchPost(<DbApiModel[]> models).then((res) => {
-                  resolve(res);
-                });
+                  resolve(models);
+                // this.dbModelApi.prepareBatchPost(<DbApiModel[]> models).then((res) => {
+                //   resolve(res);
+                // });
               }
             });
         });
@@ -281,9 +282,13 @@ export abstract class ApiService {
             }
         }
         if (!oldModel || oldModel.updated_at !== obj.updated_at) {
-            console.log('save synced');
+            console.log('before save');
             await obj.save(false, isSynced, updateCondition, false);
+            console.log('after save');
         }
+        console.log('before local relations');
+        await obj.updateLocalRelations();
+        console.log('after local relations');
         return await obj.pullFiles(oldModel, this.http.getAuthorizationToken());
     }
 }

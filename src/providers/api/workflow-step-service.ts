@@ -14,6 +14,7 @@ export class WorkflowStepService extends ApiService {
     data: WorkflowStepModel[] = [];
     loadUrl: string = '/workflow-step';
     dbModelApi: WorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService);
+    currentWorkflowStepsList: any;
 
     /**
      * Constructor
@@ -32,6 +33,18 @@ export class WorkflowStepService extends ApiService {
                 public downloadService: DownloadService,
                 public appSetting: AppSetting) {
         super(http, events, appSetting);
+    }
+
+    getById(workflowStepId: number) {
+        return new Promise((resolve) => {
+            this.dbModelApi.findFirst([this.dbModelApi.COL_ID_API, workflowStepId]).then(result => {
+                if (result && result[0]) {
+                    resolve(result[0]);
+                } else {
+                    resolve(null);
+                }
+            });
+        });
     }
 
     /**

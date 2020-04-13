@@ -3,7 +3,7 @@ import {DbApiModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
-import {GuiderModel} from './guider-model';
+import {WorkflowStepModel} from './workflow-step-model';
 
 /**
  * API Db Model for 'Workflow Model'.
@@ -12,6 +12,8 @@ export class WorkflowModel extends DbApiModel {
     /** @inheritDoc */
     TAG: string = 'WorkflowModel';
     public apiPk = 'id';
+
+    public steps: WorkflowStepModel[];
 
     //members
     public client_id: number = null;
@@ -40,6 +42,35 @@ export class WorkflowModel extends DbApiModel {
         public downloadService: DownloadService
     ) {
         super(platform, db, events, downloadService);
+    }
+
+    async getSteps() {
+        if (this.steps && this.steps.length && this.steps[0][WorkflowStepModel.COL_WORKFLOW_ID] === this.idApi) {
+            return this.steps;
+        }
+        const stepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService);
+        const steps = await stepModel.searchAll([WorkflowStepModel.COL_WORKFLOW_ID, this.idApi]);
+
+        this.steps = steps;
+
+        return steps;
+    }
+
+    async getFirstStep() {
+        const steps = await this.getSteps();
+        console.log('steps', steps);
+
+        if (!steps.length) {
+            return null;
+        }
+
+        for (let i = 0; i < steps.length; i++) {
+            if (steps[i].is_first) {
+                return steps[i];
+            }
+        }
+
+        return null;
     }
 
     setUpdateCondition() {

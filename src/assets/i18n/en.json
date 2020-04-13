@@ -48,6 +48,9 @@
     "Feedback was deleted": "Feedback was deleted",
     "Are you sure you want to delete this feedback?": "Are you sure you want to delete this feedback?"
   },
+  "protocol": {
+    "protocols": "Protocols"
+  },
   "guide": {
     "header": "Guide:",
     "No information here yet.": "No information here yet.",

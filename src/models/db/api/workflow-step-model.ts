@@ -38,14 +38,14 @@ export class WorkflowStepModel extends DbApiModel {
     static COL_IS_FRIST = 'is_first';
 
     /** @inheritDoc */
-    TABLE_NAME: string = 'workflow';
+    TABLE_NAME: string = 'workflow_step';
 
     /** @inheritDoc */
     TABLE: any = [
         [WorkflowStepModel.COL_CLIENT_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
         [WorkflowStepModel.COL_WORKFLOW_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
         [WorkflowStepModel.COL_NAME, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
-        [WorkflowStepModel.COL_TYPE, 'ENUM(\'input\', \'validation\', \'final\') NOT NULL', DbBaseModel.TYPE_STRING],
+        [WorkflowStepModel.COL_TYPE, 'VARCHAR(30)', DbBaseModel.TYPE_STRING],
         [WorkflowStepModel.COL_ROLE, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
         [WorkflowStepModel.COL_USER_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
         [WorkflowStepModel.COL_IS_FRIST, 'TINYINT(1) DEFAULT 0', DbBaseModel.TYPE_BOOLEAN],

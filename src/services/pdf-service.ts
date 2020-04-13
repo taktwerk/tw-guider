@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Events, Platform} from '@ionic/angular';
+import {AlertController, Platform} from '@ionic/angular';
 import {DownloadService} from './download-service';
+import {TranslateConfigService} from './translate-config.service';
+import {ApiSync} from '../providers/api-sync';
 import {AuthService} from './auth-service';
 import {environment} from '../environments/environment';
 
@@ -11,40 +13,88 @@ import {environment} from '../environments/environment';
 declare var PSPDFKit: any;
 
 @Injectable()
-export class PictureService {
+export class PdfService {
 
     wasAddedEditEventListenner = false;
+    originalFilePath: string;
+    editFilePath: string;
+    model: any;
     fileMapIndex;
 
     constructor(public platform: Platform,
                 private downloadService: DownloadService,
-                public authService: AuthService,
-                private events: Events) {}
+                public alertController: AlertController,
+                private translateConfigService: TranslateConfigService,
+                private apiSync: ApiSync,
+                private authService: AuthService) {}
 
     async openFile(fileUrl: string, fileTitle?: string) {
         this.initializePspdfkit(fileUrl, fileTitle);
     }
 
-    async editFile(editFileUrl: string, fileTitle: string) {
-        console.log('in edit file');
+    async editFile(
+        fullPath: string,
+        fileTitle: string,
+        model: any,
+        fileMapIndex
+    ) {
+        const editFileUrl = await this.downloadService.copy(fullPath, model.TABLE_NAME, true);
+        if (!editFileUrl) {
+            return false;
+        }
+        this.model = model;
+        this.fileMapIndex = fileMapIndex;
+        this.originalFilePath = fullPath;
+        this.editFilePath = editFileUrl;
         this.initializePspdfkit(editFileUrl, fileTitle, true);
     }
 
     async initializePspdfkit(fileUrl, fileTitle, isEdit = false) {
-        console.log('initializePspdfkit');
         if (this.platform.is('ios')) {
             PSPDFKit.setLicenseKey(environment.pspdfkitIosLicenseKey);
         }
         const config = await this.getPspdfkitConfig(isEdit);
         config['title'] = fileTitle;
-        console.log('before present');
+
         PSPDFKit.present(fileUrl, config);
         if (isEdit && !this.wasAddedEditEventListenner) {
             PSPDFKit.addEventListener('onDocumentSaved', () => {
-                this.events.publish('pdfWasSaved');
+                this.showSavePopup();
             });
             this.wasAddedEditEventListenner = true;
         }
+    }
+
+    async showSavePopup() {
+        const alert = await this.alertController.create({
+            message: this.translateConfigService.translateWord('synchronization-component.Are you sure you want to overwrite the data?'),
+            buttons: [
+                {
+                    text: 'Yes',
+                    cssClass: 'primary',
+                    handler: () => this.saveDocument()
+                }, {
+                    text: 'No',
+                }
+            ]
+        });
+        await alert.present();
+    }
+
+    protected saveDocument() {
+        if (!this.model || !this.model.TABLE_NAME) {
+            return;
+        }
+        this.downloadService.copy(this.editFilePath, this.model.TABLE_NAME).then((savedFilePath) => {
+            const modelFileMap = this.model.downloadMapping[this.fileMapIndex];
+            this.model[modelFileMap.url] = '';
+            this.model[modelFileMap.localPath] = savedFilePath;
+            this.model.save().then(res => {
+                if (res) {
+                    this.apiSync.setIsPushAvailableData(true);
+                }
+            });
+        });
     }
 
     async getPspdfkitConfig(isEdit = false) {

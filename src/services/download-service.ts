@@ -226,6 +226,7 @@ export class DownloadService {
      */
     public copy(fullPath: string, modelName: string, isDuplicate = false): Promise< string > {
         return new Promise(resolve => {
+            console.log('fullPath', fullPath);
             const date = new Date();
             const correctPath = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
             const currentName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);

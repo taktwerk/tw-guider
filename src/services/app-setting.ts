@@ -44,7 +44,7 @@ export class AppSetting {
     ) {
         this.isWasQrCodeSetupSubscribtion = new BehaviorSubject<boolean>(false);
         this.appSetting = new AppSettingsDb(platform, db, events, downloadService);
-        this.appSetting.find().then((result) => {
+        this.appSetting.find().then(async (result) => {
             if (result) {
                 Object.keys(result.settings).map((key) => {
                     if (this[key] === undefined) {
@@ -56,7 +56,9 @@ export class AppSetting {
             } else {
                 this.appSetting.settings = this.defaultData;
                 this.isWasQrCodeSetupSubscribtion.next(this.defaultData.isWasQrCodeSetup);
-                this.appSetting.save();
+                await this.appSetting.save();
+                this.appSetting = await this.appSetting.find();
+                console.log('this.appSetting', this.appSetting);
             }
         });
     }
@@ -106,12 +108,13 @@ export class AppSetting {
 
         const user = await this.userService.getUser();
         this.appSetting.settings = userSettingsObject;
-        this.appSetting.find().then((result) => {
+        this.appSetting.find().then(async (result) => {
+            console.log('app setting result', result);
             if (result) {
                 result.settings = userSettingsObject;
-                result.save();
+                await result.save();
             } else {
-                this.appSetting.create();
+                await this.appSetting.create();
             }
         });
         if (user) {

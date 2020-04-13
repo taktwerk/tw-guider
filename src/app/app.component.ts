@@ -303,6 +303,9 @@ export class AppComponent implements OnInit {
     this.events.subscribe('user:logout', () => {
       this.logoutAction();
     });
+    this.events.subscribe('setIsPushAvailableData', () => {
+      this.apiSync.setIsPushAvailableData(true);
+    });
     this.syncService.syncMode.subscribe((syncMode) => {
         this.changeSyncModeAction(syncMode);
     });

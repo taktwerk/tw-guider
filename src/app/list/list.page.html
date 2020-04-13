@@ -54,7 +54,7 @@
               <ion-button *ngIf="item.protocol_template"
                           class="show-guide-btn"
                           color="medium"
-                          (click)="editProtocol(item.protocol_template)"
+                          (click)="openProtocol(item)"
               >
                 <ion-icon class="show-guide-play-icon" slot="start" name="list"></ion-icon>
                 {{ 'guides.New Protocol' | translate:params }}

@@ -74,7 +74,7 @@ export abstract class DbBaseModel {
      * @param item db row
      */
     public loadFromAttributes(item: any): DbBaseModel {
-        this.id = item[this.COL_ID];
+        this[this.COL_ID] = item[this.COL_ID];
         for (const column of this.TABLE) {
             // get column name (if defined in 4th column - otherwise get column name defined in 1st column)
             const columnName = column[3] ? column[3] : column[0];
@@ -100,7 +100,7 @@ export abstract class DbBaseModel {
                     break;
             }
         }
-        this.updateCondition = [[this.COL_ID, this.id]];
+        this.updateCondition = [[this.COL_ID, this[this.COL_ID]]];
         return this;
     }
 
@@ -222,7 +222,9 @@ export abstract class DbBaseModel {
                     resolve(false);
                 }
                 const query = 'SELECT * FROM ' + this.secure(this.TABLE_NAME) + ' WHERE ' + this.secure(this.COL_ID) + ' = ' + id;
+                console.log('query', query);
                 db.query(query).then((res) => {
+                    console.log('res', res);
                     if (res.rows.length === 1) {
                         if (newObject) {
                             let obj: DbBaseModel = new (<any>this.constructor);
@@ -266,6 +268,7 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
+                    console.log('queryqueryqueryqueryquery', query);
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             resolve(res);
@@ -290,6 +293,7 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
+                    console.log('queryqueryqueryqueryqueryquery', query);
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
@@ -537,7 +541,8 @@ export abstract class DbBaseModel {
      */
     public save(forceCreation?: boolean): Promise<any> {
         return new Promise((resolve) => {
-            if (this.id && !forceCreation) {
+            // console.log('this[this.COL_ID] && !forceCreation', this[this.COL_ID] && !forceCreation);
+            if (this[this.COL_ID] && !forceCreation) {
                 this.update().then(() => resolve(true));
             } else {
                 this.create().then(() => resolve(true));
@@ -669,10 +674,14 @@ export abstract class DbBaseModel {
                 } else {
                     let query = 'INSERT INTO ' + this.secure(this.TABLE_NAME) + ' (`' + this.columnNames().join('`, `') + '`) ' +
                         'VALUES (' + this.columnValues().join(', ') + ') ';
+                    if (this.TAG === 'ProtocolDefaultModel' || this.TAG === 'ProtocolModel') {
+                        console.log('insert query', query);
+                    }
                     db.query(query).then((res) => {
                         //  Save ID in the model
-                        this.id = res.insertId;
-                        this.updateCondition = [this.COL_ID, this.id];
+                        console.log('after execute query');
+                        this[this.COL_ID] = res.insertId;
+                        this.updateCondition = [this.COL_ID, this[this.COL_ID]];
                         this.events.publish(this.TAG + ':create', this);
                         resolve(res);
 
@@ -697,6 +706,9 @@ export abstract class DbBaseModel {
                 } else {
                     let query = 'UPDATE ' + this.secure(this.TABLE_NAME) + ' ' +
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
+                    if (this.TAG === 'ProtocolDefaultModel' || this.TAG === 'ProtocolModel') {
+                        console.log('update query', query);
+                    }
                     db.query(query).then((res) => {
                         this.events.publish(this.TAG + ':update', this);
                         resolve(res);
@@ -705,6 +717,9 @@ export abstract class DbBaseModel {
                         resolve(false);
                     });
                 }
+            }).catch((err) => {
+                console.log('dbReady errrr', err);
+                resolve(false);
             });
         });
     }
@@ -889,7 +904,7 @@ export abstract class DbBaseModel {
      * @returns {string}
      */
     protected getValueNumber(num: number): string {
-        return num ? '' + num : 'null';
+        return num || num === 0 ? '' + num : 'null';
     }
 
     /**

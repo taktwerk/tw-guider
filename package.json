@@ -113,6 +113,7 @@
     "sentry-cordova": "^0.17.0",
     "sql.js": "^1.1.0",
     "text-encoding": "^0.7.0",
+    "ts-md5": "^1.2.7",
     "tslib": "^1.9.0",
     "typeorm": "^0.3.0-rc.13",
     "webpack": "^4.42.0",

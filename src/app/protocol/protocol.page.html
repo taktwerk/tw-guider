@@ -1,0 +1,69 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            {{ 'protocol.protocols' | translate:params }}
+        </ion-title>
+        <ion-buttons *ngIf="isComponentLikeModal" slot="end">
+            <ion-back-button text="{{ 'close' | translate:params }}"
+                             type="button"
+                             icon="null"
+                             defaultHref="{{ backDefaultHref || '/guides' }}"
+            >
+            </ion-back-button>
+        </ion-buttons>
+        <sync-spinner-component slot="primary"></sync-spinner-component>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-list *ngFor="let protocol  of protocolList">
+        <ion-item style="opacity:1;height: 79px;">
+            <ion-thumbnail slot="start">
+<!--                <div *ngIf="protocol.attached_file">-->
+<!--                    <div style="width: 70px;height: 70px;">-->
+<!--                        <div *ngIf="protocol.isPdf()">-->
+<!--                            <ion-icon name="document"-->
+<!--                                      class="videocam-icon"-->
+<!--                                      slot="start"-->
+<!--                            >-->
+<!--                            </ion-icon>-->
+<!--                        </div>-->
+<!--                        <ion-icon *ngIf="!protocol.isExistFormatFile()"-->
+<!--                                  class="cloud-upload"-->
+<!--                                  name="cloud-upload"-->
+<!--                        >-->
+<!--                        </ion-icon>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </ion-thumbnail>
+            <ion-label>
+                <h2>
+                    {{ (protocol.local_created_at || protocol.created_at) | datePipe: 'dd.MM.yyyy hh:mm:ss' }}
+                    <span *ngIf="protocol.name"> - {{ protocol.name }}</span>
+                </h2>
+            </ion-label>
+            <ion-button *ngIf="protocol.workflowStep && protocol.canEditProtocol"
+                        slot="end"
+                        fill="clear"
+                        (click)="editProtocol(protocol)"
+            >
+                <ion-icon slot="icon-only" name="create"></ion-icon>
+            </ion-button>
+        </ion-item>
+    </ion-list>
+    <div style="height: 70px;">
+    </div>
+    <ion-fab vertical="bottom"
+             horizontal="end"
+             slot="fixed"
+             (click)="createProtocol()"
+    >
+        <ion-fab-button>
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>
+

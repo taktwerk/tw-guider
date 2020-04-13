@@ -24,6 +24,7 @@ export class FileMapInModel extends BaseFileMapInModel {
  * with the remote API. In that case you'd have to extend only DbHelper.
  */
 export abstract class DbApiModel extends DbBaseModel {
+    loadUrl: string;
     public defaultImage = '/assets/placeholder.jpg';
     /** flag that indicate either a record is synced with the API or not */
     public is_synced: boolean;
@@ -218,37 +219,36 @@ export abstract class DbApiModel extends DbBaseModel {
                 this.setUpdateCondition();
             }
         }
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             this.beforeSave(isSynced);
-            this.exists().then((res) => {
-                console.log('exists res', res);
-                if (res) {
-                    if (isSaveLocaleDates) {
-                        this[this.COL_LOCAL_UPDATED_AT] = new Date();
-                    }
-                    this.update().then(() => {
-                        this.unsetNotSavedModelUploadedFilePaths();
-                        resolve(true);
-                        return;
-                    });
-                } else {
-                    console.log('not exists res')
-                    if (isSaveLocaleDates) {
-                        this[this.COL_LOCAL_CREATED_AT] = new Date();
-                        this[this.COL_LOCAL_UPDATED_AT] = new Date();
-                    }
-                    this.create().then(() => {
-                        this.unsetNotSavedModelUploadedFilePaths();
-                        resolve(true);
-                        return;
-                    });
+            console.log('before exists');
+            const res = await this.exists();
+            console.log('after exists');
+            if (res) {
+                if (isSaveLocaleDates) {
+                    this[this.COL_LOCAL_UPDATED_AT] = new Date();
                 }
-            });
+                await this.update();
+                this.unsetNotSavedModelUploadedFilePaths();
+                resolve(true);
+                return;
+            } else {
+                if (isSaveLocaleDates) {
+                    this[this.COL_LOCAL_CREATED_AT] = new Date();
+                    this[this.COL_LOCAL_UPDATED_AT] = new Date();
+                }
+                console.log('before create');
+                await this.create();
+                console.log('after create');
+                this.unsetNotSavedModelUploadedFilePaths();
+                resolve(true);
+                return;
+            }
         });
     }
 
     public setUpdateCondition() {
-        this.updateCondition = [[this.COL_ID, this.id]];
+        this.updateCondition = [[this.COL_ID, this[this.COL_ID]]];
     }
 
     public remove(): Promise<any> {
@@ -290,7 +290,6 @@ export abstract class DbApiModel extends DbBaseModel {
                     resolve(false);
                 } else {
                     let query = "SELECT * FROM " + this.TABLE_NAME + " WHERE " + this.parseWhere(this.updateCondition);
-                    console.log('query', query);
                     if (query.indexOf('undefined') >= 0) {
                         resolve(false);
                     } else {
@@ -316,7 +315,7 @@ export abstract class DbApiModel extends DbBaseModel {
         let types = this.columnTypes();
 
         obj[this.apiPk] = this.idApi;
-        obj['_id'] = this.id;
+        obj[this.COL_ID] = this[this.COL_ID];
 
         obj['deleted_at'] = this.formatApiDate(this[this.COL_DELETED_AT]);
         obj['local_deleted_at'] = this.formatApiDate(this[this.COL_LOCAL_DELETED_AT]);
@@ -653,5 +652,18 @@ export abstract class DbApiModel extends DbBaseModel {
         }
 
         return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME);
+    }
+
+    async updateLocalRelations() {
+        ///
+    }
+
+    async beforePushDataToServer(isInsert?: boolean) {
+        //
+    }
+
+    /// return additional models for push data to server
+    async afterPushDataToServer(isInsert: boolean) {
+        return [];
     }
 }

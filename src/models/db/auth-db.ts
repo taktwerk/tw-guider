@@ -28,6 +28,7 @@ export class AuthDb extends DbBaseModel {
   /** login date */
   loginDate: Date = new Date();
   lastAuthItemChangedAt: number;
+  additionalInfo: any;
 
   static COL_ID = '_id';
   static COL_USER_ID = 'user_id';
@@ -37,8 +38,8 @@ export class AuthDb extends DbBaseModel {
   static COL_USERNAME = 'username';
   static COL_PASSWORD = 'password';
   static COL_LOGIN_DATE = 'login_at';
-  static COL_IS_LAST_USER = 'is_last_user';
   static LAST_AUTH_ITEM_CHANGED_AT = 'last_auth_item_changed_at';
+  static COL_ADDITIONAL_INFO = 'additional_info';
 
   /** @inheritDoc */
   TABLE_NAME: string = 'auth';
@@ -52,6 +53,7 @@ export class AuthDb extends DbBaseModel {
     [AuthDb.COL_AUTH_TOKEN, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'authToken' ],
     [AuthDb.COL_LOGIN_DATE, 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP', DbBaseModel.TYPE_DATE, 'loginDate' ],
     [AuthDb.LAST_AUTH_ITEM_CHANGED_AT, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'lastAuthItemChangedAt' ],
+    [AuthDb.COL_ADDITIONAL_INFO, 'TEXT', DbBaseModel.TYPE_OBJECT, 'additionalInfo'],
   ];
 
   /**

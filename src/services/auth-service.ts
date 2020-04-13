@@ -260,13 +260,13 @@ export class AuthService {
                     this.auth = existUser[0];
                     this.auth.authToken = user.access_token;
                     this.auth.client_id = user.client_id;
-                    this.auth.client_id = user.client_id;
                     this.auth.lastAuthItemChangedAt = user.lastAuthItemChangedAt;
                     this.auth.isAuthority = user.isAuthority;
                     if (formData) {
                         this.auth.password = this.cryptoProvider.hashPassword(formData.password);
                     }
                     this.auth.loginDate = new Date();
+                    this.auth.additionalInfo = user.additionalInfo;
                 } else {
                     if ((formData && !formData.username) || (!formData && !user.username)) {
                         resolve(false);
@@ -285,6 +285,7 @@ export class AuthService {
                         this.auth.username = user.username;
                     }
                     this.auth.loginDate = new Date();
+                    this.auth.additionalInfo = user.additionalInfo;
                 }
                 this.auth.save(!!(existUser.length)).then((authSaveResult) => {
                     if (authSaveResult) {
