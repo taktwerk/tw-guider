@@ -261,6 +261,7 @@ export abstract class DbBaseModel {
 
     public searchAllAndGetRowsResult(where?: any, orderBy?: string, limit?: number, join?: string, selectFrom?: string, groupBy?: string): Promise<any> {
         const query = this.searchAllQuery(where, orderBy, limit, join, selectFrom, groupBy);
+        console.log('searchAllAndGetRowsResult', query);
         const entries: any[] = [];
 
         return new Promise((resolve) => {
@@ -268,7 +269,6 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
-                    console.log('queryqueryqueryqueryquery', query);
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             resolve(res);
@@ -293,7 +293,6 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
-                    console.log('queryqueryqueryqueryqueryquery', query);
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {

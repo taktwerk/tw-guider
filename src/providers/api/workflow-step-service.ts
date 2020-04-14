@@ -14,7 +14,7 @@ export class WorkflowStepService extends ApiService {
     data: WorkflowStepModel[] = [];
     loadUrl: string = '/workflow-step';
     dbModelApi: WorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService);
-    currentWorkflowStepsList: any;
+    private workflowStepsListCache: WorkflowStepModel[] = [];
 
     /**
      * Constructor
@@ -37,14 +37,27 @@ export class WorkflowStepService extends ApiService {
 
     getById(workflowStepId: number) {
         return new Promise((resolve) => {
+            if (this.workflowStepsListCache.length) {
+                for (let i = 0; i < this.workflowStepsListCache.length; i++) {
+                    if (this.workflowStepsListCache[i].idApi === workflowStepId) {
+                        resolve(this.workflowStepsListCache[i]);
+                        return;
+                    }
+                }
+            }
             this.dbModelApi.findFirst([this.dbModelApi.COL_ID_API, workflowStepId]).then(result => {
                 if (result && result[0]) {
+                    this.workflowStepsListCache.push(result[0]);
                     resolve(result[0]);
                 } else {
                     resolve(null);
                 }
             });
         });
+    }
+
+    unsetWorkflowStepsListCache() {
+        this.workflowStepsListCache = [];
     }
 
     /**

@@ -233,11 +233,11 @@ export class ApiSync {
                 await this.userDb.save();
                 this.syncData = await this.prepareDataForSavingSyncData(data);
                 if (!this.syncData) {
+                    this.isAvailableForSyncData.next(false);
                     resolve(false);
                 }
                 const isSavedSyncData = this.saveModels(this.syncData);
                 if (isSavedSyncData) {
-                    console.log('set app data version');
                     this.userDb.userSetting.appDataVersion = data.version;
                     await this.userDb.save();
                 }

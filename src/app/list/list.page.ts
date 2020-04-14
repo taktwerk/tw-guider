@@ -11,6 +11,7 @@ import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model
 import {DownloadService} from '../../services/download-service';
 import {PictureService} from '../../services/picture-service';
 import {NavigationExtras, Router} from '@angular/router';
+import {WorkflowStepService} from '../../providers/api/workflow-step-service';
 
 @Component({
   selector: 'app-list',
@@ -30,9 +31,7 @@ export class ListPage implements OnInit {
       public authService: AuthService,
       public events: Events,
       public changeDetectorRef: ChangeDetectorRef,
-      private router: Router,
-      private downloadService: DownloadService,
-      private pictureService: PictureService
+      private router: Router
   ) {
     this.authService.checkAccess();
     this.findAllGuideCategories();

@@ -44,6 +44,10 @@ export class ProtocolService extends ApiService {
 
     getAllProtocols(templateId: number, referenceModel?, referenceId?): Promise <any[]> {
         return new Promise(async (resolve) => {
+            if (this.data.length) {
+                resolve(this.data);
+                return;
+            }
             const user = await this.authService.getLastUser();
             if (!user) {
                 resolve([]);
@@ -63,15 +67,9 @@ export class ProtocolService extends ApiService {
                 ' ON ' + this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('id') +
                 '=' +
                 this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('protocol_template_id');
-                // +
-                // ' JOIN ' + this.dbModelApi.secure('guide') +
-                // ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') +
-                // '=' +
-                // this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
 
             const selectFrom = 'SELECT ' + this.dbModelApi.secure('protocol') + '.*' + ' from ' + this.dbModelApi.secure('protocol');
             const orderBy = 'protocol.local_created_at DESC, protocol.created_at DESC';
-            // const groupby = this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id');
 
             const entries: any[] = [];
             this.dbModelApi.searchAllAndGetRowsResult(
@@ -95,11 +93,17 @@ export class ProtocolService extends ApiService {
                         entries.push(obj);
                     }
                 }
+                this.data = entries;
                 resolve(entries);
             }).catch((err) => {
+                this.data = entries;
                 resolve(entries);
             });
         });
+    }
+
+    unsetProtocolDataList() {
+        this.data = [];
     }
 
     async getCurrentUser() {

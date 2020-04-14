@@ -35,7 +35,8 @@
     "duration": "(De) Duration",
     "revision": "(De) Revision",
     "Show Guide": "(De) Show Guide",
-    "New Protocol": "(De) New Protocol"
+    "New Protocol": "(De) New Protocol",
+    "Protocol": "Protocol"
   },
   "feedback": {
     "header": "(De) Feedback",
