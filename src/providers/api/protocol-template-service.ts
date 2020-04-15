@@ -11,6 +11,7 @@ import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model
 import {WorkflowStepService} from './workflow-step-service';
 import {UserService} from '../../services/user-service';
 import {AuthDb} from '../../models/db/auth-db';
+import {WorkflowService} from './workflow-service';
 
 @Injectable()
 export class ProtocolTemplateService extends ApiService {
@@ -29,6 +30,7 @@ export class ProtocolTemplateService extends ApiService {
      * @param downloadService
      * @param appSetting
      * @param workflowStepService
+     * @param workflowService
      * @param userService
      */
     constructor(http: HttpClient,
@@ -39,6 +41,7 @@ export class ProtocolTemplateService extends ApiService {
                 public downloadService: DownloadService,
                 public appSetting: AppSetting,
                 private workflowStepService: WorkflowStepService,
+                private workflowService: WorkflowService,
                 private userService: UserService) {
         super(http, events, appSetting);
     }
@@ -54,31 +57,32 @@ export class ProtocolTemplateService extends ApiService {
         if (!user) {
             return false;
         }
-        const protocol = await this.dbModelApi.findFirst([this.dbModelApi.COL_ID_API, templateId]);
-        if (protocol && protocol[0]) {
-            const workflowStepModel = this.workflowStepService.newModel();
-            const firstWorkflowStepOfTemplate = await workflowStepModel.findFirst(
-                [[this.dbModelApi.COL_ID_API, templateId], ['is_first', 1]]
-            );
-            if (!firstWorkflowStepOfTemplate || !firstWorkflowStepOfTemplate[0]) {
-                return false;
-            }
-            const workflowStep = firstWorkflowStepOfTemplate[0];
-            if (workflowStep.type === 'final') {
-                return false;
-            }
-            if (!workflowStep.user_id && !workflowStep.role) {
+        const protocolTemplate = await this.dbModelApi.findFirst([this.dbModelApi.COL_ID_API, templateId]);
+        if (!protocolTemplate || !protocolTemplate[0]) {
+            return false;
+        }
+        const workflowStepModel = this.workflowStepService.newModel();
+        const firstWorkflowStepOfTemplate = await workflowStepModel.findFirst(
+            [['workflow_id', protocolTemplate[0].workflow_id], ['is_first', 1]]
+        );
+        if (!firstWorkflowStepOfTemplate || !firstWorkflowStepOfTemplate[0]) {
+            return false;
+        }
+        const workflowStep = firstWorkflowStepOfTemplate[0];
+        if (workflowStep.type === 'final') {
+            return false;
+        }
+        if (!workflowStep.user_id && !workflowStep.role) {
+            return true;
+        }
+        if (workflowStep.user_id) {
+            if (workflowStep.user_id === user.userId) {
                 return true;
             }
-            if (workflowStep.user_id) {
-                if (workflowStep.user_id === user.userId) {
-                    return true;
-                }
-            }
-            if (workflowStep.role && user.additionalInfo && user.additionalInfo.roles) {
-                if (user.additionalInfo.roles.includes(workflowStep.role)) {
-                    return true;
-                }
+        }
+        if (workflowStep.role && user.additionalInfo && user.additionalInfo.roles) {
+            if (user.additionalInfo.roles.includes(workflowStep.role)) {
+                return true;
             }
         }
 
