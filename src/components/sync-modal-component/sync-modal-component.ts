@@ -61,7 +61,7 @@ export class SyncModalComponent implements OnInit {
                 private insomnia: Insomnia) {
         this.isNetwork = (this.network.type !== 'none');
         this.initUser().then(() => {
-            this.syncProgressStatus = this.userDb.userSetting.syncStatus;
+            this.syncProgressStatus = this.userService.userDb.userSetting.syncStatus;
         });
     }
 
@@ -114,8 +114,8 @@ export class SyncModalComponent implements OnInit {
     }
 
     getLastSyncDate() {
-        if (this.userDb && this.userDb.userSetting && this.userDb.userSetting.lastSyncedAt) {
-            const date = this.userDb.userSetting.lastSyncedAt;
+        if (this.userService.userDb && this.userService.userDb.userSetting && this.userService.userDb.userSetting.lastSyncedAt) {
+            const date = this.userService.userDb.userSetting.lastSyncedAt;
             return this.datepipe.transform(date, 'yyyy-MM-dd HH:mm:ss');
         }
 
@@ -183,7 +183,7 @@ export class SyncModalComponent implements OnInit {
             this.pushProgressStatus = pushProgressStatus;
         });
         this.events.subscribe('UserDb:update', (userDb) => {
-            this.userDb = userDb;
+            this.userService.userDb = userDb;
         });
         this.events.subscribe('network:offline', (isNetwork) => {
             this.isNetwork = false;

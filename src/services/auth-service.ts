@@ -296,6 +296,7 @@ export class AuthService {
                                 // send a notification to the rest of the app
                                 this.events.publish('user:login', user.user_id);
                                 this.userService.userDb = res;
+                                console.log('after login this.userService.userDb', this.userService.userDb);
                                 resolve(user.user_id);
                                 return true;
                             } else {

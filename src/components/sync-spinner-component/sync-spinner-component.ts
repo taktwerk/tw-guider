@@ -10,6 +10,7 @@ import {debounceTime} from 'rxjs/operators';
 import {UserDb} from '../../models/db/user-db';
 import {DownloadService} from '../../services/download-service';
 import {DbProvider} from '../../providers/db-provider';
+import {UserService} from '../../services/user-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -40,7 +41,8 @@ export class SyncSpinnerComponent implements OnInit {
                 private http: HttpClient,
                 private authService: AuthService,
                 private network: Network,
-                private events: Events
+                private events: Events,
+                private userService: UserService
     ) {
         this.isNetwork = (this.network.type !== 'none');
     }

@@ -56,12 +56,12 @@ export class SynchronizationComponent implements OnInit {
                 private userService: UserService,
                 private appSetting: AppSetting) {
       this.initUser().then(() => {
-          if ([0, 1, 2].includes(this.userDb.userSetting.syncMode)) {
-              this.modeSync = this.userDb.userSetting.syncMode;
+          if ([0, 1, 2].includes(this.userService.userDb.userSetting.syncMode)) {
+              this.modeSync = this.userService.userDb.userSetting.syncMode;
           } else {
               this.modeSync = SyncMode.Manual;
           }
-          this.syncProgressStatus = this.userDb.userSetting.syncStatus;
+          this.syncProgressStatus = this.userService.userDb.userSetting.syncStatus;
       });
     }
 
@@ -94,8 +94,8 @@ export class SynchronizationComponent implements OnInit {
           this.http.showToast('synchronization-component.Now is periodic mode (every 15 seconds)');
       }
       this.initUser().then(() => {
-          this.userDb.userSetting.syncMode = this.modeSync;
-          this.userDb.save();
+          this.userService.userDb.userSetting.syncMode = this.modeSync;
+          this.userService.userDb.save();
       });
       this.syncService.syncMode.next(this.modeSync);
   }
@@ -142,18 +142,18 @@ export class SynchronizationComponent implements OnInit {
 
         await this.apiSync.resetSyncedData();
         this.initUser().then(() => {
-          this.userDb.userSetting.lastSyncedDiff = 0;
-          this.userDb.userSetting.syncStatus = 'success';
-          this.userDb.userSetting.syncLastElementNumber = 0;
-          this.userDb.userSetting.syncAllItemsCount = 0;
-          this.userDb.userSetting.syncPercent = 0;
-          this.userDb.userSetting.lastSyncedAt = null;
-          this.userDb.userSetting.lastSyncProcessId = null;
-          this.userDb.userSetting.appDataVersion = null;
+          this.userService.userDb.userSetting.lastSyncedDiff = 0;
+          this.userService.userDb.userSetting.syncStatus = 'success';
+          this.userService.userDb.userSetting.syncLastElementNumber = 0;
+          this.userService.userDb.userSetting.syncAllItemsCount = 0;
+          this.userService.userDb.userSetting.syncPercent = 0;
+          this.userService.userDb.userSetting.lastSyncedAt = null;
+          this.userService.userDb.userSetting.lastSyncProcessId = null;
+          this.userService.userDb.userSetting.appDataVersion = null;
           this.apiSync.isAvailableForSyncData.next(true);
-          this.userDb.userSetting.isSyncAvailableData = true;
-          this.userDb.save().then(() => {
-              this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
+          this.userService.userDb.userSetting.isSyncAvailableData = true;
+          this.userService.userDb.save().then(() => {
+              this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
               this.apiSync.syncProgressStatus.next('success');
               this.apiSync.isStartSyncBehaviorSubject.next(false);
               this.http.showToast('synchronization-component.The database is cleared.');
@@ -169,9 +169,9 @@ export class SynchronizationComponent implements OnInit {
 
   ngOnInit() {
     this.initUser().then(() => {
-        this.apiSync.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
-        this.apiSync.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);
-        this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
+        this.apiSync.syncedItemsCount.next(this.userService.userDb.userSetting.syncLastElementNumber);
+        this.apiSync.syncAllItemsCount.next(this.userService.userDb.userSetting.syncAllItemsCount);
+        this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
     });
     this.syncService.syncMode.subscribe((result) => {
       if (result === null) {
@@ -204,7 +204,7 @@ export class SynchronizationComponent implements OnInit {
         this.detectChanges();
     });
     this.events.subscribe('UserDb:update', (userDb) => {
-        this.userDb = userDb;
+        this.userService.userDb = userDb;
     });
     this.apiSync.isStartPushBehaviorSubject.subscribe(isPush => {
       this.isStartPush = isPush;

@@ -63,10 +63,22 @@ export class ProtocolService extends ApiService {
                     this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
                 );
             }
-            const joinCondition = 'JOIN ' + this.dbModelApi.secure('protocol_template') +
+            let joinCondition = 'JOIN ' + this.dbModelApi.secure('protocol_template') +
                 ' ON ' + this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('id') +
                 '=' +
-                this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('protocol_template_id');
+                this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('protocol_template_id') + ' ';
+
+            joinCondition += 'JOIN ' + this.dbModelApi.secure('workflow') +
+                ' ON ' + this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('workflow_id') +
+                '=' +
+                this.dbModelApi.secure('workflow') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_ID_API) + ' ';
+            joinCondition += 'JOIN ' + this.dbModelApi.secure('workflow_step') +
+                ' ON ' + this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('workflow_step_id') +
+                '=' +
+                this.dbModelApi.secure('workflow_step') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_ID_API) +
+                ' AND ' + this.dbModelApi.secure('workflow_step') + '.' + this.dbModelApi.secure('workflow_id') +
+                '=' +
+                this.dbModelApi.secure('workflow') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_ID_API) + ' ';
 
             const selectFrom = 'SELECT ' + this.dbModelApi.secure('protocol') + '.*' + ' from ' + this.dbModelApi.secure('protocol');
             const orderBy = 'protocol.local_created_at DESC, protocol.created_at DESC';
@@ -126,11 +138,18 @@ export class ProtocolService extends ApiService {
         if (workflowStep.type === 'final') {
             return false;
         }
+        if (!workflowStep.user_id && !workflowStep.role) {
+            return true;
+        }
         if (workflowStep.user_id) {
-            return workflowStep.user_id === user.userId;
+            if (workflowStep.user_id === user.userId) {
+                return true;
+            }
         }
         if (workflowStep.role && user.additionalInfo && user.additionalInfo.roles) {
-            return user.additionalInfo.roles.includes(workflowStep.role);
+            if (user.additionalInfo.roles.includes(workflowStep.role)) {
+                return true;
+            }
         }
 
         return false;

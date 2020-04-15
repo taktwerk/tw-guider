@@ -261,7 +261,6 @@ export abstract class DbBaseModel {
 
     public searchAllAndGetRowsResult(where?: any, orderBy?: string, limit?: number, join?: string, selectFrom?: string, groupBy?: string): Promise<any> {
         const query = this.searchAllQuery(where, orderBy, limit, join, selectFrom, groupBy);
-        console.log('searchAllAndGetRowsResult', query);
         const entries: any[] = [];
 
         return new Promise((resolve) => {

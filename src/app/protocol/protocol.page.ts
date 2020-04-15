@@ -9,6 +9,8 @@ import {ProtocolModel} from '../../models/db/api/protocol-model';
 import {ProtocolService} from '../../providers/api/protocol-service';
 import {WorkflowStepService} from '../../providers/api/workflow-step-service';
 import {ProtocolDefaultService} from '../../providers/api/protocol-default-service';
+import {WorkflowService} from '../../providers/api/workflow-service';
+import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
 
 @Component({
   selector: 'protocol-page',
@@ -24,6 +26,7 @@ export class ProtocolPage implements OnInit {
     private reference_model_alias: any;
     private reference_model: string;
     private clientId: number;
+    private userCanCreateProtocol: boolean = false;
 
     constructor(private protocolService: ProtocolService,
                 private modalController: ModalController,
@@ -36,8 +39,10 @@ export class ProtocolPage implements OnInit {
                 private navCtrl: NavController,
                 private router: Router,
                 private videoService: VideoService,
+                private workflowService: WorkflowService,
                 private workflowStepService: WorkflowStepService,
                 private protocolDefaultService: ProtocolDefaultService,
+                private protocolTemplateService: ProtocolTemplateService,
                 private ngZone: NgZone) {
     }
 
@@ -67,6 +72,10 @@ export class ProtocolPage implements OnInit {
         protocolFormService.openCreatePage(this.templateId, this.clientId, this.reference_model, this.reference_id);
     }
 
+    async setUserCanCreateProtocol() {
+        this.userCanCreateProtocol = await this.protocolTemplateService.canCreateProtocol(this.templateId);
+    }
+
     dismiss() {
         this.ngZone.run(() => {
             this.navCtrl.navigateRoot('/guides');
@@ -77,10 +86,6 @@ export class ProtocolPage implements OnInit {
         if (!this.changeDetectorRef['destroyed']) {
             this.changeDetectorRef.detectChanges();
         }
-    }
-
-    async canEditProtocol(protocol: ProtocolModel) {
-        return await this.protocolService.canEditProtocol(protocol);
     }
 
     ngOnInit() {
@@ -97,7 +102,27 @@ export class ProtocolPage implements OnInit {
             this.backDefaultHref = protocolData.backUrl;
             this.setModels();
         });
-
+        this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':create', (model) => {
+            this.workflowStepService.unsetWorkflowStepsListCache();
+            this.protocolService.unsetProtocolDataList();
+            this.setUserCanCreateProtocol();
+            this.setModels();
+            this.detectChanges();
+        });
+        this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
+            this.workflowStepService.unsetWorkflowStepsListCache();
+            this.protocolService.unsetProtocolDataList();
+            this.setUserCanCreateProtocol();
+            this.setModels();
+            this.detectChanges();
+        });
+        this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', (model) => {
+            this.workflowStepService.unsetWorkflowStepsListCache();
+            this.protocolService.unsetProtocolDataList();
+            this.setUserCanCreateProtocol();
+            this.setModels();
+            this.detectChanges();
+        });
         this.events.subscribe(this.protocolService.dbModelApi.TAG + ':create', (model) => {
             this.workflowStepService.unsetWorkflowStepsListCache();
             this.protocolService.unsetProtocolDataList();
@@ -134,5 +159,45 @@ export class ProtocolPage implements OnInit {
             this.setModels();
             this.detectChanges();
         });
+        this.events.subscribe(this.workflowService.dbModelApi.TAG + ':create', (model) => {
+            this.workflowStepService.unsetWorkflowStepsListCache();
+            this.protocolService.unsetProtocolDataList();
+            this.setUserCanCreateProtocol();
+            this.setModels();
+            this.detectChanges();
+        });
+        this.events.subscribe(this.workflowService.dbModelApi.TAG + ':update', (model) => {
+            this.workflowStepService.unsetWorkflowStepsListCache();
+            this.protocolService.unsetProtocolDataList();
+            this.setUserCanCreateProtocol();
+            this.setModels();
+            this.detectChanges();
+        });
+        this.events.subscribe(this.workflowService.dbModelApi.TAG + ':delete', (model) => {
+            this.workflowStepService.unsetWorkflowStepsListCache();
+            this.protocolService.unsetProtocolDataList();
+            this.setUserCanCreateProtocol();
+            this.setModels();
+            this.detectChanges();
+        });
+        this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':create', (model) => {
+            this.workflowStepService.unsetWorkflowStepsListCache();
+            this.protocolService.unsetProtocolDataList();
+            this.setModels();
+            this.detectChanges();
+        });
+        this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':update', (model) => {
+            this.workflowStepService.unsetWorkflowStepsListCache();
+            this.protocolService.unsetProtocolDataList();
+            this.setModels();
+            this.detectChanges();
+        });
+        this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':delete', (model) => {
+            this.workflowStepService.unsetWorkflowStepsListCache();
+            this.protocolService.unsetProtocolDataList();
+            this.setModels();
+            this.detectChanges();
+        });
+        this.setUserCanCreateProtocol();
     }
 }

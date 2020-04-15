@@ -56,7 +56,8 @@
     </ion-list>
     <div style="height: 70px;">
     </div>
-    <ion-fab vertical="bottom"
+    <ion-fab *ngIf="userCanCreateProtocol"
+             vertical="bottom"
              horizontal="end"
              slot="fixed"
              (click)="createProtocol()"

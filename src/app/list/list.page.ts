@@ -100,6 +100,10 @@ export class ListPage implements OnInit {
   }
 
   ngOnInit() {
+    this.events.subscribe('user:login', () => {
+      this.findAllGuideCategories();
+      this.detectChanges();
+    });
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
       this.findAllGuideCategories();
     });

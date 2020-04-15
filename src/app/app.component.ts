@@ -73,22 +73,23 @@ export class AppComponent implements OnInit {
         if (result) {
           try {
             await this.initUserDB();
-            if (!this.userDb) {
+            if (!this.userService.userDb) {
               return;
             }
-            if (this.userDb.userSetting.language) {
-              currentLanguage = this.userDb.userSetting.language;
+            if (this.userService.userDb.userSetting.language) {
+              currentLanguage = this.userService.userDb.userSetting.language;
             }
-            this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
-            if (this.userDb.userSetting.syncLastElementNumber > 0 &&
-                (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
+            this.syncService.syncMode.next(this.userService.userDb.userSetting.syncMode);
+            if (this.userService.userDb.userSetting.syncLastElementNumber > 0 &&
+                (this.userService.userDb.userSetting.syncStatus === 'resume' ||
+                 this.userService.userDb.userSetting.syncStatus === 'progress')
             ) {
-              this.userDb.userSetting.syncStatus = 'pause';
-              this.userDb.save().then(() => {
+              this.userService.userDb.userSetting.syncStatus = 'pause';
+              this.userService.userDb.save().then(() => {
                 this.apiSync.sendSyncProgress();
               });
             }
-            this.apiSync.syncProgressStatus.next(this.userDb.userSetting.syncStatus);
+            this.apiSync.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
           } catch (e) {
           }
         }
@@ -109,7 +110,7 @@ export class AppComponent implements OnInit {
 
   protected initUserDB() {
     return this.userService.getUser().then(result => {
-      this.userDb = result;
+      this.userService.userDb = result;
     });
   }
 
@@ -203,27 +204,27 @@ export class AppComponent implements OnInit {
 
   protected baseProjectSetup() {
     this.initUserDB().then(() => {
-      if (!this.userDb) {
+      if (!this.userService.userDb) {
         return;
       }
-      if (this.userDb.userSetting.language &&
-          this.translateConfigService.isLanguageAvailable(this.userDb.userSetting.language)
+      if (this.userService.userDb.userSetting.language &&
+          this.translateConfigService.isLanguageAvailable(this.userService.userDb.userSetting.language)
       ) {
-        this.translateConfigService.setLanguage(this.userDb.userSetting.language);
+        this.translateConfigService.setLanguage(this.userService.userDb.userSetting.language);
       }
-      if (this.userDb.userSetting.syncLastElementNumber > 0 &&
-          (this.userDb.userSetting.syncStatus === 'resume' || this.userDb.userSetting.syncStatus === 'progress')
+      if (this.userService.userDb.userSetting.syncLastElementNumber > 0 &&
+          (this.userService.userDb.userSetting.syncStatus === 'resume' || this.userService.userDb.userSetting.syncStatus === 'progress')
       ) {
-        this.userDb.userSetting.syncStatus = 'pause';
-        this.userDb.save();
+        this.userService.userDb.userSetting.syncStatus = 'pause';
+        this.userService.userDb.save();
       }
-      this.syncService.syncMode.next(this.userDb.userSetting.syncMode);
-      this.apiSync.syncProgressStatus.next(this.userDb.userSetting.syncStatus);
-      this.apiSync.syncedItemsCount.next(this.userDb.userSetting.syncLastElementNumber);
-      this.apiSync.syncAllItemsCount.next(this.userDb.userSetting.syncAllItemsCount);
-      this.apiSync.syncedItemsPercent.next(this.userDb.userSetting.syncPercent);
-      this.apiSync.isAvailableForSyncData.next(this.userDb.userSetting.isSyncAvailableData);
-      this.apiSync.isAvailableForPushData.next(this.userDb.userSetting.isPushAvailableData);
+      this.syncService.syncMode.next(this.userService.userDb.userSetting.syncMode);
+      this.apiSync.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
+      this.apiSync.syncedItemsCount.next(this.userService.userDb.userSetting.syncLastElementNumber);
+      this.apiSync.syncAllItemsCount.next(this.userService.userDb.userSetting.syncAllItemsCount);
+      this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
+      this.apiSync.isAvailableForSyncData.next(this.userService.userDb.userSetting.isSyncAvailableData);
+      this.apiSync.isAvailableForPushData.next(this.userService.userDb.userSetting.isPushAvailableData);
       this.apiSync.checkAvailableChanges().then(() => {
         this.checkAvailableSyncChanges = Observable.interval(30000)
             .subscribe(() => {
@@ -235,7 +236,7 @@ export class AppComponent implements OnInit {
   }
 
   protected logoutAction() {
-    this.userDb = null;
+    this.userService.userDb = null;
     this.translateConfigService.setLanguage();
     if (this.periodicSync) {
       this.periodicSync.unsubscribe();
