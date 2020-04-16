@@ -44,10 +44,10 @@ export class ProtocolService extends ApiService {
 
     getAllProtocols(templateId: number, referenceModel?, referenceId?): Promise <any[]> {
         return new Promise(async (resolve) => {
-            if (this.data.length) {
-                resolve(this.data);
-                return;
-            }
+            // if (this.data.length) {
+            //     resolve(this.data);
+            //     return;
+            // }
             const user = await this.authService.getLastUser();
             if (!user) {
                 resolve([]);
@@ -61,6 +61,16 @@ export class ProtocolService extends ApiService {
             if (!user.isAuthority && user.client_id) {
                 protocolSearchCondition.push(
                     this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
+                );
+            }
+            if (referenceModel && referenceId) {
+                // protocolSearchCondition.push(['protocol.reference_model', referenceModel]);
+                // protocolSearchCondition.push(['protocol.reference_id', referenceId]);
+                protocolSearchCondition.push(
+                    this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('reference_model') + '= \'' + referenceModel + '\''
+                );
+                protocolSearchCondition.push(
+                    this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('reference_id') + '=' + referenceId
                 );
             }
             let joinCondition = 'JOIN ' + this.dbModelApi.secure('protocol_template') +
@@ -105,7 +115,7 @@ export class ProtocolService extends ApiService {
                         entries.push(obj);
                     }
                 }
-                this.data = entries;
+                // this.data = entries;
                 resolve(entries);
             }).catch((err) => {
                 this.data = entries;

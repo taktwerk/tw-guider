@@ -97,7 +97,7 @@ export class ProtocolDefaultService extends ApiService {
             protocol = saveInformation.protocol;
         }
         const protocolDefault = this.newModel();
-        this.downloadService.copy(saveInformation.protocol_file, protocolDefault.TABLE_NAME).then((savedFilePath) => {
+        this.downloadService.copy(saveInformation.protocol_file, protocolDefault.TABLE_NAME).then(async (savedFilePath) => {
             console.log('copy filesssss');
             const modelFileMap = protocolDefault.downloadMapping[saveInformation.fileMapIndex];
             protocolDefault[modelFileMap.url] = '';
@@ -107,15 +107,14 @@ export class ProtocolDefaultService extends ApiService {
                 protocolDefault.protocol_id = protocol[protocol.COL_ID_API];
             }
             protocolDefault.local_protocol_id = protocol[protocol.COL_ID];
-            protocolDefault.save().then(async res => {
-                if (res) {
-                    if (!protocolDefault[protocol.COL_ID_API]) {
-                        protocol.local_protocol_form_number = protocolDefault[protocol.COL_ID];
-                    }
-                    await protocol.save();
-                    this.events.publish('setIsPushAvailableData');
+            const isSaved = await protocolDefault.save();
+            if (isSaved) {
+                if (!protocolDefault[protocol.COL_ID_API]) {
+                    protocol.local_protocol_form_number = protocolDefault[protocol.COL_ID];
                 }
-            });
+                await protocol.save();
+                this.events.publish('setIsPushAvailableData');
+            }
         });
     }
 

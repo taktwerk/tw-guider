@@ -219,8 +219,10 @@ export class FeedbackAddEditPage implements OnInit {
       this.reference_model_alias = feedbackData.referenceModelAlias;
       this.reference_model = this.reference_model_alias;
       this.feedbackId = +feedbackData.feedbackId;
+      console.log('this.feedbackId', this.feedbackId);
       if (this.feedbackId) {
         const result = await this.feedbackService.dbModelApi.findFirst([this.model.COL_ID, this.feedbackId]);
+        console.log('feedbacl rtesult', result);
         this.model = result[0];
       }
       console.log('this.model', this.model);

@@ -82,7 +82,7 @@
                 </ion-label>
                 <ion-button slot="end" fill="clear"
                             *ngIf="feedback.isOpenStatus()"
-                            (click)="openAddEditPage(feedback.id)"
+                            (click)="openAddEditPage(feedback[feedback.COL_ID])"
                 >
                     <ion-icon slot="icon-only" name="create"></ion-icon>
                 </ion-button>

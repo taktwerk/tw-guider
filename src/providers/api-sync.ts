@@ -251,6 +251,7 @@ export class ApiSync {
     }
 
     protected async prepareDataForSavingSyncData(dataFromApi) {
+        console.log('prepareDataForSavingSyncDataprepareDataForSavingSyncData', dataFromApi);
         const data = dataFromApi.models;
         let countOfSyncedData = 0;
         for (const key of Object.keys(data)) {
@@ -697,9 +698,11 @@ export class ApiSync {
                     Object.keys(data).forEach((key) => {
                         const recordResponse = data[key];
                         if (recordResponse.errors) {
+                            console.log('recordResponse.errors', recordResponse.errors);
                             isError = true;
                         }
                     });
+                    console.log('is errorrr', isError);
                     if (isError) {
                         this.isStartPushBehaviorSubject.next(false);
                         this.isBusyPush = false;

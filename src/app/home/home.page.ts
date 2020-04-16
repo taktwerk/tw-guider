@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, NgZone} from '@angular/core';
 import {AlertController, Events, LoadingController, NavController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {QRScanner, QRScannerStatus} from '@ionic-native/qr-scanner/ngx';
@@ -7,7 +7,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import {AppConfigurationModeEnum, AppSetting} from '../../services/app-setting';
 import {UserService} from '../../services/user-service';
 import {environment} from '../../environments/environment';
-import {TranslateConfigService} from '../../services/translate-config.service';
+import { Subscription } from 'rxjs/Subscription';
 
 /**
  * Generated class for the TodoPage page.
@@ -22,6 +22,7 @@ import {TranslateConfigService} from '../../services/translate-config.service';
 })
 export class HomePage {
   public isScanning: boolean;
+  private scanSub: Subscription;
 
   constructor(
       private loadingCtrl: LoadingController,
@@ -37,6 +38,8 @@ export class HomePage {
       private ngZone: NgZone,
       private events: Events
   ) {}
+
+  b: any;
 
   public scanQrcode() {
     if (this.isScanning) {
@@ -56,11 +59,13 @@ export class HomePage {
             this.detectChanges();
           });
           // start scanning
-          const scanSub = this.qrScanner.scan().subscribe(async (text: string) => {
+          this.scanSub = this.qrScanner.scan().subscribe(async (text: string) => {
             const config = JSON.parse(text);
             const scanErrors = this.appSetting.validateData(config);
             if (scanErrors.length) {
               this.http.showToast('validation.QR-code has wrong information', '', 'danger');
+              this.closeScanner();
+              return;
             } else {
               const user = await this.userService.getUser();
               if (user) {
@@ -92,8 +97,6 @@ export class HomePage {
                 this.http.showToast('qr.Application was successfully configured');
               });
               this.closeScanner();
-              scanSub.unsubscribe();
-              this.detectChanges();
             }
           });
         })
@@ -101,9 +104,10 @@ export class HomePage {
             this.presentAlert(
                 'Config Error',
                 null,
-                'There was an error using the camera. Please try again.<br><br>Error: ' + err,
+                'There was an error using the camera. Please try again.<br><br>',
                 ['OK']
             );
+            this.closeScanner();
         });
   }
 
@@ -113,6 +117,8 @@ export class HomePage {
       this.qrScanner.hide().then(res => {
         this.qrScanner.destroy();
       });
+      this.scanSub.unsubscribe();
+      this.detectChanges();
     }
   }
 

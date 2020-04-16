@@ -177,6 +177,7 @@ export abstract class ApiService {
                     resolve(res);
                 });
             } else {
+                console.log('remove data must be');
                 model[model.COL_DELETED_AT] = model[model.COL_LOCAL_DELETED_AT] = new Date();
                 model.save().then(res => {
                     model.deleteAllFiles();

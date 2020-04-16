@@ -259,7 +259,14 @@ export abstract class DbBaseModel {
      * @returns {Promise<any[]>}
      */
 
-    public searchAllAndGetRowsResult(where?: any, orderBy?: string, limit?: number, join?: string, selectFrom?: string, groupBy?: string): Promise<any> {
+    public searchAllAndGetRowsResult(
+        where?: any,
+        orderBy?: string,
+        limit?: number,
+        join?: string,
+        selectFrom?: string,
+        groupBy?: string
+    ): Promise<any> {
         const query = this.searchAllQuery(where, orderBy, limit, join, selectFrom, groupBy);
         const entries: any[] = [];
 
@@ -268,6 +275,7 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
+                    console.log('searchAllAndGetRowsResult', query);
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             resolve(res);

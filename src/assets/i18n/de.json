@@ -57,7 +57,7 @@
     "Assets": "(De) Assets"
   },
   "profile": {
-    "header": "Profil des {{ name }}",
+    "header": "Profil",
     "Profile": "Profil",
     "ID": "ID",
     "Name": "Name"

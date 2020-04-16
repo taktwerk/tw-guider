@@ -58,7 +58,7 @@
     "Assets": "Assets"
   },
   "profile": {
-    "header": "Profile of {{ name }}",
+    "header": "Profile",
     "Profile": "Profile",
     "ID": "ID",
     "Name": "Name"
