@@ -6,6 +6,8 @@
   "Wrong password!": "(De) Wrong password!",
   "save": "Save",
   "delete": "Delete",
+  "title": "(De) Title",
+  "All": "(De) All",
   "start": {
     "header":"(De) Start",
     "title": "(De) Start page of the Guider"
@@ -50,7 +52,9 @@
   },
   "protocol": {
     "protocols": "(De) Protocols",
-    "Protocol": "(De) Protocol"
+    "Protocol": "(De) Protocol",
+    "Workflow Step": "(De) Workflow Step",
+    "Assignee": "(De) Assignee"
   },
   "guide": {
     "header": "(De) Guide:",

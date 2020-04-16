@@ -229,6 +229,7 @@ export abstract class ApiService {
                         if (userForSaving) {
                             userForSaving.userSetting.appDataVersion++;
                             await userForSaving.save();
+                            console.log('appDataVersion++ after saving file');
                         }
                     }
                 } catch (err) {

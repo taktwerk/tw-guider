@@ -7,6 +7,7 @@
   "save": "Save",
   "delete": "Delete",
   "title": "Title",
+  "All": "All",
   "start": {
     "header":"Start",
     "title": "Start page of the Guider"
@@ -51,7 +52,9 @@
   },
   "protocol": {
     "protocols": "Protocols",
-    "Protocol": "Protocol"
+    "Protocol": "Protocol",
+    "Workflow Step": "Workflow Step",
+    "Assignee": "Assignee"
   },
   "guide": {
     "header": "Guide:",

@@ -207,9 +207,7 @@ export class FeedbackAddEditPage implements OnInit {
       return `Feedback:${this.model[this.model.COL_ID]}`;
     }
 
-    const lastRecordLocalId = await this.model.getLastRecordLocalId();
-
-    return `Feedback:${lastRecordLocalId}`;
+    return 'Feedback';
   }
 
   ngOnInit() {

@@ -26,6 +26,7 @@ export class WorkflowStepModel extends DbApiModel {
     public type: string;
     public role: string;
     public user_id: number;
+    public assignee: string;
     public is_first: boolean;
 
     //db columns
@@ -35,6 +36,7 @@ export class WorkflowStepModel extends DbApiModel {
     static COL_TYPE = 'type';
     static COL_ROLE = 'role';
     static COL_USER_ID = 'user_id';
+    static COL_ASSIGNEE = 'assignee';
     static COL_IS_FRIST = 'is_first';
 
     /** @inheritDoc */
@@ -48,6 +50,7 @@ export class WorkflowStepModel extends DbApiModel {
         [WorkflowStepModel.COL_TYPE, 'VARCHAR(30)', DbBaseModel.TYPE_STRING],
         [WorkflowStepModel.COL_ROLE, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
         [WorkflowStepModel.COL_USER_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
+        [WorkflowStepModel.COL_ASSIGNEE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [WorkflowStepModel.COL_IS_FRIST, 'TINYINT(1) DEFAULT 0', DbBaseModel.TYPE_BOOLEAN],
     ];
 

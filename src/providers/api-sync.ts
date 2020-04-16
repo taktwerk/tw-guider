@@ -650,6 +650,7 @@ export class ApiSync {
                     const isPushedData = await this.pushDataToServer(url, model, service);
                     if (!isPushedData) {
                         this.isStartPushBehaviorSubject.next(false);
+                        console.log('is not pushed data global')
                         this.pushProgressStatus.next('failed');
                         this.isBusyPush = false;
 
@@ -713,12 +714,15 @@ export class ApiSync {
                     // get model by local id and update received primary key from api
                     try {
                         const dbModel = await service.dbModelApi.findById(record._id, true);
+                        console.log('is exist models for push', dbModel);
+                        console.log('response record for push', record);
                         if (!dbModel) {
                             resolve(false);
                             return;
                         }
                         if (dbModel.deleted_at || dbModel.local_deleted_at) {
                             dbModel.remove().then(async () => {
+                                console.log('appDataVersion++ in remove');
                                 this.userService.userDb.userSetting.appDataVersion++;
                                 await this.userService.userDb.save();
                             });
@@ -740,6 +744,7 @@ export class ApiSync {
                             false
                         );
                         console.log('after save in push');
+                        console.log('appDataVersion++ after push', dbModelApi);
                         this.userService.userDb.userSetting.appDataVersion++;
                         await this.userService.userDb.save();
                         console.log('push files');
@@ -758,24 +763,29 @@ export class ApiSync {
                         for (let i = 0; i < additionalModelsForPushDataToServer.length; i++) {
                             const additionalModel = additionalModelsForPushDataToServer[i];
                             const urlForAddtinoalPush = this.appSetting.getApiUrl() + additionalModel.loadUrl + '/batch';
-                            const isPushedData = await this.pushDataToServer(
-                                urlForAddtinoalPush,
-                                additionalModelsForPushDataToServer[i],
-                                service
-                            );
-                            if (!isPushedData) {
-                                this.isStartPushBehaviorSubject.next(false);
-                                this.pushProgressStatus.next('failed');
-                                this.isBusyPush = false;
+                            const serviceForAdditionalModel = this.apiPushServices[additionalModel.TABLE_NAME];
+                            if (serviceForAdditionalModel) {
+                                const isPushedData = await this.pushDataToServer(
+                                    urlForAddtinoalPush,
+                                    additionalModelsForPushDataToServer[i],
+                                    serviceForAdditionalModel
+                                );
+                                if (!isPushedData) {
+                                    this.isStartPushBehaviorSubject.next(false);
+                                    console.log('is not pushed data');
+                                    this.pushProgressStatus.next('failed');
+                                    this.isBusyPush = false;
 
-                                resolve(false);
-                                return;
+                                    resolve(false);
+                                    return;
+                                }
                             }
                         }
 
                         resolve(true);
                     } catch (e) {
                         this.isStartPushBehaviorSubject.next(false);
+                        console.log('is not pushed data in catch', e);
                         this.pushProgressStatus.next('failed');
                         this.isBusyPush = false;
                         resolve(false);

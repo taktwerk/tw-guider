@@ -8,6 +8,7 @@ import {SyncSpinnerComponentModule} from '../../components/sync-spinner-componen
 import {FormsModule} from '@angular/forms';
 import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
 import {TranslateModule} from '@ngx-translate/core';
+import {MainPipe} from '../../pipes/main-pipe.module';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {TranslateModule} from '@ngx-translate/core';
         SynchronizationComponentModule,
         SyncSpinnerComponentModule,
         LanguageSelectorComponentModule,
-        TranslateModule
+        TranslateModule,
+        MainPipe
     ]
 })
 export class ProfilePageModule {}
