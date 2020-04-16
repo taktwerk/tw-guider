@@ -171,7 +171,8 @@ export abstract class ApiService {
     public remove(model: DbApiModel): Promise<any> {
         return new Promise(resolve => {
             // No sync with the API yet? Only local? Delete it
-            if (model[model.COL_ID_API] == null) {
+            console.log('modelmodelmodelmodel', model);
+            if (model.idApi == null) {
                 model.remove().then(res => {
                     this.removeFromList(model);
                     resolve(res);
