@@ -104,7 +104,7 @@
       <ion-icon slot="start" name="save"></ion-icon>
       {{ 'save' | translate:params }}
     </ion-button>
-    <ion-button *ngIf="model.id"
+    <ion-button *ngIf="model[model.COL_ID]"
                 color="danger"
                 size="default"
                 fill="outline"
