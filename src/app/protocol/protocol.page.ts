@@ -48,6 +48,7 @@ export class ProtocolPage implements OnInit {
 
     public async setModels() {
         this.protocolList = await this.protocolService.getAllProtocols(this.templateId, this.reference_model, this.reference_id);
+        console.log('set models of protocol', this.protocolList);
     }
 
     public async editProtocol(protocol ?: ProtocolModel) {

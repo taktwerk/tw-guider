@@ -49,6 +49,10 @@ const routes: Routes = [
     loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
   },
   {
+    path: 'protocol',
+    loadChildren: () => import('./protocol/protocol.page.module').then(m => m.ProtocolPageModule)
+  },
+  {
     path: 'guider_protocol_template/:templateId',
     loadChildren: () => import('./protocol/protocol.page.module').then(m => m.ProtocolPageModule)
   },

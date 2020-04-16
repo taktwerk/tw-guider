@@ -44,20 +44,20 @@ export class ProtocolService extends ApiService {
 
     getAllProtocols(templateId: number, referenceModel?, referenceId?): Promise <any[]> {
         return new Promise(async (resolve) => {
-            // if (this.data.length) {
-            //     resolve(this.data);
-            //     return;
-            // }
             const user = await this.authService.getLastUser();
             if (!user) {
                 resolve([]);
                 return;
             }
             const protocolSearchCondition = [
-                this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('id') + '=' + templateId,
                 'protocol_template.deleted_at IS NULL',
                 'protocol_template.local_deleted_at IS NULL'
             ];
+            if (templateId) {
+                protocolSearchCondition.push(
+                    this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('id') + '=' + templateId
+                );
+            }
             if (!user.isAuthority && user.client_id) {
                 protocolSearchCondition.push(
                     this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
@@ -115,7 +115,6 @@ export class ProtocolService extends ApiService {
                         entries.push(obj);
                     }
                 }
-                // this.data = entries;
                 resolve(entries);
             }).catch((err) => {
                 this.data = entries;

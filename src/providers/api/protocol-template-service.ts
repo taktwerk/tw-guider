@@ -53,6 +53,9 @@ export class ProtocolTemplateService extends ApiService {
     }
 
     async canCreateProtocol(templateId): Promise<boolean> {
+        if (!templateId) {
+            return false;
+        }
         const user = await this.getCurrentUser();
         if (!user) {
             return false;
