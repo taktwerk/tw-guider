@@ -62,7 +62,12 @@
     "header": "Profile",
     "Profile": "Profile",
     "ID": "ID",
-    "Name": "Name"
+    "Name": "Name",
+    "Full name": "Full name",
+    "Email": "Email",
+    "Last Login At": "Last Login At",
+    "Roles": "Roles",
+    "Client name": "Client name"
   },
   "synchronization-component": {
     "Sync Modes": "Sync Modes",

@@ -61,7 +61,12 @@
     "header": "Profil",
     "Profile": "Profil",
     "ID": "ID",
-    "Name": "Name"
+    "Name": "Name",
+    "Full name": "(De) Full name",
+    "Email": "Email",
+    "Last Login At": "(De) Last Login At",
+    "Roles": "(De) Roles",
+    "Client name": "(De) Client name"
   },
   "synchronization-component": {
     "Sync Modes": "Synchronisierungsmodi",
