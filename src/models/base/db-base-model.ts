@@ -416,7 +416,7 @@ export abstract class DbBaseModel {
     public async getLastRecordLocalId() {
         const lastRecord = await this.find('_id DESC');
 
-        return lastRecord ? lastRecord.id + 1 : 1;
+        return lastRecord ? lastRecord[lastRecord.COL_ID] + 1 : 1;
     }
 
     /**

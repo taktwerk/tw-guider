@@ -83,7 +83,7 @@ export class ListPage implements OnInit {
   }
 
   trackByFn(item, index) {
-    return item.id;
+    return item[item.COL_ID];
   }
 
   openProtocol(guide: GuiderModel) {

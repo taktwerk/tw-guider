@@ -87,7 +87,7 @@ export class FeedbackPage implements OnInit {
     }
 
     trackByFn(index, item) {
-        return item.id;
+        return item[item.COL_ID];
     }
 
     openAddEditPage(feedbackId?: number) {

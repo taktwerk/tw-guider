@@ -194,7 +194,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async getDefaultTitle() {
-    if (this.model.id && this.model.reference_model && this.model.reference_id) {
+    if (this.model[this.model.COL_ID] && this.model.reference_model && this.model.reference_id) {
       return `${this.model.reference_model}:${this.model.reference_id}`;
     }
     if (this.model.idApi) {
@@ -203,8 +203,8 @@ export class FeedbackAddEditPage implements OnInit {
     if (this.reference_model_alias && this.reference_id) {
       return `${this.reference_model_alias}:${this.reference_id}`;
     }
-    if (this.model.id) {
-      return `Feedback:${this.model.id}`;
+    if (this.model[this.model.COL_ID]) {
+      return `Feedback:${this.model[this.model.COL_ID]}`;
     }
 
     const lastRecordLocalId = await this.model.getLastRecordLocalId();

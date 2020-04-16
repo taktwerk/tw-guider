@@ -469,7 +469,7 @@ export abstract class DbApiModel extends DbBaseModel {
                 const attachedFileForDelete = this[modelFileMap.name] ?
                     this.downloadService.getNativeFilePath(this[modelFileMap.name], this.TABLE_NAME) :
                     '';
-                if (this.id && !this.downloadMapping[columnNameIndex].originalFile && attachedFileForDelete) {
+                if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].originalFile && attachedFileForDelete) {
                     this.downloadMapping[columnNameIndex].originalFile = attachedFileForDelete;
                 }
                 if (!this.downloadMapping[columnNameIndex].attachedFilesForDelete) {
@@ -485,7 +485,7 @@ export abstract class DbApiModel extends DbBaseModel {
 
         /// If exist thumbnail for file
         if (modelFileMap.thumbnail) {
-            if (this.id && !this.downloadMapping[columnNameIndex].thumbnail.originalFile) {
+            if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile) {
                 this.downloadMapping[columnNameIndex].thumbnail.originalFile = this[modelFileMap.thumbnail.name];
             }
             if (willDeleteFile) {
@@ -493,7 +493,7 @@ export abstract class DbApiModel extends DbBaseModel {
                     const thumbnailAttachedFileForDelete = this[modelFileMap.thumbnail.name] ?
                         this.downloadService.getNativeFilePath(this[modelFileMap.thumbnail.name], this.TABLE_NAME) :
                         '';
-                    if (this.id && !this.downloadMapping[columnNameIndex].thumbnail.originalFile && thumbnailAttachedFileForDelete) {
+                    if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile && thumbnailAttachedFileForDelete) {
                         this.downloadMapping[columnNameIndex].thumbnail.originalFile = thumbnailAttachedFileForDelete;
                     }
                     if (!this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete) {
