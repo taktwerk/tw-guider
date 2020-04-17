@@ -138,9 +138,9 @@ export class ProtocolDefaultService extends ApiService {
     }
 
     public async openEditPage(protocolDefault, protocol: ProtocolModel) {
-        console.log('protocolDefault[ProtocolDefaultModel.COL_PROTOCOL_FILE]', protocolDefault[ProtocolDefaultModel.COL_PROTOCOL_FILE]);
+        console.log('protocolDefault[ProtocolDefaultModel.COL_PROTOCOL_FILE]', protocolDefault.local_protocol_file);
         const protocolTemplate = await this.getProtocolTemplate(protocol.protocol_template_id);
-        if (!protocolDefault[ProtocolDefaultModel.COL_PROTOCOL_FILE]) {
+        if (!protocolDefault.local_protocol_file) {
             return;
         }
         this.saveInformation = {
@@ -152,7 +152,7 @@ export class ProtocolDefaultService extends ApiService {
             referenceId: protocol.reference_id,
             fileMapIndex: 0
         };
-        const editFilePath = await this.getEditFilePath(protocolDefault[ProtocolDefaultModel.COL_LOCAL_PROTOCOL_FILE]);
+        const editFilePath = await this.getEditFilePath(protocolDefault.local_protocol_file);
         if (!editFilePath) {
             return false;
         }

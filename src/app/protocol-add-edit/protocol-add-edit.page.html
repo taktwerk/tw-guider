@@ -21,13 +21,21 @@
 <ion-content>
   <form>
     <ion-list>
-      <ion-item>
-        <protocol-default-component [protocol]="model"
-                                    [protocol_form]="protocol_form"
-                                    [isInsert]="!!!model[model.COL_ID]"
-        >
-        </protocol-default-component>
+      <ion-item *ngIf="model.name">
+        <ion-label>
+          <span>
+              Name
+          </span>
+          </ion-label>
+          <span class="ion-align-items-end">
+              {{ model.name }}
+          </span>
       </ion-item>
+      <protocol-default-component [protocol]="model"
+                                  [protocol_form]="protocol_form"
+                                  [isInsert]="!!!model[model.COL_ID]"
+      >
+      </protocol-default-component>
     </ion-list>
     <span *ngIf="!model[model.COL_ID] || (model.workflowStep && model.workflowStep.type !== 'final')">
       <ion-button slot="start" (click)="save()">

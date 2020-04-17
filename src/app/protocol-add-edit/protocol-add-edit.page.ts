@@ -110,6 +110,15 @@ export class ProtocolAddEditPage implements OnInit {
       this.model.reference_id = this.reference_id;
       this.model.name = protocolName;
       await this.model.save();
+      this.protocolId = this.model[this.model.COL_ID];
+      this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
+      this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
+      if (!this.protocol_form.local_protocol_file) {
+        this.protocol_form.local_protocol_file = await this.downloadService.copy(
+            protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PROTOCOL_FILE],
+            this.protocol_form.TABLE_NAME
+        );
+      }
     }
     if (this.model.idApi) {
       this.protocol_form.protocol_id = this.model.idApi;
@@ -121,6 +130,7 @@ export class ProtocolAddEditPage implements OnInit {
         this.model.local_protocol_form_number = this.protocol_form[this.protocol_form.COL_ID];
       }
       await this.model.save();
+      this.detectChanges();
       this.events.publish('setIsPushAvailableData');
     }
   }
@@ -143,28 +153,28 @@ export class ProtocolAddEditPage implements OnInit {
       previousProtocolFormFile = this.protocol_form.local_protocol_file;
     }
     const protocolFormService = this.protocolService.getProtocolFormService(this.model.protocol_form_table);
-    this.protocol_form = null;
-    const justModel = protocolFormService.newModel();
-    console.log('justModel', justModel);
+    this.protocol_form = protocolFormService.newModel();
 
     if (this.model.idApi) {
-      justModel.protocol_id = this.model.idApi;
+      this.protocol_form.protocol_id = this.model.idApi;
     }
-    justModel.local_protocol_id = this.model[this.model.COL_ID];
+    this.protocol_form.local_protocol_id = this.model[this.model.COL_ID];
     if (previousProtocolFormFile) {
-      const savedFilePath = await this.downloadService.copy(previousProtocolFormFile, justModel.TABLE_NAME);
-      const modelFileMap = justModel.downloadMapping[0];
-      justModel[modelFileMap.url] = '';
-      justModel[modelFileMap.localPath] = savedFilePath;
-      justModel[modelFileMap.name] = savedFilePath.substring(savedFilePath.lastIndexOf('/') + 1, savedFilePath.length);
+      const savedFilePath = await this.downloadService.copy(previousProtocolFormFile, this.protocol_form.TABLE_NAME);
+      const modelFileMap = this.protocol_form.downloadMapping[0];
+      this.protocol_form[modelFileMap.url] = '';
+      this.protocol_form[modelFileMap.localPath] = savedFilePath;
+      this.protocol_form[modelFileMap.name] = savedFilePath.substring(savedFilePath.lastIndexOf('/') + 1, savedFilePath.length);
     }
-    console.log('justModel', justModel);
+    console.log('justModel', this.protocol_form);
     // return false;
-    await justModel.save();
+    await this.protocol_form.save();
 
-    this.model.local_protocol_form_number = justModel[justModel.COL_ID];
+    this.model.local_protocol_form_number = this.protocol_form[this.protocol_form.COL_ID];
     await this.model.save();
-    // this.protocol_form = justModel;
+    this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
+    this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
+    this.detectChanges();
     this.events.publish('setIsPushAvailableData');
   }
 
@@ -201,12 +211,16 @@ export class ProtocolAddEditPage implements OnInit {
   }
 
   async setExistModel() {
-    this.workflowStepService.unsetWorkflowStepsListCache();
-    const result = await this.protocolService.dbModelApi.findFirst([this.model.COL_ID, this.protocolId]);
-    this.model = result[0];
-    this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
-    this.model.canEditProtocol = await this.protocolService.canEditProtocol(result);
-    this.protocol_form = await this.getProtcolFormModel();
+    console.log('setExistModel this.protocolId', this.protocolId);
+    if (this.protocolId) {
+      this.workflowStepService.unsetWorkflowStepsListCache();
+      const result = await this.protocolService.dbModelApi.findFirst([this.model.COL_ID, this.protocolId]);
+      this.model = result[0];
+      this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
+      this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
+      this.protocol_form = await this.getProtcolFormModel();
+      console.log('setExistModel() this.protocol_form', this.protocol_form);
+    }
   }
 
   ngOnInit() {
@@ -230,21 +244,15 @@ export class ProtocolAddEditPage implements OnInit {
         this.model.protocol_form_table = 'protocol_default';
         this.protocol_form = await this.getProtcolFormModel();
       }
-      this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':create', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
       this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
         this.setExistModel();
         this.detectChanges();
       });
       this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.protocolService.dbModelApi.TAG + ':create', (model) => {
-        this.setExistModel();
-        this.detectChanges();
+        if (model.id === this.model.protocol_template_id) {
+          this.setExistModel();
+          this.detectChanges();
+        }
       });
       this.events.subscribe(this.protocolService.dbModelApi.TAG + ':update', (model) => {
         this.setExistModel();
@@ -254,11 +262,8 @@ export class ProtocolAddEditPage implements OnInit {
         this.setExistModel();
         this.detectChanges();
       });
-      this.events.subscribe(this.protocolDefaultService.dbModelApi.TAG + ':create', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
       this.events.subscribe(this.protocolDefaultService.dbModelApi.TAG + ':update', (model) => {
+        console.log('protocolDefault update')
         this.setExistModel();
         this.detectChanges();
       });

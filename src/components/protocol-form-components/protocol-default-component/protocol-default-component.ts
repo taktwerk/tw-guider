@@ -37,6 +37,7 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
     }
 
     public async editProtocolFile() {
+        console.log('editProtocolFile this.isInsert', this.isInsert);
         if (this.isInsert) {
             if (!this.protocol_form[ProtocolDefaultModel.COL_LOCAL_PROTOCOL_FILE]) {
                 this.protocolDefaultService.openCreatePage(
@@ -57,7 +58,7 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
             }
             this.protocol_form = protocolFormModel[0];
         }
-
+        console.log('editProtocolFile this.protocol_form', this.protocol_form);
         this.protocolDefaultService.openEditPage(this.protocol_form, this.protocol);
     }
 
