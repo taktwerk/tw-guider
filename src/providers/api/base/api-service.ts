@@ -245,6 +245,7 @@ export abstract class ApiService {
 
     async saveSyncedModel(newModel, canUpdateNotSyncedData = false) {
         let oldModel = await this.dbModelApi.findFirst(['id', newModel[this.dbModelApi.apiPk]]);
+        console.log('this.dbModelApi.apiPk', this.dbModelApi.apiPk);
         oldModel = oldModel[0] ? oldModel[0] : null;
         if (newModel.deleted_at) {
             if (oldModel) {

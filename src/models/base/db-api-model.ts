@@ -342,6 +342,10 @@ export abstract class DbApiModel extends DbBaseModel {
 
     /// Model file part
     doesHaveFilesForPush() {
+        console.log('this.downloadMapping doesHaveFilesForPush', this.downloadMapping);
+        if (!this.downloadMapping) {
+            return false;
+        }
         for (const fields of this.downloadMapping) {
             if (this[fields.localPath] && !this[fields.url]) {
                 return true;
