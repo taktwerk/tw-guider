@@ -54,7 +54,9 @@
     "protocols": "Protocols",
     "Protocol": "Protocol",
     "Workflow Step": "Workflow Step",
-    "Assignee": "Assignee"
+    "Assignee": "Assignee",
+    "Protocol was saved": "Protocol was saved",
+    "Have it checked": "Have it checked"
   },
   "guide": {
     "header": "Guide:",

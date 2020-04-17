@@ -3,10 +3,9 @@ import {DbApiModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
-import {GuiderModel} from './guider-model';
-import {WorkflowStepModel} from './workflow-step-model';
-import {WorkflowModel} from './workflow-model';
 import {ProtocolDefaultModel} from './protocol-default-model';
+import {WorkflowStepModel} from './workflow-step-model';
+import {ProtocolCommentModel} from './protocol-comment-model';
 
 /**
  * API Db Model for 'Protocol Model'.
@@ -43,7 +42,7 @@ export class ProtocolModel extends DbApiModel {
     TABLE_NAME: string = 'protocol';
 
     /// relations
-    workflowStep: any;
+    workflowStep: WorkflowStepModel;
 
     canEditProtocol: boolean;
 

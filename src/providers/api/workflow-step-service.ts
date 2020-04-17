@@ -8,6 +8,8 @@ import {HttpClient} from '../../services/http-client';
 import {DownloadService} from '../../services/download-service';
 import {AppSetting} from '../../services/app-setting';
 import {WorkflowStepModel} from '../../models/db/api/workflow-step-model';
+import {WorkflowTransitionModel} from '../../models/db/api/workflow-transition-model';
+import {WorkflowTransitionService} from './workflow-transition-service';
 
 @Injectable()
 export class WorkflowStepService extends ApiService {
@@ -25,34 +27,53 @@ export class WorkflowStepService extends ApiService {
      * @param events
      * @param downloadService
      * @param appSetting
+     * @param workflowTransitionService
      */
     constructor(http: HttpClient,
                 private p: Platform, private db: DbProvider,
                 public authService: AuthService,
                 public events: Events,
                 public downloadService: DownloadService,
-                public appSetting: AppSetting) {
+                public appSetting: AppSetting,
+                private workflowTransitionService: WorkflowTransitionService) {
         super(http, events, appSetting);
     }
 
-    getById(workflowStepId: number) {
-        return new Promise((resolve) => {
+    getById(workflowStepId: number): Promise<WorkflowStepModel> {
+        return new Promise(async (resolve) => {
             if (this.workflowStepsListCache.length) {
                 for (let i = 0; i < this.workflowStepsListCache.length; i++) {
                     if (this.workflowStepsListCache[i].idApi === workflowStepId) {
+                        this.workflowStepsListCache[i].workflowStepNextTransitions = await this.getNextWorkflowTransitions(
+                            this.workflowStepsListCache[i].idApi
+                        );
                         resolve(this.workflowStepsListCache[i]);
                         return;
                     }
                 }
             }
-            this.dbModelApi.findFirst([this.dbModelApi.COL_ID_API, workflowStepId]).then(result => {
+            this.dbModelApi.findFirst([this.dbModelApi.COL_ID_API, workflowStepId]).then(async result => {
                 if (result && result[0]) {
+                    result[0].workflowStepNextTransitions = await this.getNextWorkflowTransitions(result[0].idApi);
                     this.workflowStepsListCache.push(result[0]);
                     resolve(result[0]);
                 } else {
                     resolve(null);
                 }
             });
+        });
+    }
+
+    getNextWorkflowTransitions(stepId): Promise<WorkflowTransitionModel[]> {
+        return new Promise(resolve => {
+            this.workflowTransitionService.dbModelApi.findAllWhere(['workflow_step_id', stepId])
+                .then((result) => {
+                    if (result) {
+                        resolve(result);
+                    } else {
+                        resolve([]);
+                    }
+                });
         });
     }
 

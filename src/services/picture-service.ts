@@ -26,20 +26,18 @@ export class PictureService {
     }
 
     async editFile(editFileUrl: string, fileTitle: string) {
-        console.log('in edit file');
         this.initializePspdfkit(editFileUrl, fileTitle, true);
     }
 
     async initializePspdfkit(fileUrl, fileTitle, isEdit = false) {
-        console.log('initializePspdfkit');
         if (this.platform.is('ios')) {
             PSPDFKit.setLicenseKey(environment.pspdfkitIosLicenseKey);
         }
         const config = await this.getPspdfkitConfig(isEdit);
         config['title'] = fileTitle;
-        console.log('before present');
         PSPDFKit.present(fileUrl, config);
         if (isEdit && !this.wasAddedEditEventListenner) {
+            console.log('this.wasAddedEditEventListennerthis.wasAddedEditEventListenner');
             PSPDFKit.addEventListener('onDocumentSaved', () => {
                 this.events.publish('pdfWasSaved');
             });

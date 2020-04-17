@@ -49,6 +49,14 @@ const routes: Routes = [
     loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
   },
   {
+    path: 'protocol/save/:protocolId',
+    loadChildren: () => import('./protocol-add-edit/protocol-add-edit.module').then(m => m.ProtocolAddEditModule)
+  },
+  {
+    path: 'protocol/save',
+    loadChildren: () => import('./protocol-add-edit/protocol-add-edit.module').then(m => m.ProtocolAddEditModule)
+  },
+  {
     path: 'protocol',
     loadChildren: () => import('./protocol/protocol.page.module').then(m => m.ProtocolPageModule)
   },

@@ -104,15 +104,12 @@ export class ProtocolDefaultModel extends DbApiModel {
     /// return additional models for push data to server
     async afterPushDataToServer(isInsert?: boolean) {
         const additionalModelsForPushDataToServer = [];
-        console.log('additionalModelsForPushDataToServer isInsert', isInsert);
         if (isInsert) {
-            console.log('additionalModelsForPushDataToServer !this[this.COL_ID] || !this.idApi', !this[this.COL_ID] || !this.idApi);
             if (!this[this.COL_ID] || !this.idApi) {
                 return;
             }
             const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService);
             const protocolModels = await protocolModel.findFirst([protocolModel.COL_ID_API, this.protocol_id]);
-            console.log('additionalModelsForPushDataToServer !this[this.COL_ID] || !this.idApi', protocolModels);
             if (protocolModels && protocolModels.length) {
                 const protocol = protocolModels[0];
                 if (protocol) {

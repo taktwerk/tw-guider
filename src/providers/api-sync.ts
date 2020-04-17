@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import {HttpClient} from '../services/http-client';
 import {AppSetting} from '../services/app-setting';
-import {UserDb} from '../models/db/user-db';
 import {DbProvider} from './db-provider';
 import {Platform, Events} from '@ionic/angular';
 import {BehaviorSubject} from 'rxjs';
@@ -25,6 +24,8 @@ import {ProtocolService} from './api/protocol-service';
 import {ProtocolDefaultService} from './api/protocol-default-service';
 import {WorkflowService} from './api/workflow-service';
 import {WorkflowStepService} from './api/workflow-step-service';
+import {ProtocolCommentService} from './api/protocol-comment-service';
+import {WorkflowTransitionService} from './api/workflow-transition-service';
 
 @Injectable()
 /**
@@ -34,8 +35,6 @@ import {WorkflowStepService} from './api/workflow-step-service';
 export class ApiSync {
     private isBusy: boolean = false;
     public syncData: any;
-
-    userDb: UserDb;
 
     /**
      * Contains all services to sync.
@@ -49,12 +48,14 @@ export class ApiSync {
         guide_step: this.guideStepService,
         guide_asset: this.guideAssetService,
         guide_asset_pivot: this.guideAssetPivotService,
-        feedback: this.feedbackService,
         protocol_template: this.protocolTemplateService,
         protocol: this.protocolService,
         protocol_default: this.protocolDefaultService,
         workflow: this.workflowService,
-        workflow_step: this.workflowStepService
+        workflow_step: this.workflowStepService,
+        workflow_transition: this.workflowTransitionService,
+        protocol_comment: this.protocolCommentService,
+        feedback: this.feedbackService
     };
 
     isStartSyncBehaviorSubject: BehaviorSubject<boolean>;
@@ -78,9 +79,10 @@ export class ApiSync {
     countOfAllChangedItems = 0;
 
     apiPushServices: any = {
-        feedback: this.feedbackService,
         protocol: this.protocolService,
-        protocol_default: this.protocolDefaultService
+        protocol_default: this.protocolDefaultService,
+        protocol_comment: this.protocolCommentService,
+        feedback: this.feedbackService
     };
 
     /**
@@ -107,7 +109,9 @@ export class ApiSync {
         private workflowStepService: WorkflowStepService,
         private protocolTemplateService: ProtocolTemplateService,
         private protocolService: ProtocolService,
-        private protocolDefaultService: ProtocolDefaultService
+        private protocolDefaultService: ProtocolDefaultService,
+        private protocolCommentService: ProtocolCommentService,
+        private workflowTransitionService: WorkflowTransitionService
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);

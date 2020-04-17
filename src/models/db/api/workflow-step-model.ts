@@ -4,6 +4,7 @@ import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
 import {GuiderModel} from './guider-model';
+import {WorkflowTransitionModel} from './workflow-transition-model';
 
 /**
  * API Db Model for 'Workflow Step Model'.
@@ -41,6 +42,8 @@ export class WorkflowStepModel extends DbApiModel {
 
     /** @inheritDoc */
     TABLE_NAME: string = 'workflow_step';
+
+    public workflowStepNextTransitions: WorkflowTransitionModel[];
 
     /** @inheritDoc */
     TABLE: any = [

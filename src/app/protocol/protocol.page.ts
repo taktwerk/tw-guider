@@ -3,7 +3,7 @@ import {Events, ModalController, NavController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {DownloadService} from '../../services/download-service';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {VideoService} from '../../services/video-service';
 import {ProtocolModel} from '../../models/db/api/protocol-model';
 import {ProtocolService} from '../../providers/api/protocol-service';
@@ -48,7 +48,21 @@ export class ProtocolPage implements OnInit {
 
     public async setModels() {
         this.protocolList = await this.protocolService.getAllProtocols(this.templateId, this.reference_model, this.reference_id);
-        console.log('set models of protocol', this.protocolList);
+        this.detectChanges();
+    }
+
+    openAddEditPage(protocolId?: number) {
+        console.log('openAddEditPage', protocolId)
+        const protocolNavigationExtras: NavigationExtras = {
+            queryParams: {
+                protocolId,
+                templateId: this.templateId,
+                clientId: this.clientId,
+                referenceModelAlias: this.reference_model_alias,
+                referenceId: this.reference_id
+            }
+        };
+        this.router.navigate(['/protocol/save/' + protocolId], protocolNavigationExtras);
     }
 
     public async editProtocol(protocol ?: ProtocolModel) {
@@ -200,5 +214,6 @@ export class ProtocolPage implements OnInit {
             this.detectChanges();
         });
         this.setUserCanCreateProtocol();
+        this.detectChanges();
     }
 }

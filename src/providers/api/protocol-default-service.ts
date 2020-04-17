@@ -57,31 +57,23 @@ export class ProtocolDefaultService extends ApiService {
                 private pictureService: PictureService,
                 private protocolTemplateService: ProtocolTemplateService) {
         super(http, events, appSetting);
-        this.events.subscribe('pdfWasSaved', (saveInformation) => {
-            console.log('pdfWasSaved');
-            this.showSavePopup(this.saveInformation);
-        });
     }
 
     async saveProtocol(saveInformation) {
         let protocol = null;
-        console.log('saveInformation', saveInformation);
         if (!saveInformation.protocol) {
             const protocolTemplate = saveInformation.protocolTemplate;
             const templateWorkflow = await protocolTemplate.getWorkflow();
-            console.log('templateWorkflow', templateWorkflow);
             if (!templateWorkflow) {
                 return;
             }
             const workflowFirstStep = await templateWorkflow.getFirstStep();
-            console.log('workflowFirstStep', workflowFirstStep);
             if (!workflowFirstStep) {
                 return;
             }
             protocol = new ProtocolModel(this.platform, this.db, this.events, this.downloadService);
             const md5 = new Md5();
             const protocolName = ('' + md5.appendStr('' + (new Date()).getTime()).end()).substr(0, 5).toUpperCase();
-            console.log('protocolName', protocolName)
             protocol.client_id = saveInformation.clientId;
             protocol.protocol_template_id = protocolTemplate.idApi;
             protocol.workflow_step_id = workflowFirstStep.idApi;
@@ -90,15 +82,12 @@ export class ProtocolDefaultService extends ApiService {
             protocol.reference_model = saveInformation.referenceModel;
             protocol.reference_id = saveInformation.referenceId;
             protocol.name = protocolName;
-            console.log('lkfsdgjg;lkjgljksdl;gkjdsgk;ljdk;lgj');
             await protocol.save();
-            console.log('protocolprotocolprotocolprotocolprotocol', protocol);
         } else {
             protocol = saveInformation.protocol;
         }
         const protocolDefault = this.newModel();
         this.downloadService.copy(saveInformation.protocol_file, protocolDefault.TABLE_NAME).then(async (savedFilePath) => {
-            console.log('copy filesssss');
             const modelFileMap = protocolDefault.downloadMapping[saveInformation.fileMapIndex];
             protocolDefault[modelFileMap.url] = '';
             protocolDefault[modelFileMap.localPath] = savedFilePath;

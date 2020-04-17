@@ -54,7 +54,9 @@
     "protocols": "(De) Protocols",
     "Protocol": "(De) Protocol",
     "Workflow Step": "(De) Workflow Step",
-    "Assignee": "(De) Assignee"
+    "Assignee": "(De) Assignee",
+    "Protocol was saved": "(De) Protocol was saved",
+    "Have it checked": "Prüfen lassen"
   },
   "guide": {
     "header": "(De) Guide:",

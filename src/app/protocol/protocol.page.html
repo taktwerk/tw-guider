@@ -39,7 +39,7 @@
             <ion-button *ngIf="protocol.workflowStep && protocol.canEditProtocol"
                         slot="end"
                         fill="clear"
-                        (click)="editProtocol(protocol)"
+                        (click)="openAddEditPage(protocol[protocol.COL_ID])"
             >
                 <ion-icon slot="icon-only" name="create"></ion-icon>
             </ion-button>
@@ -51,7 +51,7 @@
              vertical="bottom"
              horizontal="end"
              slot="fixed"
-             (click)="createProtocol()"
+             (click)="openAddEditPage()"
     >
         <ion-fab-button>
             <ion-icon name="add"></ion-icon>

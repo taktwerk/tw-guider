@@ -48,8 +48,6 @@ import {LanguageSelectorComponentModule} from '../components/language-selector-c
 import { Device } from '@ionic-native/device/ngx';
 import * as Sentry from 'sentry-cordova';
 
-// import localeFr from '@angular/common/locales/fr';
-// import localeFrExtra from '@angular/common/locales/extra/fr';
 import {DatePipe} from '../pipes/date-pipe/date-pipe';
 import {QRScanner} from '@ionic-native/qr-scanner/ngx';
 
@@ -76,6 +74,10 @@ import {ProtocolService} from '../providers/api/protocol-service';
 import {ProtocolDefaultService} from '../providers/api/protocol-default-service';
 import {WorkflowService} from '../providers/api/workflow-service';
 import {WorkflowStepService} from '../providers/api/workflow-step-service';
+import {ProtocolDefaultComponent} from '../components/protocol-form-components/protocol-default-component/protocol-default-component';
+import {ProtocolDefaultComponentModule} from '../components/protocol-form-components/protocol-default-component/protocol-default-component.module';
+import {WorkflowTransitionService} from '../providers/api/workflow-transition-service';
+import {ProtocolCommentService} from '../providers/api/protocol-comment-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -91,27 +93,33 @@ Sentry.init({ dsn: environment.sentryDsn });
     VideoModalComponent,
     PdftronModalComponent
   ],
-  entryComponents: [GuideAssetTextModalComponent, SyncModalComponent, VideoModalComponent, PdftronModalComponent],
-    imports: [
-        BrowserModule,
-        FormsModule,
-        IonicModule.forRoot(),
-        AppRoutingModule,
-        HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: (LanguageLoader),
-            deps: [Http]
-          }
-        }),
-        SyncSpinnerComponentModule,
-        LanguageSelectorComponentModule,
-        MainPipe,
-        HtmlDescriptionComponentModule,
-        VirtualScrollerModule,
-        IonicImageLoader.forRoot()
-    ],
+  entryComponents: [
+    GuideAssetTextModalComponent,
+    SyncModalComponent,
+    VideoModalComponent,
+    PdftronModalComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    IonicModule.forRoot(),
+    AppRoutingModule,
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (LanguageLoader),
+        deps: [Http]
+      }
+    }),
+    SyncSpinnerComponentModule,
+    ProtocolDefaultComponentModule,
+    LanguageSelectorComponentModule,
+    MainPipe,
+    HtmlDescriptionComponentModule,
+    VirtualScrollerModule,
+    IonicImageLoader.forRoot()
+  ],
   providers: [
     StatusBar,
     SplashScreen,
@@ -126,8 +134,10 @@ Sentry.init({ dsn: environment.sentryDsn });
     ProtocolTemplateService,
     ProtocolService,
     ProtocolDefaultService,
+    ProtocolCommentService,
     WorkflowService,
     WorkflowStepService,
+    WorkflowTransitionService,
     DbProvider,
     AuthService,
     HttpClient,
@@ -165,8 +175,11 @@ Sentry.init({ dsn: environment.sentryDsn });
     DocumentViewer,
     FileOpener,
     Insomnia,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
+  ],
+  exports: [
+    ProtocolDefaultComponent
   ],
   bootstrap: [AppComponent]
 })
