@@ -6,7 +6,7 @@
     <ion-title>
       {{ "guide.header" | translate: params }} {{ guide.title }}
     </ion-title>
-    <sync-spinner-component slot="primary"></sync-spinner-component>
+    <sync-spinner-component></sync-spinner-component>
   </ion-toolbar>
 </ion-header>
 
@@ -23,46 +23,68 @@
             {{ stepNumber + 1 }} / {{ guideSteps.length }} {{ step.title }}
           </div>
         </div>
-        <ion-card color="light">
-          <img *ngIf="step.isImageFile()"
-               (click)="openFile(step.getFileName(), step.TABLE_NAME, step.title)"
-               [src]="step.getFileImagePath()"
-          >
-          <div *ngIf="step.isVideoFile()"
-               (click)="openFile(step.getFileName(), step.TABLE_NAME, step.title)"
-               [ngClass]="{'video-with-thumbnail': step.isExistThumbOfFile()}"
-          >
-            <img *ngIf="step.isExistThumbOfFile()"
-                 [src]="step.getFileImagePath()"
-            />
-            <ion-icon name="videocam"
-                      class="videocam-icon"
-                      slot="start"
-            >
-            </ion-icon>
-          </div>
-          <ion-icon name="musical-notes"
+
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-card color="light">
+                <img
+                  *ngIf="step.isImageFile()"
+                  (click)="
+                    openFile(step.getFileName(), step.TABLE_NAME, step.title)
+                  "
+                  [src]="step.getFileImagePath()"
+                />
+                <div
+                  *ngIf="step.isVideoFile()"
+                  (click)="
+                    openFile(step.getFileName(), step.TABLE_NAME, step.title)
+                  "
+                  [ngClass]="{
+                    'video-with-thumbnail': step.isExistThumbOfFile()
+                  }"
+                >
+                  <img
+                    *ngIf="step.isExistThumbOfFile()"
+                    [src]="step.getFileImagePath()"
+                  />
+                  <ion-icon
+                    name="videocam"
                     class="videocam-icon"
                     slot="start"
-                    *ngIf="step.isAudioFile()"
-          >
-          </ion-icon>
-          <ion-icon *ngIf="!step.isExistFormatFile()"
-                    class="videocam-icon"
-                    name="cloud-upload"
-          >
-          </ion-icon>
-        </ion-card>
-        <ion-card *ngIf="step.description_html" class="ion-text-left" color="light">
-            <ion-button
-                    color="primary"
-                    fill="solid"
-                    (click)="openFeedback('guide_step', step.idApi)"
-            >
-              {{ "feedback.header" | translate: params }}
-            </ion-button>
-          <html-description-component [html]="step.description_html"></html-description-component>
-        </ion-card>
+                  ></ion-icon>
+                </div>
+                <ion-icon
+                  name="musical-notes"
+                  class="videocam-icon"
+                  slot="start"
+                  *ngIf="step.isAudioFile()"
+                ></ion-icon>
+                <ion-icon
+                  *ngIf="!step.isExistFormatFile()"
+                  class="videocam-icon"
+                  name="cloud-upload"
+                ></ion-icon>
+              </ion-card>
+            </ion-col>
+            <ion-col>
+              <ion-card
+                *ngIf="step.description_html"
+                class="ion-text-left"
+                color="light"
+              >
+                <ion-button
+                  color="primary"
+                  fill="solid"
+                  (click)="openFeedback('guide_step', step.idApi)"
+                >
+                  {{ "feedback.header" | translate: params }}
+                </ion-button>
+                <html-description-component></html-description-component>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-slide>
     </ion-slides>
     <ion-card *ngIf="guideAssets.length" color="light">
@@ -71,31 +93,41 @@
           {{ "guide.Assets" | translate: params }}
         </p>
         <ion-row class="guide-assets">
-          <span *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" class="ion-padding">
-              <span *ngIf="asset.isExistFileByIndex()">
-                <img *ngIf="asset.isPdf()"
-                     (click)="openFile(
-                     asset.getFileName(),
-                     asset.TABLE_NAME,
-                     asset.name
-                     )"
-                     class="pdf-image"
-                     [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
-                />
-              <img *ngIf="!asset.isPdf()"
-                   (click)="openFile(asset.getFileName(), asset.TABLE_NAME, asset.name)"
-                   class="pdf-image"
-                   [src]="asset.getFileImagePath()"
+          <span
+            *ngFor="let asset of guideAssets; trackBy: trackGuideAsset"
+            class="ion-padding"
+          >
+            <span *ngIf="asset.isExistFileByIndex()">
+              <img
+                *ngIf="asset.isPdf()"
+                (click)="
+                  openFile(asset.getFileName(), asset.TABLE_NAME, asset.name)
+                "
+                class="pdf-image"
+                [src]="
+                  asset.getFileImagePath(
+                    guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE
+                  )
+                "
               />
-              </span>
-              <ion-button *ngIf="!asset.isExistFileByIndex()"
-                          color="medium"
-                          (click)="openAssetTextModal(asset)"
-              >
-                {{ asset.name }}
-              </ion-button>
+              <img
+                *ngIf="!asset.isPdf()"
+                (click)="
+                  openFile(asset.getFileName(), asset.TABLE_NAME, asset.name)
+                "
+                class="pdf-image"
+                [src]="asset.getFileImagePath()"
+              />
+            </span>
+            <ion-button
+              *ngIf="!asset.isExistFileByIndex()"
+              color="medium"
+              (click)="openAssetTextModal(asset)"
+            >
+              {{ asset.name }}
+            </ion-button>
           </span>
-      </ion-row>
+        </ion-row>
       </section>
     </ion-card>
   </div>
