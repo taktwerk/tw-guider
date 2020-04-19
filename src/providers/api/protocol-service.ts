@@ -188,6 +188,16 @@ export class ProtocolService extends ApiService {
         if (user.isAuthority) {
             return true;
         }
+        if (workflowStep.user_id) {
+            if (workflowStep.user_id === user.userId) {
+                return true;
+            }
+        }
+        if (workflowStep.role && user.additionalInfo && user.additionalInfo.roles) {
+            if (user.additionalInfo.roles.includes(workflowStep.role)) {
+                return true;
+            }
+        }
 
         return user.can('protocol_protocol_fill');
     }
