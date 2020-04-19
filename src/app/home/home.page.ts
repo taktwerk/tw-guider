@@ -101,13 +101,53 @@ export class HomePage {
           });
         })
         .catch((err: any) => {
-            this.presentAlert(
+            // ---- iOS Simulator
+            if((<any>window).device.isVirtual) {
+              this.presentAlert(
                 'Config Error',
                 null,
-                'There was an error using the camera. Please try again.<br><br>',
+                'Running on Simulator',
                 ['OK']
-            );
-            this.closeScanner();
+              );
+              const text = '{"mode":2,"taktwerk":"guider","host":"http:\/\/tw-app-dev.devhost.taktwerk.ch"}';
+              const config = JSON.parse(text);
+              const appConfirmUrl =  config.host + environment.apiUrlPath + '/login/';
+              if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
+                 this.authService.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
+              } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
+                 this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
+              }
+              config.isWasQrCodeSetup = true;
+              this.appSetting.save(config).then(() => {
+                this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
+                this.userService.getUser().then(loggedUser => {
+                  const isUserLoggedIn = !!loggedUser;
+                  if (!isUserLoggedIn) {
+                    this.ngZone.run(() => {
+                      this.navCtrl.navigateRoot('/login');
+                    });
+                  } else {
+                    this.events.publish('qr-code:setup');
+                    this.ngZone.run(() => {
+                      this.navCtrl.navigateRoot('/guides');
+                    });
+                  }
+                });
+
+                this.http.showToast('qr.Application was successfully configured');
+                this.closeScanner();
+              });
+            }
+            // ----
+            else {
+              this.presentAlert(
+                'Config Error',
+                null,
+                'There was an error using the camera. Please try again.',
+                ['OK']
+              );
+              this.closeScanner();
+            }  
         });
   }
 
