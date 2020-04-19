@@ -40,6 +40,10 @@ export class ProtocolService extends ApiService {
                 public workflowStepService: WorkflowStepService,
                 public protocolDefaultService: ProtocolDefaultService) {
         super(http, events, appSetting);
+        this.events.subscribe('user:login', async (userId) => {
+            this.user = null;
+            await this.getCurrentUser();
+        });
     }
 
     getAllProtocols(templateId: number, referenceModel?, referenceId?): Promise <any[]> {
@@ -51,7 +55,8 @@ export class ProtocolService extends ApiService {
             }
             const protocolSearchCondition = [
                 'protocol_template.deleted_at IS NULL',
-                'protocol_template.local_deleted_at IS NULL'
+                'protocol_template.local_deleted_at IS NULL',
+                '1=1'
             ];
             if (templateId) {
                 protocolSearchCondition.push(
@@ -112,6 +117,7 @@ export class ProtocolService extends ApiService {
                         obj.loadFromAttributes(res.rows.item(i));
                         obj.workflowStep = await this.workflowStepService.getById(obj.workflow_step_id);
                         obj.canEditProtocol = await this.canEditProtocol(obj);
+                        obj.canFillProtocol = await this.canFillProtocol(obj);
                         entries.push(obj);
                     }
                 }
@@ -147,6 +153,9 @@ export class ProtocolService extends ApiService {
         if (workflowStep.type === 'final') {
             return false;
         }
+        if (user.isAuthority) {
+            return true;
+        }
         if (!workflowStep.user_id && !workflowStep.role) {
             return true;
         }
@@ -162,6 +171,25 @@ export class ProtocolService extends ApiService {
         }
 
         return false;
+    }
+
+    async canFillProtocol(protocol: ProtocolModel) {
+        const user = await this.getCurrentUser();
+        if (!user) {
+            return false;
+        }
+        if (!protocol.workflowStep) {
+            return false;
+        }
+        const workflowStep = protocol.workflowStep;
+        if (workflowStep.type === 'final') {
+            return false;
+        }
+        if (user.isAuthority) {
+            return true;
+        }
+
+        return user.can('protocol_protocol_fill');
     }
 
     getProtocolFormService(protocolFormTable: string) {

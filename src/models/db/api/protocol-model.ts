@@ -45,6 +45,7 @@ export class ProtocolModel extends DbApiModel {
     workflowStep: WorkflowStepModel;
 
     canEditProtocol: boolean;
+    canFillProtocol: boolean;
 
     /** @inheritDoc */
     TABLE: any = [

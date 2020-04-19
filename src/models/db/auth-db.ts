@@ -85,4 +85,15 @@ export class AuthDb extends DbBaseModel {
       }
     });
   }
+
+  public can(permissionName): boolean {
+    if (!this.additionalInfo || !this.additionalInfo.permissions) {
+      return false;
+    }
+    if (this.additionalInfo.permissions.hasAllPermissions) {
+      return true;
+    }
+
+    return this.additionalInfo.permissions.list && this.additionalInfo.permissions.list.includes(permissionName);
+  }
 }

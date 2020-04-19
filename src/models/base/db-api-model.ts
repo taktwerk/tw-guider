@@ -221,9 +221,7 @@ export abstract class DbApiModel extends DbBaseModel {
         }
         return new Promise(async (resolve) => {
             this.beforeSave(isSynced);
-            console.log('before exists');
             const res = await this.exists();
-            console.log('after exists');
             if (res) {
                 if (isSaveLocaleDates) {
                     this[this.COL_LOCAL_UPDATED_AT] = new Date();

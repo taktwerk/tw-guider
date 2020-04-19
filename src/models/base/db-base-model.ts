@@ -275,7 +275,6 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
-                    console.log('searchAllAndGetRowsResult', query);
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             resolve(res);
@@ -712,9 +711,6 @@ export abstract class DbBaseModel {
                 } else {
                     let query = 'UPDATE ' + this.secure(this.TABLE_NAME) + ' ' +
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
-                    if (this.TAG === 'ProtocolDefaultModel' || this.TAG === 'ProtocolModel') {
-                        console.log('update query', query);
-                    }
                     db.query(query).then((res) => {
                         this.events.publish(this.TAG + ':update', this);
                         resolve(res);
