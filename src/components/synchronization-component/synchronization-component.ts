@@ -152,6 +152,8 @@ export class SynchronizationComponent implements OnInit {
           this.userService.userDb.userSetting.appDataVersion = null;
           this.apiSync.isAvailableForSyncData.next(true);
           this.userService.userDb.userSetting.isSyncAvailableData = true;
+          this.apiSync.isAvailableForPushData.next(false);
+          this.userService.userDb.userSetting.isPushAvailableData = false;
           this.userService.userDb.save().then(() => {
               this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
               this.apiSync.syncProgressStatus.next('success');
