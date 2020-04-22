@@ -27,10 +27,12 @@
     "Failed" : "Failed",
     "Success" : "Success",
     "No data for sync" : "No data for sync",
+    "No data for pull" : "No data for pull",
     "There is data available for pushing to the server.": "There is data available for pushing to the server.",
     "No network connection.": "No network connection.",
     "Data synchronization is not yet possible.": "Data synchronization is not yet possible.",
-    "Data is sent to the server.": "Data is sent to the server."
+    "Data is sent to the server": "Data is sent to the server.",
+    "Data has been sent to the server": "Data has been sent to the server."
   },
   "guides": {
     "header": "Guides",

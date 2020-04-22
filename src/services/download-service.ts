@@ -149,7 +149,6 @@ export class DownloadService {
                 this.file.getFile(directoryEntry, fileName, {})
                     .then(fileEntry => {
                         fileEntry.file(async file => {
-                            console.log('before read file');
                             const imgBlob = await this.readFile(fileKey, file, url, headers);
                             const formData = new FormData();
                             formData.append(fileKey, imgBlob, file.name);
@@ -183,6 +182,9 @@ export class DownloadService {
     }
 
     uploadFile(formData: FormData, url: string, headers?: Headers): Promise<any> {
+        formData.forEach((value, key) => {
+           console.log('formData', key, value);
+        });
         return new Promise((resolve) => {
             this.http.post(url, formData, {headers: headers})
                 .toPromise()

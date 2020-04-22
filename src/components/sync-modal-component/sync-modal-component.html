@@ -91,8 +91,14 @@
                 >
                     {{ 'sync-modal.There is data available for synchronization from the server.' | translate:params }}
                 </section>
+                <div *ngIf="pushProgressStatus === 'failed'">
+                    {{ 'sync-modal.Sending data to the server failed.' | translate:params }}
+                </div>
                 <div *ngIf="pushProgressStatus === 'progress'">
-                    {{ 'sync-modal.Data is sent to the server.' | translate:params }}
+                    {{ 'sync-modal.Data is sent to the server' | translate:params }}
+                </div>
+                <div *ngIf="pushProgressStatus === 'success'">
+                    {{ 'sync-modal.Data has been sent to the server' | translate:params }}
                 </div>
                 <div *ngIf="noDataForSync">
                     {{ 'sync-modal.No data for sync' | translate:params }}

@@ -213,7 +213,6 @@ export abstract class ApiService {
             // If we have a local path but no api path, we need to upload the file!
             if (model[fields.localPath] && !model[fields.url]) {
                 const fieldUrl = url + '?fileAttribute=' + fields.name;
-                // uploadFilePromises.push(
                 try {
                     const uploadResult = await model.downloadService.startUpload(
                         model.TABLE_NAME,
@@ -223,14 +222,11 @@ export abstract class ApiService {
                         fieldUrl,
                         headers
                     );
-                    console.log('uploadResult', uploadResult);
                     if (uploadResult) {
-                        console.log('in upload result');
                         await this.saveSyncedModel(uploadResult, true);
                         if (userForSaving) {
                             userForSaving.userSetting.appDataVersion++;
                             await userForSaving.save();
-                            console.log('appDataVersion++ after saving file');
                         }
                     }
                 } catch (err) {

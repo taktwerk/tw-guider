@@ -25,19 +25,23 @@ export class UserSetting {
 
   public lastSyncProcessId: number = null;
 
+  public isSyncAvailableData: boolean = false;
+
   public pushStatus: string;
 
   public pushPercent: number;
+
+  public pushAllItemsCount: number;
+
+  public pushLastElementNumber: number;
 
   public lastPushedModel: string;
 
   public lastPushedModelId: number;
 
-  public syncMode: number;
-
-  public isSyncAvailableData: boolean = false;
-
   public isPushAvailableData: boolean = false;
+
+  public syncMode: number;
 
   public language: string = TranslateConfigService.DEFAULT_LANGUAGE;
 

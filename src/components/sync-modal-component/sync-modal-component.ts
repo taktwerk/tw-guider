@@ -34,11 +34,17 @@ export class SyncModalComponent implements OnInit {
     public noDataForSync = false;
     public syncedItemsCount = 0;
     public syncedItemsPercent = 0;
+    public syncAllItemsCount = 0;
+    public pulledItemsCount = 0;
+    public pulledItemsPercent = 0;
+    public pullAllItemsCount = 0;
+    public pushedItemsCount = 0;
+    public pushedItemsPercent = 0;
+    public pushAllItemsCount = 0;
     public syncProgressStatus = 'not_sync';
     public isPrepareSynData = false;
     public modeSync = SyncMode.Manual;
     public userDb: UserDb;
-    public syncAllItemsCount = 0;
     public isNetwork = false;
     public isAvailableForSyncData: boolean = false;
     public pushProgressStatus: string;
