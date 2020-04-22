@@ -43,13 +43,23 @@ export class FeedbackPage implements OnInit {
         }
         const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
         if (this.reference_id && this.reference_model) {
-            feedbackSearchCondition.push(['reference_model', this.reference_model]);
+            feedbackSearchCondition.push(
+                '(' + this.feedbackService.dbModelApi.secure('reference_model') +
+                '= "' +
+                this.reference_model_alias +
+                '" OR ' +
+                this.feedbackService.dbModelApi.secure('reference_model') +
+                '="' +
+                this.reference_model + '")'
+            );
             feedbackSearchCondition.push(['reference_id', this.reference_id]);
         }
+        console.log('feedbackSearchCondition', feedbackSearchCondition);
         this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(
             feedbackSearchCondition,
             'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC'
         );
+        console.log('this.feedbackList', this.feedbackList);
     }
 
     public openFile(basePath: string, modelName: string, title?: string) {
@@ -112,9 +122,11 @@ export class FeedbackPage implements OnInit {
             }
             this.backDefaultHref = feedbackData.backUrl;
             this.setModels();
+            this.detectChanges();
         });
 
         this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':create', (model) => {
+            console.log('weas createddddd');
             this.setModels();
             this.detectChanges();
         });
