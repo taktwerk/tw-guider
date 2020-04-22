@@ -115,7 +115,8 @@
     "Title is required": "Title is required",
     "nothing_to_save": "Nothing to save",
     "user_blocked": "You are blocked, contact an administrator",
-    "is_app_version_old": "The application version is outdated. Please update the application."
+    "is_app_version_old": "The application version is outdated. Please update the application.",
+    "There was an error setting up the application. Please try again.": "There was an error setting up the application. Please try again."
   },
   "qr": {
     "Application was successfully configured": "Application was successfully configured",

@@ -67,36 +67,43 @@ export class HomePage {
               this.closeScanner();
               return;
             } else {
-              const user = await this.userService.getUser();
-              if (user) {
-                await this.authService.logout();
-              }
-              const appConfirmUrl =  config.host + environment.apiUrlPath + '/login/';
-              if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
-                await this.authService.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
-              } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
-                await this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
-              }
-              config.isWasQrCodeSetup = true;
-              this.appSetting.save(config).then(() => {
-                this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
-                this.userService.getUser().then(loggedUser => {
-                  const isUserLoggedIn = !!loggedUser;
-                  if (!isUserLoggedIn) {
-                    this.ngZone.run(() => {
-                      this.navCtrl.navigateRoot('/login');
-                    });
-                  } else {
-                    this.events.publish('qr-code:setup');
-                    this.ngZone.run(() => {
-                      this.navCtrl.navigateRoot('/guides');
-                    });
-                  }
-                });
+              try {
+                const user = await this.userService.getUser();
+                if (user) {
+                  await this.authService.logout();
+                }
+                const appConfirmUrl =  config.host + environment.apiUrlPath + '/login/';
+                if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
+                  console.log('clientIdentifier');
+                  await this.authService.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
+                } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
+                  console.log('userIdentifier');
+                  await this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
+                }
+                config.isWasQrCodeSetup = true;
+                this.appSetting.save(config).then(() => {
+                  this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
+                  this.userService.getUser().then(loggedUser => {
+                    const isUserLoggedIn = !!loggedUser;
+                    if (!isUserLoggedIn) {
+                      this.ngZone.run(() => {
+                        this.navCtrl.navigateRoot('/login');
+                      });
+                    } else {
+                      this.events.publish('qr-code:setup');
+                      this.ngZone.run(() => {
+                        this.navCtrl.navigateRoot('/guides');
+                      });
+                    }
+                  });
 
-                this.http.showToast('qr.Application was successfully configured');
-              });
-              this.closeScanner();
+                  this.http.showToast('qr.Application was successfully configured');
+                });
+                this.closeScanner();
+              } catch (e) {
+                console.log('This is error', e);
+                this.closeScanner();
+              }
             }
           });
         })
