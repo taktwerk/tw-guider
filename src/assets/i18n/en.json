@@ -69,19 +69,19 @@
     "header": "Profile",
     "Profile": "Profile",
     "ID": "ID",
-    "Name": "Name",
+    "Username": "Username",
     "Full name": "Full name",
     "Email": "Email",
     "Last Login At": "Last Login At",
     "Roles": "Roles",
-    "Client name": "Client name"
+    "Company": "Client name"
   },
   "synchronization-component": {
     "Sync Modes": "Sync Modes",
     "Manually": "Manually",
     "Online": "Online",
     "Periodic": "Periodic",
-    "Re-sync data": "Re-sync data",
+    "Re-sync data": "Re-sync all data (deletes not synced local data)!",
     "Sync was canceled.": "Sync was canceled.",
     "Now is manually mode.": "Now is manually mode.",
     "Now is network connection mode.": "Now is network connection mode.",
@@ -122,7 +122,7 @@
     "Application was successfully configured": "Application was successfully configured",
     "The Guider app enables the display of digital instructions (assembly, training, etc.)": "The Guider app enables the display of digital instructions (assembly, training, etc.)",
     "The app only works with a customer account. Please contact taktwerk GmbH for this": "The app only works with a customer account. Please contact taktwerk GmbH for this",
-    "Scan the received one": "Scan the received one",
+    "Scan the received": "Scan the received",
     "QR-Code": "QR-Code",
     "Setup": "Setup",
     "Close Scanner": "Close Scanner"
