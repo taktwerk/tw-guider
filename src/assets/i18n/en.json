@@ -8,6 +8,10 @@
   "delete": "Delete",
   "title": "Title",
   "All": "All",
+  "about": {
+    "header":"About",
+    "App Version": "App Version"
+  },
   "start": {
     "header":"Start",
     "title": "Start page of the Guider"

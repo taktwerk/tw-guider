@@ -205,6 +205,7 @@ export class AppComponent implements OnInit {
         {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'},
         {title: this.translateConfigService.translateWord('protocol.Protocol'), url: '/protocol', icon: 'document'},
         {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
+        {title: this.translateConfigService.translateWord('about.header'), url: '/about', icon: 'information-circle'}
     );
 
     return appPages;
@@ -298,13 +299,6 @@ export class AppComponent implements OnInit {
     this.appSetting.isWasQrCodeSetupSubscribtion.subscribe(isWasQrCodeSetup => {
       if (isWasQrCodeSetup) {
         this.setPages();
-      }
-    });
-    this.platform.ready().then(() => {
-      if (this.appVersion) {
-        this.appVersion.getVersionNumber().then((versionNumber) => {
-          this.versionNumber = versionNumber;
-        });
       }
     });
     this.baseProjectSetup();
