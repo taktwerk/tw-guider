@@ -31,7 +31,7 @@ public void onBackPressed() {
 After changes to the database structure have been made in the code,
 you need to increase the value of the property dbMigrationVersion in the file `src/environments/environment.ts`.
 (See an example in the file  `src/environments/environment.example.ts`)
-
+й
 
 ## How bring a new model offline to mobile client at the client side. On the example of `feedback` table.
 1. Create model src/models/db/api/feedback-model.ts. Must inherit from class DbApiModel.

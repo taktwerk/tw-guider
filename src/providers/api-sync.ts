@@ -359,7 +359,7 @@ export class ApiSync {
                 resolve(true);
                 return;
             }
-            if (this.network.type === 'none') {
+            if (this.network.type === 'none'  && !this.appSetting.isEnabledUsb) {
                 resolve(false);
                 return;
             }
@@ -395,7 +395,9 @@ export class ApiSync {
 
     public sendSyncProgress(description?: string, isCancel = false) {
         return new Promise(resolve => {
-            if (!this.userService.userDb.userSetting.lastSyncProcessId || this.network.type === 'none') {
+            if (!this.userService.userDb.userSetting.lastSyncProcessId ||
+                (this.network.type === 'none' && !this.appSetting.isEnabledUsb)
+            ) {
                 resolve(false);
                 return;
             }

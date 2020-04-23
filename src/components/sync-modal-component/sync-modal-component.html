@@ -75,7 +75,7 @@
                         </div>
                     </section>
                 </div>
-                <div *ngIf="!isNetwork">
+                <div *ngIf="!isNetwork && !appSetting.isEnabledUsb">
                     <div>
                         {{ 'sync-modal.No network connection.' | translate:params }}
                     </div>
