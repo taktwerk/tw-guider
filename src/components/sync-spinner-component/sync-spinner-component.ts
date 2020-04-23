@@ -11,6 +11,7 @@ import {UserDb} from '../../models/db/user-db';
 import {DownloadService} from '../../services/download-service';
 import {DbProvider} from '../../providers/db-provider';
 import {UserService} from '../../services/user-service';
+import {AppSetting} from '../../services/app-setting';
 
 /**
  * Generated class for the TodoPage page.
@@ -42,7 +43,8 @@ export class SyncSpinnerComponent implements OnInit {
                 private authService: AuthService,
                 private network: Network,
                 private events: Events,
-                private userService: UserService
+                private userService: UserService,
+                public appSetting: AppSetting
     ) {
         this.isNetwork = (this.network.type !== 'none');
     }

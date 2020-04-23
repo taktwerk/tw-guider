@@ -63,7 +63,7 @@ export class SyncModalComponent implements OnInit {
                 public network: Network,
                 public datepipe: DatePipe,
                 private userService: UserService,
-                private appSetting: AppSetting,
+                public appSetting: AppSetting,
                 private insomnia: Insomnia) {
         this.isNetwork = (this.network.type !== 'none');
         this.initUser().then(() => {

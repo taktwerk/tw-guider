@@ -54,7 +54,7 @@ export class SynchronizationComponent implements OnInit {
                 public alertController: AlertController,
                 private translateConfigService: TranslateConfigService,
                 private userService: UserService,
-                private appSetting: AppSetting) {
+                public appSetting: AppSetting) {
       this.initUser().then(() => {
           if ([0, 1, 2].includes(this.userService.userDb.userSetting.syncMode)) {
               this.modeSync = this.userService.userDb.userSetting.syncMode;
@@ -211,6 +211,11 @@ export class SynchronizationComponent implements OnInit {
     this.apiSync.isStartPushBehaviorSubject.subscribe(isPush => {
       this.isStartPush = isPush;
       this.detectChanges();
+    });
+    this.events.subscribe(this.appSetting.appSetting.TAG + ':update', (model) => {
+        if (model.settings.isEnabledUsb && this.modeSync === SyncMode.NetworkConnect) {
+            this.changeSyncMode(SyncMode.Manual);
+        }
     });
   }
 }

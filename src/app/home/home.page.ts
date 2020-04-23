@@ -31,7 +31,7 @@ export class HomePage {
       private qrScanner: QRScanner,
       private http: HttpClient,
       private barcodeScanner: BarcodeScanner,
-      private appSetting: AppSetting,
+      public appSetting: AppSetting,
       private userService: UserService,
       public navCtrl: NavController,
       public changeDetectorRef: ChangeDetectorRef,
@@ -72,7 +72,8 @@ export class HomePage {
                 if (user) {
                   await this.authService.logout();
                 }
-                const appConfirmUrl =  config.host + environment.apiUrlPath + '/login/';
+                const host = this.appSetting.isEnabledUsb ? this.appSetting.usbHost : config.host;
+                const appConfirmUrl =  host + environment.apiUrlPath + '/login/';
                 if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
                   console.log('clientIdentifier');
                   await this.authService.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
@@ -80,6 +81,7 @@ export class HomePage {
                   console.log('userIdentifier');
                   await this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
                 }
+
                 config.isWasQrCodeSetup = true;
                 this.appSetting.save(config).then(() => {
                   this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
@@ -147,5 +149,16 @@ export class HomePage {
       buttons
     });
     await alert.present();
+  }
+
+  changeUsbMode() {
+    this.appSetting.appSetting.find().then(async (result) => {
+      console.log('app setting result', result);
+      if (result) {
+        result.settings.isEnabledUsb = !this.appSetting.isEnabledUsb;
+        await result.save();
+        this.appSetting.isEnabledUsb = !this.appSetting.isEnabledUsb;
+      }
+    });
   }
 }

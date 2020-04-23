@@ -468,7 +468,7 @@ export class ApiSync {
     }
 
     public isOffNetwork(): boolean {
-        if (this.network.type === 'none') {
+        if (this.network.type === 'none' && !this.appSetting.isEnabledUsb) {
             this.makeSyncPause().then(() => {
                 this.isBusy = false;
             });
@@ -568,8 +568,10 @@ export class ApiSync {
                         await this.userService.userDb.save();
                     }
                 } catch (err) {
+                    this.failSync();
                     this.isStartSyncBehaviorSubject.next(false);
                     resolve(false);
+                    return;
                 }
             }
             await this.pushOneAtTime();

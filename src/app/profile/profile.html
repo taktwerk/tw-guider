@@ -90,6 +90,16 @@
        </ion-item>
   </span>
   <language-selector-component></language-selector-component>
+  <ion-list>
+      <ion-item>
+          <ion-label>Enable USB mode</ion-label>
+          <ion-toggle slot="start"
+                      checked="{{ appSetting.isEnabledUsb }}"
+                      (click)="changeUsbMode()"
+          >
+          </ion-toggle>
+      </ion-item>
+  </ion-list>
   <ion-item>
     <ion-button [routerLink]="['/logout']">
       <ion-icon name="exit"></ion-icon>

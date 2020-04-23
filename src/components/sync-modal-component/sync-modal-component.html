@@ -18,7 +18,7 @@
                 <section>
                     <h6>{{ 'sync-modal.Last successful sync date:' | translate:params }}</h6> {{ this.getLastSyncDate() }}
                 </section>
-                <div *ngIf="isNetwork">
+                <div *ngIf="isNetwork || appSetting.isEnabledUsb">
                     <section *ngIf="modeSync === 0" class="modeSync0">
                         <span *ngIf="!isStartSync" class="notStartSync">
                             <ion-button *ngIf="!['progress', 'resume', 'pause'].includes(syncProgressStatus)"

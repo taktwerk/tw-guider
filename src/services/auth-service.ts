@@ -225,6 +225,7 @@ export class AuthService {
                     }
                 })
                 .catch(err => {
+                    console.log('login identifire errror', err);
                     if (err.error && err.error.error) {
                         if (err.error.error === 'User was blocked') {
                             if (err.error.blocked_user_id) {

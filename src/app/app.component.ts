@@ -250,6 +250,7 @@ export class AppComponent implements OnInit {
   }
 
   protected changeSyncModeAction(syncMode) {
+    console.log('changeSyncModeAction');
     if (syncMode !== 2 && this.periodicSync) {
       this.periodicSync.unsubscribe();
       this.periodicSync = null;
