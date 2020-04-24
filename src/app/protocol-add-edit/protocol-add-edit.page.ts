@@ -236,6 +236,7 @@ export class ProtocolAddEditPage implements OnInit {
       if (this.protocolId) {
         this.setExistModel();
       } else {
+        console.log('no protocol id');
         this.model = this.protocolService.newModel();
         this.model.client_id = this.clientId;
         this.model.protocol_template_id = this.templateId;
@@ -243,6 +244,7 @@ export class ProtocolAddEditPage implements OnInit {
         this.model.reference_model = this.reference_model;
         this.model.protocol_form_table = 'protocol_default';
         this.protocol_form = await this.getProtcolFormModel();
+        this.model.canEditProtocol = await this.protocolTemplateService.canCreateProtocol(this.templateId);
       }
       this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
         this.setExistModel();
