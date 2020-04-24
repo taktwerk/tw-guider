@@ -223,7 +223,7 @@ export abstract class ApiService {
                         headers
                     );
                     if (uploadResult) {
-                        await this.saveSyncedModel(uploadResult, true);
+                        await this.saveSyncedModel(uploadResult, true, false);
                         if (userForSaving) {
                             userForSaving.userSetting.appDataVersion++;
                             await userForSaving.save();
@@ -239,7 +239,7 @@ export abstract class ApiService {
         });
     }
 
-    async saveSyncedModel(newModel, canUpdateNotSyncedData = false) {
+    async saveSyncedModel(newModel, canUpdateNotSyncedData = false, willChangeFiles = true) {
         let oldModel = await this.dbModelApi.findFirst(['id', newModel[this.dbModelApi.apiPk]]);
         console.log('this.dbModelApi.apiPk', this.dbModelApi.apiPk);
         oldModel = oldModel[0] ? oldModel[0] : null;
@@ -253,9 +253,11 @@ export abstract class ApiService {
         if (oldModel) {
             obj.loadFromApiToCurrentObject(oldModel);
         }
-        obj.loadFromApiToCurrentObject(newModel, oldModel);
+        obj.loadFromApiToCurrentObject(newModel, oldModel, willChangeFiles);
         let isSynced = true;
+        console.log('before !canUpdateNotSyncedData && oldModel && !oldModel.is_synced && oldModel.doesHaveFilesForPush()');
         if (!canUpdateNotSyncedData && oldModel && !oldModel.is_synced && oldModel.doesHaveFilesForPush()) {
+            console.log('!canUpdateNotSyncedData && oldModel && !oldModel.is_synced && oldModel.doesHaveFilesForPush()');
             const fieldsForPush = oldModel.getFieldsForPushFiles();
 
             for (let i = 0; i < fieldsForPush.length; i++) {

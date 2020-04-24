@@ -29,9 +29,7 @@
       </span>
       <span *ngIf="isNetwork || appSetting.isEnabledUsb">
         <span *ngIf="(isStartSync && iconStatus === 'progress')">
-          <section>
             <ion-spinner name="lines" color="primary"></ion-spinner>
-          </section>
         </span>
         <span *ngIf="!(isStartSync && iconStatus === 'progress')">
           <span *ngIf="isAvailableForSyncData">
