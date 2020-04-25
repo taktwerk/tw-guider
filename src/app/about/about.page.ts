@@ -24,9 +24,7 @@ export class AboutPage implements OnInit {
         private platform: Platform,
         public authService: AuthService,
         private appVersion: AppVersion
-    ) {
-        this.authService.checkAccess();
-    }
+    ) {}
 
     ngOnInit(): void {
         this.platform.ready().then(() => {

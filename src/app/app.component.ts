@@ -186,12 +186,17 @@ export class AppComponent implements OnInit {
 
   protected async setPages() {
     this.appPages = this.getTopMenuPages();
+    this.appPages.push(
+        {title: this.translateConfigService.translateWord('about.header'), url: '/about', icon: 'information-circle'}
+    );
   }
 
   protected getTopMenuPages() {
     const appPages = [];
     if (!this.appSetting.isWasQrCodeSetup || !this.authService.isLoggedin) {
-      appPages.push({title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'});
+      appPages.push(
+          {title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'}
+      );
     }
     if (!this.appSetting.isWasQrCodeSetup) {
       return appPages;
@@ -205,7 +210,6 @@ export class AppComponent implements OnInit {
         {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'},
         {title: this.translateConfigService.translateWord('protocol.Protocol'), url: '/protocol', icon: 'document'},
         {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
-        {title: this.translateConfigService.translateWord('about.header'), url: '/about', icon: 'information-circle'}
     );
 
     return appPages;
