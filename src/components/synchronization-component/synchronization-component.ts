@@ -148,6 +148,7 @@ export class SynchronizationComponent implements OnInit {
           this.userService.userDb.userSetting.syncAllItemsCount = 0;
           this.userService.userDb.userSetting.syncPercent = 0;
           this.userService.userDb.userSetting.lastSyncedAt = null;
+          this.userService.userDb.userSetting.lastModelUpdatedAt = null;
           this.userService.userDb.userSetting.lastSyncProcessId = null;
           this.userService.userDb.userSetting.appDataVersion = null;
           this.apiSync.isAvailableForSyncData.next(true);

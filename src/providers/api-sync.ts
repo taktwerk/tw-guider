@@ -35,6 +35,7 @@ import {WorkflowTransitionService} from './api/workflow-transition-service';
 export class ApiSync {
     private isBusy: boolean = false;
     public syncData: any;
+    public lastModelUpdatedAt: Date;
 
     /**
      * Contains all services to sync.
@@ -175,9 +176,11 @@ export class ApiSync {
     }
 
     private getUTCDate(date: Date) {
-        date.setTime(date.getTime());
+        // date.setTime(date.getTime());
 
-        return date;
+        return new Date(
+            Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds())
+        );
     }
 
     private willMakeCancel(): boolean {
@@ -218,6 +221,10 @@ export class ApiSync {
             try {
                 /// TODO separete method and move to the make sync process
                 const isSavedSyncData = this.saveModels(this.syncData);
+                if (this.lastModelUpdatedAt) {
+                    this.userService.userDb.userSetting.lastModelUpdatedAt = this.lastModelUpdatedAt;
+                    this.userService.userDb.save();
+                }
                 resolve(isSavedSyncData);
             } catch (err) {
                 this.failSync(err);
@@ -237,6 +244,9 @@ export class ApiSync {
             if (!countOfSyncedData || countOfSyncedData < this.userService.userDb.userSetting.syncLastElementNumber) {
                 this.unsetSyncProgressData().then(() => {
                     this.userService.userDb.userSetting.lastSyncedAt = new Date();
+                    if (this.lastModelUpdatedAt) {
+                        this.userService.userDb.userSetting.lastModelUpdatedAt = this.lastModelUpdatedAt;
+                    }
                     this.userService.userDb.save();
                 });
                 this.isBusy = false;
@@ -254,6 +264,9 @@ export class ApiSync {
             this.syncProgressStatus.next('success');
             this.userService.userDb.userSetting.syncStatus = 'success';
             this.userService.userDb.userSetting.lastSyncedAt = new Date();
+            if (this.lastModelUpdatedAt) {
+                this.userService.userDb.userSetting.lastModelUpdatedAt = this.lastModelUpdatedAt;
+            }
             this.userService.userDb.save();
             this.isBusy = false;
             this.noDataForSync.next(true);
@@ -452,13 +465,17 @@ export class ApiSync {
             return url;
         }
 
-        if (this.userService.userDb.userSetting.lastSyncedAt) {
+        if (this.userService.userDb.userSetting.lastModelUpdatedAt) {
             // Need to recast the saved date to get the ISOString, which will give us the correct offset to sync with the ser
-            const lastUpdatedAt = this.getUTCDate(new Date(this.userService.userDb.userSetting.lastSyncedAt));
+            const lastUpdatedAt = this.getUTCDate(new Date(this.userService.userDb.userSetting.lastModelUpdatedAt));
+            // const lastUpdatedAt = new Date(this.userService.userDb.userSetting.lastModelUpdatedAt).getTime();
+            console.log('lastUpdatedAt', lastUpdatedAt);
+            console.log('new Date(this.userService.userDb.userSetting.lastModelUpdatedAt)', this.userService.userDb.userSetting.lastModelUpdatedAt);
+            console.log('lastUpdatedAt.toISOString()', lastUpdatedAt.toISOString());
             url += '?lastUpdatedAt=' + lastUpdatedAt.toISOString();
         }
         if (!isCheckAvailableData && this.userService.userDb.userSetting.lastSyncProcessId) {
-            url += !this.userService.userDb.userSetting.lastSyncedAt ? '?' : '&';
+            url += !this.userService.userDb.userSetting.lastModelUpdatedAt ? '?' : '&';
             url += 'syncProcessId=' + this.userService.userDb.userSetting.lastSyncProcessId;
         }
 
@@ -520,6 +537,7 @@ export class ApiSync {
             countOfSyncedData = this.countOfAllChangedItems;
             if (!this.userService.userDb.userSetting.isSyncAvailableData) {
                 this.noDataForSync.next(true);
+                this.lastModelUpdatedAt
                 isCanPullData = await this.prepareDataForSavingPullData(countOfSyncedData);
                 console.log('isCanPullData', isCanPullData);
                 console.log('this.countOfAllChangedItems', this.countOfAllChangedItems);
@@ -551,6 +569,9 @@ export class ApiSync {
                         this.syncProgressStatus.next('success');
                         this.userService.userDb.userSetting.syncStatus = 'success';
                         this.userService.userDb.userSetting.lastSyncedAt = new Date();
+                        if (this.lastModelUpdatedAt) {
+                            this.userService.userDb.userSetting.lastModelUpdatedAt = this.lastModelUpdatedAt;
+                        }
                         this.userService.userDb.save();
                         this.isBusy = false;
                         this.isBusyPush = false;
@@ -566,6 +587,7 @@ export class ApiSync {
                     const isSavedSyncData = await this.pull(syncStatus);
                     console.log('isSavedSyncData', isSavedSyncData);
                     if (isSavedSyncData) {
+                        this.userService.userDb.userSetting.lastModelUpdatedAt = pullData.lastModelUpdatedAt;
                         this.userService.userDb.userSetting.appDataVersion = pullData.version;
                         await this.userService.userDb.save();
                     }

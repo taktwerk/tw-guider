@@ -12,6 +12,8 @@ export class UserSetting {
   public accessToken: string;
   /** last sync date */
   public lastSyncedAt: Date;
+
+  public lastModelUpdatedAt: Date;
   /** last sync diff */
   public lastSyncedDiff: number;
 
