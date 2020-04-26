@@ -223,7 +223,7 @@ export abstract class ApiService {
                         headers
                     );
                     if (uploadResult) {
-                        await this.saveSyncedModel(uploadResult, true, false);
+                        // await this.saveSyncedModel(uploadResult, false, false);
                         if (userForSaving) {
                             userForSaving.userSetting.appDataVersion++;
                             await userForSaving.save();
