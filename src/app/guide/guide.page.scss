@@ -1,13 +1,17 @@
-.video-icon {
+/* .video-icon {
   height: 70vh;
   width: auto;
   margin: auto;
   display: block;
 }
-
+*/
 .videocam-icon {
-  font-size: 100px;
-  color: red;
+  color: white;
+  opacity: 0.8;
+  font-size: 100pt;
+  position: absolute;
+  top: 15%;
+  left: 40%;
 }
 
 /*ion-slide {
@@ -66,15 +70,8 @@ ion-slides {
   flex-wrap: wrap;
 }
 .video-with-thumbnail {
-  position: relative;
-  .videocam-icon {
-    position: absolute;
-    font-size: 7vh;
-    right: 0;
-    top: 0;
-  }
+  height: 100%;
 }
-
 
 .guide-step {
   height: 100%;
@@ -106,13 +103,24 @@ ion-slides {
   height: 100%;
 }
 
+@media screen and (orientation:portrait) {
+  .guide-step ion-row, .portrait .guide-step ion-col {
+    height: 33vh;
+  }
+}
+
+
 .guide-step-img {
   text-align: center;
   height: 100%;
   img {
-    border-radius: 4px;
+    border-radius: 2px;
     -webkit-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
     box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+    max-width: 50%;
+    max-height: 50%;
+    transform: scale(2);
+    transform-origin: top center;
   }
 }
 
@@ -124,6 +132,18 @@ ion-slides {
 
 .has-assets .guide-step-text ion-card-content {
   max-height: calc(100vh - 18rem);
+}
+
+@media screen and (orientation:portrait) {
+  .guide-step-text ion-card-content {
+    overflow: scroll;
+    color: var(--ion-text-color, black);
+    max-height: calc(67vh - 15rem);
+  }
+
+  .has-assets .guide-step-text ion-card-content {
+    max-height: calc(67vh - 18rem);
+  }
 }
 
 .guide-assets ion-card {
