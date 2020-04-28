@@ -40,7 +40,9 @@
               <h2>
                 {{item.title}}
               </h2>
-              <html-description-component [html]="item.description"></html-description-component>
+              <p class="guide-description">
+                {{item.description}}
+              </p>
               <p *ngIf="item.duration">
                 {{ 'guides.duration' | translate:params }}: {{ item.getDuration() }}
               </p>
