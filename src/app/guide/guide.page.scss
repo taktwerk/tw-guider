@@ -49,6 +49,10 @@ ion-slides {
 }
 
 .swiper-slide {
+  img {
+    width: auto !important;
+    margin: auto;
+  }
   display: block;
   text-align: left;
 }
