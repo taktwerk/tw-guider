@@ -3,6 +3,7 @@
         <ion-title>
             {{ 'sync-modal.header' | translate:params }}
         </ion-title>
+        <sync-spinner-component slot="primary"></sync-spinner-component>
         <ion-buttons slot="end">
             <ion-button (click)="dismiss()">
                 {{ 'close' | translate:params }}
@@ -18,7 +19,7 @@
                 <section>
                     <h6>{{ 'sync-modal.Last successful sync date:' | translate:params }}</h6> {{ this.getLastSyncDate() }}
                 </section>
-                <div *ngIf="isNetwork">
+                <div *ngIf="isNetwork || appSetting.isEnabledUsb">
                     <section *ngIf="modeSync === 0" class="modeSync0">
                         <span *ngIf="!isStartSync" class="notStartSync">
                             <ion-button *ngIf="!['progress', 'resume', 'pause'].includes(syncProgressStatus)"
@@ -75,7 +76,7 @@
                         </div>
                     </section>
                 </div>
-                <div *ngIf="!isNetwork">
+                <div *ngIf="!isNetwork && !appSetting.isEnabledUsb">
                     <div>
                         {{ 'sync-modal.No network connection.' | translate:params }}
                     </div>
@@ -91,8 +92,14 @@
                 >
                     {{ 'sync-modal.There is data available for synchronization from the server.' | translate:params }}
                 </section>
+                <div *ngIf="pushProgressStatus === 'failed'">
+                    {{ 'sync-modal.Sending data to the server failed.' | translate:params }}
+                </div>
                 <div *ngIf="pushProgressStatus === 'progress'">
-                    {{ 'sync-modal.Data is sent to the server.' | translate:params }}
+                    {{ 'sync-modal.Data is sent to the server' | translate:params }}
+                </div>
+                <div *ngIf="pushProgressStatus === 'success'">
+                    {{ 'sync-modal.Data has been sent to the server' | translate:params }}
                 </div>
                 <div *ngIf="noDataForSync">
                     {{ 'sync-modal.No data for sync' | translate:params }}

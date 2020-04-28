@@ -8,6 +8,10 @@
   "delete": "Delete",
   "title": "Title",
   "All": "All",
+  "about": {
+    "header":"About",
+    "App Version": "App Version"
+  },
   "start": {
     "header":"Start",
     "title": "Start page of the Guider"
@@ -27,10 +31,12 @@
     "Failed" : "Failed",
     "Success" : "Success",
     "No data for sync" : "No data for sync",
+    "No data for pull" : "No data for pull",
     "There is data available for pushing to the server.": "There is data available for pushing to the server.",
     "No network connection.": "No network connection.",
     "Data synchronization is not yet possible.": "Data synchronization is not yet possible.",
-    "Data is sent to the server.": "Data is sent to the server."
+    "Data is sent to the server": "Data is sent to the server.",
+    "Data has been sent to the server": "Data has been sent to the server."
   },
   "guides": {
     "header": "Guides",
@@ -67,19 +73,19 @@
     "header": "Profile",
     "Profile": "Profile",
     "ID": "ID",
-    "Name": "Name",
+    "Username": "Username",
     "Full name": "Full name",
     "Email": "Email",
     "Last Login At": "Last Login At",
     "Roles": "Roles",
-    "Client name": "Client name"
+    "Company": "Client name"
   },
   "synchronization-component": {
     "Sync Modes": "Sync Modes",
     "Manually": "Manually",
     "Online": "Online",
     "Periodic": "Periodic",
-    "Re-sync data": "Re-sync data",
+    "Re-sync data": "Re-sync all data (deletes not synced local data)!",
     "Sync was canceled.": "Sync was canceled.",
     "Now is manually mode.": "Now is manually mode.",
     "Now is network connection mode.": "Now is network connection mode.",
@@ -113,13 +119,14 @@
     "Title is required": "Title is required",
     "nothing_to_save": "Nothing to save",
     "user_blocked": "You are blocked, contact an administrator",
-    "is_app_version_old": "The application version is outdated. Please update the application."
+    "is_app_version_old": "The application version is outdated. Please update the application.",
+    "There was an error setting up the application. Please try again.": "There was an error setting up the application. Please try again."
   },
   "qr": {
     "Application was successfully configured": "Application was successfully configured",
     "The Guider app enables the display of digital instructions (assembly, training, etc.)": "The Guider app enables the display of digital instructions (assembly, training, etc.)",
     "The app only works with a customer account. Please contact taktwerk GmbH for this": "The app only works with a customer account. Please contact taktwerk GmbH for this",
-    "Scan the received": "Scan the received one",
+    "Scan the received": "Scan the received",
     "QR-Code": "QR-Code",
     "Setup": "Setup",
     "Close Scanner": "Close Scanner"

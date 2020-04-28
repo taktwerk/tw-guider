@@ -200,11 +200,12 @@ export class AuthService {
     }
 
     loginByIdentifier(appConfirmUrl, type: string, identifier: string) {
-        return new Promise(async (resolve) => {
+        return new Promise(async (resolve, reject) => {
             if (type === 'client') {
                 const version = await this.appVersion.getVersionNumber();
                 if (!version) {
                     resolve(false);
+                    reject(new Error('Missed version number in config'));
                     return false;
                 }
                 appConfirmUrl += 'by-client-identifier?client=' + identifier;
@@ -214,14 +215,17 @@ export class AuthService {
             }
 
             this.http.get(appConfirmUrl)
-                .subscribe(async data => {
+                .toPromise()
+                .then(async data => {
                     if (data) {
                         await this.saveAuthenticatedUser(data).then(() => {
                             resolve(data);
                             return true;
                         });
                     }
-                }, err => {
+                })
+                .catch(err => {
+                    console.log('login identifire errror', err);
                     if (err.error && err.error.error) {
                         if (err.error.error === 'User was blocked') {
                             if (err.error.blocked_user_id) {
@@ -233,6 +237,7 @@ export class AuthService {
                                     }
                                 });
                             }
+                            reject(new Error('User blocked'));
                             this.presentAlert(
                                 'Config Error',
                                 null,
@@ -242,10 +247,12 @@ export class AuthService {
                             return;
                         }
                     }
+
+                    reject(new Error('Config Error'));
                     this.presentAlert(
                         'Config Error',
                         null,
-                        'There was an error setting up the application. Please try again.<br><br>Error: ' + err + '<br>',
+                        'There was an error setting up the application. Please try again.',
                         ['OK']
                     );
                 });

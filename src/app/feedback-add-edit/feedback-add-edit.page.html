@@ -48,11 +48,15 @@
         <img *ngIf="model.isExistThumbOfFile()"
              [src]="model.getFileImagePath()"
         />
-        <ion-icon name="videocam"
+        <ion-icon *ngIf="model.isExistThumbOfFile()"
+                  name="videocam"
                   class="videocam-icon"
                   slot="start"
         >
         </ion-icon>
+        <img *ngIf="!model.isExistThumbOfFile()"
+             [src]="'/assets/videooverlay.png'"
+        >
       </div>
       <ion-icon *ngIf="model.isPdf()"
                 class="videocam-icon"

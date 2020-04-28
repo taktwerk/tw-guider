@@ -33,6 +33,7 @@ export enum ConnectionStatusEnum {
 export class AppComponent implements OnInit {
   public appPages = [];
   public versionNumber = '0.0.1';
+  public showPageView = false;
 
   constructor(
     private platform: Platform,
@@ -54,6 +55,10 @@ export class AppComponent implements OnInit {
     public navCtrl: NavController,
     private ngZone: NgZone
   ) {
+    (async () => {
+      await this.platform.ready();
+      await this.initializeApp();
+    })();
   }
 
   public userDb: UserDb;
@@ -65,47 +70,61 @@ export class AppComponent implements OnInit {
   checkAvailableSyncChanges: any;
 
   //// TODO in future save device info via API in this place
-  initializeApp() {
-    this.platform.ready().then(() => {
-      this.translateConfigService.setLanguage();
-      this.login().then(async (result) => {
-        let currentLanguage = '';
-        if (result) {
-          try {
-            await this.initUserDB();
-            if (!this.userService.userDb) {
-              return;
-            }
-            if (this.userService.userDb.userSetting.language) {
-              currentLanguage = this.userService.userDb.userSetting.language;
-            }
-            this.syncService.syncMode.next(this.userService.userDb.userSetting.syncMode);
-            if (this.userService.userDb.userSetting.syncLastElementNumber > 0 &&
-                (this.userService.userDb.userSetting.syncStatus === 'resume' ||
-                 this.userService.userDb.userSetting.syncStatus === 'progress')
-            ) {
-              this.userService.userDb.userSetting.syncStatus = 'pause';
-              this.userService.userDb.save().then(() => {
-                this.apiSync.sendSyncProgress();
+  async initializeApp() {
+    this.translateConfigService.setLanguage();
+    const result = await this.login();
+    let currentLanguage = '';
+    if (result) {
+      try {
+        await this.initUserDB();
+        if (!this.userService.userDb) {
+          return;
+        }
+        const user = await this.userService.getUser();
+        if (user) {
+          await this.ngZone.run(() => {
+            this.navCtrl.navigateRoot('/guides').then(() => {
+              this.showPageView = true;
+            });
+          });
+        } else {
+          if (this.appSetting.isWasQrCodeSetup) {
+            this.ngZone.run(() => {
+              this.navCtrl.navigateRoot('/login').then(() => {
+                this.showPageView = true;
               });
-            }
-            this.apiSync.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
-          } catch (e) {
+            });
           }
         }
-        this.translateConfigService.setLanguage(currentLanguage);
-        if (!this.appSetting.isMigratedDatabase()) {
-          this.appSetting.showIsNotMigratedDbPopup();
+        if (this.userService.userDb.userSetting.language) {
+          currentLanguage = this.userService.userDb.userSetting.language;
         }
-        this.setPages();
-        this.initNetwork();
-        this.registerEvents();
-        // this.statusBar.styleDefault();
-        this.splashScreen.hide();
-        this.statusBar.overlaysWebView(false);
-        this.statusBar.show();
-      });
-    });
+        this.syncService.syncMode.next(this.userService.userDb.userSetting.syncMode);
+        if (this.userService.userDb.userSetting.syncLastElementNumber > 0 &&
+            (this.userService.userDb.userSetting.syncStatus === 'resume' ||
+             this.userService.userDb.userSetting.syncStatus === 'progress')
+        ) {
+          this.userService.userDb.userSetting.syncStatus = 'pause';
+          this.userService.userDb.save().then(() => {
+            this.apiSync.sendSyncProgress();
+          });
+        }
+        this.apiSync.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
+      } catch (e) {
+      }
+    } else {
+      this.showPageView = true;
+    }
+    this.translateConfigService.setLanguage(currentLanguage);
+    if (!this.appSetting.isMigratedDatabase()) {
+      this.appSetting.showIsNotMigratedDbPopup();
+    }
+    this.setPages();
+    this.initNetwork();
+    this.registerEvents();
+    this.splashScreen.hide();
+    this.statusBar.overlaysWebView(false);
+    this.statusBar.show();
   }
 
   protected initUserDB() {
@@ -167,12 +186,17 @@ export class AppComponent implements OnInit {
 
   protected async setPages() {
     this.appPages = this.getTopMenuPages();
+    this.appPages.push(
+        {title: this.translateConfigService.translateWord('about.header'), url: '/about', icon: 'information-circle'}
+    );
   }
 
   protected getTopMenuPages() {
     const appPages = [];
     if (!this.appSetting.isWasQrCodeSetup || !this.authService.isLoggedin) {
-      appPages.push({title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'});
+      appPages.push(
+          {title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'}
+      );
     }
     if (!this.appSetting.isWasQrCodeSetup) {
       return appPages;
@@ -250,6 +274,7 @@ export class AppComponent implements OnInit {
   }
 
   protected changeSyncModeAction(syncMode) {
+    console.log('changeSyncModeAction');
     if (syncMode !== 2 && this.periodicSync) {
       this.periodicSync.unsubscribe();
       this.periodicSync = null;
@@ -275,30 +300,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initializeApp();
-    this.userService.getUser().then(user => {
-      if (user) {
-        this.ngZone.run(() => {
-          this.navCtrl.navigateRoot('/guides');
-        });
-      } else {
-        if (this.appSetting.isWasQrCodeSetup) {
-          this.ngZone.run(() => {
-            this.navCtrl.navigateRoot('/login');
-          });
-        }
-      }
-    });
     this.appSetting.isWasQrCodeSetupSubscribtion.subscribe(isWasQrCodeSetup => {
       if (isWasQrCodeSetup) {
         this.setPages();
-      }
-    });
-    this.platform.ready().then(() => {
-      if (this.appVersion) {
-        this.appVersion.getVersionNumber().then((versionNumber) => {
-          this.versionNumber = versionNumber;
-        });
       }
     });
     this.baseProjectSetup();

@@ -38,11 +38,13 @@
       </protocol-default-component>
     </ion-list>
     <span *ngIf="!model[model.COL_ID] || (model.workflowStep && model.workflowStep.type !== 'final')">
-      <ion-button slot="start" (click)="save()">
+      <ion-button *ngIf="model.canEditProtocol"
+                  slot="start"
+                  (click)="save()">
         <ion-icon slot="start" name="save"></ion-icon>
           {{ 'save' | translate:params }}
       </ion-button>
-      <span *ngIf="model[model.COL_ID]">
+      <span *ngIf="model[model.COL_ID] && model.canFillProtocol">
         <ion-button *ngFor="let nextWorkflowTransition of model.workflowStep.workflowStepNextTransitions"
                 color="medium"
                 size="default"
@@ -55,7 +57,5 @@
         </ion-button>
       </span>
     </span>
-
-
   </form>
 </ion-content>

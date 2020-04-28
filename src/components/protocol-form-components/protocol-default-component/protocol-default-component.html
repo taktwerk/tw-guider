@@ -1,5 +1,8 @@
-<ion-item *ngIf="!protocol[protocol.COL_ID] || (protocol.workflowStep && protocol.workflowStep.type !== 'final')">
-    <ion-label>
+<ion-item *ngIf="!protocol[protocol.COL_ID] ||
+                 protocol.canEditProtocol ||
+                 (protocol.workflowStep && protocol.workflowStep.type !== 'final')"
+>
+<ion-label>
         <span>
             Protocol file
         </span>

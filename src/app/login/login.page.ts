@@ -5,6 +5,7 @@ import {HttpClient} from '../../services/http-client';
 import { NgForm } from '@angular/forms';
 import {ApiSync} from '../../providers/api-sync';
 import {Network} from '@ionic-native/network/ngx';
+import {AppSetting} from '../../services/app-setting';
 
 /**
  * Generated class for the LoginPage page.
@@ -30,12 +31,14 @@ export class LoginPage {
      * @param http
      * @param apiSync
      * @param network
+     * @param appSetting
      */
     constructor(public navCtrl: NavController,
                 public authService: AuthService,
                 public http: HttpClient,
                 public apiSync: ApiSync,
-                private network: Network) {}
+                private network: Network,
+                private appSetting: AppSetting) {}
 
     /**
      * Try to login with the current pin-code and redirect the user to the
@@ -54,7 +57,7 @@ export class LoginPage {
             this.http.showToast('validation.Username is required');
             return;
         }
-        if (this.network.type === 'none') {
+        if (this.network.type === 'none' && !this.appSetting.isEnabledUsb) {
             this.loginOffine(form);
         } else {
             this.loginOnline(form);

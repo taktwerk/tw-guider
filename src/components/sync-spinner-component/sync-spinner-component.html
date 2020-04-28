@@ -21,14 +21,15 @@
       <span *ngIf="isAvailableForPushData">
         <ion-icon color="success" name="send"></ion-icon>
       </span>
-      <span *ngIf="!isNetwork">
+      <span *ngIf="appSetting.isEnabledUsb">
+          <ion-icon *ngIf="!isAvailableForPushData" name="laptop"></ion-icon>
+      </span>
+      <span *ngIf="!isNetwork && !appSetting.isEnabledUsb">
           <ion-icon *ngIf="!isAvailableForPushData" name="cloud-outline"></ion-icon>
       </span>
-      <span *ngIf="isNetwork">
+      <span *ngIf="isNetwork || appSetting.isEnabledUsb">
         <span *ngIf="(isStartSync && iconStatus === 'progress')">
-          <section>
             <ion-spinner name="lines" color="primary"></ion-spinner>
-          </section>
         </span>
         <span *ngIf="!(isStartSync && iconStatus === 'progress')">
           <span *ngIf="isAvailableForSyncData">
@@ -41,7 +42,6 @@
               <ion-icon *ngIf="!iconStatus" class="wifi-icon" name="wifi"></ion-icon>
           </span>
         </span>
-
       </span>
   </div>
 </ion-buttons>

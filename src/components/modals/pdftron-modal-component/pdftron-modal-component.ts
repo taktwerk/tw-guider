@@ -88,8 +88,6 @@ export class PdftronModalComponent implements OnInit, OnDestroy {
                 listeningElement.setAttribute('style', 'display:none;');
                 receivedElement.setAttribute('style', 'display:block;');
 
-                console.log('Received Event: ' + id);
-
                 const viewerElement = document.getElementById('viewer');
                 const viewer = new PDFTron.NativeViewer({
                     l: '<your-key-here>',

@@ -21,6 +21,8 @@ export class AppSetting {
     public mode = AppConfigurationModeEnum.ONLY_CONFIGURE;
     public taktwerk = environment.taktwerk;
     public host = null;
+    public usbHost = environment.usbHost;
+    public isEnabledUsb = false;
     public isWasQrCodeSetup = false;
     public isWasQrCodeSetupSubscribtion: BehaviorSubject<boolean>;
     public dbMigrationVersion = 1;
@@ -30,6 +32,8 @@ export class AppSetting {
         taktwerk : environment.taktwerk,
         isWasQrCodeSetup: false,
         dbMigrationVersion: 1,
+        usbHost: environment.usbHost,
+        isEnabledUsb: false
     };
 
     appSetting: AppSettingsDb;
@@ -88,6 +92,10 @@ export class AppSetting {
     }
 
     public getApiUrl() {
+        if (this.isEnabledUsb && this.usbHost) {
+            return this.usbHost + environment.apiUrlPath;
+        }
+
         return this.host + environment.apiUrlPath;
     }
 
@@ -103,6 +111,9 @@ export class AppSetting {
         if (!userSettingsObject) {
             userSettingsObject = this.defaultData;
         }
+        userSettingsObject['isEnabledUsb'] = this.isEnabledUsb;
+        userSettingsObject['usbHost'] = environment.usbHost;
+        this.usbHost = environment.usbHost;
         userSettingsObject['dbMigrationVersion'] = environment.dbMigrationVersion;
         this.dbMigrationVersion = environment.dbMigrationVersion;
 

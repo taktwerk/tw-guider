@@ -95,6 +95,7 @@ export class ProtocolDefaultModel extends DbApiModel {
                 const protocol = protocolModels[0];
                 if (protocol) {
                     this.protocol_id = protocol.idApi;
+                    console.log('this.protocol_id', this.protocol_id);
                     await this.save(false, false);
                 }
             }

@@ -54,7 +54,7 @@ export class SynchronizationComponent implements OnInit {
                 public alertController: AlertController,
                 private translateConfigService: TranslateConfigService,
                 private userService: UserService,
-                private appSetting: AppSetting) {
+                public appSetting: AppSetting) {
       this.initUser().then(() => {
           if ([0, 1, 2].includes(this.userService.userDb.userSetting.syncMode)) {
               this.modeSync = this.userService.userDb.userSetting.syncMode;
@@ -148,10 +148,13 @@ export class SynchronizationComponent implements OnInit {
           this.userService.userDb.userSetting.syncAllItemsCount = 0;
           this.userService.userDb.userSetting.syncPercent = 0;
           this.userService.userDb.userSetting.lastSyncedAt = null;
+          this.userService.userDb.userSetting.lastModelUpdatedAt = null;
           this.userService.userDb.userSetting.lastSyncProcessId = null;
           this.userService.userDb.userSetting.appDataVersion = null;
           this.apiSync.isAvailableForSyncData.next(true);
           this.userService.userDb.userSetting.isSyncAvailableData = true;
+          this.apiSync.isAvailableForPushData.next(false);
+          this.userService.userDb.userSetting.isPushAvailableData = false;
           this.userService.userDb.save().then(() => {
               this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
               this.apiSync.syncProgressStatus.next('success');
@@ -209,6 +212,11 @@ export class SynchronizationComponent implements OnInit {
     this.apiSync.isStartPushBehaviorSubject.subscribe(isPush => {
       this.isStartPush = isPush;
       this.detectChanges();
+    });
+    this.events.subscribe(this.appSetting.appSetting.TAG + ':update', (model) => {
+        if (model.settings.isEnabledUsb && this.modeSync === SyncMode.NetworkConnect) {
+            this.changeSyncMode(SyncMode.Manual);
+        }
     });
   }
 }

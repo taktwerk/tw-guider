@@ -28,6 +28,7 @@ export class GuiderModel extends DbApiModel {
     public title: string;
     public description: string;
     public preview_file: string;
+    public preview_file_path: string;
     public revision_term: string;
     public revision_counter: number;
     public duration: number;

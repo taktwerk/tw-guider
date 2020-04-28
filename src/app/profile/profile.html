@@ -30,7 +30,7 @@
     <ion-label>
       <ion-icon name="person"></ion-icon>
       <span>
-          {{ 'profile.Name' | translate:params }}
+          {{ 'profile.Username' | translate:params }}
       </span>
     </ion-label>
     <span class="ion-align-items-end">{{ authService.auth.username }}</span>
@@ -83,13 +83,23 @@
             <ion-label>
               <ion-icon name="briefcase"></ion-icon>
               <span>
-                  {{ 'profile.Client name' | translate:params }}
+                  {{ 'profile.Company' | translate:params }}
               </span>
             </ion-label>
             <span class="ion-align-items-end">{{ authService.auth.additionalInfo.clientName }}</span>
        </ion-item>
   </span>
   <language-selector-component></language-selector-component>
+  <ion-list>
+      <ion-item>
+          <ion-label>Enable USB mode</ion-label>
+          <ion-toggle slot="start"
+                      checked="{{ appSetting.isEnabledUsb }}"
+                      (click)="changeUsbMode()"
+          >
+          </ion-toggle>
+      </ion-item>
+  </ion-list>
   <ion-item>
     <ion-button [routerLink]="['/logout']">
       <ion-icon name="exit"></ion-icon>

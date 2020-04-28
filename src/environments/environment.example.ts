@@ -9,7 +9,8 @@ export const environment = {
   dbName: 'guider',
   dbMigrationVersion: 1,
   sentryDsn: '{SENTRY_DSN}',
-  pspdfkitIosLicenseKey: '{pspdfkitIosLicenseKey}'
+  pspdfkitIosLicenseKey: '{pspdfkitIosLicenseKey}',
+  usbHost: 'http://{ip_address}'
 };
 
 /*

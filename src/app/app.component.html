@@ -1,4 +1,4 @@
-<ion-app class="transparentBody">
+<ion-app class="transparentBody" *ngIf="showPageView">
   <ion-split-pane when="(min-width: 100%)" contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
       <ion-header>
@@ -19,12 +19,6 @@
               </ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-item *ngIf="versionNumber">
-            <ion-icon slot="start" name="apps"></ion-icon>
-            <ion-label>
-              App Version: {{ versionNumber }}
-            </ion-label>
-          </ion-item>
         </ion-list>
       </ion-content>
     </ion-menu>

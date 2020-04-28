@@ -32,6 +32,16 @@
         <h1>
           {{ 'qr.Setup' | translate:params }}
         </h1>
+        <ion-list>
+          <ion-item>
+            <ion-label>Enable USB mode</ion-label>
+            <ion-toggle slot="start"
+                        checked="{{ appSetting.isEnabledUsb }}"
+                        (click)="changeUsbMode()"
+            >
+            </ion-toggle>
+          </ion-item>
+        </ion-list>
         <p>{{ 'qr.Scan the received' | translate:params }}<strong>
           {{ 'qr.QR-Code' | translate:params }}</strong>
         </p>

@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'about.header' | translate:params }}
+    </ion-title>
+    <sync-spinner-component slot="primary"></sync-spinner-component>
+  </ion-toolbar>
+</ion-header>
+
+<style>
+  ion-content {
+    text-align: center;
+  }
+</style>
+
+<ion-content class="ion-padding">
+    <ion-item  *ngIf="versionNumber">
+        <ion-label>
+            <ion-icon slot="start" name="apps"></ion-icon>
+            <span>
+                {{ 'about.App Version' | translate:params }}
+            </span>
+        </ion-label>
+        <span class="ion-align-items-end">
+            {{ versionNumber }}
+        </span>
+    </ion-item>
+</ion-content>

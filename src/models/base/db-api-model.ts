@@ -98,23 +98,27 @@ export abstract class DbApiModel extends DbBaseModel {
         return obj;
     }
 
-    loadFromApiToCurrentObject(apiObj: any, oldModel = null) {
+    loadFromApiToCurrentObject(apiObj: any, oldModel = null, willChangeFiles = true) {
         // iterate over table fields
         for (const column of this.TABLE) {
             let willChangeColumn = true;
             if (oldModel) {
                 /// prevent change thumbnail if file name was not changed
-                if (this.downloadMapping && this.downloadMapping.length) {
-                    for (const file of this.downloadMapping) {
-                        if (file.thumbnail && (file.thumbnail.name === column[0] || file.thumbnail.url === column[0])) {
-                            let memberNameOfFile = file.name;
-                            for (const columnForFile of this.TABLE) {
-                                if (file.name === columnForFile[0]) {
-                                    memberNameOfFile = columnForFile[3] ? columnForFile[3] : memberNameOfFile;
+                if (!willChangeFiles) {
+                    if (this.downloadMapping && this.downloadMapping.length) {
+                        for (const file of this.downloadMapping) {
+                            if (file.thumbnail && (file.thumbnail.name === column[0] || file.thumbnail.url === column[0])) {
+                                let memberNameOfFile = file.name;
+                                for (const columnForFile of this.TABLE) {
+                                    if (file.name === columnForFile[0]) {
+                                        memberNameOfFile = columnForFile[3] ? columnForFile[3] : memberNameOfFile;
+                                    }
                                 }
-                            }
-                            if (apiObj[memberNameOfFile] !== undefined && this[memberNameOfFile] === apiObj[memberNameOfFile]) {
-                                willChangeColumn = false;
+                                if (apiObj[memberNameOfFile] !== undefined && this[memberNameOfFile] === apiObj[memberNameOfFile]) {
+                                    console.log('not willChangeColumn', memberNameOfFile);
+                                    console.log('not willChangeColumn in model', this);
+                                    willChangeColumn = false;
+                                }
                             }
                         }
                     }
@@ -221,9 +225,7 @@ export abstract class DbApiModel extends DbBaseModel {
         }
         return new Promise(async (resolve) => {
             this.beforeSave(isSynced);
-            console.log('before exists');
             const res = await this.exists();
-            console.log('after exists');
             if (res) {
                 if (isSaveLocaleDates) {
                     this[this.COL_LOCAL_UPDATED_AT] = new Date();
@@ -411,17 +413,30 @@ export abstract class DbApiModel extends DbBaseModel {
         if (!this.isExistFilePathInModel(fileMap)) {
             return false;
         }
+        let fileName = this[fileMap.name];
+        if (oldModel &&
+            oldModel[fileMap.url] === this[fileMap.url]
+        ) {
+            return true;
+        }
+        if (oldModel &&
+            oldModel[fileMap.url] !== this[fileMap.url] &&
+            oldModel[fileMap.name] === this[fileMap.name]
+        ) {
+            fileName = '1' + fileName;
+        }
         // If we have a local path but no api path, we need to upload the file!
         // Only download if the new file is different than the old one? We don't have this information here.
         const finalPath = await this.downloadService.downloadAndSaveFile(
             this[fileMap.url],
-            this[fileMap.name],
+            fileName,
             this.TABLE_NAME,
             authorizationToken
         );
         if (!finalPath) {
             return false;
         }
+        this[fileMap.name] = fileName;
         this[fileMap.localPath] = finalPath;
         // We received the local path back if it's successful
         await this.saveSynced(true);
@@ -430,8 +445,9 @@ export abstract class DbApiModel extends DbBaseModel {
             await this.downloadService.deleteFile(oldModel[fileMap.localPath]);
         }
         if (this.isExistThumbnail(fileMap) &&
-            (!oldModel || oldModel[fileMap.localPath] !== this[fileMap.localPath])
+            (!oldModel || oldModel[fileMap.url] !== this[fileMap.url])
         ) {
+            console.log('download thumbnail');
             await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
         }
 
@@ -445,12 +461,12 @@ export abstract class DbApiModel extends DbBaseModel {
             this[fileMap.url];
     }
 
-    isExistThumbnail(fileMap: any) {
-        return fileMap.thumbnail &&
-            fileMap.thumbnail.name &&
-            fileMap.thumbnail.url &&
-            this[fileMap.thumbnail.name] &&
-            this[fileMap.thumbnail.url];
+    isExistThumbnail(fileMap: any): boolean {
+        return (!!fileMap.thumbnail &&
+            !!fileMap.thumbnail.name &&
+            !!fileMap.thumbnail.url &&
+            !!this[fileMap.thumbnail.name] &&
+            !!this[fileMap.thumbnail.url]);
     }
 
     async setFile(recordedFile: RecordedFile, fileMapIndex = 0) {

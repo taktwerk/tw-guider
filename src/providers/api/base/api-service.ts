@@ -213,7 +213,6 @@ export abstract class ApiService {
             // If we have a local path but no api path, we need to upload the file!
             if (model[fields.localPath] && !model[fields.url]) {
                 const fieldUrl = url + '?fileAttribute=' + fields.name;
-                // uploadFilePromises.push(
                 try {
                     const uploadResult = await model.downloadService.startUpload(
                         model.TABLE_NAME,
@@ -223,14 +222,11 @@ export abstract class ApiService {
                         fieldUrl,
                         headers
                     );
-                    console.log('uploadResult', uploadResult);
                     if (uploadResult) {
-                        console.log('in upload result');
-                        await this.saveSyncedModel(uploadResult, true);
+                        // await this.saveSyncedModel(uploadResult, false, false);
                         if (userForSaving) {
                             userForSaving.userSetting.appDataVersion++;
                             await userForSaving.save();
-                            console.log('appDataVersion++ after saving file');
                         }
                     }
                 } catch (err) {
@@ -243,7 +239,7 @@ export abstract class ApiService {
         });
     }
 
-    async saveSyncedModel(newModel, canUpdateNotSyncedData = false) {
+    async saveSyncedModel(newModel, canUpdateNotSyncedData = false, willChangeFiles = true) {
         let oldModel = await this.dbModelApi.findFirst(['id', newModel[this.dbModelApi.apiPk]]);
         console.log('this.dbModelApi.apiPk', this.dbModelApi.apiPk);
         oldModel = oldModel[0] ? oldModel[0] : null;
@@ -257,9 +253,11 @@ export abstract class ApiService {
         if (oldModel) {
             obj.loadFromApiToCurrentObject(oldModel);
         }
-        obj.loadFromApiToCurrentObject(newModel, oldModel);
+        obj.loadFromApiToCurrentObject(newModel, oldModel, willChangeFiles);
         let isSynced = true;
+        console.log('before !canUpdateNotSyncedData && oldModel && !oldModel.is_synced && oldModel.doesHaveFilesForPush()');
         if (!canUpdateNotSyncedData && oldModel && !oldModel.is_synced && oldModel.doesHaveFilesForPush()) {
+            console.log('!canUpdateNotSyncedData && oldModel && !oldModel.is_synced && oldModel.doesHaveFilesForPush()');
             const fieldsForPush = oldModel.getFieldsForPushFiles();
 
             for (let i = 0; i < fieldsForPush.length; i++) {

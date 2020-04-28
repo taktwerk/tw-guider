@@ -113,6 +113,7 @@ export class ProtocolAddEditPage implements OnInit {
       this.protocolId = this.model[this.model.COL_ID];
       this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
       this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
+      this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
       if (!this.protocol_form.local_protocol_file) {
         this.protocol_form.local_protocol_file = await this.downloadService.copy(
             protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PROTOCOL_FILE],
@@ -166,7 +167,6 @@ export class ProtocolAddEditPage implements OnInit {
       this.protocol_form[modelFileMap.localPath] = savedFilePath;
       this.protocol_form[modelFileMap.name] = savedFilePath.substring(savedFilePath.lastIndexOf('/') + 1, savedFilePath.length);
     }
-    console.log('justModel', this.protocol_form);
     // return false;
     await this.protocol_form.save();
 
@@ -174,6 +174,7 @@ export class ProtocolAddEditPage implements OnInit {
     await this.model.save();
     this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
     this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
+    this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
     this.detectChanges();
     this.events.publish('setIsPushAvailableData');
   }
@@ -211,15 +212,14 @@ export class ProtocolAddEditPage implements OnInit {
   }
 
   async setExistModel() {
-    console.log('setExistModel this.protocolId', this.protocolId);
     if (this.protocolId) {
       this.workflowStepService.unsetWorkflowStepsListCache();
       const result = await this.protocolService.dbModelApi.findFirst([this.model.COL_ID, this.protocolId]);
       this.model = result[0];
       this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
       this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
+      this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
       this.protocol_form = await this.getProtcolFormModel();
-      console.log('setExistModel() this.protocol_form', this.protocol_form);
     }
   }
 
@@ -236,6 +236,7 @@ export class ProtocolAddEditPage implements OnInit {
       if (this.protocolId) {
         this.setExistModel();
       } else {
+        console.log('no protocol id');
         this.model = this.protocolService.newModel();
         this.model.client_id = this.clientId;
         this.model.protocol_template_id = this.templateId;
@@ -243,6 +244,7 @@ export class ProtocolAddEditPage implements OnInit {
         this.model.reference_model = this.reference_model;
         this.model.protocol_form_table = 'protocol_default';
         this.protocol_form = await this.getProtcolFormModel();
+        this.model.canEditProtocol = await this.protocolTemplateService.canCreateProtocol(this.templateId);
       }
       this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
         this.setExistModel();
