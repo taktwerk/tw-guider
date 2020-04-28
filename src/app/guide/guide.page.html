@@ -20,18 +20,18 @@
             <ion-grid>
                 <ion-row>
                   <ion-col fixed size-xs="12" size-md="6">
-                    <div class="guide-step-img">
+                    <div *ngIf="step.getFileName()" class="guide-step-img">
                       <img
                         *ngIf="step.isImageFile()"
                         (click)="
-                          openFile(step.getFileName(), step.TABLE_NAME, step.title)
+                          openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)
                         "
                         [src]="step.getFileImagePath()"
                       />
                       <div
                         *ngIf="step.isVideoFile()"
                         (click)="
-                          openFile(step.getFileName(), step.TABLE_NAME, step.title)
+                          openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)
                         "
                         [ngClass]="{
                           'video-with-thumbnail': step.isExistThumbOfFile()
@@ -112,7 +112,7 @@
               <img
                 *ngIf="asset.isPdf()"
                 (click)="
-                  openFile(asset.getFileName(), asset.TABLE_NAME, asset.name)
+                  openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)
                 "
                 class="pdf-image"
                 [src]="
@@ -124,7 +124,7 @@
               <img
                 *ngIf="!asset.isPdf()"
                 (click)="
-                  openFile(asset.getFileName(), asset.TABLE_NAME, asset.name)
+                  openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)
                 "
                 class="pdf-image"
                 [src]="asset.getFileImagePath()"
