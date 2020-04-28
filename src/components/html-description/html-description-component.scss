@@ -6,7 +6,7 @@ table td p {
   margin: 0;
 }
 table td {
-  padding: 10px;
+  padding: 0.5rem;
   border: 1px silver solid;
 }
 .html-description {
@@ -15,11 +15,11 @@ table td {
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
   /*padding: 15px 15px;*/
 }
 
-.html-description p, .html-description li, .html-description td p {
+/*.html-description p, .html-description li, .html-description td p {
   font-size: 1.5rem;
 }
 
@@ -34,7 +34,7 @@ table td {
 .html-description h3 {
   font-size: 1.7rem;
 }
-
+*/
 figure {
   margin: 0;
 }

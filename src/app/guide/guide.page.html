@@ -10,11 +10,11 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light">
+<ion-content color="primary">
   <div *ngIf="guideSteps && guideSteps.length === 0" class="ion-padding">
     {{ "guide.No information here yet." | translate: params }}
   </div>
-  <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step">
+  <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step" [ngClass]="{'has-assets' : guideAssets.length}">
     <ion-slides pager="true" [options]="slideOpts">
       <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">
             <ion-grid>
@@ -67,7 +67,7 @@
                     </div>
                   </ion-col>
                   <ion-col>
-                    <ion-card no-margin class="guide-step-text">
+                    <ion-card color="light" no-margin class="guide-step-text">
                      <ion-card-header>
                         <ion-card-subtitle>{{ guide.short_name }} {{ guide.title }}</ion-card-subtitle>
                         <ion-card-title>{{ stepNumber + 1 }} / {{ guideSteps.length }} {{ step.title }}</ion-card-title>
@@ -82,8 +82,10 @@
                                     slot="end"
                                     color="primary"
                                     fill="outline"
+                                    size="small"
                                     (click)="openFeedback('guide_step', step.idApi)"
                                   >
+                                    <ion-icon name="chatboxes" slot="start"></ion-icon>
                                     {{ "feedback.header" | translate: params }}
                                   </ion-button>
                         </ion-toolbar>
