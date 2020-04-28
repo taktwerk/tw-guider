@@ -41,12 +41,15 @@
                           *ngIf="step.isExistThumbOfFile()"
                           [src]="step.getFileImagePath()"
                         />
-                        <ion-icon
+                        <ion-icon *ngIf="step.isExistThumbOfFile()"
                           name="videocam"
                           class="videocam-icon"
                           color="primary"
                           slot="start"
                         ></ion-icon>
+                        <img *ngIf="!step.isExistThumbOfFile()"
+                          [src]="'/assets/videooverlay.png'"
+                        >
                       </div>
                       <ion-icon
                         name="musical-notes"
