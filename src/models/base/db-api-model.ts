@@ -410,14 +410,36 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     protected async downloadAndSaveFile(fileMap: any, oldModel, authorizationToken) {
-        if (!this.isExistFilePathInModel(fileMap)) {
+        if (!fileMap.name || !this[fileMap.name]) {
             return false;
         }
         let fileName = this[fileMap.name];
         if (oldModel &&
             oldModel[fileMap.url] === this[fileMap.url]
         ) {
+            this[fileMap.name] = oldModel[fileMap.name];
+            if (this.isExistThumbnail(fileMap)) {
+                await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
+            }
+            await this.saveSynced(true);
+
             return true;
+        }
+        if (!this.isExistFilePathInModel(fileMap)) {
+            if (!this[fileMap.url]) {
+                this[fileMap.name] = fileName;
+                this[fileMap.localPath] = null;
+                if (this.isExistThumbnail(fileMap) &&
+                    (oldModel && oldModel[fileMap.url])
+                ) {
+                    this[fileMap.thumbnail.name] = null;
+                    this[fileMap.thumbnail.url] = null;
+                    this[fileMap.thumbnail.localPath] = null;
+                }
+                await this.saveSynced(true);
+            }
+
+            return false;
         }
         if (oldModel &&
             oldModel[fileMap.url] !== this[fileMap.url] &&
@@ -639,6 +661,10 @@ export abstract class DbApiModel extends DbBaseModel {
 
     public getLocalFilePath(fileMapIndex = 0) {
         return this[this.downloadMapping[fileMapIndex].localPath];
+    }
+
+    public getFileUrl(fileMapIndex = 0) {
+        return this[this.downloadMapping[fileMapIndex].url];
     }
 
     public getFileName(fileMapIndex = 0) {

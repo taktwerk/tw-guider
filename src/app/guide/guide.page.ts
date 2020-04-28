@@ -60,13 +60,17 @@ export class GuidePage implements OnInit {
     this.authService.checkAccess();
   }
 
-  public openFile(basePath: string, modelName: string, title?: string) {
+  public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     const filePath = basePath;
     let fileTitle = 'Guide';
     if (title) {
       fileTitle = title;
     }
+    console.log('basePath', basePath);
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
+      if (!fileApiUrl) {
+        return false;
+      }
       const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
       this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
