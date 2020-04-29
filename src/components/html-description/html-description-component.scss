@@ -2,11 +2,12 @@ table {
   max-width: 100% !important;
 }
 table td p {
-  font-size: inherit !important;
+  /* font-size: inherit !important;*/
   margin: 0;
 }
 table td {
-  padding: 5px;
+  padding: 0.5rem;
+  border: 1px silver solid;
 }
 .html-description {
   position: relative;
@@ -14,6 +15,26 @@ table td {
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
+  /* font-size: 1.5rem; */
+  /*padding: 15px 15px;*/
+}
+
+/*.html-description p, .html-description li, .html-description td p {
   font-size: 1.5rem;
-  padding: 15px 15px;
+}
+
+.html-description h1 {
+  font-size: 2.4rem;
+}
+
+.html-description h2 {
+  font-size: 2rem;
+}
+
+.html-description h3 {
+  font-size: 1.7rem;
+}
+*/
+figure {
+  margin: 0;
 }

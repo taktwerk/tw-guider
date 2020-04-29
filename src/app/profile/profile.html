@@ -65,7 +65,7 @@
             <span *ngIf="authService.auth.additionalInfo.last_login_at"
                   class="ion-align-items-end"
             >
-                {{ (authService.auth.additionalInfo.last_login_at) | datePipe: 'dd.MM.yyyy hh:mm:ss' }}
+                {{ authService.auth.additionalInfo.last_login_at }}
             </span>
        </ion-item>
       <ion-item>
