@@ -28,4 +28,16 @@
             {{ versionNumber }}
         </span>
     </ion-item>
+    <ion-item  *ngIf="apiVersionNumber">
+        <ion-label>
+            <ion-icon slot="start" name="apps"></ion-icon>
+            <span>
+                {{ 'about.API Version' | translate:params }}
+            </span>
+        </ion-label>
+        <span class="ion-align-items-end">
+            {{ apiVersionNumber }}
+        </span>
+    </ion-item>
+
 </ion-content>

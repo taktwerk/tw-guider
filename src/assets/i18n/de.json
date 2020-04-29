@@ -10,7 +10,8 @@
   "All": "Alle",
   "about": {
     "header":"About",
-    "App Version": "App Version"
+    "App Version": "App Version",
+    "API Version": "API Version"
   },
   "start": {
     "header":"Start",

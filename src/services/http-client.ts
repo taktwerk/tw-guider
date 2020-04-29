@@ -3,12 +3,12 @@ import {HttpClient as Http, HttpHeaders as Headers, HttpResponse as Response} fr
 import 'rxjs/add/operator/catch';
 import {AuthService} from './auth-service';
 import { Observable } from 'rxjs/Observable';
-import {NavController, Platform, ToastController} from '@ionic/angular';
+import {NavController, Platform} from '@ionic/angular';
 import {TranslateConfigService} from './translate-config.service';
 import { Device } from '@ionic-native/device/ngx';
 import {Network} from '@ionic-native/network/ngx';
 import {ToastService} from './toast-service';
-import {AppVersion} from '@ionic-native/app-version/ngx';
+import config from '../environments/config.json';
 
 @Injectable()
 export class HttpClient {
@@ -33,8 +33,7 @@ export class HttpClient {
       private translateConfigService: TranslateConfigService,
       private device: Device,
       private network: Network,
-      private toastService: ToastService,
-      private appVersion: AppVersion
+      private toastService: ToastService
   ) {
       this.platform.ready().then(() => {
           this.deviceInfo = {
@@ -46,16 +45,14 @@ export class HttpClient {
               isVirtual: this.device.isVirtual,
               serial: this.device.serial
           };
-          if (this.appVersion) {
-              this.appVersion.getVersionNumber().then((versionNumber) => {
-                  this.versionNumber = versionNumber;
-              });
+          if (config) {
+              if (config.apiVersion) {
+                  this.versionNumber = config.apiVersion;
+              }
           }
           this.initHeaders();
       });
   }
-
-  previousToast = null;
 
     /**
      * Init the headers

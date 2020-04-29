@@ -6,8 +6,8 @@ Execute follow commands from example:
     cp src/environments/environment.example.ts src/environments/environment.ts
 (Configurate this file)
 
-    cp resources/android/xml/network_security_config.example.xml resources/android/xml/network_security_config.xml
-Add in created file subdomains (includeSubdomains)
+Configure this file
+    `src/environments/config.json`
 
 For Android platform:
 
