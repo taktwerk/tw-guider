@@ -9,6 +9,7 @@
   "edit": "Bearbeiten",
   "title": "Titel",
   "All": "Alle",
+  "Final": "Final",
   "Enable USB mode": "USB Modus aktivieren",
   "about": {
     "header":"Über",
@@ -67,6 +68,8 @@
     "Assignee": "Beauftragt",
     "Protocol was saved": "Protokoll wurde gespeichert",
     "Have it checked": "Prüfen lassen",
+    "commented": "Kommentiert: {{ comment }}",
+    "workflow_step_changed": "(De) Workflow Step changed from '{{ oldWorkflowStepName }}' to '{{ newWorkflowStepName }}'",
     "Comment": "Kommentar",
     "Protocol file": "Protokoll Datei",
     "Workflow process": "Workflow Verarbeitung",

@@ -9,6 +9,7 @@
   "edit": "Edit",
   "title": "Title",
   "All": "All",
+  "Final": "Final",
   "Enable USB mode": "Enable USB mode",
   "about": {
     "header":"About",
@@ -68,6 +69,8 @@
     "Assignee": "Assignee",
     "Protocol was saved": "Protocol was saved",
     "Have it checked": "Have it checked",
+    "commented": "Commented: {{ comment }}",
+    "workflow_step_changed": "Workflow Step changed from '{{ oldWorkflowStepName }}' to '{{ newWorkflowStepName }}'",
     "Comment": "Comment",
     "Protocol file": "Protocol file",
     "Workflow process": "Workflow process",
