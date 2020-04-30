@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
+import {Injectable, SecurityContext} from '@angular/core';
 import {Platform} from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
 import {HttpClient, HttpHeaders as Headers} from '@angular/common/http';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
 import {finalize} from 'rxjs/operators';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl} from '@angular/platform-browser';
 import {FileChooser} from '@ionic-native/file-chooser/ngx';
 import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
 import {FilePath} from '@ionic-native/file-path/ngx';
@@ -37,6 +37,7 @@ export class DownloadService {
      * @param mediaCapture
      * @param camera
      * @param videoEditor
+     * @param sanitizerImpl
      */
     constructor(public http: HttpClient,
                 public platform: Platform,
@@ -49,7 +50,8 @@ export class DownloadService {
                 private filePath: FilePath,
                 private mediaCapture: MediaCapture,
                 private camera: Camera,
-                private videoEditor: VideoEditor
+                private videoEditor: VideoEditor,
+                protected sanitizerImpl: ɵDomSanitizerImpl
     ) {
     }
 
@@ -374,8 +376,9 @@ export class DownloadService {
     public getSanitizedFileUrl(path, modelName): SafeResourceUrl {
         path = this.getNativeFilePath(path, modelName);
         const convertFileSrc = this.getWebviewFileSrc(path);
+        const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
 
-        return this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
+        return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
     }
 
     public async chooseFile(withThumbnailForVideo = false): Promise<RecordedFile> {
