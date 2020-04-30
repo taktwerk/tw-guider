@@ -1,5 +1,5 @@
 import {ErrorHandler, NgModule} from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {BrowserModule, ɵDomSanitizerImpl} from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -175,6 +175,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     Camera,
     MediaCapture,
     VideoEditor,
+    ɵDomSanitizerImpl,
     AppVersion,
     DocumentViewer,
     FileOpener,
