@@ -19,51 +19,57 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content color="primary">
     <div *ngFor="let guideCategory of guideCategories">
       <div *ngIf="guideCategory.guides &&  guideCategory.guides.length">
-        <ion-item>
-          <h1>
-            {{ guideCategory.name }}
-          </h1>
-        </ion-item>
-        <ion-list>
-          <div class="guide-row" *ngFor="let item of guideCategory.guides">
-            <div class="guide-preview" slot="start" [routerLink]="['/guide/' + item.idApi]">
-              <img *ngIf="item.getImage()" [src]="item.getImage()">
-              <img *ngIf="!item.getImage()" src="assets/placeholder.jpg">
-              <div class="shortname-label badge badge-secondary">
-                {{ item.short_name }}
-              </div>
-            </div>
-            <div class="guide-info">
-              <h2>
-                {{item.title}}
-              </h2>
-              <p class="guide-description">
-                {{item.description}}
-              </p>
-              <p *ngIf="item.duration">
-                {{ 'guides.duration' | translate:params }}: {{ item.getDuration() }}
-              </p>
-              <p *ngIf="item.revision">
-                {{ 'guides.revision' | translate:params }}: {{ item.revision }}
-              </p>
-              <ion-button class="show-guide-btn" [routerLink]="['/guide/' + item.idApi]">
-                <ion-icon class="show-guide-play-icon" slot="start" name="arrow-dropright-circle"></ion-icon>
-                {{ 'guides.Show Guide' | translate:params }}
-              </ion-button>
-              <ion-button *ngIf="item.protocol_template"
-                          class="show-guide-btn"
-                          color="medium"
-                          (click)="openProtocol(item)"
-              >
-                <ion-icon class="show-guide-play-icon" slot="start" name="list"></ion-icon>
-                {{ 'guides.Protocol' | translate:params }}
-              </ion-button>
-            </div>
-          </div>
-        </ion-list>
+
+              <ion-grid class="guides">
+                <ion-row><ion-col><h4>{{ guideCategory.name }}</h4></ion-col></ion-row>
+                <ion-row>
+                  <ion-col fixed size-xs="6" size-md="4" *ngFor="let item of guideCategory.guides">
+                    <ion-card color="light" no-margin>
+                      <div class="guide-preview" [routerLink]="['/guide/' + item.idApi]">
+                        <div class="img" *ngIf="item.getImage()" [ngStyle]="{'background-image': 'url(' + item.getImage() + ')'}"></div>
+                        <div class="img" *ngIf="!item.getImage()" [ngStyle]="{'background-image': 'url(' + 'assets/placeholder.jpg' + ')'}"></div>
+                        <div class="shortname-label badge badge-secondary">
+                          {{ item.short_name }}
+                        </div>
+                      </div>
+
+                      <ion-card-header>
+                        <ion-card-title>{{item.title}}</ion-card-title>
+                      </ion-card-header>
+                        <ion-card-content>
+                          <div class="guide-info" margin-bottom>
+                            <p class="guide-description">
+                              {{item.description}}
+                            </p>
+                            <div class="muted">
+                              <p *ngIf="item.duration">
+                                {{ 'guides.duration' | translate:params }}: {{ item.getDuration() }}
+                              </p>
+                              <p *ngIf="item.revision">
+                                {{ 'guides.revision' | translate:params }}: {{ item.revision }}
+                              </p>
+                            </div>
+                          </div>
+                          <ion-button *ngIf="item.protocol_template"
+                                      class="show-guide-btn"
+                                      color="medium"
+                                      (click)="openProtocol(item)"
+                                      vertical="bottom"
+                          >
+                            <ion-icon class="show-guide-play-icon" slot="start" name="list"></ion-icon>
+                            {{ 'guides.Protocol' | translate:params }}
+                          </ion-button>
+                        </ion-card-content>
+          
+                    </ion-card>
+                 </ion-col>
+     
+           </ion-row>
+          </ion-grid>
+
       </div>
     </div>
 </ion-content>
