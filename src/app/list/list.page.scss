@@ -1,48 +1,11 @@
-/*.guide-preview {
-  flex: 0 0 50%;
-  max-width: 50%;
-  padding-right: 0 !important;
-  position: relative;
-  width: 100%;
-  min-height: 1px;
-  padding-left: 15px;
-}
-
-
-.guide-row {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.guide-info {
-  max-width: 50%;
-  flex: 0 0 50%;
-  position: relative;
-  width: 100%;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
-
-  h2 {
-    margin-top: 0;
-  }
-}
-
-
-
-.show-guide-play-icon {
-  font-size: 30px;
-}
-
-.show-guide-btn {
-  width: 100%;
-}
-*/
-
-
 .guides {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
+
+  ion-row{
+     width: 100%;
+  }
   ion-col{
      display: flex;
      width: 100%;
@@ -77,7 +40,6 @@
 
 .guide-preview .img {
   height: 12rem;
-  background-color: red;
   background-size: cover;
   background-position: center;
 }

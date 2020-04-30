@@ -4,10 +4,10 @@
 >
 <ion-label>
         <span>
-            Protocol file
+            {{ 'protocol.Protocol file' | translate:params }}
         </span>
     </ion-label>
     <span class="ion-align-items-end">
-        <ion-button (click)="editProtocolFile()">Edit</ion-button>
+        <ion-button (click)="editProtocolFile()">{{ 'edit' | translate:params }}</ion-button>
     </span>
 </ion-item>

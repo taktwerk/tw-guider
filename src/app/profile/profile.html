@@ -92,7 +92,7 @@
   <language-selector-component></language-selector-component>
   <ion-list>
       <ion-item>
-          <ion-label>Enable USB mode</ion-label>
+          <ion-label>{{ 'Enable USB mode' | translate:params }}</ion-label>
           <ion-toggle slot="start"
                       checked="{{ appSetting.isEnabledUsb }}"
                       (click)="changeUsbMode()"

@@ -202,17 +202,17 @@ export class AppComponent implements OnInit {
       return appPages;
     }
     if (!this.authService.isLoggedin) {
-      appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'list'});
+      appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'person'});
       return appPages;
     }
     if (this.authService.isHaveUserRole('GuiderViewer') || this.authService.auth.isAuthority) {
-      appPages.push({title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'});
+      appPages.push({title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'move'});
     }
     if (this.authService.isHaveUserRole('FeedbackViewer') || this.authService.auth.isAuthority) {
-      appPages.push({title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'});
+      appPages.push({title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'chatboxes'});
     }
     if (this.authService.isHaveUserRole('ProtocolViewer') || this.authService.auth.isAuthority) {
-      appPages.push({title: this.translateConfigService.translateWord('protocol.Protocol'), url: '/protocol', icon: 'document'});
+      appPages.push({title: this.translateConfigService.translateWord('protocol.Protocols'), url: '/protocol', icon: 'list'});
     }
     appPages.push({title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'});
 
