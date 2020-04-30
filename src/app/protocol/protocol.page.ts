@@ -44,6 +44,7 @@ export class ProtocolPage implements OnInit {
                 private protocolDefaultService: ProtocolDefaultService,
                 private protocolTemplateService: ProtocolTemplateService,
                 private ngZone: NgZone) {
+        this.authService.checkAccess('protocol');
     }
 
     public async setModels() {

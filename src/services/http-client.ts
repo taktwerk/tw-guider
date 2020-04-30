@@ -163,6 +163,15 @@ export class HttpClient {
                                   );
                                   return;
                               }
+                              if (errorResponse.error === 'The user has no rights to log in') {
+                                  this.authService.presentAlert(
+                                      'Config Error',
+                                      null,
+                                      this.translateConfigService.translateWord('validation.user_cant_login'),
+                                      ['OK']
+                                  );
+                                  return;
+                              }
                           }
                       } catch (e) {
                           //

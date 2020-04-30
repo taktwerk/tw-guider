@@ -69,7 +69,7 @@ export class ProtocolAddEditPage implements OnInit {
       private translateConfigService: TranslateConfigService,
       private router: Router
   ) {
-    this.authService.checkAccess();
+    this.authService.checkAccess('protocol');
     this.comment = null;
     if (!this.model) {
       this.model = protocolService.newModel();

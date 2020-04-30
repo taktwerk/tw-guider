@@ -205,12 +205,16 @@ export class AppComponent implements OnInit {
       appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'list'});
       return appPages;
     }
-    appPages.push(
-        {title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'},
-        {title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'},
-        {title: this.translateConfigService.translateWord('protocol.Protocol'), url: '/protocol', icon: 'document'},
-        {title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'},
-    );
+    if (this.authService.isHaveUserRole('GuiderViewer') || this.authService.auth.isAuthority) {
+      appPages.push({title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'list'});
+    }
+    if (this.authService.isHaveUserRole('FeedbackViewer') || this.authService.auth.isAuthority) {
+      appPages.push({title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'paper'});
+    }
+    if (this.authService.isHaveUserRole('ProtocolViewer') || this.authService.auth.isAuthority) {
+      appPages.push({title: this.translateConfigService.translateWord('protocol.Protocol'), url: '/protocol', icon: 'document'});
+    }
+    appPages.push({title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'});
 
     return appPages;
   }
