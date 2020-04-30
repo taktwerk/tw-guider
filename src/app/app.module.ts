@@ -78,6 +78,8 @@ import {ProtocolDefaultComponent} from '../components/protocol-form-components/p
 import {ProtocolDefaultComponentModule} from '../components/protocol-form-components/protocol-default-component/protocol-default-component.module';
 import {WorkflowTransitionService} from '../providers/api/workflow-transition-service';
 import {ProtocolCommentService} from '../providers/api/protocol-comment-service';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {DateAgoPipe} from '../pipes/date-ago.pipe';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -105,6 +107,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
+    FontAwesomeModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -157,6 +160,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     SyncService,
     UserService,
     BaseDatePipe,
+    DateAgoPipe,
     CryptoProvider,
     FilePath,
     FileChooser,

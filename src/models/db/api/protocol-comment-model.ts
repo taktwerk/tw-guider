@@ -3,8 +3,11 @@ import {DbApiModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
-import {ProtocolDefaultModel} from './protocol-default-model';
 import {ProtocolModel} from './protocol-model';
+import {WorkflowStepModel} from './workflow-step-model';
+import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { faComment } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * API Db Model for 'Workflow Transition Model'.
@@ -23,8 +26,14 @@ export class ProtocolCommentModel extends DbApiModel {
     public name: string;
     public old_workflow_step_id: number = null;
     public new_workflow_step_id: number = null;
+    public creator: string = null;
+
+    public body;
+    public icon;
+    public colour;
 
     //db columns
+    static COL_CREATOR = 'creator';
     static COL_PROTOCOL_ID = 'protocol_id';
     static COL_LOCAL_PROTOCOL_ID = 'local_protocol_id';
     static COL_OLD_WORKFLOW_STEP_ID = 'old_workflow_step_id';
@@ -38,6 +47,7 @@ export class ProtocolCommentModel extends DbApiModel {
 
     /** @inheritDoc */
     TABLE: any = [
+        [ProtocolCommentModel.COL_CREATOR, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [ProtocolCommentModel.COL_PROTOCOL_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
         [ProtocolCommentModel.COL_LOCAL_PROTOCOL_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
         [ProtocolCommentModel.COL_COMMENT, 'TEXT', DbBaseModel.TYPE_STRING],
@@ -57,6 +67,82 @@ export class ProtocolCommentModel extends DbApiModel {
         public downloadService: DownloadService
     ) {
         super(platform, db, events, downloadService);
+    }
+
+    async getCommentBody() {
+        if (this.comment) {
+            return `Commented: ${this.comment}`;
+        }
+        if (!this.new_workflow_step_id || !this.old_workflow_step_id) {
+            return null;
+        }
+        const newWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService);
+        const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
+            [newWorkflowStepModel.COL_ID_API, this.new_workflow_step_id]
+        );
+        if (!newWorkflowStepSearchResult.length) {
+            return null;
+        }
+        const newWorkflowStep = newWorkflowStepSearchResult[0];
+        if (newWorkflowStep.type === 'final') {
+            return 'Final';
+        }
+
+        const oldWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService);
+        const oldWorkflowStepSearchResult = await oldWorkflowStepModel.findFirst(
+            [newWorkflowStepModel.COL_ID_API, this.old_workflow_step_id]
+        );
+        if (!oldWorkflowStepSearchResult.length) {
+            return null;
+        }
+        const oldWorkflowStep = oldWorkflowStepSearchResult[0];
+
+        if (newWorkflowStep && oldWorkflowStep) {
+            return `Workflow Step changed from '${oldWorkflowStep.name}' to '${newWorkflowStep.name}'`;
+        }
+
+        return null;
+    }
+
+    async getIcon() {
+        if (this.comment) {
+            return faComment;
+        }
+        if (this.new_workflow_step_id) {
+            const newWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService);
+            const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
+                [newWorkflowStepModel.COL_ID_API, this.new_workflow_step_id]
+            );
+            if (newWorkflowStepSearchResult.length) {
+                const newWorkflowStep = newWorkflowStepSearchResult[0];
+                if (newWorkflowStep.type === 'final') {
+                    return faCheck;
+                }
+            }
+        }
+
+        return faArrowAltCircleRight;
+    }
+
+    async getColour() {
+        if (this.new_workflow_step_id) {
+            const newWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService);
+            const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
+                [newWorkflowStepModel.COL_ID_API, this.new_workflow_step_id]
+            );
+            if (newWorkflowStepSearchResult.length) {
+                const newWorkflowStep = newWorkflowStepSearchResult[0];
+                if (newWorkflowStep.type === 'final') {
+                    return '#0073b7';
+                }
+            }
+        }
+
+        if (this.comment) {
+            return '#f39c12';
+        }
+
+        return '#00a65a';
     }
 
     async updateLocalRelations() {

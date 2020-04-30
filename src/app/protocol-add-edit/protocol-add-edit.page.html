@@ -37,6 +37,18 @@
       >
       </protocol-default-component>
     </ion-list>
+    <ion-item  *ngIf="model[model.COL_ID] && model.canFillProtocol">
+      <ion-label>
+        {{ 'protocol.Comment' | translate:params }}
+      </ion-label>
+      <ion-textarea [(ngModel)]="comment"
+                    name="'comment'"
+                    rows="8"
+                    cols="33"
+                    style="display: block;"
+      >
+      </ion-textarea>
+    </ion-item>
     <span *ngIf="!model[model.COL_ID] || (model.workflowStep && model.workflowStep.type !== 'final')">
       <ion-button *ngIf="model.canEditProtocol"
                   slot="start"
@@ -58,4 +70,41 @@
       </span>
     </span>
   </form>
+  <ion-list>
+    <ion-item *ngFor="let comment of model.comments">
+      <fa-icon [icon]="comment.icon" size="2x" slot="start" [ngStyle]="{'color': comment.colour}"></fa-icon>
+      <ion-card [ngStyle]="{'padding': '10px', 'width': '100%'}">
+        <span [ngStyle]="{'color': '#3c8dbc'}">
+          {{ comment.creator }}
+        </span>
+        <br>
+        <span>
+          {{ comment.body }}
+        </span>
+        <br>
+        <span class="time">
+          <fa-icon [icon]="faClock"></fa-icon>
+              {{ (comment.local_created_at || comment.created_at) | dateAgo  }}
+        </span>
+      </ion-card>
+    </ion-item>
+    <ion-item *ngIf="model[model.COL_ID]">
+      <fa-icon [icon]="faUser" size="2x" slot="start" [ngStyle]="{'color': '#00c0ef'}"></fa-icon>
+      <ion-card  [ngStyle]="{'padding': '10px', 'width': '100%'}">
+        <span *ngIf="model.creator" [ngStyle]="{'color': '#3c8dbc'}">
+          {{ model.creator }}
+        </span>
+        <br *ngIf="model.creator">
+        <span>
+            Created
+          </span>
+        <br>
+        <span class="time">
+            <fa-icon [icon]="faClock"></fa-icon>
+          {{ (model.local_created_at * 1000 || model.created_at) | dateAgo  }}
+          </span>
+      </ion-card>
+    </ion-item>
+<!--    </ul>-->
+  </ion-list>
 </ion-content>
