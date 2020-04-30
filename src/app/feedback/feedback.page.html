@@ -72,10 +72,10 @@
                 </div>
             </ion-thumbnail>
             <ion-label>
-                <h2>
-                    {{ (feedback.local_created_at || feedback.created_at) | datePipe: 'dd.MM.yyyy hh:mm:ss' }}
-                    <span *ngIf="feedback.title"> - {{ feedback.title }}</span>
-                </h2>
+                <h2><span *ngIf="feedback.title">{{ feedback.title }}</span></h2>
+                <p>
+                  {{ (feedback.local_created_at || feedback.created_at) | datePipe: 'dd.MM.yyyy hh:mm:ss' }}
+                </p>
                 <p>
                     {{ feedback.description }}
                 </p>

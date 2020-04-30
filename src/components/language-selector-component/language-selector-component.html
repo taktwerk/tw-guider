@@ -1,13 +1,7 @@
-<style>
-    .language-icon {
-        font-size: 25px;
-    }
-</style>
-
 <ion-item>
-    <ion-icon class="language-icon" name="globe" color="success"></ion-icon>
     <ion-label>
-        {{ 'language-selector.Language' | translate:params }}
+        <ion-icon name="globe"></ion-icon>
+        <span> {{ 'language-selector.Language' | translate:params }}</span>
     </ion-label>
     <ion-select [(ngModel)]="selectedLanguage"
                 (ionChange)="languageChanged()"
