@@ -59,7 +59,7 @@ export class FeedbackAddEditPage implements OnInit {
       private pictureService: PictureService,
       private apiSync: ApiSync
   ) {
-    this.authService.checkAccess();
+    this.authService.checkAccess('feedback');
     if (!this.model) {
       this.model = feedbackService.newModel();
     }

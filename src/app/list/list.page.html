@@ -53,7 +53,7 @@
                               </p>
                             </div>
                           </div>
-                          <ion-button *ngIf="item.protocol_template"
+                          <ion-button *ngIf="item.protocol_template && haveProtocolPermissions"
                                       class="show-guide-btn"
                                       color="medium"
                                       (click)="openProtocol(item)"
