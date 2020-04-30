@@ -26,8 +26,10 @@ export class ProtocolModel extends DbApiModel {
     public local_protocol_form_number: number;
     public reference_model: string = null;
     public reference_id: number = null;
+    public creator: string = null;
 
     //db columns
+    static COL_CREATOR = 'creator';
     static COL_CLIENT_ID = 'client_id';
     static COL_PROTOCOL_TEMPLATE_ID = 'protocol_template_id';
     static COL_WORKFLOW_STEP_ID = 'workflow_step_id';
@@ -43,12 +45,14 @@ export class ProtocolModel extends DbApiModel {
 
     /// relations
     workflowStep: WorkflowStepModel;
+    comments: ProtocolCommentModel[];
 
     canEditProtocol: boolean;
     canFillProtocol: boolean;
 
     /** @inheritDoc */
     TABLE: any = [
+        [ProtocolModel.COL_CREATOR, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [ProtocolModel.COL_CLIENT_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [ProtocolModel.COL_WORKFLOW_STEP_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
         [ProtocolModel.COL_PROTOCOL_TEMPLATE_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],

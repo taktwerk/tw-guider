@@ -62,7 +62,8 @@
     "Workflow Step": "Workflow Schritt",
     "Assignee": "Beauftragt",
     "Protocol was saved": "Protokoll wurde gespeichert",
-    "Have it checked": "(De) Prüfen lassen"
+    "Have it checked": "Prüfen lassen",
+    "Comment": "Comment"
   },
   "guide": {
     "header": "Guide",

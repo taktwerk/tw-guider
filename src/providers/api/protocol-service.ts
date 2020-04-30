@@ -11,6 +11,7 @@ import {ProtocolModel} from '../../models/db/api/protocol-model';
 import {WorkflowStepService} from './workflow-step-service';
 import {ProtocolDefaultService} from './protocol-default-service';
 import {AuthDb} from '../../models/db/auth-db';
+import {ProtocolCommentService} from './protocol-comment-service';
 
 @Injectable()
 export class ProtocolService extends ApiService {
@@ -30,6 +31,7 @@ export class ProtocolService extends ApiService {
      * @param appSetting
      * @param workflowStepService
      * @param protocolDefaultService
+     * @param protocolCommentService
      */
     constructor(http: HttpClient,
                 private p: Platform, private db: DbProvider,
@@ -38,7 +40,8 @@ export class ProtocolService extends ApiService {
                 public downloadService: DownloadService,
                 public appSetting: AppSetting,
                 public workflowStepService: WorkflowStepService,
-                public protocolDefaultService: ProtocolDefaultService) {
+                public protocolDefaultService: ProtocolDefaultService,
+                public protocolCommentService: ProtocolCommentService) {
         super(http, events, appSetting);
         this.events.subscribe('user:login', async (userId) => {
             this.user = null;
@@ -118,6 +121,8 @@ export class ProtocolService extends ApiService {
                         obj.workflowStep = await this.workflowStepService.getById(obj.workflow_step_id);
                         obj.canEditProtocol = await this.canEditProtocol(obj);
                         obj.canFillProtocol = await this.canFillProtocol(obj);
+                        // obj.comments = await this.getComments(obj);
+                        console.log('obj.comments', obj.comments);
                         entries.push(obj);
                     }
                 }
@@ -139,6 +144,10 @@ export class ProtocolService extends ApiService {
         }
 
         return this.user;
+    }
+
+    async getComments(protocol: ProtocolModel) {
+        return this.protocolCommentService.getByProtocolId(protocol[protocol.COL_ID]);
     }
 
     async canEditProtocol(protocol: ProtocolModel) {

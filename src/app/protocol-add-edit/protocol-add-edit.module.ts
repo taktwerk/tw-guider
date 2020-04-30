@@ -10,11 +10,14 @@ import {LanguageSelectorComponentModule} from '../../components/language-selecto
 import {TranslateModule} from '@ngx-translate/core';
 import {ProtocolAddEditPage} from './protocol-add-edit.page';
 import {ProtocolDefaultComponentModule} from '../../components/protocol-form-components/protocol-default-component/protocol-default-component.module';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {DateAgoPipe} from '../../pipes/date-ago.pipe';
 
 @NgModule({
-  declarations: [
-      ProtocolAddEditPage
-  ],
+    declarations: [
+        ProtocolAddEditPage,
+        DateAgoPipe
+    ],
     imports: [
         CommonModule,
         FormsModule,
@@ -25,6 +28,7 @@ import {ProtocolDefaultComponentModule} from '../../components/protocol-form-com
                 component: ProtocolAddEditPage
             }
         ]),
+        FontAwesomeModule,
         SyncSpinnerComponentModule,
         ProtocolDefaultComponentModule,
         HtmlDescriptionComponentModule,
