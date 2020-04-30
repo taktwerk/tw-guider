@@ -39,7 +39,8 @@
     "There is data available for pushing to the server.": "Lokale Daten müssen zum Server hochgeladen werden.",
     "No network connection.": "Keine Netzwerkverbindung.",
     "Data synchronization is not yet possible.": "Synchronisierung ist noch nicht möglich.",
-    "Data has been sent to the server": "Daten wurden zum Server gesendet."
+    "Data has been sent to the server": "Daten wurden zum Server gesendet.",
+    "Sending data to the server failed.": "Daten zum Server senden ist fehlgeschlagen."
   },
   "guides": {
     "header": "Anleitungen",
