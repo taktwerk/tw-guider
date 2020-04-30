@@ -68,7 +68,7 @@
     "Assignee": "Beauftragt",
     "Protocol was saved": "Protokoll wurde gespeichert",
     "Have it checked": "Prüfen lassen",
-    "commented": "(De) Commented: {{ comment }}",
+    "commented": "Kommentiert: {{ comment }}",
     "workflow_step_changed": "(De) Workflow Step changed from '{{ oldWorkflowStepName }}' to '{{ newWorkflowStepName }}'",
     "Comment": "Kommentar",
     "Protocol file": "Protokoll Datei",
