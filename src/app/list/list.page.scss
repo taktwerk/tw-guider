@@ -1,20 +1,27 @@
-.guide-preview {
-  flex: 0 0 50%;
-  max-width: 50%;
-  padding-right: 0 !important;
-  position: relative;
+.guides {
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
-  min-height: 1px;
-  padding-left: 15px;
-}
+
+  ion-row{
+     width: 100%;
+  }
+  ion-col{
+     display: flex;
+     width: 100%;
+  }
+  ion-card{
+     width: 100%;
+  }
+ }
 
 .shortname-label {
   position: absolute;
-  top: 0.8rem;
-  left: 1.6rem;
+  top: 1rem;
+  left: 1rem;
   padding: 5px 12px;
-  text-transform: uppercase;
-  font-size: 10px;
+  /* text-transform: uppercase; */
+  font-size: 12px;
   color: #fff;
   background-color: #6c757d;
   font-weight: 500;
@@ -26,33 +33,13 @@
   display: inline-block;
 }
 
-.guide-row {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.guide-info {
-  max-width: 50%;
-  flex: 0 0 50%;
-  position: relative;
-  width: 100%;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
-
-  h2 {
-    margin-top: 0;
-  }
-}
-
 .guide-description {
   white-space: pre-line;
+  font-size: 120%;
 }
 
-.show-guide-play-icon {
-  font-size: 30px;
-}
-
-.show-guide-btn {
-  width: 100%;
+.guide-preview .img {
+  height: 12rem;
+  background-size: cover;
+  background-position: center;
 }

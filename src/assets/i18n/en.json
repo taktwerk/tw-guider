@@ -6,13 +6,16 @@
   "Wrong password!": "Wrong password!",
   "save": "Save",
   "delete": "Delete",
+  "edit": "Edit",
   "title": "Title",
   "All": "All",
   "Final": "Final",
+  "Enable USB mode": "Enable USB mode",
   "about": {
     "header":"About",
     "App Version": "App Version",
-    "API Version": "API Version"
+    "API Version": "API Version",
+    "Copyright": "Copyright"
   },
   "start": {
     "header":"Start",
@@ -38,7 +41,8 @@
     "No network connection.": "No network connection.",
     "Data synchronization is not yet possible.": "Data synchronization is not yet possible.",
     "Data is sent to the server": "Data is sent to the server.",
-    "Data has been sent to the server": "Data has been sent to the server."
+    "Data has been sent to the server": "Data has been sent to the server.",
+    "Sending data to the server failed.": "Sending data to the server failed."
   },
   "guides": {
     "header": "Guides",
@@ -59,15 +63,19 @@
     "Are you sure you want to delete this feedback?": "Are you sure you want to delete this feedback?"
   },
   "protocol": {
-    "protocols": "Protocols",
+    "Protocols": "Protocols",
     "Protocol": "Protocol",
     "Workflow Step": "Workflow Step",
     "Assignee": "Assignee",
     "Protocol was saved": "Protocol was saved",
     "Have it checked": "Have it checked",
-    "Comment": "Comment",
     "commented": "Commented: {{ comment }}",
-    "workflow_step_changed": "Workflow Step changed from '{{ oldWorkflowStepName }}' to '{{ newWorkflowStepName }}'"
+    "workflow_step_changed": "Workflow Step changed from '{{ oldWorkflowStepName }}' to '{{ newWorkflowStepName }}'",
+    "Comment": "Comment",
+    "Protocol file": "Protocol file",
+    "Workflow process": "Workflow process",
+    "Workflow history": "Workflow history",
+    "Commented": "Commented"
   },
   "guide": {
     "header": "Guide",
@@ -100,7 +108,7 @@
     "The database is cleared.": "The database is cleared.",
     "All data was cleared": "All data was cleared",
     "Synchronize Data": "Synchronize Data",
-    "Are you sure you want to overwrite the data?": "Are you sure you want to overwrite the data?"
+    "Are you sure you want to overwrite the data?": "Are you sure you want to overwrite the file?"
   },
   "login": {
     "Username": "Username",
