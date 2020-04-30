@@ -34,6 +34,7 @@ export class FeedbackPage implements OnInit {
                 private router: Router,
                 private videoService: VideoService,
                 private pictureService: PictureService) {
+        this.authService.checkAccess('feedback');
     }
 
     public async setModels()  {

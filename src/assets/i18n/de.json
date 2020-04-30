@@ -119,7 +119,8 @@
     "nothing_to_save": "Nichts zu speichern",
     "user_blocked": "Sie sind blockiert. Bitte kontaktieren Sie den Administrator.",
     "is_app_version_old": "Die App Version ist nicht auf dem aktuellsten Stand. Bitte aktualisieren Sie die App zuerst.",
-    "There was an error setting up the application. Please try again.": "(De) There was an error setting up the application. Please try again."
+    "There was an error setting up the application. Please try again.": "(De) There was an error setting up the application. Please try again.",
+    "user_cant_login": "(De) You don't have rights to log in"
   },
   "qr": {
     "Application was successfully configured": "Die App wurde erfolgreich konfiguriert",

@@ -64,6 +64,7 @@ export class AuthService {
     static STATE_ERROR_INVALID_LOGIN = -1;
     static STATE_ERROR_NETWORK = -2;
     static STATE_ERROR_USER_BLOCKED = -3;
+    static STATE_ERROR_USER_CANT_LOGIN = -4;
     /** AuthDb instance that holds the login data and is stored in the local sql lite db */
     public auth: AuthDb;
     /** successful auth state info */
@@ -145,6 +146,15 @@ export class AuthService {
                                     });
                                 }
                                 resolve(AuthService.STATE_ERROR_USER_BLOCKED);
+                            }
+                            if (err.error.error === 'The user has no rights to log in') {
+                                this.presentAlert(
+                                    'Config Error',
+                                    null,
+                                    this.translateConfigService.translateWord('validation.user_cant_login'),
+                                    ['OK']
+                                );
+                                resolve(AuthService.STATE_ERROR_USER_CANT_LOGIN);
                             }
                         }
                         // loading.dismiss();
@@ -245,6 +255,16 @@ export class AuthService {
                                 ['OK']
                             );
                             return;
+                        }
+                        if (err.error.error === 'The user has no rights to log in') {
+                            reject(new Error('User can\'t login'));
+                            this.presentAlert(
+                                'Config Error',
+                                null,
+                                this.translateConfigService.translateWord('validation.user_cant_login'),
+                                ['OK']
+                            );
+                            resolve(AuthService.STATE_ERROR_USER_CANT_LOGIN);
                         }
                     }
 
@@ -405,7 +425,7 @@ export class AuthService {
     /**
      * Check if a user has access to a page
      */
-    public checkAccess(): void {
+    public checkAccess(pageName?: string): void {
         this.userService.getUser().then(isAuthenticatedUser => {
             if (!isAuthenticatedUser) {
                 this.ngZone.run(() => {
@@ -414,26 +434,37 @@ export class AuthService {
                     });
                 });
             } else {
-                if (this.network.type === 'none') {
-                    return;
+                let userHaveAcessToPage =  true;
+
+                switch (pageName) {
+                    case 'protocol':
+                        userHaveAcessToPage = this.isHaveUserRole('ProtocolViewer') || this.auth.isAuthority;
+                        break;
+                    case 'feedback':
+                        userHaveAcessToPage = this.isHaveUserRole('FeedbackViewer') || this.auth.isAuthority;
+                        break;
+                    case 'guide':
+                        userHaveAcessToPage = this.isHaveUserRole('GuiderViewer') || this.auth.isAuthority;
+                        break;
+                    default:
+                        userHaveAcessToPage = true;
                 }
-                // this.checkUserToken().then(res => {
-                //     if (!res) {
-                //         this.logout().then(() => {
-                //             this.ngZone.run(() => {
-                //                 this.navCtrl.navigateRoot('login').then(() => {
-                //                     this.showToast(
-                //                         'validation.You are not authorized.',
-                //                         'login.Please, login',
-                //                         'danger'
-                //                     );
-                //                 });
-                //             });
-                //         });
-                //     }
-                // });
+
+                if (!userHaveAcessToPage) {
+                    this.ngZone.run(() => {
+                        this.navCtrl.navigateRoot('profile');
+                    });
+                }
             }
         });
+    }
+
+    public isHaveUserRoles(): boolean {
+        return this.auth && this.auth.additionalInfo && this.auth.additionalInfo.roles;
+    }
+
+    public isHaveUserRole(roleName: string): boolean {
+        return this.isHaveUserRoles() && this.auth.additionalInfo.roles.includes(roleName);
     }
 
     async showToast(msg?: string, header = '' , toastColor?: string) {

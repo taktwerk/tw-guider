@@ -7,11 +7,7 @@ import {GuideCategoryModel} from '../../models/db/api/guide-category-model';
 import {Events} from '@ionic/angular';
 import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
 import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
-import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model';
-import {DownloadService} from '../../services/download-service';
-import {PictureService} from '../../services/picture-service';
 import {NavigationExtras, Router} from '@angular/router';
-import {WorkflowStepService} from '../../providers/api/workflow-step-service';
 
 @Component({
   selector: 'app-list',
@@ -21,6 +17,7 @@ import {WorkflowStepService} from '../../providers/api/workflow-step-service';
 export class ListPage implements OnInit {
   public guideCategories: GuideCategoryModel[] = [];
   public searchValue: string;
+  public haveProtocolPermissions = false;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
@@ -33,7 +30,14 @@ export class ListPage implements OnInit {
       public changeDetectorRef: ChangeDetectorRef,
       private router: Router
   ) {
-    this.authService.checkAccess();
+    this.authService.checkAccess('guide');
+    if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
+      if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') ||
+          this.authService.auth.isAuthority
+      ) {
+        this.haveProtocolPermissions = true;
+      }
+    }
     this.findAllGuideCategories();
   }
 
@@ -138,7 +142,7 @@ export class ListPage implements OnInit {
       this.setGuideInfo();
     });
     this.events.subscribe('network:online', (isNetwork) => {
-      this.authService.checkAccess();
+      this.authService.checkAccess('guide');
     });
   }
 }

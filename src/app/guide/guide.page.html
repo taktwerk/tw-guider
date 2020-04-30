@@ -76,7 +76,7 @@
                             <html-description-component [html]="step.description_html" class="step-description"></html-description-component>
                           </div>
                         </ion-card-content>
-                        <ion-toolbar>
+                        <ion-toolbar *ngIf="haveFeedbackPermissions">
                           <ion-button
                                     slot="end"
                                     color="primary"

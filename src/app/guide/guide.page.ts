@@ -26,6 +26,8 @@ import {PictureService} from '../../services/picture-service';
 export class GuidePage implements OnInit {
   guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
 
+  haveFeedbackPermissions = false;
+
   public guide: GuiderModel = this.guiderService.newModel();
   public guideId: number = null;
   public guideSteps: GuideStepModel[] = [];
@@ -57,7 +59,13 @@ export class GuidePage implements OnInit {
       private ngZone: NgZone,
       private pictureService: PictureService
   ) {
-    this.authService.checkAccess();
+    this.authService.checkAccess('guide');
+    if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
+      if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') ||
+          this.authService.auth.isAuthority) {
+        this.haveFeedbackPermissions = true;
+      }
+    }
   }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
@@ -205,7 +213,7 @@ export class GuidePage implements OnInit {
       });
     });
     this.events.subscribe('network:online', (isNetwork) => {
-      this.authService.checkAccess();
+      this.authService.checkAccess('guide');
     });
   }
 }
