@@ -101,10 +101,9 @@
         <br>
         <span class="time">
             <fa-icon [icon]="faClock"></fa-icon>
-          {{ (model.local_created_at * 1000 || model.created_at) | dateAgo  }}
+          {{ (model.local_created_at || model.created_at) | dateAgo  }}
           </span>
       </ion-card>
     </ion-item>
-<!--    </ul>-->
   </ion-list>
 </ion-content>

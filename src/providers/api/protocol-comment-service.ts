@@ -9,7 +9,7 @@ import {DownloadService} from '../../services/download-service';
 import {AppSetting} from '../../services/app-setting';
 import {ProtocolCommentModel} from '../../models/db/api/protocol-comment-model';
 import {WorkflowStepModel} from '../../models/db/api/workflow-step-model';
-import {ProtocolModel} from '../../models/db/api/protocol-model';
+import {TranslateConfigService} from '../../services/translate-config.service';
 
 @Injectable()
 export class ProtocolCommentService extends ApiService {
@@ -26,13 +26,15 @@ export class ProtocolCommentService extends ApiService {
      * @param events
      * @param downloadService
      * @param appSetting
+     * @param translateConfigService
      */
     constructor(http: HttpClient,
                 private p: Platform, private db: DbProvider,
                 public authService: AuthService,
                 public events: Events,
                 public downloadService: DownloadService,
-                public appSetting: AppSetting) {
+                public appSetting: AppSetting,
+                private translateConfigService: TranslateConfigService) {
         super(http, events, appSetting);
     }
 
@@ -42,7 +44,7 @@ export class ProtocolCommentService extends ApiService {
                 [ProtocolCommentModel.COL_LOCAL_PROTOCOL_ID, protocolId], '_id DESC').then(async result => {
                 if (result) {
                     for (let i = 0; i < result.length; i++) {
-                        result[i].body = await result[i].getCommentBody();
+                        result[i].body = await this.getCommentBody(result[i]);
                         result[i].icon = await result[i].getIcon();
                         result[i].colour = await result[i].getColour();
                     }
@@ -52,6 +54,46 @@ export class ProtocolCommentService extends ApiService {
                 }
             });
         });
+    }
+
+    async getCommentBody(protocolComment: ProtocolCommentModel) {
+        if (protocolComment.comment) {
+            return await this.translateConfigService.translate(
+                'protocol.commented', {comment: protocolComment.comment}
+            );
+        }
+        if (!protocolComment.new_workflow_step_id || !protocolComment.old_workflow_step_id) {
+            return null;
+        }
+        const newWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService);
+        const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
+            [newWorkflowStepModel.COL_ID_API, protocolComment.new_workflow_step_id]
+        );
+        if (!newWorkflowStepSearchResult.length) {
+            return null;
+        }
+        const newWorkflowStep = newWorkflowStepSearchResult[0];
+        if (newWorkflowStep.type === 'final') {
+            return await this.translateConfigService.translate('Final');
+        }
+
+        const oldWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService);
+        const oldWorkflowStepSearchResult = await oldWorkflowStepModel.findFirst(
+            [newWorkflowStepModel.COL_ID_API, protocolComment.old_workflow_step_id]
+        );
+        if (!oldWorkflowStepSearchResult.length) {
+            return null;
+        }
+        const oldWorkflowStep = oldWorkflowStepSearchResult[0];
+
+        if (newWorkflowStep && oldWorkflowStep) {
+            return await this.translateConfigService.translate(
+                'protocol.workflow_step_changed',
+                {oldWorkflowStepName: oldWorkflowStep.name, newWorkflowStepName: newWorkflowStep.name}
+            );
+        }
+
+        return null;
     }
 
     /**

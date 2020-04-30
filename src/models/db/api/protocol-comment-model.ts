@@ -69,41 +69,6 @@ export class ProtocolCommentModel extends DbApiModel {
         super(platform, db, events, downloadService);
     }
 
-    async getCommentBody() {
-        if (this.comment) {
-            return `Commented: ${this.comment}`;
-        }
-        if (!this.new_workflow_step_id || !this.old_workflow_step_id) {
-            return null;
-        }
-        const newWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService);
-        const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
-            [newWorkflowStepModel.COL_ID_API, this.new_workflow_step_id]
-        );
-        if (!newWorkflowStepSearchResult.length) {
-            return null;
-        }
-        const newWorkflowStep = newWorkflowStepSearchResult[0];
-        if (newWorkflowStep.type === 'final') {
-            return 'Final';
-        }
-
-        const oldWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService);
-        const oldWorkflowStepSearchResult = await oldWorkflowStepModel.findFirst(
-            [newWorkflowStepModel.COL_ID_API, this.old_workflow_step_id]
-        );
-        if (!oldWorkflowStepSearchResult.length) {
-            return null;
-        }
-        const oldWorkflowStep = oldWorkflowStepSearchResult[0];
-
-        if (newWorkflowStep && oldWorkflowStep) {
-            return `Workflow Step changed from '${oldWorkflowStep.name}' to '${newWorkflowStep.name}'`;
-        }
-
-        return null;
-    }
-
     async getIcon() {
         if (this.comment) {
             return faComment;

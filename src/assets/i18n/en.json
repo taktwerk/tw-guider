@@ -8,6 +8,7 @@
   "delete": "Delete",
   "title": "Title",
   "All": "All",
+  "Final": "Final",
   "about": {
     "header":"About",
     "App Version": "App Version",
@@ -64,7 +65,9 @@
     "Assignee": "Assignee",
     "Protocol was saved": "Protocol was saved",
     "Have it checked": "Have it checked",
-    "Comment": "Comment"
+    "Comment": "Comment",
+    "commented": "Commented: {{ comment }}",
+    "workflow_step_changed": "Workflow Step changed from '{{ oldWorkflowStepName }}' to '{{ newWorkflowStepName }}'"
   },
   "guide": {
     "header": "Guide",
