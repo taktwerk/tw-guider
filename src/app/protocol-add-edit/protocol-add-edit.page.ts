@@ -22,6 +22,9 @@ import {ProtocolDefaultService} from '../../providers/api/protocol-default-servi
 import {WorkflowService} from '../../providers/api/workflow-service';
 import {WorkflowTransitionService} from '../../providers/api/workflow-transition-service';
 
+import { faClock } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+
 @Component({
   selector: 'protocol-add-edit',
   templateUrl: 'protocol-add-edit.page.html',
@@ -36,6 +39,10 @@ export class ProtocolAddEditPage implements OnInit {
   public protocol_form: any;
   private templateId: number;
   private clientId: number;
+  public comment: string = null;
+
+  faClock = faClock;
+  faUser = faUser;
 
   constructor(
       private activatedRoute: ActivatedRoute,
@@ -63,6 +70,7 @@ export class ProtocolAddEditPage implements OnInit {
       private router: Router
   ) {
     this.authService.checkAccess();
+    this.comment = null;
     if (!this.model) {
       this.model = protocolService.newModel();
     }
@@ -109,6 +117,7 @@ export class ProtocolAddEditPage implements OnInit {
       this.model.reference_model = this.reference_model;
       this.model.reference_id = this.reference_id;
       this.model.name = protocolName;
+      this.model.creator = this.getCreatorName();
       await this.model.save();
       this.protocolId = this.model[this.model.COL_ID];
       this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
@@ -131,22 +140,59 @@ export class ProtocolAddEditPage implements OnInit {
         this.model.local_protocol_form_number = this.protocol_form[this.protocol_form.COL_ID];
       }
       await this.model.save();
+      if (this.comment) {
+        const protocolCommentModel = this.protocolCommentService.newModel();
+        if (this.model.idApi) {
+          protocolCommentModel.protocol_id = this.model.idApi;
+        }
+        console.log('after saving comment commnet protocol_id');
+        protocolCommentModel.local_protocol_id = this.model[this.model.COL_ID];
+        protocolCommentModel.comment = this.comment;
+        protocolCommentModel.event = 'comment';
+        protocolCommentModel.name = 'a';
+        protocolCommentModel.creator = this.getCreatorName();
+        await protocolCommentModel.save();
+        this.comment = null;
+      }
       this.detectChanges();
       this.events.publish('setIsPushAvailableData');
     }
   }
 
-  public async transition(nextWorkflowTransition: WorkflowTransitionModel) {
-    const protocolCommentModel = this.protocolCommentService.newModel();
-    if (this.model.idApi) {
-      protocolCommentModel.protocol_id = this.model.idApi;
+  public getCreatorName() {
+    const user = this.authService.auth;
+    if (user.additionalInfo.fullname) {
+      return user.additionalInfo.fullname;
     }
-    protocolCommentModel.local_protocol_id = this.model[this.model.COL_ID];
-    protocolCommentModel.event = this.model.workflowStep.type;
-    protocolCommentModel.old_workflow_step_id = nextWorkflowTransition.workflow_step_id;
-    protocolCommentModel.new_workflow_step_id = nextWorkflowTransition.next_workflow_step_id;
-    protocolCommentModel.name = 'b';
-    await protocolCommentModel.save();
+
+    return user.username;
+  }
+
+  public async transition(nextWorkflowTransition: WorkflowTransitionModel) {
+    if (this.comment) {
+      const writtenProtocolCommentModel = this.protocolCommentService.newModel();
+      if (this.model.idApi) {
+        writtenProtocolCommentModel.protocol_id = this.model.idApi;
+      }
+      writtenProtocolCommentModel.local_protocol_id = this.model[this.model.COL_ID];
+      writtenProtocolCommentModel.comment = this.comment;
+      writtenProtocolCommentModel.event = 'comment';
+      writtenProtocolCommentModel.name = 'a';
+      writtenProtocolCommentModel.creator = this.getCreatorName();
+      await writtenProtocolCommentModel.save();
+      this.comment = null;
+    }
+    const transitionProtocolCommentModel = this.protocolCommentService.newModel();
+    if (this.model.idApi) {
+      transitionProtocolCommentModel.protocol_id = this.model.idApi;
+    }
+    transitionProtocolCommentModel.local_protocol_id = this.model[this.model.COL_ID];
+    transitionProtocolCommentModel.event = this.model.workflowStep.type;
+    transitionProtocolCommentModel.old_workflow_step_id = nextWorkflowTransition.workflow_step_id;
+    transitionProtocolCommentModel.new_workflow_step_id = nextWorkflowTransition.next_workflow_step_id;
+    transitionProtocolCommentModel.name = 'b';
+    transitionProtocolCommentModel.creator = this.getCreatorName();
+    await transitionProtocolCommentModel.save();
     this.model.workflow_step_id = nextWorkflowTransition.next_workflow_step_id;
     await this.model.save();
     let previousProtocolFormFile = null;
@@ -219,6 +265,7 @@ export class ProtocolAddEditPage implements OnInit {
       this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
       this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
       this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
+      this.model.comments = await this.protocolService.getComments(this.model);
       this.protocol_form = await this.getProtcolFormModel();
     }
   }
@@ -234,7 +281,7 @@ export class ProtocolAddEditPage implements OnInit {
       this.reference_model = this.protocolService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
       this.protocolId = +protocolData.protocolId;
       if (this.protocolId) {
-        this.setExistModel();
+        await this.setExistModel();
       } else {
         console.log('no protocol id');
         this.model = this.protocolService.newModel();
@@ -244,7 +291,12 @@ export class ProtocolAddEditPage implements OnInit {
         this.model.reference_model = this.reference_model;
         this.model.protocol_form_table = 'protocol_default';
         this.protocol_form = await this.getProtcolFormModel();
+        console.log('this.protocol_form after getProtocolFormModel', this.protocol_form);
         this.model.canEditProtocol = await this.protocolTemplateService.canCreateProtocol(this.templateId);
+      }
+      if (!this.protocol_form) {
+        this.http.showToast('Can\'t open this protocol', '', 'danger', false);
+        this.dismiss();
       }
       this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
         this.setExistModel();
@@ -321,16 +373,16 @@ export class ProtocolAddEditPage implements OnInit {
         this.setExistModel();
         this.detectChanges();
       });
-      this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':create', (model) => {
-        this.setExistModel();
+      this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':create', async (model) => {
+        this.model.comments = await this.protocolService.getComments(this.model);
         this.detectChanges();
       });
-      this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':update', (model) => {
-        this.setExistModel();
+      this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':update', async (model) => {
+        this.model.comments = await this.protocolService.getComments(this.model);
         this.detectChanges();
       });
-      this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':delete', (model) => {
-        this.setExistModel();
+      this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':delete', async (model) => {
+        this.model.comments = await this.protocolService.getComments(this.model);
         this.detectChanges();
       });
     });

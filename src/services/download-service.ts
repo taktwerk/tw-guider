@@ -411,8 +411,11 @@ export class DownloadService {
                 return fileName.indexOf('.jpg') > -1 ||
                     fileName.indexOf('.JPG') > -1 ||
                     fileName.indexOf('.jpeg') > -1 ||
+                    fileName.indexOf('.JPEG') > -1 ||
                     fileName.indexOf('.png') > -1 ||
-                    fileName.indexOf('.PNG') > -1;
+                    fileName.indexOf('.PNG') > -1 ||
+                    fileName.indexOf('.webp') > -1 ||
+                    fileName.indexOf('.WEBP') > -1;
             case 'pdf':
                 return fileName.indexOf('.pdf') > -1;
             case 'video':
@@ -421,7 +424,19 @@ export class DownloadService {
                     fileName.indexOf('.mp4') > -1 ||
                     fileName.indexOf('.MP4') > -1 ||
                     fileName.indexOf('.wmv') > -1 ||
-                    fileName.indexOf('.WMV') > -1;
+                    fileName.indexOf('.WMV') > -1 ||
+                    fileName.indexOf('.avi') > -1 ||
+                    fileName.indexOf('.AVI') > -1 ||
+                    fileName.indexOf('.mpeg') > -1 ||
+                    fileName.indexOf('.MPEG') > -1 ||
+                    fileName.indexOf('.mpg') > -1 ||
+                    fileName.indexOf('.MPG') > -1 ||
+                    fileName.indexOf('.m4v') > -1 ||
+                    fileName.indexOf('.M4V') > -1 ||
+                    fileName.indexOf('.mkv') > -1 ||
+                    fileName.indexOf('.MKV') > -1 ||
+                    fileName.indexOf('.ogv') > -1 ||
+                    fileName.indexOf('.OGV') > -1;
             case 'audio':
                 return fileName.indexOf('.mp3') > -1 ||
                     fileName.indexOf('.MP3') > -1;

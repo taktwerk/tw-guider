@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Events, NavController, Platform} from '@ionic/angular';
+import {Platform} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
-import {AppSetting} from '../../services/app-setting';
 import {AppVersion} from '@ionic-native/app-version/ngx';
+import config from '../../environments/config.json';
 
 
 /**
@@ -19,6 +19,7 @@ import {AppVersion} from '@ionic-native/app-version/ngx';
 export class AboutPage implements OnInit {
 
     public versionNumber = '0.0.1';
+    public apiVersionNumber = '0.0.1';
 
     constructor(
         private platform: Platform,
@@ -32,6 +33,11 @@ export class AboutPage implements OnInit {
                 this.appVersion.getVersionNumber().then((versionNumber) => {
                     this.versionNumber = versionNumber;
                 });
+            }
+            if (config) {
+                if (config.apiVersion) {
+                    this.apiVersionNumber = config.apiVersion;
+                }
             }
         });
     }
