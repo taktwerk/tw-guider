@@ -147,5 +147,24 @@
   },
   "app": {
     "You needs to swipe data and reinstall app": "Sie müssen die App Daten vollständig in den Einstellungen löschen"
+  },
+  "date": {
+    "ago": {
+      "just_now": "(De) Just now",
+      "year": "(De) {{ counter }} year ago",
+      "month": "(De) {{ counter }} month ago",
+      "week": "(De) {{ counter }} week ago",
+      "day": "(De) {{ counter }} day ago",
+      "hour": "(De) {{ counter }} hour ago",
+      "minute": "(De) {{ counter }} minute ago",
+      "second": "(De) {{ counter }} second ago",
+      "years": "(De) {{ counter }} years ago",
+      "months": "(De) {{ counter }} months ago",
+      "weeks": "(De) {{ counter }} weeks ago",
+      "days": "(De) {{ counter }} days ago",
+      "hours": "(De) {{ counter }} hours ago",
+      "minutes": "(De) {{ counter }} minutes ago",
+      "seconds": "(De) {{ counter }} seconds ago"
+    }
   }
 }

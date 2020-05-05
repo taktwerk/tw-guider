@@ -150,5 +150,24 @@
   },
   "app": {
     "You needs to swipe data and reinstall app": "You needs to swipe data and reinstall app"
+  },
+  "date": {
+    "ago": {
+      "just_now": "Just now",
+      "year": "{{ counter }} year ago",
+      "month": "{{ counter }} month ago",
+      "week": "{{ counter }} week ago",
+      "day": "{{ counter }} day ago",
+      "hour": "{{ counter }} hour ago",
+      "minute": "{{ counter }} minute ago",
+      "second": "{{ counter }} second ago",
+      "years": "{{ counter }} years ago",
+      "months": "{{ counter }} months ago",
+      "weeks": "{{ counter }} weeks ago",
+      "days": "{{ counter }} days ago",
+      "hours": "{{ counter }} hours ago",
+      "minutes": "{{ counter }} minutes ago",
+      "seconds": "{{ counter }} seconds ago"
+    }
   }
 }

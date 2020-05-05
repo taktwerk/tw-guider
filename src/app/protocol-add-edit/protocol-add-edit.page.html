@@ -88,7 +88,7 @@
         <br>
         <span class="time">
           <fa-icon [icon]="faClock"></fa-icon>
-              {{ (comment.local_created_at || comment.created_at) | dateAgo  }}
+              {{ ((comment.local_created_at || comment.created_at) | dateAgo) | async }}
         </span>
       </ion-card>
     </ion-item>
@@ -105,7 +105,7 @@
         <br>
         <span class="time">
             <fa-icon [icon]="faClock"></fa-icon>
-          {{ (model.local_created_at || model.created_at) | dateAgo  }}
+          {{ ((model.local_created_at || model.created_at) | dateAgo) | async  }}
           </span>
       </ion-card>
     </ion-item>
