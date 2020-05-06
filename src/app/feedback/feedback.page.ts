@@ -94,7 +94,7 @@ export class FeedbackPage implements OnInit {
     }
 
     itemHeightFn(item, index) {
-        return 79;
+        return 99;
     }
 
     trackByFn(index, item) {

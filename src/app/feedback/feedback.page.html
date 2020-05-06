@@ -19,75 +19,73 @@
 </ion-header>
 
 <ion-content>
-    <ion-virtual-scroll [items]="feedbackList" [approxItemHeight]="'79px'" [itemHeight]="itemHeightFn" [trackBy]="trackByFn">
-        <ion-item *virtualItem="let feedback;" style="opacity:1;height: 79px;">
-            <ion-thumbnail slot="start">
-                <div *ngIf="feedback.attached_file">
-                    <div style="width: 70px;height: 70px;">
-                        <ion-icon name="musical-notes"
+    <ion-item *ngFor="let feedback of feedbackList">
+        <ion-thumbnail slot="start">
+            <div *ngIf="feedback.attached_file">
+                <div>
+                    <ion-icon name="musical-notes"
+                              class="videocam-icon"
+                              slot="start"
+                              *ngIf="feedback.isAudioFile()"
+                    >
+                    </ion-icon>
+                    <div *ngIf="feedback.isPdf()"
+                         (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.title)"
+                    >
+                        <ion-icon name="document"
                                   class="videocam-icon"
                                   slot="start"
-                                  *ngIf="feedback.isAudioFile()"
-                        >
-                        </ion-icon>
-                        <div *ngIf="feedback.isPdf()"
-                             (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.title)"
-                        >
-                            <ion-icon name="document"
-                                      class="videocam-icon"
-                                      slot="start"
-                            >
-                            </ion-icon>
-                        </div>
-                        <img *ngIf="feedback.isImageFile()"
-                             (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.title)"
-                             [src]="feedback.getFileImagePath()"
-                        >
-                        <div *ngIf="feedback.isVideoFile()"
-                             (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.title)"
-                             [ngClass]="{'video-with-thumbnail': feedback.isExistThumbOfFile()}"
-                        >
-                            <img *ngIf="feedback.isExistThumbOfFile()"
-                                 [src]="feedback.getFileImagePath()"
-                            />
-                            <ion-icon *ngIf="feedback.isExistThumbOfFile()"
-                                      name="videocam"
-                                      class="videocam-icon"
-                                      slot="start"
-                            >
-                            </ion-icon>
-                            <img *ngIf="!feedback.isExistThumbOfFile()"
-                                 [src]="'/assets/videooverlay.png'"
-                            >
-                        </div>
-                        <ion-icon *ngIf="!feedback.isExistFormatFile()"
-                                  class="cloud-upload"
-                                  name="cloud-upload"
                         >
                         </ion-icon>
                     </div>
-                    <ion-item>
-                        {{ feedback.attached_file }}
-                    </ion-item>
+                    <img *ngIf="feedback.isImageFile()"
+                         (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.title)"
+                         [src]="feedback.getFileImagePath()"
+                    >
+                    <div *ngIf="feedback.isVideoFile()"
+                         (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.title)"
+                         [ngClass]="{'video-with-thumbnail': feedback.isExistThumbOfFile()}"
+                    >
+                        <img *ngIf="feedback.isExistThumbOfFile()"
+                             [src]="feedback.getFileImagePath()"
+                        />
+                        <ion-icon *ngIf="feedback.isExistThumbOfFile()"
+                                  name="videocam"
+                                  class="videocam-icon"
+                                  slot="start"
+                        >
+                        </ion-icon>
+                        <img *ngIf="!feedback.isExistThumbOfFile()"
+                             [src]="'/assets/videooverlay.png'"
+                        >
+                    </div>
+                    <ion-icon *ngIf="!feedback.isExistFormatFile()"
+                              class="cloud-upload"
+                              name="cloud-upload"
+                    >
+                    </ion-icon>
                 </div>
-            </ion-thumbnail>
-            <ion-label>
-                <h2><span *ngIf="feedback.title">{{ feedback.title }}</span></h2>
-                <p>
-                  {{ (feedback.local_created_at || feedback.created_at) | datePipe: 'dd.MM.yyyy hh:mm:ss' }}
-                </p>
-                <p>
-                    {{ feedback.description }}
-                </p>
-            </ion-label>
-            <ion-button slot="end" fill="clear"
-                        *ngIf="feedback.isOpenStatus()"
-                        (click)="openAddEditPage(feedback[feedback.COL_ID])"
-            >
-                <ion-icon slot="icon-only" name="create"></ion-icon>
-            </ion-button>
-        </ion-item>
-    </ion-virtual-scroll>
+            </div>
+        </ion-thumbnail>
+        <ion-label>
+            <h2><span *ngIf="feedback.title">{{ feedback.title }}</span></h2>
+            <p>
+              {{ (feedback.local_created_at || feedback.created_at) | datePipe: 'dd.MM.yyyy hh:mm:ss' }}
+            </p>
+            <p>
+                {{ feedback.description }}
+            </p>
+            <p>
+                {{ 'Status' | translate:params }} : {{ feedback.status | translate:params }}
+            </p>
+        </ion-label>
+        <ion-button slot="end" fill="clear"
+                    *ngIf="feedback.isOpenStatus()"
+                    (click)="openAddEditPage(feedback[feedback.COL_ID])"
+        >
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-button>
+    </ion-item>
     <div style="height: 70px;">
     </div>
     <ion-fab vertical="bottom" horizontal="end" slot="fixed"

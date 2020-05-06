@@ -11,6 +11,9 @@
   "All": "All",
   "Final": "Final",
   "Enable USB mode": "Enable USB mode",
+  "Status": "Status",
+  "Open": "Open",
+  "Done": "Done",
   "about": {
     "header":"About",
     "App Version": "App Version",

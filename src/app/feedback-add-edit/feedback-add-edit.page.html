@@ -103,6 +103,14 @@
         >
         </ion-textarea>
       </ion-item>
+      <ion-item>
+        <ion-label>
+          {{ 'Status' | translate:params }}
+        </ion-label>
+        <span>
+          {{ model.status | translate:params }}
+        </span>
+      </ion-item>
     </ion-list>
     <ion-button slot="start" (click)="save()">
       <ion-icon slot="start" name="save"></ion-icon>
