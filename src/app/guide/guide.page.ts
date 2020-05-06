@@ -6,7 +6,7 @@ import {GuideStepService} from '../../providers/api/guide-step-service';
 import {GuideStepModel} from '../../models/db/api/guide-step-model';
 import { File } from '@ionic-native/file/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import {Events, ModalController, NavController} from '@ionic/angular';
+import {Events, LoadingController, ModalController, NavController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {GuideAssetService} from '../../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-service';
@@ -27,6 +27,7 @@ export class GuidePage implements OnInit {
   guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
 
   haveFeedbackPermissions = false;
+  isLoadedContent = false;
 
   public guide: GuiderModel = this.guiderService.newModel();
   public guideId: number = null;
@@ -57,7 +58,8 @@ export class GuidePage implements OnInit {
       private videoService: VideoService,
       public navCtrl: NavController,
       private ngZone: NgZone,
-      private pictureService: PictureService
+      private pictureService: PictureService,
+      private loader: LoadingController
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -136,17 +138,22 @@ export class GuidePage implements OnInit {
     this.router.navigate(['feedback'], feedbackNavigationExtras);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    const loader = await this.loader.create();
+    loader.present();
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     if (this.guideId) {
-      this.guiderService.getById(this.guideId).then((result) => {
-        if (result.length) {
-          this.guide = result[0];
-          this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
-          this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-        }
-      });
+      const guiderById = await this.guiderService.getById(this.guideId)
+      if (guiderById.length) {
+        this.guide = guiderById[0];
+        await this.setGuideSteps(this.guide.idApi);
+        await this.setAssets(this.guide.idApi);
+        this.detectChanges();
+      }
     }
+    loader.dismiss();
+    this.isLoadedContent = true;
+
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async (model) => {
       if (this.guide) {
         this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
