@@ -1,3 +1,10 @@
 .transparentBody {
   background: none transparent !important;
 }
+$save-changes-alert-width: 400px;
+.save-changes-alert {
+  --background: red;
+  --min-width: $save-changes-alert-width;
+  min-width: $save-changes-alert-width;
+  background-color: red;
+}

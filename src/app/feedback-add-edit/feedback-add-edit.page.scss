@@ -4,6 +4,7 @@ $big-fab-list-width: calc(#{$big-fab-width} - 2 * #{$big-fab-list-left-padding})
 $big-fab-list-margin-bottom: calc(#{$big-fab-width} + 10px);
 $videocam-font-size: 50px;
 
+
 .video-icon {
   height: 70vh;
   width: auto;
@@ -68,3 +69,4 @@ $videocam-font-size: 50px;
     }
   }
 }
+

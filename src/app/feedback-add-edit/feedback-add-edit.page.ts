@@ -24,6 +24,7 @@ import {ApiSync} from '../../providers/api-sync';
 })
 export class FeedbackAddEditPage implements OnInit {
   public model: FeedbackModel;
+  public originalModel: FeedbackModel;
   public feedbackId: number = null;
   public slideOpts = {
     initialSlide: 0,
@@ -62,6 +63,7 @@ export class FeedbackAddEditPage implements OnInit {
     this.authService.checkAccess('feedback');
     if (!this.model) {
       this.model = feedbackService.newModel();
+      this.originalModel = this.model;
     }
   }
 
@@ -79,28 +81,49 @@ export class FeedbackAddEditPage implements OnInit {
     });
   }
 
-  public openFile(basePath: string, modelName: string, title?: string) {
-    const filePath = basePath;
-    let fileTitle = 'Feedback';
-    if (title) {
-      fileTitle = title;
+  async backToFeedbackList() {
+    console.log('backToFeedbackList')
+    let wasChanges = false;
+    if (!this.model[this.model.COL_ID]) {
+      if ((this.model.title || this.model.description || this.model.attached_file)) {
+        wasChanges = true;
+        console.log('should be show alert');
+      }
+    } else {
+      const modelById = await this.feedbackService.dbModelApi.findFirst([this.model.COL_ID, this.model[this.model.COL_ID]]);
+      if (modelById && modelById.length) {
+        const originalModel = modelById[0];
+        if (originalModel.title !== this.model.title ||
+            originalModel.description !== this.model.description ||
+            originalModel.attached_file !== this.model.attached_file
+        ) {
+          wasChanges = true;
+          console.log('should be show alert for edited');
+        }
+      }
     }
-    if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
-      const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-      this.videoService.playVideo(fileUrl, fileTitle);
-    } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
-      this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
-    }  else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-      // this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
-      const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-      this.pictureService.openFile(fileUrl, fileTitle);
+    if (wasChanges) {
+      const alert = await this.alertController.create({
+        message: this.translateConfigService.translateWord('save_before_close_warning'),
+        cssClass: 'save-changes-alert',
+        buttons: [
+          {
+            text: this.translateConfigService.translateWord('save'),
+            cssClass: 'primary',
+            handler: () => this.save()
+          }, {
+            text: this.translateConfigService.translateWord('dont_save'),
+            handler: () => this.dismiss()
+          }, {
+            text: this.translateConfigService.translateWord('cancel'),
+          }
+        ]
+      });
+      await alert.present();
+    } else {
+      this.dismiss();
     }
-  }
 
-  detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
-      this.changeDetectorRef.detectChanges();
-    }
   }
 
   public async save() {
@@ -127,6 +150,30 @@ export class FeedbackAddEditPage implements OnInit {
       this.http.showToast('feedback.Feedback was saved');
       this.dismiss();
     });
+  }
+
+  public openFile(basePath: string, modelName: string, title?: string) {
+    const filePath = basePath;
+    let fileTitle = 'Feedback';
+    if (title) {
+      fileTitle = title;
+    }
+    if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
+      const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+      this.videoService.playVideo(fileUrl, fileTitle);
+    } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
+      this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+    }  else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
+      // this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+      const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+      this.pictureService.openFile(fileUrl, fileTitle);
+    }
+  }
+
+  detectChanges() {
+    if (!this.changeDetectorRef['destroyed']) {
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   private async isValidFeedback() {

@@ -33,3 +33,20 @@
 .muted {
 	color: gray;
 }
+
+$save-changes-alert-width: 400px;
+.save-changes-alert {
+  .alert-wrapper {
+    --min-width: $save-changes-alert-width;
+    min-width: $save-changes-alert-width;
+    text-align: center;
+    .alert-button-group {
+      flex-wrap: nowrap;
+      flex-direction: row;
+      justify-content: space-around;
+      button {
+        max-width: 33%;
+      }
+    }
+  }
+}

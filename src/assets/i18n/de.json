@@ -14,6 +14,9 @@
   "Status": "Status",
   "Open": "Öffnen",
   "Done": "Erledigt",
+  "save_before_close_warning": "(De) Save changes before closing?",
+  "dont_save": "(De) Don't save",
+  "cancel": "Abbrechen",
   "about": {
     "header":"Über",
     "App Version": "App Version",
