@@ -17,8 +17,8 @@
         <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">
               <ion-grid>
                   <ion-row>
-                    <ion-col fixed size-xs="12" size-md="6">
-                      <div *ngIf="step.getFileName()" class="guide-step-img">
+                    <ion-col *ngIf="step.getFileName()" fixed size-xs="12" size-md="6">
+                      <div class="guide-step-img">
                         <img
                                 *ngIf="step.isImageFile()"
                                 (click)="
