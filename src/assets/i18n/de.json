@@ -61,11 +61,7 @@
     "header": "Feedback",
     "Feedback list": "Feedback Liste",
     "Description": "Beschreibung",
-    "Feedback will be sent as soon as the Internet appears": "(De) Feedback will be sent as soon as the Internet appears",
-    "Feedback was sent": "(De) Feedback was sent",
-    "Feedback was saved": "Feedback wurde gespeichert",
-    "Feedback was deleted": "Feedback wurde gelöscht",
-    "Are you sure you want to delete this feedback?": "Soll dieses Feedback wirklich gelöscht werden?"
+    "Feedback will be sent as soon as the Internet appears": "(De) Feedback will be sent as soon as the Internet appears"
   },
   "protocol": {
     "Protocols": "Protokolle",
@@ -172,5 +168,10 @@
       "minutes": "(De) {{ counter }} minutes ago",
       "seconds": "(De) {{ counter }} seconds ago"
     }
+  },
+  "alert": {
+    "model_was_saved": "{{ model }} wurde gespeichert",
+    "model_was_deleted": "{{ model }} wurde gelöscht",
+    "are_you_sure_delete_model": "Soll dieses {{ model }} wirklich gelöscht werden?"
   }
 }

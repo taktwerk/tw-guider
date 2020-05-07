@@ -145,9 +145,10 @@ export class FeedbackAddEditPage implements OnInit {
     if (!this.model.title) {
       this.model.title = this.defaultTitle;
     }
-    this.feedbackService.save(this.model).then(res => {
+    this.feedbackService.save(this.model).then(async res => {
       this.apiSync.setIsPushAvailableData(true);
-      this.http.showToast('feedback.Feedback was saved');
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', {model: 'Feedback'});
+      this.http.showToast(alertMessage);
       this.dismiss();
     });
   }
@@ -198,16 +199,21 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   public delete() {
-    this.feedbackService.remove(this.model).then(res => {
+    this.feedbackService.remove(this.model).then(async res => {
       this.apiSync.setIsPushAvailableData(true);
       this.dismiss();
-      this.http.showToast('feedback.Feedback was deleted');
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', {model: 'Feedback'});
+      this.http.showToast(alertMessage);
     });
   }
 
   async showDeleteAlert() {
+    const alertMessage = await this.translateConfigService.translate(
+        'alert.are_you_sure_delete_model',
+        {model: 'Feedback'}
+        );
     const alert = await this.alertController.create({
-      message: this.translateConfigService.translateWord('feedback.Are you sure you want to delete this feedback?'),
+      message: alertMessage,
       buttons: [
         {
           text: 'Yes',
