@@ -116,6 +116,7 @@ export class FeedbackAddEditPage implements OnInit {
             handler: () => this.dismiss()
           }, {
             text: this.translateConfigService.translateWord('cancel'),
+            cssClass: 'last-button',
           }
         ]
       });

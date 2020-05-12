@@ -45,7 +45,13 @@ $save-changes-alert-width: 400px;
       flex-direction: row;
       justify-content: space-around;
       button {
-        max-width: 33%;
+        width: 33%;
+        margin: 0;
+        &.last-button {
+          .alert-button-inner {
+            justify-content: flex-start;
+          }
+        }
       }
     }
   }
