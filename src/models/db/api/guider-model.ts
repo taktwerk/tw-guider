@@ -117,9 +117,13 @@ export class GuiderModel extends DbApiModel {
         return `${dayString}${hourString}${minuteString}`;
     }
 
-    public getImage() {
+    public getImage(sanitizeType = 'trustResourceUrl') {
         if (this[GuiderModel.COL_LOCAL_PREVIEW_FILE]) {
-            return this.downloadService.getSanitizedFileUrl(this[GuiderModel.COL_PREVIEW_FILE], this.TABLE_NAME);
+            return this.downloadService.getSanitizedFileUrl(
+                this[GuiderModel.COL_PREVIEW_FILE],
+                this.TABLE_NAME,
+                sanitizeType
+            );
         } else {
             return this.defaultImage;
         }

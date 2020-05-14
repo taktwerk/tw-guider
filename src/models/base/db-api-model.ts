@@ -683,7 +683,7 @@ export abstract class DbApiModel extends DbBaseModel {
             this[this.downloadMapping[fileMapIndex].thumbnail.localPath];
     }
 
-    public getFileImagePath(fileMapIndex = 0) {
+    public getFileImagePath(fileMapIndex = 0, sanitizeType = 'trustResourceUrl') {
         if (!this.isExistFileByIndex(fileMapIndex)) {
             return this.defaultImage;
         }
@@ -697,7 +697,7 @@ export abstract class DbApiModel extends DbBaseModel {
             return null;
         }
 
-        return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME);
+        return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
     }
 
     async updateLocalRelations() {

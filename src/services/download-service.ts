@@ -373,12 +373,17 @@ export class DownloadService {
         return this.webview.convertFileSrc(path);
     }
 
-    public getSanitizedFileUrl(path, modelName): SafeResourceUrl {
+    public getSanitizedFileUrl(path, modelName, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
         path = this.getNativeFilePath(path, modelName);
         const convertFileSrc = this.getWebviewFileSrc(path);
+
         const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
 
-        return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
+        if (sanitizeType === 'trustStyle') {
+            return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
+        }
+
+        return safeUrl;
     }
 
     public async chooseFile(withThumbnailForVideo = false): Promise<RecordedFile> {
