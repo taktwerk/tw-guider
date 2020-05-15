@@ -31,8 +31,8 @@
                   <ion-col fixed size-xs="12" size-sm="6" size-md="4" *ngFor="let item of guideCategory.guides">
                     <ion-card color="light" no-margin>
                       <div class="guide-preview" [routerLink]="['/guide/' + item.idApi]">
-                        <div class="img" *ngIf="item.getImage()" [ngStyle]="{'background-image': 'url(' + item.getImage('trustStyle') + ')'}"></div>
-                        <div class="img" *ngIf="!item.getImage()" [ngStyle]="{'background-image': 'url(' + 'assets/placeholder.jpg' + ')'}"></div>
+                        <div class="img" *ngIf="item.getFileImagePath()" [ngStyle]="{'background-image': 'url(' + item.getFileImagePath(0,'trustStyle') + ')'}"></div>
+                        <div class="img" *ngIf="!item.getFileImagePath()" [ngStyle]="{'background-image': 'url(' + 'assets/placeholder.jpg' + ')'}"></div>
                         <div class="shortname-label badge badge-secondary">
                           {{ item.short_name }}
                         </div>
