@@ -63,7 +63,7 @@ export class GuidePage implements OnInit {
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
-      if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') ||
+      if (this.authService.auth.additionalInfo.roles.includes('FeedbackViewer') ||
           this.authService.auth.isAuthority) {
         this.haveFeedbackPermissions = true;
       }
