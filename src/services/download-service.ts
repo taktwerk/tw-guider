@@ -435,6 +435,8 @@ export class DownloadService {
                     fileName.indexOf('.WMV') > -1 ||
                     fileName.indexOf('.avi') > -1 ||
                     fileName.indexOf('.AVI') > -1 ||
+                    fileName.indexOf('.webm') > -1 ||
+                    fileName.indexOf('.WEBM') > -1 ||
                     fileName.indexOf('.mpeg') > -1 ||
                     fileName.indexOf('.MPEG') > -1 ||
                     fileName.indexOf('.mpg') > -1 ||
