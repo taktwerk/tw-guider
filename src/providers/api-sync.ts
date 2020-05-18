@@ -35,7 +35,7 @@ import {WorkflowTransitionService} from './api/workflow-transition-service';
 export class ApiSync {
     private isBusy: boolean = false;
     public syncData: any;
-    public lastModelUpdatedAt: Date;
+    public lastModelUpdatedAt: any;
 
     /**
      * Contains all services to sync.
@@ -467,7 +467,12 @@ export class ApiSync {
 
         if (this.userService.userDb.userSetting.lastModelUpdatedAt) {
             // Need to recast the saved date to get the ISOString, which will give us the correct offset to sync with the ser
-            const lastUpdatedAt = this.getUTCDate(new Date(this.userService.userDb.userSetting.lastModelUpdatedAt));
+	    const lastModelUpdatedAt = new Date(this.userService.userDb.userSetting.lastModelUpdatedAt.replace(/-/g, '/'));	
+            console.log(typeof this.userService.userDb.userSetting.lastModelUpdatedAt);
+	    // const lastUpdatedAt = this.getUTCDate(new Date(this.userService.userDb.userSetting.lastModelUpdatedAt));
+	    const lastUpdatedAt = this.getUTCDate(lastModelUpdatedAt);
+	    console.log(this.userService.userDb.userSetting.lastModelUpdatedAt);
+	    console.log('new Date(lastModelUpdatedAt)', new Date(lastModelUpdatedAt));
             // const lastUpdatedAt = new Date(this.userService.userDb.userSetting.lastModelUpdatedAt).getTime();
             console.log('lastUpdatedAt', lastUpdatedAt);
             console.log('new Date(this.userService.userDb.userSetting.lastModelUpdatedAt)', this.userService.userDb.userSetting.lastModelUpdatedAt);
@@ -592,6 +597,7 @@ export class ApiSync {
                         await this.userService.userDb.save();
                     }
                 } catch (err) {
+		    console.log('sync errrrorrrr', err);
                     this.failSync();
                     this.isStartSyncBehaviorSubject.next(false);
                     resolve(false);

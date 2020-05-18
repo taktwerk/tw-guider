@@ -13,7 +13,7 @@ export class UserSetting {
   /** last sync date */
   public lastSyncedAt: Date;
 
-  public lastModelUpdatedAt: Date;
+  public lastModelUpdatedAt: any;
   /** last sync diff */
   public lastSyncedDiff: number;
 
