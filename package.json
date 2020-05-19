@@ -78,7 +78,25 @@
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
-    "typescript": "~3.4.3"
+    "typescript": "~3.4.3",
+    "com-sarriaroman-photoviewer": "^1.2.4",
+    "cordova-plugin-streaming-media": "^2.2.0",
+    "cordova-plugin-network-information": "^2.0.2",
+    "cordova-plugin-filechooser": "^1.2.0",
+    "cordova-plugin-filepath": "^1.5.8",
+    "cordova-plugin-file-transfer": "^1.7.1",
+    "cordova-plugin-aes256-encryption": "^2.0.0",
+    "cordova-plugin-filepicker": "^1.1.6",
+    "cordova-plugin-camera": "^4.1.0",
+    "cordova-plugin-media-capture": "^3.0.3",
+    "cordova-plugin-video-editor": "^1.1.3",
+    "cordova-plugin-androidx-adapter": "^1.1.0",
+    "cordova-plugin-compat": "^1.2.0",
+    "cordova-android-support-gradle-release": "^3.0.1",
+    "cordova-plugin-androidx": "^1.0.2",
+    "cordova-custom-config": "^5.1.0",
+    "cordova-plugin-document-viewer": "^0.9.13",
+    "cordova-plugin-file-opener2": "^3.0.0"
   },
   "description": "An Ionic project",
   "cordova": {
@@ -100,7 +118,31 @@
       },
       "cordova-ios-plugin-no-export-compliance": {},
       "sentry-cordova": {},
-      "cordova-plugin-inappbrowser": {}
+      "cordova-plugin-inappbrowser": {},
+      "com-sarriaroman-photoviewer": {},
+      "cordova-plugin-streaming-media": {},
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-filechooser": {},
+      "cordova-plugin-filepath": {},
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-aes256-encryption": {},
+      "cordova-plugin-filepicker": {},
+      "cordova-plugin-camera": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
+      "cordova-plugin-media-capture": {},
+      "cordova-plugin-video-editor": {},
+      "cordova-plugin-androidx-adapter": {},
+      "cordova-plugin-compat": {},
+      "cordova-android-support-gradle-release": {
+        "ANDROID_SUPPORT_VERSION": "27.+"
+      },
+      "cordova-plugin-androidx": {},
+      "cordova-custom-config": {},
+      "cordova-plugin-document-viewer": {},
+      "cordova-plugin-file-opener2": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      }
     },
     "platforms": [
       "ios",

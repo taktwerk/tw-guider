@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {LoadingController, AlertController, NavController} from '@ionic/angular';
 import { AuthService } from '../../services/auth.service';
 import { Storage } from '@ionic/storage';
@@ -24,7 +24,8 @@ export class SetupPage {
       private alertController: AlertController,
       public storage: Storage,
       private qrScanner: QRScanner,
-      private navCtrl: NavController
+      private navCtrl: NavController,
+      private ngZone: NgZone
   ) { }
 
     async presentAlert(header: string, subHeader: string, message: string, buttons: Array<string> ) {
@@ -41,8 +42,8 @@ export class SetupPage {
      * Save the form into storage
      */
     public async save() {
-        this.clientId = this.client_id;
-        this.hostId = this.host_id;
+        this.clientId = this.client_id ? this.client_id : this.clientId;
+        this.hostId = this.host_id ? this.host_id : this.hostId;
 
         console.log('saving', this.clientId, this.hostId, this);
         if (this.clientId) {
@@ -70,12 +71,17 @@ export class SetupPage {
 
             // We need to test the url
 
+            console.log('appConfirmUrl', appConfirmUrl);
             this.authServ.login(appConfirmUrl)
                 .then(data => {
+                    console.log('should be login', data);
                     this.storage.set('url', appUrl);
                     loader.dismiss();
                     // Close the current page
-                    this.navCtrl.pop();
+                    this.ngZone.run(() => {
+                        this.navCtrl.pop();
+                    });
+
                 })
                 .catch(error => {
                     console.log(error);
