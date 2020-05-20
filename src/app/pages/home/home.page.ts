@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { Device } from '@ionic-native/device/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Router, RouterModule } from '@angular/router';
+import {Platform} from '@ionic/angular';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class HomePage {
 
    constructor(
        private router: Router,
+       private platform: Platform,
        public appVersion: AppVersion,
        public storage: Storage,
        public device: Device,
@@ -30,15 +32,21 @@ export class HomePage {
 
 
    ionViewDidEnter(): void {
-        this.appVersion.getAppName().then((res: string) => {
-            console.log('config: app name', res);
-            this.app_name = res;
-            this.appVersion.getVersionNumber().then((version: string | number) => {
-                console.log('config: app version', version);
-                this.version = version;
-                this.openBrowser();
-            });
-        });
+       console.log('ionViewDidEnter');
+       console.log('this.appVersion', this.appVersion);
+       this.platform.ready().then(() => {
+           if (this.appVersion) {
+               this.appVersion.getAppName().then((res: string) => {
+                   console.log('config: app name', res);
+                   this.app_name = res;
+                   this.appVersion.getVersionNumber().then((version: string | number) => {
+                       console.log('config: app version', version);
+                       this.version = version;
+                       this.openBrowser();
+                   });
+               });
+           }
+       });
     }
 
     public openBrowser(): void {
