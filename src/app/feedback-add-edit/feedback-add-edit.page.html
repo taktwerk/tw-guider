@@ -63,6 +63,7 @@
                 class="videocam-icon"
                 slot="start"
                 *ngIf="model.isAudioFile()"
+                (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
       >
       </ion-icon>
       <ion-icon *ngIf="!model.isExistFormatFile()"

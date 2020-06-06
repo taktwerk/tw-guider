@@ -19,11 +19,16 @@
                   <ion-row>
                     <ion-col *ngIf="step.getFileName()" fixed size-xs="12" size-md="6">
                       <div class="guide-step-img">
+                        <ion-icon name="musical-notes"
+                                  class="audio-icon"
+                                  slot="start"
+                                  *ngIf="step.isAudioFile()"
+                                  (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
+                        >
+                        </ion-icon>
                         <img
                                 *ngIf="step.isImageFile()"
-                                (click)="
-                            openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)
-                          "
+                                (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
                                 [src]="step.getFileImagePath()"
                         />
                         <div
@@ -48,13 +53,6 @@
                                [src]="'/assets/videooverlay.png'"
                           >
                         </div>
-                        <ion-icon
-                                name="musical-notes"
-                                class="videocam-icon"
-                                color="primary"
-                                slot="start"
-                                *ngIf="step.isAudioFile()"
-                        ></ion-icon>
                         <ion-icon
                                 *ngIf="!step.isExistFormatFile()"
                                 class="videocam-icon"

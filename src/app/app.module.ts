@@ -80,6 +80,9 @@ import {WorkflowTransitionService} from '../providers/api/workflow-transition-se
 import {ProtocolCommentService} from '../providers/api/protocol-comment-service';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {DateAgoPipe} from '../pipes/date-ago.pipe';
+import {NativeAudio} from '@ionic-native/native-audio/ngx';
+import {Media} from '@ionic-native/media/ngx';
+import {AudioService} from '../services/audio-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -146,6 +149,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     HttpClient,
     DownloadService,
     VideoService,
+    AudioService,
     PictureService,
     ToastService,
     ApiSync,
@@ -180,6 +184,8 @@ Sentry.init({ dsn: environment.sentryDsn });
     DocumentViewer,
     FileOpener,
     Insomnia,
+    NativeAudio,
+    Media,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
   ],

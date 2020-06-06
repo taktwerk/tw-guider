@@ -57,7 +57,9 @@
     "@ionic-native/http": "^5.20.0",
     "@ionic-native/insomnia": "^5.23.0",
     "@ionic-native/ionic-webview": "^5.20.0",
+    "@ionic-native/media": "^5.26.0",
     "@ionic-native/media-capture": "^5.22.0",
+    "@ionic-native/native-audio": "^5.26.0",
     "@ionic-native/network": "^5.20.0",
     "@ionic-native/photo-viewer": "^5.22.0",
     "@ionic-native/qr-scanner": "^5.10.0",
@@ -95,7 +97,9 @@
     "cordova-plugin-filepath": "^1.5.8",
     "cordova-plugin-filepicker": "^1.1.6",
     "cordova-plugin-insomnia": "^4.3.0",
+    "cordova-plugin-media": "^5.0.3",
     "cordova-plugin-media-capture": "^3.0.3",
+    "cordova-plugin-nativeaudio": "^3.0.9",
     "cordova-plugin-network-information": "^2.0.2",
     "cordova-plugin-qrscanner": "^3.0.1",
     "cordova-plugin-streaming-media": "^2.2.0",
@@ -201,7 +205,9 @@
       "sentry-cordova": {
         "SENTRY_ANDROID_SDK_VERSION": "1+"
       },
-      "cordova-plugin-whitelist": {}
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-nativeaudio": {},
+      "cordova-plugin-media": {}
     },
     "platforms": [
       "android",

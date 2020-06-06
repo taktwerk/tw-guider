@@ -449,7 +449,25 @@ export class DownloadService {
                     fileName.indexOf('.OGV') > -1;
             case 'audio':
                 return fileName.indexOf('.mp3') > -1 ||
-                    fileName.indexOf('.MP3') > -1;
+                    fileName.indexOf('.MP3') > -1 ||
+                    fileName.indexOf('.m4a') > -1 ||
+                    fileName.indexOf('.M4A') > -1 ||
+                    fileName.indexOf('.m4p') > -1 ||
+                    fileName.indexOf('.M4P') > -1 ||
+                    fileName.indexOf('.aac') > -1 ||
+                    fileName.indexOf('.AAC') > -1 ||
+                    fileName.indexOf('.ogg') > -1 ||
+                    fileName.indexOf('.OGG') > -1 ||
+                    fileName.indexOf('.opus') > -1 ||
+                    fileName.indexOf('.OPUS') > -1 ||
+                    fileName.indexOf('.wav') > -1 ||
+                    fileName.indexOf('.wav') > -1 ||
+                    fileName.indexOf('.3g2') > -1 ||
+                    fileName.indexOf('.3g2') > -1 ||
+                    fileName.indexOf('.midi') > -1 ||
+                    fileName.indexOf('.midi') > -1 ||
+                    fileName.indexOf('.flac') > -1 ||
+                    fileName.indexOf('.FLAC') > -1;
             default:
                 return false;
         }

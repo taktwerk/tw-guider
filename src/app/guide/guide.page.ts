@@ -77,16 +77,18 @@ export class GuidePage implements OnInit {
       fileTitle = title;
     }
     console.log('basePath', basePath);
-    if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
+    const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+    console.log('fileUrl', fileUrl);
+    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
+        this.downloadService.checkFileTypeByExtension(filePath, 'audio')
+    ) {
       if (!fileApiUrl) {
         return false;
       }
-      const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
       this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-      const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
       this.pictureService.openFile(fileUrl, fileTitle);
     }
   }

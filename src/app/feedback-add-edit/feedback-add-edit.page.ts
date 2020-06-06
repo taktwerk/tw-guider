@@ -160,7 +160,9 @@ export class FeedbackAddEditPage implements OnInit {
     if (title) {
       fileTitle = title;
     }
-    if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
+    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
+        this.downloadService.checkFileTypeByExtension(filePath, 'audio')
+    ) {
       const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
       this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {

@@ -8,6 +8,9 @@ import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {VideoService} from '../../services/video-service';
 import {PictureService} from '../../services/picture-service';
+import {NativeAudio} from '@ionic-native/native-audio/ngx';
+import { Media, MediaObject } from '@ionic-native/media/ngx';
+import {AudioService} from '../../services/audio-service';
 
 @Component({
   selector: 'feedback-page',
@@ -33,7 +36,10 @@ export class FeedbackPage implements OnInit {
                 private navCtrl: NavController,
                 private router: Router,
                 private videoService: VideoService,
-                private pictureService: PictureService) {
+                private pictureService: PictureService,
+                private nativeAudio: NativeAudio,
+                private media: Media,
+                private audio: AudioService) {
         this.authService.checkAccess('feedback');
     }
 
@@ -69,14 +75,14 @@ export class FeedbackPage implements OnInit {
         if (title) {
             fileTitle = title;
         }
-        if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
-            const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+        const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+        if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
+            this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
             this.videoService.playVideo(fileUrl, fileTitle);
         } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
-            this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+            this.photoViewer.show(fileUrl, fileTitle);
         } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
             // this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
-            const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
             this.pictureService.openFile(fileUrl, fileTitle);
         }
     }

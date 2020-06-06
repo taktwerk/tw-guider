@@ -27,6 +27,7 @@
                               class="videocam-icon"
                               slot="start"
                               *ngIf="feedback.isAudioFile()"
+                              (click)="openFile(feedback.getFileName(), feedback.TABLE_NAME, feedback.title)"
                     >
                     </ion-icon>
                     <div *ngIf="feedback.isPdf()"
