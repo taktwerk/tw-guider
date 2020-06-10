@@ -211,7 +211,9 @@ export class AuthService {
 
     loginByIdentifier(appConfirmUrl, type: string, identifier: string) {
         return new Promise(async (resolve, reject) => {
-            if (type === 'client') {
+            if (type === 'client' ||
+                type === 'client-default-user'
+            ) {
                 const version = await this.appVersion.getVersionNumber();
                 if (!version) {
                     resolve(false);
@@ -219,7 +221,13 @@ export class AuthService {
                     return false;
                 }
                 appConfirmUrl += 'by-client-identifier?client=' + identifier;
-                appConfirmUrl += '&device_key=' + this.device.uuid + '&device_name=' + this.device.model + '&version=' + version;
+                if (type === 'client-default-user') {
+                    appConfirmUrl += '&is_login_by_default_user=1';
+                } else {
+                    appConfirmUrl += '&device_key=' + this.device.uuid +
+                        '&device_name=' + this.device.model +
+                        '&version=' + version;
+                }
             } else if (type === 'user') {
                 appConfirmUrl += 'by-user-identifier?user=' + identifier;
             }
@@ -235,7 +243,6 @@ export class AuthService {
                     }
                 })
                 .catch(err => {
-                    console.log('login identifire errror', err);
                     if (err.error && err.error.error) {
                         if (err.error.error === 'User was blocked') {
                             if (err.error.blocked_user_id) {
@@ -359,7 +366,6 @@ export class AuthService {
                 }
             });
         });
-
     }
 
     /**

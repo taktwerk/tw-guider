@@ -75,10 +75,10 @@ export class HomePage {
                 const host = this.appSetting.isEnabledUsb ? this.appSetting.usbHost : config.host;
                 const appConfirmUrl =  host + environment.apiUrlPath + '/login/';
                 if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
-                  console.log('clientIdentifier');
                   await this.authService.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
+                } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT && config.client) {
+                  await this.authService.loginByIdentifier(appConfirmUrl, 'client-default-user', config.client);
                 } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
-                  console.log('userIdentifier');
                   await this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
                 }
 

@@ -11,7 +11,8 @@ import {TranslateConfigService} from './translate-config.service';
 export enum AppConfigurationModeEnum {
     ONLY_CONFIGURE,
     CONFIGURE_AND_DEVICE_LOGIN,
-    CONFIGURE_AND_USER_LOGIN
+    CONFIGURE_AND_USER_LOGIN,
+    CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT
 }
 
 @Injectable()
