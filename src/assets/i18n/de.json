@@ -49,6 +49,9 @@
     "Data has been sent to the server": "Daten wurden zum Server gesendet.",
     "Sending data to the server failed.": "Daten zum Server senden ist fehlgeschlagen."
   },
+  "guide-categories": {
+    "header": "(De) Guide categories"
+  },
   "guides": {
     "header": "Anleitungen",
     "duration": "Dauer",

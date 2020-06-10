@@ -208,17 +208,17 @@ export class GuidePage implements OnInit {
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', async (model) => {
       this.ngZone.run(() => {
-        this.navCtrl.navigateRoot('/guides');
+        this.navCtrl.navigateRoot('/guide-categories');
       });
     });
     this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', async (model) => {
       this.ngZone.run(() => {
-        this.navCtrl.navigateRoot('/guides');
+        this.navCtrl.navigateRoot('/guide-categories');
       });
     });
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
       this.ngZone.run(() => {
-        this.navCtrl.navigateRoot('/guides');
+        this.navCtrl.navigateRoot('/guide-categories');
       });
     });
     this.events.subscribe('network:online', (isNetwork) => {

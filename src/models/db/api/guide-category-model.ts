@@ -19,6 +19,7 @@ export class GuideCategoryModel extends DbApiModel {
 
     /// relation
     public guides: GuiderModel[] = [];
+    public guidesCount = 0;
 
     //db columns
     static COL_CLIENT_ID = 'client_id';
@@ -99,6 +100,7 @@ export class GuideCategoryModel extends DbApiModel {
                         this.addGuide(obj);
                     }
                 }
+                this.guidesCount = this.guides.length;
             }).catch((err) => {
                 console.log('guide category error', err);
             });

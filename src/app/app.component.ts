@@ -83,7 +83,7 @@ export class AppComponent implements OnInit {
         const user = await this.userService.getUser();
         if (user) {
           await this.ngZone.run(() => {
-            this.navCtrl.navigateRoot('/guides').then(() => {
+            this.navCtrl.navigateRoot('/guide-categories').then(() => {
               this.showPageView = true;
             });
           });
@@ -206,7 +206,7 @@ export class AppComponent implements OnInit {
       return appPages;
     }
     if (this.authService.isHaveUserRole('GuiderViewer') || this.authService.auth.isAuthority) {
-      appPages.push({title: this.translateConfigService.translateWord('guides.header'), url: '/guides', icon: 'move'});
+      appPages.push({title: this.translateConfigService.translateWord('guides.header'), url: '/guide-categories', icon: 'move'});
     }
     if (this.authService.isHaveUserRole('FeedbackViewer') || this.authService.auth.isAuthority) {
       appPages.push({title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'chatboxes'});

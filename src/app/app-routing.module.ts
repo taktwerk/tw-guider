@@ -16,7 +16,11 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
   {
-    path: 'guides',
+    path: 'guide-categories',
+    loadChildren: () => import('./categories-list/categories-list.module').then(m => m.CategoriesListModule)
+  },
+  {
+    path: 'guides/:guideCategoryId',
     loadChildren: () => import('./list/list.module').then(m => m.ListPageModule)
   },
   {

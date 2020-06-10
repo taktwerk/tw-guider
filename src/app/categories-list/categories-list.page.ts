@@ -7,19 +7,18 @@ import {GuideCategoryModel} from '../../models/db/api/guide-category-model';
 import {Events, LoadingController} from '@ionic/angular';
 import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
 import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
-import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import {NavigationExtras, Router} from '@angular/router';
 
 @Component({
   selector: 'app-list',
-  templateUrl: 'list.page.html',
-  styleUrls: ['list.page.scss']
+  templateUrl: 'categories-list.page.html',
+  styleUrls: ['categories-list.page.scss']
 })
-export class ListPage implements OnInit {
-  public guideCategory: GuideCategoryModel;
+export class CategoriesListPage implements OnInit {
+  public guideCategories: GuideCategoryModel[] = [];
   public searchValue: string;
   public haveProtocolPermissions = false;
   public isLoadedContent = false;
-  public guideCategoryId: number;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
@@ -31,8 +30,7 @@ export class ListPage implements OnInit {
       public events: Events,
       public changeDetectorRef: ChangeDetectorRef,
       private router: Router,
-      private loader: LoadingController,
-      private activatedRoute: ActivatedRoute
+      private loader: LoadingController
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -48,31 +46,28 @@ export class ListPage implements OnInit {
   async showAllGuides() {
     const loader = await this.loader.create();
     loader.present();
-    this.guideCategoryId = +this.activatedRoute.snapshot.paramMap.get('guideCategoryId');
-    if (this.guideCategoryId) {
-      const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
-      if (guiderCategoryById.length) {
-        this.guideCategory = guiderCategoryById[0];
-        this.detectChanges();
-      }
-    }
     await this.findAllGuideCategories();
     loader.dismiss();
     this.isLoadedContent = true;
   }
 
-  public searchGuides($event) {
+  async searchGuides($event) {
     this.searchValue = $event.detail.value;
-    this.setGuideInfo();
+
+    this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
+
+    this.setGuides();
   }
 
   async findAllGuideCategories() {
-    this.setGuideInfo();
+    this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
+
+    this.setGuides();
   }
 
-  setGuideInfo() {
-    this.guideCategoryService.getGuides(this.guideCategory.idApi, this.searchValue).then((guides) => {
-      this.guideCategory.guides = guides;
+  async setGuides() {
+    this.guideCategories.map(guideCategory => {
+      guideCategory.setGuides();
     });
   }
 
@@ -99,7 +94,7 @@ export class ListPage implements OnInit {
     this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.events.subscribe('user:login', () => {
       this.findAllGuideCategories();
       this.detectChanges();
@@ -110,44 +105,23 @@ export class ListPage implements OnInit {
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
       this.findAllGuideCategories();
     });
-    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', async (model) => {
-      const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
-      if (guiderCategoryById.length) {
-        this.guideCategory = guiderCategoryById[0];
-        this.detectChanges();
-      }
+    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
+      this.findAllGuideCategories();
     });
-    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', async (model) => {
-      const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
-      if (guiderCategoryById.length) {
-        this.guideCategory = guiderCategoryById[0];
-        this.detectChanges();
-      }
+    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', (model) => {
+      this.findAllGuideCategories();
     });
-    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', async (model) => {
-      const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
-      if (guiderCategoryById.length) {
-        this.guideCategory = guiderCategoryById[0];
-        this.detectChanges();
-      }
+    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', (model) => {
+      this.findAllGuideCategories();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
-      this.setGuideInfo();
+      this.setGuides();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
-      this.setGuideInfo();
+      this.setGuides();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
-      this.setGuideInfo();
-    });
-    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':create', (model) => {
-      this.setGuideInfo();
-    });
-    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
-      this.setGuideInfo();
-    });
-    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', (model) => {
-      this.setGuideInfo();
+      this.setGuides();
     });
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess('guide');

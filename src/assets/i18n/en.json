@@ -50,6 +50,9 @@
     "Data has been sent to the server": "Data has been sent to the server.",
     "Sending data to the server failed.": "Sending data to the server failed."
   },
+  "guide-categories": {
+    "header": "Guide categories"
+  },
   "guides": {
     "header": "Guides",
     "duration": "Duration",

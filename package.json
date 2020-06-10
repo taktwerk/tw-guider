@@ -207,7 +207,9 @@
       },
       "cordova-plugin-whitelist": {},
       "cordova-plugin-nativeaudio": {},
-      "cordova-plugin-media": {}
+      "cordova-plugin-media": {
+        "KEEP_AVAUDIOSESSION_ALWAYS_ACTIVE": "NO"
+      }
     },
     "platforms": [
       "android",

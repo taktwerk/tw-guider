@@ -94,7 +94,7 @@ export class HomePage {
                     } else {
                       this.events.publish('qr-code:setup');
                       this.ngZone.run(() => {
-                        this.navCtrl.navigateRoot('/guides');
+                        this.navCtrl.navigateRoot('/guide-categories');
                       });
                     }
                   });
@@ -138,7 +138,7 @@ export class HomePage {
                   } else {
                     this.events.publish('qr-code:setup');
                     this.ngZone.run(() => {
-                      this.navCtrl.navigateRoot('/guides');
+                      this.navCtrl.navigateRoot('/guide-categories');
                     });
                   }
                 });

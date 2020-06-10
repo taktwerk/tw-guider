@@ -116,17 +116,19 @@ export class GuideCategoryService extends ApiService {
         });
     }
 
-    async findAll(): Promise<any> {
+    async findAll(searchValue?: string): Promise<any> {
         return new Promise(async (resolve) => {
             const user = await this.authService.getLastUser();
             if (!user) {
                 resolve([]);
                 return;
             }
-            const whereCondition: any[] = [
-                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL AND ' +
-                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
-            ];
+            let deletedAtRaw = this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL AND ' +
+                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL';
+            if (searchValue) {
+                deletedAtRaw += ' AND ' + this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(GuideCategoryModel.COL_NAME) + ' LIKE "%' + searchValue + '%"';
+            }
+            const whereCondition: any[] = [deletedAtRaw];
             if (!user.isAuthority) {
                 whereCondition.push(['client_id', user.client_id]);
             }
@@ -148,6 +150,23 @@ export class GuideCategoryService extends ApiService {
                 resolve(entries);
             }).catch((err) => {
                 resolve(entries);
+            });
+        });
+    }
+
+    public getById(id): Promise<any> {
+        return new Promise(async resolve => {
+            const user = await this.authService.getLastUser();
+            if (!user) {
+                resolve([]);
+                return;
+            }
+            const whereCondition = [['id', id]];
+            if (!user.isAuthority && user.client_id) {
+                whereCondition.push(['client_id', user.client_id]);
+            }
+            this.dbModelApi.findFirst(whereCondition).then(result => {
+                resolve(result);
             });
         });
     }

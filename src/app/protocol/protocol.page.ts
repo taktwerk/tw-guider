@@ -94,7 +94,7 @@ export class ProtocolPage implements OnInit {
 
     dismiss() {
         this.ngZone.run(() => {
-            this.navCtrl.navigateRoot('/guides');
+            this.navCtrl.navigateRoot('/guide-categories');
         });
     }
 
