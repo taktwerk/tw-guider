@@ -83,6 +83,7 @@ import {DateAgoPipe} from '../pipes/date-ago.pipe';
 import {NativeAudio} from '@ionic-native/native-audio/ngx';
 import {Media} from '@ionic-native/media/ngx';
 import {AudioService} from '../services/audio-service';
+import {GuideListComponentModule} from "../components/guide-list-component/guide-list-component.module";
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -119,6 +120,7 @@ Sentry.init({ dsn: environment.sentryDsn });
       }
     }),
     SyncSpinnerComponentModule,
+    GuideListComponentModule,
     ProtocolDefaultComponentModule,
     LanguageSelectorComponentModule,
     MainPipe,

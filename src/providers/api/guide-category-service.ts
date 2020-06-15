@@ -171,7 +171,7 @@ export class GuideCategoryService extends ApiService {
         });
     }
 
-    public getGuides(guideId: number, searchValue?: string): Promise<GuiderModel[]> {
+    public getGuides(guideCategoryId?: number, searchValue?: string): Promise<GuiderModel[]> {
         return new Promise(async (resolve) => {
             const user = await this.authService.getLastUser();
             if (!user) {
@@ -179,7 +179,6 @@ export class GuideCategoryService extends ApiService {
                 return;
             }
             const whereCondition: any[] = [
-                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id') + '=' + guideId,
                 this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
@@ -187,6 +186,13 @@ export class GuideCategoryService extends ApiService {
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
             ];
+            if (guideCategoryId) {
+                whereCondition.push(
+                    this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id') +
+                    '=' +
+                    guideCategoryId
+                );
+            }
             if (!user.isAuthority) {
                 whereCondition.push(
                     this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id

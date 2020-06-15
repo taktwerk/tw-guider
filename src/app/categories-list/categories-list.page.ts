@@ -19,6 +19,8 @@ export class CategoriesListPage implements OnInit {
   public searchValue: string;
   public haveProtocolPermissions = false;
   public isLoadedContent = false;
+  public guides: GuiderModel[];
+  public guideItemsLimit = 20;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
 
@@ -50,6 +52,7 @@ export class CategoriesListPage implements OnInit {
     const loader = await this.loader.create();
     loader.present();
     await this.findAllGuideCategories();
+    await this.setGuides();
     loader.dismiss();
     this.isLoadedContent = true;
   }
@@ -57,18 +60,20 @@ export class CategoriesListPage implements OnInit {
   async searchGuides($event) {
     this.searchValue = $event.detail.value;
 
-    this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
-
     this.setGuides();
+  }
+
+  async setGuides() {
+    this.guides = await this.guideCategoryService.getGuides(null, this.searchValue);
   }
 
   async findAllGuideCategories() {
     this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
 
-    this.setGuides();
+    this.setCategoryGuides();
   }
 
-  async setGuides() {
+  async setCategoryGuides() {
     this.guideCategories.map(guideCategory => {
       guideCategory.setGuides();
     });
@@ -119,12 +124,15 @@ export class CategoriesListPage implements OnInit {
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
       this.setGuides();
+      this.setCategoryGuides();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
       this.setGuides();
+      this.setCategoryGuides();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
       this.setGuides();
+      this.setCategoryGuides();
     });
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess('guide');

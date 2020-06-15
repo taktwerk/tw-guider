@@ -19,6 +19,7 @@
   "save_before_close_warning": "Save changes before closing?",
   "dont_save": "Don't save",
   "cancel": "Cancel",
+  "noResults": "No results",
   "about": {
     "header":"About",
     "App Version": "App Version",
@@ -61,7 +62,9 @@
     "revision": "Revision",
     "Show Guide": "Show Guide",
     "New Protocol": "New Protocol",
-    "Protocol": "Protocol"
+    "Protocol": "Protocol",
+    "specifySearchMessage": "There are {{ guidesCount }} guides. Specify a detailed search",
+    "specifyMoreSearchMessage": "There are {{ guidesCount }} guides. Specify a more detailed search"
   },
   "feedback": {
     "header": "Feedback",
