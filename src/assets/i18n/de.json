@@ -1,6 +1,6 @@
 {
   "close": "Schliessen",
-  "search": "Suche",
+  "search guides": "Suche nach Anleitungen",
   "send": "Senden",
   "Logout": "Abmelden",
   "Wrong password!": "Falsches Passwort!",
@@ -14,8 +14,8 @@
   "Status": "Status",
   "Open": "Offen",
   "Done": "Erledigt",
-  "save_before_close_warning": "(De) Save changes before closing?",
-  "dont_save": "(De) Don't save",
+  "save_before_close_warning": "Daten vor dem Schliessen speichern?",
+  "dont_save": "Nicht speichern",
   "cancel": "Abbrechen",
   "about": {
     "header":"Über",
@@ -24,8 +24,7 @@
     "Copyright": "Copyright"
   },
   "start": {
-    "header":"Start",
-    "title": "(De) Start page of the Guider"
+    "header":"Start"
   },
   "sync-modal": {
     "header": "Sync Status",
@@ -50,7 +49,8 @@
     "Sending data to the server failed.": "Daten zum Server senden ist fehlgeschlagen."
   },
   "guide-categories": {
-    "header": "(De) Guide categories"
+    "category": "Kategorie",
+    "categories": "Kategorien"
   },
   "guides": {
     "header": "Anleitungen",
@@ -63,8 +63,7 @@
   "feedback": {
     "header": "Feedback",
     "Feedback list": "Feedback Liste",
-    "Description": "Beschreibung",
-    "Feedback will be sent as soon as the Internet appears": "(De) Feedback will be sent as soon as the Internet appears"
+    "Description": "Beschreibung"
   },
   "protocol": {
     "Protocols": "Protokolle",
@@ -155,21 +154,21 @@
   },
   "date": {
     "ago": {
-      "just_now": "(De) Just now",
-      "year": "(De) {{ counter }} year ago",
-      "month": "(De) {{ counter }} month ago",
-      "week": "(De) {{ counter }} week ago",
-      "day": "(De) {{ counter }} day ago",
-      "hour": "(De) {{ counter }} hour ago",
-      "minute": "(De) {{ counter }} minute ago",
-      "second": "(De) {{ counter }} second ago",
-      "years": "(De) {{ counter }} years ago",
-      "months": "(De) {{ counter }} months ago",
-      "weeks": "(De) {{ counter }} weeks ago",
-      "days": "(De) {{ counter }} days ago",
-      "hours": "(De) {{ counter }} hours ago",
-      "minutes": "(De) {{ counter }} minutes ago",
-      "seconds": "(De) {{ counter }} seconds ago"
+      "just_now": "Gerade eben",
+      "year": "Vor {{ counter }} Jahr",
+      "month": "Vor {{ counter }} Monat",
+      "week": "Vor {{ counter }} Woche",
+      "day": "Vor {{ counter }} Tag",
+      "hour": "Vor {{ counter }} Stunden",
+      "minute": "Vor {{ counter }} Minuten",
+      "second": "Vor {{ counter }} Sekunden",
+      "years": "Vor {{ counter }} Jahren",
+      "months": "Vor {{ counter }} Monaten",
+      "weeks": "Vor {{ counter }} Wochen",
+      "days": "Vor {{ counter }} Tagen",
+      "hours": "Vor {{ counter }} Stunden",
+      "minutes": "Vor {{ counter }} Minuten",
+      "seconds": "Vor {{ counter }} Sekunden"
     }
   },
   "alert": {

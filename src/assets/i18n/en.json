@@ -1,6 +1,6 @@
 {
   "close": "Close",
-  "search": "Search",
+  "search guides": "Search guides",
   "send": "Send",
   "Logout": "Logout",
   "Wrong password!": "Wrong password!",
@@ -24,8 +24,7 @@
     "Copyright": "Copyright"
   },
   "start": {
-    "header":"Start",
-    "title": "Start page of the Guider"
+    "header":"Start"
   },
   "sync-modal": {
     "header": "Sync Status",
@@ -51,7 +50,8 @@
     "Sending data to the server failed.": "Sending data to the server failed."
   },
   "guide-categories": {
-    "header": "Guide categories"
+    "category": "Category",
+    "categories": "Categories"
   },
   "guides": {
     "header": "Guides",
@@ -64,8 +64,7 @@
   "feedback": {
     "header": "Feedback",
     "Feedback list": "Feedback list",
-    "Description": "Description",
-    "Feedback will be sent as soon as the Internet appears": "Feedback will be sent as soon as the Internet appears"
+    "Description": "Description"
   },
   "protocol": {
     "Protocols": "Protocols",
