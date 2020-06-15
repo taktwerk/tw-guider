@@ -21,6 +21,8 @@ export class CategoriesListPage implements OnInit {
   public isLoadedContent = false;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
+
+  public type: string;
   constructor(
       private guideCategoryBindingService: GuideCategoryBindingService,
       private guideCategoryService: GuideCategoryService,
@@ -42,6 +44,7 @@ export class CategoriesListPage implements OnInit {
     }
     this.showAllGuides();
   }
+
 
   async showAllGuides() {
     const loader = await this.loader.create();
@@ -126,5 +129,7 @@ export class CategoriesListPage implements OnInit {
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess('guide');
     });
+
+    this.type = 'browse';
   }
 }

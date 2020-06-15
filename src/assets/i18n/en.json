@@ -1,6 +1,8 @@
 {
   "close": "Close",
-  "search guides": "Search guides",
+  "Search": "Suche",
+  "Search all guides": "Search all guides",
+  "Search guides by category": "Search guides by current category",
   "send": "Send",
   "Logout": "Logout",
   "Wrong password!": "Wrong password!",

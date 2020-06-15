@@ -1,6 +1,8 @@
 {
   "close": "Schliessen",
-  "search guides": "Suche nach Anleitungen",
+  "Search": "Suche",
+  "Search all guides": "Suche nach allen Anleitungen",
+  "Search guides by category": "Suche nach Anleitungen in dieser Kategory",
   "send": "Senden",
   "Logout": "Abmelden",
   "Wrong password!": "Falsches Passwort!",

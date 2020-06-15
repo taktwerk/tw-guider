@@ -8,33 +8,101 @@
     </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
   </ion-toolbar>
-  <ion-toolbar>
-    <ion-searchbar animated="true"
-                   autocomplete="on"
-                   debounce="250"
-                   placeholder="{{ 'search guides' | translate:params }}"
-                   (ionChange)="searchGuides($event)"
-    >
-    </ion-searchbar>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content color="primary" class="ion-padding-horizontal">
-  <span *ngIf="isLoadedContent">
-    <h4>{{ 'guide-categories.categories' | translate:params }}</h4>
-    <ion-list class="guide-categories">
-      <div *ngFor="let guideCategory of guideCategories; trackBy: trackByFn">
-        <div *ngIf="guideCategory.guidesCount">
-                <ion-item button detail [routerLink]="['/guides/' + guideCategory.idApi]"
-                            class="guide-category"
-                            lines="full"
-                            inset="true"
-                >
-                  <ion-label slot="start">{{ guideCategory.name }}</ion-label>
-                  <ion-badge color="medium" slot="end">{{ guideCategory.guidesCount }}</ion-badge>
-                </ion-item>
-        </div>
+  <ion-segment color="light" [(ngModel)]="type" scrollable>
+    <ion-segment-button value="browse" checked>
+      <ion-label>{{ 'guide-categories.categories' | translate:params }}</ion-label>
+      <ion-icon name="filing"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button value="search">
+      <ion-label>{{ 'Search' | translate:params }}</ion-label>
+      <ion-icon name="search"></ion-icon>
+    </ion-segment-button>
+  </ion-segment>
+  <div [ngSwitch]="type">
+    <div *ngSwitchCase="'browse'">
+      <span *ngIf="isLoadedContent">
+<!--        <h4>{{ 'guide-categories.categories' | translate:params }}</h4>-->
+        <ion-list class="guide-categories">
+          <div *ngFor="let guideCategory of guideCategories; trackBy: trackByFn">
+            <div *ngIf="guideCategory.guidesCount">
+                    <ion-item button detail [routerLink]="['/guides/' + guideCategory.idApi]"
+                                class="guide-category"
+                                lines="full"
+                                inset="true"
+                    >
+                      <ion-label slot="start">{{ guideCategory.name }}</ion-label>
+                      <ion-badge color="medium" slot="end">{{ guideCategory.guidesCount }}</ion-badge>
+                    </ion-item>
+            </div>
+          </div>
+        </ion-list>
+      </span>
+    </div>
+    <div *ngSwitchCase="'search'">
+      <ion-toolbar>
+        <ion-searchbar animated="true"
+                       autocomplete="on"
+                       debounce="250"
+                       placeholder="{{ 'Search all guides' | translate:params }}"
+                       (ionChange)="searchGuides($event)"
+        >
+        </ion-searchbar>
+      </ion-toolbar>
+
+      <!-- refactor duplicate code -->
+      <span *ngIf="isLoadedContent">
+      <div *ngIf="guideCategory && guideCategory.guides && guideCategory.guides.length">
+        <h4 class="ion-margin-horizontal">{{ 'guide-categories.category' | translate:params }}: {{ guideCategory.name }}</h4>
+        <ion-grid class="guides">
+          <ion-row>
+            <ion-col fixed size-xs="12" size-sm="6" size-md="4" *ngFor="let item of guideCategory.guides">
+              <ion-card color="light" no-margin>
+                <div class="guide-preview" [routerLink]="['/guide/' + item.idApi]">
+                  <div class="img" *ngIf="item.getFileImagePath()" [ngStyle]="{'background-image': 'url(' + item.getFileImagePath(0,'trustStyle') + ')'}"></div>
+                  <div class="img" *ngIf="!item.getFileImagePath()" [ngStyle]="{'background-image': 'url(' + 'assets/placeholder.jpg' + ')'}"></div>
+                  <div class="shortname-label badge badge-secondary">
+                    {{ item.short_name }}
+                  </div>
+                </div>
+                  <ion-card-header>
+                    <ion-card-title>{{item.title}}</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <div class="guide-info" margin-bottom>
+                      <p class="guide-description">
+                        {{item.description}}
+                      </p>
+                      <div class="muted">
+                        <p *ngIf="item.duration">
+                          {{ 'guides.duration' | translate:params }}: {{ item.getDuration() }}
+                        </p>
+                        <p *ngIf="item.revision">
+                          {{ 'guides.revision' | translate:params }}: {{ item.revision }}
+                        </p>
+                      </div>
+                    </div>
+                    <ion-button *ngIf="item.protocol_template && haveProtocolPermissions"
+                                class="show-guide-btn"
+                                color="medium"
+                                (click)="openProtocol(item)"
+                                vertical="bottom"
+                    >
+                      <ion-icon class="show-guide-play-icon" slot="start" name="list"></ion-icon>
+                      {{ 'guides.Protocol' | translate:params }}
+                    </ion-button>
+                  </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </div>
-    </ion-list>
   </span>
+      <!-- refactor duplicate code -->
+
+    </div>
+  </div>
+
 </ion-content>
