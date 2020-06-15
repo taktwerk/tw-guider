@@ -15,7 +15,7 @@
     <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step" [ngClass]="{'has-assets' : guideAssets.length}">
       <ion-slides pager="true" [options]="slideOpts">
         <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">
-              <ion-grid>
+              <ion-grid [ngClass]="{'has-media' : step.getFileName()}">
                   <ion-row>
                     <ion-col *ngIf="step.getFileName()" fixed size-xs="12" size-md="6">
                       <div class="guide-step-img">
