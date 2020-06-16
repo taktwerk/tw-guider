@@ -26,6 +26,13 @@
                                   (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
                         >
                         </ion-icon>
+                        <fa-icon  [icon]="faFilePdf"
+                                  class="fa-icon"
+                                  slot="start"
+                                  *ngIf="step.isPdf()"
+                                  (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
+                        >
+                        </fa-icon>
                         <img
                                 *ngIf="step.isImageFile()"
                                 (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"

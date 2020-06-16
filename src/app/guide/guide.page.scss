@@ -15,11 +15,14 @@
 }
 
 .audio-icon {
-  color: white;
-  font-size: 100pt;
   position: absolute;
   top: 15%;
   left: 31%;
+}
+
+.audio-icon, .fa-icon {
+  color: white;
+  font-size: 100pt;
 }
 
 /*ion-slide {

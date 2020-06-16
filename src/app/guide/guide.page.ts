@@ -18,6 +18,8 @@ import {GuideCategoryService} from '../../providers/api/guide-category-service';
 import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
 import {PictureService} from '../../services/picture-service';
 
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+
 @Component({
   selector: 'app-guide',
   templateUrl: 'guide.page.html',
@@ -28,6 +30,8 @@ export class GuidePage implements OnInit {
 
   haveFeedbackPermissions = false;
   isLoadedContent = false;
+
+  public faFilePdf = faFilePdf;
 
   public guide: GuiderModel = this.guiderService.newModel();
   public guideId: number = null;

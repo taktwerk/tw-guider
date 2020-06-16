@@ -10,6 +10,7 @@ import {HtmlDescriptionComponentModule} from '../../components/html-description/
 import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
 import {TranslateModule} from '@ngx-translate/core';
 import {DefaultFilePreviewComponentModule} from '../../components/default-file-preview-component/default-file-preview-component.module';
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import {DefaultFilePreviewComponentModule} from '../../components/default-file-p
                 component: GuidePage
             }
         ]),
+        FontAwesomeModule,
         SyncSpinnerComponentModule,
         HtmlDescriptionComponentModule,
         MainPipe,
