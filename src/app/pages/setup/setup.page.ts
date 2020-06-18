@@ -4,19 +4,27 @@ import { AuthService } from '../../services/auth.service';
 import { Storage } from '@ionic/storage';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 
+export enum LoginMode {
+    Client,
+    User = 2
+}
+
 @Component({
   selector: 'app-setup',
   templateUrl: './setup.page.html',
   styleUrls: ['./setup.page.scss'],
 })
+
 export class SetupPage {
   private browser;
   public clientId: string | number;
+  public userIdentifier: string;
   public client_id: string | number;
   public hostId: string;
   public host_id: string;
   public devMode;
   public isScanning: boolean;
+  public loginMode: number;
 
   constructor(
       private loadingCtrl: LoadingController,
@@ -46,7 +54,7 @@ export class SetupPage {
         this.hostId = this.host_id ? this.host_id : this.hostId;
 
         console.log('saving', this.clientId, this.hostId, this);
-        if (this.clientId) {
+        if (this.clientId || this.userIdentifier) {
             const loader = await this.loadingCtrl.create({
                 message: 'Configurating...',
                 showBackdrop: false
@@ -55,21 +63,25 @@ export class SetupPage {
 
             // Build the In App Browser url
 
-            // Todo: test auto-detect?
-            let appUrl = 'https://app.taktwerk.ch/de/webview-login/?client=' + this.clientId;
-            let appConfirmUrl = 'https://app.taktwerk.ch/de/webview-login/confirm?client=' + this.clientId;
-
-            if (this.devMode) {
-                appUrl = 'http://tw-app-dev.devhost.taktwerk.ch/de/webview-login/?client=' + this.clientId;
-                appConfirmUrl = 'http://tw-app-dev.devhost.taktwerk.ch/de/webview-login/confirm?client=' + this.clientId;
+            if (!this.hostId) {
+                if (this.devMode) {
+                    this.hostId = 'http://tw-app-dev.devhost.taktwerk.ch';
+                } else {
+                    this.hostId = 'https://app.taktwerk.ch';
+                }
             }
+            let appUrl = this.hostId + '/de/webview-login';
+            let appConfirmUrl = this.hostId + '/de/webview-login/confirm';
 
-            if (this.hostId) {
-                appUrl = this.hostId + '/de/webview-login/?client=' + this.clientId;
-                appConfirmUrl = this.hostId + '/de/webview-login/confirm?client=' + this.clientId;
+            if (/*this.loginMode && this.loginMode === LoginMode.User && */this.userIdentifier) {
+                appUrl += '?userIdentifier=' + this.userIdentifier;
+                appConfirmUrl += '?userIdentifier=' + this.userIdentifier;
+            } else {
+                if (this.clientId) {
+                    appUrl += '?client=' + this.clientId;
+                    appConfirmUrl += '?client=' + this.clientId;
+                }
             }
-
-            // We need to test the url
 
             console.log('appConfirmUrl', appConfirmUrl);
             this.authServ.login(appConfirmUrl)
@@ -123,8 +135,16 @@ export class SetupPage {
                         const config = JSON.parse(text);
                         console.log('json', config);
                         if (config.taktwerk && config.taktwerk === 'guider') {
-
-                            this.clientId = config.client;
+                            /*if (config.mode && config.mode === LoginMode.User) {
+                                this.loginMode = config.mode;*/
+                                if (config.userIdentifier) {
+                                    this.userIdentifier = config.userIdentifier;
+                                // }
+                            } else {
+                                if (config.client) {
+                                    this.clientId = config.client;
+                                }
+                            }
                             if (config.dev) {
                                 this.devMode = true;
                             }
