@@ -13,11 +13,11 @@ export class Viewer3dService {
     constructor(private streamingMedia: StreamingMedia,
                 private modalController: ModalController) {}
 
-    async openPopupWithRenderedFile(fileUrl: string, fileTitle?: string) {
+    async openPopupWithRenderedFile(fileName: string, fileTitle?: string) {
         const modal = await this.modalController.create({
             component: Viewer3dModalComponent,
             componentProps: {
-                fileUrl,
+                fileName,
                 fileTitle
             }
         });

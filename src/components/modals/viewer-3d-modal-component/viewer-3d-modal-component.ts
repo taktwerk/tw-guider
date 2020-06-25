@@ -3,6 +3,7 @@ import {ModalController, Platform} from '@ionic/angular';
 import {ToastService} from '../../../services/toast-service';
 import {StreamingMedia, StreamingVideoOptions} from '@ionic-native/streaming-media/ngx';
 import {DownloadService} from '../../../services/download-service';
+import {Viewer3dModelComponent} from "../../viewer-3d-model-component/viewer-3d-model-component";
 
 /**
  * Generated class for the TodoPage page.
@@ -19,25 +20,16 @@ import {DownloadService} from '../../../services/download-service';
 })
 
 export class Viewer3dModalComponent implements OnInit, OnDestroy {
-    @Input() fileUrl: string;
+    @Input() fileName: string;
     @Input() fileTitle: string;
-    backButtonSubscribe;
+    @ViewChild('viewer3d', {'static': false}) viewer3d: Viewer3dModelComponent;
 
     constructor(private modalController: ModalController,
-                private platform: Platform,
-                private toastService: ToastService,
-                private streamingMedia: StreamingMedia,
-                private downloadService: DownloadService,
-                private ngZone: NgZone) {
-        //document['ionicComponentRef'] = {name: 'video-modal-component', component: this, zone: ngZone};
-    }
+                private platform: Platform) {}
 
     dismiss() {
+        this.viewer3d.cancelRender();
         this.modalController.dismiss();
-    }
-
-    ionViewDidEnter() {
-        ///
     }
 
     backbuttonAction() {
@@ -51,5 +43,6 @@ export class Viewer3dModalComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        this.viewer3d.cancelRender();
     }
 }

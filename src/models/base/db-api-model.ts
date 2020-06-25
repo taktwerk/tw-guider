@@ -632,7 +632,8 @@ export abstract class DbApiModel extends DbBaseModel {
         return this.isVideoFile(fileMapIndex) ||
             this.isImageFile(fileMapIndex) ||
             this.isAudioFile(fileMapIndex) ||
-            this.isPdf(fileMapIndex);
+            this.isPdf(fileMapIndex) ||
+            this.is3dFile(fileMapIndex);
     }
 
     public isAudioFile(fileMapIndex = 0): boolean {
@@ -710,10 +711,11 @@ export abstract class DbApiModel extends DbBaseModel {
             basePath = this.getFileName();
         }
         if (!modelName) {
-            basePath = this.TABLE_NAME;
+            modelName = this.TABLE_NAME;
         }
-
-        return this.downloadService.getNativeFilePath(basePath, modelName)
+        //
+        // return this.downloadService.getWebviewFileSrc(this.downloadService.getNativeFilePath(basePath, modelName));
+        return this.downloadService.getNativeFilePath(basePath, modelName);
     }
 
     async updateLocalRelations() {
