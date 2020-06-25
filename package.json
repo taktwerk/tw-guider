@@ -122,6 +122,7 @@
     "sentry-cordova": "^0.17.0",
     "sql.js": "^1.1.0",
     "text-encoding": "^0.7.0",
+    "three": "^0.118.1",
     "ts-md5": "^1.2.7",
     "tslib": "^1.9.0",
     "typeorm": "^0.3.0-rc.13",
@@ -159,7 +160,7 @@
     "protractor": "^5.4.3",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
-    "typescript": "~3.4.3"
+    "typescript": "~3.7.0"
   },
   "description": "An Ionic project",
   "cordova": {

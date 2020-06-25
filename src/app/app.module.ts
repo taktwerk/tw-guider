@@ -84,6 +84,9 @@ import {NativeAudio} from '@ionic-native/native-audio/ngx';
 import {Media} from '@ionic-native/media/ngx';
 import {AudioService} from '../services/audio-service';
 import {GuideListComponentModule} from "../components/guide-list-component/guide-list-component.module";
+import {Viewer3dService} from "../services/viewer-3d-service";
+import {Viewer3dModalComponent} from "../components/modals/viewer-3d-modal-component/viewer-3d-modal-component";
+import {Viewer3dModelComponentModule} from "../components/viewer-3d-model-component/viewer-3d-model-component.module";
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -97,12 +100,14 @@ Sentry.init({ dsn: environment.sentryDsn });
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
+    Viewer3dModalComponent,
     PdftronModalComponent
   ],
   entryComponents: [
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
+    Viewer3dModalComponent,
     PdftronModalComponent
   ],
   imports: [
@@ -126,7 +131,8 @@ Sentry.init({ dsn: environment.sentryDsn });
     MainPipe,
     HtmlDescriptionComponentModule,
     VirtualScrollerModule,
-    IonicImageLoader.forRoot()
+    IonicImageLoader.forRoot(),
+    Viewer3dModelComponentModule
   ],
   providers: [
     StatusBar,
@@ -152,6 +158,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     DownloadService,
     VideoService,
     AudioService,
+    Viewer3dService,
     PictureService,
     ToastService,
     ApiSync,

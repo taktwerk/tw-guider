@@ -468,6 +468,11 @@ export class DownloadService {
                     fileName.indexOf('.midi') > -1 ||
                     fileName.indexOf('.flac') > -1 ||
                     fileName.indexOf('.FLAC') > -1;
+            case '3d':
+                return fileName.indexOf('.gltf') > -1 ||
+                    fileName.indexOf('.GLTF') > -1 ||
+                    fileName.indexOf('.stp') > -1 ||
+                    fileName.indexOf('.STP') > -1;
             default:
                 return false;
         }

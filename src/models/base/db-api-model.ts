@@ -651,6 +651,10 @@ export abstract class DbApiModel extends DbBaseModel {
         return this.checkFileType(fileMapIndex, 'pdf');
     }
 
+    public is3dFile(fileMapIndex = 0): boolean {
+        return this.checkFileType(fileMapIndex, '3d');
+    }
+
     checkFileType(fileMapIndex, format): boolean {
         const localFilePath = this.getLocalFilePath(fileMapIndex);
         const fileName = this.getFileName(fileMapIndex);
@@ -701,6 +705,17 @@ export abstract class DbApiModel extends DbBaseModel {
         return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
     }
 
+    public getFilePath(basePath?:string, modelName?:string) {
+        if (!basePath) {
+            basePath = this.getFileName();
+        }
+        if (!modelName) {
+            basePath = this.TABLE_NAME;
+        }
+
+        return this.downloadService.getNativeFilePath(basePath, modelName)
+    }
+
     async updateLocalRelations() {
         ///
     }
@@ -713,4 +728,6 @@ export abstract class DbApiModel extends DbBaseModel {
     async afterPushDataToServer(isInsert: boolean) {
         return [];
     }
+
+
 }

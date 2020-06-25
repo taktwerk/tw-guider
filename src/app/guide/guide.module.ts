@@ -11,6 +11,7 @@ import {LanguageSelectorComponentModule} from '../../components/language-selecto
 import {TranslateModule} from '@ngx-translate/core';
 import {DefaultFilePreviewComponentModule} from '../../components/default-file-preview-component/default-file-preview-component.module';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {Viewer3dModelComponentModule} from "../../components/viewer-3d-model-component/viewer-3d-model-component.module";
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
         MainPipe,
         LanguageSelectorComponentModule,
         TranslateModule,
-        DefaultFilePreviewComponentModule
+        DefaultFilePreviewComponentModule,
+        Viewer3dModelComponentModule
     ],
 })
 

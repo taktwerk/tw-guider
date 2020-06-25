@@ -19,6 +19,7 @@ import {GuideCategoryBindingService} from '../../providers/api/guide-category-bi
 import {PictureService} from '../../services/picture-service';
 
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import {Viewer3dService} from "../../services/viewer-3d-service";
 
 @Component({
   selector: 'app-guide',
@@ -60,6 +61,7 @@ export class GuidePage implements OnInit {
       public downloadService: DownloadService,
       private router: Router,
       private videoService: VideoService,
+      private viewer3dService: Viewer3dService,
       public navCtrl: NavController,
       private ngZone: NgZone,
       private pictureService: PictureService,
@@ -91,9 +93,11 @@ export class GuidePage implements OnInit {
       }
       this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
-      this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+      this.photoViewer.show(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
       this.pictureService.openFile(fileUrl, fileTitle);
+    } else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
+      this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
     }
   }
 

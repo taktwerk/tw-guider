@@ -1,0 +1,20 @@
+.loader{
+  &.failed {
+    background: #f20d49 !important;
+  }
+  &.success {
+    background: green !important;
+  }
+  &.progress {
+    background: green !important;
+  }
+  &.pause {
+    background: blue !important;
+  }
+  border-radius:100px;
+  height:20px;
+  p{
+    text-align:center;
+    color:white !important;
+  }
+}

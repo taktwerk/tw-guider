@@ -1,0 +1,19 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">
+                {{ 'close' | translate:params }}
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="vertical-align-content ion-text-center black-background">
+    <ion-grid>
+        <ion-row>
+            <viewer-3d-model-component></viewer-3d-model-component>
+        </ion-row>
+    </ion-grid>
+</ion-content>
+<ion-footer class="ion-padding ion-text-center">
+    {{ fileTitle }}
+</ion-footer>

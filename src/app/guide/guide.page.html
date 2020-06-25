@@ -40,12 +40,8 @@
                         />
                         <div
                                 *ngIf="step.isVideoFile()"
-                                (click)="
-                            openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)
-                          "
-                                [ngClass]="{
-                            'video-with-thumbnail': step.isExistThumbOfFile()
-                          }"
+                                (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
+                                [ngClass]="{'video-with-thumbnail': step.isExistThumbOfFile()}"
                         >
                           <img
                                   *ngIf="step.isExistThumbOfFile()"
@@ -59,6 +55,13 @@
                           <img *ngIf="!step.isExistThumbOfFile()"
                                [src]="'/assets/videooverlay.png'"
                           >
+                        </div>
+                        <div *ngIf="step.is3dFile()"
+                             style="color: red;width: 100%;height:100%;"
+                        >
+                          <viewer-3d-model-component
+                            [fileName]="step.getFilePath()"
+                          ></viewer-3d-model-component>
                         </div>
                         <ion-icon
                                 *ngIf="!step.isExistFormatFile()"
@@ -111,31 +114,26 @@
                     class="ion-padding"
             >
               <span *ngIf="asset.isExistFileByIndex()">
-                <img
-                        *ngIf="asset.isPdf()"
-                        (click)="
-                    openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)
-                  "
+                <img *ngIf="asset.isPdf()"
+                        (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
                         class="pdf-image"
-                        [src]="
-                    asset.getFileImagePath(
-                      guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE
-                    )
-                  "
+                        [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
                 />
-                <img
-                        *ngIf="!asset.isPdf()"
-                        (click)="
-                    openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)
-                  "
-                        class="pdf-image"
-                        [src]="asset.getFileImagePath()"
+                <div *ngIf="asset.is3dFile()"
+                     (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                     style="color: red;"
+                >
+                  3d file
+                </div>
+                <img *ngIf="!asset.isPdf() && !asset.is3dFile()"
+                     (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                     class="pdf-image"
+                     [src]="asset.getFileImagePath()"
                 />
               </span>
-              <ion-button
-                      *ngIf="!asset.isExistFileByIndex()"
-                      color="medium"
-                      (click)="openAssetTextModal(asset)"
+              <ion-button *ngIf="!asset.isExistFileByIndex()"
+                          color="medium"
+                          (click)="openAssetTextModal(asset)"
               >
                 {{ asset.name }}
               </ion-button>
