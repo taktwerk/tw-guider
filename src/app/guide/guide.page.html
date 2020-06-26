@@ -58,11 +58,14 @@
                         </div>
                         <div *ngIf="step.is3dFile()"
                              style="color: red;width: 100%;height:100%;"
+                             (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
                         >
                           <viewer-3d-model-component
                             [fileName]="step.getFilePath()"
                             [backgroundColor]="null"
-                          ></viewer-3d-model-component>
+                            [madeUserIteractions]="false"
+                          >
+                          </viewer-3d-model-component>
                         </div>
                         <ion-icon
                                 *ngIf="!step.isExistFormatFile()"
@@ -122,9 +125,10 @@
                 />
                 <div *ngIf="asset.is3dFile()"
                      (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
-                     style="color: red;"
+                     style="width: 130px; position: relative;height: 100%;text-align: center;"
                 >
-                  3d file
+                   <ion-icon name="cube" style="font-size: 130px;"></ion-icon>
+                  <div style="bottom: 0;position: relative;width: 100%;">{{ asset.name }}</div>
                 </div>
                 <img *ngIf="!asset.isPdf() && !asset.is3dFile()"
                      (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"

@@ -42,6 +42,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     modelElement: any;
     camera: any;
     scene: any;
+    controls: any;
     renderer: any;
     gltf: any;
     pivot: any;
@@ -96,12 +97,11 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
 
         this.modelElement.appendChild(this.renderer.domElement);
 
-        if (this.madeUserIteractions) {
-            let controls = new OrbitControls(this.camera, this.renderer.domElement);
-            controls.addEventListener('change', () => {
-                this.render();
-            });
-        }
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableRotate = this.madeUserIteractions;
+        this.controls.addEventListener('change', () => {
+            this.render();
+        });
 
         this.camera.zoom = 1;
         this.camera.updateProjectionMatrix();
@@ -150,13 +150,34 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
 
     renderModel() {
         const object = this.gltf.scene;
+        this.pivot = new THREE.Group();
+        this.pivot.add( object );
+        const clips = this.gltf.animations;
         const box = new THREE.Box3().setFromObject( object );
-        box.getCenter( object.position );
+        const size = box.getSize(new THREE.Vector3()).length();
+        const center = box.getCenter(object.position);
+
+        this.controls.maxDistance = size * 10;
+        this.controls.enabled = true;
+
+        this.camera.near = size / 100;
+        this.camera.far = size * 100;
+
+        this.camera.position.x += size;
+        this.camera.position.y += size / 5.0;
+        this.camera.position.z += size / 2.0 ;
+        this.camera.lookAt(center);
+
+        this.camera.updateProjectionMatrix();
+
         object.position.multiplyScalar( - 1 );
 
-        this.pivot = new THREE.Group();
+        this.controls.update();
         this.scene.add( this.pivot );
-        this.pivot.add( object );
+
+        this.controls.addEventListener('change', () => {
+            this.renderer.render(this.scene, this.camera);
+        });
 
         this.renderer.render(this.scene, this.camera);
         this.ngZone.runOutsideAngular(() => {
@@ -203,11 +224,18 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
       }
       const canvasElement = this.elementRef.nativeElement.querySelector('.three-model canvas');
       if (canvasElement) {
+          console.log('canvas element exist');
           canvasElement.addEventListener('click', () => {
               console.log('clicked on canvas');
           });
       }
-
+      const element = this.elementRef.nativeElement.querySelector('.three-model');
+      if (element) {
+          console.log('element exist');
+          canvasElement.addEventListener('click', () => {
+              console.log('clicked on element');
+          });
+      }
 
   }
 
