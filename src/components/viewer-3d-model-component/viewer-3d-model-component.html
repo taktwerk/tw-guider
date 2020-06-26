@@ -1,2 +1,8 @@
-<div #domObj class="three-model" style="height: 100%;width:100%;"></div>
+<div #domObj class="three-model" style="height: 100%;width:100%;">
+    <ion-spinner *ngIf="!isRendered"
+                 style="color: green;font-size: 20px; height: 100%;width: calc(100% - 100px);"
+                 name="crescent"
+    >
+    </ion-spinner>
+</div>
 

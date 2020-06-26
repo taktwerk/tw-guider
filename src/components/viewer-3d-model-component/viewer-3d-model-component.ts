@@ -26,7 +26,7 @@ import { NgZone } from '@angular/core';
   selector: 'viewer-3d-model-component',
   templateUrl: 'viewer-3d-model-component.html',
 })
-export class Viewer3dModelComponent implements AfterViewInit, AfterViewChecked, OnDestroy {
+export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     @Input() fileName: string;
     @Input() backgroundColor = 'green';
     @Input() madeUserIteractions = true;
@@ -34,6 +34,7 @@ export class Viewer3dModelComponent implements AfterViewInit, AfterViewChecked, 
     @ViewChild('domObj', {static: false}) domObj: ElementRef;
 
     isInit = false;
+    isRendered = false;
     resizeCanvas = false;
     isRotateModel = true;
     stopRender = false;
@@ -49,7 +50,8 @@ export class Viewer3dModelComponent implements AfterViewInit, AfterViewChecked, 
     constructor(
         private file: File,
         private ngZone: NgZone,
-        private elementRef: ElementRef
+        private elementRef: ElementRef,
+        private changeDetectorRef: ChangeDetectorRef
     ) {}
 
     async init() {
@@ -62,6 +64,11 @@ export class Viewer3dModelComponent implements AfterViewInit, AfterViewChecked, 
         }
         if (!this.modelElement.clientWidth || !this.modelElement.clientHeight) {
             return;
+        }
+        if (this.isInit) {
+            return;
+        } else {
+            this.isInit = true;
         }
         this.scene = new THREE.Scene();
         const areaWidth = this.modelElement.clientWidth;
@@ -94,22 +101,17 @@ export class Viewer3dModelComponent implements AfterViewInit, AfterViewChecked, 
             controls.addEventListener('change', () => {
                 this.render();
             });
-            controls.addEventListener('click', () => {
-                console.log('pidrilllla');
-            });
         }
 
         this.camera.zoom = 1;
         this.camera.updateProjectionMatrix();
 
         const loader = new GLTFLoader();
-        this.isInit = true;
         if (!this.gltf) {
             const fileName = this.fileName.substring(this.fileName.lastIndexOf('/') + 1, this.fileName.length);
             const path = this.fileName.slice(0, (fileName.length) * -1);
             const bufferData = await this.file.readAsText(path, fileName);
             loader.parse(bufferData, '', (gltf) => {
-                    console.log('parse data');
                     this.gltf = gltf;
                     this.renderModel();
                 },
@@ -160,15 +162,12 @@ export class Viewer3dModelComponent implements AfterViewInit, AfterViewChecked, 
         this.ngZone.runOutsideAngular(() => {
             this.animate();
         });
-        window.dispatchEvent(new Event('resize'));
-
-        console.log('this.modelElementthis.modelElementthis.modelElement', this.modelElement);
+        this.isRendered = true;
         this.modelElement
             .addEventListener('click', () => {
                 console.log('clicked on canvas')
                 this.isRotateModel = false;
             });
-
         window.onresize = () => {
             setTimeout(() => {
                 if (!this.modelElement.clientWidth || !this.modelElement.clientHeight) {
@@ -181,28 +180,18 @@ export class Viewer3dModelComponent implements AfterViewInit, AfterViewChecked, 
                 }
             })
         };
+        window.dispatchEvent(new Event('resize'));
+        this.detectChanges();
     }
 
     pauseRender() {
-        console.log('pause render');
         this.stopRender = true;
     }
 
   cancelRender() {
-        console.log('cancel render');
         if (this.requestAnimationFrameId) {
           cancelAnimationFrame(this.requestAnimationFrameId);
         }
-  }
-
-  ngAfterViewInit() {
-      const el = this.elementRef.nativeElement.querySelector('.three-model canvas');
-      if (el) {
-          el.addEventListener('click', () => {
-              console.log('kozliiiiiina');
-          });
-      }
-
   }
 
   ngAfterViewChecked()
@@ -212,21 +201,26 @@ export class Viewer3dModelComponent implements AfterViewInit, AfterViewChecked, 
               this.init();
           });
       }
+      const canvasElement = this.elementRef.nativeElement.querySelector('.three-model canvas');
+      if (canvasElement) {
+          canvasElement.addEventListener('click', () => {
+              console.log('clicked on canvas');
+          });
+      }
+
+
   }
 
-    ngOnDestroy() {
-      console.log('ngDestroy');
+  ngOnDestroy() {
       this.stopRender = true;
       if (this.requestAnimationFrameId) {
           cancelAnimationFrame(this.requestAnimationFrameId);
       }
   }
 
-    ionViewDidLeave() {
-        console.log('ionViewDidLeave');
-        this.stopRender = true;
-        if (this.requestAnimationFrameId) {
-            cancelAnimationFrame(this.requestAnimationFrameId);
+    detectChanges() {
+        if (!this.changeDetectorRef['destroyed']) {
+            this.changeDetectorRef.detectChanges();
         }
     }
 }
