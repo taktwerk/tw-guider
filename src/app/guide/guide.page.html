@@ -127,13 +127,13 @@
                         class="pdf-image"
                         [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
                 />
-                <div *ngIf="asset.is3dFile()"
-                     (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
-                     style="width: 130px; position: relative;height: 100%;text-align: center;"
+                <ion-button *ngIf="asset.is3dFile()"
+                            color="medium"
+                            (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
                 >
-                   <ion-icon name="cube" style="font-size: 130px;"></ion-icon>
-                  <div style="bottom: 0;position: relative;width: 100%;">{{ asset.name }}</div>
-                </div>
+                  <ion-icon name="cube"></ion-icon>
+                  {{ asset.name }}
+                </ion-button>
                 <img *ngIf="!asset.isPdf() && !asset.is3dFile()"
                      (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
                      class="pdf-image"
