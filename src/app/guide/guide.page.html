@@ -57,9 +57,13 @@
                           >
                         </div>
                         <div *ngIf="step.is3dFile()"
-                             style="color: red;width: 100%;height:100%;"
-                             (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
+                             style="width: 100%;height:100%;"
                         >
+                          <ion-icon (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
+                                    name="search"
+                                    style="position: absolute;bottom: 0;right: 0;padding: 15px;font-size: 50px;z-index:1000;"
+                          >
+                          </ion-icon>
                           <viewer-3d-model-component
                             [fileName]="step.getFilePath()"
                             [backgroundColor]="null"

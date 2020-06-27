@@ -184,11 +184,6 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             this.animate();
         });
         this.isRendered = true;
-        this.modelElement
-            .addEventListener('click', () => {
-                console.log('clicked on canvas')
-                this.isRotateModel = false;
-            });
         window.onresize = () => {
             setTimeout(() => {
                 if (!this.modelElement.clientWidth || !this.modelElement.clientHeight) {
@@ -215,6 +210,12 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         }
   }
 
+  stopAutoRotation() {
+        if (this.isRotateModel) {
+            this.isRotateModel = false;
+        }
+  }
+
   ngAfterViewChecked()
   {
       if (!this.isInit) {
@@ -222,21 +223,6 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
               this.init();
           });
       }
-      const canvasElement = this.elementRef.nativeElement.querySelector('.three-model canvas');
-      if (canvasElement) {
-          console.log('canvas element exist');
-          canvasElement.addEventListener('click', () => {
-              console.log('clicked on canvas');
-          });
-      }
-      const element = this.elementRef.nativeElement.querySelector('.three-model');
-      if (element) {
-          console.log('element exist');
-          canvasElement.addEventListener('click', () => {
-              console.log('clicked on element');
-          });
-      }
-
   }
 
   ngOnDestroy() {
