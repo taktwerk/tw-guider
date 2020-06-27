@@ -14,6 +14,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { File } from '@ionic-native/file/ngx';
 import { AfterViewInit } from '@angular/core';
 import { NgZone } from '@angular/core';
+import { createGesture, Gesture, GestureDetail } from '@ionic/core';
 
 /**
  * Generated class for the TodoPage page.
@@ -30,6 +31,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     @Input() fileName: string;
     @Input() backgroundColor = 'green';
     @Input() madeUserIteractions = true;
+    @Input() willStopRotate = true;
 
     @ViewChild('domObj', {static: false}) domObj: ElementRef;
 
@@ -195,6 +197,22 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
                 }
             })
         };
+        const gesture = createGesture({
+            el: this.modelElement,
+            gestureName: 'longpress',
+            threshold: 0,
+            canStart: () => true,
+            onStart: (gestureEv: GestureDetail) => {
+                if (this.willStopRotate && this.isRotateModel) {
+                    this.isRotateModel = false;
+                }
+            },
+            onEnd: () => {
+                console.log('end my presss');
+            }
+        });
+        gesture.setDisabled(false);
+
         window.dispatchEvent(new Event('resize'));
         this.detectChanges();
     }
