@@ -81,18 +81,17 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         this.camera.aspect = areaWidth / areaHeight;
         this.camera.position.z = 2;
 
-        const hlight = new THREE.AmbientLight (0xFFFFFF,1);
-        this.scene.add(hlight);
+        const light1  = new THREE.AmbientLight(0xffffff, 2);
+        this.scene.add( light1 );
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff,1);
-        directionalLight.position.set(1,1,1);
-        directionalLight.castShadow = true;
-        this.scene.add(directionalLight);
-        const light = new THREE.PointLight(0xFFFFFF,3);
-        light.position.set(1,1,1);
-        this.scene.add(light);
+        const light2  = new THREE.DirectionalLight(0xffffff, 4);
+        light2.position.set(0.5, 0, 0.866); // ~60º
+        this.scene.add( light2 );
 
         this.renderer = new THREE.WebGLRenderer({antialias:true, alpha: true});
+        this.renderer.physicallyCorrectLights = true;
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
+        this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize(areaWidth, areaHeight);
 
         this.modelElement.appendChild(this.renderer.domElement);
