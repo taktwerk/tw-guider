@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy} from '@angular/core';
 
 import {Events, NavController, Platform} from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -18,6 +18,7 @@ import {TranslateConfigService} from '../services/translate-config.service';
 import {AppSetting} from '../services/app-setting';
 import {UserService} from '../services/user-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import * as THREE from 'three';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -30,7 +31,7 @@ export enum ConnectionStatusEnum {
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   public appPages = [];
   public versionNumber = '0.0.1';
   public showPageView = false;
@@ -322,5 +323,9 @@ export class AppComponent implements OnInit {
     this.translateConfigService.onLangChange().subscribe(() => {
       this.setPages();
     });
+  }
+
+  ngOnDestroy(): void {
+    THREE.Cache.clear();
   }
 }

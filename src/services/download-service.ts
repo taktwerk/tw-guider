@@ -472,7 +472,9 @@ export class DownloadService {
                 return fileName.indexOf('.gltf') > -1 ||
                     fileName.indexOf('.GLTF') > -1 ||
                     fileName.indexOf('.stp') > -1 ||
-                    fileName.indexOf('.STP') > -1;
+                    fileName.indexOf('.STP') > -1 ||
+                    fileName.indexOf('.glb') > -1 ||
+                    fileName.indexOf('.GLB') > -1;
             default:
                 return false;
         }
