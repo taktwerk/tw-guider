@@ -1,10 +1,3 @@
-/* .video-icon {
-  height: 70vh;
-  width: auto;
-  margin: auto;
-  display: block;
-}
-*/
 .videocam-icon {
   color: white;
   opacity: 0.8;
@@ -112,12 +105,6 @@ ion-slides {
 
 .guide-step ion-row, .guide-step ion-col {
   height: 100%;
-}
-
-@media screen and (orientation:portrait) {
-  .guide-step ion-row, .portrait .guide-step ion-col {
-    height: 33vh;
-  }
 }
 
 

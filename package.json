@@ -123,6 +123,7 @@
     "scrypt-async": "^2.0.1",
     "sentry-cordova": "^0.17.0",
     "sql.js": "^1.1.0",
+    "swiper": "^5.4.5",
     "text-encoding": "^0.7.0",
     "three": "^0.110.0",
     "ts-md5": "^1.2.7",

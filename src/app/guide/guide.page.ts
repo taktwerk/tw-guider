@@ -1,4 +1,12 @@
-import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterViewChecked,
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component, ComponentFactory, ComponentFactoryResolver, ComponentRef,
+  NgZone,
+  OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef, ApplicationRef, Injector, EmbeddedViewRef, ElementRef, Renderer2
+} from '@angular/core';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
@@ -6,7 +14,7 @@ import {GuideStepService} from '../../providers/api/guide-step-service';
 import {GuideStepModel} from '../../models/db/api/guide-step-model';
 import { File } from '@ionic-native/file/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import {Events, LoadingController, ModalController, NavController} from '@ionic/angular';
+import {Events, IonSlides, LoadingController, ModalController, NavController} from '@ionic/angular';
 import {AuthService} from '../../services/auth-service';
 import {GuideAssetService} from '../../providers/api/guide-asset-service';
 import {GuideAssetPivotService} from '../../providers/api/guide-asset-pivot-service';
@@ -20,29 +28,42 @@ import {PictureService} from '../../services/picture-service';
 
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import {Viewer3dService} from "../../services/viewer-3d-service";
+import {GuideStepContentComponent} from "../../components/guide-step-content-component/guide-step-content-component";
+import {delay} from "rxjs/operators";
+
+declare var Swiper: any;
 
 @Component({
   selector: 'app-guide',
   templateUrl: 'guide.page.html',
   styleUrls: ['guide.page.scss']
 })
-export class GuidePage implements OnInit {
+export class GuidePage implements OnInit, AfterContentChecked {
+  // @ViewChild("guideStepContent", {static: false, read: ViewContainerRef }) guideStepContentContainer;
+
+  @ViewChildren('guideStepContent', { read: ViewContainerRef }) slideComponents:QueryList<any>;
+  @ViewChild('guideStepSlide', {static: false}) guideStepSlides: IonSlides;
+  @ViewChild('guideStepSlideElemRef', {static: false}) guideStepSlideElemRef: ElementRef;
+
+  @ViewChild('guideStepContentTemplate', { static: false, read: ViewContainerRef }) guideStepContentTemplate;
+
+  isInitStepSlider = false;
+
   guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
 
   haveFeedbackPermissions = false;
   isLoadedContent = false;
+  public slideOpts: any;
 
   public faFilePdf = faFilePdf;
+
+  public activeGuideStepSlideIndex = 0;
 
   public guide: GuiderModel = this.guiderService.newModel();
   public guideId: number = null;
   public guideSteps: GuideStepModel[] = [];
   public guideAssets: GuideAssetModel[] = [];
-  public slideOpts = {
-    initialSlide: 0,
-    speed: 400,
-    autoHeight: true
-  };
+  public virtualGuideStepSlides = [];
 
   constructor(
       private guideCategoryService: GuideCategoryService,
@@ -65,13 +86,148 @@ export class GuidePage implements OnInit {
       public navCtrl: NavController,
       private ngZone: NgZone,
       private pictureService: PictureService,
-      private loader: LoadingController
+      private loader: LoadingController,
+      private componentResolver: ComponentFactoryResolver,
+      private applicationRef: ApplicationRef,
+      private injector: Injector,
+      private renderer:Renderer2
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
       if (this.authService.auth.additionalInfo.roles.includes('FeedbackViewer') ||
           this.authService.auth.isAuthority) {
         this.haveFeedbackPermissions = true;
+      }
+    }
+  }
+
+  ngAfterContentChecked(): void {
+    // if (!this.isInitStepSlider) {
+    //   var swiper = new Swiper('.swiper-container', {
+    //     initialSlide: 0,
+    //     speed: 400,
+    //     autoHeight: true,
+    //     slidesPerView: 1,
+    //     pagination: {
+    //       el: '.swiper-pagination',
+    //     },
+    //     on: {
+    //       init: () => {
+    //         this.isInitStepSlider = true;
+    //       }
+    //     },
+    //     virtual: {
+    //       slides: (() => {
+    //         const slides = [];
+    //         for (let i = 0; i < this.guideSteps.length; i++) {
+    //           // if (i < 2) {
+    //             const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
+    //             const componentRef = factory.create(this.injector);
+    //             this.applicationRef.attachView(componentRef.hostView);
+    //             // get DOM element from component
+    //             const domElem = (componentRef.hostView as EmbeddedViewRef < any > )
+    //                 .rootNodes[0] as HTMLElement;
+    //             console.log('domElem', domElem);
+    //             componentRef.instance.step = this.guideSteps[i];
+    //             componentRef.instance.guide = this.guide;
+    //             componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
+    //             componentRef.instance.guideStepsLength = this.guideSteps.length;
+    //             componentRef.instance.stepNumber = i;
+    //             slides.push(domElem);
+    //           // }
+    //         }
+    //         return slides;
+    //       })(),
+    //     },
+    //   });
+    // }
+    if (!this.isInitStepSlider && this.slideComponents && this.slideComponents.toArray().length > 0) {
+      this.isInitStepSlider = true;
+      this.initializeGuideStepSlide();
+    }
+  }
+
+  protected initializeGuideStepSlide() {
+    const slideComponents = this.slideComponents.toArray();
+    console.log('slideComponentsslideComponentsslideComponentsslideComponents', slideComponents);
+    for (let i = 0; i < this.guideSteps.length; i++) {
+      const virtualGuideStepSlide = {
+        guideStep: this.guideSteps[i],
+        containerElement: slideComponents[i],
+        component: null
+      };
+      if (i < 2) {
+        const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
+        const componentRef = slideComponents[i].createComponent(factory);
+        // const componentRef = factory.create(this.injector);
+        // this.applicationRef.attachView(componentRef.hostView);
+        // // get DOM element from component
+        // const domElem = (componentRef.hostView as EmbeddedViewRef < any > )
+        //     .rootNodes[0] as HTMLElement;
+        //
+        // // this.guideStepSlideElemRef.insertAdjacentHTML('beforeend', '<ion-slide></ion-slide>');
+        // const ionsSlideTag = this.renderer.createElement('ion-slide');
+        // this.renderer.appendChild(this.guideStepSlideElemRef.nativeElement, ionsSlideTag);
+        // document.getElementsByTagName('ion-slide')[i].appendChild(domElem);
+        componentRef.instance.step = this.guideSteps[i];
+        componentRef.instance.guide = this.guide;
+        componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
+        componentRef.instance.guideStepsLength = this.guideSteps.length;
+        componentRef.instance.stepNumber = i;
+        virtualGuideStepSlide.component = componentRef;
+      }
+      this.virtualGuideStepSlides.push(virtualGuideStepSlide);
+    }
+    console.log('this.virtualGuideStepSlides', this.virtualGuideStepSlides);
+  }
+
+  protected reinitializeGuideStepSlides() {
+    this.virtualGuideStepSlides = [];
+    this.initializeGuideStepSlide();
+  }
+
+  changeGuideStepCurrentSlide() {
+    console.log('changeGuideStepCurrentSlide')
+    this.guideStepSlides
+        .getActiveIndex()
+        .then(index => {
+          this.activeGuideStepSlideIndex = index;
+          this.updateGuideStepSlides();
+        });
+
+    console.log('changeGuideStepCurrentSlide');
+  }
+
+  protected updateGuideStepSlides() {
+    console.log('updateGuideStepSlides');
+    if (this.activeGuideStepSlideIndex > (this.virtualGuideStepSlides.length - 1)) {
+      this.activeGuideStepSlideIndex = this.virtualGuideStepSlides.length - 1;
+    }
+    for (let i = 0; i < this.virtualGuideStepSlides.length; i++) {
+      if (i < this.activeGuideStepSlideIndex - 1 || i > this.activeGuideStepSlideIndex + 1) {
+        if (this.virtualGuideStepSlides[i] && this.virtualGuideStepSlides[i].component) {
+          this.virtualGuideStepSlides[i]
+              .containerElement
+              .remove(
+                  this.virtualGuideStepSlides[i].containerElement.indexOf(this.virtualGuideStepSlides[i].component)
+              );
+          console.log('should be destroy');
+          this.virtualGuideStepSlides[i].component.destroy();
+          this.virtualGuideStepSlides[i].component = null;
+        }
+        continue;
+      }
+      if (!this.virtualGuideStepSlides[i].component) {
+        const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
+        const componentRef = this.virtualGuideStepSlides[i]
+            .containerElement
+            .createComponent(factory);
+        componentRef.instance.step = this.guideSteps[i];
+        componentRef.instance.guide = this.guide;
+        componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
+        componentRef.instance.guideStepsLength = this.guideSteps.length;
+        componentRef.instance.stepNumber = i;
+        this.virtualGuideStepSlides[i].component = componentRef;
       }
     }
   }
@@ -149,6 +305,11 @@ export class GuidePage implements OnInit {
   }
 
   async ngOnInit() {
+    this.slideOpts = {
+      initialSlide: 0,
+      speed: 400,
+      autoHeight: true,
+    };
     const loader = await this.loader.create();
     loader.present();
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
@@ -165,18 +326,33 @@ export class GuidePage implements OnInit {
     this.isLoadedContent = true;
 
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async (model) => {
+      console.log('model create', model);
       if (this.guide) {
-        this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
+        this.setGuideSteps(this.guide.idApi).then(() => {
+          this.detectChanges();
+          this.reinitializeGuideStepSlides();
+          this.detectChanges();
+        });
       }
     });
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async (model) => {
+      console.log('model delete', model);
       if (this.guide) {
-        this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
+        this.setGuideSteps(this.guide.idApi).then(() => {
+          this.detectChanges();
+          this.reinitializeGuideStepSlides();
+          console.log('after reinitialize');
+        });
       }
     });
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async (model) => {
+      console.log('model update', model);
       if (this.guide) {
-        this.setGuideSteps(this.guide.idApi).then(() => this.detectChanges());
+        this.setGuideSteps(this.guide.idApi).then(() => {
+          this.detectChanges();
+          this.reinitializeGuideStepSlides();
+          console.log('after reinitialize');
+        });
       }
     });
     this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':create', async (model) => {

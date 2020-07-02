@@ -13,103 +13,157 @@
 <ion-content color="primary">
   <span *ngIf="isLoadedContent">
     <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step" [ngClass]="{'has-assets' : guideAssets.length}">
-      <ion-slides pager="true" [options]="slideOpts">
+      <ion-slides #guideStepSlide
+                  #guideStepSlideElemRef
+                  pager="true"
+                  [options]="slideOpts"
+                  (ionSlideWillChange)="changeGuideStepCurrentSlide()"
+      >
         <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">
-              <ion-grid [ngClass]="{'has-media' : step.getFileName()}">
-                  <ion-row>
-                    <ion-col *ngIf="step.getFileName()" fixed size-xs="12" size-md="6">
-                      <div class="guide-step-img">
-                        <ion-icon name="musical-notes"
-                                  class="audio-icon"
-                                  slot="start"
-                                  *ngIf="step.isAudioFile()"
-                                  (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
-                        >
-                        </ion-icon>
-                        <fa-icon  [icon]="faFilePdf"
-                                  class="fa-icon"
-                                  slot="start"
-                                  *ngIf="step.isPdf()"
-                                  (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
-                        >
-                        </fa-icon>
-                        <img
-                                *ngIf="step.isImageFile()"
-                                (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
-                                [src]="step.getFileImagePath()"
-                        />
-                        <div
-                                *ngIf="step.isVideoFile()"
-                                (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
-                                [ngClass]="{'video-with-thumbnail': step.isExistThumbOfFile()}"
-                        >
-                          <img
-                                  *ngIf="step.isExistThumbOfFile()"
-                                  [src]="step.getFileImagePath()"
-                          />
-                          <ion-icon *ngIf="step.isExistThumbOfFile()"
-                                    name="play"
-                                    class="videocam-icon"
-                                    slot="start"
-                          ></ion-icon>
-                          <img *ngIf="!step.isExistThumbOfFile()"
-                               [src]="'/assets/videooverlay.png'"
-                          >
-                        </div>
-                        <div *ngIf="step.is3dFile()"
-                             style="width: 100%;height:100%;"
-                        >
-                          <ion-icon (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
-                                    name="search"
-                                    style="position: absolute;bottom: 0;right: 0;padding: 15px;font-size: 50px;z-index:1000;"
-                          >
-                          </ion-icon>
-                          <viewer-3d-model-component
-                            [fileName]="step.getFilePath()"
-                            [backgroundColor]="null"
-                            [madeUserIteractions]="false"
-                            [willStopRotate]="false"
-                          >
-                          </viewer-3d-model-component>
-                        </div>
-                        <ion-icon
-                                *ngIf="!step.isExistFormatFile()"
-                                class="videocam-icon"
-                                color="primary"
-                                name="cloud-upload"
-                        ></ion-icon>
-                      </div>
-                    </ion-col>
-                    <ion-col>
-                      <ion-card color="light" no-margin class="guide-step-text">
-                       <ion-card-header>
-                          <ion-card-subtitle>{{ guide.short_name }} {{ guide.title }}</ion-card-subtitle>
-                          <ion-card-title>{{ stepNumber + 1 }} / {{ guideSteps.length }} {{ step.title }}</ion-card-title>
-                        </ion-card-header>
-                          <ion-card-content>
-                            <div *ngIf="step.description_html" class="ion-text-left">
-                              <html-description-component [html]="step.description_html" class="step-description"></html-description-component>
-                            </div>
-                          </ion-card-content>
-                          <ion-toolbar *ngIf="haveFeedbackPermissions">
-                            <ion-button
-                                    slot="end"
-                                    color="primary"
-                                    fill="outline"
-                                    size="small"
-                                    (click)="openFeedback('guide_step', step.idApi)"
-                            >
-                                      <ion-icon name="chatboxes" slot="start"></ion-icon>
-                              {{ "feedback.header" | translate: params }}
-                                    </ion-button>
-                            </ion-toolbar>
-                      </ion-card>
-                   </ion-col>
-                  </ion-row>
-                </ion-grid>
+          <ng-template #guideStepContent></ng-template>
         </ion-slide>
+<!--        <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">-->
+<!--              <ion-grid [ngClass]="{'has-media' : step.getFileName()}">-->
+<!--                  <ion-row>-->
+<!--                    <ion-col *ngIf="step.getFileName()" fixed size-xs="12" size-md="6">-->
+<!--                      <div class="guide-step-img">-->
+<!--                        <ion-icon name="musical-notes"-->
+<!--                                  class="audio-icon"-->
+<!--                                  slot="start"-->
+<!--                                  *ngIf="step.isAudioFile()"-->
+<!--                                  (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"-->
+<!--                        >-->
+<!--                        </ion-icon>-->
+<!--                        <fa-icon  [icon]="faFilePdf"-->
+<!--                                  class="fa-icon"-->
+<!--                                  slot="start"-->
+<!--                                  *ngIf="step.isPdf()"-->
+<!--                                  (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"-->
+<!--                        >-->
+<!--                        </fa-icon>-->
+<!--                        <img-->
+<!--                                *ngIf="step.isImageFile()"-->
+<!--                                (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"-->
+<!--                                [src]="step.getFileImagePath()"-->
+<!--                        />-->
+<!--                        <div-->
+<!--                                *ngIf="step.isVideoFile()"-->
+<!--                                (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"-->
+<!--                                [ngClass]="{'video-with-thumbnail': step.isExistThumbOfFile()}"-->
+<!--                        >-->
+<!--                          <img-->
+<!--                                  *ngIf="step.isExistThumbOfFile()"-->
+<!--                                  [src]="step.getFileImagePath()"-->
+<!--                          />-->
+<!--                          <ion-icon *ngIf="step.isExistThumbOfFile()"-->
+<!--                                    name="play"-->
+<!--                                    class="videocam-icon"-->
+<!--                                    slot="start"-->
+<!--                          ></ion-icon>-->
+<!--                          <img *ngIf="!step.isExistThumbOfFile()"-->
+<!--                               [src]="'/assets/videooverlay.png'"-->
+<!--                          >-->
+<!--                        </div>-->
+<!--                        <div *ngIf="step.is3dFile()"-->
+<!--                             style="width: 100%;height:100%;"-->
+<!--                        >-->
+<!--                          <ion-icon (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"-->
+<!--                                    name="search"-->
+<!--                                    style="position: absolute;bottom: 0;right: 0;padding: 15px;font-size: 50px;z-index:1000;"-->
+<!--                          >-->
+<!--                          </ion-icon>-->
+<!--                          <viewer-3d-model-component-->
+<!--                                  [fileName]="step.getFilePath()"-->
+<!--                                  [backgroundColor]="null"-->
+<!--                                  [madeUserIteractions]="false"-->
+<!--                                  [willStopRotate]="false"-->
+<!--                          >-->
+<!--                          </viewer-3d-model-component>-->
+<!--                        </div>-->
+<!--                        <ion-icon-->
+<!--                                *ngIf="!step.isExistFormatFile()"-->
+<!--                                class="videocam-icon"-->
+<!--                                color="primary"-->
+<!--                                name="cloud-upload"-->
+<!--                        ></ion-icon>-->
+<!--                      </div>-->
+<!--                    </ion-col>-->
+<!--                    <ion-col>-->
+<!--                      <ion-card color="light" no-margin class="guide-step-text">-->
+<!--                       <ion-card-header>-->
+<!--                          <ion-card-subtitle>{{ guide.short_name }} {{ guide.title }}</ion-card-subtitle>-->
+<!--                          <ion-card-title>{{ stepNumber + 1 }} / {{ guideSteps.length }} {{ step.title }}</ion-card-title>-->
+<!--                        </ion-card-header>-->
+<!--                          <ion-card-content>-->
+<!--                            <div *ngIf="step.description_html" class="ion-text-left">-->
+<!--                              <html-description-component [html]="step.description_html" class="step-description"></html-description-component>-->
+<!--                            </div>-->
+<!--                          </ion-card-content>-->
+<!--                          <ion-toolbar *ngIf="haveFeedbackPermissions">-->
+<!--                            <ion-button-->
+<!--                                    slot="end"-->
+<!--                                    color="primary"-->
+<!--                                    fill="outline"-->
+<!--                                    size="small"-->
+<!--                                    (click)="openFeedback('guide_step', step.idApi)"-->
+<!--                            >-->
+<!--                                      <ion-icon name="chatboxes" slot="start"></ion-icon>-->
+<!--                              {{ "feedback.header" | translate: params }}-->
+<!--                                    </ion-button>-->
+<!--                            </ion-toolbar>-->
+<!--                      </ion-card>-->
+<!--                   </ion-col>-->
+<!--                  </ion-row>-->
+<!--                </ion-grid>-->
+<!--          </ion-slide>-->
+
+<!--        <style>-->
+<!--          html,-->
+<!--          body {-->
+<!--            position: relative;-->
+<!--            height: 100%;-->
+<!--          }-->
+
+<!--          body {-->
+<!--            background: #eee;-->
+<!--            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;-->
+<!--            font-size: 14px;-->
+<!--            color: #000;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--          }-->
+
+<!--          .swiper-container {-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--          }-->
+
+<!--          .swiper-slide {-->
+<!--            text-align: center;-->
+<!--            font-size: 18px;-->
+<!--            background: #fff;-->
+
+<!--            /* Center slide text vertically */-->
+<!--            display: -webkit-box;-->
+<!--            display: -ms-flexbox;-->
+<!--            display: -webkit-flex;-->
+<!--            display: flex;-->
+<!--            -webkit-box-pack: center;-->
+<!--            -ms-flex-pack: center;-->
+<!--            -webkit-justify-content: center;-->
+<!--            justify-content: center;-->
+<!--            -webkit-box-align: center;-->
+<!--            -ms-flex-align: center;-->
+<!--            -webkit-align-items: center;-->
+<!--            align-items: center;-->
+<!--          }-->
+<!--        </style>-->
+<!--        <div class="swiper-container">-->
+<!--          <div class="swiper-wrapper"></div>-->
+<!--                &lt;!&ndash; Add Pagination &ndash;&gt;-->
+<!--          <div class="swiper-pagination"></div>-->
+<!--        </div>-->
       </ion-slides>
-    </div>
     <div *ngIf="guideAssets.length" class="guide-assets">
       <ion-card color="light" >
         <ion-item>
@@ -152,5 +206,7 @@
         </section>
       </ion-card>
   </div>
+    </div>
+    <ng-template #guideStepContentTemplate></ng-template>
   </span>
 </ion-content>

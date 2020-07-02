@@ -1,0 +1,56 @@
+.videocam-icon {
+  color: white;
+  opacity: 0.8;
+  font-size: 100pt;
+  position: absolute;
+  top: 15%;
+  left: 31%;
+}
+
+.video-with-thumbnail {
+  height: 100%;
+}
+
+.audio-icon {
+  position: absolute;
+  top: 15%;
+  left: 31%;
+}
+
+.audio-icon, .fa-icon {
+  color: white;
+  font-size: 100pt;
+}
+
+.pdf-image {
+  width: 130px;
+  display: inline;
+}
+
+.guide-step-img {
+  text-align: center;
+  height: 100%;
+  img {
+    border-radius: 2px;
+    -webkit-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+    max-width: 50%;
+    max-height: 50%;
+    transform: scale(2);
+    transform-origin: top center;
+  }
+}
+
+ion-row, ion-col {
+  height: 100%;
+}
+
+ion-grid {
+  height: calc(100vh - 5rem);
+}
+
+@media screen and (orientation:portrait) {
+  ion-row, .portrait .guide-step ion-col {
+    height: 33vh;
+  }
+}

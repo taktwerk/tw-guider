@@ -243,6 +243,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
   }
 
   ngOnDestroy() {
+      console.log('destroy 3d viewer');
       this.stopRender = true;
       if (this.requestAnimationFrameId) {
           cancelAnimationFrame(this.requestAnimationFrameId);

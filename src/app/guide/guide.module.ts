@@ -12,6 +12,8 @@ import {TranslateModule} from '@ngx-translate/core';
 import {DefaultFilePreviewComponentModule} from '../../components/default-file-preview-component/default-file-preview-component.module';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {Viewer3dModelComponentModule} from "../../components/viewer-3d-model-component/viewer-3d-model-component.module";
+import {GuideStepContentComponentModule} from "../../components/guide-step-content-component/guide-step-content-component.module";
+import {GuideStepContentComponent} from "../../components/guide-step-content-component/guide-step-content-component";
 
 @NgModule({
   declarations: [
@@ -34,8 +36,12 @@ import {Viewer3dModelComponentModule} from "../../components/viewer-3d-model-com
         LanguageSelectorComponentModule,
         TranslateModule,
         DefaultFilePreviewComponentModule,
-        Viewer3dModelComponentModule
+        Viewer3dModelComponentModule,
+        GuideStepContentComponentModule
     ],
+    entryComponents: [
+        GuideStepContentComponent
+    ]
 })
 
 export class GuidePageModule {}
