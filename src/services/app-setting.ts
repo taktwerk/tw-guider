@@ -93,7 +93,6 @@ export class AppSetting {
     }
 
     public getApiUrl() {
-        this.host = 'http://192.168.0.74:8015';
         if (this.isEnabledUsb && this.usbHost) {
             return this.usbHost + environment.apiUrlPath;
         }
