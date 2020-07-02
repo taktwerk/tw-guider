@@ -130,30 +130,30 @@ ion-slides {
 /* no media, only text (portrait & landscape) */
 /* all without or with assets bar */
 .guide-step-text ion-card-content {
-  max-height: calc(100vh - 11rem);
+  max-height: calc(100vh - 15rem);
 }
 
 .has-assets .guide-step-text ion-card-content {
-  max-height: calc(100vh - 14rem);
+  max-height: calc(100vh - 18rem);
 }
 
 /* with media, with text (landscape) */
 .has-media .guide-step-text ion-card-content {
-  max-height: calc(100vh - 11rem);
+  max-height: calc(100vh - 15rem);
 }
 
 .has-assets .has-media  .guide-step-text ion-card-content {
-  max-height: calc(100vh - 14rem);
+  max-height: calc(100vh - 18rem);
 }
 
 /* with media, with text (portrait) */
 @media screen and (orientation:portrait) {
   .has-media .guide-step-text ion-card-content {
-    max-height: calc(67vh - 11rem);
+    max-height: calc(67vh - 15rem);
   }
 
   .has-assets .has-media  .guide-step-text ion-card-content {
-    max-height: calc(67vh - 14rem);
+    max-height: calc(67vh - 18rem);
   }
 }
 
