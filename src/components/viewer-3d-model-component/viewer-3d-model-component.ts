@@ -140,7 +140,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             //     this.animate();
             // });
             this.gltf = gltfObject;
-            this.renderModel(true);
+            this.renderModel();
         }
     }
 
@@ -168,8 +168,8 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         this.renderer.render(this.scene, this.camera);
     }
 
-    renderModel(cloneScene?: false) {
-        const object = skeletonUtils.SkeletonUtils.clone(this.gltf.scene);
+    renderModel() {
+        const object: any = skeletonUtils.SkeletonUtils.clone(this.gltf.scene);
         this.pivot = new THREE.Group();
         this.pivot.add( object );
         const clips = this.gltf.animations;
