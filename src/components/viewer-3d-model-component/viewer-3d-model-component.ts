@@ -119,7 +119,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         if (!gltfObject) {
             const fileName = this.fileName.substring(this.fileName.lastIndexOf('/') + 1, this.fileName.length);
             const path = this.fileName.slice(0, (fileName.length) * -1);
-            const bufferData = await this.file.readAsText(path, fileName);
+            const bufferData = await this.file.readAsArrayBuffer(path, fileName);
             const dracoLoader = new DRACOLoader();
             dracoLoader.setDecoderPath( '/assets/threeJs/loaders/gltf/draco/' );
             dracoLoader.setDecoderConfig({type: 'js'});

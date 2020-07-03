@@ -326,6 +326,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    THREE.Cache.clear();
+    // THREE.Cache.clear();
   }
 }
