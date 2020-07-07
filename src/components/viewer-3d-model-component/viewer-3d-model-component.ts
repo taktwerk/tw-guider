@@ -94,28 +94,6 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         const light2  = new THREE.DirectionalLight(0xffffff, 4);
         light2.position.set(0.5, 0, 0.866); // ~60º
         this.scene.add( light2 );
-        // const light = new THREE.DirectionalLight( 0xffffff, 4 );
-        // light.position.set( 1, 1, 1 );
-        // this.scene.add( light );
-        // const light2 = new THREE.DirectionalLight( 0xffffff, 1.5 );
-        // light2.position.set( 0, 1, 0 );
-        // this.scene.add( light2 );
-        // const light3 = new THREE.DirectionalLight( 0xffffff, 1.5 );
-        // light3.position.set( 1, 0, 0 );
-        // this.scene.add( light3 );
-        // const light4 = new THREE.DirectionalLight( 0xffffff, 1.5 );
-        // light4.position.set( 0, 0, 1 );
-        // this.scene.add( light4 );
-        // const light5 = new THREE.DirectionalLight( 0xffffff, 1.5 );
-        // light5.position.set( 1, 1, 1 );
-        // this.scene.add( light5 );
-        // const light6 = new THREE.DirectionalLight( 0xffffff, 1.5 );
-        // light6.position.set( 0, 1, 1 );
-        // this.scene.add( light6 );
-        // const light7 = new THREE.DirectionalLight( 0xffffff, 1.5 );
-        // light7.position.set( 1, 1, 0 );
-        // this.scene.add( light7 );
-
 
         this.renderer = new THREE.WebGLRenderer({antialias:true, alpha: true});
         this.renderer.physicallyCorrectLights = true;
@@ -131,9 +109,6 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             this.render();
         });
 
-        // this.camera.zoom = 1;
-        // this.camera.updateProjectionMatrix();
-
         await this.renderModels();
     }
 
@@ -141,7 +116,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         let cachedSceneObject = null;
 
         THREE.Cache.enabled = true;
-        cachedSceneObject = THREE.Cache.get(this.fileName);
+        cachedSceneObject = await THREE.Cache.get(this.fileName);
         THREE.Cache.enabled = false;
 
         if (cachedSceneObject) {
@@ -156,6 +131,9 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             const loaderSecond = new THREE.ObjectLoader();
             const scene: any = loaderSecond.parse(cachedSceneObject);
             this.gltfScene = scene;
+            THREE.Cache.enabled = true;
+            THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(scene));
+            THREE.Cache.enabled = false;
             this.renderModel();
             return;
 
@@ -175,7 +153,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             }
             this.gltfScene = object;
             THREE.Cache.enabled = true;
-            THREE.Cache.add(this.fileName, object);
+            THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(object));
             THREE.Cache.enabled = false;
             this.renderModel();
             return;
@@ -194,8 +172,8 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
                 THREE.Cache.enabled = true;
                 THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(gltf.scene));
                 THREE.Cache.enabled = false;
-                // this.storage.set(this.fileName, bufferData);
-                this.storage.set(this.fileName, skeletonUtils.SkeletonUtils.clone(gltf.scene).toJSON());
+                const sceneSkeleton: any = skeletonUtils.SkeletonUtils.clone(gltf.scene);
+                this.storage.set(this.fileName, sceneSkeleton.toJSON());
 
                 this.renderModel();
             },
