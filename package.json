@@ -71,6 +71,7 @@
     "@ionic-native/video-player": "^5.23.0",
     "@ionic/angular": "^4.11.10",
     "@ionic/app-scripts": "^3.2.4",
+    "@ionic/storage": "^2.2.0",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "@sentry/cli": "^1.51.1",

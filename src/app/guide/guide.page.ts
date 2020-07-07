@@ -102,45 +102,6 @@ export class GuidePage implements OnInit, AfterContentChecked {
   }
 
   ngAfterContentChecked(): void {
-    // if (!this.isInitStepSlider) {
-    //   var swiper = new Swiper('.swiper-container', {
-    //     initialSlide: 0,
-    //     speed: 400,
-    //     autoHeight: true,
-    //     slidesPerView: 1,
-    //     pagination: {
-    //       el: '.swiper-pagination',
-    //     },
-    //     on: {
-    //       init: () => {
-    //         this.isInitStepSlider = true;
-    //       }
-    //     },
-    //     virtual: {
-    //       slides: (() => {
-    //         const slides = [];
-    //         for (let i = 0; i < this.guideSteps.length; i++) {
-    //           // if (i < 2) {
-    //             const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
-    //             const componentRef = factory.create(this.injector);
-    //             this.applicationRef.attachView(componentRef.hostView);
-    //             // get DOM element from component
-    //             const domElem = (componentRef.hostView as EmbeddedViewRef < any > )
-    //                 .rootNodes[0] as HTMLElement;
-    //             console.log('domElem', domElem);
-    //             componentRef.instance.step = this.guideSteps[i];
-    //             componentRef.instance.guide = this.guide;
-    //             componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
-    //             componentRef.instance.guideStepsLength = this.guideSteps.length;
-    //             componentRef.instance.stepNumber = i;
-    //             slides.push(domElem);
-    //           // }
-    //         }
-    //         return slides;
-    //       })(),
-    //     },
-    //   });
-    // }
     if (!this.isInitStepSlider && this.slideComponents && this.slideComponents.toArray().length > 0) {
       this.isInitStepSlider = true;
       this.initializeGuideStepSlide();
@@ -149,7 +110,6 @@ export class GuidePage implements OnInit, AfterContentChecked {
 
   protected initializeGuideStepSlide() {
     const slideComponents = this.slideComponents.toArray();
-    console.log('slideComponentsslideComponentsslideComponentsslideComponents', slideComponents);
     for (let i = 0; i < this.guideSteps.length; i++) {
       const virtualGuideStepSlide = {
         guideStep: this.guideSteps[i],
@@ -211,7 +171,6 @@ export class GuidePage implements OnInit, AfterContentChecked {
               .remove(
                   this.virtualGuideStepSlides[i].containerElement.indexOf(this.virtualGuideStepSlides[i].component)
               );
-          console.log('should be destroy');
           this.virtualGuideStepSlides[i].component.destroy();
           this.virtualGuideStepSlides[i].component = null;
         }

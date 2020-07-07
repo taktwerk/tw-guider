@@ -12,11 +12,13 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import {DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader";
+import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import * as skeletonUtils from "three/examples/jsm/utils/SkeletonUtils";
 import { File } from '@ionic-native/file/ngx';
 import { AfterViewInit } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { createGesture, Gesture, GestureDetail } from '@ionic/core';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the TodoPage page.
@@ -48,7 +50,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     scene: any;
     controls: any;
     renderer: any;
-    gltf: any;
+    gltfScene: any;
     pivot: any;
     requestAnimationFrameId: number;
 
@@ -56,7 +58,8 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         private file: File,
         private ngZone: NgZone,
         private elementRef: ElementRef,
-        private changeDetectorRef: ChangeDetectorRef
+        private changeDetectorRef: ChangeDetectorRef,
+        private storage: Storage
     ) {}
 
     async init() {
@@ -81,19 +84,38 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         if (this.backgroundColor) {
             this.scene.background = new THREE.Color(this.backgroundColor);
         }
-        this.camera = new THREE.PerspectiveCamera(60, areaWidth/areaHeight, 0.01, 1000);
+        this.camera = new THREE.PerspectiveCamera(50, areaWidth/areaHeight, 0.01, 1000);
         this.camera.aspect = areaWidth / areaHeight;
         this.camera.position.z = 2;
 
-        const light1  = new THREE.AmbientLight(0xffffff, 2);
+        const light1  = new THREE.AmbientLight(0xffffff, 3);
         this.scene.add( light1 );
 
         const light2  = new THREE.DirectionalLight(0xffffff, 4);
         light2.position.set(0.5, 0, 0.866); // ~60º
         this.scene.add( light2 );
+        // const light = new THREE.DirectionalLight( 0xffffff, 4 );
+        // light.position.set( 1, 1, 1 );
+        // this.scene.add( light );
+        // const light2 = new THREE.DirectionalLight( 0xffffff, 1.5 );
+        // light2.position.set( 0, 1, 0 );
+        // this.scene.add( light2 );
+        // const light3 = new THREE.DirectionalLight( 0xffffff, 1.5 );
+        // light3.position.set( 1, 0, 0 );
+        // this.scene.add( light3 );
+        // const light4 = new THREE.DirectionalLight( 0xffffff, 1.5 );
+        // light4.position.set( 0, 0, 1 );
+        // this.scene.add( light4 );
+        // const light5 = new THREE.DirectionalLight( 0xffffff, 1.5 );
+        // light5.position.set( 1, 1, 1 );
+        // this.scene.add( light5 );
+        // const light6 = new THREE.DirectionalLight( 0xffffff, 1.5 );
+        // light6.position.set( 0, 1, 1 );
+        // this.scene.add( light6 );
+        // const light7 = new THREE.DirectionalLight( 0xffffff, 1.5 );
+        // light7.position.set( 1, 1, 0 );
+        // this.scene.add( light7 );
 
-        const light3 = new THREE.PointLight( 0xffffff, 0.9 );
-        this.scene.add( light3 );
 
         this.renderer = new THREE.WebGLRenderer({antialias:true, alpha: true});
         this.renderer.physicallyCorrectLights = true;
@@ -109,39 +131,78 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             this.render();
         });
 
-        this.camera.zoom = 1;
-        this.camera.updateProjectionMatrix();
+        // this.camera.zoom = 1;
+        // this.camera.updateProjectionMatrix();
+
+        await this.renderModels();
+    }
+
+    protected async renderModels() {
+        let cachedSceneObject = null;
+
+        THREE.Cache.enabled = true;
+        cachedSceneObject = THREE.Cache.get(this.fileName);
+        THREE.Cache.enabled = false;
+
+        if (cachedSceneObject) {
+            this.gltfScene = skeletonUtils.SkeletonUtils.clone(cachedSceneObject);
+            this.renderModel();
+            return;
+        }
+
+        cachedSceneObject = await this.storage.get(this.fileName);
+
+        if (cachedSceneObject) {
+            const loaderSecond = new THREE.ObjectLoader();
+            const scene: any = loaderSecond.parse(cachedSceneObject);
+            this.gltfScene = scene;
+            this.renderModel();
+            return;
+
+            if (!scene) {
+                return false;
+            }
+            const object = new THREE.Scene();
+            object.uuid = scene.uuid;
+            object.name = scene.name;
+            object.background = ( scene.background !== null ) ? scene.background.clone() : null;
+            if ( scene.fog !== null ) {
+                object.fog = scene.fog.clone();
+            }
+            object.userData = JSON.parse(JSON.stringify(scene.userData));
+            while ( scene.children.length > 0 ) {
+                object.add(scene.children[0]);
+            }
+            this.gltfScene = object;
+            THREE.Cache.enabled = true;
+            THREE.Cache.add(this.fileName, object);
+            THREE.Cache.enabled = false;
+            this.renderModel();
+            return;
+        }
 
         const loader = new GLTFLoader();
-        THREE.Cache.enabled = true;
-        const gltfObject = THREE.Cache.get(this.fileName);
-        THREE.Cache.enabled = false;
-        if (!gltfObject) {
-            const fileName = this.fileName.substring(this.fileName.lastIndexOf('/') + 1, this.fileName.length);
-            const path = this.fileName.slice(0, (fileName.length) * -1);
-            const bufferData = await this.file.readAsArrayBuffer(path, fileName);
-            const dracoLoader = new DRACOLoader();
-            dracoLoader.setDecoderPath( '/assets/threeJs/loaders/gltf/draco/' );
-            dracoLoader.setDecoderConfig({type: 'js'});
-            loader.setDRACOLoader( dracoLoader )
-            loader.parse(bufferData, '', (gltf) => {
-                    THREE.Cache.enabled = true;
-                    THREE.Cache.add(this.fileName, gltf);
-                    THREE.Cache.enabled = false;
-                    this.gltf = gltf;
-                    this.renderModel();
-                },
-                (error) => {
-                    console.log('gltfError', error);
-                }
-            );
-        } else {
-            // this.requestAnimationFrameId = requestAnimationFrame(() => {
-            //     this.animate();
-            // });
-            this.gltf = gltfObject;
-            this.renderModel();
-        }
+        const fileName = this.fileName.substring(this.fileName.lastIndexOf('/') + 1, this.fileName.length);
+        const path = this.fileName.slice(0, (fileName.length) * -1);
+        const bufferData = await this.file.readAsArrayBuffer(path, fileName);
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath( '/assets/threeJs/loaders/gltf/draco/' );
+        dracoLoader.setDecoderConfig({type: 'js'});
+        loader.setDRACOLoader( dracoLoader )
+        loader.parse(bufferData, '', (gltf) => {
+                this.gltfScene = gltf.scene;
+                THREE.Cache.enabled = true;
+                THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(gltf.scene));
+                THREE.Cache.enabled = false;
+                // this.storage.set(this.fileName, bufferData);
+                this.storage.set(this.fileName, skeletonUtils.SkeletonUtils.clone(gltf.scene).toJSON());
+
+                this.renderModel();
+            },
+            (error) => {
+                console.log('gltfError', error);
+            }
+        );
     }
 
     render() {
@@ -169,10 +230,9 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     }
 
     renderModel() {
-        const object: any = skeletonUtils.SkeletonUtils.clone(this.gltf.scene);
+        const object: any = this.gltfScene;
         this.pivot = new THREE.Group();
         this.pivot.add( object );
-        const clips = this.gltf.animations;
         const box = new THREE.Box3().setFromObject( object );
         const size = box.getSize(new THREE.Vector3()).length();
         const center = box.getCenter(object.position);
@@ -194,11 +254,9 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
 
         this.controls.update();
         this.scene.add( this.pivot );
-        this.renderer.render(this.scene, this.camera);
         this.ngZone.runOutsideAngular(() => {
             this.animate();
         });
-        this.isRendered = true;
         window.onresize = () => {
             setTimeout(() => {
                 if (!this.modelElement.clientWidth || !this.modelElement.clientHeight) {
@@ -228,6 +286,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         gesture.setDisabled(false);
 
         window.dispatchEvent(new Event('resize'));
+        this.isRendered = true;
         this.detectChanges();
     }
 

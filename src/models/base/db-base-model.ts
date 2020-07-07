@@ -299,7 +299,6 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
-                    console.log('queryqueryqueryquery', query);
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {

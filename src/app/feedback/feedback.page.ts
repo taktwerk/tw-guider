@@ -61,12 +61,10 @@ export class FeedbackPage implements OnInit {
             );
             feedbackSearchCondition.push(['reference_id', this.reference_id]);
         }
-        console.log('feedbackSearchCondition', feedbackSearchCondition);
         this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(
             feedbackSearchCondition,
             'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC'
         );
-        console.log('this.feedbackList', this.feedbackList);
     }
 
     public openFile(basePath: string, modelName: string, title?: string) {
@@ -133,7 +131,6 @@ export class FeedbackPage implements OnInit {
         });
 
         this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':create', (model) => {
-            console.log('weas createddddd');
             this.setModels();
             this.detectChanges();
         });
