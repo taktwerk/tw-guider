@@ -444,10 +444,14 @@ export class AuthService {
 
                 switch (pageName) {
                     case 'protocol':
-                        userHaveAcessToPage = this.isHaveUserRole('ProtocolViewer') || this.auth.isAuthority;
+                        userHaveAcessToPage = this.isHaveUserRole('ProtocolViewer')
+                                        || this.isHaveUserRole('ProtocolAdmin')
+                                        || this.auth.isAuthority;
                         break;
                     case 'feedback':
-                        userHaveAcessToPage = this.isHaveUserRole('FeedbackViewer') || this.auth.isAuthority;
+                        userHaveAcessToPage = this.isHaveUserRole('FeedbackViewer') ||
+                                        this.isHaveUserRole('FeedbackAdmin') ||
+                                        this.auth.isAuthority;
                         break;
                     case 'guide':
                         userHaveAcessToPage = this.isHaveUserRole('GuiderViewer') || this.auth.isAuthority;

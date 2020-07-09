@@ -48,7 +48,18 @@ export class FeedbackPage implements OnInit {
         if (!user) {
             return;
         }
-        const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
+        const feedbackSearchCondition: any[] = ['1=1', 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
+        if (!user.isAuthority) {
+            console.log('is not authority', this.authService.isHaveUserRole('FeedbackViewer'));
+            if (this.authService.isHaveUserRole('FeedbackAdmin') && user.client_id) {
+                feedbackSearchCondition.push(['client_id', user.client_id]);
+            } else if (this.authService.isHaveUserRole('FeedbackViewer') && user.userId) {
+                feedbackSearchCondition.push(['created_by', user.userId]);
+            } else {
+                return [];
+            }
+        }
+        
         if (this.reference_id && this.reference_model) {
             feedbackSearchCondition.push(
                 '(' + this.feedbackService.dbModelApi.secure('reference_model') +
