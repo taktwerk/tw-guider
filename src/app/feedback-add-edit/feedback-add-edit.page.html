@@ -7,7 +7,7 @@
       {{ 'feedback.header' | translate:params }}
     </ion-title>
     <ion-buttons slot="end" (click)="backToFeedbackList()">
-      {{ 'close' | translate:params }}
+      <ion-icon name="close"></ion-icon>
     </ion-buttons>
     <sync-spinner-component slot="primary"></sync-spinner-component>
   </ion-toolbar>
