@@ -53,7 +53,6 @@ export class ProtocolPage implements OnInit {
     }
 
     openAddEditPage(protocolId?: number) {
-        console.log('openAddEditPage', protocolId)
         const protocolNavigationExtras: NavigationExtras = {
             queryParams: {
                 protocolId,

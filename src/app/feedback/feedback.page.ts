@@ -50,7 +50,6 @@ export class FeedbackPage implements OnInit {
         }
         const feedbackSearchCondition: any[] = ['1=1', 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
         if (!user.isAuthority) {
-            console.log('is not authority', this.authService.isHaveUserRole('FeedbackViewer'));
             if (this.authService.isHaveUserRole('FeedbackAdmin') && user.client_id) {
                 feedbackSearchCondition.push(['client_id', user.client_id]);
             } else if (this.authService.isHaveUserRole('FeedbackViewer') && user.userId) {

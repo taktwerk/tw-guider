@@ -56,20 +56,31 @@ export class ProtocolService extends ApiService {
                 resolve([]);
                 return;
             }
-            const protocolSearchCondition = [
+            const protocolSearchCondition: any[] = [
+                '1=1',
                 'protocol_template.deleted_at IS NULL',
                 'protocol_template.local_deleted_at IS NULL',
-                '1=1'
             ];
             if (templateId) {
                 protocolSearchCondition.push(
                     this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('id') + '=' + templateId
                 );
             }
-            if (!user.isAuthority && user.client_id) {
-                protocolSearchCondition.push(
-                    this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
-                );
+            if (!user.isAuthority) {
+                const isProtocolAdmin = (this.authService.isHaveUserRole('ProtocolAdmin') && user.client_id);
+                console.log('ProtocolAdmin', isProtocolAdmin);
+                if (isProtocolAdmin) {
+                    protocolSearchCondition.push(
+                        this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
+                    );
+                } else if (this.authService.isHaveUserRole('ProtocolViewer') && user.userId) {
+                    protocolSearchCondition.push(
+                        this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('created_by') + '=' + user.userId
+                    );
+                } else {
+                    resolve([]);
+                    return;
+                }
             }
             if (referenceModel && referenceId) {
                 // protocolSearchCondition.push(['protocol.reference_model', referenceModel]);

@@ -497,6 +497,8 @@ export abstract class DbBaseModel {
         } else {
             console.debug(this.TAG, 'findAllWhere condition error', condition);
         }
+
+        console.log('CONDITIONS', conditions.join(' AND '));
         return conditions.join(' AND ');
     }
 
