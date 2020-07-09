@@ -56,3 +56,24 @@ $save-changes-alert-width: 400px;
     }
   }
 }
+
+ion-header {
+  sync-spinner-component {
+    order: 2;
+    margin-left: 20px;
+  }
+  ion-title {
+    order: 3;
+  }
+}
+
+sync-modal-component {
+  ion-header {
+    sync-spinner-component {
+      order: 1;
+    }
+    ion-title {
+      order: 2;
+    }
+  }
+}

@@ -3,7 +3,10 @@
         <ion-title>
             {{ 'sync-modal.header' | translate:params }}
         </ion-title>
-        <sync-spinner-component slot="primary" [shouldOpenPopup]="false"></sync-spinner-component>
+        <sync-spinner-component [shouldOpenPopup]="false"
+                                slot="primary"
+        >
+        </sync-spinner-component>
         <ion-buttons slot="end">
             <ion-button (click)="dismiss()">
                 <ion-icon name="close"></ion-icon>
