@@ -83,8 +83,6 @@ export class ProtocolService extends ApiService {
                 }
             }
             if (referenceModel && referenceId) {
-                // protocolSearchCondition.push(['protocol.reference_model', referenceModel]);
-                // protocolSearchCondition.push(['protocol.reference_id', referenceId]);
                 protocolSearchCondition.push(
                     this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('reference_model') + '= \'' + referenceModel + '\''
                 );

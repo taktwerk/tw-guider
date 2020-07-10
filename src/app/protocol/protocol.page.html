@@ -7,11 +7,7 @@
             {{ 'protocol.Protocols' | translate:params }}
         </ion-title>
         <ion-buttons *ngIf="isComponentLikeModal" slot="end">
-            <ion-back-button text="x"
-                             type="button"
-                             icon="null"
-                             defaultHref="{{ backDefaultHref || '/guide-categories' }}"
-            >
+            <ion-back-button text="" defaultHref="{{ backDefaultHref || '/guide-categories' }}">
             </ion-back-button>
         </ion-buttons>
         <sync-spinner-component slot="primary"></sync-spinner-component>

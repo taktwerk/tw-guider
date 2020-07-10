@@ -97,8 +97,6 @@ export class AppSetting {
             return this.usbHost + environment.apiUrlPath;
         }
 
-        this.host = 'http://192.168.0.74:8015';
-
         return this.host + environment.apiUrlPath;
     }
 

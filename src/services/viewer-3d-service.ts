@@ -19,7 +19,8 @@ export class Viewer3dService {
             componentProps: {
                 fileName,
                 fileTitle
-            }
+            },
+            cssClass: "modal-fullscreen"
         });
         await modal.present();
     }

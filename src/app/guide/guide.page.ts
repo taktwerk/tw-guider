@@ -5,6 +5,7 @@ import {
   ChangeDetectorRef,
   Component, ComponentFactory, ComponentFactoryResolver, ComponentRef,
   NgZone,
+  Input,
   OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef, ApplicationRef, Injector, EmbeddedViewRef, ElementRef, Renderer2
 } from '@angular/core';
 import {GuiderService} from '../../providers/api/guider-service';
@@ -46,6 +47,8 @@ export class GuidePage implements OnInit, AfterContentChecked {
   @ViewChild('guideStepSlideElemRef', {static: false}) guideStepSlideElemRef: ElementRef;
 
   @ViewChild('guideStepContentTemplate', { static: false, read: ViewContainerRef }) guideStepContentTemplate;
+
+  @Input() categoryId: number;
 
   isInitStepSlider = false;
 
@@ -119,16 +122,6 @@ export class GuidePage implements OnInit, AfterContentChecked {
       if (i < 2) {
         const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
         const componentRef = slideComponents[i].createComponent(factory);
-        // const componentRef = factory.create(this.injector);
-        // this.applicationRef.attachView(componentRef.hostView);
-        // // get DOM element from component
-        // const domElem = (componentRef.hostView as EmbeddedViewRef < any > )
-        //     .rootNodes[0] as HTMLElement;
-        //
-        // // this.guideStepSlideElemRef.insertAdjacentHTML('beforeend', '<ion-slide></ion-slide>');
-        // const ionsSlideTag = this.renderer.createElement('ion-slide');
-        // this.renderer.appendChild(this.guideStepSlideElemRef.nativeElement, ionsSlideTag);
-        // document.getElementsByTagName('ion-slide')[i].appendChild(domElem);
         componentRef.instance.step = this.guideSteps[i];
         componentRef.instance.guide = this.guide;
         componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
@@ -228,6 +221,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
       componentProps: {
         asset: asset
       },
+      cssClass: "modal-fullscreen"
     });
     return await modal.present();
   }
