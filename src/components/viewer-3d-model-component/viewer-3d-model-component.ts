@@ -152,13 +152,13 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             return;
         }
         const {left, right, top, bottom, width, height} = this.modelElement.getBoundingClientRect();
-        // if (this.resizeCanvas) {
-        //     console.log('resize canvaser');
-        //     // this.camera.aspect = this.modelElement.clientWidth / this.modelElement.clientHeight;
-        //     this.camera.aspect = width / height;
-        //     this.camera.updateProjectionMatrix();
-        //     this.renderer.setSize( this.modelElement.width, this.modelElement.height, false );
-        // }
+        if (this.resizeCanvas) {
+            console.log('resize canvaser');
+            // this.camera.aspect = this.modelElement.clientWidth / this.modelElement.clientHeight;
+            this.camera.aspect = width / height;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize( this.modelElement.width, this.modelElement.height, false );
+        }
         // this.renderer.setScissorTest(false);
         // this.renderer.clear(true, true);
         // this.renderer.setScissorTest(true);
