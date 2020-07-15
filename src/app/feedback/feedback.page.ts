@@ -48,16 +48,17 @@ export class FeedbackPage implements OnInit {
         if (!user) {
             return;
         }
-        const feedbackSearchCondition: any[] = ['1=1', 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
-        if (!user.isAuthority) {
-            if (this.authService.isHaveUserRole('FeedbackAdmin') && user.client_id) {
-                feedbackSearchCondition.push(['client_id', user.client_id]);
-            } else if (this.authService.isHaveUserRole('FeedbackViewer') && user.userId) {
-                feedbackSearchCondition.push(['created_by', user.userId]);
-            } else {
-                return [];
-            }
-        }
+        // const feedbackSearchCondition: any[] = ['1=1', 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
+        const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
+        // if (!user.isAuthority) {
+        //     if (this.authService.isHaveUserRole('FeedbackAdmin') && user.client_id) {
+        //         feedbackSearchCondition.push(['client_id', user.client_id]);
+        //     } else if (this.authService.isHaveUserRole('FeedbackViewer') && user.userId) {
+        //         feedbackSearchCondition.push(['created_by', user.userId]);
+        //     } else {
+        //         return [];
+        //     }
+        // }
         
         if (this.reference_id && this.reference_model) {
             feedbackSearchCondition.push(
