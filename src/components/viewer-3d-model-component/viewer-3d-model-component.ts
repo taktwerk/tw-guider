@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import {TrackballControls} from 'three/examples/jsm/controls/TrackballControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import {DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
@@ -19,6 +20,7 @@ import { AfterViewInit } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { createGesture, Gesture, GestureDetail } from '@ionic/core';
 import { Storage } from '@ionic/storage';
+import {Viewer3dService} from "../../services/viewer-3d-service";
 
 /**
  * Generated class for the TodoPage page.
@@ -54,60 +56,40 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     pivot: any;
     requestAnimationFrameId: number;
 
+
+    /// new
+    ctx: any;
+    /// new
+
     constructor(
         private file: File,
         private ngZone: NgZone,
         private elementRef: ElementRef,
         private changeDetectorRef: ChangeDetectorRef,
-        private storage: Storage
+        private storage: Storage,
+        private viewer3d: Viewer3dService
     ) {}
 
     async init() {
+        if (this.isInit) {
+            return;
+        }
         if (this.requestAnimationFrameId) {
             return;
         }
-        this.modelElement = this.domObj.nativeElement;
-        if (!this.modelElement) {
+        if (!this.domObj.nativeElement) {
             return;
         }
+        this.modelElement = this.domObj.nativeElement;
         if (!this.modelElement.clientWidth || !this.modelElement.clientHeight) {
             return;
         }
-        if (this.isInit) {
-            return;
-        } else {
-            this.isInit = true;
-        }
-        this.scene = new THREE.Scene();
-        const areaWidth = this.modelElement.clientWidth;
-        const areaHeight = this.modelElement.clientHeight;
-        if (this.backgroundColor) {
-            this.scene.background = new THREE.Color(this.backgroundColor);
-        }
-        this.camera = new THREE.PerspectiveCamera(50, areaWidth/areaHeight, 0.01, 1000);
-        this.camera.aspect = areaWidth / areaHeight;
-        this.camera.position.z = 2;
+        this.isInit = true;
 
-        const light1  = new THREE.AmbientLight(0xffffff, 3);
-        this.scene.add( light1 );
-
-        const light2  = new THREE.DirectionalLight(0xffffff, 4);
-        light2.position.set(0.5, 0, 0.866); // ~60º
-        this.scene.add( light2 );
-
-        this.renderer = new THREE.WebGLRenderer({antialias:true, alpha: true});
-        this.renderer.physicallyCorrectLights = true;
-        this.renderer.outputEncoding = THREE.sRGBEncoding;
-        this.renderer.setPixelRatio( window.devicePixelRatio );
-        this.renderer.setSize(areaWidth, areaHeight);
-
-        this.modelElement.appendChild(this.renderer.domElement);
-
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableRotate = this.madeUserIteractions;
-        this.controls.addEventListener('change', () => {
-            this.render();
-        });
+        ///new
+        this.ctx = document.createElement('canvas').getContext('2d');
+        this.modelElement.appendChild(this.ctx.canvas);
+        ///new
 
         await this.renderModels();
     }
@@ -118,7 +100,6 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         THREE.Cache.enabled = true;
         cachedSceneObject = await THREE.Cache.get(this.fileName);
         THREE.Cache.enabled = false;
-
         if (cachedSceneObject) {
             this.gltfScene = skeletonUtils.SkeletonUtils.clone(cachedSceneObject);
             this.renderModel();
@@ -133,27 +114,6 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             this.gltfScene = scene;
             THREE.Cache.enabled = true;
             THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(scene));
-            THREE.Cache.enabled = false;
-            this.renderModel();
-            return;
-
-            if (!scene) {
-                return false;
-            }
-            const object = new THREE.Scene();
-            object.uuid = scene.uuid;
-            object.name = scene.name;
-            object.background = ( scene.background !== null ) ? scene.background.clone() : null;
-            if ( scene.fog !== null ) {
-                object.fog = scene.fog.clone();
-            }
-            object.userData = JSON.parse(JSON.stringify(scene.userData));
-            while ( scene.children.length > 0 ) {
-                object.add(scene.children[0]);
-            }
-            this.gltfScene = object;
-            THREE.Cache.enabled = true;
-            THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(object));
             THREE.Cache.enabled = false;
             this.renderModel();
             return;
@@ -191,47 +151,142 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         if (this.stopRender) {
             return;
         }
+        const {left, right, top, bottom, width, height} = this.modelElement.getBoundingClientRect();
+        // if (this.resizeCanvas) {
+        //     console.log('resize canvaser');
+        //     // this.camera.aspect = this.modelElement.clientWidth / this.modelElement.clientHeight;
+        //     this.camera.aspect = width / height;
+        //     this.camera.updateProjectionMatrix();
+        //     this.renderer.setSize( this.modelElement.width, this.modelElement.height, false );
+        // }
+        // this.renderer.setScissorTest(false);
+        // this.renderer.clear(true, true);
+        // this.renderer.setScissorTest(true);
+        // const isOffscreen =
+        //     bottom < 0 ||
+        //     top > this.renderer.domElement.clientHeight ||
+        //     right < 0 ||
+        //     left > this.renderer.domElement.clientWidth;
+
+
+        /// new
+         const isOffscreen =
+            bottom < 0 ||
+            top > window.innerHeight ||
+            right < 0 ||
+            left > window.innerWidth;
+        /// new
+
+        if (isOffscreen) { 
+          this.requestAnimationFrameId = requestAnimationFrame(() => {
+              this.animate();
+          });
+          return;
+        }
+
+        const rendererCanvas = this.renderer.domElement;
+        this.renderer.setSize(width, height, false);
+        // if (rendererCanvas.width < width || rendererCanvas.height < height) {
+        //   this.renderer.setSize(width, height, false);
+        // }
+        // make sure the canvas for this area is the same size as the area
+        if (this.ctx.canvas.width !== width || this.ctx.canvas.height !== height) {
+          this.ctx.canvas.width = width;
+          this.ctx.canvas.height = height;
+        }
+
+        // const positiveYUpBottom = this.renderer.domElement.clientHeight - bottom;
+        this.renderer.setScissor(0, 0, width, height);
+        this.renderer.setViewport(0, 0, width, height);
+
         if (this.isRotateModel) {
             this.pivot.rotation.y += 0.01;
         }
-        if (this.resizeCanvas) {
-            this.camera.aspect = this.modelElement.clientWidth / this.modelElement.clientHeight;
-            this.renderer.setSize( this.modelElement.clientWidth, this.modelElement.clientHeight );
-            this.camera.updateProjectionMatrix();
-        }
+
+        // this.camera.aspect = width / height;
+        // this.camera.updateProjectionMatrix();
+        // this.controls.handleResize();
+        // this.controls.update();
+
+        
+        // this.renderer.setScissor(left, positiveYUpBottom, width, height);
+        // this.renderer.setViewport(left, positiveYUpBottom, width, height);
+        // this.controls.handleResize();
+        // this.controls.update();
+        this.render();
+
+        /// new
+        this.ctx.globalCompositeOperation = 'copy';
+        this.ctx.drawImage(
+            rendererCanvas, //img
+            0, // dx
+            0, //dy
+            width, //dWidth
+            height //dHeight
+        );                              // dst rect
+        /// new
         this.requestAnimationFrameId = requestAnimationFrame(() => {
             this.animate();
-        });
-        console.log('request animation');
-
-        this.renderer.render(this.scene, this.camera);
+        });        
     }
 
     renderModel() {
+        this.renderer = this.viewer3d.getGlobalRenderer();
         const object: any = this.gltfScene;
         this.pivot = new THREE.Group();
+        const light1  = new THREE.AmbientLight(0xffffff, 3);
+        const light2  = new THREE.DirectionalLight(0xffffff, 4);
+        light2.position.set(0.5, 0, 0.866); // ~60º
         this.pivot.add( object );
+        this.scene = new THREE.Scene();
+        this.scene.add(light1);
+        this.scene.add(light2);
+        this.scene.add(this.pivot);
+        if (this.backgroundColor) {
+            this.scene.background = new THREE.Color(this.backgroundColor);
+        }
         const box = new THREE.Box3().setFromObject( object );
+        const center = box.getCenter( object.position );
+        
+        // object.position.x += (object.position.x - center.x);
+        // object.position.y += (object.position.y - center.y);
+        // object.position.z += (object.position.z - center.z);
+
+        const {left, right, top, bottom, width, height} = this.modelElement.getBoundingClientRect();
+        const areaWidth = width;
+        const areaHeight = height;
+
         const size = box.getSize(new THREE.Vector3()).length();
-        const center = box.getCenter(object.position);
 
-        this.controls.maxDistance = size * 10;
-        this.controls.enabled = true;
+        console.log('width', width);
+        console.log('height', height)
 
-        this.camera.near = size / 100;
-        this.camera.far = size * 100;
-
+        this.camera = new THREE.PerspectiveCamera(
+                    50,
+                    width/height,
+                    size / 100,
+                    size * 100
+                );
+        // this.camera.position.copy(center);
         this.camera.position.x += size;
         this.camera.position.y += size / 5.0;
-        this.camera.position.z += size / 2.0 ;
+        this.camera.position.z = (2 + size / 2.0);
         this.camera.lookAt(center);
+        
 
-        this.camera.updateProjectionMatrix();
+        // this.pivot.add(this.camera);
+        // this.camera.lookAt( this.pivot.position );
+
+        this.scene.add(this.camera);
 
         object.position.multiplyScalar( - 1 );
 
-        this.controls.update();
-        this.scene.add( this.pivot );
+        this.camera.updateProjectionMatrix();
+
+        this.controls = new OrbitControls(this.camera, this.modelElement);
+        this.controls.enableRotate = this.madeUserIteractions;
+        this.controls.enablePan = false;
+        
         this.ngZone.runOutsideAngular(() => {
             this.animate();
         });
@@ -240,15 +295,16 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
                 if (!this.modelElement.clientWidth || !this.modelElement.clientHeight) {
                     return;
                 }
-                if (this.renderer.domElement.width !== this.modelElement.clientWidth ||
-                    this.renderer.domElement.height !== this.modelElement.clientHeight
+                if (this.renderer.domElement.width !== window.innerWidth ||
+                    this.renderer.domElement.height !== window.innerHeight
                 ) {
                     this.resizeCanvas = true;
                 }
             })
         };
         const gesture = createGesture({
-            el: this.modelElement,
+            // el: this.renderer.domElement,
+            el: this.ctx.canvas,
             gestureName: 'longpress',
             threshold: 0,
             canStart: () => true,

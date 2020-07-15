@@ -1,7 +1,7 @@
 <ion-grid class="guides">
     <ion-row>
         <ion-col fixed size-xs="12" size-sm="6" size-md="4" *ngFor="let item of guides">
-            <ion-card color="light" no-margin>
+            <ion-card color="light" class="ion-no-margin">
                 <div class="guide-preview" (click)="openGuide(item)">
                     <div class="img"
                          *ngIf="item.getFileImagePath()"
