@@ -1,10 +1,14 @@
 .videocam-icon {
   color: white;
-  opacity: 0.8;
-  font-size: 100pt;
+  font-size: 50pt;
   position: absolute;
-  top: 15%;
-  left: 31%;
+  top: 5%;
+  left: 3%;
+  /* middle */
+  /* top: 50%;
+  left: 50%;
+  margin-left: -11%;
+  margin-top: -11%; */
 }
 
 .video-with-thumbnail {
@@ -22,11 +26,6 @@
   font-size: 100pt;
 }
 
-.pdf-image {
-  width: 130px;
-  display: inline;
-}
-
 .guide-step-img {
   text-align: center;
   height: 100%;
@@ -41,16 +40,55 @@
   }
 }
 
-ion-row, ion-col {
-  height: 100%;
+.guide-step-text ion-card-content {
+  overflow: scroll;
+  color: var(--ion-text-color, black);
 }
 
-ion-grid {
+/* no media, only text (portrait & landscape) */
+/* all without or with assets bar */
+.guide-step-text ion-card-content {
+  max-height: calc(100vh - 15rem);
+}
+
+.has-assets .guide-step-text ion-card-content {
+  max-height: calc(100vh - 18rem);
+}
+
+/* with media, with text (landscape) */
+.has-media .guide-step-text ion-card-content {
+  max-height: calc(100vh - 15rem);
+}
+
+.has-assets .has-media  .guide-step-text ion-card-content {
+  max-height: calc(100vh - 18rem);
+}
+
+/* with media, with text (portrait) */
+@media screen and (orientation:portrait) {
+  .has-media .guide-step-text ion-card-content {
+    max-height: calc(67vh - 15rem);
+  }
+
+  .has-assets .has-media  .guide-step-text ion-card-content {
+    max-height: calc(67vh - 18rem);
+  }
+}
+
+.guide-step ion-grid {
   height: calc(100vh - 5rem);
 }
 
+.guide-step.has-assets ion-grid {
+  height: calc(100vh - 8rem);
+}
+
+.guide-step ion-row, .guide-step ion-col {
+  height: 100%;
+}
+
 @media screen and (orientation:portrait) {
-  ion-row, .portrait .guide-step ion-col {
+  .guide-step ion-row, .portrait .guide-step ion-col {
     height: 33vh;
   }
 }

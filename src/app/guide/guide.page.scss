@@ -1,38 +1,3 @@
-.videocam-icon {
-  color: white;
-  opacity: 0.8;
-  font-size: 100pt;
-  position: absolute;
-  top: 15%;
-  left: 31%;
-}
-
-.audio-icon {
-  position: absolute;
-  top: 15%;
-  left: 31%;
-}
-
-.audio-icon, .fa-icon {
-  color: white;
-  font-size: 100pt;
-}
-
-/*ion-slide {
-  overflow: scroll;
-}*/
-
-.pdf-image {
-  width: 130px;
-  display: inline;
-}
-
-/*.shortname-label {
-  position: absolute;
-  top: 0.8rem;
-  left: 1.6rem;
-}*/
-
 table {
   max-width: 100%;
 }
@@ -73,9 +38,6 @@ ion-slides {
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
 }
-.video-with-thumbnail {
-  height: 100%;
-}
 
 .guide-step {
   height: 100%;
@@ -95,68 +57,11 @@ ion-slides {
   bottom: 7px !important;
 } */
 
-.guide-step ion-grid {
-  height: calc(100vh - 5rem);
-}
-
-.guide-step.has-assets ion-grid {
-  height: calc(100vh - 8rem);
-}
-
-.guide-step ion-row, .guide-step ion-col {
-  height: 100%;
-}
-
-
-.guide-step-img {
-  text-align: center;
-  height: 100%;
-  img {
-    border-radius: 2px;
-    -webkit-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-    max-width: 50%;
-    max-height: 50%;
-    transform: scale(2);
-    transform-origin: top center;
-  }
-}
-
-.guide-step-text ion-card-content {
-  overflow: scroll;
-  color: var(--ion-text-color, black);
-}
-
-/* no media, only text (portrait & landscape) */
-/* all without or with assets bar */
-.guide-step-text ion-card-content {
-  max-height: calc(100vh - 15rem);
-}
-
-.has-assets .guide-step-text ion-card-content {
-  max-height: calc(100vh - 18rem);
-}
-
-/* with media, with text (landscape) */
-.has-media .guide-step-text ion-card-content {
-  max-height: calc(100vh - 15rem);
-}
-
-.has-assets .has-media  .guide-step-text ion-card-content {
-  max-height: calc(100vh - 18rem);
-}
-
-/* with media, with text (portrait) */
-@media screen and (orientation:portrait) {
-  .has-media .guide-step-text ion-card-content {
-    max-height: calc(67vh - 15rem);
-  }
-
-  .has-assets .has-media  .guide-step-text ion-card-content {
-    max-height: calc(67vh - 18rem);
-  }
-}
-
 .guide-assets ion-card {
   margin-top: 0;
+}
+
+.pdf-image {
+  width: 130px;
+  display: inline;
 }
