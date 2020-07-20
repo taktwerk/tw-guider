@@ -55,6 +55,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
   guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
 
   haveFeedbackPermissions = false;
+  haveAssets = false;
   isLoadedContent = false;
   public slideOpts: any;
 
@@ -107,6 +108,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
   ngAfterContentChecked(): void {
     if (!this.isInitStepSlider && this.slideComponents && this.slideComponents.toArray().length > 0) {
       this.isInitStepSlider = true;
+      this.haveAssets = this.guideAssets.length > 0;
       this.initializeGuideStepSlide();
     }
   }
@@ -125,6 +127,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
         componentRef.instance.step = this.guideSteps[i];
         componentRef.instance.guide = this.guide;
         componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
+        componentRef.instance.haveAssets = this.haveAssets;
         componentRef.instance.guideStepsLength = this.guideSteps.length;
         componentRef.instance.stepNumber = i;
         virtualGuideStepSlide.component = componentRef;
@@ -177,6 +180,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
         componentRef.instance.step = this.guideSteps[i];
         componentRef.instance.guide = this.guide;
         componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
+        componentRef.instance.haveAssets = this.haveAssets;
         componentRef.instance.guideStepsLength = this.guideSteps.length;
         componentRef.instance.stepNumber = i;
         this.virtualGuideStepSlides[i].component = componentRef;

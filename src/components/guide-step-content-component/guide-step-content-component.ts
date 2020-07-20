@@ -49,6 +49,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     @Input() step: GuideStepModel;
     @Input() guide: GuiderModel;
     @Input() haveFeedbackPermissions: boolean;
+    @Input() haveAssets: boolean;
     @Input() guideStepsLength: number;
     @Input() stepNumber: number;
 
