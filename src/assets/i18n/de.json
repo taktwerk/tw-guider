@@ -19,7 +19,7 @@
   "save_before_close_warning": "Daten vor dem Schliessen speichern?",
   "dont_save": "Nicht speichern",
   "cancel": "Abbrechen",
-  "noResults": "(De) No results",
+  "noResults": "Kein Resultat",
   "about": {
     "header":"Über",
     "App Version": "App Version",
@@ -62,8 +62,8 @@
     "Show Guide": "Zeige Anleitung",
     "New Protocol": "Neues Protokoll",
     "Protocol": "Protokoll",
-    "specifySearchMessage": "(De) There are {{ guidesCount }} guides. Specify a detailed search",
-    "specifyMoreSearchMessage": "(De) There are {{ guidesCount }} guides. Specify a more detailed search"
+    "specifySearchMessage": "{{ guidesCount }} Anleitungen gefunden. Spezifizieren Sie die Suche",
+    "specifyMoreSearchMessage": "{{ guidesCount }} Anleitungen gefunden. Spezifizieren Sie die Suche weiter"
   },
   "feedback": {
     "header": "Feedback",
