@@ -39,7 +39,7 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
     public async editProtocolFile() {
         console.log('editProtocolFile this.isInsert', this.isInsert);
         if (this.isInsert) {
-            if (!this.protocol_form[ProtocolDefaultModel.COL_LOCAL_PROTOCOL_FILE]) {
+            if (!this.protocol_form[ProtocolDefaultModel.COL_LOCAL_PDF_IMAGE]) {
                 this.protocolDefaultService.openCreatePage(
                     this.protocol.protocol_template_id,
                     this.protocol.client_id,
@@ -80,14 +80,18 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
 
     updateProtocolFile(saveInformation) {
         console.log('saveInformation', saveInformation);
-        this.downloadService.copy(saveInformation.protocol_file, this.protocol_form.TABLE_NAME).then(async (savedFilePath) => {
-            const modelFileMap = this.protocol_form.downloadMapping[saveInformation.fileMapIndex];
-            console.log('savedFilePath', savedFilePath);
-            this.protocol_form[modelFileMap.url] = '';
-            this.protocol_form[modelFileMap.localPath] = savedFilePath;
-            this.protocol_form[modelFileMap.name] = savedFilePath.substring(savedFilePath.lastIndexOf('/') + 1, savedFilePath.length);
-            console.log('this.protocol_form in copy file', this.protocol_form);
-        });
+        this.downloadService
+            .copy(saveInformation.protocol_file, this.protocol_form.TABLE_NAME)
+            .then(async (savedFilePath) => {
+                console.log('saveInformation.fileMapIndex', saveInformation.fileMapIndex);
+                const modelFileMap = this.protocol_form.downloadMapping[saveInformation.fileMapIndex];
+                console.log('modelFileMap', modelFileMap);
+                console.log('savedFilePath', savedFilePath);
+                this.protocol_form[modelFileMap.url] = '';
+                this.protocol_form[modelFileMap.localPath] = savedFilePath;
+                this.protocol_form[modelFileMap.name] = savedFilePath.substring(savedFilePath.lastIndexOf('/') + 1, savedFilePath.length);
+                console.log('this.protocol_form in copy file', this.protocol_form);
+            });
     }
 
     ngOnInit(): void {

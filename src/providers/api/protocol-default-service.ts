@@ -10,6 +10,7 @@ import {AppSetting} from '../../services/app-setting';
 import {ProtocolDefaultModel} from '../../models/db/api/protocol-default-model';
 import {ProtocolModel} from '../../models/db/api/protocol-model';
 import {PictureService} from '../../services/picture-service';
+import {DrawImageService} from '../../services/draw-image-service';
 import {ProtocolTemplateService} from './protocol-template-service';
 import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model';
 import {TranslateConfigService} from '../../services/translate-config.service';
@@ -55,6 +56,7 @@ export class ProtocolDefaultService extends ApiService {
                 public downloadService: DownloadService,
                 public appSetting: AppSetting,
                 private pictureService: PictureService,
+                private drawImageService: DrawImageService,
                 private protocolTemplateService: ProtocolTemplateService) {
         super(http, events, appSetting);
     }
@@ -138,9 +140,9 @@ export class ProtocolDefaultService extends ApiService {
     }
 
     public async openEditPage(protocolDefault, protocol: ProtocolModel) {
-        console.log('protocolDefault[ProtocolDefaultModel.COL_PROTOCOL_FILE]', protocolDefault.local_protocol_file);
+        console.log('protocolDefault[ProtocolDefaultModel.COL_PROTOCOL_FILE]', protocolDefault.local_pdf_image);
         const protocolTemplate = await this.getProtocolTemplate(protocol.protocol_template_id);
-        if (!protocolDefault.local_protocol_file) {
+        if (!protocolDefault.local_pdf_image) {
             return;
         }
         this.saveInformation = {
@@ -150,24 +152,36 @@ export class ProtocolDefaultService extends ApiService {
             protocolTemplate,
             referenceModel: protocol.reference_model,
             referenceId: protocol.reference_id,
-            fileMapIndex: 0
+            fileMapIndex: 1
         };
-        const editFilePath = await this.getEditFilePath(protocolDefault.local_protocol_file);
+        const originalFilePath = protocolDefault.local_pdf_image;
+        const editFilePath = await this.getEditFilePath(originalFilePath);
         if (!editFilePath) {
             return false;
         }
+        const convertFileSrc = this.downloadService.getWebviewFileSrc(editFilePath);
+        const editFilePathNew = this.downloadService.getSafeUrl(convertFileSrc, 'trustStyle');
+        var n = editFilePath.lastIndexOf('/');
+        var saveFileName = editFilePath.substring(n + 1);
+        this.drawImageService.open(editFilePathNew, protocolTemplate.name, this.dbModelApi.TABLE_NAME, saveFileName);
+        
         this.saveInformation.protocol_file = editFilePath;
-        this.pictureService.editFile(editFilePath, protocol.name);
     }
 
     public async openCreatePage(templateId: number, clientId?, referenceModel?, referenceId?) {
+
         const protocolTemplate = await this.getProtocolTemplate(templateId);
-        if (!protocolTemplate || !protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE]) {
+        // const editFilePath = 'http://localhost/_app_file_/data/user/0/com.taktwerk.twguider2/files/guide_step/1592303527_7B5B4B0E-B92B-497C-8305-5CD629D6A223.jpeg';
+        
+        if (!protocolTemplate || !protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE]) {
             return;
         }
-        this.saveInformation = {clientId, protocol: null, protocolFormModel: null, protocolTemplate, referenceModel, referenceId, fileMapIndex: 0};
+        this.saveInformation = {clientId, protocol: null, protocolFormModel: null, protocolTemplate, referenceModel, referenceId, fileMapIndex: 1};
+        // const editFilePath = '';
+        // this.drawImageService.open(editFilePath, protocolTemplate.name);
+        // this.pictureService.editFile(editFilePath, protocolTemplate.name);
         this.downloadService.copy(
-            protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PROTOCOL_FILE],
+            protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE],
             this.dbModelApi.TABLE_NAME
         ).then(async (savedFilePath) => {
             const editFilePath = await this.getEditFilePath(savedFilePath);
@@ -175,7 +189,12 @@ export class ProtocolDefaultService extends ApiService {
                 return false;
             }
             this.saveInformation.protocol_file = editFilePath;
-            this.pictureService.editFile(editFilePath, protocolTemplate.name);
+            const convertFileSrc = this.downloadService.getWebviewFileSrc(editFilePath);
+            const editFilePathNew = this.downloadService.getSafeUrl(convertFileSrc, 'trustStyle');
+            var n = editFilePath.lastIndexOf('/');
+            var saveFileName = editFilePath.substring(n + 1);
+            this.drawImageService.open(editFilePathNew, protocolTemplate.name, this.dbModelApi.TABLE_NAME, saveFileName);
+            // this.pictureService.editFile(editFilePath, protocolTemplate.name);
         });
     }
 

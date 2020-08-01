@@ -123,9 +123,9 @@ export class ProtocolAddEditPage implements OnInit {
       this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
       this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
       this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
-      if (!this.protocol_form.local_protocol_file) {
-        this.protocol_form.local_protocol_file = await this.downloadService.copy(
-            protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PROTOCOL_FILE],
+      if (!this.protocol_form.local_pdf_image) {
+        this.protocol_form.local_pdf_image = await this.downloadService.copy(
+            protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE],
             this.protocol_form.TABLE_NAME
         );
       }
@@ -145,7 +145,6 @@ export class ProtocolAddEditPage implements OnInit {
         if (this.model.idApi) {
           protocolCommentModel.protocol_id = this.model.idApi;
         }
-        console.log('after saving comment commnet protocol_id');
         protocolCommentModel.local_protocol_id = this.model[this.model.COL_ID];
         protocolCommentModel.comment = this.comment;
         protocolCommentModel.event = 'comment';
@@ -198,8 +197,8 @@ export class ProtocolAddEditPage implements OnInit {
     this.model.workflow_step_id = nextWorkflowTransition.next_workflow_step_id;
     await this.model.save();
     let previousProtocolFormFile = null;
-    if (this.protocol_form.local_protocol_file) {
-      previousProtocolFormFile = this.protocol_form.local_protocol_file;
+    if (this.protocol_form.local_pdf_image) {
+      previousProtocolFormFile = this.protocol_form.local_pdf_image;
     }
     const protocolFormService = this.protocolService.getProtocolFormService(this.model.protocol_form_table);
     this.protocol_form = protocolFormService.newModel();
@@ -287,7 +286,6 @@ export class ProtocolAddEditPage implements OnInit {
       if (this.protocolId) {
         await this.setExistModel();
       } else {
-        console.log('no protocol id');
         this.model = this.protocolService.newModel();
         this.model.client_id = this.clientId;
         this.model.protocol_template_id = this.templateId;
@@ -295,7 +293,6 @@ export class ProtocolAddEditPage implements OnInit {
         this.model.reference_model = this.reference_model;
         this.model.protocol_form_table = 'protocol_default';
         this.protocol_form = await this.getProtcolFormModel();
-        console.log('this.protocol_form after getProtocolFormModel', this.protocol_form);
         this.model.canEditProtocol = await this.protocolTemplateService.canCreateProtocol(this.templateId);
       }
       if (!this.protocol_form) {

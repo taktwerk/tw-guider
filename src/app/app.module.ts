@@ -60,7 +60,9 @@ import {Camera} from '@ionic-native/camera/ngx';
 import {MediaCapture} from '@ionic-native/media-capture/ngx';
 import { VideoEditor } from '@ionic-native/video-editor/ngx';
 import {VideoService} from '../services/video-service';
+import {DrawImageService} from '../services/draw-image-service';
 import {VideoModalComponent} from '../components/modals/video-modal-component/video-modal-component';
+import {DrawImageModalComponent} from '../components/modals/draw-image-modal-component/draw-image-modal-component';
 import {ToastService} from '../services/toast-service';
 import {DocumentViewer} from '@ionic-native/document-viewer/ngx';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
@@ -89,6 +91,8 @@ import {Viewer3dModalComponent} from "../components/modals/viewer-3d-modal-compo
 import {Viewer3dModelComponentModule} from "../components/viewer-3d-model-component/viewer-3d-model-component.module";
 import { IonicStorageModule } from '@ionic/storage';
 
+import { Base64ToGallery } from '@ionic-native/base64-to-gallery/ngx';
+
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -101,6 +105,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
+    DrawImageModalComponent,
     Viewer3dModalComponent,
     PdftronModalComponent
   ],
@@ -108,6 +113,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
+    DrawImageModalComponent,
     Viewer3dModalComponent,
     PdftronModalComponent
   ],
@@ -161,6 +167,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     HttpClient,
     DownloadService,
     VideoService,
+    DrawImageService,
     AudioService,
     Viewer3dService,
     PictureService,
@@ -200,7 +207,8 @@ Sentry.init({ dsn: environment.sentryDsn });
     NativeAudio,
     Media,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
-    {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
+    {provide: ErrorHandler, useClass: SentryIonicErrorHandler},
+    Base64ToGallery
   ],
   exports: [
     ProtocolDefaultComponent

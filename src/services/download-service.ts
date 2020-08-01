@@ -249,6 +249,10 @@ export class DownloadService {
                         if (success) {
                             resolve(newFilePath + '/' + newFileName);
                         } else {
+                            console.log('correctPath', correctPath);
+                            console.log('currentName', currentName);
+                            console.log('newFilePath', newFilePath);
+                            console.log('newFileName', newFileName);
                             console.log('is not success copy dir');
                             resolve('');
                         }
@@ -377,6 +381,11 @@ export class DownloadService {
         path = this.getNativeFilePath(path, modelName);
         const convertFileSrc = this.getWebviewFileSrc(path);
 
+        return this.getSafeUrl(convertFileSrc, sanitizeType);
+    }
+
+    public getSafeUrl(convertFileSrc, sanitizeType = 'trustResourceUrl'): SafeResourceUrl
+    {
         const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
 
         if (sanitizeType === 'trustStyle') {

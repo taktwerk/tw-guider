@@ -27,6 +27,9 @@ export class ProtocolDefaultModel extends DbApiModel {
     static COL_THUMB_PROTOCOL_FILE = 'thumb_protocol_file';
     static COL_API_THUMB_PROTOCOL_FILE_PATH = 'thumb_protocol_file_path';
     static COL_LOCAL_THUMB_PROTOCOL_FILE = 'local_thumb_protocol_file';
+    static COL_PDF_IMAGE = 'pdf_image';
+    static COL_API_PDF_IMAGE_PATH = 'pdf_image_path';
+    static COL_LOCAL_PDF_IMAGE = 'local_pdf_image';
 
     /** @inheritDoc */
     TABLE_NAME: string = 'protocol_default';
@@ -43,6 +46,9 @@ export class ProtocolDefaultModel extends DbApiModel {
         [ProtocolDefaultModel.COL_THUMB_PROTOCOL_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
         [ProtocolDefaultModel.COL_API_THUMB_PROTOCOL_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
         [ProtocolDefaultModel.COL_LOCAL_THUMB_PROTOCOL_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
+        [ProtocolDefaultModel.COL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [ProtocolDefaultModel.COL_API_PDF_IMAGE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [ProtocolDefaultModel.COL_LOCAL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
     ];
 
     public downloadMapping: FileMapInModel[] = [
@@ -54,7 +60,12 @@ export class ProtocolDefaultModel extends DbApiModel {
                 name: ProtocolDefaultModel.COL_THUMB_PROTOCOL_FILE,
                 url: ProtocolDefaultModel.COL_API_THUMB_PROTOCOL_FILE_PATH,
                 localPath: ProtocolDefaultModel.COL_LOCAL_THUMB_PROTOCOL_FILE
-            }
+            },
+        },
+        {
+            name: ProtocolDefaultModel.COL_PDF_IMAGE,
+            url: ProtocolDefaultModel.COL_API_PDF_IMAGE_PATH,
+            localPath: ProtocolDefaultModel.COL_LOCAL_PDF_IMAGE
         }
     ];
 
@@ -90,12 +101,10 @@ export class ProtocolDefaultModel extends DbApiModel {
             }
             const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService);
             const protocolModels = await protocolModel.findFirst([protocolModel.COL_ID, this.local_protocol_id]);
-            console.log('protocolModels', protocolModels);
             if (protocolModels && protocolModels.length) {
                 const protocol = protocolModels[0];
                 if (protocol) {
                     this.protocol_id = protocol.idApi;
-                    console.log('this.protocol_id', this.protocol_id);
                     await this.save(false, false);
                 }
             }
