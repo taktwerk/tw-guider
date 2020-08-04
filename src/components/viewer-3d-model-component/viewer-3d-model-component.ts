@@ -153,29 +153,15 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         }
         const {left, right, top, bottom, width, height} = this.modelElement.getBoundingClientRect();
         if (this.resizeCanvas) {
-            console.log('resize canvaser');
-            // this.camera.aspect = this.modelElement.clientWidth / this.modelElement.clientHeight;
             this.camera.aspect = width / height;
             this.camera.updateProjectionMatrix();
             this.renderer.setSize( this.modelElement.width, this.modelElement.height, false );
         }
-        // this.renderer.setScissorTest(false);
-        // this.renderer.clear(true, true);
-        // this.renderer.setScissorTest(true);
-        // const isOffscreen =
-        //     bottom < 0 ||
-        //     top > this.renderer.domElement.clientHeight ||
-        //     right < 0 ||
-        //     left > this.renderer.domElement.clientWidth;
-
-
-        /// new
          const isOffscreen =
             bottom < 0 ||
             top > window.innerHeight ||
             right < 0 ||
             left > window.innerWidth;
-        /// new
 
         if (isOffscreen) { 
           this.requestAnimationFrameId = requestAnimationFrame(() => {
@@ -186,33 +172,16 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
 
         const rendererCanvas = this.renderer.domElement;
         this.renderer.setSize(width, height, false);
-        // if (rendererCanvas.width < width || rendererCanvas.height < height) {
-        //   this.renderer.setSize(width, height, false);
-        // }
-        // make sure the canvas for this area is the same size as the area
         if (this.ctx.canvas.width !== width || this.ctx.canvas.height !== height) {
           this.ctx.canvas.width = width;
           this.ctx.canvas.height = height;
         }
-
-        // const positiveYUpBottom = this.renderer.domElement.clientHeight - bottom;
         this.renderer.setScissor(0, 0, width, height);
         this.renderer.setViewport(0, 0, width, height);
 
         if (this.isRotateModel) {
             this.pivot.rotation.y += 0.01;
         }
-
-        // this.camera.aspect = width / height;
-        // this.camera.updateProjectionMatrix();
-        // this.controls.handleResize();
-        // this.controls.update();
-
-        
-        // this.renderer.setScissor(left, positiveYUpBottom, width, height);
-        // this.renderer.setViewport(left, positiveYUpBottom, width, height);
-        // this.controls.handleResize();
-        // this.controls.update();
         this.render();
 
         /// new
