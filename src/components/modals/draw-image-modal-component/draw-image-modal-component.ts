@@ -29,9 +29,15 @@ export class DrawImageModalComponent implements AfterViewChecked {
       consoleLog: any;
 
       @ViewChild('imageCanvas', { static: false }) canvas: any;
+      @ViewChild('mainCanvas', { static: false }) mainCanvas: any;
       canvasElement: any;
+      mainCanvasElement: any;
       saveX: number;
       saveY: number;
+
+      context: any;
+      mainContext: any;
+      scale: any;
 
       modelElement: any;
 
@@ -69,7 +75,20 @@ export class DrawImageModalComponent implements AfterViewChecked {
         this.canvasElement = this.canvas.nativeElement;
         this.canvasElement.width = this.plt.width() + '';
         this.canvasElement.height = this.modelElement.clientHeight;
-        this.setBackground();
+
+        this.mainCanvasElement = this.mainCanvas.nativeElement;
+        this.mainCanvasElement.width = this.plt.width() + '';
+        this.mainCanvasElement.height = this.modelElement.clientHeight;
+        this.setBackground(this.fileUrl, true);
+
+        window.onresize = () => {
+          console.log('onresize now');
+          var dataUrl = this.mainCanvasElement.toDataURL();
+          this.canvasElement.width = this.plt.width() + '';
+          this.canvasElement.height = this.modelElement.clientHeight;
+
+          this.setBackground(dataUrl);
+        };
       }
 
       ngAfterViewChecked()
@@ -104,14 +123,52 @@ export class DrawImageModalComponent implements AfterViewChecked {
         this.selectedColor = color;
       }
      
-      setBackground() {
-        var background = new Image();
-        background.src = this.fileUrl;
-        background.crossOrigin = '*';
-        let ctx = this.canvasElement.getContext('2d');
+      setBackground(fileUrl, shouldCreateMainCanvas = false) {
+        const background = new Image();
+        background.src = fileUrl;
+        // background.crossOrigin = '*';
+        this.context = this.canvasElement.getContext('2d');
+        if (shouldCreateMainCanvas) {
+          this.mainContext = this.mainCanvasElement.getContext('2d');
+        }
      
         background.onload = () => {
-          ctx.drawImage(background, 0, 0, this.canvasElement.width, this.canvasElement.height);   
+          // this.context.drawImage(background, 0, 0, 100, this.canvasElement.height);
+          var imgWidth = background.naturalWidth;
+          var screenWidth  = this.canvasElement.width;
+          var scaleX = 1;
+          if (imgWidth > screenWidth)
+              scaleX = screenWidth/imgWidth;
+          var imgHeight = background.naturalHeight;
+          var screenHeight = this.canvasElement.height;
+          var scaleY = 1;
+          if (imgHeight > screenHeight)
+              scaleY = screenHeight/imgHeight;
+          var scale = scaleY;
+          if(scaleX < scaleY)
+              scale = scaleX;
+          if(scale < 1){
+              imgHeight = imgHeight * scale;
+              imgWidth = imgWidth * scale;          
+          }
+
+          this.scale = scale;
+
+          this.canvasElement.height = imgHeight;
+          this.canvasElement.width = imgWidth;
+
+          this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+          this.context.drawImage(background, 0, 0, background.naturalWidth, background.naturalHeight, 0,0, imgWidth, imgHeight);
+
+          console.log('background', background);
+
+          if (shouldCreateMainCanvas) {
+            this.mainCanvasElement.height = background.naturalHeight;
+            this.mainCanvasElement.width = background.naturalWidth;
+
+            this.mainContext.drawImage(background, 0, 0, background.naturalWidth, background.naturalHeight);
+          }
+          
         }
       }
 
@@ -119,7 +176,7 @@ export class DrawImageModalComponent implements AfterViewChecked {
       if (!this.drawing) return;
      
       var canvasPosition = this.canvasElement.getBoundingClientRect();
-      let ctx = this.canvasElement.getContext('2d');
+      // let ctx = this.canvasElement.getContext('2d');
 
         let pageX = 0;
         let pageY = 0;
@@ -134,48 +191,48 @@ export class DrawImageModalComponent implements AfterViewChecked {
       let currentX = pageX - canvasPosition.x;
       let currentY = pageY - canvasPosition.y;
      
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = this.selectedColor;
-      ctx.lineWidth = this.lineWidth;
-     
-      ctx.beginPath();
-      ctx.moveTo(this.saveX, this.saveY);
-      ctx.lineTo(currentX, currentY);
-      ctx.closePath();
-     
-      ctx.stroke();
+      this.context.lineJoin = 'round';
+      this.context.strokeStyle = this.selectedColor;
+      this.context.lineWidth = this.lineWidth;
+      this.context.beginPath();
+      this.context.moveTo(this.saveX, this.saveY);
+      this.context.lineTo(currentX, currentY);
+      this.context.closePath();
+      this.context.stroke();
+
+      this.mainContext.lineJoin = 'round';
+      this.mainContext.strokeStyle = this.selectedColor;
+      this.mainContext.lineWidth = this.lineWidth / this.scale;
+      this.mainContext.beginPath();
+      this.mainContext.moveTo(this.saveX / this.scale, this.saveY / this.scale);
+      this.mainContext.lineTo(currentX / this.scale, currentY / this.scale);
+      this.mainContext.closePath();
+      this.mainContext.stroke();
      
       this.saveX = currentX;
       this.saveY = currentY;
     }
      
     exportCanvasImage() {
-      var dataUrl = this.canvasElement.toDataURL();
-     
-      // Clear the current canvas
-      let ctx = this.canvasElement.getContext('2d');
-      // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-     
-     const data = dataUrl.split(',')[1];
-     let blob = this.b64toBlob(data, 'image/png');
-
-     this.downloadService.file
-        .writeFile(
-            this.downloadService.file.dataDirectory + this.modelName,
-            this.saveName,
-            blob,
-            { replace: true }
-        )
-        .then(fe => {
-            this.consoleLog = this.modelName + ' ' + this.saveName;
-            this.events.publish('pdfWasSaved');
-            this.dismiss();
-            // resolve(finalPath);
-            return;
-        }).catch(writeFileErr => {
-            // resolve(false);
-            return;
-        });
+      this.mainCanvasElement.toBlob((blobFile) => {
+        this.downloadService.file
+          .writeFile(
+              this.downloadService.file.dataDirectory + this.modelName,
+              this.saveName,
+              blobFile,
+              { replace: true }
+          )
+          .then(fe => {
+              this.consoleLog = this.modelName + ' ' + this.saveName;
+              this.events.publish('pdfWasSaved');
+              this.dismiss();
+              // resolve(finalPath);
+              return;
+          }).catch(writeFileErr => {
+              // resolve(false);
+              return;
+          });
+        }); 
     }
 
     b64toBlob(b64Data, contentType) {
