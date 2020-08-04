@@ -37,29 +37,40 @@
                     class="ion-padding"
             >
               <span *ngIf="asset.isExistFileByIndex()">
-                <img *ngIf="asset.isPdf()"
-                        (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
-                        class="pdf-image"
-                        [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
-                />
+                <div *ngIf="asset.isPdf()">
+                  <ion-button color="medium"
+                              (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                  >
+                    <ion-icon name="document" slot="start" ></ion-icon> {{ asset.name }}
+                  </ion-button>
+                  <img (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                       class="image-preview"
+                       [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
+                  />
+                </div>
                 <ion-button *ngIf="asset.is3dFile()"
                             color="medium"
                             (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
                 >
-                  <ion-icon name="cube"></ion-icon>
-                  {{ asset.name }}
+                  <ion-icon name="cube" slot="start" ></ion-icon> {{ asset.name }}
                 </ion-button>
-                <img *ngIf="!asset.isPdf() && !asset.is3dFile()"
-                     (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
-                     class="pdf-image"
+                <div *ngIf="!asset.isPdf() && !asset.is3dFile()">
+                  <ion-button color="medium"
+                              (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                  >
+                    <ion-icon name="folder" slot="start" ></ion-icon> {{ asset.name }}
+                  </ion-button>
+                <img (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                     class="image-preview"
                      [src]="asset.getFileImagePath()"
                 />
+                </div>
               </span>
               <ion-button *ngIf="!asset.isExistFileByIndex()"
                           color="medium"
                           (click)="openAssetTextModal(asset)"
               >
-                {{ asset.name }}
+                <ion-icon name="list" slot="start"></ion-icon> {{ asset.name }}
               </ion-button>
             </span>
           </ion-row>
