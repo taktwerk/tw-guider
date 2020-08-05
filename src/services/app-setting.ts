@@ -7,6 +7,7 @@ import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from './download-service';
 import {BehaviorSubject} from 'rxjs';
 import {TranslateConfigService} from './translate-config.service';
+import config from '../environments/config.json';
 
 export enum AppConfigurationModeEnum {
     ONLY_CONFIGURE,
@@ -115,8 +116,14 @@ export class AppSetting {
         userSettingsObject['isEnabledUsb'] = this.isEnabledUsb;
         userSettingsObject['usbHost'] = environment.usbHost;
         this.usbHost = environment.usbHost;
-        userSettingsObject['dbMigrationVersion'] = environment.dbMigrationVersion;
-        this.dbMigrationVersion = environment.dbMigrationVersion;
+        let databaseVersion = '0.0.1';
+        if (config.databaseVersion) {
+            databaseVersion = config.databaseVersion;
+        } else if (environment.dbMigrationVersion) {
+            databaseVersion = environment.dbMigrationVersion;
+        }
+        userSettingsObject['dbMigrationVersion'] = databaseVersion;
+        this.dbMigrationVersion = databaseVersion;
 
         const user = await this.userService.getUser();
         this.appSetting.settings = userSettingsObject;
@@ -138,7 +145,13 @@ export class AppSetting {
     }
 
     public isMigratedDatabase() {
-        return this.dbMigrationVersion === environment.dbMigrationVersion;
+        let databaseVersion = '0.0.1';
+        if (config.databaseVersion) {
+            databaseVersion = config.databaseVersion;
+        } else if (environment.dbMigrationVersion) {
+            databaseVersion = environment.dbMigrationVersion;
+        }
+        return this.dbMigrationVersion === databaseVersion;
     }
 
     async showIsNotMigratedDbPopup() {
