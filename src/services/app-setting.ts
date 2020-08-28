@@ -27,13 +27,13 @@ export class AppSetting {
     public isEnabledUsb = false;
     public isWasQrCodeSetup = false;
     public isWasQrCodeSetupSubscribtion: BehaviorSubject<boolean>;
-    public dbMigrationVersion = 1;
+    public dbMigrationVersion = '1';
 
     private defaultData = {
         mode : AppConfigurationModeEnum.ONLY_CONFIGURE,
         taktwerk : environment.taktwerk,
         isWasQrCodeSetup: false,
-        dbMigrationVersion: 1,
+        dbMigrationVersion: '1',
         usbHost: environment.usbHost,
         isEnabledUsb: false
     };
