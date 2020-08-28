@@ -1,3 +1,4 @@
 {
-  "apiVersion": "1.2"
+  "apiVersion": "1.2",
+  "databaseVersion": "1.0"
 }

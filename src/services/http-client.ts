@@ -14,6 +14,9 @@ import config from '../environments/config.json';
 export class HttpClient {
   headers: Headers = null;
   versionNumber = '0.0.1';
+  databaseVersionNumber = '0.0.1';
+
+  showAppVersionPopup = true;
 
   deviceInfo: any = {
       model: this.device.model,
@@ -49,6 +52,9 @@ export class HttpClient {
               if (config.apiVersion) {
                   this.versionNumber = config.apiVersion;
               }
+              if (config.databaseVersion) {
+                  this.databaseVersionNumber = config.databaseVersion;
+              }
           }
           this.initHeaders();
       });
@@ -72,6 +78,7 @@ export class HttpClient {
                 headers['X-Auth-Item-Last-Changed-At'] = '' + this.authService.auth.lastAuthItemChangedAt;
             }
             headers['X-VERSION-NUMBER'] = this.versionNumber;
+            headers['X-DATABASE-VERSION-NUMBER'] = this.databaseVersionNumber;
         }
     }
     this.headers = new Headers(headers);
@@ -185,12 +192,25 @@ export class HttpClient {
               });
           });
       } else if (error.status === 426) {
-          this.authService.presentAlert(
-              '',
-              null,
-              this.translateConfigService.translateWord('validation.is_app_version_old'),
-              ['OK']
-          );
+          if (this.showAppVersionPopup) {
+            if (error.error.message === 'Wrong Application Version') {
+              this.authService.presentAlert(
+                  '',
+                  null,
+                  this.translateConfigService.translateWord('validation.is_app_version_old'),
+                  ['OK']
+              );
+              this.showAppVersionPopup = false;
+            } else if (error.error.message === 'Wrong Database Application Version') {
+              this.authService.presentAlert(
+                  '',
+                  null,
+                  this.translateConfigService.translateWord('app.You needs to swipe data and reinstall app'),
+                  ['OK']
+              );
+              this.showAppVersionPopup = false;
+            }
+          }
       } else {
           errMsg = error.message ? error.message : error.toString();
           console.log('errMsg', error);
