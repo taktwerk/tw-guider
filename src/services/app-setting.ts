@@ -27,7 +27,7 @@ export class AppSetting {
     public isEnabledUsb = false;
     public isWasQrCodeSetup = false;
     public isWasQrCodeSetupSubscribtion: BehaviorSubject<boolean>;
-    public dbMigrationVersion = 1;
+    public dbMigrationVersion = '1';
 
     private defaultData = {
         mode : AppConfigurationModeEnum.ONLY_CONFIGURE,
@@ -120,10 +120,10 @@ export class AppSetting {
         if (config.databaseVersion) {
             databaseVersion = config.databaseVersion;
         } else if (environment.dbMigrationVersion) {
-            databaseVersion = environment.dbMigrationVersion;
+            databaseVersion = '' + environment.dbMigrationVersion;
         }
         userSettingsObject['dbMigrationVersion'] = databaseVersion;
-        this.dbMigrationVersion = databaseVersion;
+        this.dbMigrationVersion = '' + databaseVersion;
 
         const user = await this.userService.getUser();
         this.appSetting.settings = userSettingsObject;
@@ -147,9 +147,9 @@ export class AppSetting {
     public isMigratedDatabase() {
         let databaseVersion = '0.0.1';
         if (config.databaseVersion) {
-            databaseVersion = config.databaseVersion;
+            databaseVersion = '' + config.databaseVersion;
         } else if (environment.dbMigrationVersion) {
-            databaseVersion = environment.dbMigrationVersion;
+            databaseVersion = '' + environment.dbMigrationVersion;
         }
         return this.dbMigrationVersion === databaseVersion;
     }

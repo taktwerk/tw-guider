@@ -34,6 +34,15 @@
                             </p>
                         </div>
                     </div>
+                    <ion-button *ngIf="item.guide_collection.length"
+                                class="show-guide-btn"
+                                (click)="openCollection(item)"
+                                vertical="bottom"
+                                style="text-transform: uppercase;"
+                    >
+                        <ion-icon slot="start" name="play"></ion-icon>
+                        {{ 'guides.Show Collection' | translate:params }}
+                    </ion-button>
                     <ion-button *ngIf="item.protocol_template && haveProtocolPermissions"
                                 class="show-guide-btn"
                                 color="medium"

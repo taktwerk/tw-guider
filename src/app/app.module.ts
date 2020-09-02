@@ -22,6 +22,7 @@ import {HttpClient as Http, HttpClientModule} from '@angular/common/http';
 import {GuideCategoryService} from '../providers/api/guide-category-service';
 import {GuideCategoryBindingService} from '../providers/api/guide-category-binding-service';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
+import {GuideChildService} from '../providers/api/guide-child-service';
 import {GuideStepService} from '../providers/api/guide-step-service';
 import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
@@ -44,6 +45,7 @@ import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {TranslateConfigService} from '../services/translate-config.service';
+
 import {LanguageSelectorComponentModule} from '../components/language-selector-component/language-selector-component.module';
 import { Device } from '@ionic-native/device/ngx';
 import * as Sentry from 'sentry-cordova';
@@ -146,6 +148,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     GuideCategoryService,
     GuideCategoryBindingService,
     GuideStepService,
+    GuideChildService,
     GuideAssetService,
     GuideAssetPivotService,
     FeedbackService,

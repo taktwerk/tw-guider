@@ -231,6 +231,7 @@ export class GuideCategoryService extends ApiService {
                         obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
+                        obj.setChildren();
                         obj.setProtocolTemplate();
                         entries.push(obj);
                     }

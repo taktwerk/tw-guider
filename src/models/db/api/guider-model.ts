@@ -6,6 +6,7 @@ import {DownloadService} from '../../../services/download-service';
 import {GuideStepModel} from './guide-step-model';
 import {GuideAssetModel} from './guide-asset-model';
 import {ProtocolTemplateModel} from './protocol-template-model';
+import {GuideChildModel} from './guide-child-model';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -19,6 +20,7 @@ export class GuiderModel extends DbApiModel {
     steps: GuideStepModel[] = [];
     assets: GuideAssetModel[] = [];
     protocol_template: ProtocolTemplateModel;
+    guide_collection: GuideChildModel[];
 
     public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_CLIENT_ID + ')';
 
@@ -170,6 +172,38 @@ export class GuiderModel extends DbApiModel {
                 resolve(this.assets);
             }).catch((err) => {
                 resolve(this.assets);
+            });
+        });
+    }
+
+    public setChildren(): Promise<GuideChildModel[]> {
+        return new Promise((resolve) => {
+            const query = 'SELECT ' + this.secure('guide_child') + '.*' + ' from ' + this.secure('guide') +
+                ' JOIN ' + this.secure('guide_child') + ' ON ' + this.secure('guide_child') + '.' + this.secure('parent_guide_id') + '=' + this.secure('guide') + '.' + this.secure('id') +
+                ' WHERE ' + this.secure('guide') + '.' + this.secure('id') + ' = ' + this.idApi +
+                ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
+                ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL' +
+                ' AND ' + this.secure('guide_child') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
+                ' AND ' + this.secure('guide_child') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL'
+                ' GROUP BY guide_child.id';
+
+            this.db.query(query).then((res) => {
+                this.guide_collection = [];
+                if (res.rows.length > 0) {
+                    for (let i = 0; i < res.rows.length; i++) {
+                        const obj: GuideChildModel = new GuideChildModel(this.platform, this.db, this.events, this.downloadService);
+                        obj.platform = this.platform;
+                        obj.db = this.db;
+                        obj.events = this.events;
+                        obj.downloadService = this.downloadService;
+                        obj.loadFromAttributes(res.rows.item(i));
+                        this.guide_collection.push(obj);
+                    }
+                }
+                console.log('this.guide_collection', this.guide_collection);
+                resolve(this.guide_collection);
+            }).catch((err) => {
+                resolve(this.guide_collection);
             });
         });
     }

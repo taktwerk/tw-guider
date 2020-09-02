@@ -68,7 +68,21 @@ export class GuideListComponent {
         this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
     }
 
+    openCollection(guide: GuiderModel) {
+        const feedbackNavigationExtras: NavigationExtras = {
+            queryParams: {
+                guideId: guide.idApi
+            }
+        };
+        this.router.navigate(['/guide-collection/' + guide.idApi], feedbackNavigationExtras);
+    }
+
     openGuide(guide: GuiderModel) {
+        if (guide.guide_collection.length) {
+            this.openCollection(guide);
+
+            return;
+        }
         this.router.navigate(['/guide/' + guide.idApi]);
     }
 }

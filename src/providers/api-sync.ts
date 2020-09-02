@@ -13,6 +13,7 @@ import 'rxjs/add/observable/forkJoin';
 import {GuideCategoryService} from './api/guide-category-service';
 import {GuideCategoryBindingService} from './api/guide-category-binding-service';
 import {GuideStepService} from './api/guide-step-service';
+import {GuideChildService} from './api/guide-child-service';
 import {Network} from '@ionic-native/network/ngx';
 import {GuideAssetService} from './api/guide-asset-service';
 import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
@@ -49,6 +50,7 @@ export class ApiSync {
         guide_step: this.guideStepService,
         guide_asset: this.guideAssetService,
         guide_asset_pivot: this.guideAssetPivotService,
+        guide_child: this.guideChildService,
         protocol_template: this.protocolTemplateService,
         protocol: this.protocolService,
         protocol_default: this.protocolDefaultService,
@@ -114,7 +116,8 @@ export class ApiSync {
         private protocolService: ProtocolService,
         private protocolDefaultService: ProtocolDefaultService,
         private protocolCommentService: ProtocolCommentService,
-        private workflowTransitionService: WorkflowTransitionService
+        private workflowTransitionService: WorkflowTransitionService,
+        private guideChildService: GuideChildService
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);

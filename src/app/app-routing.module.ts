@@ -69,6 +69,10 @@ const routes: Routes = [
     loadChildren: () => import('./protocol/protocol.page.module').then(m => m.ProtocolPageModule)
   },
   {
+    path: 'guide-collection/:guideId',
+    loadChildren: () => import('./guide-collection/guide-collection.page.module').then(m => m.GuideCollectionModule)
+  },
+  {
     path: 'guider_protocol_template/:templateId',
     loadChildren: () => import('./protocol/protocol.page.module').then(m => m.ProtocolPageModule)
   },

@@ -64,7 +64,8 @@
     "New Protocol": "New Protocol",
     "Protocol": "Protocol",
     "specifySearchMessage": "There are {{ guidesCount }} guides. Specify a detailed search",
-    "specifyMoreSearchMessage": "There are {{ guidesCount }} guides. Specify a more detailed search"
+    "specifyMoreSearchMessage": "There are {{ guidesCount }} guides. Specify a more detailed search",
+    "Show Collection": "Show Collection"
   },
   "feedback": {
     "header": "Feedback",
