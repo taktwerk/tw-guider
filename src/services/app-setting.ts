@@ -33,7 +33,7 @@ export class AppSetting {
         mode : AppConfigurationModeEnum.ONLY_CONFIGURE,
         taktwerk : environment.taktwerk,
         isWasQrCodeSetup: false,
-        dbMigrationVersion: 1,
+        dbMigrationVersion: '1',
         usbHost: environment.usbHost,
         isEnabledUsb: false
     };
