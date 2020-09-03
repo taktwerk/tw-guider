@@ -20,7 +20,7 @@ export class GuiderModel extends DbApiModel {
     steps: GuideStepModel[] = [];
     assets: GuideAssetModel[] = [];
     protocol_template: ProtocolTemplateModel;
-    guide_collection: GuideChildModel[];
+    guide_collection: GuideChildModel[] = [];
 
     public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_CLIENT_ID + ')';
 
