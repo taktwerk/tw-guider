@@ -103,6 +103,7 @@ export class GuideCollectionPage implements OnInit {
   async ngOnInit() {
     this.activatedRoute.queryParams.subscribe(async params => {
       if (params.guideId) {
+        this.collectionGuides = [];
         const guiderById = await this.guiderService.getById(params.guideId);
         if (guiderById.length) {
           this.guide = guiderById[0];
@@ -120,9 +121,6 @@ export class GuideCollectionPage implements OnInit {
           this.detectChanges();
         }
       }
-            this.guide = params.guideId;
-            console.log('this.guide', this.guide);
-            // this.showAllGuides();
         });
     this.events.subscribe('user:login', () => {
       this.findAllGuideCategories();

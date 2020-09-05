@@ -54,6 +54,7 @@
   },
   "guide-categories": {
     "category": "Category",
+    "no-category": "No Category",
     "categories": "Categories"
   },
   "guides": {

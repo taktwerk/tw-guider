@@ -4,7 +4,7 @@
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>
-            {{ 'Guide Collection' }}
+            Guides
         </ion-title>
         <ion-back-button *ngIf="isComponentLikeModal" text="" defaultHref="{{ backDefaultHref || '/guide-categories' }}">
         </ion-back-button>
@@ -14,10 +14,11 @@
 
 <ion-content color="primary">
   <span *ngIf="isLoadedContent && guide">
-      <h4 class="ion-margin-horizontal">{{ guide.title }}</h4>
+      <h4 class="ion-margin-horizontal">
+        Collection: {{guide.short_name}} {{ guide.title }}
+      </h4>
       <div *ngIf="collectionGuides.length">
         <guide-list-component [guides]="collectionGuides"></guide-list-component>
       </div>
   </span>
 </ion-content>
-

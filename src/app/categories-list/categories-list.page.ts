@@ -19,8 +19,9 @@ export class CategoriesListPage implements OnInit {
   public searchValue: string;
   public haveProtocolPermissions = false;
   public isLoadedContent = false;
-  public guides: GuiderModel[];
+  public guides: GuiderModel[] = [];
   public guideItemsLimit = 20;
+  public guidesWithoutCategories: GuiderModel[] = [];
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
 
@@ -65,6 +66,7 @@ export class CategoriesListPage implements OnInit {
 
   async setGuides() {
     this.guides = await this.guideCategoryService.getGuides(null, this.searchValue);
+    this.guidesWithoutCategories = await this.guideCategoryService.getGuides(null, '', true);
   }
 
   async findAllGuideCategories() {
@@ -100,6 +102,13 @@ export class CategoriesListPage implements OnInit {
       }
     };
     this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
+  }
+
+  getGuidesWithoutCategories()
+  {
+    return this.guides.filter(guide => {
+      return !guide.guide_collection.length;
+    });
   }
 
   ngOnInit() {
