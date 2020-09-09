@@ -98,6 +98,7 @@ export class SetupPage {
                 .catch(error => {
                     console.log(error);
                     loader.dismiss();
+                    console.log('errrrror', error);
                     this.presentAlert('Config Error', null, 'There was an error setting up the application. Please try again.<br><br>Error: ' + error + '<br><br>Url: ' + appUrl, ['OK']);
                 });
 

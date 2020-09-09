@@ -7,6 +7,7 @@ import { HomePage } from './home.page';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
         component: HomePage
       }
     ]),
+    PdfJsViewerModule
   ],
   declarations: [HomePage],
   providers: [

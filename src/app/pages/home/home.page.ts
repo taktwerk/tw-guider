@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Storage } from '@ionic/storage';
 import { Device } from '@ionic-native/device/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Router, RouterModule } from '@angular/router';
 import {Platform} from '@ionic/angular';
+import {PdfViewerService} from "../../services/pdf-viewer-service";
 
+declare var cordova: any;
 
 @Component({
   selector: 'app-home',
@@ -27,9 +29,8 @@ export class HomePage {
        public storage: Storage,
        public device: Device,
        public iab: InAppBrowser,
-
+       private pdfViewerService: PdfViewerService
    ) {}
-
 
    ionViewDidEnter(): void {
        console.log('ionViewDidEnter');
@@ -71,35 +72,43 @@ export class HomePage {
         appUrl += '&device_key=' + this.device.uuid + '&device_name=' + this.device.model + '&version=' + this.version;
         console.log('iab url', appUrl);
 
-        this.browser = this.iab.create(appUrl, '_blank', {
-            location: 'no',
-            toolbar: 'no',
-            allowinlinemediaplayback: 'yes',
-            disallowoverscroll: 'yes',
-            usewkwebview: 'yes'
-        });
+        if (this.platform.is('android')) {
+          this.androidBrowser(appUrl);
+        } else {
+          this.iosBrowser(appUrl);
+        }
+    }
 
-        // Events: loadstart, loadstop, loaderror, exit
-        // this.browser.on('exit').subscribe(() => {
-        //     console.log('closed browser');
-        //     this.platform.exitApp();
-        //     navigator['app'].exitApp();
-        // }, err => {
-        //     console.error(err);
-        // });
+    iosBrowser(appUrl) {
+      this.browser = this.iab.create(appUrl, "_blank", "'location=no,toolbar=no,allowinlinemediaplayback=yes,disallowoverscroll=yes,usewkwebview=yes'");
+    }
 
-        // If going on the login page, redirect
-        this.browser.on('loadstart').subscribe((e) => {
-            console.log('url loadstart', e.url);
-            const forbiddenUrl = e.url.includes('user/login');
-            console.log('forbidden', forbiddenUrl);
-            if (forbiddenUrl) {
-                console.log('closing');
-                this.browser.close();
-                this.openWebview(url);
-            }
-        });
+    androidBrowser(appUrl) {
+      this.browser = cordova.InAppBrowser.open(appUrl, "_blank", 'location=no,toolbar=no,allowinlinemediaplayback=yes,disallowoverscroll=yes,usewkwebview=yes,beforeload=yes');
 
+      this.browser.addEventListener('beforeload', (params, callback) => {
+        // If the URL being loaded is a PDF
+        if(params.url.match(".pdf") || params.url.match("elfinder/connect")) {
+          console.log('is pdf file');
+          let appUrl = 'http://192.168.1.101:8015/img/file.pdf';
+          this.browser.hide();
+          this.pdfViewerService.open(appUrl, this.browser);
+        } else {
+          callback(params.url);
+        }
+      }, false);
+
+      this.browser.addEventListener('loadstart', function(params, callback){
+        console.log('loadstart event');
+      });
+
+      this.browser.addEventListener('loadstop', function(params, callback){
+        console.log('loadstop event');
+      });
+
+      this.browser.addEventListener('exit', function(params, callback){
+        console.log('exit event');
+      });
     }
 
     public openSetup() {
