@@ -35,6 +35,7 @@ export class FeedbackAddEditPage implements OnInit {
   public reference_model: string = null;
   public reference_model_alias: string = null;
   public defaultTitle = 'Feedback';
+  public params;
 
   constructor(
       private activatedRoute: ActivatedRoute,

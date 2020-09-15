@@ -34,6 +34,7 @@ export class LanguageSelectorComponent implements OnInit {
     public isAvailableForSyncData: boolean = false;
     public isAvailableForPushData: boolean = false;
     public isLoggedUser: boolean = false;
+    public params;
 
     selectedLanguage:string;
 

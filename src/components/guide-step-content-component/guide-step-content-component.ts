@@ -55,6 +55,8 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
 
     @Output() loaded: EventEmitter<void> = new EventEmitter<void>();
 
+    public params;
+
     constructor(
         private guideCategoryService: GuideCategoryService,
         private guideCategoryBindingService: GuideCategoryBindingService,

@@ -20,6 +20,7 @@ export class ListPage implements OnInit {
   public haveProtocolPermissions = false;
   public isLoadedContent = false;
   public guideCategoryId: number;
+  public params;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(

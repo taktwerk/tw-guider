@@ -24,6 +24,7 @@ export class FeedbackPage implements OnInit {
     public reference_model_alias: string = null;
     public feedbackList: FeedbackModel[] = [];
     public isComponentLikeModal = false;
+    public params;
 
     constructor(private feedbackService: FeedbackService,
                 private modalController: ModalController,

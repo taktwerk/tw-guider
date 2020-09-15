@@ -169,7 +169,6 @@ Sentry.init({ dsn: environment.sentryDsn });
     PictureService,
     ToastService,
     ApiSync,
-    Storage,
     File,
     Toast,
     WebView,

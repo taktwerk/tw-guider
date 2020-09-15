@@ -22,6 +22,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class HomePage {
   public isScanning: boolean;
+  public params;
   private scanSub: Subscription;
 
   constructor(

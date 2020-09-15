@@ -22,6 +22,7 @@ export class CategoriesListPage implements OnInit {
   public guides: GuiderModel[] = [];
   public guideItemsLimit = 20;
   public guidesWithoutCategories: GuiderModel[] = [];
+  public params;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
 

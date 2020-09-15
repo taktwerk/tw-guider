@@ -40,6 +40,7 @@ export class ProtocolAddEditPage implements OnInit {
   private templateId: number;
   private clientId: number;
   public comment: string = null;
+  public params;
 
   faClock = faClock;
   faUser = faUser;

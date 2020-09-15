@@ -22,6 +22,10 @@ import {AppSetting} from '../../services/app-setting';
 export class LoginPage {
     username: string;
     password: string;
+
+    public center;
+
+    public params;
     /** flag that indicates if the login was failed or not */
     isLoginFailed: boolean = false;
 

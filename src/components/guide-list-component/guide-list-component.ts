@@ -29,6 +29,7 @@ import {NavigationExtras, Router} from "@angular/router";
 })
 export class GuideListComponent {
     public haveProtocolPermissions = false;
+    public params;
     @Input() guides: GuiderModel[];
 
     constructor(private platform: Platform,

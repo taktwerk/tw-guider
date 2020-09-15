@@ -4,15 +4,11 @@ import {IonicModule} from '@ionic/angular';
 import {VideoModalComponent} from './video-modal-component';
 
 @NgModule({
-  declarations: [
-    VideoModalComponent
-  ],
+  declarations: [],
   imports: [
     CommonModule,
     IonicModule,
   ],
-  exports: [
-    VideoModalComponent
-  ],
+  exports: [],
 })
 export class VideoModalComponentModule {}

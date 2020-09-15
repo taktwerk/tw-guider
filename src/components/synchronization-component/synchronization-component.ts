@@ -41,6 +41,7 @@ export class SynchronizationComponent implements OnInit {
     public modeSync;
     public userDb: UserDb;
     public syncAllItemsCount = 0;
+    public params;
 
     constructor(public apiSync: ApiSync,
                 private downloadService: DownloadService,

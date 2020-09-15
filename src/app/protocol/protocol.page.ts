@@ -22,11 +22,12 @@ export class ProtocolPage implements OnInit {
     public protocolList: ProtocolModel[] = [];
     public isComponentLikeModal = false;
     public templateId: number;
+    public params;
     private reference_id: number;
     private reference_model_alias: any;
     private reference_model: string;
     private clientId: number;
-    private userCanCreateProtocol: boolean = false;
+    public userCanCreateProtocol: boolean = false;
 
     constructor(private protocolService: ProtocolService,
                 private modalController: ModalController,

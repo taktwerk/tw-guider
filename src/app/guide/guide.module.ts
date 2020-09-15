@@ -9,7 +9,6 @@ import {MainPipe} from '../../pipes/main-pipe.module';
 import {HtmlDescriptionComponentModule} from '../../components/html-description/html-description-component.module';
 import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
 import {TranslateModule} from '@ngx-translate/core';
-import {DefaultFilePreviewComponentModule} from '../../components/default-file-preview-component/default-file-preview-component.module';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {Viewer3dModelComponentModule} from "../../components/viewer-3d-model-component/viewer-3d-model-component.module";
 import {GuideStepContentComponentModule} from "../../components/guide-step-content-component/guide-step-content-component.module";
@@ -35,7 +34,6 @@ import {GuideStepContentComponent} from "../../components/guide-step-content-com
         MainPipe,
         LanguageSelectorComponentModule,
         TranslateModule,
-        DefaultFilePreviewComponentModule,
         Viewer3dModelComponentModule,
         GuideStepContentComponentModule
     ],

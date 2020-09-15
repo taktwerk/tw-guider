@@ -4,15 +4,11 @@ import {IonicModule} from '@ionic/angular';
 import {PdftronModalComponent} from './pdftron-modal-component';
 
 @NgModule({
-  declarations: [
-    PdftronModalComponent
-  ],
+  declarations: [],
   imports: [
     CommonModule,
     IonicModule,
   ],
-  exports: [
-    PdftronModalComponent
-  ],
+  exports: [],
 })
 export class PdftronModalComponentModule {}

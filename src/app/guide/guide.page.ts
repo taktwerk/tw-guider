@@ -68,6 +68,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
   public guideSteps: GuideStepModel[] = [];
   public guideAssets: GuideAssetModel[] = [];
   public virtualGuideStepSlides = [];
+  public params;
 
   constructor(
       private guideCategoryService: GuideCategoryService,

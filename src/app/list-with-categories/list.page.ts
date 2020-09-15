@@ -19,6 +19,7 @@ export class ListPage implements OnInit {
   public searchValue: string;
   public haveProtocolPermissions = false;
   public isLoadedContent = false;
+  public params;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
