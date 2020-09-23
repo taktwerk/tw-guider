@@ -27,6 +27,8 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
     @Input() protocol_form: ProtocolDefaultModel;
     @Input() isInsert: boolean;
 
+    public params;
+
     constructor(private protocolService: ProtocolService,
                 private protocolDefaultService: ProtocolDefaultService,
                 private downloadService: DownloadService,

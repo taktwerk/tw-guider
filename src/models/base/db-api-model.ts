@@ -632,7 +632,8 @@ export abstract class DbApiModel extends DbBaseModel {
         return this.isVideoFile(fileMapIndex) ||
             this.isImageFile(fileMapIndex) ||
             this.isAudioFile(fileMapIndex) ||
-            this.isPdf(fileMapIndex);
+            this.isPdf(fileMapIndex) ||
+            this.is3dFile(fileMapIndex);
     }
 
     public isAudioFile(fileMapIndex = 0): boolean {
@@ -649,6 +650,10 @@ export abstract class DbApiModel extends DbBaseModel {
 
     public isPdf(fileMapIndex = 0): boolean {
         return this.checkFileType(fileMapIndex, 'pdf');
+    }
+
+    public is3dFile(fileMapIndex = 0): boolean {
+        return this.checkFileType(fileMapIndex, '3d');
     }
 
     checkFileType(fileMapIndex, format): boolean {
@@ -683,7 +688,7 @@ export abstract class DbApiModel extends DbBaseModel {
             this[this.downloadMapping[fileMapIndex].thumbnail.localPath];
     }
 
-    public getFileImagePath(fileMapIndex = 0) {
+    public getFileImagePath(fileMapIndex = 0, sanitizeType = 'trustResourceUrl') {
         if (!this.isExistFileByIndex(fileMapIndex)) {
             return this.defaultImage;
         }
@@ -696,8 +701,21 @@ export abstract class DbApiModel extends DbBaseModel {
         } else {
             return null;
         }
+        imageName = encodeURI(imageName);
 
-        return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME);
+        return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
+    }
+
+    public getFilePath(basePath?:string, modelName?:string) {
+        if (!basePath) {
+            basePath = this.getFileName();
+        }
+        if (!modelName) {
+            modelName = this.TABLE_NAME;
+        }
+        // console.log('this.downloadService.getWebviewFileSrc(this.downloadService.getNativeFilePath(basePath, modelName))', this.downloadService.getWebviewFileSrc(this.downloadService.getNativeFilePath(basePath, modelName)));
+        // return this.downloadService.getWebviewFileSrc(this.downloadService.getNativeFilePath(basePath, modelName));
+        return this.downloadService.getNativeFilePath(basePath, modelName);
     }
 
     async updateLocalRelations() {
@@ -712,4 +730,6 @@ export abstract class DbApiModel extends DbBaseModel {
     async afterPushDataToServer(isInsert: boolean) {
         return [];
     }
+
+
 }

@@ -24,6 +24,7 @@ import {ApiSync} from '../../providers/api-sync';
 })
 export class FeedbackAddEditPage implements OnInit {
   public model: FeedbackModel;
+  public originalModel: FeedbackModel;
   public feedbackId: number = null;
   public slideOpts = {
     initialSlide: 0,
@@ -34,6 +35,7 @@ export class FeedbackAddEditPage implements OnInit {
   public reference_model: string = null;
   public reference_model_alias: string = null;
   public defaultTitle = 'Feedback';
+  public params;
 
   constructor(
       private activatedRoute: ActivatedRoute,
@@ -62,6 +64,7 @@ export class FeedbackAddEditPage implements OnInit {
     this.authService.checkAccess('feedback');
     if (!this.model) {
       this.model = feedbackService.newModel();
+      this.originalModel = this.model;
     }
   }
 
@@ -79,13 +82,86 @@ export class FeedbackAddEditPage implements OnInit {
     });
   }
 
+  async backToFeedbackList() {
+    let wasChanges = false;
+    if (!this.model[this.model.COL_ID]) {
+      if ((this.model.title || this.model.description || this.model.attached_file)) {
+        wasChanges = true;
+      }
+    } else {
+      const modelById = await this.feedbackService.dbModelApi.findFirst([this.model.COL_ID, this.model[this.model.COL_ID]]);
+      if (modelById && modelById.length) {
+        const originalModel = modelById[0];
+        if (originalModel.title !== this.model.title ||
+            originalModel.description !== this.model.description ||
+            originalModel.attached_file !== this.model.attached_file
+        ) {
+          wasChanges = true;
+        }
+      }
+    }
+    if (wasChanges) {
+      const alert = await this.alertController.create({
+        message: this.translateConfigService.translateWord('save_before_close_warning'),
+        cssClass: 'save-changes-alert',
+        buttons: [
+          {
+            text: this.translateConfigService.translateWord('save'),
+            cssClass: 'primary',
+            handler: () => this.save()
+          }, {
+            text: this.translateConfigService.translateWord('dont_save'),
+            handler: () => this.dismiss()
+          }, {
+            text: this.translateConfigService.translateWord('cancel'),
+            cssClass: 'last-button',
+          }
+        ]
+      });
+      await alert.present();
+    } else {
+      this.dismiss();
+    }
+
+  }
+
+  public async save() {
+    const user = await this.authService.getLastUser();
+    if (!user) {
+      return;
+    }
+    this.model.user_id = user.userId;
+    this.model.created_by = user.userId;
+    this.model.client_id = user.client_id;
+    if (this.reference_id) {
+      this.model.reference_id = this.reference_id;
+    }
+    if (this.reference_model) {
+      this.model.reference_model = this.reference_model;
+    }
+    if (!(await this.isValidFeedback())) {
+      return;
+    }
+    if (!this.model.title) {
+      this.model.title = this.defaultTitle;
+    }
+    this.feedbackService.save(this.model).then(async res => {
+      this.apiSync.setIsPushAvailableData(true);
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', {model: 'Feedback'});
+      this.http.showToast(alertMessage);
+      this.dismiss();
+    });
+  }
+
   public openFile(basePath: string, modelName: string, title?: string) {
     const filePath = basePath;
     let fileTitle = 'Feedback';
     if (title) {
       fileTitle = title;
     }
-    if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
+    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
+        this.downloadService.checkFileTypeByExtension(filePath, 'audio')
+    ) {
       const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
       this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
@@ -101,32 +177,6 @@ export class FeedbackAddEditPage implements OnInit {
     if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
     }
-  }
-
-  public async save() {
-    const user = await this.authService.getLastUser();
-    if (!user) {
-      return;
-    }
-    this.model.user_id = user.userId;
-    this.model.client_id = user.client_id;
-    if (this.reference_id) {
-      this.model.reference_id = this.reference_id;
-    }
-    if (this.reference_model) {
-      this.model.reference_model = this.reference_model;
-    }
-    if (!(await this.isValidFeedback())) {
-      return;
-    }
-    if (!this.model.title) {
-      this.model.title = this.defaultTitle;
-    }
-    this.feedbackService.save(this.model).then(res => {
-      this.apiSync.setIsPushAvailableData(true);
-      this.http.showToast('feedback.Feedback was saved');
-      this.dismiss();
-    });
   }
 
   private async isValidFeedback() {
@@ -151,16 +201,21 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   public delete() {
-    this.feedbackService.remove(this.model).then(res => {
+    this.feedbackService.remove(this.model).then(async res => {
       this.apiSync.setIsPushAvailableData(true);
       this.dismiss();
-      this.http.showToast('feedback.Feedback was deleted');
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', {model: 'Feedback'});
+      this.http.showToast(alertMessage);
     });
   }
 
   async showDeleteAlert() {
+    const alertMessage = await this.translateConfigService.translate(
+        'alert.are_you_sure_delete_model',
+        {model: 'Feedback'}
+        );
     const alert = await this.alertController.create({
-      message: this.translateConfigService.translateWord('feedback.Are you sure you want to delete this feedback?'),
+      message: alertMessage,
       buttons: [
         {
           text: 'Yes',
@@ -217,13 +272,10 @@ export class FeedbackAddEditPage implements OnInit {
       this.reference_model_alias = feedbackData.referenceModelAlias;
       this.reference_model = this.reference_model_alias;
       this.feedbackId = +feedbackData.feedbackId;
-      console.log('this.feedbackId', this.feedbackId);
       if (this.feedbackId) {
         const result = await this.feedbackService.dbModelApi.findFirst([this.model.COL_ID, this.feedbackId]);
-        console.log('feedbacl rtesult', result);
         this.model = result[0];
       }
-      console.log('this.model', this.model);
       this.defaultTitle = await this.getDefaultTitle();
     });
   }

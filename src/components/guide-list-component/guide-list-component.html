@@ -1,0 +1,59 @@
+<ion-grid class="guides">
+    <ion-row>
+        <ion-col fixed size-xs="12" size-sm="6" size-md="4" *ngFor="let item of guides">
+            <ion-card color="light" class="ion-no-margin">
+                <div class="guide-preview" (click)="openGuide(item)">
+                    <div class="img"
+                         *ngIf="item.getFileImagePath()"
+                         [ngStyle]="{'background-image': 'url(' + item.getFileImagePath(0,'trustStyle') + ')'}"
+                    >
+                    </div>
+                    <div class="img"
+                         *ngIf="!item.getFileImagePath()"
+                         [ngStyle]="{'background-image': 'url(' + 'assets/placeholder.jpg' + ')'}"
+                    >
+                    </div>
+                    <div class="shortname-label badge badge-secondary">
+                        {{ item.short_name }}
+                    </div>
+                </div>
+                <ion-card-header>
+                    <ion-card-title>{{item.title}}</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <div class="guide-info" margin-bottom>
+                        <p class="guide-description">
+                            {{item.description}}
+                        </p>
+                        <div class="muted">
+                            <p *ngIf="item.duration">
+                                {{ 'guides.duration' | translate:params }}: {{ item.getDuration() }}
+                            </p>
+                            <p *ngIf="item.revision">
+                                {{ 'guides.revision' | translate:params }}: {{ item.revision }}
+                            </p>
+                        </div>
+                    </div>
+                    <ion-button *ngIf="item.guide_collection.length"
+                                class="show-guide-btn"
+                                (click)="openCollection(item)"
+                                vertical="bottom"
+                                style="text-transform: uppercase;"
+                    >
+                        <ion-icon slot="start" name="play"></ion-icon>
+                        {{ 'guides.Show Collection' | translate:params }}
+                    </ion-button>
+                    <ion-button *ngIf="item.protocol_template && haveProtocolPermissions"
+                                class="show-guide-btn"
+                                color="medium"
+                                (click)="openProtocol(item)"
+                                vertical="bottom"
+                    >
+                        <ion-icon slot="start" name="list"></ion-icon>
+                        {{ 'guides.Protocol' | translate:params }}
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
+    </ion-row>
+</ion-grid>

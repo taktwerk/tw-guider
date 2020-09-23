@@ -15,11 +15,14 @@ import {AppSetting} from '../../services/app-setting';
   templateUrl: 'profile.html',
 })
 export class ProfilePage implements OnInit {
-        constructor(
-            public navCtrl: NavController,
-            public authService: AuthService,
-            public events: Events,
-            public appSetting: AppSetting
+
+    public params;
+
+    constructor(
+        public navCtrl: NavController,
+        public authService: AuthService,
+        public events: Events,
+        public appSetting: AppSetting
     ) {
             this.authService.checkAccess();
     }

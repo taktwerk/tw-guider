@@ -22,11 +22,12 @@ export class ProtocolPage implements OnInit {
     public protocolList: ProtocolModel[] = [];
     public isComponentLikeModal = false;
     public templateId: number;
+    public params;
     private reference_id: number;
     private reference_model_alias: any;
     private reference_model: string;
     private clientId: number;
-    private userCanCreateProtocol: boolean = false;
+    public userCanCreateProtocol: boolean = false;
 
     constructor(private protocolService: ProtocolService,
                 private modalController: ModalController,
@@ -53,7 +54,6 @@ export class ProtocolPage implements OnInit {
     }
 
     openAddEditPage(protocolId?: number) {
-        console.log('openAddEditPage', protocolId)
         const protocolNavigationExtras: NavigationExtras = {
             queryParams: {
                 protocolId,
@@ -94,7 +94,7 @@ export class ProtocolPage implements OnInit {
 
     dismiss() {
         this.ngZone.run(() => {
-            this.navCtrl.navigateRoot('/guides');
+            this.navCtrl.navigateRoot('/guide-categories');
         });
     }
 

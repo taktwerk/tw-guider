@@ -31,7 +31,6 @@ public void onBackPressed() {
 After changes to the database structure have been made in the code,
 you need to increase the value of the property dbMigrationVersion in the file `src/environments/environment.ts`.
 (See an example in the file  `src/environments/environment.example.ts`)
-й
 
 ## How bring a new model offline to mobile client at the client side. On the example of `feedback` table.
 1. Create model src/models/db/api/feedback-model.ts. Must inherit from class DbApiModel.
@@ -74,7 +73,7 @@ you need to increase the value of the property dbMigrationVersion in the file `s
 ## Set up Sentry:
 1) set sentryDsn in src/environments/environment.ts
 
-## Set up PSPDFKIT:
+## Set up PSPDFKIT (not needed now):
 #### For android:
 1) create file local.properties from local.properties.example and set up fields;
 #### For iOS:
@@ -90,3 +89,16 @@ you need to increase the value of the property dbMigrationVersion in the file `s
    Reason: image not found`
    
    Then it’s likely you have an older Xcode project where the Runpath Search Paths in your project settings are not correctly configured. Make sure they are set to the following value: $(inherited) @executable_path/Frameworks @loader_path/Frameworks.
+
+#### Set DNS for using server via USB:
+1) set usbHost in src/environments/environment.ts
+
+
+During the development process associated with drawing on a PDF image, do not use this liverload command:
+ionic cordova run android -l
+Use just:
+ionic cordova run android
+
+Translate files is consist in src/assets/i18n folder
+
+For build shoud be created environment.prod.ts

@@ -20,6 +20,7 @@ export class AboutPage implements OnInit {
 
     public versionNumber = '0.0.1';
     public apiVersionNumber = '0.0.1';
+    public params;
 
     constructor(
         private platform: Platform,

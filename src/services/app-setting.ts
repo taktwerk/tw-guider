@@ -7,11 +7,13 @@ import {DbProvider} from '../providers/db-provider';
 import {DownloadService} from './download-service';
 import {BehaviorSubject} from 'rxjs';
 import {TranslateConfigService} from './translate-config.service';
+import config from '../environments/config.json';
 
 export enum AppConfigurationModeEnum {
     ONLY_CONFIGURE,
     CONFIGURE_AND_DEVICE_LOGIN,
-    CONFIGURE_AND_USER_LOGIN
+    CONFIGURE_AND_USER_LOGIN,
+    CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT
 }
 
 @Injectable()
@@ -25,13 +27,13 @@ export class AppSetting {
     public isEnabledUsb = false;
     public isWasQrCodeSetup = false;
     public isWasQrCodeSetupSubscribtion: BehaviorSubject<boolean>;
-    public dbMigrationVersion = 1;
+    public dbMigrationVersion = '1';
 
     private defaultData = {
         mode : AppConfigurationModeEnum.ONLY_CONFIGURE,
         taktwerk : environment.taktwerk,
         isWasQrCodeSetup: false,
-        dbMigrationVersion: 1,
+        dbMigrationVersion: '1',
         usbHost: environment.usbHost,
         isEnabledUsb: false
     };
@@ -114,8 +116,14 @@ export class AppSetting {
         userSettingsObject['isEnabledUsb'] = this.isEnabledUsb;
         userSettingsObject['usbHost'] = environment.usbHost;
         this.usbHost = environment.usbHost;
-        userSettingsObject['dbMigrationVersion'] = environment.dbMigrationVersion;
-        this.dbMigrationVersion = environment.dbMigrationVersion;
+        let databaseVersion = '0.0.1';
+        if (config.databaseVersion) {
+            databaseVersion = config.databaseVersion;
+        } else if (environment.dbMigrationVersion) {
+            databaseVersion = '' + environment.dbMigrationVersion;
+        }
+        userSettingsObject['dbMigrationVersion'] = databaseVersion;
+        this.dbMigrationVersion = '' + databaseVersion;
 
         const user = await this.userService.getUser();
         this.appSetting.settings = userSettingsObject;
@@ -137,7 +145,13 @@ export class AppSetting {
     }
 
     public isMigratedDatabase() {
-        return this.dbMigrationVersion === environment.dbMigrationVersion;
+        let databaseVersion = '0.0.1';
+        if (config.databaseVersion) {
+            databaseVersion = '' + config.databaseVersion;
+        } else if (environment.dbMigrationVersion) {
+            databaseVersion = '' + environment.dbMigrationVersion;
+        }
+        return this.dbMigrationVersion === databaseVersion;
     }
 
     async showIsNotMigratedDbPopup() {

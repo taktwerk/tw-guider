@@ -373,12 +373,17 @@ export class DownloadService {
         return this.webview.convertFileSrc(path);
     }
 
-    public getSanitizedFileUrl(path, modelName): SafeResourceUrl {
+    public getSanitizedFileUrl(path, modelName, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
         path = this.getNativeFilePath(path, modelName);
         const convertFileSrc = this.getWebviewFileSrc(path);
+
         const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
 
-        return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
+        if (sanitizeType === 'trustStyle') {
+            return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
+        }
+
+        return safeUrl;
     }
 
     public async chooseFile(withThumbnailForVideo = false): Promise<RecordedFile> {
@@ -430,6 +435,8 @@ export class DownloadService {
                     fileName.indexOf('.WMV') > -1 ||
                     fileName.indexOf('.avi') > -1 ||
                     fileName.indexOf('.AVI') > -1 ||
+                    fileName.indexOf('.webm') > -1 ||
+                    fileName.indexOf('.WEBM') > -1 ||
                     fileName.indexOf('.mpeg') > -1 ||
                     fileName.indexOf('.MPEG') > -1 ||
                     fileName.indexOf('.mpg') > -1 ||
@@ -442,7 +449,32 @@ export class DownloadService {
                     fileName.indexOf('.OGV') > -1;
             case 'audio':
                 return fileName.indexOf('.mp3') > -1 ||
-                    fileName.indexOf('.MP3') > -1;
+                    fileName.indexOf('.MP3') > -1 ||
+                    fileName.indexOf('.m4a') > -1 ||
+                    fileName.indexOf('.M4A') > -1 ||
+                    fileName.indexOf('.m4p') > -1 ||
+                    fileName.indexOf('.M4P') > -1 ||
+                    fileName.indexOf('.aac') > -1 ||
+                    fileName.indexOf('.AAC') > -1 ||
+                    fileName.indexOf('.ogg') > -1 ||
+                    fileName.indexOf('.OGG') > -1 ||
+                    fileName.indexOf('.opus') > -1 ||
+                    fileName.indexOf('.OPUS') > -1 ||
+                    fileName.indexOf('.wav') > -1 ||
+                    fileName.indexOf('.wav') > -1 ||
+                    fileName.indexOf('.3g2') > -1 ||
+                    fileName.indexOf('.3g2') > -1 ||
+                    fileName.indexOf('.midi') > -1 ||
+                    fileName.indexOf('.midi') > -1 ||
+                    fileName.indexOf('.flac') > -1 ||
+                    fileName.indexOf('.FLAC') > -1;
+            case '3d':
+                return fileName.indexOf('.gltf') > -1 ||
+                    fileName.indexOf('.GLTF') > -1 ||
+                    fileName.indexOf('.stp') > -1 ||
+                    fileName.indexOf('.STP') > -1 ||
+                    fileName.indexOf('.glb') > -1 ||
+                    fileName.indexOf('.GLB') > -1;
             default:
                 return false;
         }

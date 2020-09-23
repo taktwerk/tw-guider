@@ -40,6 +40,7 @@ export class ProtocolAddEditPage implements OnInit {
   private templateId: number;
   private clientId: number;
   public comment: string = null;
+  public params;
 
   faClock = faClock;
   faUser = faUser;
@@ -156,6 +157,8 @@ export class ProtocolAddEditPage implements OnInit {
       }
       this.detectChanges();
       this.events.publish('setIsPushAvailableData');
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', {model: 'Protocol'});
+      this.http.showToast(alertMessage);
     }
   }
 
@@ -223,6 +226,8 @@ export class ProtocolAddEditPage implements OnInit {
     this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
     this.detectChanges();
     this.events.publish('setIsPushAvailableData');
+    const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', {model: 'Protocol'});
+    this.http.showToast(alertMessage);
   }
 
   public getProtocolTemplate(templateId: number): Promise<ProtocolTemplateModel> {

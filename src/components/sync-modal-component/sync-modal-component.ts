@@ -48,7 +48,8 @@ export class SyncModalComponent implements OnInit {
     public isNetwork = false;
     public isAvailableForSyncData: boolean = false;
     public pushProgressStatus: string;
-    private isAvailableForPushData: boolean;
+    public isAvailableForPushData: boolean;
+    public params;
 
     constructor(private modalController: ModalController,
                 public apiSync: ApiSync,

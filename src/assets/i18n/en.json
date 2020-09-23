@@ -1,6 +1,8 @@
 {
   "close": "Close",
-  "search": "Search",
+  "Search": "Search",
+  "Search all guides": "Search all guides",
+  "Search guides by category": "Search guides by current category",
   "send": "Send",
   "Logout": "Logout",
   "Wrong password!": "Wrong password!",
@@ -11,6 +13,13 @@
   "All": "All",
   "Final": "Final",
   "Enable USB mode": "Enable USB mode",
+  "Status": "Status",
+  "Open": "Open",
+  "Done": "Done",
+  "save_before_close_warning": "Save changes before closing?",
+  "dont_save": "Don't save",
+  "cancel": "Cancel",
+  "noResults": "No results",
   "about": {
     "header":"About",
     "App Version": "App Version",
@@ -18,8 +27,7 @@
     "Copyright": "Copyright"
   },
   "start": {
-    "header":"Start",
-    "title": "Start page of the Guider"
+    "header":"Start"
   },
   "sync-modal": {
     "header": "Sync Status",
@@ -44,23 +52,26 @@
     "Data has been sent to the server": "Data has been sent to the server.",
     "Sending data to the server failed.": "Sending data to the server failed."
   },
+  "guide-categories": {
+    "category": "Category",
+    "no-category": "No Category",
+    "categories": "Categories"
+  },
   "guides": {
     "header": "Guides",
     "duration": "Duration",
     "revision": "Revision",
     "Show Guide": "Show Guide",
     "New Protocol": "New Protocol",
-    "Protocol": "Protocol"
+    "Protocol": "Protocol",
+    "specifySearchMessage": "There are {{ guidesCount }} guides. Specify a detailed search",
+    "specifyMoreSearchMessage": "There are {{ guidesCount }} guides. Specify a more detailed search",
+    "Show Collection": "Show Collection"
   },
   "feedback": {
     "header": "Feedback",
     "Feedback list": "Feedback list",
-    "Description": "Description",
-    "Feedback will be sent as soon as the Internet appears": "Feedback will be sent as soon as the Internet appears",
-    "Feedback was sent": "Feedback was sent",
-    "Feedback was saved": "Feedback was saved",
-    "Feedback was deleted": "Feedback was deleted",
-    "Are you sure you want to delete this feedback?": "Are you sure you want to delete this feedback?"
+    "Description": "Description"
   },
   "protocol": {
     "Protocols": "Protocols",
@@ -150,5 +161,29 @@
   },
   "app": {
     "You needs to swipe data and reinstall app": "You needs to swipe data and reinstall app"
+  },
+  "date": {
+    "ago": {
+      "just_now": "Just now",
+      "year": "{{ counter }} year ago",
+      "month": "{{ counter }} month ago",
+      "week": "{{ counter }} week ago",
+      "day": "{{ counter }} day ago",
+      "hour": "{{ counter }} hour ago",
+      "minute": "{{ counter }} minute ago",
+      "second": "{{ counter }} second ago",
+      "years": "{{ counter }} years ago",
+      "months": "{{ counter }} months ago",
+      "weeks": "{{ counter }} weeks ago",
+      "days": "{{ counter }} days ago",
+      "hours": "{{ counter }} hours ago",
+      "minutes": "{{ counter }} minutes ago",
+      "seconds": "{{ counter }} seconds ago"
+    }
+  },
+  "alert": {
+    "model_was_saved": "{{ model }} was saved",
+    "model_was_deleted": "{{ model }} was deleted",
+    "are_you_sure_delete_model": "Are you sure you want to delete this {{ model }}?"
   }
 }

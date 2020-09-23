@@ -10,6 +10,7 @@ import {MainPipe} from '../../pipes/main-pipe.module';
 import {HtmlDescriptionComponentModule} from '../../components/html-description/html-description-component.module';
 import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
 import {TranslateModule} from '@ngx-translate/core';
+import {GuideListComponentModule} from "../../components/guide-list-component/guide-list-component.module";
 
 @NgModule({
     imports: [
@@ -26,7 +27,8 @@ import {TranslateModule} from '@ngx-translate/core';
         MainPipe,
         HtmlDescriptionComponentModule,
         LanguageSelectorComponentModule,
-        TranslateModule
+        TranslateModule,
+        GuideListComponentModule
     ],
   declarations: [ListPage]
 })

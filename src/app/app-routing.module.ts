@@ -16,7 +16,11 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
   {
-    path: 'guides',
+    path: 'guide-categories',
+    loadChildren: () => import('./categories-list/categories-list.module').then(m => m.CategoriesListModule)
+  },
+  {
+    path: 'guides/:guideCategoryId',
     loadChildren: () => import('./list/list.module').then(m => m.ListPageModule)
   },
   {
@@ -63,6 +67,10 @@ const routes: Routes = [
   {
     path: 'protocol',
     loadChildren: () => import('./protocol/protocol.page.module').then(m => m.ProtocolPageModule)
+  },
+  {
+    path: 'guide-collection/:guideId',
+    loadChildren: () => import('./guide-collection/guide-collection.page.module').then(m => m.GuideCollectionModule)
   },
   {
     path: 'guider_protocol_template/:templateId',

@@ -1,18 +1,20 @@
 import { NgModule } from '@angular/core';
-import {DefaultFilePreviewComponent} from './default-file-preview-component';
 import {CommonModule} from '@angular/common';
 import {IonicModule} from '@ionic/angular';
+import {GuideListComponent} from "./guide-list-component";
+import {TranslateModule} from "@ngx-translate/core";
 
 @NgModule({
   declarations: [
-    DefaultFilePreviewComponent,
+    GuideListComponent,
   ],
   imports: [
     CommonModule,
     IonicModule,
+    TranslateModule,
   ],
   exports: [
-    DefaultFilePreviewComponent
+    GuideListComponent
   ],
 })
-export class DefaultFilePreviewComponentModule {}
+export class GuideListComponentModule {}

@@ -6,14 +6,7 @@
     <ion-title>
       {{ 'protocol.Protocol' | translate:params }}
     </ion-title>
-    <ion-buttons slot="end">
-      <ion-back-button text="{{ 'close' | translate:params }}"
-                       type="button"
-                       icon="null"
-                       defaultHref="/feedback"
-      >
-      </ion-back-button>
-    </ion-buttons>
+    <ion-back-button text=""></ion-back-button>
     <sync-spinner-component slot="primary"></sync-spinner-component>
   </ion-toolbar>
 </ion-header>
@@ -88,7 +81,7 @@
         <br>
         <span class="time">
           <fa-icon [icon]="faClock"></fa-icon>
-              {{ (comment.local_created_at || comment.created_at) | dateAgo  }}
+              {{ ((comment.local_created_at || comment.created_at) | dateAgo) | async }}
         </span>
       </ion-card>
     </ion-item>
@@ -105,7 +98,7 @@
         <br>
         <span class="time">
             <fa-icon [icon]="faClock"></fa-icon>
-          {{ (model.local_created_at || model.created_at) | dateAgo  }}
+          {{ ((model.local_created_at || model.created_at) | dateAgo) | async  }}
           </span>
       </ion-card>
     </ion-item>

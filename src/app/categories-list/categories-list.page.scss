@@ -1,0 +1,49 @@
+ion-segment-button {
+  color: white !important;
+}
+
+.guides {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+
+  ion-row{
+     width: 100%;
+  }
+  ion-col{
+     display: flex;
+     width: 100%;
+  }
+  ion-card{
+     width: 100%;
+  }
+ }
+
+.shortname-label {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 5px 12px;
+  /* text-transform: uppercase; */
+  font-size: 12px;
+  color: #fff;
+  background-color: #6c757d;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  display: inline-block;
+}
+
+.guide-description {
+  white-space: pre-line;
+  font-size: 120%;
+}
+
+.guide-preview .img {
+  height: 12rem;
+  background-size: cover;
+  background-position: center;
+}

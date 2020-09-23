@@ -8,6 +8,9 @@ import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {VideoService} from '../../services/video-service';
 import {PictureService} from '../../services/picture-service';
+import {NativeAudio} from '@ionic-native/native-audio/ngx';
+import { Media, MediaObject } from '@ionic-native/media/ngx';
+import {AudioService} from '../../services/audio-service';
 
 @Component({
   selector: 'feedback-page',
@@ -21,6 +24,7 @@ export class FeedbackPage implements OnInit {
     public reference_model_alias: string = null;
     public feedbackList: FeedbackModel[] = [];
     public isComponentLikeModal = false;
+    public params;
 
     constructor(private feedbackService: FeedbackService,
                 private modalController: ModalController,
@@ -33,7 +37,10 @@ export class FeedbackPage implements OnInit {
                 private navCtrl: NavController,
                 private router: Router,
                 private videoService: VideoService,
-                private pictureService: PictureService) {
+                private pictureService: PictureService,
+                private nativeAudio: NativeAudio,
+                private media: Media,
+                private audio: AudioService) {
         this.authService.checkAccess('feedback');
     }
 
@@ -42,7 +49,18 @@ export class FeedbackPage implements OnInit {
         if (!user) {
             return;
         }
+        // const feedbackSearchCondition: any[] = ['1=1', 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
         const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
+        // if (!user.isAuthority) {
+        //     if (this.authService.isHaveUserRole('FeedbackAdmin') && user.client_id) {
+        //         feedbackSearchCondition.push(['client_id', user.client_id]);
+        //     } else if (this.authService.isHaveUserRole('FeedbackViewer') && user.userId) {
+        //         feedbackSearchCondition.push(['created_by', user.userId]);
+        //     } else {
+        //         return [];
+        //     }
+        // }
+        
         if (this.reference_id && this.reference_model) {
             feedbackSearchCondition.push(
                 '(' + this.feedbackService.dbModelApi.secure('reference_model') +
@@ -55,12 +73,10 @@ export class FeedbackPage implements OnInit {
             );
             feedbackSearchCondition.push(['reference_id', this.reference_id]);
         }
-        console.log('feedbackSearchCondition', feedbackSearchCondition);
         this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(
             feedbackSearchCondition,
             'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC'
         );
-        console.log('this.feedbackList', this.feedbackList);
     }
 
     public openFile(basePath: string, modelName: string, title?: string) {
@@ -69,14 +85,14 @@ export class FeedbackPage implements OnInit {
         if (title) {
             fileTitle = title;
         }
-        if (this.downloadService.checkFileTypeByExtension(filePath, 'video')) {
-            const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+        const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+        if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
+            this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
             this.videoService.playVideo(fileUrl, fileTitle);
         } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
-            this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
+            this.photoViewer.show(fileUrl, fileTitle);
         } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
             // this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
-            const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
             this.pictureService.openFile(fileUrl, fileTitle);
         }
     }
@@ -94,7 +110,7 @@ export class FeedbackPage implements OnInit {
     }
 
     itemHeightFn(item, index) {
-        return 79;
+        return 99;
     }
 
     trackByFn(index, item) {
@@ -127,7 +143,6 @@ export class FeedbackPage implements OnInit {
         });
 
         this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':create', (model) => {
-            console.log('weas createddddd');
             this.setModels();
             this.detectChanges();
         });

@@ -1,0 +1,24 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            Guides
+        </ion-title>
+        <ion-back-button text="" defaultHref="{{ '/guide-categories' }}">
+        </ion-back-button>
+        <sync-spinner-component slot="primary"></sync-spinner-component>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content color="primary">
+  <span *ngIf="isLoadedContent && guide">
+      <h4 class="ion-margin-horizontal">
+        Collection: {{guide.short_name}} {{ guide.title }}
+      </h4>
+      <div *ngIf="collectionGuides.length">
+        <guide-list-component [guides]="collectionGuides"></guide-list-component>
+      </div>
+  </span>
+</ion-content>

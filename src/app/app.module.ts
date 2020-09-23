@@ -22,6 +22,7 @@ import {HttpClient as Http, HttpClientModule} from '@angular/common/http';
 import {GuideCategoryService} from '../providers/api/guide-category-service';
 import {GuideCategoryBindingService} from '../providers/api/guide-category-binding-service';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
+import {GuideChildService} from '../providers/api/guide-child-service';
 import {GuideStepService} from '../providers/api/guide-step-service';
 import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
@@ -44,6 +45,7 @@ import {IOSFilePicker} from '@ionic-native/file-picker/ngx';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {TranslateConfigService} from '../services/translate-config.service';
+
 import {LanguageSelectorComponentModule} from '../components/language-selector-component/language-selector-component.module';
 import { Device } from '@ionic-native/device/ngx';
 import * as Sentry from 'sentry-cordova';
@@ -80,6 +82,14 @@ import {WorkflowTransitionService} from '../providers/api/workflow-transition-se
 import {ProtocolCommentService} from '../providers/api/protocol-comment-service';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {DateAgoPipe} from '../pipes/date-ago.pipe';
+import {NativeAudio} from '@ionic-native/native-audio/ngx';
+import {Media} from '@ionic-native/media/ngx';
+import {AudioService} from '../services/audio-service';
+import {GuideListComponentModule} from "../components/guide-list-component/guide-list-component.module";
+import {Viewer3dService} from "../services/viewer-3d-service";
+import {Viewer3dModalComponent} from "../components/modals/viewer-3d-modal-component/viewer-3d-modal-component";
+import {Viewer3dModelComponentModule} from "../components/viewer-3d-model-component/viewer-3d-model-component.module";
+import { IonicStorageModule } from '@ionic/storage';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -93,18 +103,23 @@ Sentry.init({ dsn: environment.sentryDsn });
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
+    Viewer3dModalComponent,
     PdftronModalComponent
   ],
   entryComponents: [
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
+    Viewer3dModalComponent,
     PdftronModalComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     IonicModule.forRoot(),
+    IonicStorageModule.forRoot({
+        driverOrder: ['indexeddb', 'websql', 'sqlite']
+    }),
     AppRoutingModule,
     HttpClientModule,
     FontAwesomeModule,
@@ -116,12 +131,14 @@ Sentry.init({ dsn: environment.sentryDsn });
       }
     }),
     SyncSpinnerComponentModule,
+    GuideListComponentModule,
     ProtocolDefaultComponentModule,
     LanguageSelectorComponentModule,
     MainPipe,
     HtmlDescriptionComponentModule,
     VirtualScrollerModule,
-    IonicImageLoader.forRoot()
+    IonicImageLoader.forRoot(),
+    Viewer3dModelComponentModule
   ],
   providers: [
     StatusBar,
@@ -131,6 +148,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     GuideCategoryService,
     GuideCategoryBindingService,
     GuideStepService,
+    GuideChildService,
     GuideAssetService,
     GuideAssetPivotService,
     FeedbackService,
@@ -146,10 +164,11 @@ Sentry.init({ dsn: environment.sentryDsn });
     HttpClient,
     DownloadService,
     VideoService,
+    AudioService,
+    Viewer3dService,
     PictureService,
     ToastService,
     ApiSync,
-    Storage,
     File,
     Toast,
     WebView,
@@ -180,6 +199,8 @@ Sentry.init({ dsn: environment.sentryDsn });
     DocumentViewer,
     FileOpener,
     Insomnia,
+    NativeAudio,
+    Media,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
   ],

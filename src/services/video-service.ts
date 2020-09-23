@@ -19,7 +19,8 @@ export class VideoService {
             componentProps: {
                 fileUrl,
                 fileTitle
-            }
+            },
+            cssClass: "modal-fullscreen"
         });
         await modal.present();
     }

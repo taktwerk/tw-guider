@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {Events, ModalController, Platform} from '@ionic/angular';
 
 import {ApiSync} from '../../providers/api-sync';
@@ -25,6 +25,8 @@ import {AppSetting} from '../../services/app-setting';
   templateUrl: 'sync-spinner-component.html',
 })
 export class SyncSpinnerComponent implements OnInit {
+    @Input() shouldOpenPopup = true;
+
     public userDb: UserDb;
     public isStartSync = false;
     public isNetwork = false;
@@ -56,6 +58,9 @@ export class SyncSpinnerComponent implements OnInit {
     }
 
     async openSyncModal() {
+        if (!this.shouldOpenPopup) {
+            return false;
+        }
         const modal = await this.modalController.create({
             component: SyncModalComponent,
         });

@@ -4,10 +4,10 @@ import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {AuthService} from '../../services/auth-service';
 import {GuideCategoryModel} from '../../models/db/api/guide-category-model';
-import {Events} from '@ionic/angular';
+import {Events, LoadingController} from '@ionic/angular';
 import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
 import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
-import {NavigationExtras, Router} from '@angular/router';
+import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 
 @Component({
   selector: 'app-list',
@@ -15,9 +15,12 @@ import {NavigationExtras, Router} from '@angular/router';
   styleUrls: ['list.page.scss']
 })
 export class ListPage implements OnInit {
-  public guideCategories: GuideCategoryModel[] = [];
+  public guideCategory: GuideCategoryModel;
   public searchValue: string;
   public haveProtocolPermissions = false;
+  public isLoadedContent = false;
+  public guideCategoryId: number;
+  public params;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
@@ -28,7 +31,9 @@ export class ListPage implements OnInit {
       public authService: AuthService,
       public events: Events,
       public changeDetectorRef: ChangeDetectorRef,
-      private router: Router
+      private router: Router,
+      private loader: LoadingController,
+      private activatedRoute: ActivatedRoute
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -38,45 +43,37 @@ export class ListPage implements OnInit {
         this.haveProtocolPermissions = true;
       }
     }
-    this.findAllGuideCategories();
+    this.showAllGuides();
+  }
+
+  async showAllGuides() {
+    const loader = await this.loader.create();
+    loader.present();
+    this.guideCategoryId = +this.activatedRoute.snapshot.paramMap.get('guideCategoryId');
+    if (this.guideCategoryId) {
+      const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
+      if (guiderCategoryById.length) {
+        this.guideCategory = guiderCategoryById[0];
+        this.detectChanges();
+      }
+    }
+    await this.findAllGuideCategories();
+    loader.dismiss();
+    this.isLoadedContent = true;
   }
 
   public searchGuides($event) {
     this.searchValue = $event.detail.value;
-
-    this.guideCategoryService.findByGuides(this.searchValue).then(guideCategories => {
-      this.guideCategories = guideCategories;
-      this.setGuideInfo();
-    });
+    this.setGuideInfo();
   }
 
-  findAllGuideCategories() {
-    if (this.searchValue) {
-      this.guideCategoryService.findByGuides(this.searchValue).then(guideCategories => {
-        this.guideCategories = guideCategories;
-        this.guideCategories.map((guideCategory) => {
-          this.guideCategoryService.getGuides(guideCategory.idApi, this.searchValue).then((guides) => {
-            guideCategory.guides = guides;
-          });
-        });
-      });
-    } else {
-      this.guideCategoryService.findAll().then(guideCategories => {
-        this.guideCategories = guideCategories;
-        this.guideCategories.map((guideCategory) => {
-          this.guideCategoryService.getGuides(guideCategory.idApi, this.searchValue).then((guides) => {
-            guideCategory.guides = guides;
-          });
-        });
-      });
-    }
+  async findAllGuideCategories() {
+    this.setGuideInfo();
   }
 
   setGuideInfo() {
-    this.guideCategories.map(guideCategory => {
-      this.guideCategoryService.getGuides(guideCategory.idApi, this.searchValue).then((guides) => {
-        guideCategory.guides = guides;
-      });
+    this.guideCategoryService.getGuides(this.guideCategory.idApi, this.searchValue).then((guides) => {
+      this.guideCategory.guides = guides;
     });
   }
 
@@ -103,7 +100,7 @@ export class ListPage implements OnInit {
     this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.events.subscribe('user:login', () => {
       this.findAllGuideCategories();
       this.detectChanges();
@@ -114,14 +111,26 @@ export class ListPage implements OnInit {
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
       this.findAllGuideCategories();
     });
-    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
-      this.findAllGuideCategories();
+    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', async (model) => {
+      const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
+      if (guiderCategoryById.length) {
+        this.guideCategory = guiderCategoryById[0];
+        this.detectChanges();
+      }
     });
-    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', (model) => {
-      this.findAllGuideCategories();
+    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', async (model) => {
+      const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
+      if (guiderCategoryById.length) {
+        this.guideCategory = guiderCategoryById[0];
+        this.detectChanges();
+      }
     });
-    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', (model) => {
-      this.findAllGuideCategories();
+    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', async (model) => {
+      const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
+      if (guiderCategoryById.length) {
+        this.guideCategory = guiderCategoryById[0];
+        this.detectChanges();
+      }
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
       this.setGuideInfo();
