@@ -4,7 +4,7 @@
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
-    "taktwerk": "npm install && ionic cordova plugin add https://github.com/PSPDFKit/PSPDFKit-Cordova.git --force && ionic cordova plugin add https://github.com/moust/cordova-plugin-videoplayer.git --no-save",
+    "taktwerk": "npm install && ionic cordova plugin add https://github.com/moust/cordova-plugin-videoplayer.git --no-save",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -84,6 +84,7 @@
     "cordova-android": "8.1.0",
     "cordova-android-support-gradle-release": "^3.0.1",
     "cordova-custom-config": "^5.1.0",
+    "cordova-ios": "^5.1.1",
     "cordova-plugin-aes256-encryption": "^2.0.0",
     "cordova-plugin-androidx": "^1.0.2",
     "cordova-plugin-androidx-adapter": "^1.1.0",
@@ -115,7 +116,6 @@
     "ngx-virtual-scroller": "^3.0.3",
     "node-forge": "git://github.com/digitalbazaar/forge.git#ef835fafe",
     "pbkdf2-sha256": "^1.1.1",
-    "pspdfkit-cordova": "git+https://github.com/PSPDFKit/PSPDFKit-Cordova.git",
     "rxjs": "~6.5.5",
     "rxjs-compat": "^6.5.4",
     "scrypt-async": "^2.0.1",
@@ -202,7 +202,6 @@
       "cordova-plugin-file-opener2": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
-      "com.moust.cordova.videoplayer": {},
       "cordova-plugin-insomnia": {},
       "sentry-cordova": {
         "SENTRY_ANDROID_SDK_VERSION": "1+"
@@ -211,11 +210,11 @@
       "cordova-plugin-nativeaudio": {},
       "cordova-plugin-media": {
         "KEEP_AVAUDIOSESSION_ALWAYS_ACTIVE": "NO"
-      },
-      "pspdfkit-cordova": {}
+      }
     },
     "platforms": [
-      "android"
+      "android",
+      "ios"
     ]
   }
 }
