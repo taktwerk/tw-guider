@@ -10,7 +10,7 @@ import {environment} from '../environments/environment';
  * Download file class
  */
 
-declare var PSPDFKit: any;
+// declare var PSPDFKit: any;
 
 @Injectable()
 export class PdfService {
@@ -50,19 +50,19 @@ export class PdfService {
     }
 
     async initializePspdfkit(fileUrl, fileTitle, isEdit = false) {
-        if (this.platform.is('ios')) {
-            PSPDFKit.setLicenseKey(environment.pspdfkitIosLicenseKey);
-        }
-        const config = await this.getPspdfkitConfig(isEdit);
-        config['title'] = fileTitle;
+        // if (this.platform.is('ios')) {
+        //     PSPDFKit.setLicenseKey(environment.pspdfkitIosLicenseKey);
+        // }
+        // const config = await this.getPspdfkitConfig(isEdit);
+        // config['title'] = fileTitle;
 
-        PSPDFKit.present(fileUrl, config);
-        if (isEdit && !this.wasAddedEditEventListenner) {
-            PSPDFKit.addEventListener('onDocumentSaved', () => {
-                this.showSavePopup();
-            });
-            this.wasAddedEditEventListenner = true;
-        }
+        // PSPDFKit.present(fileUrl, config);
+        // if (isEdit && !this.wasAddedEditEventListenner) {
+        //     PSPDFKit.addEventListener('onDocumentSaved', () => {
+        //         this.showSavePopup();
+        //     });
+        //     this.wasAddedEditEventListenner = true;
+        // }
     }
 
     async showSavePopup() {
@@ -98,34 +98,34 @@ export class PdfService {
     }
 
     async getPspdfkitConfig(isEdit = false) {
-        if (isEdit) {
-            const user = await this.authService.getLastUser();
+        // if (isEdit) {
+        //     const user = await this.authService.getLastUser();
 
-            return {
-                scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,
-                scrollMode: PSPDFKit.ScrollMode.CONTINUOUS,
-                autosaveEnabled: true,
-                useImmersiveMode: true,
-                shareFeatures: [],
-                annotationEditing: {
-                    enabled: true,
-                    creatorName: user.username
-                }
-            };
-        }
+        //     return {
+        //         scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,
+        //         scrollMode: PSPDFKit.ScrollMode.CONTINUOUS,
+        //         autosaveEnabled: true,
+        //         useImmersiveMode: true,
+        //         shareFeatures: [],
+        //         annotationEditing: {
+        //             enabled: true,
+        //             creatorName: user.username
+        //         }
+        //     };
+        // }
 
-        return {
-            scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,
-            scrollMode: PSPDFKit.ScrollMode.CONTINUOUS,
-            disableSearch: true,
-            disableDocumentEditor: true,
-            disableAnnotationNoteHinting: true,
-            useImmersiveMode: true,
-            shareFeatures: [],
-            annotationEditing: {
-                enabled: false, // activate annotation editing (default: true)
-                creatorName: null
-            }
-        };
+        // return {
+        //     scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,
+        //     scrollMode: PSPDFKit.ScrollMode.CONTINUOUS,
+        //     disableSearch: true,
+        //     disableDocumentEditor: true,
+        //     disableAnnotationNoteHinting: true,
+        //     useImmersiveMode: true,
+        //     shareFeatures: [],
+        //     annotationEditing: {
+        //         enabled: false, // activate annotation editing (default: true)
+        //         creatorName: null
+        //     }
+        // };
     }
 }

@@ -11,8 +11,8 @@ import {DownloadService} from '../../../services/download-service';
  * on Ionic pages and navigation.
  */
 
-declare var PDFTron: any;
-declare var PSPDFKit: any;
+// declare var PDFTron: any;
+// declare var PSPDFKit: any;
 declare const WebViewer: any;
 
 @Component({
@@ -48,61 +48,61 @@ export class PdftronModalComponent implements OnInit, OnDestroy {
     }
 
     initializePspdfkit(fileUrl, fileTitle) {
-        PSPDFKit.present(fileUrl, {
-            title: fileTitle,
-            scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,
-            scrollMode: PSPDFKit.ScrollMode.CONTINUOUS,
-            useImmersiveMode: true
-        });
+        // PSPDFKit.present(fileUrl, {
+        //     title: fileTitle,
+        //     scrollDirection: PSPDFKit.PageScrollDirection.VERTICAL,
+        //     scrollMode: PSPDFKit.ScrollMode.CONTINUOUS,
+        //     useImmersiveMode: true
+        // });
     }
 
     initializePdftronNativeViewer(fileUrl) {
-        const app = {
-            // Application Constructor
-            initialize: function() {
-                document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
-            },
+        // const app = {
+        //     // Application Constructor
+        //     initialize: function() {
+        //         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        //     },
 
-            // deviceready Event Handler
-            //
-            // Bind any cordova events here. Common events are:
-            // 'pause', 'resume', etc.
-            onDeviceReady: function() {
-                this.receivedEvent('deviceready');
-            },
+        //     // deviceready Event Handler
+        //     //
+        //     // Bind any cordova events here. Common events are:
+        //     // 'pause', 'resume', etc.
+        //     onDeviceReady: function() {
+        //         this.receivedEvent('deviceready');
+        //     },
 
-            onTopLeftButtonPressed: function () {
-                console.log('onTopLeftButtonPressed');
-            },
+        //     onTopLeftButtonPressed: function () {
+        //         console.log('onTopLeftButtonPressed');
+        //     },
 
-            onClose: function () {
-                console.log('was close');
-            },
+        //     onClose: function () {
+        //         console.log('was close');
+        //     },
 
-            // Update DOM on a Received Event
-            receivedEvent: function(id) {
-                var parentElement = document.getElementById(id);
-                var listeningElement = parentElement.querySelector('.listening');
-                var receivedElement = parentElement.querySelector('.received');
+        //     // Update DOM on a Received Event
+        //     receivedEvent: function(id) {
+        //         var parentElement = document.getElementById(id);
+        //         var listeningElement = parentElement.querySelector('.listening');
+        //         var receivedElement = parentElement.querySelector('.received');
 
-                listeningElement.setAttribute('style', 'display:none;');
-                receivedElement.setAttribute('style', 'display:block;');
+        //         listeningElement.setAttribute('style', 'display:none;');
+        //         receivedElement.setAttribute('style', 'display:block;');
 
-                const viewerElement = document.getElementById('viewer');
-                const viewer = new PDFTron.NativeViewer({
-                    l: '<your-key-here>',
-                    initialDoc: fileUrl,
-                    // initialDoc: 'http://www.africau.edu/images/default/sample.pdf',
-                    disabledElements: [
-                        // hide elements as you wish
-                    ]
-                }, viewerElement);
+        //         const viewerElement = document.getElementById('viewer');
+        //         const viewer = new PDFTron.NativeViewer({
+        //             l: '<your-key-here>',
+        //             initialDoc: fileUrl,
+        //             // initialDoc: 'http://www.africau.edu/images/default/sample.pdf',
+        //             disabledElements: [
+        //                 // hide elements as you wish
+        //             ]
+        //         }, viewerElement);
 
-                document.addEventListener('topLeftButtonPressed', this.onTopLeftButtonPressed.bind(this), false);
-            }
-        };
+        //         document.addEventListener('topLeftButtonPressed', this.onTopLeftButtonPressed.bind(this), false);
+        //     }
+        // };
 
-        app.initialize();
+        // app.initialize();
     }
 
     ngOnDestroy() {

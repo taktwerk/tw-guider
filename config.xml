@@ -29,7 +29,6 @@
     <preference name="UseSwiftLanguageVersion" value="4.2" />
     <preference name="StatusBarOverlaysWebView" value="true" />
     <hook src="scripts/before_compile.js" type="before_compile" />
-    <hook src="scripts/cli_env.js" type="before_platform_add" />
     <hook src="scripts/before_platform_add.js" type="before_platform_add" />
     <platform name="android">
         <preference name="android-manifest/@android:installLocation" value="auto" />
@@ -128,7 +127,6 @@
     <allow-navigation href="http://localhost:8101" sessionid="38a16263" />
     <allow-navigation href="http://localhost" />
     <allow-navigation href="http://localhost:8100" sessionid="683cd034" />
-    <plugin name="com.moust.cordova.videoplayer" spec="~1.0.1" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.3" />
     <plugin name="cordova-plugin-device" spec="^2.0.3" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.3" />
@@ -164,5 +162,4 @@
     <plugin name="cordova-plugin-file-opener2" spec="^3.0.0">
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
     </plugin>
-    <plugin name="pspdfkit-cordova" spec="~1.0.9" />
 </widget>
