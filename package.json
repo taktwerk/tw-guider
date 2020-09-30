@@ -113,6 +113,7 @@
     "ionic-material": "^0.4.1",
     "ionic-native": "^2.9.0",
     "jose-jwe": "^0.2.2",
+    "ng2-pdfjs-viewer": "^5.0.7",
     "ngx-virtual-scroller": "^3.0.3",
     "node-forge": "git://github.com/digitalbazaar/forge.git#ef835fafe",
     "pbkdf2-sha256": "^1.1.1",

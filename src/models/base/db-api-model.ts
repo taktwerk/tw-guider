@@ -44,6 +44,8 @@ export abstract class DbApiModel extends DbBaseModel {
     public local_deleted_at: Date;
     public deleted_by: number;
 
+    public migrations = [];
+
     // download mapping
     public downloadMapping: FileMapInModel[];
 
@@ -150,7 +152,7 @@ export abstract class DbApiModel extends DbBaseModel {
      * Creates the db table for the extended db class.
      * @returns {Promise<any>}
      */
-    protected dbCreateTable(): Promise<any> {
+    public dbCreateTable(): Promise<any> {
         this.TABLE.push([this.COL_IS_SYNCED, 'TINYINT(1) DEFAULT 1', DbBaseModel.TYPE_BOOLEAN, 'is_synced']);
         this.TABLE.push([this.COL_CREATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_LOCAL_CREATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
@@ -285,13 +287,16 @@ export abstract class DbApiModel extends DbBaseModel {
      * of this DbApiModel instance by its `updateCondition`
      * @returns {Promise<T>}
      */
-    public exists(): Promise<boolean> {
+    public exists(condition?:any): Promise<boolean> {
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
                     resolve(false);
                 } else {
-                    let query = "SELECT * FROM " + this.TABLE_NAME + " WHERE " + this.parseWhere(this.updateCondition);
+                    if (!condition) {
+                        condition = this.updateCondition;
+                    }
+                    let query = "SELECT * FROM " + this.TABLE_NAME + " WHERE " + this.parseWhere(condition);
                     if (query.indexOf('undefined') >= 0) {
                         resolve(false);
                     } else {

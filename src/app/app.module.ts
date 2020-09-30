@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import {ApiSync} from '../providers/api-sync';
 import {GuiderService} from '../providers/api/guider-service';
 import {DbProvider} from '../providers/db-provider';
+import {MigrationProvider} from '../providers/migration-provider';
 import {AuthService} from '../services/auth-service';
 import {HttpClient} from '../services/http-client';
 import {DownloadService} from '../services/download-service';
@@ -90,6 +91,9 @@ import {Viewer3dService} from "../services/viewer-3d-service";
 import {Viewer3dModalComponent} from "../components/modals/viewer-3d-modal-component/viewer-3d-modal-component";
 import {Viewer3dModelComponentModule} from "../components/viewer-3d-model-component/viewer-3d-model-component.module";
 import { IonicStorageModule } from '@ionic/storage';
+import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewer-component'
+import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
+import {MigrationService} from '../providers/api/migration-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -104,14 +108,16 @@ Sentry.init({ dsn: environment.sentryDsn });
     SyncModalComponent,
     VideoModalComponent,
     Viewer3dModalComponent,
-    PdftronModalComponent
+    PdftronModalComponent,
+    PdfViewerComponent
   ],
   entryComponents: [
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
     Viewer3dModalComponent,
-    PdftronModalComponent
+    PdftronModalComponent,
+    PdfViewerComponent
   ],
   imports: [
     BrowserModule,
@@ -138,7 +144,8 @@ Sentry.init({ dsn: environment.sentryDsn });
     HtmlDescriptionComponentModule,
     VirtualScrollerModule,
     IonicImageLoader.forRoot(),
-    Viewer3dModelComponentModule
+    Viewer3dModelComponentModule,
+    PdfJsViewerModule
   ],
   providers: [
     StatusBar,
@@ -160,6 +167,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     WorkflowStepService,
     WorkflowTransitionService,
     DbProvider,
+    MigrationProvider,
     AuthService,
     HttpClient,
     DownloadService,
@@ -202,7 +210,8 @@ Sentry.init({ dsn: environment.sentryDsn });
     NativeAudio,
     Media,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
-    {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
+    {provide: ErrorHandler, useClass: SentryIonicErrorHandler},
+    MigrationService
   ],
   exports: [
     ProtocolDefaultComponent

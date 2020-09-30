@@ -115,3 +115,9 @@ public void onBackPressed() {
     this.appView.loadUrl("javascript:if (document.webkitIsFullScreen === true) {document.webkitExitFullscreen();}");
 }
 ```
+
+## Migrations
+
+- Add migration file to src/migrations directory;
+- Add export of the migration to src/migrations/base/migration-list.ts file
+- Add migration class name to related model property 'migrations';
