@@ -61,17 +61,19 @@ ion-header {
   sync-spinner-component {
     order: 2;
     margin-left: 20px;
+    margin-top: 5px;
   }
   ion-title {
     order: 3;
     display: inline-block;
+    margin-top: 5px;
   }
   ion-back-button {
     display: inline-block !important;
     order: 7;
     position: absolute;
-    right: 0;
-    top: 0;
+    right: 5px;
+    top: 4px;
     height: auto;
   }
 }
@@ -98,5 +100,3 @@ sync-modal-component {
         margin-right: 20px;
     }
 }
-
-
