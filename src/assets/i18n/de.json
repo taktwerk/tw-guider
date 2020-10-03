@@ -5,6 +5,7 @@
   "Search guides by category": "Suche nach Anleitungen in dieser Kategorie",
   "send": "Senden",
   "Logout": "Abmelden",
+  "back": "zurück",
   "Wrong password!": "Falsches Passwort!",
   "save": "Speichern",
   "delete": "Löschen",
@@ -68,7 +69,8 @@
   "feedback": {
     "header": "Feedback",
     "Feedback list": "Feedback Liste",
-    "Description": "Beschreibung"
+    "Description": "Beschreibung",
+    "Note description": "Beschreibung beachten"
   },
   "protocol": {
     "Protocols": "Protokolle",
