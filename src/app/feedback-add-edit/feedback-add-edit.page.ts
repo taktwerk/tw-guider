@@ -5,7 +5,7 @@ import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Events, NavController, Platform, AlertController, IonBackButtonDelegate } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
-import { DownloadService } from '../../services/download-service';
+import { DownloadService, RecordedFile } from '../../services/download-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
 import { FeedbackService } from '../../providers/api/feedback-service';
 import { Network } from '@ionic-native/network/ngx';
@@ -16,6 +16,10 @@ import { VideoService } from '../../services/video-service';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { PictureService } from '../../services/picture-service';
 import { ApiSync } from '../../providers/api-sync';
+import { CameraResultType, CameraSource, Capacitor } from '@capacitor/core';
+import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
+
+const { Filesystem } = Plugins;
 
 @Component({
   selector: 'feedback-add-edit-page',
@@ -225,6 +229,38 @@ export class FeedbackAddEditPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  async addFileCapacitor() {
+    const image = await Plugins.Camera.getPhoto({
+      allowEditing: false,
+      source: CameraSource.Photos,
+      resultType: CameraResultType.Uri
+    });
+
+    const photoInTempStorage = await Filesystem.readFile({ path: image.path });
+
+    let date = new Date(),
+    time = date.getTime(),
+    fileName = time + ".jpeg";
+
+    await Filesystem.writeFile({
+      data: photoInTempStorage.data,
+      path: 'feedback/' + fileName,
+      directory: FilesystemDirectory.Data
+    });
+
+    const finalPhotoUri = await Filesystem.getUri({
+      directory: FilesystemDirectory.Data,
+      path: 'feedback/' + fileName,
+    });
+
+    let photoPath = Capacitor.convertFileSrc(finalPhotoUri.uri);
+     //await this.downloadService.copy(photoPath, this.TABLE_NAME);
+
+    const recordedFile = new RecordedFile();
+    recordedFile.uri = photoPath;
+    this.model.setFileProperty(recordedFile);
   }
 
   addFile() {

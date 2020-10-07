@@ -17,7 +17,7 @@
       <ion-icon name="attach"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
-      <ion-fab-button (click)="addFile()" color="primary">
+      <ion-fab-button (click)="addFileCapacitor()" color="primary">
         <ion-icon name="folder"></ion-icon>
       </ion-fab-button>
       <ion-fab-button (click)="addPhotoUsingCamera()" color="primary">
@@ -64,9 +64,9 @@
     <div *ngIf="model.attached_file" class="top-file">
       <div class="ion-text-center wrapper">
         <img *ngIf="model.isImageFile()"
+             height="280"
              (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
-             [src]="model.getFileImagePath()"
-        >
+             [src]="model.getFileImagePath()">
         <div *ngIf="model.isVideoFile()"
              (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
              [ngClass]="{'video-with-thumbnail': model.isExistThumbOfFile()}"

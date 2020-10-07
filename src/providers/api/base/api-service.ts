@@ -209,6 +209,7 @@ export abstract class ApiService {
           const url = this.appSetting.getApiUrl() + this.loadUrl + '/' + model.idApi + '/upload';
           const headers = new Headers({'X-Auth-Token': this.http.getAuthorizationToken()});
           const uploadFilePromises = [];
+          console.log('MODEL.DOWNLOADMAPPING', model.downloadMapping );
           for (const fields of model.downloadMapping) {
             // If we have a local path but no api path, we need to upload the file!
             if (model[fields.localPath] && !model[fields.url]) {
@@ -222,8 +223,10 @@ export abstract class ApiService {
                         fieldUrl,
                         headers
                     );
+                    console.log('uploadResult', uploadResult );
                     if (uploadResult) {
-                        // await this.saveSyncedModel(uploadResult, false, false);
+                       // await this.saveSyncedModel(uploadResult, false, false); // WAS COMMENTED
+                        console.log('SAVEED');
                         if (userForSaving) {
                             userForSaving.userSetting.appDataVersion++;
                             await userForSaving.save();
