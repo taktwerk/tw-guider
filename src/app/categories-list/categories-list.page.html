@@ -3,9 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>
-      {{ 'guides.header' | translate:params }}
-    </ion-title>
+    <ion-title> {{ 'guides.header' | translate:params }} </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
   </ion-toolbar>
 </ion-header>
@@ -31,79 +29,50 @@
         <ion-list class="guide-categories">
           <div *ngFor="let guideCategory of guideCategories; trackBy: trackByFn">
             <div *ngIf="guideCategory.guidesCount">
-                    <ion-item button detail [routerLink]="['/guides/' + guideCategory.idApi]"
-                                class="guide-category"
-                                lines="full"
-                                inset="true"
-                    >
-                      <ion-label slot="start">{{ guideCategory.name }}</ion-label>
-                      <ion-badge color="medium" slot="end">{{ guideCategory.guidesCount }}</ion-badge>
-                    </ion-item>
+              <ion-item button detail [routerLink]="['/guides/' + guideCategory.idApi]" class="guide-category" lines="full" inset="true">
+                <ion-label slot="start">{{ guideCategory.name }}</ion-label>
+                <ion-badge color="medium" slot="end">{{ guideCategory.guidesCount }}</ion-badge>
+              </ion-item>
             </div>
           </div>
         </ion-list>
       </span>
     </div>
     <div *ngSwitchCase="'search'">
-      <ion-toolbar>
-        <ion-searchbar animated="true"
-                       autocomplete="on"
-                       debounce="250"
-                       [value]="searchValue"
-                       placeholder="{{ 'Search all guides' | translate:params }}"
-                       (ionChange)="searchGuides($event)"
-        >
-        </ion-searchbar>
-      </ion-toolbar>
+      <ion-searchbar
+        animated="true"
+        class="search-categories"
+        autocomplete="on"
+        debounce="250"
+        [value]="searchValue"
+        placeholder="{{ 'Search all guides' | translate:params }}"
+        (ionChange)="searchGuides($event)"
+      >
+      </ion-searchbar>
 
       <span *ngIf="isLoadedContent">
         <div *ngIf="guides && guides.length">
-            <div *ngIf="guides.length > guideItemsLimit"
-                 [ngStyle]="{'margin': '15px'}">
-                <div *ngIf="!searchValue">
-                    {{ 'guides.specifySearchMessage' | translate:{guidesCount:guides.length} }}
-                </div>
-                <div *ngIf="searchValue">
-                    {{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
-                </div>
-            </div>
-            <guide-list-component *ngIf="guides.length <= guideItemsLimit"
-                                  [guides]="guides"
-            >
-            </guide-list-component>
+          <div *ngIf="guides.length > guideItemsLimit" [ngStyle]="{'margin': '15px'}">
+            <div *ngIf="!searchValue">{{ 'guides.specifySearchMessage' | translate:{guidesCount:guides.length} }}</div>
+            <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}</div>
+          </div>
+          <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides"> </guide-list-component>
         </div>
-        <div *ngIf="!guides.length"
-             [ngStyle]="{'margin': '15px'}"
-        >
-           {{ 'noResults' | translate:params }}
-        </div>
+        <div *ngIf="!guides.length" [ngStyle]="{'margin': '15px'}">{{ 'noResults' | translate:params }}</div>
       </span>
     </div>
 
     <div *ngSwitchCase="'no-category'">
       <span *ngIf="isLoadedContent">
         <div *ngIf="guidesWithoutCategories && guidesWithoutCategories.length">
-            <div *ngIf="guidesWithoutCategories.length > guideItemsLimit"
-                 [ngStyle]="{'margin': '15px'}">
-                <div *ngIf="!searchValue">
-                    {{ 'guides.specifySearchMessage' | translate:{guidesCount:guides.length} }}
-                </div>
-                <div *ngIf="searchValue">
-                    {{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
-                </div>
-            </div>
-            <guide-list-component *ngIf="guidesWithoutCategories.length <= guideItemsLimit"
-                                  [guides]="guidesWithoutCategories"
-            >
-            </guide-list-component>
+          <div *ngIf="guidesWithoutCategories.length > guideItemsLimit" [ngStyle]="{'margin': '15px'}">
+            <div *ngIf="!searchValue">{{ 'guides.specifySearchMessage' | translate:{guidesCount:guides.length} }}</div>
+            <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}</div>
+          </div>
+          <guide-list-component *ngIf="guidesWithoutCategories.length <= guideItemsLimit" [guides]="guidesWithoutCategories"> </guide-list-component>
         </div>
-        <div *ngIf="!guidesWithoutCategories.length"
-             [ngStyle]="{'margin': '15px'}"
-        >
-           {{ 'noResults' | translate:params }}
-        </div>
+        <div *ngIf="!guidesWithoutCategories.length" [ngStyle]="{'margin': '15px'}">{{ 'noResults' | translate:params }}</div>
       </span>
     </div>
   </div>
-
 </ion-content>

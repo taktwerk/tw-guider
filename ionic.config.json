@@ -1,7 +1,8 @@
 {
   "name": "guide",
   "integrations": {
-    "cordova": {}
+    "cordova": {},
+    "capacitor": {}
   },
   "type": "angular",
   "hooks": {

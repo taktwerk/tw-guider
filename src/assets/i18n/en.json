@@ -5,6 +5,7 @@
   "Search guides by category": "Search guides by current category",
   "send": "Send",
   "Logout": "Logout",
+  "back": "Back",
   "Wrong password!": "Wrong password!",
   "save": "Save",
   "delete": "Delete",
@@ -71,7 +72,8 @@
   "feedback": {
     "header": "Feedback",
     "Feedback list": "Feedback list",
-    "Description": "Description"
+    "Description": "Description",
+    "Note description": "Note description"
   },
   "protocol": {
     "Protocols": "Protocols",
