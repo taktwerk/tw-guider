@@ -1,9 +1,9 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { File } from '@ionic-native/file/ngx';
 import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { Events, NavController, Platform, AlertController } from '@ionic/angular';
+import { Events, NavController, Platform, AlertController, IonBackButtonDelegate } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
@@ -36,6 +36,8 @@ export class FeedbackAddEditPage implements OnInit {
   public reference_model_alias: string = null;
   public defaultTitle = 'Feedback';
   public params;
+
+  @ViewChild(IonBackButtonDelegate, { static: false }) backButton: IonBackButtonDelegate;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -276,5 +278,11 @@ export class FeedbackAddEditPage implements OnInit {
       }
       this.defaultTitle = await this.getDefaultTitle();
     });
+  }
+
+  ionViewDidEnter() {
+    this.backButton.onClick = () => {
+      this.showDeleteAlert();
+    };
   }
 }

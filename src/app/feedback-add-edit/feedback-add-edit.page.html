@@ -116,8 +116,8 @@
           {{ 'delete' | translate:params }}
         </ion-button>
 
-        <ion-button *ngIf="!model[model.COL_ID]" color="light" expand="block" (click)="showDeleteAlert()">
-          {{ 'back' | translate:params }}
+        <ion-button *ngIf="!model[model.COL_ID]" color="danger" expand="block" (click)="showDeleteAlert()">
+          {{ 'Cancel' | translate:params }}
         </ion-button>
       </ion-col>
     </ion-row>
