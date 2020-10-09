@@ -143,18 +143,27 @@ export class DownloadService {
   }
 
   startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<any> {
-    fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
+    return new Promise(async (resolve) => {
+      const blob = await fetch(path).then(r => r.blob());
+      const formData = new FormData();
+      formData.append('file', blob, '1602032535861.jpeg');
+
+      const isUploadedFile = await this.uploadFile(formData, url, headers);
+      resolve(isUploadedFile);
+    });
+
+   /*  fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
     return new Promise((resolve) => {
       this.file
         .resolveDirectoryUrl(this.file.dataDirectory + directoryName)
         .then((directoryEntry) => {
-          this.file
-            .getFile(directoryEntry, fileName, {})
+          this.file.getFile(directoryEntry, fileName, {})
             .then((fileEntry) => {
               fileEntry.file(async (file) => {
                 const imgBlob = await this.readFile(fileKey, file, url, headers);
                 const formData = new FormData();
                 formData.append(fileKey, imgBlob, file.name);
+
                 const isUploadedFile = await this.uploadFile(formData, url, headers);
                 resolve(isUploadedFile);
                 return;
@@ -171,7 +180,7 @@ export class DownloadService {
           resolve(false);
           return;
         });
-    });
+    }); */
   }
 
   readFile(fileKey: string, file: any, url: string, headers?: Headers): Promise<Blob> {
@@ -282,6 +291,11 @@ export class DownloadService {
    */
   public copyToLocalDir(namePath: string, currentName: string, newFilePath: string, newFileName: string): Promise<boolean> {
     return new Promise((resolve) => {
+      console.log('START HEREEEE');
+      console.log(namePath);
+      console.log(currentName);
+      console.log(newFilePath);
+      console.log(newFileName);
       this.file.copyFile(namePath, currentName, newFilePath, newFileName).then(
         (success) => {
           resolve(true);
@@ -558,6 +572,7 @@ export class DownloadService {
   }
 
   public getResolvedNativeFilePath(uri): Promise<string> {
+    console.log('URIII',uri);
     if (!this.filePath) {
       throw new Error('FilePath plugin is not defined');
     }
