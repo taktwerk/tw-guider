@@ -2,6 +2,11 @@ ion-segment-button {
   color: white !important;
 }
 
+ion-segment {
+  display: flex;
+  justify-content: center;
+}
+
 .guides {
   display: flex;
   flex-wrap: wrap;

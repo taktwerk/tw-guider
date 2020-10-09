@@ -9,16 +9,16 @@
 </ion-header>
 
 <ion-content color="primary" class="ion-padding-horizontal">
-  <ion-segment color="light" [(ngModel)]="type" scrollable>
-    <ion-segment-button value="browse" checked>
+  <ion-segment color="light" [(ngModel)]="type" scrollable mode="md">
+    <ion-segment-button value="browse" checked mode="md">
       <ion-label>{{ 'guide-categories.categories' | translate:params }}</ion-label>
       <ion-icon name="filing"></ion-icon>
     </ion-segment-button>
-    <ion-segment-button value="search">
+    <ion-segment-button value="search" mode="md">
       <ion-label>{{ 'Search' | translate:params }}</ion-label>
       <ion-icon name="search"></ion-icon>
     </ion-segment-button>
-    <ion-segment-button *ngIf="guidesWithoutCategories.length" value="no-category">
+    <ion-segment-button mode="md" *ngIf="guidesWithoutCategories.length" value="no-category">
       <ion-label>{{ 'guide-categories.no-category' | translate:params }}</ion-label>
       <ion-icon name="filing"></ion-icon>
     </ion-segment-button>
@@ -41,6 +41,7 @@
     <div *ngSwitchCase="'search'">
       <ion-searchbar
         animated="true"
+        mode="md"
         class="search-categories"
         autocomplete="on"
         debounce="250"
