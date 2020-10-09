@@ -316,9 +316,28 @@ export class FeedbackAddEditPage implements OnInit {
     });
   }
 
+  async showBackAlert() {
+    const alertMessage = await this.translateConfigService.translate('alert.are_you_sure_go_back');
+    const alert = await this.alertController.create({
+      message: alertMessage,
+      buttons: [
+        {
+          text: 'Yes',
+          cssClass: 'primary',
+          handler: () => this.navCtrl.pop(),
+        },
+        {
+          text: 'No',
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
   ionViewDidEnter() {
     this.backButton.onClick = () => {
-      this.showDeleteAlert();
+      this.showBackAlert();
     };
   }
 }
