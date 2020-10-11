@@ -171,14 +171,12 @@ export abstract class ApiService {
     public remove(model: DbApiModel): Promise<any> {
         return new Promise(resolve => {
             // No sync with the API yet? Only local? Delete it
-            console.log('modelmodelmodelmodel', model);
             if (model.idApi == null) {
                 model.remove().then(res => {
                     this.removeFromList(model);
                     resolve(res);
                 });
             } else {
-                console.log('remove data must be');
                 model[model.COL_DELETED_AT] = model[model.COL_LOCAL_DELETED_AT] = new Date();
                 model.save().then(res => {
                     model.deleteAllFiles();
@@ -244,7 +242,6 @@ export abstract class ApiService {
 
     async saveSyncedModel(newModel, canUpdateNotSyncedData = false, willChangeFiles = true) {
         let oldModel = await this.dbModelApi.findFirst(['id', newModel[this.dbModelApi.apiPk]]);
-        console.log('this.dbModelApi.apiPk', this.dbModelApi.apiPk);
         oldModel = oldModel[0] ? oldModel[0] : null;
         if (newModel.deleted_at) {
             if (oldModel) {
@@ -285,13 +282,9 @@ export abstract class ApiService {
             }
         }
         if (!oldModel || oldModel.updated_at !== obj.updated_at) {
-            console.log('before save');
             await obj.save(false, isSynced, updateCondition, false);
-            console.log('after save');
         }
-        console.log('before local relations');
         await obj.updateLocalRelations();
-        console.log('after local relations');
         return await obj.pullFiles(oldModel, this.http.getAuthorizationToken());
     }
 }

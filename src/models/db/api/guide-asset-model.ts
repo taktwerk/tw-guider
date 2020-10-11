@@ -68,6 +68,8 @@ export class GuideAssetModel extends DbApiModel {
         [GuideAssetModel.COL_LOCAL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
     ];
 
+    public migrations = ['NewTestMigration'];
+
     /**
      * @inheritDoc
      */

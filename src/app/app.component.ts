@@ -4,6 +4,7 @@ import {Events, NavController, Platform} from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import {ApiSync} from '../providers/api-sync';
+import {MigrationProvider} from '../providers/migration-provider';
 import {AuthService} from '../services/auth-service';
 import {AuthDb} from '../models/db/auth-db';
 import {Network} from '@ionic-native/network/ngx';
@@ -54,7 +55,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private appVersion: AppVersion,
     public navCtrl: NavController,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private migrationProvider: MigrationProvider
   ) {
     (async () => {
       await this.platform.ready();
@@ -72,6 +74,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   //// TODO in future save device info via API in this place
   async initializeApp() {
+    await this.migrationProvider.init();
     this.translateConfigService.setLanguage();
     const result = await this.login();
     let currentLanguage = '';

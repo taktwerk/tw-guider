@@ -157,7 +157,7 @@ export class ProtocolDefaultService extends ApiService {
             return false;
         }
         this.saveInformation.protocol_file = editFilePath;
-        this.pictureService.editFile(editFilePath, protocol.name);
+        // this.pictureService.editFile(editFilePath, protocol.name);
     }
 
     public async openCreatePage(templateId: number, clientId?, referenceModel?, referenceId?) {
@@ -175,7 +175,7 @@ export class ProtocolDefaultService extends ApiService {
                 return false;
             }
             this.saveInformation.protocol_file = editFilePath;
-            this.pictureService.editFile(editFilePath, protocolTemplate.name);
+            // this.pictureService.editFile(editFilePath, protocolTemplate.name);
         });
     }
 
