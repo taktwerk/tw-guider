@@ -185,6 +185,29 @@ export abstract class DbBaseModel {
         return query;
     }
 
+    public isExistTable() {
+        return new Promise((resolve) => {
+            if (this.dbIsBusy) {
+                resolve(false);
+            } else {
+                this.dbIsBusy = true;
+                this.platform.ready().then(() => {
+                    this.db.query(
+                        "SELECT COUNT(*) FROM " + this.secure(this.TABLE_NAME)
+                    ).then((res) => {
+                        this.dbIsReady = true;
+                        this.dbIsBusy = false;
+                        resolve(true);
+                    }).catch((err) => {
+                        this.dbIsBusy = false;
+                        resolve(false);
+                    });
+                });
+            }
+        });
+        
+    }
+
     /**
      * Creates the db table for the extended db class.
      * @returns {Promise<T>}
@@ -222,9 +245,7 @@ export abstract class DbBaseModel {
                     resolve(false);
                 }
                 const query = 'SELECT * FROM ' + this.secure(this.TABLE_NAME) + ' WHERE ' + this.secure(this.COL_ID) + ' = ' + id;
-                console.log('query', query);
                 db.query(query).then((res) => {
-                    console.log('res', res);
                     if (res.rows.length === 1) {
                         if (newObject) {
                             let obj: DbBaseModel = new (<any>this.constructor);
@@ -294,12 +315,15 @@ export abstract class DbBaseModel {
         const query = this.searchAllQuery(where, orderBy, limit, join, selectFrom);
         const entries: any[] = [];
 
+        console.log('query', query);
+
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
                     resolve(entries);
                 } else {
                     db.query(query).then((res) => {
+                        console.log('search all res', res);
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
                                 const obj = new (this.constructor as any);
@@ -313,6 +337,7 @@ export abstract class DbBaseModel {
                         }
                         resolve(entries);
                     }).catch((err) => {
+                        console.log('is errororrr');
                         resolve(entries);
                     });
                 }
@@ -705,14 +730,17 @@ export abstract class DbBaseModel {
      * Updates this base model instance in the local SQLite db.
      * Make sure to modify the `updateCondition` first if necessary.
      */
-    protected update(): Promise<any> {
+    public update(condition?: any): Promise<any> {
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
                     resolve(false);
                 } else {
+                    if (!condition) {
+                        condition = this.updateCondition;
+                    }
                     let query = 'UPDATE ' + this.secure(this.TABLE_NAME) + ' ' +
-                        'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
+                        'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(condition);
                     db.query(query).then((res) => {
                         this.events.publish(this.TAG + ':update', this);
                         resolve(res);

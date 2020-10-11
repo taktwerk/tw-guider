@@ -80,6 +80,12 @@ export class FeedbackModel extends DbApiModel {
         }
     ];
 
+    public migrations = [
+        'TestMigration',
+        'AnotherMigration',
+        'AnotherTestMigration'
+    ];
+
     /**
      * @inheritDoc
      */
