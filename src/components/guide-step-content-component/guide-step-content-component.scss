@@ -15,12 +15,6 @@
   height: 100%;
 }
 
-.audio-icon {
-  position: absolute;
-  top: 15%;
-  left: 31%;
-}
-
 .audio-icon, .fa-icon {
   color: white;
   font-size: 100pt;
@@ -46,7 +40,7 @@
 .description {
   background-color: white;
   color: black;
-  padding: 15px;
+  padding: 10px;
 }
 
 ion-slides, ion-slide, .guide-step, .grid {
@@ -77,19 +71,30 @@ ion-card {
 
     &.description {
       padding: 0;
-      margin: 0;
-      margin-left: 14px;
+      margin: 0 0 4px 14px;
     }
+  }
+
+  .col-img {
+    margin-bottom: 4px;
   }
 }
 
 @media (orientation: portrait) {
   .col {
-    max-height: 44vh;
+    max-height: calc(100vh - 79px);
     background: transparent;
   }
 
+  .has-media {
+    max-height: calc(50vh - 71px);
+  }
+
+  .col-img {
+    padding: 10px 10px 0px 10px;
+  }
+
   .guide-step-img img {
-    max-height: 44vh;
+    max-height: calc(50vh - 71px);
   }
 }

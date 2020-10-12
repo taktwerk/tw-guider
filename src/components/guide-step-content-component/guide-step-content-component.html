@@ -1,6 +1,6 @@
 <div class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
-  <div class="grid" [ngClass]="{'has-media' : step.getFileName()}">
-    <div class="col" *ngIf="step.getFileName()">
+  <div class="grid">
+    <div class="col col-img" *ngIf="step.getFileName()">
       <div class="guide-step-img">
         <ion-icon
           name="musical-notes"
@@ -45,7 +45,7 @@
         <ion-icon *ngIf="!step.isExistFormatFile()" class="videocam-icon" color="primary" name="cloud-upload"></ion-icon>
       </div>
     </div>
-    <div class="col description">
+    <div class="col description" [ngClass]="{'has-media' : step.getFileName()}">
       <ion-card color="light" class="guide-step-text ion-no-margin">
         <ion-card-header>
           <ion-card-subtitle>{{ guide.short_name }} {{ guide.title }}</ion-card-subtitle>
