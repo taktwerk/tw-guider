@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { File } from '@ionic-native/file/ngx';
 import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
@@ -73,6 +73,8 @@ export class FeedbackAddEditPage implements OnInit {
       this.originalModel = this.model;
     }
   }
+
+  @ViewChild('filePicker', { static: false }) filePickerRef: ElementRef<HTMLInputElement>;
 
   dismiss() {
     this.model.deleteAttachedFilesForDelete();
@@ -232,13 +234,18 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addFileCapacitor() {
+    console.log('before get file');
     const image = await Plugins.Camera.getPhoto({
       allowEditing: false,
       source: CameraSource.Photos,
-      resultType: CameraResultType.Uri
+      resultType: CameraResultType.Uri,
+      saveToGallery: false
     });
+    console.log('after get file', image);
 
     const photoInTempStorage = await Filesystem.readFile({ path: image.path });
+
+    console.log('after readFile', photoInTempStorage);
 
     let date = new Date(),
     time = date.getTime(),
@@ -263,12 +270,25 @@ export class FeedbackAddEditPage implements OnInit {
     this.model.setFileProperty(recordedFile);
   }
 
-  addFile() {
-    this.downloadService
-      .chooseFile(true)
-      .then((recordedFile) => this.model.setFile(recordedFile))
-      .catch((e) => console.log('FeedbackModal', 'addFile', e));
-  }
+  // addFile(event) {
+  //   console.log('change filllleeee');
+  //   const file = (event.target as HTMLInputElement).files[0];
+  //   console.log('filllleee', file);
+  //   const reader = new FileReader();
+  //   const fileReader = new FileReader();
+  //   const zoneOriginalInstance = (fileReader as any)["__zone_symbol__originalInstance"];
+  //   const reader = zoneOriginalInstance || fileReader;
+
+  //   reader.onload = () => {
+  //     console.log('reader.result', reader);
+  //     // this.photo = reader.result.toString();
+  //   };
+  //   reader.readAsArrayBuffer(file);
+  //   // this.downloadService
+  //   //   .chooseFile(true)
+  //   //   .then((recordedFile) => this.model.setFile(recordedFile))
+  //   //   .catch((e) => console.log('FeedbackModal', 'addFile', e));
+  // }
 
   async addVideoUsingCamera() {
     this.downloadService

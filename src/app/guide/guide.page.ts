@@ -156,7 +156,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
   }
 
   protected updateGuideStepSlides() {
-    console.log('updateGuideStepSlides');
+    console.log('updateGuideStepSlides 123');
     if (this.activeGuideStepSlideIndex > (this.virtualGuideStepSlides.length - 1)) {
       this.activeGuideStepSlideIndex = this.virtualGuideStepSlides.length - 1;
     }

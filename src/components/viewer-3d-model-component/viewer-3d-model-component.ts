@@ -8,6 +8,7 @@ import {
     OnInit,
     ViewChild
 } from '@angular/core';
+import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {TrackballControls} from 'three/examples/jsm/controls/TrackballControls';
@@ -28,6 +29,8 @@ import {Viewer3dService} from "../../services/viewer-3d-service";
  * See http://ionicframework.com/docs/components/#navigation for more info
  * on Ionic pages and navigation.
  */
+
+ const { Filesystem } = Plugins;
 
 @Component({
   selector: 'viewer-3d-model-component',
@@ -71,6 +74,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     ) {}
 
     async init() {
+        console.log('init 3d model viewer');
         if (this.isInit) {
             return;
         }
@@ -122,7 +126,22 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         const loader = new GLTFLoader();
         const fileName = this.fileName.substring(this.fileName.lastIndexOf('/') + 1, this.fileName.length);
         const path = this.fileName.slice(0, (fileName.length) * -1);
-        const bufferData = await this.file.readAsArrayBuffer(path, fileName);
+        let bufferData = null;
+        try {
+            const modelFile = await Filesystem.readFile({ path: path + fileName });
+            var binary_string = window.atob(modelFile.data);
+            var len = binary_string.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binary_string.charCodeAt(i);
+            }
+            bufferData = bytes.buffer;
+            // bufferData = await this.file.readAsArrayBuffer(path, fileName);
+            // console.log('bufferDatabufferData', bufferData);
+        } catch (error) {
+            console.log('3d model file error', error);
+        }
+        
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath( '/assets/threeJs/loaders/gltf/draco/' );
         dracoLoader.setDecoderConfig({type: 'js'});
