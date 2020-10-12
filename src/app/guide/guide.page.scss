@@ -35,8 +35,8 @@ ion-slides {
   margin-bottom: 15px;
 }*/
 .guide-assets ion-row {
-  -webkit-flex-wrap: wrap;
-  flex-wrap: wrap;
+/*   -webkit-flex-wrap: wrap;
+  flex-wrap: wrap; */
 }
 
 .guide-step {
@@ -47,7 +47,7 @@ ion-slides {
   height: calc(100% - 3rem);
 }
 
-.guide-step ion-slides {
+.guide-step ion-slides, .guide-step ion-slide {
   height: 100%;
 }
 
