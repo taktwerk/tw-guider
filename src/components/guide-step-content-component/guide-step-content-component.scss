@@ -28,15 +28,12 @@
 
 .guide-step-img {
   text-align: center;
+  overflow: hidden;
   height: 100%;
   img {
     border-radius: 2px;
     -webkit-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
     box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-    max-width: 50%;
-    max-height: 50%;
-    transform: scale(2);
-    transform-origin: top center;
   }
 }
 
@@ -45,50 +42,54 @@
   color: var(--ion-text-color, black);
 }
 
-/* no media, only text (portrait & landscape) */
-/* all without or with assets bar */
-.guide-step-text ion-card-content {
-  max-height: calc(100vh - 15rem);
+
+.description {
+  background-color: white;
+  color: black;
+  padding: 15px;
 }
 
-.has-assets .guide-step-text ion-card-content {
-  max-height: calc(100vh - 18rem);
-}
-
-/* with media, with text (landscape) */
-.has-media .guide-step-text ion-card-content {
-  max-height: calc(100vh - 15rem);
-}
-
-.has-assets .has-media  .guide-step-text ion-card-content {
-  max-height: calc(100vh - 18rem);
-}
-
-/* with media, with text (portrait) */
-@media screen and (orientation:portrait) {
-  .has-media .guide-step-text ion-card-content {
-    max-height: calc(67vh - 15rem);
-  }
-
-  .has-assets .has-media  .guide-step-text ion-card-content {
-    max-height: calc(67vh - 18rem);
-  }
-}
-
-.guide-step ion-grid {
-  height: calc(100vh - 5rem);
-}
-
-.guide-step.has-assets ion-grid {
-  height: calc(100vh - 8rem);
-}
-
-.guide-step ion-row, .guide-step ion-col {
+ion-slides, ion-slide, .guide-step, .grid {
   height: 100%;
 }
 
-@media screen and (orientation:portrait) {
-  .guide-step ion-row, .portrait .guide-step ion-col {
-    height: 33vh;
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+ion-card {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (orientation: landscape) {
+  .grid {
+    display: flex;
+    max-height: calc(100vh - 6em);
+    padding: 10px 15px 24px 10px;
+  }
+
+  .col {
+    flex: 1 1;
+    background: transparent;
+    max-height: initial;
+
+    &.description {
+      padding: 0;
+      margin: 0;
+      margin-left: 14px;
+    }
+  }
+}
+
+@media (orientation: portrait) {
+  .col {
+    max-height: 44vh;
+    background: transparent;
+  }
+
+  .guide-step-img img {
+    max-height: 44vh;
   }
 }
