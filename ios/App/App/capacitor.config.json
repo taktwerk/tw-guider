@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "guide",
+  "appId": "com.taktwerk.twguider2",
+  "appName": "Guider 2",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

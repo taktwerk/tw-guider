@@ -261,6 +261,7 @@ export class DownloadService {
           this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then(
             (success) => {
               if (success) {
+                console.log('is sucessss copieng');
                 resolve(newFilePath + '/' + newFileName);
               } else {
                 console.log('is not success copy dir');
