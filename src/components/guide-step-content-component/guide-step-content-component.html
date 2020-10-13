@@ -28,7 +28,7 @@
           (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
           [ngClass]="{'video-with-thumbnail': step.isExistThumbOfFile()}"
         >
-          <img *ngIf="step.isExistThumbOfFile()" [src]="step.getFileImagePath()" />
+          <img class="video-thumb" *ngIf="step.isExistThumbOfFile()" [src]="step.getFileImagePath()" />
           <ion-icon *ngIf="step.isExistThumbOfFile()" name="play" class="videocam-icon" slot="start"></ion-icon>
           <img *ngIf="!step.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
         </div>
