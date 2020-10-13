@@ -31,6 +31,17 @@
   }
 }
 
+@media (min-width: 576px) {
+  .video-thumb {
+    min-height: 42vh;
+  }
+}
+@media (max-width: 575px) {
+  .video-thumb {
+    min-height: 223px;
+  }
+}
+
 .guide-step-text ion-card-content {
   overflow: scroll;
   color: var(--ion-text-color, black);
@@ -40,7 +51,7 @@
 .description {
   background-color: white;
   color: black;
-  padding: 10px;
+  padding: 9px 10px 10px 10px;
 }
 
 ion-slides, ion-slide, .guide-step, .grid {
@@ -96,5 +107,12 @@ ion-card {
 
   .guide-step-img img {
     max-height: calc(50vh - 71px);
+  }
+
+  .video-with-thumbnail {
+    display: flex;
+    img {
+      flex: 0 0 100%;
+    }
   }
 }
