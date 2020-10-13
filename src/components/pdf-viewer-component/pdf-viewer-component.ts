@@ -1,8 +1,6 @@
-import { Component, ViewChild, OnInit, Input } from '@angular/core';
-import {FileOpener} from '@ionic-native/file-opener/ngx';
-import {FileTransfer} from '@ionic-native/file-transfer/ngx';
-import { HTTP } from '@ionic-native/http/ngx';
-import {ModalController} from '@ionic/angular';
+import { Component, ViewChild, OnInit, Input, AfterViewInit } from '@angular/core';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { ModalController } from '@ionic/angular';
 
 /**
  * Generated class for the TodoPage page.
@@ -15,36 +13,22 @@ import {ModalController} from '@ionic/angular';
   selector: 'pdf-viewer-component',
   templateUrl: 'pdf-viewer-component.html',
 })
-export class PdfViewerComponent implements OnInit {
-    @Input() url: string;
-    @Input() fileTitle: string;
-    
-    @ViewChild('viewer', { static: false }) public embeddedPdfViewer;
+export class PdfViewerComponent implements AfterViewInit {
+  @Input() url: string;
+  @Input() fileTitle: string;
 
-    public pdfUrl = '';
+  constructor(private modalController: ModalController, private fileOpener: FileOpener) {}
 
-    constructor(
-       private modalController: ModalController,
-       private http: HTTP
-   ) {}
-
-   dismiss() {
+  dismiss() {
     this.modalController.dismiss();
-   }
+  }
 
-    ngOnInit(): void {
-     const reqOptions = {
-        method: 'get' as any,
-        responseType: 'blob' as any,
-        headers: {
-          accept: 'application/pdf'
-        }
-      };
+  ngAfterViewInit() {
+    this.fileOpener
+      .open(this.url, 'application/pdf')
+      .then(() => console.log('File is opened'))
+      .catch((e) => console.log('Error opening file', e));
 
-      this.http.sendRequest(this.url, reqOptions)
-        .then((response) => {
-          this.embeddedPdfViewer.pdfSrc = response.data;
-          this.embeddedPdfViewer.refresh();
-        });
-    }
+      this.dismiss();
+  }
 }

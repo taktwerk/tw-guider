@@ -1,6 +1,5 @@
 import {Platform, Events} from '@ionic/angular';
 import {DbProvider} from '../../providers/db-provider';
-import {AppSetting} from '../../services/app-setting';
 import {DownloadService} from '../../services/download-service';
 
 /**
@@ -130,7 +129,8 @@ export abstract class DbBaseModel {
                 this.db.init().then(() => {
                     this.dbCreateTable().then((res) => {
                         if (!res) {
-                            console.log(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME);
+                           // console.log(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME);
+                           // circular dependency (AppSettings import)
                         }
                         resolve(res);
                     });
