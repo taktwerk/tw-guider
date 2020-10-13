@@ -33,7 +33,7 @@
 
 @media (min-width: 576px) {
   .video-thumb {
-    min-height: 42vh;
+    min-height: calc(50vh - 170px);
   }
 }
 @media (max-width: 575px) {
