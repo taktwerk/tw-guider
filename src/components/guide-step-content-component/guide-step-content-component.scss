@@ -26,6 +26,7 @@
   height: 100%;
   img {
     border-radius: 2px;
+    object-fit: contain;
     -webkit-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
     box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
   }
@@ -58,11 +59,17 @@
 .description {
   background-color: white;
   color: black;
-  padding: 9px 10px 10px 10px;
+  padding: 7px 10px 10px 10px;
 }
 
 ion-slides, ion-slide, .guide-step, .grid {
   height: 100%;
+}
+
+.grid {
+  min-height: 0;
+  min-width: 0;
+  padding-bottom: 25px;
 }
 
 .col {
@@ -75,11 +82,16 @@ ion-card {
   flex-direction: column;
 }
 
+.description {
+  flex: 1 1 10%;
+  overflow: scroll;
+}
+
 @media (orientation: landscape) {
   .grid {
-    display: flex;
-    max-height: calc(100vh - 6em);
     padding: 10px 15px 24px 10px;
+    display: flex;
+    max-height: calc(100vh - 75px);
   }
 
   .col {
@@ -95,6 +107,8 @@ ion-card {
 
   .col-img {
     margin-bottom: 4px;
+    display: flex;
+    justify-content: center;
   }
 }
 
@@ -102,10 +116,7 @@ ion-card {
   .col {
     max-height: calc(100vh - 79px);
     background: transparent;
-  }
-
-  .has-media {
-    max-height: calc(50vh - 71px);
+    flex-direction: column;
   }
 
   .col-img {
@@ -114,6 +125,15 @@ ion-card {
 
   .guide-step-img img {
     max-height: calc(50vh - 71px);
+  }
+
+  ion-card, .grid, .description {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &.description {
+    min-height: 0;
   }
 
 }
