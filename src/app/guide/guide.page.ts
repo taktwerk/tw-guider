@@ -127,6 +127,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
         const componentRef = slideComponents[i].createComponent(factory);
         componentRef.instance.step = this.guideSteps[i];
         componentRef.instance.guide = this.guide;
+        componentRef.instance.portraitOriginal = window.innerHeight > window.innerWidth;
         componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
         componentRef.instance.haveAssets = this.haveAssets;
         componentRef.instance.guideStepsLength = this.guideSteps.length;
