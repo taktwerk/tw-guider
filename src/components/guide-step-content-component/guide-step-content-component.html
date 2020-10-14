@@ -1,5 +1,5 @@
 <div class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
-  <div class="grid">
+  <div class="grid" [ngClass]="{'grid-custom': paddingLandscape}">
     <div class="col col-img" *ngIf="step.getFileName()">
       <div class="guide-step-img">
         <ion-icon

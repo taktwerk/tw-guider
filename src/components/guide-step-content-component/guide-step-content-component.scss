@@ -72,6 +72,10 @@ ion-slides, ion-slide, .guide-step, .grid {
   padding-bottom: 25px;
 }
 
+.grid-custom {
+  padding-bottom: 55px;
+}
+
 .col {
   display: flex;
   flex-direction: column;
@@ -89,7 +93,9 @@ ion-card {
 
 @media (orientation: landscape) {
   .grid {
-    padding: 10px 15px 24px 10px;
+    padding-top: 10px;
+    padding-right: 15px;
+    padding-left: 10px;
     display: flex;
     max-height: calc(100vh - 75px);
   }
