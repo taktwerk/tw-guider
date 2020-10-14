@@ -48,6 +48,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     }
     public faFilePdf = faFilePdf;
     @Input() step: GuideStepModel;
+    @Input() portraitOriginal: boolean;
     @Input() guide: GuiderModel;
     @Input() haveFeedbackPermissions: boolean;
     @Input() haveAssets: boolean;
@@ -86,12 +87,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
 
     @HostListener('window:resize')
     onResize() {
-        if (window.innerHeight < window.innerWidth){
-            this.paddingLandscape = true;
-        } else {
-            this.paddingLandscape = false;
-        }
-        this.changeDetectorRef.detectChanges();
+       this.fixLandscapePadding();
     }
 
     public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
@@ -132,5 +128,15 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.loaded.emit();
+        this.fixLandscapePadding();
+    }
+
+    fixLandscapePadding() {
+        if (!this.portraitOriginal && window.innerHeight < window.innerWidth){
+            this.paddingLandscape = true;
+        } else {
+            this.paddingLandscape = false;
+        }
+        this.changeDetectorRef.detectChanges();
     }
 }
