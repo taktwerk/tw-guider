@@ -18,3 +18,9 @@
     color:white !important;
   }
 }
+
+@media (orientation: portrait) {
+  .three-model {
+    max-height: 33vh;
+  }
+}

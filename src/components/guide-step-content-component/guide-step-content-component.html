@@ -28,7 +28,7 @@
           <ion-icon *ngIf="step.isExistThumbOfFile()" name="play" class="videocam-icon" slot="start"></ion-icon>
           <img *ngIf="!step.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
         </div>
-        <div *ngIf="step.is3dFile()" style="width: 100%; height: 100%">
+        <div *ngIf="step.is3dFile()" style="width: 100%; height: 100%;position:relative;">
           <ion-icon
             (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
             name="search"
