@@ -35,7 +35,7 @@
             style="position: absolute; bottom: 0; right: 0; padding: 15px; font-size: 50px; z-index: 1000"
           >
           </ion-icon>
-          <viewer-3d-model-component [fileName]="step.getFilePath()" [backgroundColor]="null" [madeUserIteractions]="false" [willStopRotate]="false">
+          <viewer-3d-model-component [fileName]="step.getFilePath()" [backgroundColor]="null" [madeUserIteractions]="false" [fullScreen]="false" [willStopRotate]="false">
           </viewer-3d-model-component>
         </div>
         <ion-icon *ngIf="!step.isExistFormatFile()" class="videocam-icon" color="primary" name="cloud-upload"></ion-icon>

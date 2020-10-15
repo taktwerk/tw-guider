@@ -42,6 +42,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     @Input() backgroundColor = 'green';
     @Input() madeUserIteractions = true;
     @Input() willStopRotate = true;
+    @Input() fullScreen = true;
 
     @ViewChild('domObj', {static: false}) domObj: ElementRef;
 
@@ -59,7 +60,6 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     gltfScene: any;
     pivot: any;
     requestAnimationFrameId: number;
-
 
     /// new
     ctx: any;
