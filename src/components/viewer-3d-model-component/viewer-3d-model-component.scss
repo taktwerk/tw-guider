@@ -19,8 +19,15 @@
   }
 }
 
+.three-model {
+    height: 100%;
+}
+
 @media (orientation: portrait) {
   .three-model {
-    max-height: 33vh;
+    &.not-full-screen {
+      max-height: 33vh;
+      height: 33vh;
+    }
   }
 }
