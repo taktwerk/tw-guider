@@ -1,5 +1,5 @@
 <div class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
-  <div class="grid">
+  <div class="grid" [ngClass]="{'grid-custom': paddingLandscape}">
     <div class="col col-img" *ngIf="step.getFileName()">
       <div class="guide-step-img">
         <ion-icon
@@ -23,11 +23,7 @@
           (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
           [src]="step.getFileImagePath()"
         />
-        <div
-          *ngIf="step.isVideoFile()"
-          (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
-          [ngClass]="{'video-with-thumbnail': step.isExistThumbOfFile()}"
-        >
+        <div *ngIf="step.isVideoFile()" (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)">
           <img class="video-thumb" *ngIf="step.isExistThumbOfFile()" [src]="step.getFileImagePath()" />
           <ion-icon *ngIf="step.isExistThumbOfFile()" name="play" class="videocam-icon" slot="start"></ion-icon>
           <img *ngIf="!step.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />

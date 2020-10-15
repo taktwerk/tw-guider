@@ -26,19 +26,27 @@
   height: 100%;
   img {
     border-radius: 2px;
+    object-fit: contain;
     -webkit-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
     box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
   }
 }
 
-@media (min-width: 576px) {
+@media (min-width: 576px) and (orientation: portrait) {
   .video-thumb {
-    min-height: 42vh;
+    min-height: calc(50vh - 163px);
   }
   .three-model {
     max-height: 33vh;
   }
 }
+
+@media (min-width: 576px) and (orientation: landscape) {
+  .video-thumb {
+    min-height: calc(50vh - 14px);
+  }
+}
+
 @media (max-width: 575px) {
   .video-thumb {
     min-height: 223px;
@@ -54,11 +62,21 @@
 .description {
   background-color: white;
   color: black;
-  padding: 9px 10px 10px 10px;
+  padding: 7px 10px 10px 10px;
 }
 
 ion-slides, ion-slide, .guide-step, .grid {
   height: 100%;
+}
+
+.grid {
+  min-height: 0;
+  min-width: 0;
+  padding-bottom: 25px;
+}
+
+.grid-custom {
+  padding-bottom: 55px;
 }
 
 .col {
@@ -71,11 +89,18 @@ ion-card {
   flex-direction: column;
 }
 
+.description {
+  flex: 1 1 10%;
+  overflow: scroll;
+}
+
 @media (orientation: landscape) {
   .grid {
+    padding-top: 10px;
+    padding-right: 15px;
+    padding-left: 10px;
     display: flex;
-    max-height: calc(100vh - 6em);
-    padding: 10px 15px 24px 10px;
+    max-height: calc(100vh - 75px);
   }
 
   .col {
@@ -91,6 +116,8 @@ ion-card {
 
   .col-img {
     margin-bottom: 4px;
+    display: flex;
+    justify-content: center;
   }
 }
 
@@ -98,10 +125,7 @@ ion-card {
   .col {
     max-height: calc(100vh - 79px);
     background: transparent;
-  }
-
-  .has-media {
-    max-height: calc(50vh - 71px);
+    flex-direction: column;
   }
 
   .col-img {
@@ -112,10 +136,13 @@ ion-card {
     max-height: calc(50vh - 71px);
   }
 
-  .video-with-thumbnail {
+  ion-card, .grid, .description {
     display: flex;
-    img {
-      flex: 0 0 100%;
-    }
+    flex-direction: column;
   }
+
+  &.description {
+    min-height: 0;
+  }
+
 }
