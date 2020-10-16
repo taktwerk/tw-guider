@@ -47,13 +47,14 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
         console.log('destroy GuideStepContentComponent');
     }
     public faFilePdf = faFilePdf;
-    @Input() step: GuideStepModel;
-    @Input() portraitOriginal: boolean;
-    @Input() guide: GuiderModel;
-    @Input() haveFeedbackPermissions: boolean;
-    @Input() haveAssets: boolean;
-    @Input() guideStepsLength: number;
-    @Input() stepNumber: number;
+    @Input() step: GuideStepModel = null;
+    @Input() portraitOriginal: boolean = false;
+    @Input() guide: GuiderModel = null;
+    @Input() haveFeedbackPermissions: boolean = false;
+    @Input() haveAssets: boolean = false;
+    @Input() guideStepsLength: number = 0;
+    @Input() stepNumber: number = 0;
+    paddingLandscape = false;
 
     @Output() loaded: EventEmitter<void> = new EventEmitter<void>();
 

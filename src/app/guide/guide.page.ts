@@ -163,6 +163,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
     }
     for (let i = 0; i < this.virtualGuideStepSlides.length; i++) {
       if (i < this.activeGuideStepSlideIndex - 1 || i > this.activeGuideStepSlideIndex + 1) {
+        console.log('this.activeGuideStepSlideIndexthis.activeGuideStepSlideIndex');
         if (this.virtualGuideStepSlides[i] && this.virtualGuideStepSlides[i].component) {
           this.virtualGuideStepSlides[i]
               .containerElement
@@ -176,10 +177,21 @@ export class GuidePage implements OnInit, AfterContentChecked {
       }
       if (!this.virtualGuideStepSlides[i].component) {
         const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
+        console.log('factory factory', factory);
         const componentRef = this.virtualGuideStepSlides[i]
             .containerElement
             .createComponent(factory);
+        console.log('componentRef', componentRef);
+        try {
+          console.log('componentRef.instance', componentRef.instance);
+        } catch (e) {
+          console.log('componentRef.instance is errrrrorrrr');
+        }
+        
         componentRef.instance.step = this.guideSteps[i];
+        console.log('this.guideStepsthis.guideSteps', this.guideSteps);
+        console.log('componentRef.instance.step', componentRef.instance.step);
+        console.log('this.guideSteps[i]', this.guideSteps[i]);
         componentRef.instance.guide = this.guide;
         componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
         componentRef.instance.haveAssets = this.haveAssets;
