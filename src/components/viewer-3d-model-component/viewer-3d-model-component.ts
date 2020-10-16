@@ -34,6 +34,7 @@ import {Viewer3dService} from "../../services/viewer-3d-service";
 
 @Component({
   selector: 'viewer-3d-model-component',
+  styleUrls: ['viewer-3d-model-component.scss'],
   templateUrl: 'viewer-3d-model-component.html',
 })
 export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
@@ -41,6 +42,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     @Input() backgroundColor = 'green';
     @Input() madeUserIteractions = true;
     @Input() willStopRotate = true;
+    @Input() fullScreen = true;
 
     @ViewChild('domObj', {static: false}) domObj: ElementRef;
 
@@ -58,7 +60,6 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     gltfScene: any;
     pivot: any;
     requestAnimationFrameId: number;
-
 
     /// new
     ctx: any;

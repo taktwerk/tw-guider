@@ -4,7 +4,7 @@
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
-  "linuxAndroidStudioPath":"/snap/android-studio/current/android-studio/bin/studio.sh",
+  "linuxAndroidStudioPath": "/snap/android-studio/current/android-studio/bin/studio.sh",
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 0
@@ -27,6 +27,6 @@
     }
   },
   "server": {
-    "url": "http://192.168.1.101:8100"
+    "url": "http://192.168.0.74:8100"
   }
 }

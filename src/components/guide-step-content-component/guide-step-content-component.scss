@@ -37,6 +37,9 @@
   .video-thumb {
     min-height: calc(50vh - 163px);
   }
+  .three-model {
+    max-height: 33vh;
+  }
 }
 
 @media (min-width: 576px) and (orientation: landscape) {
