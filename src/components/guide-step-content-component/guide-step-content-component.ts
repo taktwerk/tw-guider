@@ -85,11 +85,6 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
         private elementRef: ElementRef
     ) {}
 
-    @HostListener('window:resize')
-    onResize() {
-       this.fixLandscapePadding();
-    }
-
     public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
         const filePath = basePath;
         let fileTitle = 'Guide';
@@ -128,15 +123,6 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.loaded.emit();
-        this.fixLandscapePadding();
-    }
 
-    fixLandscapePadding() {
-        if (!this.portraitOriginal && window.innerHeight < window.innerWidth){
-            this.paddingLandscape = true;
-        } else {
-            this.paddingLandscape = false;
         }
-        this.changeDetectorRef.detectChanges();
-    }
 }

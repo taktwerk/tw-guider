@@ -279,7 +279,6 @@ export class GuidePage implements OnInit, AfterContentChecked {
     this.slideOpts = {
       initialSlide: 0,
       speed: 400,
-      autoHeight: true,
     };
     const loader = await this.loader.create();
     loader.present();
