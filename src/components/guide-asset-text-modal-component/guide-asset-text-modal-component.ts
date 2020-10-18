@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
 import { Events, ModalController } from '@ionic/angular';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
@@ -14,7 +14,7 @@ import { GuideAssetService } from '../../providers/api/guide-asset-service';
   selector: 'guide-asset-text-modal-component',
   templateUrl: 'guide-asset-text-modal-component.html',
 })
-export class GuideAssetTextModalComponent implements OnInit, OnDestroy {
+export class GuideAssetTextModalComponent implements OnInit {
   public asset: GuideAssetModel;
 
   constructor(
@@ -43,10 +43,5 @@ export class GuideAssetTextModalComponent implements OnInit, OnDestroy {
       this.asset = model;
       this.detectChanges();
     });
-  }
-
-  ngOnDestroy() {
-    this.events.unsubscribe(this.guideAssetService.dbModelApi.TAG + ':create');
-    this.events.unsubscribe(this.guideAssetService.dbModelApi.TAG + ':update');
   }
 }
