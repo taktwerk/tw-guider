@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
-import { Events, LoadingController, ModalController, NavController } from '@ionic/angular';
+import { Events, LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
 
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
@@ -11,13 +11,15 @@ import { GuiderService } from '../../providers/api/guider-service';
 import { GuideStepService } from '../../providers/api/guide-step-service';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
 import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
-import { File } from '@ionic-native/file/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { VideoService } from '../../services/video-service';
 import { Viewer3dService } from '../../services/viewer-3d-service';
 import { PictureService } from '../../services/picture-service';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
+import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
+import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-component/guide-asset-text-modal-component';
+import { DbProvider } from '../../providers/db-provider';
 
 /**
  * Generated class for the TodoPage page.
@@ -57,7 +59,8 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     private guideAssetService: GuideAssetService,
     private guideAssetPivotService: GuideAssetPivotService,
     private activatedRoute: ActivatedRoute,
-    private file: File,
+    public platform: Platform,
+    public db: DbProvider,
     private photoViewer: PhotoViewer,
     public events: Events,
     public authService: AuthService,
@@ -70,8 +73,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     public navCtrl: NavController,
     private ngZone: NgZone,
     private pictureService: PictureService,
-    private loader: LoadingController,
-    private elementRef: ElementRef
+    private loader: LoadingController
   ) {}
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
@@ -110,5 +112,21 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loaded.emit();
+  }
+
+  async openAssetTextModal() {
+    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService);
+    guideAsset.asset_html = this.step.description_html;
+    guideAsset.name = this.step.title;
+
+    const modal = await this.modalController.create({
+      component: GuideAssetTextModalComponent,
+      componentProps: {
+        asset: guideAsset
+      },
+      cssClass: "modal-fullscreen"
+    });
+
+    return await modal.present();
   }
 }
