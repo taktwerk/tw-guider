@@ -1,48 +1,48 @@
 <div style="width: 100%;">
   <div class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
     <div class="grid">
-      <div class="col col-img" *ngIf="step.getFileName()">
+      <div class="col col-img" *ngIf="fileName">
         <div class="guide-step-img">
           <ion-icon
             name="musical-notes"
             class="audio-icon"
             slot="start"
-            *ngIf="step.isAudioFile()"
-            (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
+            *ngIf="isAudioFile"
+            (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)"
           >
           </ion-icon>
           <fa-icon
             [icon]="faFilePdf"
             class="fa-icon"
             slot="start"
-            *ngIf="step.isPdf()"
-            (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
+            *ngIf="isPdf"
+            (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)"
           >
           </fa-icon>
           <img class="guide-img"
-            *ngIf="step.isImageFile()"
-            (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
-            [src]="step.getFileImagePath()"
+            *ngIf="isImageFile"
+            (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)"
+            [src]="fileImagePath"
           />
-          <div class="video-div" *ngIf="step.isVideoFile()" (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)">
-            <img class="video-thumb" *ngIf="step.isExistThumbOfFile()" [src]="step.getFileImagePath()" />
-            <ion-icon *ngIf="step.isExistThumbOfFile()" name="play" class="videocam-icon" slot="start"></ion-icon>
-            <img *ngIf="!step.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
+          <div class="video-div" *ngIf="isVideoFile" (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)">
+            <img class="video-thumb" *ngIf="existThumbOfFile" [src]="fileImagePath" />
+            <ion-icon *ngIf="existThumbOfFile" name="play" class="videocam-icon" slot="start"></ion-icon>
+            <img *ngIf="!existThumbOfFile" [src]="'/assets/videooverlay.png'" />
           </div>
-          <div *ngIf="step.is3dFile()" style="width: 100%; height: 100%; position:relative;">
+          <div *ngIf="is3dFile" style="width: 100%; height: 100%; position:relative;">
             <ion-icon
-              (click)="openFile(step.getFileName(), step.getFileUrl(), step.TABLE_NAME, step.title)"
+              (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)"
               name="search"
               style="position: absolute; bottom: 0; right: 0; padding: 15px; font-size: 50px; z-index: 1000"
             >
             </ion-icon>
-            <viewer-3d-model-component [fileName]="step.getFilePath()" [backgroundColor]="null" [fullScreen]="false" [madeUserIteractions]="false" [willStopRotate]="false">
+            <viewer-3d-model-component [fileName]="filePath3d" [backgroundColor]="null" [fullScreen]="false" [madeUserIteractions]="false" [willStopRotate]="false">
             </viewer-3d-model-component>
           </div>
-          <ion-icon *ngIf="!step.isExistFormatFile()" class="videocam-icon" color="primary" name="cloud-upload"></ion-icon>
+          <ion-icon *ngIf="!isExistFormatFile" class="videocam-icon" color="primary" name="cloud-upload"></ion-icon>
         </div>
       </div>
-      <div class="col description" #description [ngClass]="{'has-media' : step.getFileName()}">
+      <div class="col description" #description [ngClass]="{'has-media' : fileName}">
         <ion-card color="light" class="guide-step-text ion-no-margin">
           <ion-card-header>
             <ion-card-subtitle>{{ guide.short_name }} {{ guide.title }}</ion-card-subtitle>

@@ -4,13 +4,7 @@ import { Events, LoadingController, ModalController, NavController, Platform } f
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { GuideCategoryService } from '../../providers/api/guide-category-service';
-import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
-import { GuiderService } from '../../providers/api/guider-service';
-import { GuideStepService } from '../../providers/api/guide-step-service';
-import { GuideAssetService } from '../../providers/api/guide-asset-service';
-import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
+import { NavigationExtras, Router } from '@angular/router';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { VideoService } from '../../services/video-service';
 import { Viewer3dService } from '../../services/viewer-3d-service';
@@ -20,6 +14,7 @@ import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
 import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { DbProvider } from '../../providers/db-provider';
+import { SafeResourceUrl } from '@angular/platform-browser';
 
 /**
  * Generated class for the TodoPage page.
@@ -45,20 +40,24 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   @Input() haveAssets: boolean = false;
   @Input() guideStepsLength: number = 0;
   @Input() stepNumber: number = 0;
-  paddingLandscape = false;
+
+  fileName: string;
+  fileImagePath: SafeResourceUrl;
+  fileUrl: string;
+  isVideoFile: boolean;
+  filePath3d: any;
+  existThumbOfFile: boolean;
+  isImageFile: boolean;
+  is3dFile: boolean;
+  isExistFormatFile: boolean;
+  isAudioFile: boolean;
+  isPdf: boolean;
 
   @Output() loaded: EventEmitter<void> = new EventEmitter<void>();
 
   public params;
 
   constructor(
-    private guideCategoryService: GuideCategoryService,
-    private guideCategoryBindingService: GuideCategoryBindingService,
-    private guiderService: GuiderService,
-    private guideStepService: GuideStepService,
-    private guideAssetService: GuideAssetService,
-    private guideAssetPivotService: GuideAssetPivotService,
-    private activatedRoute: ActivatedRoute,
     public platform: Platform,
     public db: DbProvider,
     private photoViewer: PhotoViewer,
@@ -71,9 +70,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     private videoService: VideoService,
     private viewer3dService: Viewer3dService,
     public navCtrl: NavController,
-    private ngZone: NgZone,
-    private pictureService: PictureService,
-    private loader: LoadingController
+    private pictureService: PictureService
   ) {}
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
@@ -82,9 +79,8 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     if (title) {
       fileTitle = title;
     }
-    console.log('basePath', basePath);
+
     const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-    console.log('fileUrl', fileUrl);
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
       if (!fileApiUrl) {
         return false;
@@ -112,6 +108,17 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loaded.emit();
+    this.fileName = this.step.getFileName();
+    this.fileUrl = this.step.getFileUrl();
+    this.filePath3d = this.step.getFilePath();
+    this.fileImagePath = this.step.getFileImagePath();
+    this.isVideoFile = this.step.isVideoFile();
+    this.existThumbOfFile = this.step.isExistThumbOfFile();
+    this.isImageFile = this.step.isImageFile();
+    this.is3dFile = this.step.is3dFile();
+    this.isExistFormatFile = this.step.isExistFormatFile();
+    this.isAudioFile = this.step.isAudioFile();
+    this.isPdf = this.step.isPdf();    
   }
 
   async openAssetTextModal() {
