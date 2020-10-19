@@ -1,7 +1,7 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
-import {Events, ModalController} from '@ionic/angular';
-import {GuideAssetService} from '../../providers/api/guide-asset-service';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
+import { Events, ModalController } from '@ionic/angular';
+import { GuideAssetService } from '../../providers/api/guide-asset-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -14,35 +14,34 @@ import {GuideAssetService} from '../../providers/api/guide-asset-service';
   selector: 'guide-asset-text-modal-component',
   templateUrl: 'guide-asset-text-modal-component.html',
 })
-export class GuideAssetTextModalComponent implements OnInit{
+export class GuideAssetTextModalComponent implements OnInit {
+  public asset: GuideAssetModel;
 
-    public asset: GuideAssetModel;
+  constructor(
+    private modalController: ModalController,
+    private events: Events,
+    private guideAssetService: GuideAssetService,
+    public changeDetectorRef: ChangeDetectorRef
+  ) { }
 
-    constructor(private modalController: ModalController,
-                private events: Events,
-                private guideAssetService: GuideAssetService,
-                public changeDetectorRef: ChangeDetectorRef) {
-        ///
+  dismiss() {
+    this.modalController.dismiss();
+  }
+
+  detectChanges() {
+    if (!this.changeDetectorRef['destroyed']) {
+      this.changeDetectorRef.detectChanges();
     }
+  }
 
-    dismiss() {
-        this.modalController.dismiss();
-    }
-
-    detectChanges() {
-        if (!this.changeDetectorRef['destroyed']) {
-            this.changeDetectorRef.detectChanges();
-        }
-    }
-
-    ngOnInit() {
-        this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', (model) => {
-            this.asset = model;
-            this.detectChanges();
-        });
-        this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', (model) => {
-            this.asset = model;
-            this.detectChanges();
-        });
-    }
+  ngOnInit() {
+    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', (model) => {
+      this.asset = model;
+      this.detectChanges();
+    });
+    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', (model) => {
+      this.asset = model;
+      this.detectChanges();
+    });
+  }
 }
