@@ -143,16 +143,18 @@ export class DownloadService {
   }
 
   startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<any> {
+  /*   console.log('fileKey', fileKey);
+    console.log('fileName', fileName);
     return new Promise(async (resolve) => {
       const blob = await fetch(path).then(r => r.blob());
       const formData = new FormData();
-      formData.append('file', blob, '1602032535861.jpeg');
+      formData.append('file', blob, fileName);
 
       const isUploadedFile = await this.uploadFile(formData, url, headers);
       resolve(isUploadedFile);
-    });
+    }); */
 
-   /*  fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
+    fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
     return new Promise((resolve) => {
       this.file
         .resolveDirectoryUrl(this.file.dataDirectory + directoryName)
@@ -180,7 +182,7 @@ export class DownloadService {
           resolve(false);
           return;
         });
-    }); */
+    });
   }
 
   readFile(fileKey: string, file: any, url: string, headers?: Headers): Promise<Blob> {
@@ -203,7 +205,6 @@ export class DownloadService {
         .post(url, formData, { headers: headers })
         .toPromise()
         .then((res) => {
-          console.log('SYNC5');
           console.log('subscribe file uploading', res);
           resolve(res);
         })
