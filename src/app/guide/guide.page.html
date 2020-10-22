@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="primary">
+<ion-content class="guide-page">
   <span *ngIf="isLoadedContent">
     <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
       <ion-slides #guideStepSlide #guideStepSlideElemRef pager="true" [options]="slideOpts" (ionSlideWillChange)="changeGuideStepCurrentSlide()">

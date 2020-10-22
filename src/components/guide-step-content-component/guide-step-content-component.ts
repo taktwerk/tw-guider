@@ -118,7 +118,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     this.is3dFile = this.step.is3dFile();
     this.isExistFormatFile = this.step.isExistFormatFile();
     this.isAudioFile = this.step.isAudioFile();
-    this.isPdf = this.step.isPdf();    
+    this.isPdf = this.step.isPdf();
   }
 
   async openAssetTextModal() {

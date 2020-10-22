@@ -102,6 +102,10 @@ ion-slide {
 .col {
   display: flex;
   flex-direction: column;
+
+  .col-img {
+    background: #E9EAED;
+  }
 }
 
 ion-card {
