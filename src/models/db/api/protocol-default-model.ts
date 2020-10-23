@@ -69,6 +69,8 @@ export class ProtocolDefaultModel extends DbApiModel {
         }
     ];
 
+    public migrations = ['AddPdfImageColumnsToProtocolDefaultTableMigration'];
+
     async updateLocalRelations() {
         if (!this[this.COL_ID] || !this.idApi) {
             return;
