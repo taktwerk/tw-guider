@@ -30,6 +30,9 @@ export class ProtocolTemplateModel extends DbApiModel {
     static COL_THUMB_PROTOCOL_FILE = 'thumb_protocol_file';
     static COL_API_THUMB_PROTOCOL_FILE_PATH = 'thumb_protocol_file_path';
     static COL_LOCAL_THUMB_PROTOCOL_FILE = 'local_thumb_protocol_file';
+    static COL_PDF_IMAGE = 'pdf_image';
+    static COL_API_PDF_IMAGE_PATH = 'pdf_image_path';
+    static COL_LOCAL_PDF_IMAGE = 'local_pdf_image';
 
     /** @inheritDoc */
     TABLE_NAME: string = 'protocol_template';
@@ -50,6 +53,10 @@ export class ProtocolTemplateModel extends DbApiModel {
         [ProtocolTemplateModel.COL_THUMB_PROTOCOL_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
         [ProtocolTemplateModel.COL_API_THUMB_PROTOCOL_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
         [ProtocolTemplateModel.COL_LOCAL_THUMB_PROTOCOL_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
+        /// pdf images
+        [ProtocolTemplateModel.COL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [ProtocolTemplateModel.COL_API_PDF_IMAGE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
     ];
 
     public downloadMapping: FileMapInModel[] = [
@@ -62,6 +69,11 @@ export class ProtocolTemplateModel extends DbApiModel {
                 url: ProtocolTemplateModel.COL_API_THUMB_PROTOCOL_FILE_PATH,
                 localPath: ProtocolTemplateModel.COL_LOCAL_THUMB_PROTOCOL_FILE
             }
+        },
+        {
+            name: ProtocolTemplateModel.COL_PDF_IMAGE,
+            url: ProtocolTemplateModel.COL_API_PDF_IMAGE_PATH,
+            localPath: ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE
         }
     ];
 

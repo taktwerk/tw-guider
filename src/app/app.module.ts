@@ -63,7 +63,9 @@ import {Camera} from '@ionic-native/camera/ngx';
 import {MediaCapture} from '@ionic-native/media-capture/ngx';
 import { VideoEditor } from '@ionic-native/video-editor/ngx';
 import {VideoService} from '../services/video-service';
+import {DrawImageService} from '../services/draw-image-service';
 import {VideoModalComponent} from '../components/modals/video-modal-component/video-modal-component';
+import {DrawImageModalComponent} from '../components/modals/draw-image-modal-component/draw-image-modal-component';
 import {ToastService} from '../services/toast-service';
 import {DocumentViewer} from '@ionic-native/document-viewer/ngx';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
@@ -96,6 +98,8 @@ import {MigrationService} from '../providers/api/migration-service';
 import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewer-component';
 import { PdfViewerComponentModule } from '../components/pdf-viewer-component/pdf-viewer-component.module';
 
+import { Base64ToGallery } from '@ionic-native/base64-to-gallery/ngx';
+
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -108,6 +112,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
+    DrawImageModalComponent,
     Viewer3dModalComponent,
     PdftronModalComponent
   ],
@@ -115,6 +120,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     GuideAssetTextModalComponent,
     SyncModalComponent,
     VideoModalComponent,
+    DrawImageModalComponent,
     Viewer3dModalComponent,
     PdftronModalComponent,
     PdfViewerComponent
@@ -173,6 +179,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     HttpClient,
     DownloadService,
     VideoService,
+    DrawImageService,
     AudioService,
     Viewer3dService,
     PictureService,
@@ -212,7 +219,8 @@ Sentry.init({ dsn: environment.sentryDsn });
     Media,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: ErrorHandler, useClass: SentryIonicErrorHandler},
-    MigrationService
+    MigrationService,
+    Base64ToGallery
   ],
   exports: [
     ProtocolDefaultComponent

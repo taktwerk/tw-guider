@@ -159,7 +159,7 @@ export class AppSetting {
             return;
         }
         const alert = await this.alertController.create({
-            message: this.translateConfigService.translateWord('app.You needs to swipe data and reinstall app'),
+            message: this.translateConfigService.translateWord('app.You need to swipe data and reinstall app'),
             buttons: [
                 {
                     text: 'Ok',

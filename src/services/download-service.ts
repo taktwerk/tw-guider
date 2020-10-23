@@ -413,18 +413,23 @@ export class DownloadService {
     return this.webview.convertFileSrc(path);
   }
 
-  public getSanitizedFileUrl(path, modelName, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
-    path = this.getNativeFilePath(path, modelName);
-    const convertFileSrc = this.getWebviewFileSrc(path);
+    public getSanitizedFileUrl(path, modelName, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
+        path = this.getNativeFilePath(path, modelName);
+        const convertFileSrc = this.getWebviewFileSrc(path);
 
-    const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
-
-    if (sanitizeType === 'trustStyle') {
-      return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
+        return this.getSafeUrl(convertFileSrc, sanitizeType);
     }
 
-    return safeUrl;
-  }
+    public getSafeUrl(convertFileSrc, sanitizeType = 'trustResourceUrl'): SafeResourceUrl
+    {
+        const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
+
+        if (sanitizeType === 'trustStyle') {
+            return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
+        }
+
+        return safeUrl;
+    }
 
   public async chooseFile(withThumbnailForVideo = false): Promise<RecordedFile> {
     const recordedFile = new RecordedFile();
