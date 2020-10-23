@@ -12,12 +12,16 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
+import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
 
 export class RecordedFile {
   uri: string;
   thumbnailUri?: string;
   type?: string;
 }
+
+const { Filesystem } = Plugins;
+
 /**
  * Download file class
  */
@@ -104,8 +108,18 @@ export class DownloadService {
     return await promise;
   }
 
-  download(url, authToken): Promise<any> {
-    const headers = new Headers({ 'Content-Type': 'application/json', 'X-Auth-Token': authToken, 'Access-Control-Allow-Origin': '*' });
+  download(url, authToken?: string): Promise<any> {
+    const headerObject: any = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    };
+    if (authToken) {
+      headerObject['X-Auth-Token'] = authToken;
+    }
+
+    console.log('headerObject', headerObject);
+    
+    const headers = new Headers(headerObject);
 
     return new Promise((resolve) => {
       this.http
@@ -118,6 +132,7 @@ export class DownloadService {
             return;
           },
           (downloadErr) => {
+            console.log('downloadErr', downloadErr);
             resolve(false);
             return;
           }
@@ -143,45 +158,39 @@ export class DownloadService {
   }
 
   startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<any> {
-  /*   console.log('fileKey', fileKey);
-    console.log('fileName', fileName);
     return new Promise(async (resolve) => {
-      const blob = await fetch(path).then(r => r.blob());
+      console.log('push file directoryName', directoryName);
+      console.log('push file path', path);
+      console.log('push file fileKey', fileKey);
+      console.log('push file url', url);
+      fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
+      const fileUriObject = await Filesystem.getUri({
+                  directory: FilesystemDirectory.Data,
+                  path: directoryName + '/' + fileName
+                });
+      console.log('fileUriObject', fileUriObject);
+      const fileUri = Capacitor.convertFileSrc(fileUriObject.uri);
+      console.log('fileUri', fileUri);
+      const downloadedImage = await this.download(fileUri);
+      const imgBlob = downloadedImage.body;
+      console.log('imgBlob', imgBlob);
+      // const file = await Filesystem.readFile({ path: path });
+      // console.log('push file to server file', file);
+      // var binary_string = window.atob(file.data);
+      // var len = binary_string.length;
+      // var bytes = new Uint8Array(len);
+      // for (var i = 0; i < len; i++) {
+      //     bytes[i] = binary_string.charCodeAt(i);
+      // }
+      // const bufferData = bytes.buffer;
+      // const imgBlob = new Blob(bufferData);
+      // const imgBlob = await this.readFile(fileKey, file, url, headers);
       const formData = new FormData();
-      formData.append('file', blob, fileName);
+      formData.append(fileKey, imgBlob, fileName);
 
       const isUploadedFile = await this.uploadFile(formData, url, headers);
       resolve(isUploadedFile);
-    }); */
-
-    fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
-    return new Promise((resolve) => {
-      this.file
-        .resolveDirectoryUrl(this.file.dataDirectory + directoryName)
-        .then((directoryEntry) => {
-          this.file.getFile(directoryEntry, fileName, {})
-            .then((fileEntry) => {
-              fileEntry.file(async (file) => {
-                const imgBlob = await this.readFile(fileKey, file, url, headers);
-                const formData = new FormData();
-                formData.append(fileKey, imgBlob, file.name);
-
-                const isUploadedFile = await this.uploadFile(formData, url, headers);
-                resolve(isUploadedFile);
-                return;
-              });
-            })
-            .catch((err) => {
-              console.log('errr', err);
-              resolve(false);
-              return;
-            });
-        })
-        .catch((err) => {
-          console.log('errr', err);
-          resolve(false);
-          return;
-        });
+      return;
     });
   }
 

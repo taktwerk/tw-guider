@@ -704,19 +704,16 @@ export class ApiSync {
             await this.userService.userDb.save();
             this.isBusyPush = true;
             for (const modelKey of Object.keys(this.allServicesBodiesForPush)) {
-                console.log('push in for');
                 const service: ApiService = this.apiPushServices[modelKey];
                 const url = this.appSetting.getApiUrl() + service.loadUrl + '/batch';
 
                 for (const model of this.allServicesBodiesForPush[modelKey]) {
-                    console.log('push in for model');
                     if (!model) {
                         continue;
                     }
                     if (this.syncMustBeEnd()) {
                         return false;
                     }
-                    console.log('after all if push in for model');
                     const isPushedData = await this.pushDataToServer(url, model, service);
                     if (!isPushedData) {
                         this.isStartPushBehaviorSubject.next(false);
@@ -758,12 +755,6 @@ export class ApiSync {
                 this.countOfAllChangedItems += modelBody[key].length;
             }
         }
-        // const pushItemsCount = this.userService.userDb.userSetting.pushAllItemsCount;
-        // const pushLastElementNumber = this.userService.userDb.userSetting.pushLastElementNumber;
-        // console.log('pushItemsCount', pushItemsCount);
-        // console.log('pushLastElementNumber', pushLastElementNumber);
-        // const alreadyPushedDataToServer = pushItemsCount - pushLastElementNumber;
-        // console.log('alreadyPushedDataToServer');
         if (this.syncProgressStatus.getValue() === 'resume') {
             this.countOfAllChangedItems += this.userService.userDb.userSetting.pushLastElementNumber;
         } else {
