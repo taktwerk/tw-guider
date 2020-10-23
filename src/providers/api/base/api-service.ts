@@ -194,6 +194,7 @@ export abstract class ApiService {
      * @returns {boolean}
      */
     public pushFiles(model: DbApiModel, userForSaving?: UserDb): Promise<boolean> {
+        console.log('push files to server');
         return new Promise(async (resolve) => {
           if (model.platform.is('mobileweb')) {
             resolve(false);
@@ -209,10 +210,14 @@ export abstract class ApiService {
           const uploadFilePromises = [];
           console.log('MODEL.DOWNLOADMAPPING', model.downloadMapping );
           for (const fields of model.downloadMapping) {
+            console.log('in forrrrr of pushing files');
             // If we have a local path but no api path, we need to upload the file!
             if (model[fields.localPath] && !model[fields.url]) {
+                console.log('model[fields.localPath] && !model[fields.url] pushing files');
                 const fieldUrl = url + '?fileAttribute=' + fields.name;
+                console.log('fieledUrl  pushing files', fieldUrl);
                 try {
+                    console.log('in try catcj of push');
                     const uploadResult = await model.downloadService.startUpload(
                         model.TABLE_NAME,
                         fields.name,
