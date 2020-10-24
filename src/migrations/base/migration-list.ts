@@ -1,2 +1,1 @@
-export * from '../another-migration';
-export * from '../another-test-migration';
+export * from '../add-pdf-image-columns-to-protocol-default-table-migration';

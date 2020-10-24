@@ -132,7 +132,7 @@ export class MigrationProvider {
     for (let i = 0; i < migrations.length; i++) {
       const className = migrations[i].name;
       if (migrationList[className]) {
-        const migrationInstance = new migrationList[className]();
+        const migrationInstance = new migrationList[className](this.userService);
         await migrationInstance.execute();
       }
       
