@@ -25,5 +25,8 @@
       "UseSwiftLanguageVersion": "4.2",
       "StatusBarOverlaysWebView": "true"
     }
+  },
+  "server": {
+    "url": "http://192.168.10.1:8100"
   }
 }
