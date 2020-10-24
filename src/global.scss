@@ -124,3 +124,7 @@ sync-modal-component {
 .swiper-slide-active {
   width: 100% !important;
 }
+
+ion-menu ion-content ion-list, .header-list {
+  padding-bottom: 0;
+}
