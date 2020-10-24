@@ -112,6 +112,10 @@ ion-card {
   display: flex;
   flex-direction: column;
   background: white;
+
+  ion-toolbar {
+    --background: #e2e3e463;
+  }
 }
 
 .description {

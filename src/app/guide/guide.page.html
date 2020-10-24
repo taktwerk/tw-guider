@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="guide-page">
+<ion-content class="grey-background">
   <span *ngIf="isLoadedContent">
     <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
       <ion-slides #guideStepSlide #guideStepSlideElemRef pager="true" [options]="slideOpts" (ionSlideWillChange)="changeGuideStepCurrentSlide()">
@@ -18,8 +18,8 @@
         </ion-slide>
       </ion-slides>
       <div *ngIf="guideAssets.length" class="guide-assets">
-        <ion-card color="light">
-          <ion-item>
+        <ion-card>
+          <ion-item class="asset-item">
             <ion-icon name="information-circle" slot="start"></ion-icon>
             <ion-label>{{ "guide.Assets" | translate: params }}</ion-label>
           </ion-item>
