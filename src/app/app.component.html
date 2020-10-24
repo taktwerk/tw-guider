@@ -6,8 +6,8 @@
           <ion-title>Guider App</ion-title>
         </ion-toolbar>
       </ion-header>
-      <ion-content>
-        <ion-list>
+      <ion-content class="grey-background">
+        <ion-list class="header-list">
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
             <ion-item *ngIf="p.url"
                       [routerDirection]="'root'"

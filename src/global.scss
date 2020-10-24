@@ -57,7 +57,7 @@ $save-changes-alert-width: 400px;
   }
 }
 
-.main-categories, .guide-page, .guite-step, .feedback-list, .protocol-page, .profile-page, .about-page {
+.grey-background {
   --ion-color-base: #E9EAED !important;
   --background: #E9EAED !important;
 }
@@ -70,9 +70,9 @@ ion-header {
   }
 
   sync-spinner-component {
-    order: 6;
+    order: 2;
     margin-left: 20px;
-    margin-top: 12px;
+    margin-top: 5px;
 
     ion-icon {
       fill: white;
@@ -123,4 +123,8 @@ sync-modal-component {
 
 .swiper-slide-active {
   width: 100% !important;
+}
+
+ion-menu ion-content ion-list, .header-list {
+  padding-bottom: 0;
 }

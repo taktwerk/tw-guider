@@ -9,7 +9,7 @@
     <sync-spinner-component slot="primary"></sync-spinner-component>
     <ion-back-button text=""></ion-back-button>
   </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar class="search-toolbar">
     <ion-searchbar animated="true"
                    autocomplete="on"
                    debounce="250"
@@ -20,7 +20,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="grey-background">
   <span *ngIf="isLoadedContent">
       <div *ngIf="guideCategory && guideCategory.guides && guideCategory.guides.length">
         <h4 class="ion-margin-horizontal">{{ 'guide-categories.category' | translate:params }}: {{ guideCategory.name }}</h4>

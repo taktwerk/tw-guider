@@ -39,6 +39,14 @@ ion-slides {
   flex-wrap: wrap; */
 }
 
+ion-card {
+  --background: white;
+
+  .asset-item {
+    --background: #e2e3e463;
+  }
+}
+
 .guide-step {
   height: 100%;
 }
