@@ -73,7 +73,8 @@
     "header": "Feedback",
     "Feedback list": "Feedback list",
     "Description": "Description",
-    "Note description": "Note description"
+    "Note description": "Note description",
+    "No feedbacks": "No feedbacks registered"
   },
   "protocol": {
     "Protocols": "Protocols",

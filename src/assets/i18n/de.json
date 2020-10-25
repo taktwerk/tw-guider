@@ -70,7 +70,8 @@
     "header": "Feedback",
     "Feedback list": "Feedback Liste",
     "Description": "Beschreibung",
-    "Note description": "Beschreibung beachten"
+    "Note description": "Beschreibung beachten",
+    "No feedbacks": "Keine Rückmeldungen registriert"
   },
   "protocol": {
     "Protocols": "Protokolle",
