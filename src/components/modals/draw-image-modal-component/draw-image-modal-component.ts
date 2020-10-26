@@ -4,6 +4,9 @@ import {ToastService} from '../../../services/toast-service';
 import {StreamingMedia, StreamingVideoOptions} from '@ionic-native/streaming-media/ngx';
 import {DownloadService} from '../../../services/download-service';
 import { Base64ToGallery, Base64ToGalleryOptions } from '@ionic-native/base64-to-gallery/ngx';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslateConfigService } from '../../../services/translate-config.service';
+
 
 /**
  * Generated class for the TodoPage page.
@@ -50,6 +53,8 @@ export class DrawImageModalComponent implements AfterViewChecked {
      
       drawing = false;
       lineWidth = 5;
+
+      saveTranslatdWord = 'Save';
      
       constructor(
         private plt: Platform,
@@ -57,8 +62,11 @@ export class DrawImageModalComponent implements AfterViewChecked {
         private toastCtrl: ToastController,
         private modalController: ModalController,
         private downloadService: DownloadService,
-        private events: Events
-      ) {}
+        private events: Events,
+        private translateConfigService: TranslateConfigService
+      ) {
+        this.saveTranslatdWord = this.translateConfigService.translateWord('save');
+      }
 
       init() {
         if (this.isInit) {
