@@ -135,8 +135,6 @@ export class ProtocolService extends ApiService {
                         obj.workflowStep = await this.workflowStepService.getById(obj.workflow_step_id);
                         obj.canEditProtocol = await this.canEditProtocol(obj);
                         obj.canFillProtocol = await this.canFillProtocol(obj);
-                        // obj.comments = await this.getComments(obj);
-                        console.log('obj.comments', obj.comments);
                         entries.push(obj);
                     }
                 }
