@@ -1,18 +1,16 @@
 import { NgModule } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {IonicModule} from '@ionic/angular';
-import {DrawImageModalComponent} from './draw-image-modal-component';
+import {TranslateModule} from '@ngx-translate/core';
+
 
 @NgModule({
-  declarations: [
-    DrawImageModalComponent
-  ],
+  declarations: [],
   imports: [
     CommonModule,
     IonicModule,
+    TranslateModule
   ],
-  exports: [
-    DrawImageModalComponent
-  ],
+  exports: []
 })
 export class DrawImageModalComponentModule {}
