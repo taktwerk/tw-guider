@@ -53,6 +53,9 @@
       <ion-icon slot="icon-only" name="create"></ion-icon>
     </ion-button>
   </ion-item>
+
+  <div *ngIf="!feedbackList.length" [ngStyle]="{'margin': '15px', 'text-align': 'center'}">{{ 'feedback.No feedbacks' | translate:params }}</div>
+
   <div style="height: 70px"></div>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="openAddEditPage()">
     <ion-fab-button>
