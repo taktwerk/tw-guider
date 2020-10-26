@@ -20,6 +20,11 @@ export class ProtocolService extends ApiService {
     dbModelApi: ProtocolModel = new ProtocolModel(this.p, this.db, this.events, this.downloadService);
     user: AuthDb;
 
+    possibleDatabaseNamespaces = [
+        'app',
+        'taktwerk\\yiiboilerplate'
+    ];
+
     /**
      * Constructor
      * @param http
@@ -61,11 +66,6 @@ export class ProtocolService extends ApiService {
                 'protocol_template.local_deleted_at IS NULL',
                 '1=1'
             ];
-            // const protocolSearchCondition: any[] = [
-            //     '1=1',
-            //     'protocol_template.deleted_at IS NULL',
-            //     'protocol_template.local_deleted_at IS NULL',
-            // ];
             if (templateId) {
                 protocolSearchCondition.push(
                     this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('id') + '=' + templateId
@@ -77,25 +77,19 @@ export class ProtocolService extends ApiService {
                     this.dbModelApi.secure('protocol_template') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
                 );
             }
-            // if (!user.isAuthority) {
-            //     const isProtocolAdmin = (this.authService.isHaveUserRole('ProtocolAdmin') && user.client_id);
-            //     console.log('ProtocolAdmin', isProtocolAdmin);
-            //     if (isProtocolAdmin) {
-            //         protocolSearchCondition.push(
-            //             this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
-            //         );
-            //     } else if (this.authService.isHaveUserRole('ProtocolViewer') && user.userId) {
-            //         protocolSearchCondition.push(
-            //             this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('created_by') + '=' + user.userId
-            //         );
-            //     } else {
-            //         resolve([]);
-            //         return;
-            //     }
-            // }
-            if (referenceModel && referenceId) {
+            if (referenceModel && referenceId && this.possibleDatabaseNamespaces.length) {
+                let referenceModelQuery = '(';
+                for (let i = 0; i < this.possibleDatabaseNamespaces.length; i++) {
+                    const referenceModelName = this.possibleDatabaseNamespaces[i] + referenceModel;
+                    referenceModelQuery = referenceModelQuery + this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('reference_model') + '= \'' + referenceModelName + '\'';
+                    if (this.possibleDatabaseNamespaces.length > 1 && i !== (this.possibleDatabaseNamespaces.length - 1)) {
+                        referenceModelQuery = referenceModelQuery + ' OR ';
+                    }
+
+                }
+                referenceModelQuery = referenceModelQuery + ')';
                 protocolSearchCondition.push(
-                    this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('reference_model') + '= \'' + referenceModel + '\''
+                    referenceModelQuery
                 );
                 protocolSearchCondition.push(
                     this.dbModelApi.secure('protocol') + '.' + this.dbModelApi.secure('reference_id') + '=' + referenceId
@@ -141,8 +135,6 @@ export class ProtocolService extends ApiService {
                         obj.workflowStep = await this.workflowStepService.getById(obj.workflow_step_id);
                         obj.canEditProtocol = await this.canEditProtocol(obj);
                         obj.canFillProtocol = await this.canFillProtocol(obj);
-                        // obj.comments = await this.getComments(obj);
-                        console.log('obj.comments', obj.comments);
                         entries.push(obj);
                     }
                 }

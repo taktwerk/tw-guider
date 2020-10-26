@@ -80,12 +80,6 @@ export class FeedbackModel extends DbApiModel {
         }
     ];
 
-    public migrations = [
-        'TestMigration',
-        'AnotherMigration',
-        'AnotherTestMigration'
-    ];
-
     /**
      * @inheritDoc
      */
@@ -100,9 +94,9 @@ export class FeedbackModel extends DbApiModel {
     getReferenceModelByAlias(referenceModelAlias) {
         switch (referenceModelAlias) {
             case 'guide':
-                return 'app\\modules\\guide\\models\\Guide';
+                return '\\modules\\guide\\models\\Guide';
             case 'guide_step':
-                return 'app\\modules\\guide\\models\\GuideStep';
+                return '\\modules\\guide\\models\\GuideStep';
             default:
                 return null;
         }

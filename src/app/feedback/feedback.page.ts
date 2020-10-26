@@ -25,6 +25,10 @@ export class FeedbackPage implements OnInit {
   public feedbackList: FeedbackModel[] = [];
   public isComponentLikeModal = false;
   public params;
+  possibleDatabaseNamespaces = [
+      'app',
+      'taktwerk\\yiiboilerplate'
+  ];
 
   constructor(
     private feedbackService: FeedbackService,
@@ -51,29 +55,27 @@ export class FeedbackPage implements OnInit {
     if (!user) {
       return;
     }
-    // const feedbackSearchCondition: any[] = ['1=1', 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
     const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
-    // if (!user.isAuthority) {
-    //     if (this.authService.isHaveUserRole('FeedbackAdmin') && user.client_id) {
-    //         feedbackSearchCondition.push(['client_id', user.client_id]);
-    //     } else if (this.authService.isHaveUserRole('FeedbackViewer') && user.userId) {
-    //         feedbackSearchCondition.push(['created_by', user.userId]);
-    //     } else {
-    //         return [];
-    //     }
-    // }
 
     if (this.reference_id && this.reference_model) {
+      let referenceModelQuery = '(';
+      for (let i = 0; i < this.possibleDatabaseNamespaces.length; i++) {
+          const referenceModelName = this.possibleDatabaseNamespaces[i] + this.reference_model;
+          referenceModelQuery = referenceModelQuery + this.feedbackService.dbModelApi.secure('reference_model') + '= \'' + referenceModelName + '\'';
+          if (this.possibleDatabaseNamespaces.length > 1 && i !== (this.possibleDatabaseNamespaces.length - 1)) {
+              referenceModelQuery = referenceModelQuery + ' OR ';
+          }
+
+      }
+      referenceModelQuery = referenceModelQuery + ')';
       feedbackSearchCondition.push(
         '(' +
           this.feedbackService.dbModelApi.secure('reference_model') +
           '= "' +
           this.reference_model_alias +
           '" OR ' +
-          this.feedbackService.dbModelApi.secure('reference_model') +
-          '="' +
-          this.reference_model +
-          '")'
+          referenceModelQuery +
+          ')'
       );
       feedbackSearchCondition.push(['reference_id', this.reference_id]);
     }
@@ -95,7 +97,6 @@ export class FeedbackPage implements OnInit {
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-      // this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
       this.pictureService.openFile(fileUrl, fileTitle);
     }
   }

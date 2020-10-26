@@ -79,9 +79,9 @@ export class ProtocolModel extends DbApiModel {
     getReferenceModelByAlias(referenceModelAlias) {
         switch (referenceModelAlias) {
             case 'guide':
-                return 'app\\modules\\guide\\models\\Guide';
+                return '\\modules\\guide\\models\\Guide';
             case 'guide_step':
-                return 'app\\modules\\guide\\models\\GuideStep';
+                return '\\modules\\guide\\models\\GuideStep';
             default:
                 return null;
         }
@@ -105,7 +105,6 @@ export class ProtocolModel extends DbApiModel {
     }
 
     async updateLocalRelations() {
-        console.log('protocol update local relations');
         if (!this[this.COL_ID] || !this.idApi) {
             return;
         }
