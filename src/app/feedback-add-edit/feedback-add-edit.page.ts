@@ -147,7 +147,7 @@ export class FeedbackAddEditPage implements OnInit {
       this.model.reference_id = this.reference_id;
     }
     if (this.reference_model) {
-      this.model.reference_model = this.reference_model;
+      this.model.reference_model = 'taktwerk\\yiiboilerplate' + this.reference_model;
     }
     if (!(await this.isValidFeedback())) {
       return;
@@ -155,6 +155,7 @@ export class FeedbackAddEditPage implements OnInit {
     if (!this.model.title) {
       this.model.title = this.defaultTitle;
     }
+    console.log('this.model for save', this.model);
     this.feedbackService.save(this.model).then(async (res) => {
       this.apiSync.setIsPushAvailableData(true);
       const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Feedback' });
@@ -270,26 +271,6 @@ export class FeedbackAddEditPage implements OnInit {
     this.model.setFileProperty(recordedFile);
   }
 
-  // addFile(event) {
-  //   console.log('change filllleeee');
-  //   const file = (event.target as HTMLInputElement).files[0];
-  //   console.log('filllleee', file);
-  //   const reader = new FileReader();
-  //   const fileReader = new FileReader();
-  //   const zoneOriginalInstance = (fileReader as any)["__zone_symbol__originalInstance"];
-  //   const reader = zoneOriginalInstance || fileReader;
-
-  //   reader.onload = () => {
-  //     console.log('reader.result', reader);
-  //     // this.photo = reader.result.toString();
-  //   };
-  //   reader.readAsArrayBuffer(file);
-  //   // this.downloadService
-  //   //   .chooseFile(true)
-  //   //   .then((recordedFile) => this.model.setFile(recordedFile))
-  //   //   .catch((e) => console.log('FeedbackModal', 'addFile', e));
-  // }
-
   async addVideoUsingCamera() {
     this.downloadService
       .recordVideo(true)
@@ -326,7 +307,8 @@ export class FeedbackAddEditPage implements OnInit {
       const feedbackData = params;
       this.reference_id = +feedbackData.referenceId;
       this.reference_model_alias = feedbackData.referenceModelAlias;
-      this.reference_model = this.reference_model_alias;
+      this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
+      console.log('feedback add edit this.reference_model_alias', this.reference_model_alias);
       this.feedbackId = +feedbackData.feedbackId;
       if (this.feedbackId) {
         const result = await this.feedbackService.dbModelApi.findFirst([this.model.COL_ID, this.feedbackId]);
