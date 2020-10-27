@@ -115,7 +115,7 @@ export class ProtocolAddEditPage implements OnInit {
       this.model.workflow_step_id = workflowFirstStep.idApi;
       this.model.protocol_form_number = 0;
       this.model.protocol_form_table = this.protocol_form.TABLE_NAME;
-      this.model.reference_model = this.reference_model;
+      this.model.reference_model = 'taktwerk\\yiiboilerplate' + this.reference_model;
       this.model.reference_id = this.reference_id;
       this.model.name = protocolName;
       this.model.creator = this.getCreatorName();

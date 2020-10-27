@@ -138,6 +138,7 @@ export class FeedbackPage implements OnInit {
       this.reference_id = +feedbackData.referenceId;
       this.reference_model_alias = feedbackData.referenceModelAlias;
       this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
+      console.log('feedback page reference_model', this.reference_model);
       if (this.reference_model) {
         this.isComponentLikeModal = true;
       }
