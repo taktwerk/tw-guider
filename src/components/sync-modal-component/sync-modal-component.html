@@ -20,12 +20,14 @@
         </section>
         <div *ngIf="isNetwork || appSetting.isEnabledUsb">
           <section>
-            <div *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'">
+            <div style="font-size: 15px" *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'">
               {{ 'sync-modal.In progress' | translate:params }}<span class="dot1">.</span><span class="dot2">.</span><span class="dot3">.</span>
             </div>
 
             <app-progress-bar [progress]="syncedItemsPercent" [color]="syncProgressStatus === 'failed' ? '#989aa2' : '#babcbf'"></app-progress-bar>
-            <div>{{ syncedItemsCount }}/{{ syncAllItemsCount }} {{getProgressText()}}</div>
+            <div style="font-size: 15px">{{ syncedItemsCount }}/{{ syncAllItemsCount }}
+              {{getProgressText()}}
+            </div>
           </section>
 
           <section *ngIf="modeSync === 0" class="modeSync0">
