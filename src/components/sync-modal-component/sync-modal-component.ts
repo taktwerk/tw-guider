@@ -14,6 +14,7 @@ import { UserService } from '../../services/user-service';
 import { SyncMode } from '../synchronization-component/synchronization-component';
 import { AppSetting } from '../../services/app-setting';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { TranslateConfigService } from '../../services/translate-config.service';
 
 /**
  * Generated class for the TodoPage page.
@@ -58,6 +59,7 @@ export class SyncModalComponent implements OnInit {
     public authService: AuthService,
     private platform: Platform,
     private db: DbProvider,
+    private translateConfigService: TranslateConfigService,
     private events: Events,
     private syncService: SyncService,
     public network: Network,
@@ -199,5 +201,19 @@ export class SyncModalComponent implements OnInit {
     this.events.subscribe('user:logout', () => {
       this.dismiss();
     });
+  }
+
+  getProgressText() {
+    switch (this.syncProgressStatus) {
+      case 'pause':
+        return '(' + this.translateConfigService.translateWord('sync-modal.Paused') + ')';
+      case 'failed':
+        return '(' + this.translateConfigService.translateWord('sync-modal.Failed') + ')';
+      case 'success':
+        return '(' + this.translateConfigService.translateWord('sync-modal.Success') + ')';
+
+      default:
+        return '';
+    }
   }
 }
