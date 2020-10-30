@@ -41,7 +41,7 @@
     "In progress": "In Arbeit",
     "(Prepare data)": "Vorbereitung der Daten",
     "(Prepare data for resume)": "Vorbereitung der Daten für Fortsetzung",
-    "Pause" : "Pause",
+    "Paused" : "Pausiert",
     "Failed" : "Fehlgeschlagen",
     "Success" : "Erfolgreich",
     "No data for sync." : "Keine Daten zur Synchronisierung.",
