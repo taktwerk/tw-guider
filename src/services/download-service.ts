@@ -159,32 +159,14 @@ export class DownloadService {
 
   startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<any> {
     return new Promise(async (resolve) => {
-      console.log('push file directoryName', directoryName);
-      console.log('push file path', path);
-      console.log('push file fileKey', fileKey);
-      console.log('push file url', url);
       fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
       const fileUriObject = await Filesystem.getUri({
                   directory: FilesystemDirectory.Data,
                   path: directoryName + '/' + fileName
                 });
-      console.log('fileUriObject', fileUriObject);
       const fileUri = Capacitor.convertFileSrc(fileUriObject.uri);
-      console.log('fileUri', fileUri);
       const downloadedImage = await this.download(fileUri);
       const imgBlob = downloadedImage.body;
-      console.log('imgBlob', imgBlob);
-      // const file = await Filesystem.readFile({ path: path });
-      // console.log('push file to server file', file);
-      // var binary_string = window.atob(file.data);
-      // var len = binary_string.length;
-      // var bytes = new Uint8Array(len);
-      // for (var i = 0; i < len; i++) {
-      //     bytes[i] = binary_string.charCodeAt(i);
-      // }
-      // const bufferData = bytes.buffer;
-      // const imgBlob = new Blob(bufferData);
-      // const imgBlob = await this.readFile(fileKey, file, url, headers);
       const formData = new FormData();
       formData.append(fileKey, imgBlob, fileName);
 

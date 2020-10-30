@@ -112,22 +112,24 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
 
         cachedSceneObject = await this.storage.get(this.fileName);
 
-        if (cachedSceneObject) {
-            const loaderSecond = new THREE.ObjectLoader();
-            const scene: any = loaderSecond.parse(cachedSceneObject);
-            this.gltfScene = scene;
-            THREE.Cache.enabled = true;
-            THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(scene));
-            THREE.Cache.enabled = false;
-            this.renderModel();
-            return;
-        }
+        // if (cachedSceneObject) {
+        //     const loaderSecond = new THREE.ObjectLoader();
+        //     const scene: any = loaderSecond.parse(cachedSceneObject);
+        //     this.gltfScene = scene;
+        //     THREE.Cache.enabled = true;
+        //     THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(scene));
+        //     THREE.Cache.enabled = false;
+        //     this.renderModel();
+        //     return;
+        // }
 
         const loader = new GLTFLoader();
         const fileName = this.fileName.substring(this.fileName.lastIndexOf('/') + 1, this.fileName.length);
         const path = this.fileName.slice(0, (fileName.length) * -1);
         let bufferData = null;
+        console.log('please show console log');
         try {
+            console.log('pathfileName', (path + fileName));
             const modelFile = await Filesystem.readFile({ path: path + fileName });
             var binary_string = window.atob(modelFile.data);
             var len = binary_string.length;

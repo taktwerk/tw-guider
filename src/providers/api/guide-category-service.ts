@@ -195,9 +195,6 @@ export class GuideCategoryService extends ApiService {
             }
             if (!user.isAuthority) {
                 whereCondition.push(
-                    this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
-                );
-                whereCondition.push(
                     this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
                 );
             }
@@ -241,6 +238,11 @@ export class GuideCategoryService extends ApiService {
                     this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_category_id') +
                     ' = ' +
                     this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id');
+                    if (!user.isAuthority) {
+                        whereCondition.push(
+                            this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
+                        );
+                    }
             }
             
             const selectFrom = 'SELECT ' + this.dbModelApi.secure('guide') + '.*' + ' from ' + this.dbModelApi.secure('guide');
