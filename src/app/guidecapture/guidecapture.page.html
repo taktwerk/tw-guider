@@ -10,9 +10,9 @@
 
 <ion-content>
   <ion-list>
-    <ion-card *ngFor="let guide of guides">
-      <img [src]="guide.preview_file" *ngIf="guide.getFileImagePath()">
-      <img src="../../assets/placeholder.jpg" *ngIf="!guide.getFileImagePath()">
+      <ion-card *ngFor="let guide of guides">
+      <img [src]="guide.getFileImagePath()" *ngIf="guide.getFileImagePath()" class="guide_preview">
+      <img src="../../assets/placeholder.jpg" *ngIf="!guide.getFileImagePath()" class="guide_preview">
       <ion-card-content>
         <ion-item lines="none" class="no-padding">
           <ion-card-title>

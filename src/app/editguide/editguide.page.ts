@@ -31,9 +31,9 @@ export class EditguidePage implements OnInit {
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.has('id')) {
-        this.guideId = paramMap.get("id")
+        this.guideId = paramMap.get("id");
         this.guide = this.guiderService.getById(this.guideId)[0];
-        this.setGuideSteps(this.guide.idApi);
+        this.setGuideSteps(this.guideId);
         this.setAssets(this.guide.idApi);
       }
     })
