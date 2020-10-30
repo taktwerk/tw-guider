@@ -474,6 +474,7 @@ export class AuthService {
     }
 
     public isHaveUserRole(roleName: string): boolean {
+        console.log(this.auth.additionalInfo)
         return this.isHaveUserRoles() && this.auth.additionalInfo.roles.includes(roleName);
     }
 

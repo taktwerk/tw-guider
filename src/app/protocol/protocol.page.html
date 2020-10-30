@@ -6,14 +6,15 @@
         <ion-title>
             {{ 'protocol.Protocols' | translate:params }}
         </ion-title>
-        <ion-back-button *ngIf="isComponentLikeModal" text="" defaultHref="{{ backDefaultHref || '/guide-categories' }}">
+        <ion-back-button *ngIf="isComponentLikeModal" text=""
+            defaultHref="{{ backDefaultHref || '/guide-categories' }}">
         </ion-back-button>
         <sync-spinner-component slot="primary"></sync-spinner-component>
     </ion-toolbar>
 </ion-header>
 
 <ion-content class="grey-background protocol-content">
-    <ion-list *ngFor="let protocol  of protocolList">
+    <ion-list *ngFor="let protocol of protocolList">
         <ion-item>
             <ion-label>
                 <h2>{{ 'protocol.Protocol' | translate:params }}:
@@ -32,26 +33,17 @@
                     {{ 'protocol.Assignee' | translate:params }}: {{ 'All' | translate:params }}
                 </p>
             </ion-label>
-            <ion-button *ngIf="protocol.workflowStep && protocol.canEditProtocol"
-                        slot="end"
-                        fill="clear"
-                        (click)="openAddEditPage(protocol[protocol.COL_ID])"
-            >
+            <ion-button *ngIf="protocol.workflowStep && protocol.canEditProtocol" slot="end" fill="clear"
+                (click)="openAddEditPage(protocol[protocol.COL_ID])">
                 <ion-icon slot="icon-only" name="create"></ion-icon>
             </ion-button>
         </ion-item>
     </ion-list>
     <div style="height: 70px;">
     </div>
-    <ion-fab *ngIf="userCanCreateProtocol"
-             vertical="bottom"
-             horizontal="end"
-             slot="fixed"
-             (click)="openAddEditPage()"
-    >
+    <ion-fab *ngIf="userCanCreateProtocol" vertical="bottom" horizontal="end" slot="fixed" (click)="openAddEditPage()">
         <ion-fab-button>
             <ion-icon name="add"></ion-icon>
         </ion-fab-button>
     </ion-fab>
 </ion-content>
-

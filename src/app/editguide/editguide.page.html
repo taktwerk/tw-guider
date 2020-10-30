@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title> {{ 'editguide.header' | translate }} </ion-title>
+    <sync-spinner-component slot="primary"></sync-spinner-component>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-card *ngFor="let step of guideSteps">
+      <div class="stepMedia">
+
+        <ion-icon name="musical-notes" class="audio-icon" slot="start" *ngIf="step.isAudioFile()">
+        </ion-icon>
+
+        <fa-icon [icon]="faFilePdf" class="fa-icon" slot="start" *ngIf="step.isPdf()"> </fa-icon>
+
+        <img class="guide-img" *ngIf="step.isImageFile()" [src]="step.getFileImagePath()" />
+
+        <div class="video-div" *ngIf="step.isVideoFile()">
+          <img class="video-thumb" *ngIf="step.isExistThumbOfFile()" [src]="step.getFileImagePath()" />
+          <ion-icon *ngIf="step.isExistThumbOfFile()" name="play" class="videocam-icon" slot="start"></ion-icon>
+          <img *ngIf="!step.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
+        </div>
+
+
+        <div *ngIf="step.is3dFile()" style="width: 100%; height: 100%; position:relative;">
+          <ion-icon name="search"
+            style="position: absolute; bottom: 0; right: 0; padding: 15px; font-size: 50px; z-index: 1000">
+          </ion-icon>
+          <viewer-3d-model-component [fileName]="step.getFilePath()" [backgroundColor]="null" [fullScreen]="false"
+            [madeUserIteractions]="false" [willStopRotate]="false">
+          </viewer-3d-model-component>
+        </div>
+
+      </div>
+      <ion-card-content>
+        <ion-item lines="none" class="no-padding">
+          <ion-card-title>
+            <h2>{{step.title}}</h2>
+            <p>{{step.order_number}}</p>
+            <p>{{step.description_html}}</p>
+          </ion-card-title>
+          <ion-buttons slot="end">
+            <ion-button [routerLink]="['/', 'editguidestep', guide.idApi]">
+              <ion-icon slot="icon-only" name="create"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+
+
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="onCreate()">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

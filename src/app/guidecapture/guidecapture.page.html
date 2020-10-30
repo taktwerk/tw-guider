@@ -1,9 +1,34 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>guidecapture</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title> {{ 'guider.header' | translate:params }} </ion-title>
+    <sync-spinner-component slot="primary"></sync-spinner-component>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-list>
+    <ion-card *ngFor="let guide of guides">
+      <img [src]="guide.preview_file" *ngIf="guide.getFileImagePath()">
+      <img src="../../assets/placeholder.jpg" *ngIf="!guide.getFileImagePath()">
+      <ion-card-content>
+        <ion-item lines="none" class="no-padding">
+          <ion-card-title>
+            <h2>{{guide.title}}</h2>
+            <p>{{guide.short_name}}</p>
+          </ion-card-title>
+          <ion-buttons slot="end">
+            <ion-button [routerLink]="['/', 'editguide', guide.idApi]">
+              <ion-icon slot="icon-only" name="create"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <div *ngIf="guides.length < 1" [ngStyle]="{'margin': '15px'}">{{ 'noResults' | translate:params }}</div>
 
 </ion-content>

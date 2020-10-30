@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../services/auth-service';
+import { GuiderModel } from '../../models/db/api/guider-model';
+import { GuideCategoryService } from '../../providers/api/guide-category-service';
 
 @Component({
   selector: 'app-guidecapture',
@@ -6,10 +9,19 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./guidecapture.page.scss'],
 })
 export class GuidecapturePage implements OnInit {
+  isLoadedContent = false;
+  guides: GuiderModel[] = [];
+  public params;
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor(private authService: AuthService,
+    private guideCategoryService: GuideCategoryService,
+  ) {
+    // this.authService.checkAccess('feedback');
   }
 
+  ngOnInit() { this.getGuides(); }
+
+  async getGuides() {
+    this.guides = await this.guideCategoryService.getGuides(null);
+  }
 }

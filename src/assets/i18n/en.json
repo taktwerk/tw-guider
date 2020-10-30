@@ -22,13 +22,13 @@
   "cancel": "Cancel",
   "noResults": "No results",
   "about": {
-    "header":"About",
+    "header": "About",
     "App Version": "App Version",
     "API Version": "API Version",
     "Copyright": "Copyright"
   },
   "start": {
-    "header":"Start"
+    "header": "Start"
   },
   "sync-modal": {
     "header": "Sync Status",
@@ -41,11 +41,11 @@
     "In progress": "In progress",
     "(Prepare data)": "(Prepare data)",
     "(Prepare data for resume)": "(Prepare data for resume)",
-    "Pause" : "Pause",
-    "Failed" : "Failed",
-    "Success" : "Success",
-    "No data for sync" : "No data for sync",
-    "No data for pull" : "No data for pull",
+    "Pause": "Pause",
+    "Failed": "Failed",
+    "Success": "Success",
+    "No data for sync": "No data for sync",
+    "No data for pull": "No data for pull",
     "There is data available for pushing to the server.": "There is data available for pushing to the server.",
     "No network connection.": "No network connection.",
     "Data synchronization is not yet possible.": "Data synchronization is not yet possible.",
@@ -189,5 +189,15 @@
     "model_was_deleted": "{{ model }} was deleted",
     "are_you_sure_delete_model": "Are you sure you want to delete this {{ model }}?",
     "are_you_sure_go_back": "Are you sure you want to go back? Unsaved changes will be lost."
+  },
+  "guider": {
+    "header": "Guide Capture",
+    "No information here yet.": "No information here yet.",
+    "Assets": "Assets"
+  },
+  "editguide": {
+    "header": "Edit Guide",
+    "No information here yet.": "No information here yet.",
+    "Assets": "Assets"
   }
 }
