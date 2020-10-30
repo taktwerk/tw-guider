@@ -83,7 +83,11 @@ const routes: Routes = [
   {
     path: 'logout',
     loadChildren: () => import('./logout/logout.module').then(m => m.LogoutPageModule)
+  },  {
+    path: 'guidecapture',
+    loadChildren: () => import('./guidecapture/guidecapture.module').then( m => m.GuidecapturePageModule)
   }
+
 ];
 
 @NgModule({

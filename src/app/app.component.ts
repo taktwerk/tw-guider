@@ -218,6 +218,9 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.authService.isHaveUserRole('ProtocolViewer') || this.authService.auth.isAuthority) {
       appPages.push({title: this.translateConfigService.translateWord('protocol.Protocols'), url: '/protocol', icon: 'list'});
     }
+    if (this.authService.isHaveUserRole('GuideCapture') || this.authService.auth.isAuthority) {
+      appPages.push({title: this.translateConfigService.translateWord('guidecapture.Guidecapture'), url: '/guidecapture', icon: 'camera'});
+    }
     appPages.push({title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'});
 
     return appPages;
