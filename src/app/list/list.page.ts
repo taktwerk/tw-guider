@@ -8,6 +8,8 @@ import {Events, LoadingController} from '@ionic/angular';
 import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
 import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import { TranslateConfigService } from '../../services/translate-config.service';
+
 
 @Component({
   selector: 'app-list',
@@ -33,7 +35,8 @@ export class ListPage implements OnInit {
       public changeDetectorRef: ChangeDetectorRef,
       private router: Router,
       private loader: LoadingController,
-      private activatedRoute: ActivatedRoute
+      private activatedRoute: ActivatedRoute,
+      private translateConfigService: TranslateConfigService
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -56,6 +59,10 @@ export class ListPage implements OnInit {
         this.guideCategory = guiderCategoryById[0];
         this.detectChanges();
       }
+    } else {
+      this.guideCategory = this.guideCategoryService.newModel();
+      this.guideCategory.name = this.translateConfigService.translateWord('guide-categories.no-category');
+      this.detectChanges();
     }
     await this.findAllGuideCategories();
     loader.dismiss();
@@ -72,7 +79,8 @@ export class ListPage implements OnInit {
   }
 
   setGuideInfo() {
-    this.guideCategoryService.getGuides(this.guideCategory.idApi, this.searchValue).then((guides) => {
+    const guideCategoryId = this.guideCategory ? this.guideCategory.idApi : null;
+    this.guideCategoryService.getGuides(guideCategoryId, this.searchValue, !guideCategoryId).then((guides) => {
       this.guideCategory.guides = guides;
     });
   }
