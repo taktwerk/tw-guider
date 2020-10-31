@@ -36,7 +36,7 @@ export class PdfViewerComponent implements OnInit {
     this.modalController.dismiss();
    }
 
-    ngOnInit(): void {
+    async ngOnInit() {
      const reqOptions = {
         method: 'get' as any,
         responseType: 'blob' as any,
@@ -54,6 +54,8 @@ export class PdfViewerComponent implements OnInit {
      const headers = new Headers(headerObject);
 
      this.url = this.download.getWebviewFileSrc(this.url);
+     this.embeddedPdfViewer.pdfSrc = this.url;
+     this.embeddedPdfViewer.refresh();
 
       // this.http.get(this.url, {responseType: 'blob'})
       //   .pipe(
@@ -79,25 +81,25 @@ export class PdfViewerComponent implements OnInit {
       // }
       // this.embeddedPdfViewer.pdfSrc = bytes;
       // this.embeddedPdfViewer.refresh();
-        console.log('window', window);
-        //    
-          this.http.get(this.url, {responseType: 'blob'})
-           .toPromise()
-          .then((response) => {
-            this.embeddedPdfViewer.pdfSrc = response;
-              this.embeddedPdfViewer.refresh();
-            console.log('this.embeddedPdfViewer.pdfSrc', this.embeddedPdfViewer);
-            let reader = new FileReader();
-            const zoneOriginalInstance = (reader as any)["__zone_symbol__originalInstance"];
-            reader = zoneOriginalInstance || reader;
-            reader.onloadend = (() => {
-              const base64data = reader.result;
-              this.embeddedPdfViewer.pdfSrc = base64data;
-              this.embeddedPdfViewer.refresh();
-            });
-            reader.readAsDataURL(response);
-        }, (error) => {
-          console.log('errrrrooooorrr', error);
-        });
+        // console.log('window', window);
+        // //    
+        //   this.http.get(this.url, {responseType: 'blob'})
+        //    .toPromise()
+        //   .then((response) => {
+        //     this.embeddedPdfViewer.pdfSrc = response;
+        //       this.embeddedPdfViewer.refresh();
+        //     console.log('this.embeddedPdfViewer.pdfSrc', this.embeddedPdfViewer);
+        //     let reader = new FileReader();
+        //     const zoneOriginalInstance = (reader as any)["__zone_symbol__originalInstance"];
+        //     reader = zoneOriginalInstance || reader;
+        //     reader.onloadend = (() => {
+        //       const base64data = reader.result;
+        //       this.embeddedPdfViewer.pdfSrc = base64data;
+        //       this.embeddedPdfViewer.refresh();
+        //     });
+        //     reader.readAsDataURL(response);
+        // }, (error) => {
+        //   console.log('errrrrooooorrr', error);
+        // });
     }
 }
