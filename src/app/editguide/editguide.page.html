@@ -11,8 +11,8 @@
 <ion-content>
   <ion-list>
     <ion-card *ngFor="let step of guideSteps">
-      <div class="stepMedia">
-
+      <div class="guide_preview">
+        <p class="floating_ordernumber">{{step.order_number}}</p>
         <ion-icon name="musical-notes" class="audio-icon" slot="start" *ngIf="step.isAudioFile()">
         </ion-icon>
 
@@ -34,17 +34,21 @@
             [madeUserIteractions]="false" [willStopRotate]="false">
           </viewer-3d-model-component>
         </div>
-
       </div>
+
       <ion-card-content>
-        <ion-item lines="none" class="no-padding">
+        <ion-item lines="none" class="no-padding stretch_item">
           <ion-card-title>
-            <h2>{{step.title}}</h2>
-            <p>{{step.order_number}}</p>
-            <p>{{step.description_html}}</p>
+            <ion-label>
+              <h2>{{step.title}}</h2>
+              <div *ngIf="step.description_html" class="ion-text-left" class="html_element">
+                <html-description-component [html]="step.description_html" class="step-description">
+                </html-description-component>
+              </div>
+            </ion-label>
           </ion-card-title>
-          <ion-buttons slot="end">
-            <ion-button [routerLink]="['/', 'editguidestep', guide.idApi]">
+          <ion-buttons slot="end" class="edit_btn">
+            <ion-button [routerLink]="['/', 'editguidestep', step.idApi]">
               <ion-icon slot="icon-only" name="create"></ion-icon>
             </ion-button>
           </ion-buttons>
@@ -52,9 +56,6 @@
       </ion-card-content>
     </ion-card>
   </ion-list>
-
-
-
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="onCreate()">
     <ion-fab-button>

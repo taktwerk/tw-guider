@@ -32,9 +32,10 @@ export class EditguidePage implements OnInit {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.has('id')) {
         this.guideId = paramMap.get("id");
-        this.guide = this.guiderService.getById(this.guideId)[0];
+        // this.guide = this.guiderService.getById(this.guideId)[0];
+        // console.log(this.guide)
         this.setGuideSteps(this.guideId);
-        this.setAssets(this.guide.idApi);
+        this.setAssets(this.guideId);
       }
     })
   }
@@ -44,7 +45,9 @@ export class EditguidePage implements OnInit {
       this.guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
-      this.guideSteps.sort((a, b) => a.order_number - b.order_number)
+      this.guideSteps.sort((a, b) => a.order_number - b.order_number);
+      console.log('this.guideSteps')
+      console.log(this.guideSteps)
     });
   }
 
@@ -53,10 +56,10 @@ export class EditguidePage implements OnInit {
       this.guideAssets = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
+
+      // console.log(this.guideAssets)
     });
   }
 
-  onCreate() {
-
-  }
+  onCreate() {}
 }

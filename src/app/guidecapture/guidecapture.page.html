@@ -14,7 +14,7 @@
       <img [src]="guide.getFileImagePath()" *ngIf="guide.getFileImagePath()" class="guide_preview">
       <img src="../../assets/placeholder.jpg" *ngIf="!guide.getFileImagePath()" class="guide_preview">
       <ion-card-content>
-        <ion-item lines="none" class="no-padding">
+        <ion-item lines="none" class="no-padding stretch_item">
           <ion-card-title>
             <h2>{{guide.title}}</h2>
             <p>{{guide.short_name}}</p>

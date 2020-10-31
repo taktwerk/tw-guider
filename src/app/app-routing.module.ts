@@ -100,12 +100,20 @@ const routes: Routes = [
         loadChildren: () => import('./editguide/editguide.module').then(m => m.EditguidePageModule)
       }
     ]
-  },  {
+  },
+  {
     path: 'editguidestep',
-    loadChildren: () => import('./editguidestep/editguidestep.module').then( m => m.EditguidestepPageModule)
+    loadChildren: () => import('./editguidestep/editguidestep.module').then(m => m.EditguidestepPageModule)
+  },
+  {
+    path: 'editguidestep',
+    children: [
+      {
+        path: ':id',
+        loadChildren: () => import('./editguidestep/editguidestep.module').then(m => m.EditguidestepPageModule)
+      }
+    ]
   }
-
-
 ];
 
 @NgModule({

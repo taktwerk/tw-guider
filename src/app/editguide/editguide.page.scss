@@ -1,4 +1,45 @@
 .guide_preview {
-    max-height: 100px;
-    object-fit: cover;
+    max-height: 144px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    fa-icon {
+        font-size: 32px;
+        margin: 16px;
+    }
+}
+
+.stretch_item {
+    --padding-start: 0px;
+    --inner-padding-end: 0px;
+}
+
+.edit_btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+ion-card-content {
+    background: #fff;
+}
+
+.html_element {
+    max-height: 144px;
+    overflow-y: scroll;
+    * {
+        white-space: normal;
+    }
+}
+
+
+.floating_ordernumber {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 16px;
+    background: #ffffffde;
+    color: #000;
+    font-weight: 900;
 }
