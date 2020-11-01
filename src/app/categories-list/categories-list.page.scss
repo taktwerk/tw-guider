@@ -58,9 +58,18 @@ ion-segment {
   background-position: center;
 }
 
-.guide-categories {
-  padding: 0;
-  margin-top: 13px;
+.guide-category {
+  margin-top: 8px;
+
+  ion-item {
+    --min-height: 55px;
+    border-radius: 8px;
+    font-weight: 400;
+  }
+}
+
+.category-content {
+  margin-top: 12px;
 }
 
 .search-categories {
