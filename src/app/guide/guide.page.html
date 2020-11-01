@@ -17,6 +17,7 @@
           <ng-template #guideStepContent></ng-template>
         </ion-slide>
       </ion-slides>
+      
       <div *ngIf="guideAssets.length" class="guide-assets">
         <ion-card>
           <ion-item class="asset-item">
@@ -27,6 +28,7 @@
             <ion-row>
               <span *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" class="ion-padding">
                 <span *ngIf="asset.isExistFileByIndex()">
+
                   <div *ngIf="asset.isPdf()">
                     <ion-button color="medium" (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)">
                       <ion-icon name="document" slot="start"></ion-icon> {{ asset.name }}
@@ -37,12 +39,14 @@
                       [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
                     />
                   </div>
+
                   <ion-button
                     *ngIf="asset.is3dFile()"
                     color="medium"
                     (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)">
                     <ion-icon name="cube" slot="start"></ion-icon> {{ asset.name }}
                   </ion-button>
+
                   <div *ngIf="!asset.isPdf() && !asset.is3dFile()">
                     <ion-button color="medium" (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)">
                       <ion-icon name="folder" slot="start"></ion-icon> {{ asset.name }}
@@ -52,10 +56,13 @@
                       class="image-preview"
                       [src]="asset.getFileImagePath()"/>
                   </div>
+
                 </span>
+
                 <ion-button *ngIf="!asset.isExistFileByIndex()" color="medium" (click)="openAssetTextModal(asset)">
                   <ion-icon name="list" slot="start"></ion-icon> {{ asset.name }}
                 </ion-button>
+
               </span>
             </ion-row>
           </section>

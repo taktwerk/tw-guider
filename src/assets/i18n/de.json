@@ -186,13 +186,21 @@
     "are_you_sure_go_back": "Bist du sicher, dass du zurück willst? Nicht gespeicherte Änderungen gehen verloren."
   },
   "guider": {
-    "header": "Guide Capture",
+    "header": "Leitfadenerfassung",
     "No information here yet.": "No information here yet.",
     "Assets": "Assets"
   },
   "editguide": {
-    "header": "Edit Guide",
+    "header": "Handbuch bearbeiten",
     "No information here yet.": "No information here yet.",
     "Assets": "Assets"
+  },
+
+  "editguidestep": {
+    "header": "Schritt bearbeiten",
+    "No information here yet.": "No information here yet.",
+    "Assets": "Assets",
+    "Description": "Beschreibung",
+    "Note description": "Beschreibung beachten"
   }
 }

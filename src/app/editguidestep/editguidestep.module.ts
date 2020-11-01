@@ -7,13 +7,23 @@ import { IonicModule } from '@ionic/angular';
 import { EditguidestepPageRoutingModule } from './editguidestep-routing.module';
 
 import { EditguidestepPage } from './editguidestep.page';
+import { TranslateModule } from '@ngx-translate/core';
+import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { HtmlDescriptionComponentModule } from 'src/components/html-description/html-description-component.module';
+import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-component/viewer-3d-model-component.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    EditguidestepPageRoutingModule
+    EditguidestepPageRoutingModule,
+    TranslateModule,
+    SyncSpinnerComponentModule,
+    FontAwesomeModule,
+    Viewer3dModelComponentModule,
+    HtmlDescriptionComponentModule
   ],
   declarations: [EditguidestepPage]
 })

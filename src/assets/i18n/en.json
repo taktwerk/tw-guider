@@ -199,5 +199,12 @@
     "header": "Edit Guide",
     "No information here yet.": "No information here yet.",
     "Assets": "Assets"
+  },
+  "editguidestep": {
+    "header": "Edit Step",
+    "No information here yet.": "No information here yet.",
+    "Assets": "Assets",
+    "Description": "Description",
+    "Note description": "Note description"
   }
 }
