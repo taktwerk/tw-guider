@@ -1,5 +1,6 @@
 import {AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit} from '@angular/core';
 import {GuideCategoryService} from '../../providers/api/guide-category-service';
+import {GuideChildService} from '../../providers/api/guide-child-service';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {AuthService} from '../../services/auth-service';
@@ -28,6 +29,7 @@ export class GuideCollectionPage implements OnInit {
   constructor(
       private guideCategoryBindingService: GuideCategoryBindingService,
       private guideCategoryService: GuideCategoryService,
+      private guideChildService: GuideChildService,
       private guiderService: GuiderService,
       private protocolTemplateService: ProtocolTemplateService,
       public authService: AuthService,
@@ -71,10 +73,23 @@ export class GuideCollectionPage implements OnInit {
     this.setGuideInfo();
   }
 
-  setGuideInfo() {
-    this.guideCategoryService.getGuides(this.guideCategory.idApi, this.searchValue).then((guides) => {
-      this.guideCategory.guides = guides;
-    });
+  async setGuideInfo() {
+    if (!this.guide) {
+      return;
+    }
+    const collectionGuideChildren = await this.guide.setChildren();
+    const collectionGuidesTemporary = [];
+    for (let i = 0; i < collectionGuideChildren.length; i++) {
+      let guides = await this.guiderService.getById(collectionGuideChildren[i].guide_id);
+      if (guides.length) {
+        let guide = guides[0];
+        await guide.setChildren();
+        await guide.setProtocolTemplate();
+        collectionGuidesTemporary.push(guide);
+      }
+    }
+    this.collectionGuides = collectionGuidesTemporary;
+    this.detectChanges();
   }
 
   detectChanges() {
@@ -107,21 +122,12 @@ export class GuideCollectionPage implements OnInit {
         const guiderById = await this.guiderService.getById(params.guideId);
         if (guiderById.length) {
           this.guide = guiderById[0];
-          const collectionGuideChildren = await this.guide.setChildren();
-          for (let i = 0; i < collectionGuideChildren.length; i++) {
-            let guides = await this.guiderService.getById(collectionGuideChildren[i].guide_id);
-            if (guides.length) {
-              let guide = guides[0];
-              await guide.setChildren();
-              await guide.setProtocolTemplate();
-              this.collectionGuides.push(guide);
-            }
-          }
+          await this.setGuideInfo();
           this.isLoadedContent = true;
           this.detectChanges();
         }
       }
-        });
+    });
     this.events.subscribe('user:login', () => {
       this.findAllGuideCategories();
       this.detectChanges();
@@ -153,23 +159,32 @@ export class GuideCollectionPage implements OnInit {
         this.detectChanges();
       }
     });
-    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
-      this.setGuideInfo();
+    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', async (model) => {
+      await this.setGuideInfo();
     });
-    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
-      this.setGuideInfo();
+    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', async (model) => {
+     await  this.setGuideInfo();
     });
-    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
-      this.setGuideInfo();
+    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', async (model) => {
+      await this.setGuideInfo();
     });
-    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':create', (model) => {
-      this.setGuideInfo();
+    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':create', async (model) => {
+      await this.setGuideInfo();
     });
-    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
-      this.setGuideInfo();
+    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', async (model) => {
+      await this.setGuideInfo();
     });
-    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', (model) => {
-      this.setGuideInfo();
+    this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', async (model) => {
+      await this.setGuideInfo();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', async (model) => {
+      await this.setGuideInfo();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', async (model) => {
+      await this.setGuideInfo();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', async (model) => {
+      await this.setGuideInfo();
     });
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess('guide');

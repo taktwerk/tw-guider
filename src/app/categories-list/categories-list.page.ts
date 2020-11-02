@@ -1,5 +1,6 @@
 import {AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit} from '@angular/core';
 import {GuideCategoryService} from '../../providers/api/guide-category-service';
+import {GuideChildService} from '../../providers/api/guide-child-service';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {AuthService} from '../../services/auth-service';
@@ -31,6 +32,7 @@ export class CategoriesListPage implements OnInit {
       private guideCategoryBindingService: GuideCategoryBindingService,
       private guideCategoryService: GuideCategoryService,
       private guiderService: GuiderService,
+      private guideChildService: GuideChildService,
       private protocolTemplateService: ProtocolTemplateService,
       public authService: AuthService,
       public events: Events,
@@ -123,6 +125,9 @@ export class CategoriesListPage implements OnInit {
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
       this.findAllGuideCategories();
     });
+    this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':create', (model) => {
+      this.findAllGuideCategories();
+    });
     this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
       this.findAllGuideCategories();
     });
@@ -144,6 +149,19 @@ export class CategoriesListPage implements OnInit {
       this.setGuides();
       this.setCategoryGuides();
     });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', (model) => {
+      this.setGuides();
+      this.setCategoryGuides();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', (model) => {
+      this.setGuides();
+      this.setCategoryGuides();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', (model) => {
+      this.setGuides();
+      this.setCategoryGuides();
+    });
+    
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess('guide');
     });

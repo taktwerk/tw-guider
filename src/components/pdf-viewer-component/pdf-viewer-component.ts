@@ -56,50 +56,5 @@ export class PdfViewerComponent implements OnInit {
      this.url = this.download.getWebviewFileSrc(this.url);
      this.embeddedPdfViewer.pdfSrc = this.url;
      this.embeddedPdfViewer.refresh();
-
-      // this.http.get(this.url, {responseType: 'blob'})
-      //   .pipe(
-      //         map((result: any) => {
-      //             return result;
-      //         })
-      //     )
-      //   .subscribe(
-      //     (res) => {
-      //       this.embeddedPdfViewer.pdfSrc = res;
-      //       this.embeddedPdfViewer.refresh();
-      //     }
-      //   );
-
-
-
-      // const modelFile = await Filesystem.readFile({ path: this.url });
-      // var binary_string = window.atob(modelFile.data);
-      // var len = binary_string.length;
-      // var bytes = new Uint8Array(len);
-      // for (var i = 0; i < len; i++) {
-      //     bytes[i] = binary_string.charCodeAt(i);
-      // }
-      // this.embeddedPdfViewer.pdfSrc = bytes;
-      // this.embeddedPdfViewer.refresh();
-        // console.log('window', window);
-        // //    
-        //   this.http.get(this.url, {responseType: 'blob'})
-        //    .toPromise()
-        //   .then((response) => {
-        //     this.embeddedPdfViewer.pdfSrc = response;
-        //       this.embeddedPdfViewer.refresh();
-        //     console.log('this.embeddedPdfViewer.pdfSrc', this.embeddedPdfViewer);
-        //     let reader = new FileReader();
-        //     const zoneOriginalInstance = (reader as any)["__zone_symbol__originalInstance"];
-        //     reader = zoneOriginalInstance || reader;
-        //     reader.onloadend = (() => {
-        //       const base64data = reader.result;
-        //       this.embeddedPdfViewer.pdfSrc = base64data;
-        //       this.embeddedPdfViewer.refresh();
-        //     });
-        //     reader.readAsDataURL(response);
-        // }, (error) => {
-        //   console.log('errrrrooooorrr', error);
-        // });
     }
 }

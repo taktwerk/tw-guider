@@ -181,8 +181,6 @@ export class GuideCategoryService extends ApiService {
             const whereCondition: any[] = [
                 this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
-                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
-                this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
             ];
@@ -219,7 +217,7 @@ export class GuideCategoryService extends ApiService {
                     this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id') +
                     ' LEFT JOIN ' + this.dbModelApi.secure('guide_child') +
                     ' ON ' +
-                    this.dbModelApi.secure('guide_child') + '.' + this.dbModelApi.secure('parent_guide_id') +
+                    this.dbModelApi.secure('guide_child') + '.' + this.dbModelApi.secure('guide_id') +
                     '=' +
                     this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
 
@@ -240,7 +238,9 @@ export class GuideCategoryService extends ApiService {
                     this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id');
                     if (!user.isAuthority) {
                         whereCondition.push(
-                            this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
+                            this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id,
+                            this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+                            this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
                         );
                     }
             }
