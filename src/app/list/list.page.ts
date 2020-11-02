@@ -1,5 +1,6 @@
 import {AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit} from '@angular/core';
 import {GuideCategoryService} from '../../providers/api/guide-category-service';
+import {GuideChildService} from '../../providers/api/guide-child-service';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {AuthService} from '../../services/auth-service';
@@ -28,6 +29,7 @@ export class ListPage implements OnInit {
   constructor(
       private guideCategoryBindingService: GuideCategoryBindingService,
       private guideCategoryService: GuideCategoryService,
+      private guideChildService: GuideChildService,
       private guiderService: GuiderService,
       private protocolTemplateService: ProtocolTemplateService,
       public authService: AuthService,
@@ -156,6 +158,15 @@ export class ListPage implements OnInit {
       this.setGuideInfo();
     });
     this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', (model) => {
+      this.setGuideInfo();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', (model) => {
+      this.setGuideInfo();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', (model) => {
+      this.setGuideInfo();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', (model) => {
       this.setGuideInfo();
     });
     this.events.subscribe('network:online', (isNetwork) => {
