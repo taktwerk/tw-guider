@@ -7,7 +7,6 @@ export class AddPdfImageColumnsToProtocolDefaultTableMigration {
 	constructor(private userService: UserService) { }
 
 	execute() {
-		console.log('execute AddPdfImageColumnsToProtocolDefaultTableMigration');
 		return new Promise(async (resolve) => {
 			const queries = [
 				"ALTER TABLE protocol_default ADD COLUMN pdf_image VARCHAR(255)",

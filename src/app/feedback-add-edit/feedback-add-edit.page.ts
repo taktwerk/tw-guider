@@ -155,7 +155,6 @@ export class FeedbackAddEditPage implements OnInit {
     if (!this.model.title) {
       this.model.title = this.defaultTitle;
     }
-    console.log('this.model for save', this.model);
     this.feedbackService.save(this.model).then(async (res) => {
       this.apiSync.setIsPushAvailableData(true);
       const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Feedback' });
