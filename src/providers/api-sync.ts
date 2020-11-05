@@ -85,7 +85,8 @@ export class ApiSync {
         protocol: this.protocolService,
         protocol_default: this.protocolDefaultService,
         protocol_comment: this.protocolCommentService,
-        feedback: this.feedbackService
+        feedback: this.feedbackService,
+        guide_step: this.guideStepService
     };
 
     allServicesBodiesForPush: any;
