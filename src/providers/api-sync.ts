@@ -85,7 +85,8 @@ export class ApiSync {
         protocol: this.protocolService,
         protocol_default: this.protocolDefaultService,
         protocol_comment: this.protocolCommentService,
-        feedback: this.feedbackService
+        feedback: this.feedbackService,
+        guide_step: this.guideStepService
     };
 
     allServicesBodiesForPush: any;
@@ -767,7 +768,6 @@ export class ApiSync {
     }
 
     private pushDataToServer(url, model, service, isAdditionalData = false) {
-        console.log('push data to server');
         return new Promise(async resolve => {
             if (this.pushProgressStatus.getValue() === 'failed') {
                 this.isBusyPush = false;

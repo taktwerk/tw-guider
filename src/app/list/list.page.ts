@@ -1,5 +1,6 @@
 import {AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit} from '@angular/core';
 import {GuideCategoryService} from '../../providers/api/guide-category-service';
+import {GuideChildService} from '../../providers/api/guide-child-service';
 import {GuiderService} from '../../providers/api/guider-service';
 import {GuiderModel} from '../../models/db/api/guider-model';
 import {AuthService} from '../../services/auth-service';
@@ -8,6 +9,8 @@ import {Events, LoadingController} from '@ionic/angular';
 import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
 import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import { TranslateConfigService } from '../../services/translate-config.service';
+
 
 @Component({
   selector: 'app-list',
@@ -26,6 +29,7 @@ export class ListPage implements OnInit {
   constructor(
       private guideCategoryBindingService: GuideCategoryBindingService,
       private guideCategoryService: GuideCategoryService,
+      private guideChildService: GuideChildService,
       private guiderService: GuiderService,
       private protocolTemplateService: ProtocolTemplateService,
       public authService: AuthService,
@@ -33,7 +37,8 @@ export class ListPage implements OnInit {
       public changeDetectorRef: ChangeDetectorRef,
       private router: Router,
       private loader: LoadingController,
-      private activatedRoute: ActivatedRoute
+      private activatedRoute: ActivatedRoute,
+      private translateConfigService: TranslateConfigService
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -56,6 +61,10 @@ export class ListPage implements OnInit {
         this.guideCategory = guiderCategoryById[0];
         this.detectChanges();
       }
+    } else {
+      this.guideCategory = this.guideCategoryService.newModel();
+      this.guideCategory.name = this.translateConfigService.translateWord('guide-categories.no-category');
+      this.detectChanges();
     }
     await this.findAllGuideCategories();
     loader.dismiss();
@@ -72,7 +81,8 @@ export class ListPage implements OnInit {
   }
 
   setGuideInfo() {
-    this.guideCategoryService.getGuides(this.guideCategory.idApi, this.searchValue).then((guides) => {
+    const guideCategoryId = this.guideCategory ? this.guideCategory.idApi : null;
+    this.guideCategoryService.getGuides(guideCategoryId, this.searchValue, !guideCategoryId).then((guides) => {
       this.guideCategory.guides = guides;
     });
   }
@@ -148,6 +158,15 @@ export class ListPage implements OnInit {
       this.setGuideInfo();
     });
     this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', (model) => {
+      this.setGuideInfo();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', (model) => {
+      this.setGuideInfo();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', (model) => {
+      this.setGuideInfo();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', (model) => {
       this.setGuideInfo();
     });
     this.events.subscribe('network:online', (isNetwork) => {

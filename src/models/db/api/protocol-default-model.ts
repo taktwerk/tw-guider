@@ -96,7 +96,6 @@ export class ProtocolDefaultModel extends DbApiModel {
     }
 
     async beforePushDataToServer(isInsert?: boolean) {
-        console.log('beforePushDataToServer isInsert', isInsert);
         if (isInsert) {
             if (!this[this.COL_ID]) {
                 return;

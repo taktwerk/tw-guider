@@ -3,6 +3,7 @@ import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
 import {DbProvider} from '../../../providers/db-provider';
 import {DbBaseModel} from '../../base/db-base-model';
 import {DownloadService} from '../../../services/download-service';
+import {GuiderModel} from './guider-model';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -19,6 +20,7 @@ export class GuideStepModel extends DbApiModel {
     public description_html: string;
     public attached_file: string;
     public local_attached_file: string;
+    public local_guide_id: number;
 
     //db columns
     static COL_GUIDE_ID = 'guide_id';
@@ -31,6 +33,7 @@ export class GuideStepModel extends DbApiModel {
     static COL_THUMB_ATTACHED_FILE = 'thumb_attached_file';
     static COL_API_THUMB_ATTACHED_FILE_PATH = 'thumb_attached_file_path';
     static COL_LOCAL_THUMB_ATTACHED_FILE = 'local_thumb_attached_file';
+    static COL_LOCAL_GUIDE_ID = 'local_guide_id';
 
     public downloadMapping: FileMapInModel[] = [
         {
@@ -62,6 +65,7 @@ export class GuideStepModel extends DbApiModel {
         [GuideStepModel.COL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuideStepModel.COL_API_THUMB_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [GuideStepModel.COL_LOCAL_GUIDE_ID, 'INT', DbBaseModel.TYPE_NUMBER]
     ];
 
     /**
@@ -69,5 +73,45 @@ export class GuideStepModel extends DbApiModel {
      */
     constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
         super(platform, db, events, downloadService);
+    }
+
+    async updateLocalRelations() {
+        if (!this[this.COL_ID] || !this.idApi) {
+            return;
+        }
+
+        const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService);
+        if (guiderModel) {
+            const guiderModels = await guiderModel.findFirst(
+                [guiderModel.COL_ID_API, this.guide_id]
+            );
+            if (guiderModels && guiderModels.length) {
+                const guider = guiderModels[0];
+                if (guider) {
+                    this.local_guide_id = guider[guider.COL_ID];
+                    await this.save(false, true);
+                }
+            }
+        }
+    }
+
+    public migrations = ['AddLocalGuideIdToGuideStepTableMigration'];
+
+    async beforePushDataToServer(isInsert?: boolean) {
+        if (isInsert) {
+            if (!this[this.COL_ID]) {
+                return;
+            }
+            const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService);
+            const guiderModels = await guiderModel.findFirst([guiderModel.COL_ID, this.local_guide_id]);
+            if (guiderModels && guiderModels.length) {
+                console.log('guiderModels is not 0000');
+                const guider = guiderModels[0];
+                if (guider) {
+                    this.guide_id = guider.idApi;
+                    const isSaved = await this.save(false, false);
+                }
+            }
+        }
     }
 }

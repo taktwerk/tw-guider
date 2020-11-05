@@ -128,6 +128,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         const path = this.fileName.slice(0, (fileName.length) * -1);
         let bufferData = null;
         try {
+            console.log('pathfileName', (path + fileName));
             const modelFile = await Filesystem.readFile({ path: path + fileName });
             var binary_string = window.atob(modelFile.data);
             var len = binary_string.length;
@@ -136,8 +137,6 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
                 bytes[i] = binary_string.charCodeAt(i);
             }
             bufferData = bytes.buffer;
-            // bufferData = await this.file.readAsArrayBuffer(path, fileName);
-            // console.log('bufferDatabufferData', bufferData);
         } catch (error) {
             console.log('3d model file error', error);
         }
