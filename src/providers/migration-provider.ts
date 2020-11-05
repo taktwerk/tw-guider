@@ -132,19 +132,21 @@ export class MigrationProvider {
     for (let i = 0; i < migrations.length; i++) {
       const className = migrations[i].name;
       if (migrationList[className]) {
-        const migrationInstance = new migrationList[className](this.userService);
-        await migrationInstance.execute();
+        const service = this.modelsServices[migrations[i].table_name];
+        const migrationInstance = new migrationList[className](service);
+        const isExecutedMigration = await migrationInstance.execute();
       }
-      
-      migrations[i].is_active = 1;
-      await migrations[i].save();
+      if (isExecutedMigration) {
+        migrations[i].is_active = 1;
+        await migrations[i].save();
+      }
     }
   }
 
   getNotActiveMigrations(tableName?: string): Promise<any[]> {
     return new Promise(async (resolve) => {
 
-      const condition: any = ['1=1', ['is_active', 0]];
+      const condition: any = ['1=1', ['is_active', 1], ['name', 'AddLocalGuideIdToGuideStepTableMigration']];
       if (tableName) {
         condition.push(['table_name', tableName]);
       }
