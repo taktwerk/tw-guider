@@ -206,5 +206,12 @@
     "Assets": "Assets",
     "Description": "Description",
     "Note description": "Note description"
+  },
+  "addstep": {
+    "header": "Add Step",
+    "No information here yet.": "No information here yet.",
+    "Assets": "Assets",
+    "Description": "Description",
+    "Note description": "Note description"
   }
 }

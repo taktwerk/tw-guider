@@ -195,9 +195,15 @@
     "No information here yet.": "No information here yet.",
     "Assets": "Assets"
   },
-
   "editguidestep": {
     "header": "Schritt bearbeiten",
+    "No information here yet.": "No information here yet.",
+    "Assets": "Assets",
+    "Description": "Beschreibung",
+    "Note description": "Beschreibung beachten"
+  },
+  "addstep": {
+    "header": "Schritt hinzufügen",
     "No information here yet.": "No information here yet.",
     "Assets": "Assets",
     "Description": "Beschreibung",

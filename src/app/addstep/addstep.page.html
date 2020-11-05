@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title> {{ 'editguidestep.header' | translate }} </ion-title>
+    <ion-title> {{ 'addstep.header' | translate }} </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
     <ion-back-button text=""></ion-back-button>
   </ion-toolbar>
@@ -27,21 +27,19 @@
     </ion-fab-list>
   </ion-fab>
 
-  <form *ngIf="model">
+  <form>
     <ion-list>
       <ion-item class="">
         <ion-label position="floating">
           {{ 'title' | translate:params }}:
         </ion-label>
-        <ion-input [(ngModel)]="model.title" name="title" placeholder="{{ defaultTitle }}" clear-input
-          (ionChange)="onChanges($event)">
-        </ion-input>
+        <ion-input [(ngModel)]="model.title" name="title" clear-input> </ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="floating">{{ 'editguidestep.Description' | translate:params }}:</ion-label>
+        <ion-label position="floating">{{ 'addstep.Description' | translate:params }}:</ion-label>
         <ion-textarea [(ngModel)]="model.description_html" name="description"
-          placeholder="{{ 'editguidestep.Note description' | translate:params }}" rows="5" cols="33"
-          style="display: block;" (ionChange)="onChanges($event)">
+          placeholder="{{ 'addstep.Note description' | translate:params }}" rows="5" cols="33"
+          style="display: block;">
         </ion-textarea>
       </ion-item>
     </ion-list>
@@ -70,13 +68,13 @@
 
     <ion-row class="buttons">
       <ion-col>
-        <ion-button expand="block" (click)="save()" [disabled]="!shouldUpdate">
+        <ion-button expand="block" (click)="save()">
           {{ 'save' | translate:params }}
         </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button color="danger" expand="block" (click)="showDeleteAlert()">
-          {{ 'delete' | translate:params }}
+        <ion-button color="danger" expand="block" (click)="onCancel()">
+          {{ 'cancel' | translate:params }}
         </ion-button>
       </ion-col>
     </ion-row>

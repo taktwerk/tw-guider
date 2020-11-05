@@ -11,7 +11,7 @@
 
 <ion-content>
   <ion-list>
-    <ion-reorder-group [disabled]="disableReorder" (ionItemReorder)="noReorder($event)">
+    <ion-reorder-group [disabled]="disableReorder" (ionItemReorder)="Reorder($event)">
       <ion-card *ngFor="let step of guideSteps" (click)="onEdit(step)">
         <ion-reorder slot="start" *ngIf="disableReorder == false"></ion-reorder>
         <div class="guide_preview">
@@ -71,7 +71,7 @@
   </ion-list>
 
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="onCreate()">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" routerLink="/addstep">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

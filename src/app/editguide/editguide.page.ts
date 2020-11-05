@@ -9,6 +9,7 @@ import { GuideStepService } from 'src/providers/api/guide-step-service';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ToastController } from '@ionic/angular';
+import { ApiSync } from 'src/providers/api-sync';
 
 @Component({
   selector: 'app-editguide',
@@ -21,8 +22,8 @@ export class EditguidePage implements OnInit {
     private guideStepService: GuideStepService,
     private guideAssetService: GuideAssetService,
     private router: Router,
-    private toastController: ToastController
-
+    private toastController: ToastController,
+    private apiSync: ApiSync
   ) { }
 
   public faFilePdf = faFilePdf;
@@ -34,11 +35,12 @@ export class EditguidePage implements OnInit {
 
   disableReorder = true;
 
-
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.has('id')) {
         this.guideId = paramMap.get("id");
+        console.log("Retrieved Guide>>>>>>>>>>>>>>>>>>>>>>>>")
+        console.log(this.guideId)
         this.setGuideSteps(this.guideId);
         this.setAssets(this.guideId);
       }
@@ -72,15 +74,10 @@ export class EditguidePage implements OnInit {
     this.router.navigate(["/", "editguidestep"], navigationExtras);
   }
 
-  onEdit_(step: GuideStepModel) {
-    console.log(step)
-    }
-
-  noReorder(ev: CustomEvent<ItemReorderEventDetail>) {
+  Reorder(ev: CustomEvent<ItemReorderEventDetail>) {
     console.log("before index " + this.guideSteps);
     this.guideSteps = ev.detail.complete(this.guideSteps);
     console.log("after index " + this.guideSteps);
-
     this.reOrderStep();
   }
 
@@ -88,8 +85,7 @@ export class EditguidePage implements OnInit {
     this.guideSteps.map((step, index) => {
       step.order_number = index + 1;
     })
-
-    console.log("after step reorder " + this.guideSteps);
+    console.log("after step reorder >>>>>>>>>>>>");
     console.log(this.guideSteps)
   }
 
@@ -100,16 +96,15 @@ export class EditguidePage implements OnInit {
   async save() {
     this.guideSteps.map((step) => {
       this.guideStepService.save(step).then(() => {
+        this.apiSync.setIsPushAvailableData(true);
         this.showToast(`${step.title} saved`);
       }).catch((e) => console.log(e));
     })
-
     this.disableReorder = true;
   }
 
-  onCreate() { }
-
-  showToast(message) {
-    this.toastController.create({ message: message, duration: 1200 })
+  async showToast(message) {
+    const toast = await this.toastController.create({ message: message, duration: 500 });
+    toast.present();
   }
 }

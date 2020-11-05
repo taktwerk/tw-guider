@@ -1,5 +1,4 @@
-import { ActivatedRoute } from '@angular/router';
-import { GuideStepModel } from './../../models/db/api/guide-step-model';
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { GuideAssetService } from 'src/providers/api/guide-asset-service';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
@@ -13,28 +12,20 @@ import { AuthService } from 'src/services/auth-service';
 import { TranslateConfigService } from 'src/services/translate-config.service';
 import { AlertController, ToastController } from '@ionic/angular';
 import { ApiSync } from 'src/providers/api-sync';
+import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 
 const { Filesystem } = Plugins;
 
 @Component({
-  selector: 'app-editguidestep',
-  templateUrl: './editguidestep.page.html',
-  styleUrls: ['./editguidestep.page.scss'],
+  selector: 'app-addstep',
+  templateUrl: './addstep.page.html',
+  styleUrls: ['./addstep.page.scss'],
 })
-export class EditguidestepPage implements OnInit {
-  public params;
+export class AddstepPage implements OnInit {
   public model: GuideStepModel;
-  public previousModel: GuideStepModel
-  public stepId: any;
-  public guideId: any;
-  public defaultTitle = 'Guide Step';
-  public guideSteps: GuideStepModel[];
-
-  shouldUpdate = false;
+  public params;
 
   constructor(
-    private translateConfigService: TranslateConfigService,
-    private activatedRoute: ActivatedRoute,
     private guideStepService: GuideStepService,
     private guideAssetService: GuideAssetService,
     public downloadService: DownloadService,
@@ -44,21 +35,10 @@ export class EditguidestepPage implements OnInit {
     public authService: AuthService,
     public alertController: AlertController,
     private toastController: ToastController,
-    private apiSync: ApiSync
+    private apiSync: ApiSync,
+    private router:Router
   ) {
-
-    // this.authService.checkAccess('guider');
-
-    this.activatedRoute.queryParams.subscribe((param) => {
-      this.guideId = param.guideId;
-      this.stepId = param.stepId;
-      this.guideStepService.dbModelApi.findAllWhere(['guide_id', this.guideId], 'order_number ASC').then(results => {
-        this.model = results.filter(model => {
-          return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT] && model.idApi == this.stepId
-        })[0];
-        this.previousModel = this.model;
-      });
-    })
+    this.model = this.guideStepService.newModel();
   }
 
   ngOnInit() { }
@@ -117,8 +97,6 @@ export class EditguidestepPage implements OnInit {
     const recordedFile = new RecordedFile();
     recordedFile.uri = photoPath;
     this.model.setFileProperty(recordedFile);
-
-    this.shouldUpdate = true;
   }
 
   async addVideoUsingCamera() {
@@ -126,7 +104,6 @@ export class EditguidestepPage implements OnInit {
       .recordVideo(true)
       .then((recordedFile) => {
         this.model.setFile(recordedFile)
-        this.shouldUpdate = true;
       })
       .catch((e) => console.log('model', 'addVideoUsingCamera', e));
   }
@@ -136,16 +113,8 @@ export class EditguidestepPage implements OnInit {
       .makePhoto(1000, 1000)
       .then((recordedFile) => {
         this.model.setFile(recordedFile)
-        this.shouldUpdate = true;
       })
       .catch((e) => console.log('model', 'addPhotoUsingCamera', e));
-  }
-
-  onChanges(event) {
-    if (event.target.value != this.previousModel.title || event.target.value != this.previousModel.description_html) {
-      this.shouldUpdate = true;
-    }
-    else {this.shouldUpdate = false}
   }
 
   async save() {
@@ -153,38 +122,24 @@ export class EditguidestepPage implements OnInit {
     if (!user) {
       return;
     }
-    this.guideStepService.save(this.model).then(() => {
+    console.log("Model before save service >>>>>>>>>>>>>>>>>>>>>")
+    console.log(this.model)
+
+    this.guideStepService.save(this.model).then((res) => {
       this.apiSync.setIsPushAvailableData(true);
       this.showToast(`${this.model.title} saved`);
-      this.shouldUpdate = false;
+      console.log("Model after save service >>>>>>>>>>>>>>>>>>>>>")
+      console.log(res)
+      this.router.navigateByUrl("/editguide");
     }).catch((e) => console.log(e))
   }
 
-  async showDeleteAlert() {
-    const alertMessage = await this.translateConfigService.translate('alert.are_you_sure_delete_model', { model: 'editguidestep' });
-    const alert = await this.alertController.create({
-      message: alertMessage,
-      buttons: [
-        {
-          text: 'Yes',
-          cssClass: 'primary',
-          handler: () => this.delete(),
-        },
-        {
-          text: 'No',
-        },
-      ],
-    });
+  onCancel() { 
+    this.router.navigateByUrl("/editguide");
   }
 
-  delete() {
-    this.guideStepService.remove(this.model).then(() => {
-      this.apiSync.setIsPushAvailableData(true);
-      this.showToast(`You deleted ${this.model.title}`)
-    })
-  }
-
-  showToast(message) {
-    this.toastController.create({ message: message, duration: 1200 })
+  async showToast(message) {
+    const toast = await this.toastController.create({ message: message, duration: 800 });
+    toast.present();
   }
 }
