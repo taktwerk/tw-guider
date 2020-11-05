@@ -5,7 +5,7 @@ import {GuiderService} from '../providers/api/guider-service';
 @Injectable()
 export class AddPdfImageColumnsToProtocolDefaultTableMigration {
 
-	constructor(private guiderService: GuideService) { }
+	constructor(private guiderService: GuiderService) { }
 
 	execute() {
 		return new Promise(async (resolve) => {
