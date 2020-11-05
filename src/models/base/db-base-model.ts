@@ -205,7 +205,27 @@ export abstract class DbBaseModel {
                 });
             }
         });
-        
+    }
+
+    public query(query) {
+        return new Promise((resolve) => {
+            if (this.dbIsBusy) {
+                resolve(false);
+            } else {
+                this.dbIsBusy = true;
+                this.platform.ready().then(() => {
+                    this.db.query(query)
+                    .then((res) => {
+                        this.dbIsReady = true;
+                        this.dbIsBusy = false;
+                        resolve(true);
+                    }).catch((err) => {
+                        this.dbIsBusy = false;
+                        resolve(false);
+                    });
+                });
+            }
+        });
     }
 
     /**
