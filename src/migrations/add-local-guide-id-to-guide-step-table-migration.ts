@@ -1,18 +1,15 @@
 import { Injectable } from '@angular/core';
-import {UserService} from '../services/user-service';
-import {GuiderService} from '../providers/api/guider-service';
+import {GuideStepService} from '../providers/api/guide-step-service';
 
 @Injectable()
-export class AddPdfImageColumnsToProtocolDefaultTableMigration {
+export class AddLocalGuideIdToGuideStepTableMigration {
 
-	constructor(private guiderService: GuiderService) { }
+	constructor(private guideStepService: GuideStepService) { }
 
 	execute() {
 		return new Promise(async (resolve) => {
 			const queries = [
-				"ALTER TABLE protocol_default ADD COLUMN pdf_image VARCHAR(255)",
-				"ALTER TABLE protocol_default ADD COLUMN pdf_image_path VARCHAR(255)",
-				"ALTER TABLE protocol_default ADD COLUMN local_pdf_image VARCHAR(255)"
+				"ALTER TABLE guide_step ADD COLUMN local_guide_id INT(11)"
 			];
 			let successExecution = true;
 			for (let i = 0; i < queries.length; i++) {
@@ -22,13 +19,17 @@ export class AddPdfImageColumnsToProtocolDefaultTableMigration {
 					return;
 				}
 			}
+			const guideStepModels = await this.guideStepService.dbModelApi.findAll();
+			for (let i = 0; i < guideStepModels.length; i++) {
+				guideStepModels[i].updateLocalRelations();
+			}
 			resolve(true);
         });
 	}
 
 	executeQuery(query): Promise<boolean>  {
 		return new Promise(async (resolve) => {
-			this.guiderService
+			this.guideStepService
 				.dbModelApi
 				.query(query)
 				.then((res) => {
