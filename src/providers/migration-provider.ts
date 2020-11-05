@@ -131,10 +131,11 @@ export class MigrationProvider {
     const migrations = await this.getNotActiveMigrations();
     for (let i = 0; i < migrations.length; i++) {
       const className = migrations[i].name;
+      let isExecutedMigration = false;
       if (migrationList[className]) {
         const service = this.modelsServices[migrations[i].table_name];
         const migrationInstance = new migrationList[className](service);
-        const isExecutedMigration = await migrationInstance.execute();
+        isExecutedMigration = await migrationInstance.execute();
       }
       if (isExecutedMigration) {
         migrations[i].is_active = 1;
