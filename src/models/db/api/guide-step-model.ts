@@ -104,17 +104,12 @@ export class GuideStepModel extends DbApiModel {
             }
             const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService);
             const guiderModels = await guiderModel.findFirst([guiderModel.COL_ID, this.local_guide_id]);
-            console.log('guiderModel.COL_ID', guiderModel.COL_ID);
-            console.log('this.local_guide_id', this.local_guide_id);
-            console.log('guiderModels', guiderModels);
             if (guiderModels && guiderModels.length) {
                 console.log('guiderModels is not 0000');
                 const guider = guiderModels[0];
                 if (guider) {
                     this.guide_id = guider.idApi;
                     const isSaved = await this.save(false, false);
-                    console.log('guidestepmodel', this);
-                    console.log('this.guider_id', this.guider_id, isSaved);
                 }
             }
         }
