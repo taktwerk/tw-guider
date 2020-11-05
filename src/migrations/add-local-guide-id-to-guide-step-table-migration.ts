@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {GuideStepService} from '../providers/api/guide-step-service';
+import {GuideStepService} from '../providers/api/guider-step-service';
 
 @Injectable()
 export class AddLocalGuideIdToGuideStepTableMigration {
