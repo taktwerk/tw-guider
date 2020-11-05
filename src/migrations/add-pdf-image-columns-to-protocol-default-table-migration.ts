@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {UserService} from '../services/user-service';
-import {GuideService} from '../providers/api/guide-service';
+import {GuiderService} from '../providers/api/guider-service';
 
 @Injectable()
 export class AddPdfImageColumnsToProtocolDefaultTableMigration {
