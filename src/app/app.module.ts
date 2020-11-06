@@ -156,7 +156,6 @@ Sentry.init({ dsn: environment.sentryDsn });
     IonicImageLoader.forRoot(),
     Viewer3dModelComponentModule,
     PdfJsViewerModule,
-    ListviewComponent
   ],
   providers: [
     StatusBar,
