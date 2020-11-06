@@ -100,6 +100,7 @@ import { PdfViewerComponentModule } from '../components/pdf-viewer-component/pdf
 
 import { Base64ToGallery } from '@ionic-native/base64-to-gallery/ngx';
 import { ProgressBarModule } from '../components/progress-bar/progress-bar.module';
+import { ListviewComponent } from 'src/components/listview/listview.component';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -154,7 +155,8 @@ Sentry.init({ dsn: environment.sentryDsn });
     VirtualScrollerModule,
     IonicImageLoader.forRoot(),
     Viewer3dModelComponentModule,
-    PdfJsViewerModule
+    PdfJsViewerModule,
+    ListviewComponent
   ],
   providers: [
     StatusBar,
