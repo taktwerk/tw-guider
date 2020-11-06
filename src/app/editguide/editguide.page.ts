@@ -30,7 +30,6 @@ export class EditguidePage implements OnInit {
 
   guideId: string;
   public guideSteps: GuideStepModel[] = [];
-  public guideAssets: GuideAssetModel[] = [];
   public virtualGuideStepSlides = [];
 
   disableReorder = true;
@@ -39,10 +38,9 @@ export class EditguidePage implements OnInit {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.has('id')) {
         this.guideId = paramMap.get("id");
-        console.log("Retrieved Guide>>>>>>>>>>>>>>>>>>>>>>>>")
+        console.log("Retrieved Guide ID >>>>>>>>>>>>>>>>>>>>>>>>")
         console.log(this.guideId)
         this.setGuideSteps(this.guideId);
-        this.setAssets(this.guideId);
       }
     })
   }
@@ -52,17 +50,11 @@ export class EditguidePage implements OnInit {
       this.guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
+      console.log("Retrieved Guide Steps >>>>>>>>>>>>>>>>>>>>>>>>")
+      console.log(this.guideSteps)
     });
   }
-
-  public setAssets(id) {
-    return this.guiderService.dbModelApi.setAssets(id).then(results => {
-      this.guideAssets = results.filter(model => {
-        return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
-      });
-    });
-  }
-
+ 
   onEdit(step: GuideStepModel) {
     console.log(step)
     let navigationExtras: NavigationExtras = {

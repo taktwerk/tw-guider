@@ -1,4 +1,4 @@
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { GuideAssetService } from 'src/providers/api/guide-asset-service';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
@@ -24,6 +24,8 @@ const { Filesystem } = Plugins;
 export class AddstepPage implements OnInit {
   public model: GuideStepModel;
   public params;
+  guideId;
+  public guideSteps: GuideStepModel[] = [];
 
   constructor(
     private guideStepService: GuideStepService,
@@ -36,12 +38,21 @@ export class AddstepPage implements OnInit {
     public alertController: AlertController,
     private toastController: ToastController,
     private apiSync: ApiSync,
-    private router:Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
   ) {
     this.model = this.guideStepService.newModel();
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.activatedRoute.paramMap.subscribe((paramMap) => {
+      if (paramMap.has('id')) {
+        this.guideId = paramMap.get("id");
+        this.model.guide_id = this.guideId;
+        console.log(this.model.guide_id)
+      }
+    })
+  }
 
   public openFile(basePath: string, modelName: string, title?: string) {
     const filePath = basePath;
@@ -117,26 +128,37 @@ export class AddstepPage implements OnInit {
       .catch((e) => console.log('model', 'addPhotoUsingCamera', e));
   }
 
+  public setGuideSteps(id) {
+    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
+      this.guideSteps = results.filter(model => {
+        return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
+      });
+    });
+  }
+
   async save() {
     const user = await this.authService.getLastUser();
     if (!user) {
       return;
     }
-    console.log("Model before save service >>>>>>>>>>>>>>>>>>>>>")
-    console.log(this.model)
+    if (!this.model.guide_id) {
+      return;
+    }
 
-    this.guideStepService.save(this.model).then((res) => {
-      this.apiSync.setIsPushAvailableData(true);
-      this.showToast(`${this.model.title} saved`);
-      console.log("Model after save service >>>>>>>>>>>>>>>>>>>>>")
-      console.log(res)
-      this.router.navigateByUrl("/editguide");
-    }).catch((e) => console.log(e))
+    this.setGuideSteps(this.guideId).then(() => {
+      console.log("Before save >>>>>>>>>>>>>>>>>>>>>>>" + this.model)
+      console.log(this.model)
+      this.model.order_number = this.guideSteps.length + 1;
+      this.guideStepService.save(this.model).then((res) => {
+        this.apiSync.setIsPushAvailableData(true);
+        this.showToast(`${this.model.title} saved`);
+        this.router.navigate(["/", "editguide", this.guideId]);
+      }).catch((e) => console.log(e))
+    })
+
   }
 
-  onCancel() { 
-    this.router.navigateByUrl("/editguide");
-  }
+  onCancel() { this.router.navigate(["/", "editguide", this.guideId]); }
 
   async showToast(message) {
     const toast = await this.toastController.create({ message: message, duration: 800 });

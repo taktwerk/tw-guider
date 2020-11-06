@@ -71,7 +71,7 @@
   </ion-list>
 
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" routerLink="/addstep">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" [routerLink]="['/','addstep',guideId]">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
@@ -79,6 +79,6 @@
 </ion-content>
 
 <ion-buttons class="floating_cta">
-  <ion-button (click)="onReorder()" *ngIf="disableReorder" fill="solid">Re-Order</ion-button>
+  <ion-button (click)="onReorder()" *ngIf="disableReorder && guideSteps.length > 0" fill="solid">Re-Order</ion-button>
   <ion-button (click)="save()" *ngIf="!disableReorder" fill="solid">Save</ion-button>
 </ion-buttons>

@@ -10,7 +10,7 @@
 
 <ion-content>
   <ion-list>
-      <ion-card *ngFor="let guide of guides">
+      <ion-card *ngFor="let guide of guides" [routerLink]="['/', 'editguide', guide.idApi]">
       <img [src]="guide.getFileImagePath()" *ngIf="guide.getFileImagePath()" class="guide_preview">
       <img src="../../assets/placeholder.jpg" *ngIf="!guide.getFileImagePath()" class="guide_preview">
       <ion-card-content>
