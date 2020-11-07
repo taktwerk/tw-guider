@@ -1,0 +1,10 @@
+.floating_cta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 16px;
+
+    ion-button {
+        --background: #173262;
+    }
+}
