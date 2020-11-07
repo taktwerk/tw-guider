@@ -40,27 +40,6 @@ ion-card-content {
     }
 }
 
-.floating_ordernumber {
-    position: absolute;
-    left: 0;
-    top: 0;
-    padding: 16px;
-    background: #ffffffde;
-    color: #000;
-    font-weight: 900;
-}
-
-.floating_cta {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 16px;
-
-    ion-button {
-        --background: #173262;
-    }
-}
-
 ion-reorder {
     background: #ffffff33;
     position: absolute;

@@ -12,6 +12,7 @@ import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-componen
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { HtmlDescriptionComponentModule } from 'src/components/html-description/html-description-component.module';
 import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-component/viewer-3d-model-component.module';
+import { ListviewComponentModule } from 'src/components/listview/listview.module';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-com
     SyncSpinnerComponentModule,
     FontAwesomeModule,
     Viewer3dModelComponentModule,
-    HtmlDescriptionComponentModule
+    HtmlDescriptionComponentModule,
+    ListviewComponentModule
   ],
   declarations: [EditguidePage]
 })

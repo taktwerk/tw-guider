@@ -138,16 +138,10 @@ export class AddstepPage implements OnInit {
 
   async save() {
     const user = await this.authService.getLastUser();
-    if (!user) {
-      return;
-    }
-    if (!this.model.guide_id) {
-      return;
-    }
+    if (!user) { return; }
+    if (!this.model.guide_id) { return; }
 
     this.setGuideSteps(this.guideId).then(() => {
-      console.log("Before save >>>>>>>>>>>>>>>>>>>>>>>" + this.model)
-      console.log(this.model)
       this.model.order_number = this.guideSteps.length + 1;
       this.guideStepService.save(this.model).then((res) => {
         this.apiSync.setIsPushAvailableData(true);
@@ -155,7 +149,6 @@ export class AddstepPage implements OnInit {
         this.router.navigate(["/", "editguide", this.guideId]);
       }).catch((e) => console.log(e))
     })
-
   }
 
   onCancel() { this.router.navigate(["/", "editguide", this.guideId]); }

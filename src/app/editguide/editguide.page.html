@@ -10,66 +10,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-reorder-group [disabled]="disableReorder" (ionItemReorder)="Reorder($event)">
-      <ion-card *ngFor="let step of guideSteps" (click)="onEdit(step)">
-        <ion-reorder slot="start" *ngIf="disableReorder == false"></ion-reorder>
-        <div class="guide_preview">
-          <p class="floating_ordernumber">{{step.order_number}}</p>
-          <ion-icon name="musical-notes" class="audio-icon ion-icon" slot="start" *ngIf="step.isAudioFile()">
-          </ion-icon>
-
-          <fa-icon [icon]="faFilePdf" class="fa-icon" slot="start" *ngIf="step.isPdf()"> </fa-icon>
-
-          <img class="guide-img" *ngIf="step.isImageFile()" [src]="step.getFileImagePath()" />
-
-          <div class="video-div" *ngIf="step.isVideoFile()">
-            <img class="video-thumb" *ngIf="step.isExistThumbOfFile()" [src]="step.getFileImagePath()" />
-            <ion-icon *ngIf="step.isExistThumbOfFile()" name="play" class="videocam-icon ion-icon" slot="start">
-            </ion-icon>
-            <img *ngIf="!step.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
-          </div>
-
-          <div *ngIf="step.is3dFile()" style="width: 100%; height: 100%; position:relative;">
-            <ion-icon name="expand" class="ion-icon"
-              style="position: absolute; bottom: 0; right: 0; padding: 15px; font-size: 50px; z-index: 1000">
-            </ion-icon>
-            <viewer-3d-model-component [fileName]="step.getFilePath()" [backgroundColor]="null" [fullScreen]="false"
-              [madeUserIteractions]="false" [willStopRotate]="false">
-            </viewer-3d-model-component>
-          </div>
-
-          <ion-buttons slot="end" class="edit_btn" style="margin: 16px;"
-            *ngIf="!step.is3dFile() && !step.isVideoFile() && !step.isImageFile() && !step.isPdf() && !step.isAudioFile()">
-            <ion-button (click)="onEdit(step)">
-              <ion-icon slot="icon-only" name="create" style="margin: 0px!important; color: #000;"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </div>
-
-        <ion-card-content>
-          <ion-item lines="none" class="no-padding stretch_item">
-            <ion-card-title>
-              <ion-label>
-                <h2>{{step.title}}</h2>
-                <div *ngIf="step.description_html" class="ion-text-left" class="html_element">
-                  <html-description-component [html]="step.description_html" class="step-description">
-                  </html-description-component>
-                </div>
-              </ion-label>
-            </ion-card-title>
-            <ion-buttons slot="end" class="edit_btn"
-              *ngIf="step.is3dFile() || step.isVideoFile() || step.isImageFile() || step.isPdf() || step.isAudioFile()">
-              <ion-button (click)="onEdit(step)">
-                <ion-icon slot="icon-only" name="create"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-item>
-        </ion-card-content>
-      </ion-card>
-    </ion-reorder-group>
-  </ion-list>
-
+  <listview-component [guideSteps]="guideSteps" canReorder="true" guideId="guideId"></listview-component>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" [routerLink]="['/','addstep',guideId]">
     <ion-fab-button>
@@ -78,7 +19,3 @@
   </ion-fab>
 </ion-content>
 
-<ion-buttons class="floating_cta">
-  <ion-button (click)="onReorder()" *ngIf="disableReorder && guideSteps.length > 0" fill="solid">Re-Order</ion-button>
-  <ion-button (click)="save()" *ngIf="!disableReorder" fill="solid">Save</ion-button>
-</ion-buttons>
