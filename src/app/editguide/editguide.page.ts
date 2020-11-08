@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs/Subscription';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GuiderService } from 'src/providers/api/guider-service';
 import { GuiderModel } from 'src/models/db/api/guider-model';
 import { GuideAssetModel } from 'src/models/db/api/guide-asset-model';
@@ -16,7 +16,7 @@ import { ApiSync } from 'src/providers/api-sync';
   templateUrl: './editguide.page.html',
   styleUrls: ['./editguide.page.scss'],
 })
-export class EditguidePage implements OnInit {
+export class EditguidePage implements OnInit, OnDestroy {
   constructor(private activatedRoute: ActivatedRoute,
     private guiderService: GuiderService,
     private guideStepService: GuideStepService,
@@ -55,6 +55,8 @@ export class EditguidePage implements OnInit {
     });
   }
 
-
+  ngOnDestroy(): void {
+    this.refreshSub.unsubscribe();
+  }
 
 }

@@ -187,7 +187,6 @@ export class EditguidestepPage implements OnInit {
   delete() {
     this.guideStepService.remove(this.model).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
-
       this.router.navigate(["/", "editguide", this.guideId]);
       const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'GuideStep' });
       this.http.showToast(alertMessage);
