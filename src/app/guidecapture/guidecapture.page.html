@@ -9,26 +9,37 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-      <ion-card *ngFor="let guide of guides" [routerLink]="['/', 'editguide', guide.idApi]">
-      <img [src]="guide.getFileImagePath()" *ngIf="guide.getFileImagePath()" class="guide_preview">
-      <img src="../../assets/placeholder.jpg" *ngIf="!guide.getFileImagePath()" class="guide_preview">
-      <ion-card-content>
-        <ion-item lines="none" class="no-padding stretch_item">
-          <ion-card-title>
-            <h2>{{guide.title}}</h2>
-            <p>{{guide.short_name}}</p>
-          </ion-card-title>
-          <ion-buttons slot="end">
-            <ion-button [routerLink]="['/', 'editguide', guide.idApi]">
-              <ion-icon slot="icon-only" name="create"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
-  </ion-list>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-lg="3" size-md="4" *ngFor="let guide of guidesList"
+        [routerLink]="['/', 'editguide', guide.idApi]" button>
+        <ion-card>
+          <img [src]="guide.getFileImagePath()" *ngIf="guide.getFileImagePath()" class="guide_preview">
+          <img src="../../assets/placeholder.jpg" *ngIf="!guide.getFileImagePath()" class="guide_preview">
+          <ion-card-content>
+            <ion-item lines="none" class="no-padding stretch_item">
+              <ion-card-title>
+                <h2><strong>{{guide.title}}</strong></h2>
+                <p>{{guide.short_name}}</p>
+              </ion-card-title>
+              <ion-buttons slot="end">
+                <ion-button [routerLink]="['/', 'editguide', guide.idApi]">
+                  <ion-icon slot="icon-only" name="create"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-  <div *ngIf="guides.length < 1" [ngStyle]="{'margin': '15px'}">{{ 'noResults' | translate:params }}</div>
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <div *ngIf="guidesList.length < 1" [ngStyle]="{'margin': '15px'}">{{ 'noResults' | translate:params }}</div>
 
 </ion-content>

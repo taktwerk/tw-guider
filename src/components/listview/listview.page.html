@@ -1,51 +1,56 @@
-<ion-content>
+<ion-content [scrollEvents]="true" (ionScrollStart)="logScrollStart()" (ionScroll)="logScrolling($event)"
+  (ionScrollEnd)="logScrollEnd()">
   <ion-list>
     <ion-reorder-group [disabled]="disableReorder" (ionItemReorder)="Reorder($event)">
+      <ion-item-sliding *ngFor="let step of guideSteps">
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="showDeleteAlert(step)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
 
-      <ion-item *ngFor="let step of guideSteps" (click)="onEdit(step)" detail="true">
-        <ion-reorder slot="start" *ngIf="disableReorder == false"></ion-reorder>
-        <ion-thumbnail slot="start"
-          *ngIf="step.is3dFile() || step.isVideoFile() || step.isImageFile() || step.isPdf() || step.isAudioFile()">
-          <ion-icon name="musical-notes" class="audio-icon ion-icon" slot="start" *ngIf="step.isAudioFile()">
-          </ion-icon>
-       
-          <ion-icon name="document-text" *ngIf="step.isPdf()"></ion-icon>
+        <ion-item detail="true" button (click)="onEdit(step)">
+          <ion-reorder slot="start" *ngIf="disableReorder == false"></ion-reorder>
+          <ion-thumbnail slot="start"
+            *ngIf="step.is3dFile() || step.isVideoFile() || step.isImageFile() || step.isPdf() || step.isAudioFile()">
 
-          <img class="guide-img" *ngIf="step.isImageFile()" [src]="step.getFileImagePath()" />
+            <img src="../../assets/icon/musical-note.svg" *ngIf="step.isAudioFile()" class="grayoutimage">
 
-          <div class="video-div" *ngIf="step.isVideoFile()">
-            <img class="video-thumb" *ngIf="step.isExistThumbOfFile()" [src]="step.getFileImagePath()" />
-            <img *ngIf="!step.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
-          </div>
+            <img src="../../assets/icon/document-text.svg" *ngIf="step.isPdf()" class="grayoutimage">
 
-          <div *ngIf="step.is3dFile()" style="width: 100%; height: 100%; position:relative;">
-            <ion-icon name="expand" class="ion-icon"
-              style="position: absolute; bottom: 0; right: 0; padding: 15px; font-size: 50px; z-index: 1000">
-            </ion-icon>
-            <viewer-3d-model-component [fileName]="step.getFilePath()" [backgroundColor]="null" [fullScreen]="false"
-              [madeUserIteractions]="false" [willStopRotate]="false">
-            </viewer-3d-model-component>
-          </div>
-        </ion-thumbnail>
+            <img class="guide-img" *ngIf="step.isImageFile()" [src]="step.getFileImagePath()" />
 
-        <ion-label>
-          <h2> <strong>#{{step.order_number}} {{step.title}}</strong></h2>
-          <div *ngIf="step.description_html" class="ion-text-left" class="html_element">
-            <p>
-              <html-description-component [html]="step.description_html" class="step-description">
-              </html-description-component>
-            </p>
-          </div>
-        </ion-label>
-      </ion-item>
+            <div class="video-div" *ngIf="step.isVideoFile()">
+              <img class="video-thumb" *ngIf="step.isExistThumbOfFile()" [src]="step.getFileImagePath()" />
+              <img *ngIf="!step.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
+            </div>
 
+            <div *ngIf="step.is3dFile()" style="width: 100%; height: 100%; position:relative;">
+              <viewer-3d-model-component [fileName]="step.getFilePath()" [backgroundColor]="null" [fullScreen]="false"
+                [madeUserIteractions]="false" [willStopRotate]="false">
+              </viewer-3d-model-component>
+            </div>
+
+          </ion-thumbnail>
+
+          <ion-label>
+            <h2> <strong>#{{step.order_number}} {{step.title}}</strong></h2>
+            <div *ngIf="step.description_html" class="ion-text-left" class="html_element">
+              <p>
+                <html-description-component [html]="step.description_html" class="step-description">
+                </html-description-component>
+              </p>
+            </div>
+          </ion-label>
+        </ion-item>
+      </ion-item-sliding>
     </ion-reorder-group>
   </ion-list>
 
 </ion-content>
 
 
-<ion-buttons class="floating_cta" *ngIf="canReorder">
+<ion-buttons class="floating_cta" *ngIf="canReorder && !isScrolling">
   <ion-button (click)="onReorder()" *ngIf="disableReorder && guideSteps.length > 0" fill="solid">Re-Order</ion-button>
   <ion-button (click)="save()" *ngIf="!disableReorder" fill="solid">Save</ion-button>
 </ion-buttons>
