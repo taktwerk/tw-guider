@@ -11,7 +11,7 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col  *ngFor="let guide of guides"
+      <ion-col size="12" size-lg="3" size-md="4" *ngFor="let guide of guides"
         [routerLink]="['/', 'editguide', guide.idApi]" button>
         <ion-card>
           <img [src]="guide.getFileImagePath()" *ngIf="guide.getFileImagePath()" class="guide_preview">
@@ -19,7 +19,7 @@
           <ion-card-content>
             <ion-item lines="none" class="no-padding stretch_item">
               <ion-card-title>
-                <h2>{{guide.title}}</h2>
+                <h2><strong>{{guide.title}}</strong></h2>
                 <p>{{guide.short_name}}</p>
               </ion-card-title>
               <ion-buttons slot="end">
