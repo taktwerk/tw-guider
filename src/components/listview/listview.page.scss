@@ -12,3 +12,15 @@
 .grayoutimage {
     filter: invert(80%) sepia(0%) saturate(3594%) hue-rotate(97deg) brightness(90%) contrast(100%);
 }
+
+.html_element {
+    max-height: 32px;
+    overflow-y: scroll;
+}
+
+ion-thumbnail {
+    img {
+        object-fit: cover;
+        height: 100%;
+    }
+}

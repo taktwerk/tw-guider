@@ -140,9 +140,8 @@ export class AddstepPage implements OnInit {
     const user = await this.authService.getLastUser();
     if (!user) { return; }
     if (!this.model.guide_id) { return; }
-
+    if (!this.model.order_number) { this.model.order_number = this.guideSteps.length + 1; }
     this.setGuideSteps(this.guideId).then(() => {
-      this.model.order_number = this.guideSteps.length + 1;
       this.guideStepService.save(this.model).then((res) => {
         this.apiSync.setIsPushAvailableData(true);
         this.showToast(`${this.model.title} saved`);
