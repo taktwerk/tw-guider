@@ -49,7 +49,7 @@ export class AddstepPage implements OnInit {
       if (paramMap.has('id')) {
         this.guideId = paramMap.get("id");
         this.model.guide_id = this.guideId;
-        console.log(this.model.guide_id)
+        this.setGuideSteps(this.guideId)
       }
     })
   }
@@ -141,12 +141,17 @@ export class AddstepPage implements OnInit {
     if (!user) { return; }
     if (!this.model.guide_id) { return; }
     if (!this.model.order_number) { this.model.order_number = this.guideSteps.length + 1; }
-    this.setGuideSteps(this.guideId).then(() => {
-      this.guideStepService.save(this.model).then((res) => {
-        this.apiSync.setIsPushAvailableData(true);
-        this.showToast(`${this.model.title} saved`);
-        this.router.navigate(["/", "editguide", this.guideId]);
-      }).catch((e) => console.log(e))
+    this.guideSteps.splice(this.model.order_number - 1, 0, this.model)
+    this.guideSteps.map((step, index) => {
+      step.order_number = index + 1;
+      this.setGuideSteps(this.guideId).then(() => {
+        this.guideStepService.save(step).then((res) => {
+          this.apiSync.setIsPushAvailableData(true);
+          this.apiSync.refreshData();
+          this.showToast(`${this.model.title} saved`);
+          this.router.navigate(["/", "editguide", this.guideId]);
+        }).catch((e) => console.log(e))
+      })
     })
   }
 

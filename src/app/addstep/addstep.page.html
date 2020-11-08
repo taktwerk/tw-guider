@@ -31,11 +31,11 @@
     <ion-list>
       <ion-item class="">
         <ion-label position="floating">{{ 'Order' | translate:params }}: </ion-label>
-        <ion-input [(ngModel)]="model.order_number" name="order" clear-input> </ion-input>
+        <ion-input [(ngModel)]="model.order_number" name="order" clear-input type="number" min="1"> </ion-input>
       </ion-item>
       <ion-item class="">
         <ion-label position="floating"> {{ 'title' | translate:params }}: </ion-label>
-        <ion-input [(ngModel)]="model.title" name="title" clear-input> </ion-input>
+        <ion-input [(ngModel)]="model.title" name="title" clear-input required> </ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">{{ 'addstep.Description' | translate:params }}:</ion-label>
