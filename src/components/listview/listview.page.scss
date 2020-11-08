@@ -8,3 +8,7 @@
         --background: #173262;
     }
 }
+
+.grayoutimage {
+    filter: invert(80%) sepia(0%) saturate(3594%) hue-rotate(97deg) brightness(90%) contrast(100%);
+}

@@ -1,4 +1,4 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GuideStepModel } from './../../models/db/api/guide-step-model';
 import { Component, OnInit } from '@angular/core';
 import { GuideAssetService } from 'src/providers/api/guide-asset-service';
@@ -13,6 +13,7 @@ import { AuthService } from 'src/services/auth-service';
 import { TranslateConfigService } from 'src/services/translate-config.service';
 import { AlertController, ToastController } from '@ionic/angular';
 import { ApiSync } from 'src/providers/api-sync';
+import { HttpClient } from '../../services/http-client';
 
 const { Filesystem } = Plugins;
 
@@ -44,12 +45,14 @@ export class EditguidestepPage implements OnInit {
     public authService: AuthService,
     public alertController: AlertController,
     private toastController: ToastController,
-    private apiSync: ApiSync
+    private apiSync: ApiSync,
+    private router: Router,
+    public http: HttpClient,
   ) {
-
     // this.authService.checkAccess('guider');
 
     this.activatedRoute.queryParams.subscribe((param) => {
+      console.log(param)
       this.guideId = param.guideId;
       this.stepId = param.stepId;
       this.guideStepService.dbModelApi.findAllWhere(['guide_id', this.guideId], 'order_number ASC').then(results => {
@@ -57,6 +60,7 @@ export class EditguidestepPage implements OnInit {
           return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT] && model.idApi == this.stepId
         })[0];
         this.previousModel = this.model;
+        console.log(this.model)
       });
     })
   }
@@ -145,7 +149,7 @@ export class EditguidestepPage implements OnInit {
     if (event.target.value != this.previousModel.title || event.target.value != this.previousModel.description_html) {
       this.shouldUpdate = true;
     }
-    else {this.shouldUpdate = false}
+    else { this.shouldUpdate = false }
   }
 
   async save() {
@@ -153,15 +157,17 @@ export class EditguidestepPage implements OnInit {
     if (!user) {
       return;
     }
-    this.guideStepService.save(this.model).then(() => {
+    this.guideStepService.save(this.model).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
-      this.showToast(`${this.model.title} saved`);
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'GuideStep' });
+      this.http.showToast(alertMessage);
       this.shouldUpdate = false;
     }).catch((e) => console.log(e))
   }
 
   async showDeleteAlert() {
-    const alertMessage = await this.translateConfigService.translate('alert.are_you_sure_delete_model', { model: 'editguidestep' });
+    console.log("Delete button")
+    const alertMessage = await this.translateConfigService.translate('alert.are_you_sure_delete_model', { model: 'Step' });
     const alert = await this.alertController.create({
       message: alertMessage,
       buttons: [
@@ -175,16 +181,16 @@ export class EditguidestepPage implements OnInit {
         },
       ],
     });
+    await alert.present();
   }
 
   delete() {
-    this.guideStepService.remove(this.model).then(() => {
+    this.guideStepService.remove(this.model).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
-      this.showToast(`You deleted ${this.model.title}`)
-    })
-  }
 
-  showToast(message) {
-    this.toastController.create({ message: message, duration: 1200 })
+      this.router.navigate(["/", "editguide", this.guideId]);
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'GuideStep' });
+      this.http.showToast(alertMessage);
+    })
   }
 }

@@ -1,32 +1,32 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import {HttpClient} from '../services/http-client';
-import {AppSetting} from '../services/app-setting';
-import {DbProvider} from './db-provider';
-import {Platform, Events} from '@ionic/angular';
-import {BehaviorSubject} from 'rxjs';
-import {ApiService} from './api/base/api-service';
+import { HttpClient } from '../services/http-client';
+import { AppSetting } from '../services/app-setting';
+import { DbProvider } from './db-provider';
+import { Platform, Events } from '@ionic/angular';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { ApiService } from './api/base/api-service';
 
-import {GuiderService} from './api/guider-service';
-import {DownloadService} from '../services/download-service';
+import { GuiderService } from './api/guider-service';
+import { DownloadService } from '../services/download-service';
 import 'rxjs/add/observable/forkJoin';
-import {GuideCategoryService} from './api/guide-category-service';
-import {GuideCategoryBindingService} from './api/guide-category-binding-service';
-import {GuideStepService} from './api/guide-step-service';
-import {GuideChildService} from './api/guide-child-service';
-import {Network} from '@ionic-native/network/ngx';
-import {GuideAssetService} from './api/guide-asset-service';
-import {GuideAssetPivotService} from './api/guide-asset-pivot-service';
-import {FeedbackService} from './api/feedback-service';
-import {UserService} from '../services/user-service';
-import {ProtocolTemplateService} from './api/protocol-template-service';
-import {DbApiModel} from '../models/base/db-api-model';
-import {ProtocolService} from './api/protocol-service';
-import {ProtocolDefaultService} from './api/protocol-default-service';
-import {WorkflowService} from './api/workflow-service';
-import {WorkflowStepService} from './api/workflow-step-service';
-import {ProtocolCommentService} from './api/protocol-comment-service';
-import {WorkflowTransitionService} from './api/workflow-transition-service';
+import { GuideCategoryService } from './api/guide-category-service';
+import { GuideCategoryBindingService } from './api/guide-category-binding-service';
+import { GuideStepService } from './api/guide-step-service';
+import { GuideChildService } from './api/guide-child-service';
+import { Network } from '@ionic-native/network/ngx';
+import { GuideAssetService } from './api/guide-asset-service';
+import { GuideAssetPivotService } from './api/guide-asset-pivot-service';
+import { FeedbackService } from './api/feedback-service';
+import { UserService } from '../services/user-service';
+import { ProtocolTemplateService } from './api/protocol-template-service';
+import { DbApiModel } from '../models/base/db-api-model';
+import { ProtocolService } from './api/protocol-service';
+import { ProtocolDefaultService } from './api/protocol-default-service';
+import { WorkflowService } from './api/workflow-service';
+import { WorkflowStepService } from './api/workflow-step-service';
+import { ProtocolCommentService } from './api/protocol-comment-service';
+import { WorkflowTransitionService } from './api/workflow-transition-service';
 
 @Injectable()
 /**
@@ -38,6 +38,7 @@ export class ApiSync {
     public syncData: any;
     public lastModelUpdatedAt: any;
 
+    refreshSub = new Subject<any>();
     /**
      * Contains all services to sync.
      * Use for each service a key that matches the received key from the API in 'models'.
@@ -161,15 +162,15 @@ export class ApiSync {
                     if (
                         this.userService.userDb.userSetting.syncStatus &&
                         (
-                          this.syncProgressStatus.getValue() !== 'progress' &&
-                          this.syncProgressStatus.getValue() !== 'resume' &&
-                          this.syncProgressStatus.getValue() !== 'not_sync'
+                            this.syncProgressStatus.getValue() !== 'progress' &&
+                            this.syncProgressStatus.getValue() !== 'resume' &&
+                            this.syncProgressStatus.getValue() !== 'not_sync'
                         )
                     ) {
-                      this.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
+                        this.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
                     }
                     if (this.userService.userDb.userSetting.syncPercent) {
-                      this.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
+                        this.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
                     }
                     resolve(true);
                 } else {
@@ -188,7 +189,7 @@ export class ApiSync {
     }
 
     private willMakeCancel(): boolean {
-      return this.syncProgressStatus.getValue() === 'not_sync';
+        return this.syncProgressStatus.getValue() === 'not_sync';
     }
 
     public syncMustBeEnd(): boolean {
@@ -376,7 +377,7 @@ export class ApiSync {
                 resolve(true);
                 return;
             }
-            if (this.network.type === 'none'  && !this.appSetting.isEnabledUsb) {
+            if (this.network.type === 'none' && !this.appSetting.isEnabledUsb) {
                 resolve(false);
                 return;
             }
@@ -471,12 +472,12 @@ export class ApiSync {
 
         if (this.userService.userDb.userSetting.lastModelUpdatedAt) {
             // Need to recast the saved date to get the ISOString, which will give us the correct offset to sync with the ser
-	    const lastModelUpdatedAt = new Date(this.userService.userDb.userSetting.lastModelUpdatedAt.replace(/-/g, '/'));	
+            const lastModelUpdatedAt = new Date(this.userService.userDb.userSetting.lastModelUpdatedAt.replace(/-/g, '/'));
             console.log(typeof this.userService.userDb.userSetting.lastModelUpdatedAt);
-	    // const lastUpdatedAt = this.getUTCDate(new Date(this.userService.userDb.userSetting.lastModelUpdatedAt));
-	    const lastUpdatedAt = this.getUTCDate(lastModelUpdatedAt);
-	    console.log(this.userService.userDb.userSetting.lastModelUpdatedAt);
-	    console.log('new Date(lastModelUpdatedAt)', new Date(lastModelUpdatedAt));
+            // const lastUpdatedAt = this.getUTCDate(new Date(this.userService.userDb.userSetting.lastModelUpdatedAt));
+            const lastUpdatedAt = this.getUTCDate(lastModelUpdatedAt);
+            console.log(this.userService.userDb.userSetting.lastModelUpdatedAt);
+            console.log('new Date(lastModelUpdatedAt)', new Date(lastModelUpdatedAt));
             // const lastUpdatedAt = new Date(this.userService.userDb.userSetting.lastModelUpdatedAt).getTime();
             console.log('lastUpdatedAt', lastUpdatedAt);
             console.log('new Date(this.userService.userDb.userSetting.lastModelUpdatedAt)', this.userService.userDb.userSetting.lastModelUpdatedAt);
@@ -601,7 +602,7 @@ export class ApiSync {
                         await this.userService.userDb.save();
                     }
                 } catch (err) {
-		    console.log('sync errrrorrrr', err);
+                    console.log('sync errrrorrrr', err);
                     this.failSync();
                     this.isStartSyncBehaviorSubject.next(false);
                     resolve(false);
@@ -613,25 +614,25 @@ export class ApiSync {
     }
 
     public unsetSyncProgressData(): Promise<true> {
-      return new Promise(resolve => {
-        this.init().then((data) => {
-          if (data && this.userService.userDb) {
-            this.syncProgressStatus.next('not_sync');
-            this.userService.userDb.userSetting.syncStatus = 'not_sync';
-            this.syncedItemsPercent.next(0);
-            this.userService.userDb.userSetting.syncPercent = 0;
-            this.userService.userDb.userSetting.syncLastElementNumber = 0;
-            this.userService.userDb.userSetting.syncAllItemsCount = 0;
-            this.userService.userDb.userSetting.lastSyncProcessId = null;
-            this.userService.userDb.save().then(() => {
-                this.syncedItemsCount.next(this.userService.userDb.userSetting.syncLastElementNumber);
-                this.syncAllItemsCount.next(this.userService.userDb.userSetting.syncAllItemsCount);
-                resolve(true);
-                return;
+        return new Promise(resolve => {
+            this.init().then((data) => {
+                if (data && this.userService.userDb) {
+                    this.syncProgressStatus.next('not_sync');
+                    this.userService.userDb.userSetting.syncStatus = 'not_sync';
+                    this.syncedItemsPercent.next(0);
+                    this.userService.userDb.userSetting.syncPercent = 0;
+                    this.userService.userDb.userSetting.syncLastElementNumber = 0;
+                    this.userService.userDb.userSetting.syncAllItemsCount = 0;
+                    this.userService.userDb.userSetting.lastSyncProcessId = null;
+                    this.userService.userDb.save().then(() => {
+                        this.syncedItemsCount.next(this.userService.userDb.userSetting.syncLastElementNumber);
+                        this.syncAllItemsCount.next(this.userService.userDb.userSetting.syncAllItemsCount);
+                        resolve(true);
+                        return;
+                    });
+                }
             });
-          }
         });
-      });
     }
 
     resetSyncedData(): Promise<any> {
@@ -752,7 +753,7 @@ export class ApiSync {
             if (bodies && bodies.length > 0) {
                 const modelBody = {};
                 modelBody[key] = bodies;
-                this.allServicesBodiesForPush = {...this.allServicesBodiesForPush, ...modelBody};
+                this.allServicesBodiesForPush = { ...this.allServicesBodiesForPush, ...modelBody };
                 this.countOfAllChangedItems += modelBody[key].length;
             }
         }
@@ -870,5 +871,7 @@ export class ApiSync {
         await this.userService.userDb.save();
         await this.saveSyncProgress();
     }
+
+    refreshData() { this.refreshSub.next(true) }
 }
 

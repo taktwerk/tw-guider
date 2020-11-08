@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs/Subscription';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { GuiderService } from 'src/providers/api/guider-service';
@@ -27,13 +28,21 @@ export class EditguidePage implements OnInit {
 
   guideId: string;
   public guideSteps: GuideStepModel[] = [];
+  refreshSub: Subscription
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.has('id')) {
         this.guideId = paramMap.get("id");
-        console.log(this.guideId)
         this.setGuideSteps(this.guideId);
+      }
+    })
+
+    this.refreshSub = this.apiSync.refreshSub.subscribe((value) => {
+      if (value) {
+        if (this.guideId) {
+          this.setGuideSteps(this.guideId);
+        }
       }
     })
   }
@@ -45,7 +54,6 @@ export class EditguidePage implements OnInit {
       });
     });
   }
- 
 
 
 
