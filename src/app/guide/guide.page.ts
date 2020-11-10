@@ -1,3 +1,4 @@
+import { GuideinfoPage } from './../../components/guideinfo/guideinfo.page';
 import {
   AfterContentChecked,
   AfterViewChecked,
@@ -31,7 +32,6 @@ import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { Viewer3dService } from "../../services/viewer-3d-service";
 import { GuideStepContentComponent } from "../../components/guide-step-content-component/guide-step-content-component";
 import { delay } from "rxjs/operators";
-
 declare var Swiper: any;
 
 @Component({
@@ -95,7 +95,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
     private componentResolver: ComponentFactoryResolver,
     private applicationRef: ApplicationRef,
     private injector: Injector,
-    private renderer: Renderer2
+    private renderer: Renderer2,
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -284,6 +284,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
     loader.present();
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     if (this.guideId) {
+      this.presentGuideInfo(this.guideId);
       const guiderById = await this.guiderService.getById(this.guideId)
       if (guiderById.length) {
         this.guide = guiderById[0];
@@ -318,6 +319,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async (model) => {
       console.log('model update', model);
       if (this.guide) {
+
         this.setGuideSteps(this.guide.idApi).then(() => {
           this.detectChanges();
           this.reinitializeGuideStepSlides();
@@ -378,5 +380,15 @@ export class GuidePage implements OnInit, AfterContentChecked {
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess('guide');
     });
+  }
+
+  async presentGuideInfo(guideId) {
+    const modal = await this.modalController.create({
+      component: GuideinfoPage,
+      componentProps: {
+        'guideId': guideId
+      }
+    });
+    return await modal.present();
   }
 }

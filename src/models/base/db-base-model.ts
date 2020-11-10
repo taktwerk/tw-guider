@@ -327,7 +327,6 @@ export abstract class DbBaseModel {
                         resolve(entries);
                     });
                 }
-
             });
         });
     }

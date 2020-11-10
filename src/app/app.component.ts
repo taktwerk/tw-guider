@@ -201,8 +201,6 @@ export class AppComponent implements OnInit, OnDestroy {
       appPages.push(
         { title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home' }
       );
-      // temp
-       appPages.push({ title: this.translateConfigService.translateWord('guider.header'), url: '/guidecapture', icon: 'camera' });
     }
     if (!this.appSetting.isWasQrCodeSetup) {
       return appPages;
