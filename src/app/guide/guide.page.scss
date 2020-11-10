@@ -30,12 +30,11 @@ ion-slides {
   text-align: left;
 }
 
-
 /*.swiper-wrapper {
   margin-bottom: 15px;
 }*/
 .guide-assets ion-row {
-/*   -webkit-flex-wrap: wrap;
+  /*   -webkit-flex-wrap: wrap;
   flex-wrap: wrap; */
 }
 
@@ -55,7 +54,8 @@ ion-card {
   height: calc(100% - 3rem);
 }
 
-.guide-step ion-slides, .guide-step ion-slide {
+.guide-step ion-slides,
+.guide-step ion-slide {
   height: 100%;
 }
 
@@ -75,4 +75,15 @@ ion-card {
 
 ion-slide {
   padding-bottom: 30px;
+}
+
+.header_cta {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
+  max-width: 100px;
+
+  ion-back-button {
+    display: contents !important;
+  }
 }

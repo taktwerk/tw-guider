@@ -62,6 +62,8 @@
     "header": "Guides",
     "duration": "Duration",
     "revision": "Revision",
+    "created_by": "Created By",
+    "updated_by": "Updated By",
     "Show Guide": "Show Guide",
     "New Protocol": "New Protocol",
     "Protocol": "Protocol",

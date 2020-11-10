@@ -3,12 +3,10 @@
     <ion-col fixed size-xs="12" size-sm="6" size-md="6" size-lg="4" *ngFor="let item of guides">
       <ion-card color="light" class="ion-no-margin">
         <div class="guide-preview" (click)="openGuide(item)">
-          <div
-            class="img"
-            *ngIf="item.getFileImagePath()"
-            [ngStyle]="{'background-image': 'url(' + item.getFileImagePath(0,'trustStyle') + ')'}"
-          ></div>
-          <div class="img" *ngIf="!item.getFileImagePath()" [ngStyle]="{'background-image': 'url(' + 'assets/placeholder.jpg' + ')'}"></div>
+          <div class="img" *ngIf="item.getFileImagePath()"
+            [ngStyle]="{'background-image': 'url(' + item.getFileImagePath(0,'trustStyle') + ')'}"></div>
+          <div class="img" *ngIf="!item.getFileImagePath()"
+            [ngStyle]="{'background-image': 'url(' + 'assets/placeholder.jpg' + ')'}"></div>
           <div class="shortname-label badge badge-secondary">{{ item.short_name }}</div>
         </div>
         <ion-card-header>
@@ -22,33 +20,18 @@
               <p *ngIf="item.revision">{{ 'guides.revision' | translate:params }}: {{ item.revision }}</p>
             </div>
           </div>
-          <ion-button
-            *ngIf="item.guide_collection.length"
-            class="show-guide-btn"
-            (click)="openCollection(item)"
-            vertical="bottom"
-            style="text-transform: uppercase"
-          >
+          <ion-button *ngIf="item.guide_collection.length" class="show-guide-btn" (click)="openCollection(item)"
+            vertical="bottom" style="text-transform: uppercase">
             <ion-icon slot="start" name="play"></ion-icon>
             {{ 'guides.Show Collection' | translate:params }}
           </ion-button>
-          <ion-button
-            *ngIf="item.protocol_template && haveProtocolPermissions"
-            class="show-guide-btn"
-            color="medium"
-            (click)="openProtocol(item)"
-            vertical="bottom"
-          >
+          <ion-button *ngIf="item.protocol_template && haveProtocolPermissions" class="show-guide-btn" color="medium"
+            (click)="openProtocol(item)" vertical="bottom">
             <ion-icon slot="start" name="list"></ion-icon>
             {{ 'guides.Protocol' | translate:params }}
           </ion-button>
-          <ion-button
-            *ngIf="testGuideStepSave"
-            class="show-guide-btn"
-            color="medium"
-            (click)="addGuideStep(item)"
-            vertical="bottom"
-          >
+          <ion-button *ngIf="testGuideStepSave" class="show-guide-btn" color="medium" (click)="addGuideStep(item)"
+            vertical="bottom">
             <ion-icon slot="start" name="list"></ion-icon>
             {{ 'guides.Guide Step' | translate:params }}
           </ion-button>
