@@ -39,7 +39,7 @@ const routes: Routes = [
     path: ':reference_model_alias/:reference_id/feedback',
     loadChildren: () => import('./feedback/feedback.page.module').then(m => m.FeedbackPageModule)
   },
-   /// add/edit feedback
+  /// add/edit feedback
   {
     path: 'feedback/save',
     loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
@@ -83,7 +83,37 @@ const routes: Routes = [
   {
     path: 'logout',
     loadChildren: () => import('./logout/logout.module').then(m => m.LogoutPageModule)
-  }
+  },
+  {
+    path: 'guidecapture',
+    loadChildren: () => import('./guidecapture/guidecapture.module').then(m => m.GuidecapturePageModule)
+  },
+  {
+    path: 'editguide',
+    loadChildren: () => import('./editguide/editguide.module').then(m => m.EditguidePageModule)
+  },
+  {
+    path: 'editguide',
+    children: [
+      {
+        path: ':id',
+        loadChildren: () => import('./editguide/editguide.module').then(m => m.EditguidePageModule)
+      }
+    ]
+  },
+  {
+    path: 'editguidestep',
+    loadChildren: () => import('./editguidestep/editguidestep.module').then(m => m.EditguidestepPageModule)
+  },
+  {
+    path: 'addstep',
+    children: [
+      {
+        path: ":id",
+        loadChildren: () => import('./addstep/addstep.module').then(m => m.AddstepPageModule)
+      }
+    ]
+  },
 ];
 
 @NgModule({
@@ -92,4 +122,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

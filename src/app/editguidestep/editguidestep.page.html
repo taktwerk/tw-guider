@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title> {{ 'editguidestep.header' | translate }} </ion-title>
+    <sync-spinner-component slot="primary"></sync-spinner-component>
+    <ion-back-button text=""></ion-back-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-fab class="big-fab" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="attach"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button (click)="addFileCapacitor()" color="primary">
+        <ion-icon name="folder"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="addPhotoUsingCamera()" color="primary">
+        <ion-icon name="camera"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="addVideoUsingCamera()" color="primary">
+        <ion-icon name="videocam"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <form *ngIf="model">
+    <ion-list>
+      <ion-item class="">
+        <ion-label position="floating">
+          {{ 'title' | translate:params }}:
+        </ion-label>
+        <ion-input [(ngModel)]="model.title" name="title" placeholder="{{ defaultTitle }}" clear-input
+          (ionChange)="onChanges($event)">
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">{{ 'editguidestep.Description' | translate:params }}:</ion-label>
+        <ion-textarea [(ngModel)]="model.description_html" name="description"
+          placeholder="{{ 'editguidestep.Note description' | translate:params }}" rows="5" cols="33"
+          style="display: block;" (ionChange)="onChanges($event)">
+        </ion-textarea>
+      </ion-item>
+    </ion-list>
+
+    <div *ngIf="model.attached_file" class="top-file">
+      <div class="ion-text-center wrapper">
+        <img *ngIf="model.isImageFile()" height="280" [src]="model.getFileImagePath()"
+          (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
+        <div *ngIf="model.isVideoFile()" [ngClass]="{'video-with-thumbnail': model.isExistThumbOfFile()}"
+          (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
+          <img *ngIf="model.isExistThumbOfFile()" [src]="model.getFileImagePath()" />
+          <ion-icon *ngIf="model.isExistThumbOfFile()" name="videocam" class="videocam-icon" slot="start">
+          </ion-icon>
+          <img *ngIf="!model.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'">
+        </div>
+        <ion-icon *ngIf="model.isPdf()" class="videocam-icon" name="document"
+          (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
+        </ion-icon>
+        <ion-icon name="musical-notes" class="videocam-icon" slot="start" *ngIf="model.isAudioFile()"
+          (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
+        </ion-icon>
+        <ion-icon *ngIf="!model.isExistFormatFile()" class="videocam-icon" name="cloud-upload">
+        </ion-icon>
+      </div>
+    </div>
+
+    <ion-row class="buttons">
+      <ion-col>
+        <ion-button expand="block" (click)="save()" [disabled]="!shouldUpdate">
+          {{ 'save' | translate:params }}
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button color="danger" expand="block" (click)="showDeleteAlert()">
+          {{ 'delete' | translate:params }}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>

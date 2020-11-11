@@ -248,8 +248,8 @@ export class FeedbackAddEditPage implements OnInit {
     console.log('after readFile', photoInTempStorage);
 
     let date = new Date(),
-    time = date.getTime(),
-    fileName = time + ".jpeg";
+      time = date.getTime(),
+      fileName = time + ".jpeg";
 
     await Filesystem.writeFile({
       data: photoInTempStorage.data,
@@ -263,7 +263,7 @@ export class FeedbackAddEditPage implements OnInit {
     });
 
     let photoPath = Capacitor.convertFileSrc(finalPhotoUri.uri);
-     //await this.downloadService.copy(photoPath, this.TABLE_NAME);
+    //await this.downloadService.copy(photoPath, this.TABLE_NAME);
 
     const recordedFile = new RecordedFile();
     recordedFile.uri = photoPath;
