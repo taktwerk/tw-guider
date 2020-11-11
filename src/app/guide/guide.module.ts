@@ -4,30 +4,27 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { GuidePage } from './guide.page';
-import {SyncSpinnerComponentModule} from '../../components/sync-spinner-component/sync-spinner-component.module';
-import {MainPipe} from '../../pipes/main-pipe.module';
-import {HtmlDescriptionComponentModule} from '../../components/html-description/html-description-component.module';
-import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
-import {TranslateModule} from '@ngx-translate/core';
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-import {Viewer3dModelComponentModule} from "../../components/viewer-3d-model-component/viewer-3d-model-component.module";
-import {GuideStepContentComponentModule} from "../../components/guide-step-content-component/guide-step-content-component.module";
-import {GuideStepContentComponent} from "../../components/guide-step-content-component/guide-step-content-component";
+import { SyncSpinnerComponentModule } from '../../components/sync-spinner-component/sync-spinner-component.module';
+import { MainPipe } from '../../pipes/main-pipe.module';
+import { HtmlDescriptionComponentModule } from '../../components/html-description/html-description-component.module';
+import { LanguageSelectorComponentModule } from '../../components/language-selector-component/language-selector-component.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { Viewer3dModelComponentModule } from "../../components/viewer-3d-model-component/viewer-3d-model-component.module";
+import { GuideStepContentComponentModule } from "../../components/guide-step-content-component/guide-step-content-component.module";
+import { GuideStepContentComponent } from "../../components/guide-step-content-component/guide-step-content-component";
+import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
+import { GuideinfoPageModule } from 'src/components/guideinfo/guideinfo.module';
 
 @NgModule({
-  declarations: [
-      GuidePage
-  ],
+    declarations: [
+        GuidePage,
+    ],
     imports: [
         CommonModule,
         FormsModule,
         IonicModule,
-        RouterModule.forChild([
-            {
-                path: '',
-                component: GuidePage
-            }
-        ]),
+        RouterModule.forChild([{ path: '', component: GuidePage }]),
         FontAwesomeModule,
         SyncSpinnerComponentModule,
         HtmlDescriptionComponentModule,
@@ -35,11 +32,13 @@ import {GuideStepContentComponent} from "../../components/guide-step-content-com
         LanguageSelectorComponentModule,
         TranslateModule,
         Viewer3dModelComponentModule,
-        GuideStepContentComponentModule
+        GuideStepContentComponentModule,
+        GuideinfoPageModule
+
     ],
     entryComponents: [
         GuideStepContentComponent
     ]
 })
 
-export class GuidePageModule {}
+export class GuidePageModule { }

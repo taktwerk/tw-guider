@@ -1,23 +1,23 @@
-import {ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy} from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 
-import {Events, NavController, Platform} from '@ionic/angular';
+import { Events, NavController, Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import {ApiSync} from '../providers/api-sync';
-import {MigrationProvider} from '../providers/migration-provider';
-import {AuthService} from '../services/auth-service';
-import {AuthDb} from '../models/db/auth-db';
-import {Network} from '@ionic-native/network/ngx';
-import {HttpClient} from '../services/http-client';
-import {SyncService} from '../services/sync-service';
-import {Observable} from 'rxjs';
+import { ApiSync } from '../providers/api-sync';
+import { MigrationProvider } from '../providers/migration-provider';
+import { AuthService } from '../services/auth-service';
+import { AuthDb } from '../models/db/auth-db';
+import { Network } from '@ionic-native/network/ngx';
+import { HttpClient } from '../services/http-client';
+import { SyncService } from '../services/sync-service';
+import { Observable } from 'rxjs';
 import 'rxjs/add/observable/interval';
-import {UserDb} from '../models/db/user-db';
-import {DbProvider} from '../providers/db-provider';
-import {DownloadService} from '../services/download-service';
-import {TranslateConfigService} from '../services/translate-config.service';
-import {AppSetting} from '../services/app-setting';
-import {UserService} from '../services/user-service';
+import { UserDb } from '../models/db/user-db';
+import { DbProvider } from '../providers/db-provider';
+import { DownloadService } from '../services/download-service';
+import { TranslateConfigService } from '../services/translate-config.service';
+import { AppSetting } from '../services/app-setting';
+import { UserService } from '../services/user-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import * as THREE from 'three';
 
@@ -105,8 +105,8 @@ export class AppComponent implements OnInit, OnDestroy {
         }
         this.syncService.syncMode.next(this.userService.userDb.userSetting.syncMode);
         if (this.userService.userDb.userSetting.syncLastElementNumber > 0 &&
-            (this.userService.userDb.userSetting.syncStatus === 'resume' ||
-             this.userService.userDb.userSetting.syncStatus === 'progress')
+          (this.userService.userDb.userSetting.syncStatus === 'resume' ||
+            this.userService.userDb.userSetting.syncStatus === 'progress')
         ) {
           this.userService.userDb.userSetting.syncStatus = 'pause';
           this.userService.userDb.save().then(() => {
@@ -191,7 +191,7 @@ export class AppComponent implements OnInit, OnDestroy {
   protected async setPages() {
     this.appPages = this.getTopMenuPages();
     this.appPages.push(
-        {title: this.translateConfigService.translateWord('about.header'), url: '/about', icon: 'information-circle'}
+      { title: this.translateConfigService.translateWord('about.header'), url: '/about', icon: 'information-circle' }
     );
   }
 
@@ -199,27 +199,29 @@ export class AppComponent implements OnInit, OnDestroy {
     const appPages = [];
     if (!this.appSetting.isWasQrCodeSetup || !this.authService.isLoggedin) {
       appPages.push(
-          {title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home'}
+        { title: this.translateConfigService.translateWord('start.header'), url: '/start', icon: 'home' }
       );
     }
     if (!this.appSetting.isWasQrCodeSetup) {
       return appPages;
     }
     if (!this.authService.isLoggedin) {
-      appPages.push({title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'person'});
+      appPages.push({ title: this.translateConfigService.translateWord('login.Login'), url: '/login', icon: 'person' });
       return appPages;
     }
     if (this.authService.isHaveUserRole('GuiderViewer') || this.authService.auth.isAuthority) {
-      appPages.push({title: this.translateConfigService.translateWord('guides.header'), url: '/guide-categories', icon: 'move'});
+      appPages.push({ title: this.translateConfigService.translateWord('guides.header'), url: '/guide-categories', icon: 'move' });
     }
     if (this.authService.isHaveUserRole('FeedbackViewer') || this.authService.auth.isAuthority) {
-      appPages.push({title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'chatboxes'});
+      appPages.push({ title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'chatboxes' });
     }
     if (this.authService.isHaveUserRole('ProtocolViewer') || this.authService.auth.isAuthority) {
-      appPages.push({title: this.translateConfigService.translateWord('protocol.Protocols'), url: '/protocol', icon: 'list'});
+      appPages.push({ title: this.translateConfigService.translateWord('protocol.Protocols'), url: '/protocol', icon: 'list' });
     }
-    appPages.push({title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person'});
-
+    if (this.authService.isHaveUserRole('GuiderAdmin') || this.authService.auth.isAuthority) {
+      appPages.push({ title: this.translateConfigService.translateWord('guider.header'), url: '/guidecapture', icon: 'camera' });
+    }
+    appPages.push({ title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person' });
     return appPages;
   }
 
@@ -241,12 +243,12 @@ export class AppComponent implements OnInit, OnDestroy {
         return;
       }
       if (this.userService.userDb.userSetting.language &&
-          this.translateConfigService.isLanguageAvailable(this.userService.userDb.userSetting.language)
+        this.translateConfigService.isLanguageAvailable(this.userService.userDb.userSetting.language)
       ) {
         this.translateConfigService.setLanguage(this.userService.userDb.userSetting.language);
       }
       if (this.userService.userDb.userSetting.syncLastElementNumber > 0 &&
-          (this.userService.userDb.userSetting.syncStatus === 'resume' || this.userService.userDb.userSetting.syncStatus === 'progress')
+        (this.userService.userDb.userSetting.syncStatus === 'resume' || this.userService.userDb.userSetting.syncStatus === 'progress')
       ) {
         this.userService.userDb.userSetting.syncStatus = 'pause';
         this.userService.userDb.save();
@@ -260,9 +262,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.apiSync.isAvailableForPushData.next(this.userService.userDb.userSetting.isPushAvailableData);
       this.apiSync.checkAvailableChanges().then(() => {
         this.checkAvailableSyncChanges = Observable.interval(30000)
-            .subscribe(() => {
-              this.apiSync.checkAvailableChanges();
-            });
+          .subscribe(() => {
+            this.apiSync.checkAvailableChanges();
+          });
       });
       this.detectChanges();
     });
@@ -288,15 +290,15 @@ export class AppComponent implements OnInit, OnDestroy {
     }
     if (syncMode === 2) {
       this.periodicSync = Observable.interval(15000)
-          .subscribe(() => {
-            let syncProcessStatus = this.apiSync.syncProgressStatus.getValue();
-            if (['pause'].includes(syncProcessStatus)) {
-              syncProcessStatus = 'resume';
-            } else {
-              syncProcessStatus = 'progress';
-            }
-            this.apiSync.makeSyncProcess(syncProcessStatus);
-          });
+        .subscribe(() => {
+          let syncProcessStatus = this.apiSync.syncProgressStatus.getValue();
+          if (['pause'].includes(syncProcessStatus)) {
+            syncProcessStatus = 'resume';
+          } else {
+            syncProcessStatus = 'progress';
+          }
+          this.apiSync.makeSyncProcess(syncProcessStatus);
+        });
     }
   }
 
@@ -320,7 +322,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.apiSync.setIsPushAvailableData(true);
     });
     this.syncService.syncMode.subscribe((syncMode) => {
-        this.changeSyncModeAction(syncMode);
+      this.changeSyncModeAction(syncMode);
     });
     this.translateConfigService.onLangChange().subscribe(() => {
       this.setPages();

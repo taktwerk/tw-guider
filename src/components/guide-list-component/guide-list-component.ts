@@ -33,7 +33,7 @@ export class GuideListComponent {
   public params;
   @Input() guides: GuiderModel[];
 
-  testGuideStepSave = false;
+  testGuideStepSave = true;
 
   constructor(
     private platform: Platform,
