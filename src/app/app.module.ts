@@ -67,7 +67,6 @@ import {DrawImageService} from '../services/draw-image-service';
 import {VideoModalComponent} from '../components/modals/video-modal-component/video-modal-component';
 import {DrawImageModalComponent} from '../components/modals/draw-image-modal-component/draw-image-modal-component';
 import {ToastService} from '../services/toast-service';
-import {DocumentViewer} from '@ionic-native/document-viewer/ngx';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {PdftronModalComponent} from '../components/modals/pdftron-modal-component/pdftron-modal-component';
 import {PictureService} from '../services/picture-service';
@@ -214,7 +213,6 @@ Sentry.init({ dsn: environment.sentryDsn });
     VideoEditor,
     ɵDomSanitizerImpl,
     AppVersion,
-    DocumentViewer,
     FileOpener,
     Insomnia,
     NativeAudio,
