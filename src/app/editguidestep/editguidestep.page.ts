@@ -169,6 +169,7 @@ export class EditguidestepPage implements OnInit {
       const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'GuideStep' });
       this.http.showToast(alertMessage);
       this.shouldUpdate = false;
+      this.router.navigate(["/", "editguide", this.guideId]);
     }).catch((e) => console.log(e))
   }
 
