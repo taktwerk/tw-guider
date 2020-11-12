@@ -194,7 +194,7 @@ export abstract class ApiService {
      * @returns {boolean}
      */
     public pushFiles(model: DbApiModel, userForSaving?: UserDb): Promise<boolean> {
-        console.log('push files to server');
+      //  console.log('push files to server');
         return new Promise(async (resolve) => {
           if (model.platform.is('mobileweb')) {
             resolve(false);
@@ -208,16 +208,16 @@ export abstract class ApiService {
           const url = this.appSetting.getApiUrl() + this.loadUrl + '/' + model.idApi + '/upload';
           const headers = new Headers({'X-Auth-Token': this.http.getAuthorizationToken()});
           const uploadFilePromises = [];
-          console.log('MODEL.DOWNLOADMAPPING', model.downloadMapping );
+        //  console.log('MODEL.DOWNLOADMAPPING', model.downloadMapping );
           for (const fields of model.downloadMapping) {
-            console.log('in forrrrr of pushing files');
+           // console.log('in forrrrr of pushing files');
             // If we have a local path but no api path, we need to upload the file!
             if (model[fields.localPath] && !model[fields.url]) {
-                console.log('model[fields.localPath] && !model[fields.url] pushing files');
+            //    console.log('model[fields.localPath] && !model[fields.url] pushing files');
                 const fieldUrl = url + '?fileAttribute=' + fields.name;
-                console.log('fieledUrl  pushing files', fieldUrl);
+             //   console.log('fieledUrl  pushing files', fieldUrl);
                 try {
-                    console.log('in try catcj of push');
+               //     console.log('in try catcj of push');
                     const uploadResult = await model.downloadService.startUpload(
                         model.TABLE_NAME,
                         fields.name,
@@ -226,10 +226,10 @@ export abstract class ApiService {
                         fieldUrl,
                         headers
                     );
-                    console.log('uploadResult', uploadResult );
+                //    console.log('uploadResult', uploadResult );
                     if (uploadResult) {
                        // await this.saveSyncedModel(uploadResult, false, false); // WAS COMMENTED
-                        console.log('SAVEED');
+                   //     console.log('SAVEED');
                         if (userForSaving) {
                             userForSaving.userSetting.appDataVersion++;
                             await userForSaving.save();

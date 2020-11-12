@@ -1,7 +1,7 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbBaseModel} from './db-base-model';
-import {DbProvider} from '../../providers/db-provider';
-import {DownloadService, RecordedFile} from '../../services/download-service';
+import { Platform, Events } from '@ionic/angular';
+import { DbBaseModel } from './db-base-model';
+import { DbProvider } from '../../providers/db-provider';
+import { DownloadService, RecordedFile } from '../../services/download-service';
 
 export class BaseFileMapInModel {
     public name: string;
@@ -75,9 +75,9 @@ export abstract class DbApiModel extends DbBaseModel {
      * @param downloadService
      */
     constructor(public platform: Platform,
-                public db: DbProvider,
-                public events: Events,
-                public downloadService: DownloadService
+        public db: DbProvider,
+        public events: Events,
+        public downloadService: DownloadService
     ) {
         super(platform, db, events, downloadService);
     }
@@ -117,8 +117,8 @@ export abstract class DbApiModel extends DbBaseModel {
                                     }
                                 }
                                 if (apiObj[memberNameOfFile] !== undefined && this[memberNameOfFile] === apiObj[memberNameOfFile]) {
-                                    console.log('not willChangeColumn', memberNameOfFile);
-                                    console.log('not willChangeColumn in model', this);
+                                    // console.log('not willChangeColumn', memberNameOfFile);
+                                    // console.log('not willChangeColumn in model', this);
                                     willChangeColumn = false;
                                 }
                             }
@@ -241,9 +241,9 @@ export abstract class DbApiModel extends DbBaseModel {
                     this[this.COL_LOCAL_CREATED_AT] = new Date();
                     this[this.COL_LOCAL_UPDATED_AT] = new Date();
                 }
-                console.log('before create');
+                // console.log('before create');
                 await this.create();
-                console.log('after create');
+                // console.log('after create');
                 this.unsetNotSavedModelUploadedFilePaths();
                 resolve(true);
                 return;
@@ -287,7 +287,7 @@ export abstract class DbApiModel extends DbBaseModel {
      * of this DbApiModel instance by its `updateCondition`
      * @returns {Promise<T>}
      */
-    public exists(condition?:any): Promise<boolean> {
+    public exists(condition?: any): Promise<boolean> {
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
@@ -349,7 +349,7 @@ export abstract class DbApiModel extends DbBaseModel {
 
     /// Model file part
     doesHaveFilesForPush() {
-        console.log('this.downloadMapping doesHaveFilesForPush', this.downloadMapping);
+        // console.log('this.downloadMapping doesHaveFilesForPush', this.downloadMapping);
         if (!this.downloadMapping) {
             return false;
         }
@@ -475,7 +475,7 @@ export abstract class DbApiModel extends DbBaseModel {
             (!oldModel || oldModel[fileMap.url] !== this[fileMap.url])
         ) {
             console.log('download thumbnail');
-            await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
+            // await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
         }
 
         return true;
@@ -498,6 +498,11 @@ export abstract class DbApiModel extends DbBaseModel {
 
     async setFile(recordedFile: RecordedFile, fileMapIndex = 0) {
         recordedFile.uri = await this.downloadService.copy(recordedFile.uri, this.TABLE_NAME);
+
+        console.log(">>>>>>>>>>>>>>>>  recordedFile.uri  ><>>>>>>>>>>>>>>>>>")
+        console.log(recordedFile.uri)
+        console.log(">>>>>>>>>>>>>>>>  recordedFile.uri  ><>>>>>>>>>>>>>>>>>")
+
         if (recordedFile.thumbnailUri) {
             recordedFile.thumbnailUri = await this.downloadService.copy(recordedFile.thumbnailUri, this.TABLE_NAME);
         }
@@ -711,7 +716,7 @@ export abstract class DbApiModel extends DbBaseModel {
         return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
     }
 
-    public getFilePath(basePath?:string, modelName?:string) {
+    public getFilePath(basePath?: string, modelName?: string) {
         if (!basePath) {
             basePath = this.getFileName();
         }
@@ -735,6 +740,4 @@ export abstract class DbApiModel extends DbBaseModel {
     async afterPushDataToServer(isInsert: boolean) {
         return [];
     }
-
-
 }

@@ -57,7 +57,7 @@ export class DownloadService {
     private camera: Camera,
     private videoEditor: VideoEditor,
     protected sanitizerImpl: ɵDomSanitizerImpl
-  ) {}
+  ) { }
 
   /**
    * Download a file locally
@@ -118,7 +118,7 @@ export class DownloadService {
     }
 
     console.log('headerObject', headerObject);
-    
+
     const headers = new Headers(headerObject);
 
     return new Promise((resolve) => {
@@ -161,9 +161,9 @@ export class DownloadService {
     return new Promise(async (resolve) => {
       fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
       const fileUriObject = await Filesystem.getUri({
-                  directory: FilesystemDirectory.Data,
-                  path: directoryName + '/' + fileName
-                });
+        directory: FilesystemDirectory.Data,
+        path: directoryName + '/' + fileName
+      });
       const fileUri = Capacitor.convertFileSrc(fileUriObject.uri);
       const downloadedImage = await this.download(fileUri);
       const imgBlob = downloadedImage.body;
@@ -250,8 +250,10 @@ export class DownloadService {
 
       this.checkDir(modelName).then(
         (suc) => {
-          this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then(
-            (success) => {
+          console.log(suc)
+          if (suc) {
+            console.log(correctPath, currentName, newFilePath, newFileName)
+            this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then((success) => {
               if (success) {
                 console.log('is sucessss copieng');
                 resolve(newFilePath + '/' + newFileName);
@@ -260,11 +262,12 @@ export class DownloadService {
                 resolve('');
               }
             },
-            (error) => {
-              console.log('copyToLocalDir error', error);
-              resolve('');
-            }
-          );
+              (error) => {
+                console.log('copyToLocalDir error', error);
+                resolve('');
+              }
+            );
+          }
         },
         (err) => {
           console.log('checkDir error', err);
@@ -289,10 +292,9 @@ export class DownloadService {
       console.log(currentName);
       console.log(newFilePath);
       console.log(newFileName);
-      this.file.copyFile(namePath, currentName, newFilePath, newFileName).then(
-        (success) => {
-          resolve(true);
-        },
+      this.file.copyFile(namePath, currentName, newFilePath, newFileName).then((success) => {
+        resolve(true);
+      },
         (error) => {
           console.log('copyFile error', error);
           resolve(false);
@@ -395,23 +397,22 @@ export class DownloadService {
     return this.webview.convertFileSrc(path);
   }
 
-    public getSanitizedFileUrl(path, modelName, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
-        path = this.getNativeFilePath(path, modelName);
-        const convertFileSrc = this.getWebviewFileSrc(path);
+  public getSanitizedFileUrl(path, modelName, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
+    path = this.getNativeFilePath(path, modelName);
+    const convertFileSrc = this.getWebviewFileSrc(path);
 
-        return this.getSafeUrl(convertFileSrc, sanitizeType);
+    return this.getSafeUrl(convertFileSrc, sanitizeType);
+  }
+
+  public getSafeUrl(convertFileSrc, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
+    const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
+
+    if (sanitizeType === 'trustStyle') {
+      return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
     }
 
-    public getSafeUrl(convertFileSrc, sanitizeType = 'trustResourceUrl'): SafeResourceUrl
-    {
-        const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
-
-        if (sanitizeType === 'trustStyle') {
-            return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
-        }
-
-        return safeUrl;
-    }
+    return safeUrl;
+  }
 
   public async chooseFile(withThumbnailForVideo = false): Promise<RecordedFile> {
     const recordedFile = new RecordedFile();
@@ -433,7 +434,6 @@ export class DownloadService {
         recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
       }
     }
-
     return recordedFile;
   }
 
@@ -547,8 +547,16 @@ export class DownloadService {
     };
     const photoFullPath = await this.camera.getPicture(cameraOptions);
 
+    console.log(">>>>>>>>>>>>>> photoFullPath >>>>>>>>>>>>>>>>>>>>>>>")
+    console.log(photoFullPath)
+    console.log(">>>>>>>>>>>>>> photoFullPath >>>>>>>>>>>>>>>>>>>>>>>")
+
     const recordedFile = new RecordedFile();
+
     recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath);
+    console.log(">>>>>>>>>>>>>> recordedFile >>>>>>>>>>>>>>>>>>>>>>>");
+    console.log(recordedFile.uri)
+    console.log(">>>>>>>>>>>>>> recordedFile >>>>>>>>>>>>>>>>>>>>>>>");
 
     return recordedFile;
   }
@@ -570,7 +578,7 @@ export class DownloadService {
   }
 
   public getResolvedNativeFilePath(uri): Promise<string> {
-    console.log('URIII',uri);
+    console.log('URIII', uri);
     if (!this.filePath) {
       throw new Error('FilePath plugin is not defined');
     }

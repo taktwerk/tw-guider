@@ -9,23 +9,28 @@ import { GuideCategoryService } from '../../providers/api/guide-category-service
   styleUrls: ['./guidecapture.page.scss'],
 })
 export class GuidecapturePage implements OnInit {
-  isLoadedContent = false;
   guidesData: GuiderModel[] = [];
   guidesList: GuiderModel[] = [];
   public params;
 
   displayLimit: number = 10;
+
+  isLoading = true;
+
   constructor(private authService: AuthService,
     private guideCategoryService: GuideCategoryService,
   ) {
-    // this.authService.checkAccess('guidecapture');
+    this.authService.checkAccess('guidecapture');
   }
 
   ngOnInit() { this.getGuides(); }
 
   async getGuides() {
-    this.guidesData = await this.guideCategoryService.getGuides(null);
-    this.guidesList = this.guidesData.slice(0, this.displayLimit);
+    this.guideCategoryService.getGuides(null).then((res) => {
+      this.guidesData = res;
+      this.guidesList = this.guidesData.slice(0, this.displayLimit);
+      this.isLoading = false;
+    })
   }
 
   loadData(event) {

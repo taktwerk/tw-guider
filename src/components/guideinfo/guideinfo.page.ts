@@ -1,4 +1,6 @@
+import { ApiSync } from './../../providers/api-sync';
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { GuiderModel } from 'src/models/db/api/guider-model';
 import { GuiderService } from 'src/providers/api/guider-service';
@@ -13,8 +15,7 @@ export class GuideinfoPage implements OnInit {
   guide: GuiderModel
   public params;
 
-  constructor(public modalController: ModalController, private guiderService: GuiderService,
-  ) { }
+  constructor(public modalController: ModalController, private guiderService: GuiderService, private router: Router,private apiSync: ApiSync) { }
 
   async ngOnInit() {
     const guiderById = await this.guiderService.getById(this.guideId)
@@ -24,6 +25,7 @@ export class GuideinfoPage implements OnInit {
   }
 
   dismiss() {
-    this.modalController.dismiss({ 'dismissed': true });
+    this.modalController.dismiss({ 'dismissed': true, 'guideId': this.guideId });
+    this.router.navigate(['/guide/' + this.guide.idApi]);
   }
 }

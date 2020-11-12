@@ -13,6 +13,9 @@ import { TranslateConfigService } from 'src/services/translate-config.service';
 import { AlertController, ToastController } from '@ionic/angular';
 import { ApiSync } from 'src/providers/api-sync';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
+import { Camera, CameraOptions } from '@ionic-native/Camera/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
 
 const { Filesystem } = Plugins;
 
@@ -40,6 +43,8 @@ export class AddstepPage implements OnInit {
     private apiSync: ApiSync,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private filePath: FilePath,
+    private fileChooser: FileChooser,
   ) {
     this.model = this.guideStepService.newModel();
   }
@@ -74,40 +79,17 @@ export class AddstepPage implements OnInit {
   }
 
   async addFileCapacitor() {
-    console.log('before get file');
-    const image = await Plugins.Camera.getPhoto({
-      allowEditing: false,
-      source: CameraSource.Photos,
-      resultType: CameraResultType.Uri,
-      saveToGallery: false
-    });
+    this.fileChooser.open().then(async (resp) => {
+      const res = await this.downloadService.getResolvedNativeFilePath(resp);
 
-    console.log('after get file', image);
+      console.log(">>>>>>>>>>>>>>>> getResolvedNativeFilePath ><>>>>>>>>>>>>>>>>>")
+      console.log(res)
+      console.log(">>>>>>>>>>>>>>>> getResolvedNativeFilePath ><>>>>>>>>>>>>>>>>>")
 
-    const photoInTempStorage = await Filesystem.readFile({ path: image.path });
-
-    console.log('after readFile', photoInTempStorage);
-
-    let date = new Date(),
-      time = date.getTime(),
-      fileName = time + ".jpeg";
-
-    await Filesystem.writeFile({
-      data: photoInTempStorage.data,
-      path: 'model/' + fileName,
-      directory: FilesystemDirectory.Data
-    });
-
-    const finalPhotoUri = await Filesystem.getUri({
-      directory: FilesystemDirectory.Data,
-      path: 'model/' + fileName,
-    });
-
-    let photoPath = Capacitor.convertFileSrc(finalPhotoUri.uri);
-
-    const recordedFile = new RecordedFile();
-    recordedFile.uri = photoPath;
-    this.model.setFileProperty(recordedFile);
+      const recordedFile = new RecordedFile();
+      recordedFile.uri = res;
+      this.model.setFile(recordedFile);
+    })
   }
 
   async addVideoUsingCamera() {
@@ -123,6 +105,10 @@ export class AddstepPage implements OnInit {
     this.downloadService
       .makePhoto(1000, 1000)
       .then((recordedFile) => {
+        console.log(">>>>>>>>>>>>>>>> recordedFile><>>>>>>>>>>>>>>>>>")
+        console.log(recordedFile)
+        console.log(">>>>>>>>>>>>>>>> recordedFile ><>>>>>>>>>>>>>>>>>")
+
         this.model.setFile(recordedFile)
       })
       .catch((e) => console.log('model', 'addPhotoUsingCamera', e));
@@ -147,7 +133,6 @@ export class AddstepPage implements OnInit {
       this.setGuideSteps(this.guideId).then(() => {
         this.guideStepService.save(step).then((res) => {
           this.apiSync.setIsPushAvailableData(true);
-          this.apiSync.refreshData();
           this.showToast(`${this.model.title} saved`);
           this.router.navigate(["/", "editguide", this.guideId]);
         }).catch((e) => console.log(e))
