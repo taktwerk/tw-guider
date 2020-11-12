@@ -13,7 +13,7 @@ import { TranslateConfigService } from 'src/services/translate-config.service';
 import { AlertController, ToastController } from '@ionic/angular';
 import { ApiSync } from 'src/providers/api-sync';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
-import { Camera, CameraOptions } from '@ionic-native/Camera/ngx';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 
