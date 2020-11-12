@@ -18,6 +18,7 @@ import { PictureService } from '../../services/picture-service';
 import { ApiSync } from '../../providers/api-sync';
 import { CameraResultType, CameraSource, Capacitor } from '@capacitor/core';
 import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
 
 const { Filesystem } = Plugins;
 
@@ -65,7 +66,8 @@ export class FeedbackAddEditPage implements OnInit {
     private videoService: VideoService,
     private fileOpener: FileOpener,
     private pictureService: PictureService,
-    private apiSync: ApiSync
+    private apiSync: ApiSync,
+    private fileChooser: FileChooser,
   ) {
     this.authService.checkAccess('feedback');
     if (!this.model) {
@@ -234,40 +236,17 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addFileCapacitor() {
-    console.log('before get file');
-    const image = await Plugins.Camera.getPhoto({
-      allowEditing: false,
-      source: CameraSource.Photos,
-      resultType: CameraResultType.Uri,
-      saveToGallery: false
-    });
-    console.log('after get file', image);
+    this.fileChooser.open().then(async (resp) => {
+      const res = await this.downloadService.getResolvedNativeFilePath(resp);
 
-    const photoInTempStorage = await Filesystem.readFile({ path: image.path });
+      console.log(">>>>>>>>>>>>>>>> getResolvedNativeFilePath ><>>>>>>>>>>>>>>>>>")
+      console.log(res)
+      console.log(">>>>>>>>>>>>>>>> getResolvedNativeFilePath ><>>>>>>>>>>>>>>>>>")
 
-    console.log('after readFile', photoInTempStorage);
-
-    let date = new Date(),
-      time = date.getTime(),
-      fileName = time + ".jpeg";
-
-    await Filesystem.writeFile({
-      data: photoInTempStorage.data,
-      path: 'feedback/' + fileName,
-      directory: FilesystemDirectory.Data
-    });
-
-    const finalPhotoUri = await Filesystem.getUri({
-      directory: FilesystemDirectory.Data,
-      path: 'feedback/' + fileName,
-    });
-
-    let photoPath = Capacitor.convertFileSrc(finalPhotoUri.uri);
-    //await this.downloadService.copy(photoPath, this.TABLE_NAME);
-
-    const recordedFile = new RecordedFile();
-    recordedFile.uri = photoPath;
-    this.model.setFileProperty(recordedFile);
+      const recordedFile = new RecordedFile();
+      recordedFile.uri = res;
+      this.model.setFile(recordedFile);
+    })
   }
 
   async addVideoUsingCamera() {
