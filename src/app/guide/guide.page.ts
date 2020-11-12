@@ -282,10 +282,10 @@ export class GuidePage implements OnInit, AfterContentChecked {
     };
     const loader = await this.loader.create();
     loader.present();
+
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     if (this.guideId) {
-      this.presentGuideInfo(this.guideId);
-      const guiderById = await this.guiderService.getById(this.guideId)
+      const guiderById = await this.guiderService.getById(this.guideId);
       if (guiderById.length) {
         this.guide = guiderById[0];
         await this.setGuideSteps(this.guide.idApi);
@@ -380,6 +380,8 @@ export class GuidePage implements OnInit, AfterContentChecked {
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess('guide');
     });
+
+    this.presentGuideInfo(this.guideId);
   }
 
   async presentGuideInfo(guideId) {

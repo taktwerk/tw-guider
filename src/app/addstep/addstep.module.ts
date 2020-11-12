@@ -26,6 +26,6 @@ import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-com
     Viewer3dModelComponentModule,
     HtmlDescriptionComponentModule
   ],
-  declarations: [AddstepPage]
+  declarations: [AddstepPage],
 })
-export class AddstepPageModule {}
+export class AddstepPageModule { }

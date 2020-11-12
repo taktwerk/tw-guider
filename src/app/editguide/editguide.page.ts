@@ -8,7 +8,7 @@ import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { GuideAssetService } from 'src/providers/api/guide-asset-service';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
 
-import { ToastController } from '@ionic/angular';
+import { Events, ToastController } from '@ionic/angular';
 import { ApiSync } from 'src/providers/api-sync';
 
 @Component({
@@ -23,7 +23,8 @@ export class EditguidePage implements OnInit, OnDestroy {
     private guideAssetService: GuideAssetService,
     private router: Router,
     private toastController: ToastController,
-    private apiSync: ApiSync
+    private apiSync: ApiSync,
+    public events: Events,
   ) { }
 
   guideId: string;
@@ -38,13 +39,18 @@ export class EditguidePage implements OnInit, OnDestroy {
       }
     })
 
-    this.refreshSub = this.apiSync.refreshSub.subscribe((value) => {
-      if (value) {
-        if (this.guideId) {
-          this.setGuideSteps(this.guideId);
-        }
-      }
-    })
+    this.events.subscribe('user:login', () => {
+      this.setGuideSteps(this.guideId);
+    });
+    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async (model) => {
+      this.setGuideSteps(this.guideId);
+    });
+    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async (model) => {
+      this.setGuideSteps(this.guideId);
+    });
+    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async (model) => {
+      this.setGuideSteps(this.guideId);
+    });
   }
 
   public setGuideSteps(id) {
@@ -55,8 +61,5 @@ export class EditguidePage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.refreshSub.unsubscribe();
-  }
-
+  ngOnDestroy(): void {}
 }
