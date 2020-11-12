@@ -316,7 +316,7 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
-                    console.log('query', query);
+                  //  console.log('query', query);
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             resolve(res);
@@ -335,7 +335,7 @@ export abstract class DbBaseModel {
         const query = this.searchAllQuery(where, orderBy, limit, join, selectFrom);
         const entries: any[] = [];
 
-        console.log('query', query);
+      //  console.log('query', query);
 
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
@@ -343,7 +343,7 @@ export abstract class DbBaseModel {
                     resolve(entries);
                 } else {
                     db.query(query).then((res) => {
-                        console.log('search all res', res);
+                      //  console.log('search all res', res);
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
                                 const obj = new (this.constructor as any);
@@ -540,10 +540,10 @@ export abstract class DbBaseModel {
                 }
             }
         } else {
-            console.debug(this.TAG, 'findAllWhere condition error', condition);
+           // console.debug(this.TAG, 'findAllWhere condition error', condition);
         }
 
-        console.log('CONDITIONS', conditions.join(' AND '));
+      //  console.log('CONDITIONS', conditions.join(' AND '));
         return conditions.join(' AND ');
     }
 

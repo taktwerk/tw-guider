@@ -108,7 +108,6 @@ export class GuideListComponent {
   openGuide(guide: GuiderModel) {
     if (guide.guide_collection.length) {
       this.openCollection(guide);
-
       return;
     }
     this.router.navigate(['/guide/' + guide.idApi]);

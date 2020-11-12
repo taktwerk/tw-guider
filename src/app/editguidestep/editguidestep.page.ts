@@ -52,7 +52,6 @@ export class EditguidestepPage implements OnInit {
     // this.authService.checkAccess('guider');
 
     this.activatedRoute.queryParams.subscribe((param) => {
-      console.log(param)
       this.guideId = param.guideId;
       this.stepId = param.stepId;
       this.guideStepService.dbModelApi.findAllWhere(['guide_id', this.guideId], 'order_number ASC').then(results => {
@@ -60,7 +59,7 @@ export class EditguidestepPage implements OnInit {
           return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT] && model.idApi == this.stepId
         })[0];
         this.previousModel = this.model;
-        console.log(this.model)
+        this.setGuideSteps(this.guideId)
       });
     })
   }
@@ -107,13 +106,13 @@ export class EditguidestepPage implements OnInit {
 
     await Filesystem.writeFile({
       data: photoInTempStorage.data,
-      path: 'model/' + fileName,
+      path: 'guidestep/' + fileName,
       directory: FilesystemDirectory.Data
     });
 
     const finalPhotoUri = await Filesystem.getUri({
       directory: FilesystemDirectory.Data,
-      path: 'model/' + fileName,
+      path: 'guidestep/' + fileName,
     });
 
     let photoPath = Capacitor.convertFileSrc(finalPhotoUri.uri);
@@ -152,6 +151,14 @@ export class EditguidestepPage implements OnInit {
     else { this.shouldUpdate = false }
   }
 
+  public setGuideSteps(id) {
+    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
+      this.guideSteps = results.filter(model => {
+        return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
+      });
+    });
+  }
+
   async save() {
     const user = await this.authService.getLastUser();
     if (!user) {
@@ -162,6 +169,7 @@ export class EditguidestepPage implements OnInit {
       const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'GuideStep' });
       this.http.showToast(alertMessage);
       this.shouldUpdate = false;
+      this.router.navigate(["/", "editguide", this.guideId]);
     }).catch((e) => console.log(e))
   }
 
@@ -187,9 +195,18 @@ export class EditguidestepPage implements OnInit {
   delete() {
     this.guideStepService.remove(this.model).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
-      this.router.navigate(["/", "editguide", this.guideId]);
       const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'GuideStep' });
       this.http.showToast(alertMessage);
+
+      this.setGuideSteps(this.guideId).then(() => {
+        this.guideSteps.map((step, index) => {
+          step.order_number = index + 1;
+          this.guideStepService.save(step).then((res) => {
+            this.apiSync.setIsPushAvailableData(true);
+          })
+        })
+      })
+      this.router.navigate(["/", "editguide", this.guideId]);
     })
   }
 }

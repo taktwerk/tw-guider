@@ -132,6 +132,7 @@ export class GuideCollectionPage implements OnInit {
       this.findAllGuideCategories();
       this.detectChanges();
     });
+    
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
       this.findAllGuideCategories();
     });

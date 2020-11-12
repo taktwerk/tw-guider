@@ -49,6 +49,7 @@
       <div class="ion-text-center wrapper">
         <img *ngIf="model.isImageFile()" height="280" [src]="model.getFileImagePath()"
           (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
+
         <div *ngIf="model.isVideoFile()" [ngClass]="{'video-with-thumbnail': model.isExistThumbOfFile()}"
           (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
           <img *ngIf="model.isExistThumbOfFile()" [src]="model.getFileImagePath()" />
@@ -56,12 +57,15 @@
           </ion-icon>
           <img *ngIf="!model.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'">
         </div>
+
         <ion-icon *ngIf="model.isPdf()" class="videocam-icon" name="document"
           (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
         </ion-icon>
+
         <ion-icon name="musical-notes" class="videocam-icon" slot="start" *ngIf="model.isAudioFile()"
           (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
         </ion-icon>
+        
         <ion-icon *ngIf="!model.isExistFormatFile()" class="videocam-icon" name="cloud-upload">
         </ion-icon>
       </div>
