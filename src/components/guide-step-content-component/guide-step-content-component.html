@@ -3,45 +3,11 @@
     <div class="grid">
       <div class="col col-img" *ngIf="fileName">
         <div class="guide-step-img">
-          <ion-icon
-            name="musical-notes"
-            class="audio-icon"
-            slot="start"
-            *ngIf="isAudioFile"
-            (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)"
-          >
-          </ion-icon>
-          <fa-icon
-            [icon]="faFilePdf"
-            class="fa-icon"
-            slot="start"
-            *ngIf="isPdf"
-            (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)"
-          >
-          </fa-icon>
-          <img class="guide-img"
-            *ngIf="isImageFile"
-            (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)"
-            [src]="fileImagePath"
-          />
-          <div class="video-div" *ngIf="isVideoFile" (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)">
-            <img class="video-thumb" *ngIf="existThumbOfFile" [src]="fileImagePath" />
-            <ion-icon *ngIf="existThumbOfFile" name="play" class="videocam-icon" slot="start"></ion-icon>
-            <img *ngIf="!existThumbOfFile" [src]="'/assets/videooverlay.png'" />
-          </div>
-          <div *ngIf="is3dFile" style="width: 100%; height: 100%; position:relative;">
-            <ion-icon
-              (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)"
-              name="search"
-              style="position: absolute; bottom: 0; right: 0; padding: 15px; font-size: 50px; z-index: 1000"
-            >
-            </ion-icon>
-            <viewer-3d-model-component [fileName]="filePath3d" [backgroundColor]="null" [fullScreen]="false" [madeUserIteractions]="false" [willStopRotate]="false">
-            </viewer-3d-model-component>
-          </div>
-          <ion-icon *ngIf="!isExistFormatFile" class="videocam-icon" color="primary" name="cloud-upload"></ion-icon>
+          <model-assetcomponent [model]="step"></model-assetcomponent>
         </div>
+
       </div>
+
       <div class="col description" #description [ngClass]="{'has-media' : fileName}">
         <ion-card class="guide-step-text ion-no-margin">
           <ion-card-header>
@@ -50,12 +16,15 @@
           </ion-card-header>
           <ion-card-content>
             <div *ngIf="step.description_html" class="ion-text-left">
-              <html-description-component [html]="step.description_html" class="step-description"></html-description-component>
+              <html-description-component [html]="step.description_html" class="step-description">
+              </html-description-component>
             </div>
           </ion-card-content>
           <ion-toolbar *ngIf="haveFeedbackPermissions">
-            <ion-icon *ngIf="step.description_html" class="expand-icon" color="primary" name="list" (click)="openAssetTextModal()" slot="start"></ion-icon>
-            <ion-button class="feedback-btn" slot="end" color="primary" fill="outline" size="small" (click)="openFeedback('guide_step', step.idApi)">
+            <ion-icon *ngIf="step.description_html" class="expand-icon" color="primary" name="list"
+              (click)="openAssetTextModal()" slot="start"></ion-icon>
+            <ion-button class="feedback-btn" slot="end" color="primary" fill="outline" size="small"
+              (click)="openFeedback('guide_step', step.idApi)">
               <ion-icon name="chatboxes" slot="start"></ion-icon>
               {{ "feedback.header" | translate: params }}
             </ion-button>

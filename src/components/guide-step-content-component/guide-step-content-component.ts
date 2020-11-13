@@ -81,7 +81,9 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     }
 
     const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
+
+    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || 
+    this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
       if (!fileApiUrl) {
         return false;
       }

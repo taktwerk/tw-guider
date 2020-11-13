@@ -20,7 +20,7 @@
       <ion-fab-button (click)="addFileCapacitor()" color="primary">
         <ion-icon name="folder"></ion-icon>
       </ion-fab-button>
-      <!-- <ion-fab-button color="primary">
+<!--       <ion-fab-button color="primary">
         <ion-icon name="folder" style="position: absolute;"></ion-icon>
         <input type="file" style="opacity: 0;height: 100%;" (change)="addFile($event)" #filePicker/>
       </ion-fab-button> -->
@@ -38,13 +38,21 @@
         <ion-label position="floating">
           {{ 'title' | translate:params }}:
         </ion-label>
-        <ion-input [(ngModel)]="model.title" name="title" placeholder="{{ defaultTitle }}" clear-input>
+        <ion-input
+                [(ngModel)]="model.title"
+                name="title"
+                placeholder="{{ defaultTitle }}"
+                clear-input>
         </ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">{{ 'feedback.Description' | translate:params }}:</ion-label>
-        <ion-textarea [(ngModel)]="model.description" name="description"
-          placeholder="{{ 'feedback.Note description' | translate:params }}" rows="5" cols="33" style="display: block;">
+        <ion-textarea [(ngModel)]="model.description"
+                      name="description"
+                      placeholder="{{ 'feedback.Note description' | translate:params }}"
+                      rows="5"
+                      cols="33"
+                      style="display: block;">
         </ion-textarea>
       </ion-item>
       <ion-item>
@@ -59,22 +67,44 @@
 
     <div *ngIf="model.attached_file" class="top-file">
       <div class="ion-text-center wrapper">
-        <img *ngIf="model.isImageFile()" height="280"
-          (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)" [src]="model.getFileImagePath()">
-        <div *ngIf="model.isVideoFile()" (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
-          [ngClass]="{'video-with-thumbnail': model.isExistThumbOfFile()}">
-          <img *ngIf="model.isExistThumbOfFile()" [src]="model.getFileImagePath()" />
-          <ion-icon *ngIf="model.isExistThumbOfFile()" name="videocam" class="videocam-icon" slot="start">
+        <img *ngIf="model.isImageFile()"
+             height="280"
+             (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
+             [src]="model.getFileImagePath()">
+        <div *ngIf="model.isVideoFile()"
+             (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
+             [ngClass]="{'video-with-thumbnail': model.isExistThumbOfFile()}"
+        >
+          <img *ngIf="model.isExistThumbOfFile()"
+               [src]="model.getFileImagePath()"
+          />
+          <ion-icon *ngIf="model.isExistThumbOfFile()"
+                    name="videocam"
+                    class="videocam-icon"
+                    slot="start"
+          >
           </ion-icon>
-          <img *ngIf="!model.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'">
+          <img *ngIf="!model.isExistThumbOfFile()"
+               [src]="'/assets/videooverlay.png'"
+          >
         </div>
-        <ion-icon *ngIf="model.isPdf()" class="videocam-icon" name="document"
-          (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
+        <ion-icon *ngIf="model.isPdf()"
+                  class="videocam-icon"
+                  name="document"
+                  (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
+        >
         </ion-icon>
-        <ion-icon name="musical-notes" class="videocam-icon" slot="start" *ngIf="model.isAudioFile()"
-          (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
+        <ion-icon name="musical-notes"
+                  class="videocam-icon"
+                  slot="start"
+                  *ngIf="model.isAudioFile()"
+                  (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
+        >
         </ion-icon>
-        <ion-icon *ngIf="!model.isExistFormatFile()" class="videocam-icon" name="cloud-upload">
+        <ion-icon *ngIf="!model.isExistFormatFile()"
+                  class="videocam-icon"
+                  name="cloud-upload"
+        >
         </ion-icon>
       </div>
     </div>
@@ -96,5 +126,5 @@
       </ion-col>
     </ion-row>
   </form>
-
+ 
 </ion-content>

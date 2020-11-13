@@ -1,3 +1,4 @@
+import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -23,8 +24,9 @@ import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-com
     SyncSpinnerComponentModule,
     FontAwesomeModule,
     Viewer3dModelComponentModule,
-    HtmlDescriptionComponentModule
+    HtmlDescriptionComponentModule,
+    AssetviewComponentModule
   ],
   declarations: [EditguidestepPage]
 })
-export class EditguidestepPageModule {}
+export class EditguidestepPageModule { }

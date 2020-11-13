@@ -22,6 +22,7 @@ export class FileMapInModel extends BaseFileMapInModel {
  *
  * IMPORTANT: Do not extend this class if you only want to create a DbModel but not a model that has to be synced
  * with the remote API. In that case you'd have to extend only DbHelper.
+ * 
  */
 export abstract class DbApiModel extends DbBaseModel {
     loadUrl: string;
