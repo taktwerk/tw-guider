@@ -19,6 +19,8 @@
 }
 
 ion-thumbnail {
+    border-radius: 6px;
+    overflow: hidden;
     img {
         object-fit: cover;
         height: 100%;
