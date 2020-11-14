@@ -1,8 +1,7 @@
 <div class="preview-wrapper">
     <!-- audio  -->
-    <ion-icon name="musical-notes" class="videocam-icon" slot="start" *ngIf="model.isAudioFile()"
-        (click)="openFile(model.getFileName(), model.TABLE_NAME, model.COL_TITLE)">
-    </ion-icon>
+    <img src="../../assets/icon/musical-note.svg" *ngIf="model.isAudioFile()"
+        (click)="openFile(model.getFileName(), model.TABLE_NAME, model.COL_TITLE)" class="grayoutimage">
 
     <!-- video -->
     <div *ngIf="model.isVideoFile()" (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
@@ -16,11 +15,9 @@
     <img *ngIf="model.isImageFile()" (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)"
         [src]="model.getFileImagePath()" />
 
-
     <!-- pdf -->
-    <div *ngIf="model.isPdf()" (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)">
-        <ion-icon name="document" class="videocam-icon" slot="start"> </ion-icon>
-    </div>
+    <img src="../../assets/icon/document-text.svg" class="grayoutimage" *ngIf="model.isPdf()"
+        (click)="openFile(model.getFileName(), model.TABLE_NAME, model.title)" style="width: auto!important;">
 
     <div *ngIf="model.is3dFile()" style="width: 100%; height: 100%; position:relative;">
         <ion-icon (click)="openFile(model.fileName, model.fileUrl, model.TABLE_NAME, model.title)" name="search"

@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -25,13 +25,12 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-
 .ck {
   display: none;
 }
 
 .muted {
-	color: gray;
+  color: gray;
 }
 
 $save-changes-alert-width: 400px;
@@ -58,8 +57,8 @@ $save-changes-alert-width: 400px;
 }
 
 .grey-background {
-  --ion-color-base: #E9EAED !important;
-  --background: #E9EAED !important;
+  --ion-color-base: #e9eaed !important;
+  --background: #e9eaed !important;
 }
 
 ion-header {
@@ -74,7 +73,7 @@ ion-header {
     margin-left: 20px;
     margin-top: 5px;
 
- /*    ion-icon {
+    /*    ion-icon {
       fill: white;
       stroke: white;
     } */
@@ -110,21 +109,28 @@ sync-modal-component {
 }
 
 .modal-fullscreen {
-    .modal-wrapper {
-        position: absolute;
-        top: 0;
-        left: 0;
-        display: block;
-        width: 100%;
-        height: 100%;
-        margin-right: 20px;
-    }
+  .modal-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin-right: 20px;
+  }
 }
 
 .swiper-slide-active {
   width: 100% !important;
 }
 
-ion-menu ion-content ion-list, .header-list {
+ion-menu ion-content ion-list,
+.header-list {
   padding-bottom: 0;
+}
+
+ion-thumbnail {
+  div {
+    height: 100%;
+  }
 }

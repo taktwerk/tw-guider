@@ -21,22 +21,14 @@ export class AssetviewComponent implements OnInit {
     private viewer3dService: Viewer3dService,
   ) { }
 
-  ngOnInit() { 
-    console.log(this.model)
-    console.log(this.model.is3dFile())
-  }
+  ngOnInit() {}
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     const filePath = basePath;
-    let fileTitle = this.model.TABLE_NAME; // change later
-    console.log(">>>>>>>>>>>> this.model.TABLE_NAME <<<<<<<<<<<<<<<<<")
-    console.log(this.model.TABLE_NAME)
-    console.log(">>>>>>>>>>>> this.model.TABLE_NAME <<<<<<<<<<<<<<<<<")
-
+    let fileTitle = this.model.title; // change later
     if (title) {
       fileTitle = title;
     }
-
     const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
 
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
