@@ -1,4 +1,4 @@
-<div  class="preview-wrapper">
+<div class="preview-wrapper">
     <!-- audio  -->
     <ion-icon name="musical-notes" class="videocam-icon" slot="start" *ngIf="model.isAudioFile()"
         (click)="openFile(model.getFileName(), model.TABLE_NAME, model.COL_TITLE)">
@@ -22,9 +22,7 @@
         <ion-icon name="document" class="videocam-icon" slot="start"> </ion-icon>
     </div>
 
-
-
-    <div *ngIf="model.is3dFile" style="width: 100%; height: 100%; position:relative;">
+    <div *ngIf="model.is3dFile()" style="width: 100%; height: 100%; position:relative;">
         <ion-icon (click)="openFile(model.fileName, model.fileUrl, model.TABLE_NAME, model.title)" name="search"
             style="position: absolute; bottom: 0; right: 0; padding: 15px; font-size: 50px; z-index: 1000">
         </ion-icon>

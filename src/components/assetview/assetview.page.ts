@@ -21,7 +21,10 @@ export class AssetviewComponent implements OnInit {
     private viewer3dService: Viewer3dService,
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    console.log(this.model)
+    console.log(this.model.is3dFile())
+  }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     const filePath = basePath;
