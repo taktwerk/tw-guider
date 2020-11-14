@@ -33,10 +33,10 @@ ion-slides {
 /*.swiper-wrapper {
   margin-bottom: 15px;
 }*/
-.guide-assets ion-row {
-  /*   -webkit-flex-wrap: wrap;
-  flex-wrap: wrap; */
-}
+// .guide-assets ion-row {
+//   /*   -webkit-flex-wrap: wrap;
+//   flex-wrap: wrap; */
+// }
 
 ion-card {
   --background: white;
@@ -85,5 +85,34 @@ ion-slide {
 
   ion-back-button {
     display: contents !important;
+  }
+}
+
+.asset_wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+
+  label {
+    padding: 8px;
+    span {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      p {
+        line-height: normal;
+        padding-top: 16px;
+        margin: 0;
+      }
+    }
+    img {
+      height: 40px;
+      width: 40px;
+    }
   }
 }
