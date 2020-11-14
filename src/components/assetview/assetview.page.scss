@@ -1,13 +1,17 @@
 .preview-wrapper {
     height: 100%;
     max-height: 250px;
-     img {
+    img {
         height: 100%;
-        width: 100%!important;
+        width: 100% !important;
         object-fit: cover;
     }
 }
 
 .grayoutimage {
     filter: invert(80%) sepia(0%) saturate(3594%) hue-rotate(97deg) brightness(90%) contrast(100%);
+}
+
+.mini {
+    max-height: 250px;
 }

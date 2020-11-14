@@ -3,25 +3,6 @@
     <div class="grid">
       <div class="col col-img" *ngIf="fileName">
         <div class="guide-step-img">
-
-          <div *ngIf="is3dFile" style="width: 100%; height: 100%; position:relative;">
-
-            <ion-icon (click)="openFile(fileName, fileUrl, step.TABLE_NAME, step.title)" name="search"
-              style="position: absolute; bottom: 0; right: 0; padding: 15px; font-size: 50px; z-index: 1000">
-            </ion-icon>
-
-            <viewer-3d-model-component [fileName]="filePath3d" [backgroundColor]="null" [fullScreen]="false"
-              [madeUserIteractions]="false" [willStopRotate]="false">
-            </viewer-3d-model-component>
-          </div>
-
-
-
-
-
-
-
-
           <model-assetcomponent [model]="step"></model-assetcomponent>
         </div>
       </div>

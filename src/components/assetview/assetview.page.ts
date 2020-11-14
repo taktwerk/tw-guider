@@ -13,6 +13,8 @@ import { Viewer3dService } from 'src/services/viewer-3d-service';
 })
 export class AssetviewComponent implements OnInit {
   @Input() model: any;
+  /**Set to true to make image small */
+  @Input() mini: boolean;
 
   constructor(private downloadService: DownloadService,
     private videoService: VideoService,
@@ -21,7 +23,7 @@ export class AssetviewComponent implements OnInit {
     private viewer3dService: Viewer3dService,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     const filePath = basePath;
