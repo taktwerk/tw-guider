@@ -11,8 +11,7 @@
 
         <ion-item detail="true" button (click)="onEdit(step)">
           <ion-reorder slot="start" *ngIf="disableReorder == false"></ion-reorder>
-          <ion-thumbnail slot="start"
-            *ngIf="step.is3dFile() || step.isVideoFile() || step.isImageFile() || step.isPdf() || step.isAudioFile()">
+          <ion-thumbnail slot="start">
             <model-assetcomponent [model]="step"></model-assetcomponent>
           </ion-thumbnail>
 
