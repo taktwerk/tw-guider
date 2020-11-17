@@ -87,7 +87,7 @@ export class ListViewComponent implements OnInit {
 
   logScrollStart() { }
 
-  logScrolling() {
+  logScrolling(event?) {
     this.isScrolling = true;
   }
 
