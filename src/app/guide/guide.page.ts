@@ -389,7 +389,8 @@ export class GuidePage implements OnInit, AfterContentChecked {
       component: GuideinfoPage,
       componentProps: {
         'guideId': guideId
-      }
+      },
+      cssClass: "modal-fullscreen"
     });
     return await modal.present();
   }

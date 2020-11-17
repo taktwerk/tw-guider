@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ElementRef, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { ItemReorderEventDetail } from '@ionic/core';
@@ -8,7 +8,6 @@ import { ApiSync } from 'src/providers/api-sync';
 import { GuideAssetService } from 'src/providers/api/guide-asset-service';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
 import { GuiderService } from 'src/providers/api/guider-service';
-import { async } from 'rxjs/internal/scheduler/async';
 import { TranslateConfigService } from 'src/services/translate-config.service';
 import { HttpClient } from '../../services/http-client';
 import { GuideChildService } from 'src/providers/api/guide-child-service';
@@ -20,6 +19,8 @@ import { GuideChildService } from 'src/providers/api/guide-child-service';
 })
 export class ListViewComponent implements OnInit {
   @Input() guideSteps: GuideStepModel[];
+  guideStepsData: GuideStepModel[] = [];
+
   @Input() canReorder: boolean;
   @Input() guideId: string;
 
@@ -29,11 +30,10 @@ export class ListViewComponent implements OnInit {
   public faFilePdf = faFilePdf;
   disableReorder = true;
   isScrolling = false;
+  displayLimit: number = 10;
 
   constructor(
-    private guiderService: GuiderService,
     private guideStepService: GuideStepService,
-    private guideAssetService: GuideAssetService,
     private router: Router,
     private toastController: ToastController,
     private apiSync: ApiSync,
@@ -41,7 +41,6 @@ export class ListViewComponent implements OnInit {
     private translateConfigService: TranslateConfigService,
     public http: HttpClient,
     public events: Events,
-    private guideChildService: GuideChildService,
   ) { }
 
   ngOnInit(): void { }
@@ -88,7 +87,7 @@ export class ListViewComponent implements OnInit {
 
   logScrollStart() { }
 
-  logScrolling(event) {
+  logScrolling() {
     this.isScrolling = true;
   }
 
@@ -98,14 +97,27 @@ export class ListViewComponent implements OnInit {
 
   public setGuideSteps(id) {
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
-      this.guideSteps = results.filter(model => {
+      this.guideStepsData = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
+      this.guideSteps = this.guideStepsData.slice(0, this.displayLimit)
     });
   }
 
+  loadData(event) {
+    setTimeout(() => {
+      this.displayLimit += 10;
+      this.guideSteps = this.guideSteps.slice(0, this.displayLimit);
+      event.target.complete();
+      event.target.disabled = true;
+      if (this.guideSteps.length == this.guideSteps.length) {
+        event.target.disabled = true;
+      }
+    }, 500)
+  }
+
   delete(step: GuideStepModel) {
-    this.guideStepService.remove(step).then(async (res) => {
+    this.guideStepService.remove(step).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
       const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'GuideStep' });
       this.http.showToast(alertMessage);
@@ -113,7 +125,7 @@ export class ListViewComponent implements OnInit {
       // this.setGuideSteps(this.guideId).then(() => {
       this.guideSteps.map((step, index) => {
         step.order_number = index + 1;
-        this.guideStepService.save(step).then((res) => {
+        this.guideStepService.save(step).then(() => {
           this.apiSync.setIsPushAvailableData(true);
         })
         // })

@@ -22,14 +22,17 @@
   <div [ngSwitch]="type">
     <div class="category-content" *ngSwitchCase="'browse'">
       <span *ngIf="isLoadedContent">
+
         <div class="guide-category" *ngFor="let guideCategory of guideCategories; trackBy: trackByFn">
           <div *ngIf="guideCategory.guidesCount">
-            <ion-item button detail [routerLink]="['/guides/' + guideCategory.idApi]" class="guide-category" lines="full" inset="true">
+            <ion-item button detail [routerLink]="['/guides/' + guideCategory.idApi]" class="guide-category"
+              lines="full" inset="true">
               <ion-label slot="start">{{ guideCategory.name }}</ion-label>
               <ion-badge color="medium" slot="end">{{ guideCategory.guidesCount }}</ion-badge>
             </ion-item>
           </div>
         </div>
+
         <div class="guide-category" *ngIf="guidesWithoutCategories && guidesWithoutCategories.length">
           <div>
             <ion-item button detail [routerLink]="['/guides/0']" class="guide-category" lines="full" inset="true">
@@ -38,25 +41,20 @@
             </ion-item>
           </div>
         </div>
+        
       </span>
     </div>
     <div *ngSwitchCase="'search'">
-      <ion-searchbar
-        animated="true"
-        mode="md"
-        class="search-categories"
-        autocomplete="on"
-        debounce="250"
-        [value]="searchValue"
-        placeholder="{{ 'Search all guides' | translate:params }}"
-        (ionChange)="searchGuides($event)"
-      >
+      <ion-searchbar animated="true" mode="md" class="search-categories" autocomplete="on" debounce="250"
+        [value]="searchValue" placeholder="{{ 'Search all guides' | translate:params }}"
+        (ionChange)="searchGuides($event)">
       </ion-searchbar>
       <span *ngIf="isLoadedContent">
         <div *ngIf="guides && guides.length">
           <div *ngIf="guides.length > guideItemsLimit" [ngStyle]="{'margin': '15px'}">
             <div *ngIf="!searchValue">{{ 'guides.specifySearchMessage' | translate:{guidesCount:guides.length} }}</div>
-            <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}</div>
+            <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
+            </div>
           </div>
           <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides"> </guide-list-component>
         </div>
