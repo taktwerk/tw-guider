@@ -120,6 +120,10 @@ sync-modal-component {
   }
 }
 
+.sc-ion-modal-md-h {
+  --border-radius: 0px !important;
+}
+
 .swiper-slide-active {
   width: 100% !important;
 }
