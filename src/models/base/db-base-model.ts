@@ -343,7 +343,7 @@ export abstract class DbBaseModel {
                     resolve(entries);
                 } else {
                     db.query(query).then((res) => {
-                      //  console.log('search all res', res);
+                      // console.log('search all res', res);
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
                                 const obj = new (this.constructor as any);
