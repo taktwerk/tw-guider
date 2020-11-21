@@ -1,33 +1,44 @@
+import { Platform } from '@ionic/angular';
 import { Injectable } from '@angular/core';
 import { AppSetting } from '../services/app-setting';
-import { Plugins } from '@capacitor/core';
+import { Plugins, Capacitor } from '@capacitor/core';
 import '@capacitor-community/sqlite';
-const { CapacitorSQLite, Device } = Plugins;
+import { CapacitorSQLitePlugin } from '@capacitor-community/sqlite';
+const { CapacitorSQLite, Device, Storage } = Plugins;
+
+declare var window: any;
 
 @Injectable()
 export class DbProvider {
-  public db = CapacitorSQLite;
+
+  public db = CapacitorSQLite as any;
+
   /**
    * Init - init database etc. PS! Have to wait for Platform.ready
    */
   init(): Promise<any> {
     return new Promise(async (resolve) => {
       const info = await Device.getInfo();
+
       if (info.platform === 'android') {
         try {
-          const db = CapacitorSQLite as any;
-          await db.requestPermissions();
-          this.openDatabase();
+          // TODO: change to  public db = CapacitorSQLite as any;
+          // await this.db.requestPermissions();
+          this.initDatabase();
         } catch (e) { console.log('db issue >> ', e) }
       }
-      else { this.openDatabase(); }
+      else { this.initDatabase(); }
       resolve(true);
     });
   }
 
-  async openDatabase() {
-    await this.db.open({ database: AppSetting.DB_NAME });
-    console.log(this.db)
+  async initDatabase() {
+    // if (typeof window.sqlitePlugin !== 'undefined') {
+    //   this.db = window.sqlitePlugin.openDatabase({ name: AppSetting.DB_NAME, location: 'default' });
+    // } else {
+    //   this.db = window.openDatabase(AppSetting.DB_NAME, '1.0', 'Test DB', -1);
+    // }
+    await this.db.open({ database: AppSetting.DB_NAME })
   }
 
   removeDb(): Promise<any> {
@@ -48,16 +59,25 @@ export class DbProvider {
   query(q: string, params?: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       params = params || [];
+
+      // this.db.transaction((tx) => {
+      //   tx.executeSql(q, params, (tx, res) => {
+      //     resolve(res);
+      //   }, (tx, err) => {
+      //     reject(err);
+      //   });
+      // });
+
       if (q.length > 0) {
-        console.log(q)
-        // this.db.query({ statements: q, values: params }).then((res) => {
-        //   console.log(">>>>>>>>> Result >>>>>>>>")
-        //   console.log(res)
-        //   console.log(">>>>>>>>> Result >>>>>>>>")
-        //   resolve(res)
-        // })
+        const res = await this.db.run({ statement: q, values: params });
+        console.log(">>>>>>>>>")
+        console.log(res)
+        console.log(">>>>>>>>>")
+        resolve(res)
       }
-      else { reject({ changes: -1, message: "Cannot run query" }); }
+      else {
+        return reject({ changes: -1, message: "Service not started" });
+      }
     });
   }
 }
