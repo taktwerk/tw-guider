@@ -100,6 +100,7 @@ import { PdfViewerComponentModule } from '../components/pdf-viewer-component/pdf
 import { Base64ToGallery } from '@ionic-native/base64-to-gallery/ngx';
 import { ProgressBarModule } from '../components/progress-bar/progress-bar.module';
 import { ListviewComponentModule } from 'src/components/listview/listview.module';
+import { SQLite } from '@ionic-native/sqlite/ngx';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -219,6 +220,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     Insomnia,
     NativeAudio,
     Media,
+    SQLite,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     MigrationService,
