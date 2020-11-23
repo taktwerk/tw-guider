@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Platform } from '@ionic/angular';
-import { AppSetting } from '../services/app-setting';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
+import {AppSetting} from '../services/app-setting';
 
 declare var window: any;
 
@@ -9,30 +7,19 @@ declare var window: any;
 export class DbProvider {
 
   public db: any;
-  constructor(private platform: Platform, private sqlite: SQLite) { }
+  constructor() { }
 
   /**
    * Init - init database etc. PS! Have to wait for Platform.ready
    */
   init(): Promise<any> {
     return new Promise((resolve) => {
-      // if (typeof window.sqlitePlugin !== 'undefined') {
-      //   this.db = window.sqlitePlugin.openDatabase({ name: AppSetting.DB_NAME, location: 'default' });
-      // } else {
-      //   this.db = window.openDatabase(AppSetting.DB_NAME, '1.0', 'Test DB', -1);
-      // }
-      this.platform.ready().then(() => {
-        console.log("Platform Ready");
-        if (this.sqlite.create({ name: AppSetting.DB_NAME })) {
-          this.sqlite.create({ name: AppSetting.DB_NAME, location: 'default' })
-          .then((db: SQLiteObject) => { this.db = db; resolve(true); })
-          .catch((e) => console.log(e))
-        }
-        else {
-          console.log("SQLite Plugin Error / Use on Device or Emulator")
-        }
-      })
-
+      if (typeof window.sqlitePlugin !== 'undefined') {
+        this.db = window.sqlitePlugin.openDatabase({ name: AppSetting.DB_NAME, location: 'default' });
+      } else {
+        this.db = window.openDatabase(AppSetting.DB_NAME, '1.0', 'Test DB', -1);
+      }
+      resolve(true);
     });
   }
 

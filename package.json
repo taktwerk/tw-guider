@@ -175,5 +175,58 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.5.3"
+  },
+  "description": "An Ionic project",
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-device": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+      },
+      "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-file": {},
+      "cordova-sqlite-storage": {},
+      "com-sarriaroman-photoviewer": {},
+      "cordova-plugin-streaming-media": {},
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-filechooser": {},
+      "cordova-plugin-filepath": {},
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-aes256-encryption": {},
+      "cordova-plugin-filepicker": {},
+      "cordova-plugin-qrscanner": {},
+      "cordova-plugin-app-version": {},
+      "cordova-plugin-camera": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
+      "cordova-plugin-media-capture": {},
+      "cordova-plugin-video-editor": {},
+      "cordova-plugin-androidx-adapter": {},
+      "cordova-plugin-compat": {},
+      "cordova-android-support-gradle-release": {
+        "ANDROID_SUPPORT_VERSION": "27.+"
+      },
+      "cordova-plugin-androidx": {},
+      "cordova-custom-config": {},
+      "cordova-plugin-file-opener2": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
+      "cordova-plugin-insomnia": {},
+      "sentry-cordova": {
+        "SENTRY_ANDROID_SDK_VERSION": "1+"
+      },
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-nativeaudio": {},
+      "cordova-plugin-media": {
+        "KEEP_AVAUDIOSESSION_ALWAYS_ACTIVE": "NO"
+      },
+      "cordova-base64-to-gallery": {}
+    },
+    "platforms": [
+      "android",
+      "ios"
+    ]
   }
 }
