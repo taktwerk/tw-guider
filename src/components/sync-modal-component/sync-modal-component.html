@@ -1,10 +1,10 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="header_bg">
     <ion-title> {{ 'sync-modal.header' | translate:params }} </ion-title>
     <sync-spinner-component [shouldOpenPopup]="false" slot="primary"> </sync-spinner-component>
     <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">
-        <ion-icon name="close"></ion-icon>
+      <ion-button (click)="dismiss()"> 
+        <ion-icon name="close" style="color: #fff;" mode="md"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
