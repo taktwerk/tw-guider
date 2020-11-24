@@ -61,11 +61,24 @@ $save-changes-alert-width: 400px;
   --background: #e9eaed !important;
 }
 
+.header_bg {
+  background-color: #173262;
+  --background:#173262;
+}
+
+ion-menu-button {
+  color: white;
+}
+
 ion-header {
   --ion-background-color: #173262;
 
   ion-toolbar {
     color: white;
+    background-color: #173262;
+    --background:#173262;
+
+   *{ color: white;  }
   }
 
   sync-spinner-component {
