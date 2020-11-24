@@ -412,36 +412,36 @@ export class ApiSync {
 
     public sendSyncProgress(description?: string, isCancel = false) {
         return new Promise(resolve => {
-            if (!this.userService.userDb.userSetting.lastSyncProcessId ||
-                (this.network.type === 'none' && !this.appSetting.isEnabledUsb)
-            ) {
-                resolve(false);
-                return;
-            }
-            let url = this.appSetting.getApiUrl() + '/sync/save-progress';
-            url += '?syncProcessId=' + this.userService.userDb.userSetting.lastSyncProcessId;
+            // if (!this.userService.userDb.userSetting.lastSyncProcessId ||
+            //     (this.network.type === 'none' && !this.appSetting.isEnabledUsb)
+            // ) {
+            //     resolve(false);
+            //     return;
+            // }
+            // let url = this.appSetting.getApiUrl() + '/sync/save-progress';
+            // url += '?syncProcessId=' + this.userService.userDb.userSetting.lastSyncProcessId;
 
-            let data = null;
-            if (isCancel) {
-                data = {
-                    id: this.userService.userDb.userSetting.lastSyncProcessId,
-                    uuid: this.http.deviceInfo.uuid,
-                    status: 'cancel'
-                };
-            } else {
-                data = this.getSyncProcessInfo();
-                if (description) {
-                    data.description = description;
-                }
-            }
+            // let data = null;
+            // if (isCancel) {
+            //     data = {
+            //         id: this.userService.userDb.userSetting.lastSyncProcessId,
+            //         uuid: this.http.deviceInfo.uuid,
+            //         status: 'cancel'
+            //     };
+            // } else {
+            //     data = this.getSyncProcessInfo();
+            //     if (description) {
+            //         data.description = description;
+            //     }
+            // }
 
-            this.http.post(url, data).subscribe((response) => {
-                resolve(true);
-                return;
-            }, (err) => {
-                resolve(false);
-                return;
-            });
+            // this.http.post(url, data).subscribe((response) => {
+            //     resolve(true);
+            //     return;
+            // }, (err) => {
+            //     resolve(false);
+            //     return;
+            // });
         });
     }
 
