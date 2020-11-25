@@ -86,7 +86,7 @@ export class EditguidestepPage implements OnInit {
   }
 
   async addFileCapacitor() {
-    console.log('before get file');
+    /* console.log('before get file');
     const image = await Plugins.Camera.getPhoto({
       allowEditing: false,
       source: CameraSource.Photos,
@@ -121,7 +121,10 @@ export class EditguidestepPage implements OnInit {
     recordedFile.uri = photoPath;
     this.model.setFileProperty(recordedFile);
 
-    this.shouldUpdate = true;
+    this.shouldUpdate = true; */
+    this.downloadService.chooseFile().then((recordedFile) =>{
+      this.model.setFile(recordedFile);
+    })
   }
 
   async addVideoUsingCamera() {
