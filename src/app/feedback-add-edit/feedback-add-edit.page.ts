@@ -236,7 +236,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addFileCapacitor() {
-    this.fileChooser.open().then(async (resp) => {
+   /*  this.fileChooser.open().then(async (resp) => {
       const res = await this.downloadService.getResolvedNativeFilePath(resp);
 
       console.log(">>>>>>>>>>>>>>>> getResolvedNativeFilePath ><>>>>>>>>>>>>>>>>>")
@@ -245,6 +245,9 @@ export class FeedbackAddEditPage implements OnInit {
 
       const recordedFile = new RecordedFile();
       recordedFile.uri = res;
+      this.model.setFile(recordedFile);
+    }) */
+    this.downloadService.chooseFile().then((recordedFile) =>{
       this.model.setFile(recordedFile);
     })
   }
