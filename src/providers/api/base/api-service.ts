@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import {DbApiModel} from '../../../models/base/db-api-model';
-import {HttpClient} from '../../../services/http-client';
-import {AppSetting} from '../../../services/app-setting';
-import {Events} from '@ionic/angular';
-import {UserDb} from '../../../models/db/user-db';
-import {HttpHeaders as Headers} from '@angular/common/http';
+import { DbApiModel } from '../../../models/base/db-api-model';
+import { HttpClient } from '../../../services/http-client';
+import { AppSetting } from '../../../services/app-setting';
+import { Events } from '@ionic/angular';
+import { UserDb } from '../../../models/db/user-db';
+import { HttpHeaders as Headers } from '@angular/common/http';
 
 @Injectable()
 export abstract class ApiService {
@@ -28,8 +28,8 @@ export abstract class ApiService {
     public dataVersion = 0;
 
     protected constructor(public http: HttpClient,
-                          public events: Events,
-                          public appSetting: AppSetting) {
+        public events: Events,
+        public appSetting: AppSetting) {
         this.data = [];
         this.currentData = [];
     }
@@ -98,19 +98,19 @@ export abstract class ApiService {
      */
     public prepareBatchPost(): Promise<any> {
         return new Promise(resolve => {
-          this.dbModelApi.searchAll(
-            this.dbModelApi.parseWhere([this.dbModelApi.COL_IS_SYNCED, 0])
-          )
-            .then((models) => {
-              if (!models || models.length === 0) {
-                resolve(false);
-              } else {
-                  resolve(models);
-                // this.dbModelApi.prepareBatchPost(<DbApiModel[]> models).then((res) => {
-                //   resolve(res);
-                // });
-              }
-            });
+            this.dbModelApi.searchAll(
+                this.dbModelApi.parseWhere([this.dbModelApi.COL_IS_SYNCED, 0])
+            )
+                .then((models) => {
+                    if (!models || models.length === 0) {
+                        resolve(false);
+                    } else {
+                        resolve(models);
+                        // this.dbModelApi.prepareBatchPost(<DbApiModel[]> models).then((res) => {
+                        //   resolve(res);
+                        // });
+                    }
+                });
         });
     }
 
@@ -194,54 +194,54 @@ export abstract class ApiService {
      * @returns {boolean}
      */
     public pushFiles(model: DbApiModel, userForSaving?: UserDb): Promise<boolean> {
-      //  console.log('push files to server');
+        //  console.log('push files to server');
         return new Promise(async (resolve) => {
-          if (model.platform.is('mobileweb')) {
-            resolve(false);
-            return;
-          }
-          // Do we have files to upload?
-          if (!model.canThereBeFiles()) {
-            resolve(false);
-            return;
-          }
-          const url = this.appSetting.getApiUrl() + this.loadUrl + '/' + model.idApi + '/upload';
-          const headers = new Headers({'X-Auth-Token': this.http.getAuthorizationToken()});
-          const uploadFilePromises = [];
-        //  console.log('MODEL.DOWNLOADMAPPING', model.downloadMapping );
-          for (const fields of model.downloadMapping) {
-           // console.log('in forrrrr of pushing files');
-            // If we have a local path but no api path, we need to upload the file!
-            if (model[fields.localPath] && !model[fields.url]) {
-            //    console.log('model[fields.localPath] && !model[fields.url] pushing files');
-                const fieldUrl = url + '?fileAttribute=' + fields.name;
-             //   console.log('fieledUrl  pushing files', fieldUrl);
-                try {
-               //     console.log('in try catcj of push');
-                    const uploadResult = await model.downloadService.startUpload(
-                        model.TABLE_NAME,
-                        fields.name,
-                        model[fields.name],
-                        model[fields.localPath],
-                        fieldUrl,
-                        headers
-                    );
-                //    console.log('uploadResult', uploadResult );
-                    if (uploadResult) {
-                       // await this.saveSyncedModel(uploadResult, false, false); // WAS COMMENTED
-                   //     console.log('SAVEED');
-                        if (userForSaving) {
-                            userForSaving.userSetting.appDataVersion++;
-                            await userForSaving.save();
+            if (model.platform.is('mobileweb')) {
+                resolve(false);
+                return;
+            }
+            // Do we have files to upload?
+            if (!model.canThereBeFiles()) {
+                resolve(false);
+                return;
+            }
+            const url = this.appSetting.getApiUrl() + this.loadUrl + '/' + model.idApi + '/upload';
+            const headers = new Headers({ 'X-Auth-Token': this.http.getAuthorizationToken() });
+            const uploadFilePromises = [];
+            //  console.log('MODEL.DOWNLOADMAPPING', model.downloadMapping );
+            for (const fields of model.downloadMapping) {
+                // console.log('in forrrrr of pushing files');
+                // If we have a local path but no api path, we need to upload the file!
+                if (model[fields.localPath] && !model[fields.url]) {
+                    //    console.log('model[fields.localPath] && !model[fields.url] pushing files');
+                    const fieldUrl = url + '?fileAttribute=' + fields.name;
+                    //   console.log('fieledUrl  pushing files', fieldUrl);
+                    try {
+                        //     console.log('in try catcj of push');
+                        const uploadResult = await model.downloadService.startUpload(
+                            model.TABLE_NAME,
+                            fields.name,
+                            model[fields.name],
+                            model[fields.localPath],
+                            fieldUrl,
+                            headers
+                        );
+                        //    console.log('uploadResult', uploadResult );
+                        if (uploadResult) {
+                            // await this.saveSyncedModel(uploadResult, false, false); // WAS COMMENTED
+                            //     console.log('SAVEED');
+                            if (userForSaving) {
+                                userForSaving.userSetting.appDataVersion++;
+                                await userForSaving.save();
+                            }
                         }
+                    } catch (err) {
+                        console.log('upload file', err);
                     }
-                } catch (err) {
-                    console.log('upload file', err);
                 }
             }
-          }
 
-          resolve(true);
+            resolve(true);
         });
     }
 
