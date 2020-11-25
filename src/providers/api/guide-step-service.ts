@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import {Platform, Events} from '@ionic/angular';
-import {ApiService} from './base/api-service';
-import {DbProvider} from '../db-provider';
-import {AuthService} from '../../services/auth-service';
-import {HttpClient} from '../../services/http-client';
-import {GuiderModel} from '../../models/db/api/guider-model';
-import {DownloadService} from '../../services/download-service';
-import {GuideStepModel} from '../../models/db/api/guide-step-model';
-import {DomSanitizer} from '@angular/platform-browser';
-import {AppSetting} from '../../services/app-setting';
+import { Platform, Events } from '@ionic/angular';
+import { ApiService } from './base/api-service';
+import { DbProvider } from '../db-provider';
+import { AuthService } from '../../services/auth-service';
+import { HttpClient } from '../../services/http-client';
+import { GuiderModel } from '../../models/db/api/guider-model';
+import { DownloadService } from '../../services/download-service';
+import { GuideStepModel } from '../../models/db/api/guide-step-model';
+import { DomSanitizer } from '@angular/platform-browser';
+import { AppSetting } from '../../services/app-setting';
 
 @Injectable()
 export class GuideStepService extends ApiService {
@@ -30,13 +30,13 @@ export class GuideStepService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-                private p: Platform,
-                private db: DbProvider,
-                public authService: AuthService,
-                public events: Events,
-                public downloadService: DownloadService,
-                private sanitized: DomSanitizer,
-                public appSetting: AppSetting) {
+        private p: Platform,
+        private db: DbProvider,
+        public authService: AuthService,
+        public events: Events,
+        public downloadService: DownloadService,
+        private sanitized: DomSanitizer,
+        public appSetting: AppSetting) {
         super(http, events, appSetting);
         console.debug('GuideStepService', 'initialized');
     }
