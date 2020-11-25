@@ -200,7 +200,7 @@ export class GuiderModel extends DbApiModel {
                         this.guide_collection.push(obj);
                     }
                 }
-                console.log('this.guide_collection', this.guide_collection);
+               // console.log('this.guide_collection', this.guide_collection);
                 resolve(this.guide_collection);
             }).catch((err) => {
                 resolve(this.guide_collection);
