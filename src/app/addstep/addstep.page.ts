@@ -74,15 +74,14 @@ export class AddstepPage implements OnInit {
   }
 
   async addFileCapacitor() {
-    this.fileChooser.open().then(async (resp) => {
+    /* this.fileChooser.open().then(async (resp) => {
       const res = await this.downloadService.getResolvedNativeFilePath(resp);
-
-      console.log(">>>>>>>>>>>>>>>> getResolvedNativeFilePath ><>>>>>>>>>>>>>>>>>")
-      console.log(res)
-      console.log(">>>>>>>>>>>>>>>> getResolvedNativeFilePath ><>>>>>>>>>>>>>>>>>")
 
       const recordedFile = new RecordedFile();
       recordedFile.uri = res;
+      this.model.setFile(recordedFile);
+    }) */
+    this.downloadService.chooseFile().then((recordedFile) =>{
       this.model.setFile(recordedFile);
     })
   }
