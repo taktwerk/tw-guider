@@ -64,7 +64,7 @@ export class AppSetting {
                 this.isWasQrCodeSetupSubscribtion.next(this.defaultData.isWasQrCodeSetup);
                 await this.appSetting.save();
                 this.appSetting = await this.appSetting.find();
-                console.log('this.appSetting', this.appSetting);
+               // console.log('this.appSetting', this.appSetting);
             }
         });
     }
@@ -128,7 +128,7 @@ export class AppSetting {
         const user = await this.userService.getUser();
         this.appSetting.settings = userSettingsObject;
         this.appSetting.find().then(async (result) => {
-            console.log('app setting result', result);
+           // console.log('app setting result', result);
             if (result) {
                 result.settings = userSettingsObject;
                 await result.save();
