@@ -330,7 +330,7 @@ export class AuthService {
                                 // send a notification to the rest of the app
                                 this.events.publish('user:login', user.user_id);
                                 this.userService.userDb = res;
-                                console.log('after login this.userService.userDb', this.userService.userDb);
+                               // console.log('after login this.userService.userDb', this.userService.userDb);
                                 resolve(user.user_id);
                                 return true;
                             } else {
@@ -374,7 +374,7 @@ export class AuthService {
      */
     logout() {
         return new Promise((resolve) => {
-            console.log('logout', this.auth);
+           // console.log('logout', this.auth);
             this.auth.loginDate = null;
             this.auth.save(true).then(() => {
                 this.isLoggedin = false;
@@ -474,7 +474,7 @@ export class AuthService {
     }
 
     public isHaveUserRole(roleName: string): boolean {
-        console.log(this.auth.additionalInfo)
+      //  console.log(this.auth.additionalInfo)
         return this.isHaveUserRoles() && this.auth.additionalInfo.roles.includes(roleName);
     }
 
