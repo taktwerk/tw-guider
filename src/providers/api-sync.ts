@@ -562,9 +562,6 @@ export class ApiSync {
                     }
                     const pullData = await this.http.get(this.getSyncUrl()).toPromise();
                     this.guideViewHistories = pullData.models.guide_view_history;
-                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> this.guideViewHistories")
-                    console.log(this.guideViewHistories)
-
                     // console.log('pullData', pullData);
                     if (!pullData.syncProcessId) {
                         this.failSync('There was no property syncProcessId in the response');
