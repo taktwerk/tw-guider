@@ -38,6 +38,7 @@ export class ApiSync {
     public syncData: any;
     public lastModelUpdatedAt: any;
 
+    public guideViewHistories: any;
     /**
      * Contains all services to sync.
      * Use for each service a key that matches the received key from the API in 'models'.
@@ -549,7 +550,7 @@ export class ApiSync {
                 this.lastModelUpdatedAt
                 isCanPullData = await this.prepareDataForSavingPullData(countOfSyncedData);
                 // console.log('isCanPullData', isCanPullData);
-                //  console.log('this.countOfAllChangedItems', this.countOfAllChangedItems);
+                // console.log('this.countOfAllChangedItems', this.countOfAllChangedItems);
                 if (!isCanPullData) {
                     this.isAvailableForSyncData.next(false);
                 }
@@ -561,6 +562,7 @@ export class ApiSync {
                         return;
                     }
                     const pullData = await this.http.get(this.getSyncUrl()).toPromise();
+                    this.guideViewHistories = pullData.models.guide_view_history;
                     // console.log('pullData', pullData);
                     if (!pullData.syncProcessId) {
                         this.failSync('There was no property syncProcessId in the response');
@@ -610,6 +612,30 @@ export class ApiSync {
             }
             await this.pushOneAtTime();
         });
+    }
+
+    /**
+     * Returns history for all Guides
+     */
+    getGuideViewHistories(): Promise<any> {
+        return new Promise(async resolve => {
+            const pullData = await this.http.get(this.getSyncUrl()).toPromise();
+            this.guideViewHistories = pullData.models.guide_view_history;
+            resolve(this.guideViewHistories)
+        })
+    }
+
+    /**
+     * Returns history for single Guide
+     */
+    getGuideViewHistory(id): Promise<any> {
+        return new Promise(async resolve => {
+            this.getGuideViewHistories().then((res) => {
+                console.log(res)
+                const guideHistory = res.filter(h => h.guide_id === id)
+                resolve(guideHistory)
+            })
+        })
     }
 
     public unsetSyncProgressData(): Promise<true> {
