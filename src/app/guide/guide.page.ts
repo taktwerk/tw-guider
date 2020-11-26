@@ -1,3 +1,4 @@
+import { ApiSync } from 'src/providers/api-sync';
 import { MenuPopoverComponent } from 'src/components/menupopover/menupopover.page';
 import { GuideinfoPage } from './../../components/guideinfo/guideinfo.page';
 import {
@@ -73,7 +74,11 @@ export class GuidePage implements OnInit, AfterContentChecked {
   public virtualGuideStepSlides = [];
   public params;
 
+
+  public guideViewHistory: any;
+
   constructor(
+    private apiSync: ApiSync,
     private popoverController: PopoverController,
     private guideCategoryService: GuideCategoryService,
     private guideCategoryBindingService: GuideCategoryBindingService,
@@ -257,6 +262,12 @@ export class GuidePage implements OnInit, AfterContentChecked {
       this.guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
+      // resume slide at
+      if (this.guideViewHistory) {
+        // this.guideStepSlides.slideTo()
+        //  const guideHistory = this.guideViewHistory.find
+      }
+
     });
   }
 
@@ -386,6 +397,13 @@ export class GuidePage implements OnInit, AfterContentChecked {
     });
 
     this.presentGuideInfo(this.guideId);
+
+    this.apiSync.getGuideViewHistory(this.guideId).then((res) => {
+      this.guideViewHistory = res;
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.guideViewHistory")
+      console.log(this.guideViewHistory)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.guideViewHistory")
+    })
   }
 
   async presentGuideInfo(guideId) {
