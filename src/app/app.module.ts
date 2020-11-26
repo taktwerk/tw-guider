@@ -1,3 +1,4 @@
+import { MiscService } from './../services/misc-service';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule, ɵDomSanitizerImpl } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -180,6 +181,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     DbProvider,
     MigrationProvider,
     AuthService,
+    MiscService,
     HttpClient,
     DownloadService,
     VideoService,

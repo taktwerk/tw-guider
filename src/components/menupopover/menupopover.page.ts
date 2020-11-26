@@ -1,5 +1,6 @@
+import { MiscService } from '../../services/misc-service';
 import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
-import { ModalController, NavParams } from '@ionic/angular';
+import { ModalController, NavParams, PopoverController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 import { ApiSync } from 'src/providers/api-sync';
 
@@ -13,7 +14,9 @@ export class MenuPopoverComponent implements OnInit {
   constructor(
     private apiSync: ApiSync,
     private modalController: ModalController,
-    public navParams: NavParams
+    public navParams: NavParams,
+    private miscService: MiscService,
+    private popoverController: PopoverController,
   ) {
     this.guideId = this.navParams.get('guideId');
   }
@@ -28,10 +31,12 @@ export class MenuPopoverComponent implements OnInit {
       },
       cssClass: "modal-fullscreen"
     });
+    this.popoverController.dismiss();
     return await modal.present();
   }
 
   async restartSlide(ev: any) {
-    
-   }
+    this.miscService.onSlideRestart.next(true);
+    this.popoverController.dismiss();
+  }
 }

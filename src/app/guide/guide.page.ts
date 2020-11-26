@@ -1,3 +1,4 @@
+import { MiscService } from './../../services/misc-service';
 import { ApiSync } from 'src/providers/api-sync';
 import { MenuPopoverComponent } from 'src/components/menupopover/menupopover.page';
 import { GuideinfoPage } from './../../components/guideinfo/guideinfo.page';
@@ -106,6 +107,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
     private injector: Injector,
     private renderer: Renderer2,
     private toast: ToastController,
+    private miscService: MiscService,
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -259,15 +261,20 @@ export class GuidePage implements OnInit, AfterContentChecked {
   }
 
   public setGuideSteps(id) {
-    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
+    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(async results => {
       this.guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
 
       // resume slide at
-      this.apiSync.getGuideViewHistory(this.guideId).then((res) => {
+      this.apiSync.getGuideViewHistory(this.guideId).then(async (res) => {
         this.guideViewHistory = res[0];
-        if (this.guideViewHistory) { this.guideStepSlides.slideTo(this.guideViewHistory.metadata.step_order_number).then(() => this.toast.create({ message: 'Resume', duration: 1000 })) }
+
+        if (this.guideViewHistory) {
+          this.guideStepSlides.slideTo(this.guideViewHistory.metadata.step_order_number).then(() => {
+            this.toast.create({ message: 'Resume', duration: 1000 });
+          })
+        }
       })
     });
   }
@@ -396,6 +403,17 @@ export class GuidePage implements OnInit, AfterContentChecked {
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess('guide');
     });
+
+    this.miscService.onSlideRestart.subscribe((res) => {
+      if (res) {
+        if (this.guideStepSlides.slideTo(0)) {
+          this.guideStepSlides.slideTo(0)
+        }
+        else {
+          this.guideStepSlides.slideTo(1)
+        }
+      }
+    })
 
     this.presentGuideInfo(this.guideId);
 
