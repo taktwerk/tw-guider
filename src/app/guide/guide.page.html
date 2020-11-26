@@ -8,9 +8,18 @@
 
     <ion-buttons slot="primary" class="header_cta">
       <ion-back-button></ion-back-button>
+
+      <ion-button (click)="presentSlideInfo($event)">
+        <ion-icon
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Ellipsis Vertical</title><circle cx='256' cy='256' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='256' cy='416' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='256' cy='96' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>">
+        </ion-icon>
+
+      </ion-button>
+
       <ion-button (click)="presentGuideInfo(guideId)">
         <ion-icon name="information-circle-outline"></ion-icon>
       </ion-button>
+
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

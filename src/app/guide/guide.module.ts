@@ -1,3 +1,4 @@
+import { MenupopoverPageModule } from 'src/components/menupopover/menupopover.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +14,6 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { Viewer3dModelComponentModule } from "../../components/viewer-3d-model-component/viewer-3d-model-component.module";
 import { GuideStepContentComponentModule } from "../../components/guide-step-content-component/guide-step-content-component.module";
 import { GuideStepContentComponent } from "../../components/guide-step-content-component/guide-step-content-component";
-import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
 import { GuideinfoPageModule } from 'src/components/guideinfo/guideinfo.module';
 
 @NgModule({
@@ -33,7 +33,8 @@ import { GuideinfoPageModule } from 'src/components/guideinfo/guideinfo.module';
         TranslateModule,
         Viewer3dModelComponentModule,
         GuideStepContentComponentModule,
-        GuideinfoPageModule
+        GuideinfoPageModule,
+        MenupopoverPageModule,
 
     ],
     entryComponents: [

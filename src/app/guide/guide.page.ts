@@ -1,3 +1,4 @@
+import { MenuPopoverComponent } from 'src/components/menupopover/menupopover.page';
 import { GuideinfoPage } from './../../components/guideinfo/guideinfo.page';
 import {
   AfterContentChecked,
@@ -32,6 +33,8 @@ import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { Viewer3dService } from "../../services/viewer-3d-service";
 import { GuideStepContentComponent } from "../../components/guide-step-content-component/guide-step-content-component";
 import { delay } from "rxjs/operators";
+import { PopoverController } from '@ionic/angular';
+
 declare var Swiper: any;
 
 @Component({
@@ -71,6 +74,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
   public params;
 
   constructor(
+    private popoverController: PopoverController,
     private guideCategoryService: GuideCategoryService,
     private guideCategoryBindingService: GuideCategoryBindingService,
     private guiderService: GuiderService,
@@ -393,5 +397,14 @@ export class GuidePage implements OnInit, AfterContentChecked {
       cssClass: "modal-fullscreen"
     });
     return await modal.present();
+  }
+
+  async presentSlideInfo(ev: any) {
+    const popover = await this.popoverController.create({
+      component: MenuPopoverComponent,
+      translucent: true,
+      event: ev,
+    });
+    return await popover.present();
   }
 }
