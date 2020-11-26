@@ -262,12 +262,15 @@ export class GuidePage implements OnInit, AfterContentChecked {
       this.guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
-      // resume slide at
-      if (this.guideViewHistory) {
-        // this.guideStepSlides.slideTo()
-        //  const guideHistory = this.guideViewHistory.find
-      }
 
+      // resume slide at
+      this.apiSync.getGuideViewHistory(this.guideId).then((res) => {
+        this.guideViewHistory = res[0];
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.guideViewHistory")
+        console.log(this.guideViewHistory)
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.guideViewHistory")
+        if (this.guideViewHistory) { this.guideStepSlides.slideTo(this.guideViewHistory.metadata.step_order_number) }
+      })
     });
   }
 
@@ -398,12 +401,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
 
     this.presentGuideInfo(this.guideId);
 
-    this.apiSync.getGuideViewHistory(this.guideId).then((res) => {
-      this.guideViewHistory = res;
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.guideViewHistory")
-      console.log(this.guideViewHistory)
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.guideViewHistory")
-    })
+
   }
 
   async presentGuideInfo(guideId) {
@@ -420,6 +418,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
   async presentSlideInfo(ev: any) {
     const popover = await this.popoverController.create({
       component: MenuPopoverComponent,
+      componentProps: { guideId: this.guideId },
       translucent: true,
       event: ev,
     });
