@@ -622,7 +622,6 @@ export class ApiSync {
                 this.guideViewHistories = res.models.guide_view_history;
                 resolve(this.guideViewHistories);
             })
-
         })
     }
 
