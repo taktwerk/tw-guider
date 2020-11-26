@@ -18,7 +18,7 @@ import { GuideStepService } from '../../providers/api/guide-step-service';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { File } from '@ionic-native/file/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { Events, IonSlides, LoadingController, ModalController, NavController } from '@ionic/angular';
+import { Events, IonSlides, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
 import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
@@ -105,6 +105,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
     private applicationRef: ApplicationRef,
     private injector: Injector,
     private renderer: Renderer2,
+    private toast: ToastController,
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -266,10 +267,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
       // resume slide at
       this.apiSync.getGuideViewHistory(this.guideId).then((res) => {
         this.guideViewHistory = res[0];
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.guideViewHistory")
-        console.log(this.guideViewHistory)
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.guideViewHistory")
-        if (this.guideViewHistory) { this.guideStepSlides.slideTo(this.guideViewHistory.metadata.step_order_number) }
+        if (this.guideViewHistory) { this.guideStepSlides.slideTo(this.guideViewHistory.metadata.step_order_number).then(() => this.toast.create({ message: 'Resume', duration: 1000 })) }
       })
     });
   }
