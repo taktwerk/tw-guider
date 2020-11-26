@@ -466,7 +466,6 @@ export class ApiSync {
             if (this.userService.userDb.userSetting.appDataVersion) {
                 url += '?appDataVersion=' + this.userService.userDb.userSetting.appDataVersion;
             }
-
             return url;
         }
 
@@ -563,6 +562,9 @@ export class ApiSync {
                     }
                     const pullData = await this.http.get(this.getSyncUrl()).toPromise();
                     this.guideViewHistories = pullData.models.guide_view_history;
+                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> this.guideViewHistories")
+                    console.log(this.guideViewHistories)
+
                     // console.log('pullData', pullData);
                     if (!pullData.syncProcessId) {
                         this.failSync('There was no property syncProcessId in the response');
@@ -619,9 +621,11 @@ export class ApiSync {
      */
     getGuideViewHistories(): Promise<any> {
         return new Promise(async resolve => {
-            const pullData = await this.http.get(this.getSyncUrl()).toPromise();
-            this.guideViewHistories = pullData.models.guide_view_history;
-            resolve(this.guideViewHistories)
+            this.http.get(this.getSyncUrl()).subscribe(async (res) => {
+                this.guideViewHistories = res.models.guide_view_history;
+                resolve(this.guideViewHistories);
+            })
+
         })
     }
 
@@ -631,9 +635,8 @@ export class ApiSync {
     getGuideViewHistory(id): Promise<any> {
         return new Promise(async resolve => {
             this.getGuideViewHistories().then((res) => {
-                console.log(res)
-                const guideHistory = res.filter(h => h.guide_id === id)
-                resolve(guideHistory)
+                const guideHistory = res.filter(h => h.guide_id == id);
+                resolve(guideHistory);
             })
         })
     }
