@@ -1,3 +1,4 @@
+import { GuiderModel } from './../models/db/api/guider-model';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { HttpClient } from '../services/http-client';
@@ -487,7 +488,6 @@ export class ApiSync {
             url += !this.userService.userDb.userSetting.lastModelUpdatedAt ? '?' : '&';
             url += 'syncProcessId=' + this.userService.userDb.userSetting.lastSyncProcessId;
         }
-
         return url;
     }
 
@@ -631,9 +631,70 @@ export class ApiSync {
     getGuideViewHistory(id): Promise<any> {
         return new Promise(async resolve => {
             this.getGuideViewHistories().then((res) => {
+                console.log(res)
                 const guideHistory = res.filter(h => h.guide_id == id);
                 resolve(guideHistory);
             })
+        })
+    }
+
+    public async saveGuideHistory(guide_id, last_seen_step) {
+        console.log(guide_id)
+        this.getGuideViewHistory(guide_id).then(async (res) => {
+            console.log(res)
+
+            let history = res[0];
+            let stepHistory = {};
+            let Url = "";
+            console.log("Guide History " + history)
+
+            // existing history
+            if (history != undefined) {
+                stepHistory = {
+                    client_id: history.client_id,
+                    created_at: history.created_at,
+                    deleted_at: history.deleted_at,
+                    deleted_by: history.deleted_by,
+                    guide_id: history.guide_id,
+                    id: history.id,
+                    metadata: { step_order_number: last_seen_step },
+                    updated_at: this.getUTCDate(new Date),
+                    updated_by: history.updated_by,
+                    user_id: history.user_id
+                }
+                Url = this.appSetting.getApiUrl() + '/guide/view-history/' + history.guide_id;
+            }
+            else {
+                // new history
+                stepHistory = {
+                    client_id: (await this.userService.getUser()).id,
+                    created_at: this.getUTCDate(new Date),
+                    deleted_at: false,
+                    deleted_by: null,
+                    guide_id: guide_id,
+                    id: null,
+                    metadata: { step_order_number: last_seen_step },
+                    updated_at: this.getUTCDate(new Date),
+                    updated_by: (await this.userService.getUser()).id,
+                    user_id: (await this.userService.getUser()).id
+                }
+                Url = this.appSetting.getApiUrl() + '/guide/view-history/' + guide_id;
+            }
+
+            console.log("Step History " + stepHistory)
+
+            console.log("Api Url >> " + Url)
+
+            const jsonBody = JSON.stringify(stepHistory);
+            console.log("jsonBody " + jsonBody)
+
+            this.http.post(Url, stepHistory).subscribe((response) => {
+                console.log(response)
+                return;
+            }, (err) => {
+                console.log(err)
+                return;
+            });
         })
     }
 
@@ -895,6 +956,7 @@ export class ApiSync {
         await this.userService.userDb.save();
         await this.saveSyncProgress();
     }
+
 
 }
 
