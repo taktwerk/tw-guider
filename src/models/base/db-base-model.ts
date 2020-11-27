@@ -856,7 +856,6 @@ export abstract class DbBaseModel {
             /// if date is integer that it is seconds
             date = +date * 1000;
         }
-
         return date ? new Date(date) : null;
     }
 
