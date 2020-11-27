@@ -148,7 +148,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
       }
       this.virtualGuideStepSlides.push(virtualGuideStepSlide);
     }
-    console.log('this.virtualGuideStepSlides', this.virtualGuideStepSlides);
+    // console.log('this.virtualGuideStepSlides', this.virtualGuideStepSlides);
   }
 
   protected reinitializeGuideStepSlides() {
@@ -164,18 +164,16 @@ export class GuidePage implements OnInit, AfterContentChecked {
         this.activeGuideStepSlideIndex = index;
         this.updateGuideStepSlides();
       });
-
-    console.log('changeGuideStepCurrentSlide');
   }
 
   protected updateGuideStepSlides() {
-    console.log('updateGuideStepSlides 123');
+    // console.log('updateGuideStepSlides 123');
     if (this.activeGuideStepSlideIndex > (this.virtualGuideStepSlides.length - 1)) {
       this.activeGuideStepSlideIndex = this.virtualGuideStepSlides.length - 1;
     }
     for (let i = 0; i < this.virtualGuideStepSlides.length; i++) {
       if (i < this.activeGuideStepSlideIndex - 1 || i > this.activeGuideStepSlideIndex + 1) {
-        console.log('this.activeGuideStepSlideIndexthis.activeGuideStepSlideIndex');
+        // console.log('this.activeGuideStepSlideIndexthis.activeGuideStepSlideIndex');
         if (this.virtualGuideStepSlides[i] && this.virtualGuideStepSlides[i].component) {
           this.virtualGuideStepSlides[i]
             .containerElement
@@ -189,21 +187,21 @@ export class GuidePage implements OnInit, AfterContentChecked {
       }
       if (!this.virtualGuideStepSlides[i].component) {
         const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
-        console.log('factory factory', factory);
+        //  console.log('factory factory', factory);
         const componentRef = this.virtualGuideStepSlides[i]
           .containerElement
           .createComponent(factory);
-        console.log('componentRef', componentRef);
+        // console.log('componentRef', componentRef);
         try {
-          console.log('componentRef.instance', componentRef.instance);
+          //  console.log('componentRef.instance', componentRef.instance);
         } catch (e) {
           console.log('componentRef.instance is errrrrorrrr');
         }
 
         componentRef.instance.step = this.guideSteps[i];
-        console.log('this.guideStepsthis.guideSteps', this.guideSteps);
-        console.log('componentRef.instance.step', componentRef.instance.step);
-        console.log('this.guideSteps[i]', this.guideSteps[i]);
+        //  console.log('this.guideStepsthis.guideSteps', this.guideSteps);
+        //  console.log('componentRef.instance.step', componentRef.instance.step);
+        // console.log('this.guideSteps[i]', this.guideSteps[i]);
         componentRef.instance.guide = this.guide;
         componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
         componentRef.instance.haveAssets = this.haveAssets;
@@ -220,9 +218,9 @@ export class GuidePage implements OnInit, AfterContentChecked {
     if (title) {
       fileTitle = title;
     }
-    console.log('basePath', basePath);
+    //  console.log('basePath', basePath);
     const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-    console.log('fileUrl', fileUrl);
+    //  console.log('fileUrl', fileUrl);
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
       this.downloadService.checkFileTypeByExtension(filePath, 'audio')
     ) {
@@ -320,7 +318,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
     this.isLoadedContent = true;
 
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async (model) => {
-      console.log('model create', model);
+      // console.log('model create', model);
       if (this.guide) {
         this.setGuideSteps(this.guide.idApi).then(() => {
           this.detectChanges();
@@ -330,23 +328,23 @@ export class GuidePage implements OnInit, AfterContentChecked {
       }
     });
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async (model) => {
-      console.log('model delete', model);
+      // console.log('model delete', model);
       if (this.guide) {
         this.setGuideSteps(this.guide.idApi).then(() => {
           this.detectChanges();
           this.reinitializeGuideStepSlides();
-          console.log('after reinitialize');
+          // console.log('after reinitialize');
         });
       }
     });
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async (model) => {
-      console.log('model update', model);
+      //  console.log('model update', model);
       if (this.guide) {
 
         this.setGuideSteps(this.guide.idApi).then(() => {
           this.detectChanges();
           this.reinitializeGuideStepSlides();
-          console.log('after reinitialize');
+          //  console.log('after reinitialize');
         });
       }
     });
@@ -439,5 +437,12 @@ export class GuidePage implements OnInit, AfterContentChecked {
       event: ev,
     });
     return await popover.present();
+  }
+
+  ionViewWillLeave() {
+    this.guideStepSlides.getActiveIndex().then(index => {
+      console.log(index)
+      this.apiSync.saveGuideHistory(this.guideId, index);
+    })
   }
 }
