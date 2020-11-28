@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs/Subscription';
 import { MiscService } from './../../services/misc-service';
 import { ApiSync } from 'src/providers/api-sync';
 import { MenuPopoverComponent } from 'src/components/menupopover/menupopover.page';
@@ -10,7 +11,7 @@ import {
   Component, ComponentFactory, ComponentFactoryResolver, ComponentRef,
   NgZone,
   Input,
-  OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef, ApplicationRef, Injector, EmbeddedViewRef, ElementRef, Renderer2
+  OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef, ApplicationRef, Injector, EmbeddedViewRef, ElementRef, Renderer2, OnDestroy
 } from '@angular/core';
 import { GuiderService } from '../../providers/api/guider-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
@@ -44,7 +45,7 @@ declare var Swiper: any;
   templateUrl: 'guide.page.html',
   styleUrls: ['guide.page.scss']
 })
-export class GuidePage implements OnInit, AfterContentChecked {
+export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   // @ViewChild("guideStepContent", {static: false, read: ViewContainerRef }) guideStepContentContainer;
 
   @ViewChildren('guideStepContent', { read: ViewContainerRef }) slideComponents: QueryList<any>;
@@ -77,6 +78,8 @@ export class GuidePage implements OnInit, AfterContentChecked {
 
 
   public guideViewHistory: any;
+
+  restartSub: Subscription;
 
   constructor(
     private apiSync: ApiSync,
@@ -402,7 +405,7 @@ export class GuidePage implements OnInit, AfterContentChecked {
       this.authService.checkAccess('guide');
     });
 
-    this.miscService.onSlideRestart.subscribe((res) => {
+    this.restartSub = this.miscService.onSlideRestart.subscribe((res) => {
       if (res) {
         if (this.guideStepSlides.slideTo(0)) {
           this.guideStepSlides.slideTo(0)
@@ -414,8 +417,6 @@ export class GuidePage implements OnInit, AfterContentChecked {
     })
 
     this.presentGuideInfo(this.guideId);
-
-
   }
 
   async presentGuideInfo(guideId) {
@@ -444,5 +445,9 @@ export class GuidePage implements OnInit, AfterContentChecked {
       console.log(index)
       this.apiSync.saveGuideHistory(this.guideId, index);
     })
+  }
+
+  ngOnDestroy(): void {
+    this.restartSub.unsubscribe();
   }
 }
