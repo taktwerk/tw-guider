@@ -1,9 +1,11 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title *ngIf="guide"> {{guide.short_name}}</ion-title>
+    <ion-title *ngIf="guide"> {{guide.title}}</ion-title>
 
     <ion-buttons slot="primary">
-      <ion-button (click)="dismiss()">Dismiss</ion-button>
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -11,8 +13,7 @@
 <ion-content *ngIf="guide">
   <ion-card>
     <ion-card-content>
-      <img [src]="guide.getFileImagePath(0,'trustStyle')" *ngIf="guide.getFileImagePath()">
-      <img src="../../assets/placeholder.jpg" *ngIf="!guide.getFileImagePath()">
+      <model-assetcomponent [model]="guide" mini="true"></model-assetcomponent>
     </ion-card-content>
   </ion-card>
 
@@ -20,7 +21,7 @@
     <ion-item-group>
       <ion-item lines="full" style="border-bottom: 1px solid #eeeeeea8;">
         <ion-label>
-          <p class=""> <strong>{{guide.title}}</strong></p>
+          <h2 class=""> <strong>{{guide.title}}</strong></h2>
           <p *ngIf="guide.duration">{{ 'guides.duration' | translate:params }}: {{ guide.getDuration() }}</p>
           <p *ngIf="guide.revision">{{ 'guides.revision' | translate:params }}: {{ guide.revision }}</p>
           <p *ngIf="guide.created_by">{{ 'guides.created_by' | translate:params }}: {{ guide.created_by }}</p>

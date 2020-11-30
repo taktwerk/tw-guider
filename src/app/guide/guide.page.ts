@@ -427,7 +427,12 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       },
       cssClass: "modal-fullscreen"
     });
-    return await modal.present();
+
+    const willShow_GuideInfo = await this.miscService.get_guideShown(this.guideId);
+    if (willShow_GuideInfo == null) {
+      this.miscService.set_guideShown(this.guideId)
+      return await modal.present();
+    }
   }
 
   async presentSlideInfo(ev: any) {
