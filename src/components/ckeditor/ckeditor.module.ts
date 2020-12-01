@@ -4,8 +4,6 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CKEditorPageRoutingModule } from './ckeditor-routing.module';
-
 import { CKEditorComponent } from './ckeditor.page';
 
 @NgModule({
@@ -13,10 +11,8 @@ import { CKEditorComponent } from './ckeditor.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    CKEditorPageRoutingModule,
-    
   ],
-  exports: [CKEditorComponent],
-  declarations: [CKEditorComponent]
+  exports: [],
+
 })
 export class CKEditorPageModule { }

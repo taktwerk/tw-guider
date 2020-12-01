@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {IonicModule} from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 
 @NgModule({
   declarations: [
@@ -9,7 +9,6 @@ import {IonicModule} from '@ionic/angular';
     CommonModule,
     IonicModule,
   ],
-  exports: [
-  ],
+  exports: [],
 })
-export class GuideAssetTextModalComponentModule {}
+export class GuideAssetTextModalComponentModule { }
