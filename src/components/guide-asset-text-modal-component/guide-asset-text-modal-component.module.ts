@@ -9,6 +9,6 @@ import { IonicModule } from '@ionic/angular';
     CommonModule,
     IonicModule,
   ],
-  exports: [],
+  exports: [],  
 })
 export class GuideAssetTextModalComponentModule { }
