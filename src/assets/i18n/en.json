@@ -215,5 +215,8 @@
     "Assets": "Assets",
     "Description": "Description",
     "Note description": "Note description"
+  },
+  "CKEditor" : {
+    "header": "Text Editor"
   }
 }

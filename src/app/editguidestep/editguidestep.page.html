@@ -43,6 +43,10 @@
           placeholder="{{ 'editguidestep.Note description' | translate:params }}" rows="5" cols="33"
           style="display: block;" (ionChange)="onChanges($event)">
         </ion-textarea>
+        
+        <ion-buttons slot="end">
+          <ion-button (click)="openEditor()"> Open in Editor</ion-button>
+        </ion-buttons>
       </ion-item>
     </ion-list>
 

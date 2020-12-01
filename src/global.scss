@@ -25,6 +25,15 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+ckeditor {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.cke_inner.cke_reset {
+  height: 73vh;
+}
+
 .ck {
   display: none;
 }
@@ -63,7 +72,7 @@ $save-changes-alert-width: 400px;
 
 .header_bg {
   background-color: #173262;
-  --background:#173262;
+  --background: #173262;
 }
 
 ion-menu-button {
@@ -76,9 +85,11 @@ ion-header {
   ion-toolbar {
     color: white;
     background-color: #173262;
-    --background:#173262;
+    --background: #173262;
 
-   *{ color: white;  }
+    * {
+      color: white;
+    }
   }
 
   sync-spinner-component {

@@ -210,5 +210,8 @@
     "Assets": "Assets",
     "Description": "Beschreibung",
     "Note description": "Beschreibung beachten"
+  },
+  "CKEditor": {
+    "header": "Texteditor"
   }
 }

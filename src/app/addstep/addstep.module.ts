@@ -26,7 +26,7 @@ import { AssetviewComponentModule } from 'src/components/assetview/assetview.mod
     FontAwesomeModule,
     Viewer3dModelComponentModule,
     HtmlDescriptionComponentModule,
-    AssetviewComponentModule
+    AssetviewComponentModule,
   ],
   declarations: [AddstepPage],
 })

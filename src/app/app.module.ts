@@ -104,6 +104,10 @@ import { ProgressBarModule } from '../components/progress-bar/progress-bar.modul
 import { ListviewComponentModule } from 'src/components/listview/listview.module';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 
+import { CKEditorModule } from 'ng2-ckeditor';
+import { CKEditorComponent } from 'src/components/ckeditor/ckeditor.page';
+
+
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -114,6 +118,7 @@ Sentry.init({ dsn: environment.sentryDsn });
   declarations: [
     AppComponent,
     GuideAssetTextModalComponent,
+    CKEditorComponent,
     SyncModalComponent,
     VideoModalComponent,
     DrawImageModalComponent,
@@ -122,6 +127,7 @@ Sentry.init({ dsn: environment.sentryDsn });
   ],
   entryComponents: [
     GuideAssetTextModalComponent,
+    CKEditorComponent,
     SyncModalComponent,
     VideoModalComponent,
     DrawImageModalComponent,
@@ -159,6 +165,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     IonicImageLoader.forRoot(),
     Viewer3dModelComponentModule,
     PdfJsViewerModule,
+    CKEditorModule
   ],
   providers: [
     StatusBar,

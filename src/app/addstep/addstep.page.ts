@@ -1,3 +1,4 @@
+import { CKEditorComponent } from './../../components/ckeditor/ckeditor.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { GuideAssetService } from 'src/providers/api/guide-asset-service';
@@ -8,11 +9,12 @@ import { PictureService } from 'src/services/picture-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { AuthService } from 'src/services/auth-service';
 import { TranslateConfigService } from 'src/services/translate-config.service';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, ToastController, ModalController, NavParams } from '@ionic/angular';
 import { ApiSync } from 'src/providers/api-sync';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
+
 
 @Component({
   selector: 'app-addstep',
@@ -40,6 +42,7 @@ export class AddstepPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private filePath: FilePath,
     private fileChooser: FileChooser,
+    private modalController: ModalController,
   ) {
     this.model = this.guideStepService.newModel();
   }
@@ -81,7 +84,7 @@ export class AddstepPage implements OnInit {
       recordedFile.uri = res;
       this.model.setFile(recordedFile);
     }) */
-    this.downloadService.chooseFile().then((recordedFile) =>{
+    this.downloadService.chooseFile().then((recordedFile) => {
       this.model.setFile(recordedFile);
     })
   }
@@ -139,5 +142,25 @@ export class AddstepPage implements OnInit {
   async showToast(message) {
     const toast = await this.toastController.create({ message: message, duration: 800 });
     toast.present();
+  }
+
+  async openEditor() {
+    const modal = await this.modalController.create({
+      component: CKEditorComponent,
+      componentProps: {
+        content: this.model.description_html
+      },
+      cssClass: "modal-fullscreen",
+    });
+
+    modal.onDidDismiss()
+      .then((res: any) => {
+        console.log(res.data.data)
+        if (res != null) {
+          this.model.description_html = res.data.data
+        }
+      });
+
+    return await modal.present();
   }
 }

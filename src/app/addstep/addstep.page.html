@@ -42,6 +42,10 @@
         <ion-textarea [(ngModel)]="model.description_html" name="description"
           placeholder="{{ 'addstep.Note description' | translate:params }}" rows="5" cols="33" style="display: block;">
         </ion-textarea>
+
+        <ion-buttons slot="end">
+          <ion-button (click)="openEditor()"> Open in Editor</ion-button>
+        </ion-buttons>
       </ion-item>
     </ion-list>
 
