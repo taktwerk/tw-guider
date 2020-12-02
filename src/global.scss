@@ -38,6 +38,32 @@ ckeditor {
   display: none;
 }
 
+body.cke_editable.cke_editable_themed.cke_contents_ltr.cke_show_borders {
+  margin: auto;
+}
+
+.inline_editor {
+  width: 100%;
+  margin-bottom: 16px;
+  margin-top: 16px;
+  padding-top span#cke_1_bottom,
+  .cke_bottom {
+    display: none !important;
+  }
+  .cke_inner.cke_reset {
+    max-height: 55vh;
+    height: 100%;
+  }
+  .cke_chrome {
+    border: none;
+  }
+  iframe {
+    body {
+      margin: 0;
+    }
+  }
+}
+
 .muted {
   color: gray;
 }
