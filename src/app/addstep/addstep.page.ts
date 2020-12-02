@@ -25,6 +25,9 @@ export class AddstepPage implements OnInit {
   public model: GuideStepModel;
   public params;
   guideId;
+  
+  ckeConfig
+
   public guideSteps: GuideStepModel[] = [];
 
   constructor(
@@ -48,6 +51,13 @@ export class AddstepPage implements OnInit {
   }
 
   ngOnInit() {
+    this.ckeConfig = {
+      toolbar: [{ name: "basicstyles", items: ["Format", "-", "Bold", "Italic", "Blockquote", "-", "NumberedList", "BulletedList", "-", "Table"] }],
+      toolbarLocation: 'bottom',
+      height: '100%',
+      autoGrow_minHeight: '300',
+    };
+
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.has('id')) {
         this.guideId = paramMap.get("id");
@@ -152,15 +162,12 @@ export class AddstepPage implements OnInit {
       },
       cssClass: "modal-fullscreen",
     });
-
     modal.onDidDismiss()
       .then((res: any) => {
-        console.log(res.data.data)
         if (res != null) {
           this.model.description_html = res.data.data
         }
       });
-
     return await modal.present();
   }
 }
