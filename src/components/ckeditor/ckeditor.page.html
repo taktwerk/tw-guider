@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text=""></ion-back-button>
+      <ion-back-button style="display: contents!important;color: #fff;" (click)="onDone()"></ion-back-button>
     </ion-buttons>
 
     <ion-title> {{ 'CKEditor.header' | translate }}</ion-title>
@@ -14,4 +14,4 @@
 
 <ion-content>
   <ckeditor [(ngModel)]="ckeditorContent" [config]="ckeConfig"></ckeditor>
-</ion-content>     
+</ion-content>
