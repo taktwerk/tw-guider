@@ -114,10 +114,6 @@ const routes: Routes = [
       }
     ]
   },
-  {
-    path: 'ckeditor',
-    loadChildren: () => import('../components/ckeditor/ckeditor.module').then( m => m.CKEditorPageModule)
-  },
 ];
 
 @NgModule({
