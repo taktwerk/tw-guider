@@ -31,6 +31,8 @@ export class EditguidestepPage implements OnInit {
 
   shouldUpdate = false;
 
+  ckeConfig
+
   constructor(
     private translateConfigService: TranslateConfigService,
     private activatedRoute: ActivatedRoute,
@@ -61,7 +63,14 @@ export class EditguidestepPage implements OnInit {
     })
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.ckeConfig = {
+      toolbar: [{ name: "basicstyles", items: ["Format", "-", "Bold", "Italic", "Blockquote", "-", "NumberedList", "BulletedList", "-", "Table"] }],
+      toolbarLocation: 'bottom',
+      height: '100%',
+      autoGrow_minHeight: '300',
+    };
+  }
 
   public openFile(basePath: string, modelName: string, title?: string) {
     const filePath = basePath;
@@ -185,7 +194,6 @@ export class EditguidestepPage implements OnInit {
 
     modal.onDidDismiss()
       .then((res: any) => {
-        console.log(res.data.data)
         if (res != null) {
           this.model.description_html = res.data.data
         }
@@ -193,5 +201,5 @@ export class EditguidestepPage implements OnInit {
 
     return await modal.present();
   }
-  
+
 }
