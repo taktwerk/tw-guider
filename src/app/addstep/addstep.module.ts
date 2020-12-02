@@ -14,6 +14,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { HtmlDescriptionComponentModule } from 'src/components/html-description/html-description-component.module';
 import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-component/viewer-3d-model-component.module';
 import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
+import { CKEditorModule } from 'ng2-ckeditor';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { AssetviewComponentModule } from 'src/components/assetview/assetview.mod
     Viewer3dModelComponentModule,
     HtmlDescriptionComponentModule,
     AssetviewComponentModule,
+    CKEditorModule
   ],
   declarations: [AddstepPage],
 })
