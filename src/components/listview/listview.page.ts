@@ -107,10 +107,10 @@ export class ListViewComponent implements OnInit {
   loadData(event) {
     setTimeout(() => {
       this.displayLimit += 10;
-      this.guideSteps = this.guideSteps.slice(0, this.displayLimit);
+      this.guideSteps = this.guideStepsData.slice(0, this.displayLimit);
       event.target.complete();
       event.target.disabled = true;
-      if (this.guideSteps.length == this.guideSteps.length) {
+      if (this.guideSteps.length == this.guideStepsData.length) {
         event.target.disabled = true;
       }
     }, 500)
