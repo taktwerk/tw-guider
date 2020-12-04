@@ -16,6 +16,8 @@ export class AssetviewComponent implements OnInit {
   /**Set to true to make image small */
   @Input() mini: boolean;
 
+  filePath3d
+
   constructor(private downloadService: DownloadService,
     private videoService: VideoService,
     private pictureService: PictureService,
@@ -23,7 +25,7 @@ export class AssetviewComponent implements OnInit {
     private viewer3dService: Viewer3dService,
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     const filePath = basePath;
