@@ -131,27 +131,10 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             if (path__fileName.split('.').pop() == "gltf") {
                 console.log('pathfileName', (path + fileName));
                 // read model from path
-                // const modelFile = await Filesystem.readFile({ path: path + fileName });
                 const convertFileSrc = Capacitor.convertFileSrc(path + fileName);
                 const response = await fetch(convertFileSrc);
-                let modelFile = await response.json();
-                console.log(modelFile)
-
-                modelFile = modelFile.buffers[0].uri;
-                modelFile = modelFile.replace("data:application/octet-stream;base64,", "")
-                var binary_string = window.atob(modelFile);
-                console.log(binary_string)
-                var len = binary_string.length;
-                console.log(len)
-                var bytes = new Uint8Array(len);
-                console.log(bytes)
-                for (var i = 0; i < len; i++) {
-                    bytes[i] = binary_string.charCodeAt(i);
-                }
-                bufferData = bytes.buffer;
-                console.log(bufferData)
+                bufferData = await response.arrayBuffer();
             }
-
         } catch (error) {
             console.log('3d model file error', error);
         }
@@ -162,18 +145,15 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             dracoLoader.setDecoderConfig({ type: 'js' });
             loader.setDRACOLoader(dracoLoader);
             console.log(bufferData)
-            const dataString = JSON.stringify(Array.from(new Uint8Array(bufferData)));
-            console.log(dataString)
-            loader.parse(dataString, '',
+            loader.parse(bufferData, '',
                 (gltf) => {
                     this.gltfScene = gltf.scene;
                     console.log(this.gltfScene)
                     THREE.Cache.enabled = true;
-                    // THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(gltf.scene));
+                    THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(gltf.scene));
                     THREE.Cache.enabled = false;
-                    // const sceneSkeleton: any = skeletonUtils.SkeletonUtils.clone(gltf.scene);
-                    // this.storage.set(this.fileName, sceneSkeleton.toJSON());
-
+                    const sceneSkeleton: any = skeletonUtils.SkeletonUtils.clone(gltf.scene);
+                    this.storage.set(this.fileName, sceneSkeleton.toJSON());
                     this.renderModel();
                 },
                 (error) => {
