@@ -25,42 +25,17 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-ckeditor {
-  -webkit-user-select: text;
-  user-select: text;
-}
-
-.cke_inner.cke_reset {
-  height: 73vh;
-}
-
-.ck {
-  display: none;
-}
-
-body.cke_editable.cke_editable_themed.cke_contents_ltr.cke_show_borders {
-  margin: auto;
-}
-
-.inline_editor {
+ckeditor.inline_editor {
+  margin-top: 32px;
   width: 100%;
-  margin-bottom: 16px;
-  margin-top: 16px;
-  padding-top span#cke_1_bottom,
-  .cke_bottom {
-    display: none !important;
+  max-height: 52vh;
+
+  .ck-editor__top {
+    display: none;
   }
-  .cke_inner.cke_reset {
-    max-height: 55vh;
-    height: 100%;
-  }
-  .cke_chrome {
-    border: none;
-  }
-  iframe {
-    body {
-      margin: 0;
-    }
+
+  .ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline {
+    border: none!important;
   }
 }
 

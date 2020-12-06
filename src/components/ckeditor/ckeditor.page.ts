@@ -1,5 +1,6 @@
 import { ModalController } from '@ionic/angular';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'text-editor',
@@ -7,6 +8,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./ckeditor.page.scss'],
 })
 export class CKEditorComponent implements OnInit {
+  public Editor = ClassicEditor;
+
   @Input() content;
   ckeditorContent
   ckeConfig
@@ -17,10 +20,8 @@ export class CKEditorComponent implements OnInit {
     this.ckeditorContent = this.content;
 
     this.ckeConfig = {
-      toolbar: [{ name: "basicstyles", items: ["Format", "-", "Bold", "Italic", "Blockquote", "-", "NumberedList", "BulletedList", "-", "Table"] }],
+      toolbar: ["heading", "bold", "italic", "blockQuote", "numberedList", "bulletedList", "insertTable"],
       toolbarLocation: 'bottom',
-      height: '100%',
-      autoGrow_minHeight: '600',
     };
   }
 
@@ -30,5 +31,9 @@ export class CKEditorComponent implements OnInit {
 
   async onDone() {
     await this.modalController.dismiss({ data: this.ckeditorContent });
+  }
+
+  onReady(e) {
+
   }
 }

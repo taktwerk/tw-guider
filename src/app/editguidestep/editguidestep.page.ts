@@ -14,6 +14,7 @@ import { AlertController, ToastController, ModalController } from '@ionic/angula
 import { ApiSync } from 'src/providers/api-sync';
 import { HttpClient } from '../../services/http-client';
 import { CKEditorComponent } from './../../components/ckeditor/ckeditor.page';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-editguidestep',
@@ -21,6 +22,8 @@ import { CKEditorComponent } from './../../components/ckeditor/ckeditor.page';
   styleUrls: ['./editguidestep.page.scss'],
 })
 export class EditguidestepPage implements OnInit {
+  public Editor = ClassicEditor;
+
   public params;
   public model: GuideStepModel;
   public previousModel: GuideStepModel
@@ -65,10 +68,8 @@ export class EditguidestepPage implements OnInit {
 
   ngOnInit() {
     this.ckeConfig = {
-      toolbar: [{ name: "basicstyles", items: ["Format", "-", "Bold", "Italic", "Blockquote", "-", "NumberedList", "BulletedList", "-", "Table"] }],
+      toolbar: ["heading", "bold", "italic", "blockQuote", "numberedList", "bulletedList", "insertTable"],
       toolbarLocation: 'bottom',
-      height: '100%',
-      autoGrow_minHeight: '300',
     };
   }
 
@@ -202,4 +203,6 @@ export class EditguidestepPage implements OnInit {
     return await modal.present();
   }
 
+  onReady(e) {
+  }
 }

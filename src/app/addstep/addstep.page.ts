@@ -1,3 +1,4 @@
+
 import { CKEditorComponent } from './../../components/ckeditor/ckeditor.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
@@ -14,7 +15,7 @@ import { ApiSync } from 'src/providers/api-sync';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
-
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-addstep',
@@ -22,10 +23,12 @@ import { FileChooser } from '@ionic-native/file-chooser/ngx';
   styleUrls: ['./addstep.page.scss'],
 })
 export class AddstepPage implements OnInit {
+  public Editor = ClassicEditor;
+
   public model: GuideStepModel;
   public params;
   guideId;
-  
+
   ckeConfig
 
   public guideSteps: GuideStepModel[] = [];
@@ -52,10 +55,9 @@ export class AddstepPage implements OnInit {
 
   ngOnInit() {
     this.ckeConfig = {
-      toolbar: [{ name: "basicstyles", items: ["Format", "-", "Bold", "Italic", "Blockquote", "-", "NumberedList", "BulletedList", "-", "Table"] }],
+      toolbar: ["heading", "bold", "italic", "blockQuote", "numberedList", "bulletedList", "insertTable"],
       toolbarLocation: 'bottom',
-      height: '100%',
-      autoGrow_minHeight: '300',
+
     };
 
     this.activatedRoute.paramMap.subscribe((paramMap) => {
@@ -169,5 +171,9 @@ export class AddstepPage implements OnInit {
         }
       });
     return await modal.present();
+  }
+
+  onReady(e) {
+   
   }
 }

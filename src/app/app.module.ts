@@ -104,8 +104,8 @@ import { ProgressBarModule } from '../components/progress-bar/progress-bar.modul
 import { ListviewComponentModule } from 'src/components/listview/listview.module';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 
-import { CKEditorModule } from 'ng2-ckeditor';
 import { CKEditorComponent } from 'src/components/ckeditor/ckeditor.page';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 
 export function LanguageLoader(http: Http) {
