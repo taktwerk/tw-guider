@@ -36,29 +36,39 @@
             <ion-label>{{ "guide.Assets" | translate: params }}</ion-label>
           </ion-item>
           <section class="ion-padding">
-            <ion-row>
-              <div class="asset_wrapper">
-                <label *ngFor="let asset of guideAssets; trackBy: trackGuideAsset">
-                  <span (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
-                    *ngIf="asset.isExistFileByIndex()">
-                    <!-- pdf -->
-                    <img [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
-                      *ngIf="asset.isPdf()">
-                    <!-- 3d -->
-                    <img src="../../assets/icon/3d.svg" *ngIf="asset.is3dFile()">
-                    <!-- other -->
-                    <img src="" *ngIf="!asset.isPdf() && !asset.is3dFile()">
-                    <p> <strong>{{ asset.name }}</strong> </p>
-                  </span>
-                  <!-- text -->
-                  <span *ngIf="!asset.isExistFileByIndex()" (click)="openAssetTextModal(asset)">
-                    <img src="../../assets/icon/text.svg">
-                    <p><strong>{{ asset.name }}</strong></p>
-                  </span>
-                </label>
-              </div>
+            <ion-grid class="asset__grid">
+              <ion-row>
+                <ion-col *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" size="6" size-md="3">
 
-            </ion-row>
+                  <ion-item *ngIf="asset.isExistFileByIndex()"
+                    (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                    lines="none">
+                    <ion-label>
+                      <ion-thumbnail>
+                        <!-- pdf -->
+                        <img [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
+                          *ngIf="asset.isPdf()">
+                        <!-- 3d -->
+                        <img src="../../assets/icon/3d.svg" *ngIf="asset.is3dFile()">
+                        <!-- other -->
+                        <img src="../../assets/placeholder.jpg" *ngIf="!asset.isPdf() && !asset.is3dFile()">
+                      </ion-thumbnail>
+                      <p> <strong>{{ asset.name }}</strong> </p>
+                    </ion-label>
+                  </ion-item>
+
+                  <ion-item *ngIf="!asset.isExistFileByIndex()" (click)="openAssetTextModal(asset)" lines="none">
+                    <ion-label>
+                      <ion-thumbnail>
+                        <ion-icon name="text-outline"></ion-icon>
+                      </ion-thumbnail>
+                      <p> <strong>{{ asset.name }}</strong> </p>
+                    </ion-label>
+                  </ion-item>
+
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </section>
         </ion-card>
       </div>
