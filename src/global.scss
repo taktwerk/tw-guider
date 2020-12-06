@@ -35,7 +35,23 @@ ckeditor.inline_editor {
   }
 
   .ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline {
-    border: none!important;
+    border: none !important;
+  }
+}
+
+.main_editor {
+  .ck.ck-reset.ck-editor.ck-rounded-corners {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    height: 100% !important;
+  }
+
+  .ck.ck-editor__main {
+    height: 100%;
+  }
+
+  .ck-editor__editable_inline {
+    height: 100%;
   }
 }
 
