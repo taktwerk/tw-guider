@@ -39,10 +39,6 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">{{ 'editguidestep.Description' | translate:params }}:</ion-label>
-        <!-- <ion-textarea [(ngModel)]="model.description_html" name="description"
-          placeholder="{{ 'editguidestep.Note description' | translate:params }}" rows="5" cols="33"
-          style="display: block;"  (ionChange)="onChanges($event)">
-        </ion-textarea> -->
 
         <ckeditor (ready)="onReady($event)" class="inline_editor" [editor]="Editor" [(ngModel)]="model.description_html"
           [config]="ckeConfig" name="description" (ionChange)="onChanges($event)">
