@@ -4,26 +4,19 @@
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
-  "linuxAndroidStudioPath": "/snap/android-studio/current/android-studio/bin/studio.sh",
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 0
+      "launchShowDuration": 3000,
+      "launchAutoHide": true,
+      "androidScaleType": "CENTER_INSIDE",
+      "splashFullScreen": false,
+      "splashImmersive": false,
+      "backgroundColor": "#1C3461"
     }
   },
-  "cordova": {
-    "preferences": {
-      "ScrollEnabled": "false",
-      "android-minSdkVersion": "19",
-      "android-targetSdkVersion": "29",
-      "BackupWebStorage": "none",
-      "SplashMaintainAspectRatio": "true",
-      "FadeSplashScreenDuration": "300",
-      "SplashShowOnlyFirstTime": "false",
-      "SplashScreen": "screen",
-      "SplashScreenDelay": "3000",
-      "AndroidPersistentFileLocation": "Compatibility",
-      "UseSwiftLanguageVersion": "4.2",
-      "StatusBarOverlaysWebView": "true"
-    }
+  "cordova": {},
+  "server": {
+    "url": "http://10.102.1.98:8100",
+    "cleartext": true
   }
 }

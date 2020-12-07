@@ -12,7 +12,8 @@
     "lint": "ng lint",
     "postinstall": "jetifier && node patch-camera.js",
     "e2e": "ng e2e",
-    "extract": "ngx-translate-extract -i ./src -o ./src/assets/i18n/en.json --clean --sort --format namespaced-json --format-indentation=\"\t\""
+    "extract": "ngx-translate-extract -i ./src -o ./src/assets/i18n/en.json --clean --sort --format namespaced-json --format-indentation=\"\t\"",
+    "resources": "capacitor-resources -p android,ios"
   },
   "config": {
     "ionic_generate_source_map": "true",
