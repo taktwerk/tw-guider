@@ -12,11 +12,6 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ckeditor class="main_editor" name="mainEditor" [editor]="Editor" [(ngModel)]="ckeditorContent" [config]="ckeConfig" (ionChange)="onChanges($event)"></ckeditor>
+<ion-content style="padding-top: 32px;">
+    <ckeditor class="main_editor" [editor]="Editor" [(ngModel)]="ckeditorContent" [config]="ckeConfig"></ckeditor>
 </ion-content>
-
-
-
-<!-- 2020-12-08 00:11:07.170635-0800 App[3239:115372] API error: <_UIKBCompatInputView: 0x7fbb32428760; frame = (0 0; 0 0); layer = <CALayer: 0x600001f746e0>> returned 0 width, assuming UIViewNoIntrinsicMetric
-2020-12-08 00:11:07.171714-0800 App[3239:115372] API error: <_UIKBCompatInputView: 0x7fbb32428760; frame = (0 0; 0 0); layer = <CALayer: 0x600001f746e0>> returned 0 width, assuming UIViewNoIntrinsicMetric-->
