@@ -26,7 +26,7 @@ export class CKEditorComponent implements OnInit {
   }
 
   onChange(e) {
-    console.log(this.ckeditorContent);
+    console.log(e);
   }
 
   async onDone() {
