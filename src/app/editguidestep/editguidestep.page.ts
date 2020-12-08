@@ -26,7 +26,8 @@ export class EditguidestepPage implements OnInit {
 
   public params;
   public model: GuideStepModel;
-  public previousModel: GuideStepModel
+  public previousDescription;
+  public previousTitle;
   public stepId: any;
   public guideId: any;
   public defaultTitle = 'Guide Step';
@@ -60,7 +61,8 @@ export class EditguidestepPage implements OnInit {
         this.model = results.filter(model => {
           return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT] && model.idApi == this.stepId
         })[0];
-        this.previousModel = this.model;
+        this.previousDescription = this.model.description_html;
+        this.previousTitle = this.model.title
         this.setGuideSteps(this.guideId)
       });
     })
@@ -119,7 +121,17 @@ export class EditguidestepPage implements OnInit {
   }
 
   onChanges(event) {
-    if (event.target.value != this.previousModel.title || event.target.value != this.previousModel.description_html) {
+    if (event.target != undefined && event.target.value != this.previousTitle) {
+      this.shouldUpdate = true;
+    }
+    else if (this.previousDescription != this.model.description_html) {
+      this.shouldUpdate = true;
+    }
+    else { this.shouldUpdate = false }
+  }
+
+  editorChanges() {
+    if (this.previousDescription != this.model.description_html) {
       this.shouldUpdate = true;
     }
     else { this.shouldUpdate = false }

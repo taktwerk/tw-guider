@@ -39,9 +39,8 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">{{ 'editguidestep.Description' | translate:params }}:</ion-label>
-
-        <ckeditor (ready)="onReady($event)" class="inline_editor" [editor]="Editor" [(ngModel)]="model.description_html"
-          [config]="ckeConfig" name="description" (ionChange)="onChanges($event)">
+        <ckeditor class="inline_editor" [editor]="Editor" [(ngModel)]="model.description_html" [config]="ckeConfig"
+          name="description" (change)="editorChanges()">
         </ckeditor>
 
         <ion-buttons slot="end" style="position: absolute;  right: 0;">
