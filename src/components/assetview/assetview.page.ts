@@ -5,18 +5,22 @@ import { PictureService } from 'src/services/picture-service';
 import { VideoService } from 'src/services/video-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Viewer3dService } from 'src/services/viewer-3d-service';
+import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
 
 @Component({
   selector: 'model-assetcomponent',
   templateUrl: './assetview.page.html',
   styleUrls: ['./assetview.page.scss'],
 })
+
 export class AssetviewComponent implements OnInit {
   @Input() model: any;
   /**Set to true to make image small */
   @Input() mini: boolean;
 
   filePath3d
+
+  guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
 
   constructor(private downloadService: DownloadService,
     private videoService: VideoService,
@@ -25,7 +29,7 @@ export class AssetviewComponent implements OnInit {
     private viewer3dService: Viewer3dService,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     const filePath = basePath;

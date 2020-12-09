@@ -123,6 +123,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (!this.appSetting.isMigratedDatabase()) {
       this.appSetting.showIsNotMigratedDbPopup();
     }
+    
     this.setPages();
     this.initNetwork();
     this.registerEvents();
