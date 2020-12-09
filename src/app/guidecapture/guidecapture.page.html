@@ -12,7 +12,7 @@
   <ion-grid>
     <ion-row *ngIf="isLoading">
       <ion-col size="12" size-lg="3" size-md="4">
-        <ion-card>
+        <ion-card style="margin:0!important">
           <img src="../../assets/placeholder.jpg" class="guide_preview">
           <ion-card-content>
             <ion-card-title>
@@ -76,7 +76,7 @@
     <ion-row>
       <ion-col size="12" size-lg="3" size-md="4" *ngFor="let guide of guidesList"
         [routerLink]="['/', 'editguide', guide.idApi]" button>
-        <ion-card>
+        <ion-card style="margin:0">
           <img [src]="guide.getFileImagePath()" *ngIf="guide.getFileImagePath()" class="guide_preview">
           <img src="../../assets/placeholder.jpg" *ngIf="!guide.getFileImagePath()" class="guide_preview">
           <ion-card-content>

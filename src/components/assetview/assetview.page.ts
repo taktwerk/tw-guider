@@ -6,6 +6,7 @@ import { VideoService } from 'src/services/video-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Viewer3dService } from 'src/services/viewer-3d-service';
 import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
+import { faExpand } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'model-assetcomponent',
@@ -19,6 +20,9 @@ export class AssetviewComponent implements OnInit {
   @Input() mini: boolean;
 
   filePath3d
+
+  faExpand = faExpand;
+
 
   guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
 

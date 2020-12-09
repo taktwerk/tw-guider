@@ -22,12 +22,12 @@
         *ngIf="model.isPdf()" (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
         style="width: auto!important;">
 
+    <!-- 3d model -->
     <div *ngIf="model.is3dFile()" style="width: 100%; height: 100%; position:relative;">
 
-        <ion-icon (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
-            name="search"
-            style="position: absolute; bottom: 0; right: 0; padding: 15px; font-size: 50px; z-index: 1000">
-        </ion-icon>
+        <fa-icon [icon]="faExpand"
+            (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
+            style="position: absolute; bottom: 0; right: 0;"></fa-icon>
 
         <viewer-3d-model-component [fileName]="model.getFilePath()" [backgroundColor]="null" [fullScreen]="false"
             [madeUserIteractions]="false" [willStopRotate]="false">
