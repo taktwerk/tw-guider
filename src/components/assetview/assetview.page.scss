@@ -7,7 +7,7 @@
     img {
         height: 100%;
         width: 100% !important;
-        object-fit: cover;
+        object-fit: contain;
     }
 }
 
@@ -19,4 +19,15 @@
     img {
         max-height: 250px;
     }
+}
+
+ion-icon.asset__icons,
+fa-icon.asset__icons {
+    font-size: 4.2rem;
+    color: #c7c4c4;
+}
+
+ion-icon.thumbnail,
+fa-icon.thumbnail {
+    font-size: 3.2rem !important;
 }

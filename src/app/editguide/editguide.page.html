@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content>
-  <listview-component [guideSteps]="guideSteps" canReorder="true" guideId="guideId"></listview-component>
+  <listview-component canReorder="true" [guideId]="guideId"></listview-component>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" [routerLink]="['/','addstep',guideId]">
     <ion-fab-button>
@@ -18,4 +18,3 @@
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-

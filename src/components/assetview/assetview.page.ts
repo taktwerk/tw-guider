@@ -5,8 +5,10 @@ import { PictureService } from 'src/services/picture-service';
 import { VideoService } from 'src/services/video-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Viewer3dService } from 'src/services/viewer-3d-service';
-import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
-import { faExpand } from '@fortawesome/free-solid-svg-icons';
+import { GuideAssetModel, GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
+import { faExpand, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { ModalController } from '@ionic/angular';
+import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 
 @Component({
   selector: 'model-assetcomponent',
@@ -16,13 +18,14 @@ import { faExpand } from '@fortawesome/free-solid-svg-icons';
 
 export class AssetviewComponent implements OnInit {
   @Input() model: any;
+  @Input() isthumbnail: boolean;
   /**Set to true to make image small */
   @Input() mini: boolean;
 
   filePath3d
 
   faExpand = faExpand;
-
+  faQuestion = faQuestion;
 
   guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
 
@@ -31,6 +34,7 @@ export class AssetviewComponent implements OnInit {
     private pictureService: PictureService,
     private photoViewer: PhotoViewer,
     private viewer3dService: Viewer3dService,
+    public modalController: ModalController,
   ) { }
 
   ngOnInit() { }
@@ -59,5 +63,17 @@ export class AssetviewComponent implements OnInit {
     else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
       this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
     }
+  }
+
+
+  async openAssetTextModal() {
+    const modal = await this.modalController.create({
+      component: GuideAssetTextModalComponent,
+      componentProps: {
+        asset: this.model
+      },
+      cssClass: "modal-fullscreen"
+    });
+    return await modal.present();
   }
 }

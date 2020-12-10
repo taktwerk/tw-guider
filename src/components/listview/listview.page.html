@@ -12,7 +12,7 @@
         <ion-item detail="true" button (click)="onEdit(step)">
           <ion-reorder slot="start" *ngIf="disableReorder == false"></ion-reorder>
           <ion-thumbnail slot="start">
-            <model-assetcomponent [model]="step"></model-assetcomponent>
+            <model-assetcomponent [model]="step"  isthumbnail="true"></model-assetcomponent>
           </ion-thumbnail>
 
           <ion-label>
@@ -39,6 +39,6 @@
 
 
 <ion-buttons class="floating_cta" *ngIf="canReorder && !isScrolling">
-  <ion-button (click)="onReorder()" *ngIf="disableReorder && guideSteps.length > 0" fill="solid">Re-Order</ion-button>
+  <ion-button (click)="onReorder()" *ngIf="disableReorder && guideSteps?.length > 0" fill="solid">Re-Order</ion-button>
   <ion-button (click)="save()" *ngIf="!disableReorder" fill="solid">Save</ion-button>
 </ion-buttons>

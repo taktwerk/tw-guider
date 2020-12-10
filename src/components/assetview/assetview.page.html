@@ -34,8 +34,11 @@
         </viewer-3d-model-component>
     </div>
 
-    <!-- undefined / null == true -->
-    <img src="../../assets/icon/nofile.png" class="grayoutimage" *ngIf="!model.isExistFormatFile()"
-        style="width: auto!important;">
+    <!-- text -->
+    <div (click)="openAssetTextModal()"
+        *ngIf="!model.is3dFile() && !model.isAudioFile() && !model.isVideoFile() && !model.isImageFile() && !model.isPdf()">
+        <ion-icon class="asset__icons" src="../../assets/icon/text.svg" style="font-size: 4.2rem;"
+            [ngClass]="{'thumbnail' : isthumbnail}"></ion-icon>
+    </div>
 
 </div>

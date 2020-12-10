@@ -41,26 +41,27 @@
                 <ion-col *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" size="6" size-md="3">
 
                   <ion-item *ngIf="asset.isExistFileByIndex()"
-                    (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                   
                     lines="none">
                     <ion-label>
                       <ion-thumbnail>
+                        <model-assetcomponent [model]="asset" mini="true"></model-assetcomponent>
                         <!-- pdf -->
-                        <img [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
-                          *ngIf="asset.isPdf()">
+                        <!-- <img [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
+                          *ngIf="asset.isPdf()"> -->
                         <!-- 3d -->
-                        <img src="../../assets/icon/3d.svg" *ngIf="asset.is3dFile()">
+                        <!-- <img src="../../assets/icon/3d.svg" *ngIf="asset.is3dFile()"> -->
                         <!-- other -->
-                        <img src="../../assets/placeholder.jpg" *ngIf="!asset.isPdf() && !asset.is3dFile()">
+                        <!-- <img src="../../assets/placeholder.jpg" *ngIf="!asset.isPdf() && !asset.is3dFile()"> -->
                       </ion-thumbnail>
                       <p> <strong>{{ asset.name }}</strong> </p>
                     </ion-label>
                   </ion-item>
 
-                  <ion-item *ngIf="!asset.isExistFileByIndex()" (click)="openAssetTextModal(asset)" lines="none">
+                  <ion-item *ngIf="!asset.isExistFileByIndex()" lines="none">
                     <ion-label>
                       <ion-thumbnail>
-                        <ion-icon src="../../assets/icon/text.svg"></ion-icon>
+                        <model-assetcomponent [model]="asset" mini="true"></model-assetcomponent>
                       </ion-thumbnail>
                       <p> <strong>{{ asset.name }}</strong> </p>
                     </ion-label>

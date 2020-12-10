@@ -15,6 +15,7 @@ import { Viewer3dModelComponentModule } from "../../components/viewer-3d-model-c
 import { GuideStepContentComponentModule } from "../../components/guide-step-content-component/guide-step-content-component.module";
 import { GuideStepContentComponent } from "../../components/guide-step-content-component/guide-step-content-component";
 import { GuideinfoPageModule } from 'src/components/guideinfo/guideinfo.module';
+import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
 
 @NgModule({
     declarations: [
@@ -35,6 +36,7 @@ import { GuideinfoPageModule } from 'src/components/guideinfo/guideinfo.module';
         GuideStepContentComponentModule,
         GuideinfoPageModule,
         MenupopoverPageModule,
+        AssetviewComponentModule,
 
     ],
     entryComponents: [

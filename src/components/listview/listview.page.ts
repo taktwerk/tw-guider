@@ -18,7 +18,7 @@ import { GuideChildService } from 'src/providers/api/guide-child-service';
   styleUrls: ['./listview.page.scss'],
 })
 export class ListViewComponent implements OnInit {
-  @Input() guideSteps: GuideStepModel[];
+  guideSteps: GuideStepModel[];
   guideStepsData: GuideStepModel[] = [];
 
   @Input() canReorder: boolean;
@@ -43,8 +43,19 @@ export class ListViewComponent implements OnInit {
     public events: Events,
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    console.log(this.guideId)
+    this.setGuideSteps(this.guideId);
+  }
 
+  public setGuideSteps(id) {
+    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
+      this.guideStepsData = results.filter(model => {
+        return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
+      });
+      this.guideSteps = this.guideStepsData.slice(0, this.displayLimit)
+    });
+  }
   onEdit(step: GuideStepModel) {
     let navigationExtras: NavigationExtras = {
       queryParams: {
@@ -93,15 +104,6 @@ export class ListViewComponent implements OnInit {
 
   logScrollEnd() {
     this.isScrolling = false;
-  }
-
-  public setGuideSteps(id) {
-    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
-      this.guideStepsData = results.filter(model => {
-        return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
-      });
-      this.guideSteps = this.guideStepsData.slice(0, this.displayLimit)
-    });
   }
 
   loadData(event) {
