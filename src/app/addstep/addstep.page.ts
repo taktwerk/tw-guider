@@ -51,6 +51,7 @@ export class AddstepPage implements OnInit {
     private modalController: ModalController,
   ) {
     this.model = this.guideStepService.newModel();
+    this.model.description_html = ""
   }
 
   ngOnInit() {
@@ -174,6 +175,6 @@ export class AddstepPage implements OnInit {
   }
 
   onReady(e) {
-   
+
   }
 }

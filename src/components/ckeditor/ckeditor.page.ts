@@ -17,7 +17,7 @@ export class CKEditorComponent implements OnInit {
   constructor(private modalController: ModalController) { }
 
   ngOnInit() {
-    this.ckeditorContent = this.content;
+    this.ckeditorContent = this.content || '';
 
     this.ckeConfig = {
       toolbar: ["heading", "bold", "italic", "blockQuote", "numberedList", "bulletedList", "insertTable"],
