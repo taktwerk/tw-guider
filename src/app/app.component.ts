@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 
 import { Events, NavController, Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+// import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { ApiSync } from '../providers/api-sync';
 import { MigrationProvider } from '../providers/migration-provider';
@@ -21,6 +21,10 @@ import { UserService } from '../services/user-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import * as THREE from 'three';
 
+import { Plugins } from '@capacitor/core';
+
+const { SplashScreen } = Plugins;
+
 export enum ConnectionStatusEnum {
   Online,
   Offline,
@@ -39,7 +43,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private events: Events,
     private apiSync: ApiSync,
@@ -74,62 +77,77 @@ export class AppComponent implements OnInit, OnDestroy {
 
   //// TODO in future save device info via API in this place
   async initializeApp() {
-    await this.migrationProvider.init();
-    this.translateConfigService.setLanguage();
-    const result = await this.login();
-    let currentLanguage = '';
-    if (result) {
-      try {
-        await this.initUserDB();
-        if (!this.userService.userDb) {
-          return;
-        }
-        const user = await this.userService.getUser();
-        if (user) {
-          await this.ngZone.run(() => {
-            this.navCtrl.navigateRoot('/guide-categories').then(() => {
-              this.showPageView = true;
-            });
-          });
-        } else {
-          if (this.appSetting.isWasQrCodeSetup) {
-            this.ngZone.run(() => {
-              this.navCtrl.navigateRoot('/login').then(() => {
+    this.platform.ready().then(async () => {
+
+      setTimeout(()=>{
+        SplashScreen.hide({
+          fadeOutDuration: 1000
+        });
+      }, 2000)
+     
+
+      await this.migrationProvider.init();
+
+      this.translateConfigService.setLanguage();
+
+      const result = await this.login();
+
+      let currentLanguage = '';
+
+      if (result) {
+        try {
+          await this.initUserDB();
+          if (!this.userService.userDb) {
+            return;
+          }
+          const user = await this.userService.getUser();
+          if (user) {
+            await this.ngZone.run(() => {
+              this.navCtrl.navigateRoot('/guide-categories').then(() => {
                 this.showPageView = true;
               });
             });
+          } else {
+            if (this.appSetting.isWasQrCodeSetup) {
+              this.ngZone.run(() => {
+                this.navCtrl.navigateRoot('/login').then(() => {
+                  this.showPageView = true;
+                });
+              });
+            }
           }
+          if (this.userService.userDb.userSetting.language) {
+            currentLanguage = this.userService.userDb.userSetting.language;
+          }
+          this.syncService.syncMode.next(this.userService.userDb.userSetting.syncMode);
+          if (this.userService.userDb.userSetting.syncLastElementNumber > 0 &&
+            (this.userService.userDb.userSetting.syncStatus === 'resume' ||
+              this.userService.userDb.userSetting.syncStatus === 'progress')
+          ) {
+            this.userService.userDb.userSetting.syncStatus = 'pause';
+            this.userService.userDb.save().then(() => {
+              this.apiSync.sendSyncProgress();
+            });
+          }
+          this.apiSync.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
+        } catch (e) {
         }
-        if (this.userService.userDb.userSetting.language) {
-          currentLanguage = this.userService.userDb.userSetting.language;
-        }
-        this.syncService.syncMode.next(this.userService.userDb.userSetting.syncMode);
-        if (this.userService.userDb.userSetting.syncLastElementNumber > 0 &&
-          (this.userService.userDb.userSetting.syncStatus === 'resume' ||
-            this.userService.userDb.userSetting.syncStatus === 'progress')
-        ) {
-          this.userService.userDb.userSetting.syncStatus = 'pause';
-          this.userService.userDb.save().then(() => {
-            this.apiSync.sendSyncProgress();
-          });
-        }
-        this.apiSync.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
-      } catch (e) {
+      } else {
+        this.showPageView = true;
       }
-    } else {
-      this.showPageView = true;
-    }
-    this.translateConfigService.setLanguage(currentLanguage);
-    if (!this.appSetting.isMigratedDatabase()) {
-      this.appSetting.showIsNotMigratedDbPopup();
-    }
-    
-    this.setPages();
-    this.initNetwork();
-    this.registerEvents();
-    this.splashScreen.hide();
-    this.statusBar.overlaysWebView(false);
-    this.statusBar.show();
+      this.translateConfigService.setLanguage(currentLanguage);
+      if (!this.appSetting.isMigratedDatabase()) {
+        this.appSetting.showIsNotMigratedDbPopup();
+      }
+
+      this.setPages();
+      this.initNetwork();
+      this.registerEvents();
+
+      //  this.statusBar.overlaysWebView(false);
+      //  this.statusBar.show();
+    })
+
   }
 
   protected initUserDB() {
