@@ -14,7 +14,7 @@ import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
-import {TranslateConfigService} from '../../services/translate-config.service';
+import { TranslateConfigService } from '../../services/translate-config.service';
 
 /**
  * Generated class for the TodoPage page.
@@ -28,12 +28,15 @@ import {TranslateConfigService} from '../../services/translate-config.service';
   templateUrl: 'guide-list-component.html',
   styleUrls: ['guide-list-component.scss'],
 })
-export class GuideListComponent {
+export class GuideListComponent implements OnInit {
   public haveProtocolPermissions = false;
   public params;
   @Input() guides: GuiderModel[];
+  @Input() isCapture = false;
+  @Input() hideCollection = false;
 
-  testGuideStepSave = false;
+  guideList: GuiderModel[];
+  displayLimit = 10;
 
   constructor(
     private platform: Platform,
@@ -58,6 +61,23 @@ export class GuideListComponent {
       }
     }
   }
+  ngOnInit(): void {
+    this.guideList = this.guides.slice(0, this.displayLimit);
+  }
+
+
+
+  loadData(event) {
+    setTimeout(() => {
+      this.displayLimit += 10;
+      this.guideList = this.guides.slice(0, this.displayLimit);
+      event.target.complete();
+      event.target.disabled = true;
+      if (this.guideList.length == this.guides.length) {
+        event.target.disabled = true;
+      }
+    }, 500)
+  }
 
   openProtocol(guide: GuiderModel) {
     const feedbackNavigationExtras: NavigationExtras = {
@@ -71,30 +91,6 @@ export class GuideListComponent {
     };
     this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }
-
-  addGuideStep(guide: GuiderModel) {
-    const model = this.apiSync.apiPushServices.guide_step.newModel();
-    model.local_guide_id = guide[guide.COL_ID];
-    model.guide_id = guide.idApi;
-    model.order_number = 1;
-    model.title = this.makeid(10);
-    model.description_html = this.makeid(30);
-    this.apiSync.apiPushServices.guide_step.save(model).then(async (res) => {
-       this.apiSync.setIsPushAvailableData(true);
-       const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'GuideStep' });
-       this.http.showToast(alertMessage);
-    });
-  }
-
-  makeid(length) {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
-}
 
   openCollection(guide: GuiderModel) {
     const feedbackNavigationExtras: NavigationExtras = {
@@ -111,5 +107,13 @@ export class GuideListComponent {
       return;
     }
     this.router.navigate(['/guide/' + guide.idApi]);
+  }
+
+  openGuideSteps(guideId) {
+    this.router.navigate(['/', 'editguide', guideId]);
+  }
+
+  trackByFn(item: GuiderModel, index: number) {
+    return item.idApi;
   }
 }

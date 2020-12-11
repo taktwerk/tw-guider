@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import {Platform, Events} from '@ionic/angular';
-import {ApiService} from './base/api-service';
-import {DbProvider} from '../db-provider';
-import {AuthService} from '../../services/auth-service';
-import {HttpClient} from '../../services/http-client';
-import {GuiderModel} from '../../models/db/api/guider-model';
-import {DownloadService} from '../../services/download-service';
-import {GuideCategoryModel} from '../../models/db/api/guide-category-model';
-import {DbBaseModel} from '../../models/base/db-base-model';
-import {AppSetting} from '../../services/app-setting';
+import { Platform, Events } from '@ionic/angular';
+import { ApiService } from './base/api-service';
+import { DbProvider } from '../db-provider';
+import { AuthService } from '../../services/auth-service';
+import { HttpClient } from '../../services/http-client';
+import { GuiderModel } from '../../models/db/api/guider-model';
+import { DownloadService } from '../../services/download-service';
+import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
+import { DbBaseModel } from '../../models/base/db-base-model';
+import { AppSetting } from '../../services/app-setting';
 
 @Injectable()
 export class GuideCategoryService extends ApiService {
@@ -28,12 +28,12 @@ export class GuideCategoryService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-                private p: Platform,
-                private db: DbProvider,
-                public authService: AuthService,
-                public events: Events,
-                public downloadService: DownloadService,
-                public appSetting: AppSetting) {
+        private p: Platform,
+        private db: DbProvider,
+        public authService: AuthService,
+        public events: Events,
+        public downloadService: DownloadService,
+        public appSetting: AppSetting) {
         super(http, events, appSetting);
         console.debug('GuideCategoryService', 'initialized');
     }
@@ -236,15 +236,15 @@ export class GuideCategoryService extends ApiService {
                     this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_category_id') +
                     ' = ' +
                     this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id');
-                    if (!user.isAuthority) {
-                        whereCondition.push(
-                            this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id,
-                            this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
-                            this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
-                        );
-                    }
+                if (!user.isAuthority) {
+                    whereCondition.push(
+                        this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id,
+                        this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+                        this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
+                    );
+                }
             }
-            
+
             const selectFrom = 'SELECT ' + this.dbModelApi.secure('guide') + '.*' + ' from ' + this.dbModelApi.secure('guide');
             const groupby = this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
 

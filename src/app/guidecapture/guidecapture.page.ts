@@ -1,7 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
+import { Events, LoadingController } from '@ionic/angular';
+import { GuiderService } from 'src/providers/api/guider-service';
+import { GuideCategoryModel } from 'src/models/db/api/guide-category-model';
+import { Router } from '@angular/router';
+import { GuideCategoryBindingService } from 'src/providers/api/guide-category-binding-service';
+import { GuideChildService } from 'src/providers/api/guide-child-service';
+import { ProtocolTemplateService } from 'src/providers/api/protocol-template-service';
 
 @Component({
   selector: 'app-guidecapture',
@@ -9,39 +16,73 @@ import { GuideCategoryService } from '../../providers/api/guide-category-service
   styleUrls: ['./guidecapture.page.scss'],
 })
 export class GuidecapturePage implements OnInit {
-  guidesData: GuiderModel[] = [];
-  guidesList: GuiderModel[] = [];
+  public guideCategories: GuideCategoryModel[] = [];
+  public searchValue: string;
+  public haveProtocolPermissions = false;
+  public isLoadedContent = false;
+  public guides: GuiderModel[] = [];
+  public guideItemsLimit = 20;
   public params;
 
-  displayLimit: number = 10;
+  public items: Array<{ title: string; note: string; icon: string }> = [];
+  public type: string;
 
-  isLoading = true;
-
-  constructor(private authService: AuthService,
+  constructor(
     private guideCategoryService: GuideCategoryService,
+    private guiderService: GuiderService,
+    private guideChildService: GuideChildService,
+    public authService: AuthService,
+    public events: Events,
+    public changeDetectorRef: ChangeDetectorRef,
+    private loader: LoadingController
   ) {
-    this.authService.checkAccess('guidecapture');
+    this.authService.checkAccess('guide');
+    this.showAllGuides();
   }
 
-  ngOnInit() { this.getGuides(); }
-
-  async getGuides() {
-    this.guideCategoryService.getGuides(null).then((res) => {
-      this.guidesData = res;
-      this.guidesList = this.guidesData.slice(0, this.displayLimit);
-      this.isLoading = false;
-    })
+  async showAllGuides() {
+    const loader = await this.loader.create();
+    loader.present();
+    await this.setGuides();
+    loader.dismiss();
+    this.isLoadedContent = true;
   }
 
-  loadData(event) {
-    setTimeout(() => {
-      this.displayLimit += 10;
-      this.guidesList = this.guidesData.slice(0, this.displayLimit);
-      event.target.complete();
-      event.target.disabled = true;
-      if (this.guidesList.length == this.guidesData.length) {
-        event.target.disabled = true;
-      }
-    }, 500)
+  async setGuides() {
+    this.guides = await this.guideCategoryService.getGuides();
+  }
+
+  detectChanges() {
+    if (!this.changeDetectorRef['destroyed']) {
+      this.changeDetectorRef.detectChanges();
+    }
+  }
+
+  ngOnInit() {
+
+    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', () => {
+      this.setGuides();
+    });
+    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', () => {
+      this.setGuides();
+    });
+    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', () => {
+      this.setGuides();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', () => {
+      this.setGuides();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', () => {
+      this.setGuides();
+    });
+    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', () => {
+      this.setGuides();
+    });
+
+    this.events.subscribe('network:online', () => {
+      this.authService.checkAccess('guide');
+    });
   }
 }
+
+

@@ -1,14 +1,14 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit} from '@angular/core';
-import {GuideCategoryService} from '../../providers/api/guide-category-service';
-import {GuideChildService} from '../../providers/api/guide-child-service';
-import {GuiderService} from '../../providers/api/guider-service';
-import {GuiderModel} from '../../models/db/api/guider-model';
-import {AuthService} from '../../services/auth-service';
-import {GuideCategoryModel} from '../../models/db/api/guide-category-model';
-import {Events, LoadingController} from '@ionic/angular';
-import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
-import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
-import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import { AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit } from '@angular/core';
+import { GuideCategoryService } from '../../providers/api/guide-category-service';
+import { GuideChildService } from '../../providers/api/guide-child-service';
+import { GuiderService } from '../../providers/api/guider-service';
+import { GuiderModel } from '../../models/db/api/guider-model';
+import { AuthService } from '../../services/auth-service';
+import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
+import { Events, LoadingController } from '@ionic/angular';
+import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
+import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'guide-collection-page',
@@ -27,22 +27,22 @@ export class GuideCollectionPage implements OnInit {
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
-      private guideCategoryBindingService: GuideCategoryBindingService,
-      private guideCategoryService: GuideCategoryService,
-      private guideChildService: GuideChildService,
-      private guiderService: GuiderService,
-      private protocolTemplateService: ProtocolTemplateService,
-      public authService: AuthService,
-      public events: Events,
-      public changeDetectorRef: ChangeDetectorRef,
-      private router: Router,
-      private loader: LoadingController,
-      private activatedRoute: ActivatedRoute
+    private guideCategoryBindingService: GuideCategoryBindingService,
+    private guideCategoryService: GuideCategoryService,
+    private guideChildService: GuideChildService,
+    private guiderService: GuiderService,
+    private protocolTemplateService: ProtocolTemplateService,
+    public authService: AuthService,
+    public events: Events,
+    public changeDetectorRef: ChangeDetectorRef,
+    private router: Router,
+    private loader: LoadingController,
+    private activatedRoute: ActivatedRoute
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
       if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') ||
-          this.authService.auth.isAuthority
+        this.authService.auth.isAuthority
       ) {
         this.haveProtocolPermissions = true;
       }
@@ -132,7 +132,7 @@ export class GuideCollectionPage implements OnInit {
       this.findAllGuideCategories();
       this.detectChanges();
     });
-    
+
     this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
       this.findAllGuideCategories();
     });
@@ -164,7 +164,7 @@ export class GuideCollectionPage implements OnInit {
       await this.setGuideInfo();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', async (model) => {
-     await  this.setGuideInfo();
+      await this.setGuideInfo();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', async (model) => {
       await this.setGuideInfo();
@@ -191,4 +191,5 @@ export class GuideCollectionPage implements OnInit {
       this.authService.checkAccess('guide');
     });
   }
+
 }
