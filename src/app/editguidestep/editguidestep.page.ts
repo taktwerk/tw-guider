@@ -72,6 +72,7 @@ export class EditguidestepPage implements OnInit {
     this.ckeConfig = {
       toolbar: ["heading", "bold", "italic", "blockQuote", "numberedList", "bulletedList", "insertTable"],
       toolbarLocation: 'bottom',
+      isReadOnly: true
     };
   }
 

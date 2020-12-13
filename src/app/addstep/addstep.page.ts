@@ -29,7 +29,7 @@ export class AddstepPage implements OnInit {
   public params;
   guideId;
 
-  ckeConfig
+  ckeConfig 
 
   public guideSteps: GuideStepModel[] = [];
 
@@ -58,7 +58,7 @@ export class AddstepPage implements OnInit {
     this.ckeConfig = {
       toolbar: ["heading", "bold", "italic", "blockQuote", "numberedList", "bulletedList", "insertTable"],
       toolbarLocation: 'bottom',
-
+      isReadOnly: true
     };
 
     this.activatedRoute.paramMap.subscribe((paramMap) => {
