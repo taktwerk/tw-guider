@@ -98,7 +98,9 @@
   "guide": {
     "header": "Guide",
     "No information here yet.": "No information here yet.",
-    "Assets": "Assets"
+    "Assets": "Assets",
+    "Information":"Information",
+    "Restart":"Restart Guide"
   },
   "profile": {
     "header": "Profile",

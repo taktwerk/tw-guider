@@ -11,6 +11,7 @@ import { ApiSync } from 'src/providers/api-sync';
 })
 export class MenuPopoverComponent implements OnInit {
   guideId;
+  params;
   constructor(
     private apiSync: ApiSync,
     private modalController: ModalController,

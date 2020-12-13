@@ -96,7 +96,9 @@
   "guide": {
     "header": "Guide",
     "No information here yet.": "Noch keine Informationen verfügbar.",
-    "Assets": "Zusatzinformationen"
+    "Assets": "Zusatzinformationen",
+    "Information":"Information",
+    "Restart":"Anleitung zum Neustart"
   },
   "profile": {
     "header": "Profil",
