@@ -21,6 +21,9 @@
   "dont_save": "Don't save",
   "cancel": "Cancel",
   "noResults": "No results",
+  "Order": "Order",
+  "created_by": "Created By",
+  "updated_by": "Updated By",
   "about": {
     "header": "About",
     "App Version": "App Version",
@@ -62,8 +65,7 @@
     "header": "Guides",
     "duration": "Duration",
     "revision": "Revision",
-    "created_by": "Created By",
-    "updated_by": "Updated By",
+    "Description": "Description",
     "Show Guide": "Show Guide",
     "New Protocol": "New Protocol",
     "Protocol": "Protocol",
@@ -195,27 +197,24 @@
   },
   "guider": {
     "header": "Guide Capture",
-    "No information here yet.": "No information here yet.",
-    "Assets": "Assets"
+    "No information here yet.": "No information here yet."
   },
   "editguide": {
     "header": "Edit Guide",
-    "No information here yet.": "No information here yet.",
-    "Assets": "Assets"
+    "No information here yet.": "No information here yet."
   },
   "editguidestep": {
     "header": "Edit Step",
     "No information here yet.": "No information here yet.",
-    "Assets": "Assets",
     "Description": "Description",
     "Note description": "Note description"
   },
   "addstep": {
     "header": "Add Step",
     "No information here yet.": "No information here yet.",
-    "Assets": "Assets",
     "Description": "Description",
-    "Note description": "Note description"
+    "Note description": "Note description",
+    "Open in editor": "Open in editor"
   },
   "CKEditor" : {
     "header": "Text Editor"

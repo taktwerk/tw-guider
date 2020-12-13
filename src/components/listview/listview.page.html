@@ -39,6 +39,6 @@
 
 
 <ion-buttons class="floating_cta" *ngIf="canReorder && !isScrolling">
-  <ion-button (click)="onReorder()" *ngIf="disableReorder && guideSteps?.length > 0" fill="solid">Re-Order</ion-button>
+  <ion-button (click)="onReorder()" *ngIf="disableReorder && guideSteps?.length > 0" fill="solid">{{ 'Order' | translate:params }}</ion-button>
   <ion-button (click)="save()" *ngIf="!disableReorder" fill="solid">Save</ion-button>
 </ion-buttons>
