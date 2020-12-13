@@ -24,8 +24,8 @@
           <h2 class=""> <strong>{{guide.title}}</strong></h2>
           <p *ngIf="guide.duration">{{ 'guides.duration' | translate:params }}: {{ guide.getDuration() }}</p>
           <p *ngIf="guide.revision">{{ 'guides.revision' | translate:params }}: {{ guide.revision }}</p>
-          <p *ngIf="guide.created_by">{{ 'guides.created_by' | translate:params }}: {{ guide.created_by }}</p>
-          <p *ngIf="guide.updated_by">{{ 'guides.updated_by' | translate:params }}: {{ guide.updated_by }}</p>
+          <p *ngIf="guide.created_by">{{ 'created_by' | translate:params }}: {{ guide.created_by }}</p>
+          <p *ngIf="guide.updated_by">{{ 'updated_by' | translate:params }}: {{ guide.updated_by }}</p>
         </ion-label>
       </ion-item>
     </ion-item-group>
@@ -33,7 +33,7 @@
     <ion-item-group>
       <ion-item lines="full">
         <ion-label>
-          <h2> <strong>Description</strong></h2>
+          <h2> <strong>{{ 'guides.Description' | translate:params }}</strong></h2>
           <p class="guide-description">{{guide.description}}</p>
         </ion-label>
       </ion-item>

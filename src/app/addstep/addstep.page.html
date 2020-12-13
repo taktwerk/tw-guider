@@ -34,7 +34,7 @@
         <ion-input [(ngModel)]="model.order_number" name="order" clear-input type="number" min="1"> </ion-input>
       </ion-item>
       <ion-item class="">
-        <ion-label position="floating"> {{ 'title' | translate:params }}: </ion-label>
+        <ion-label position="floating">{{ 'title' | translate:params }}: </ion-label>
         <ion-input [(ngModel)]="model.title" name="title" clear-input required> </ion-input>
       </ion-item>
       <ion-item>
@@ -45,7 +45,7 @@
         </ckeditor>
 
         <ion-buttons slot="end" style="position: absolute;  right: 0;">
-          <ion-button (click)="openEditor()"> Open in Editor</ion-button>
+          <ion-button (click)="openEditor()">{{ 'addstep.Open in editor' | translate:params }}</ion-button>
         </ion-buttons>
 
       </ion-item>

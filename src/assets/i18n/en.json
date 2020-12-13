@@ -21,6 +21,9 @@
   "dont_save": "Don't save",
   "cancel": "Cancel",
   "noResults": "No results",
+  "Order": "Order",
+  "created_by": "Created By",
+  "updated_by": "Updated By",
   "about": {
     "header": "About",
     "App Version": "App Version",
@@ -62,8 +65,7 @@
     "header": "Guides",
     "duration": "Duration",
     "revision": "Revision",
-    "created_by": "Created By",
-    "updated_by": "Updated By",
+    "Description": "Description",
     "Show Guide": "Show Guide",
     "New Protocol": "New Protocol",
     "Protocol": "Protocol",
@@ -156,6 +158,7 @@
     "Application was successfully configured": "Application was successfully configured",
     "The Guider app enables the display of digital instructions (assembly, training, etc.)": "The Guider app enables the display of digital instructions (assembly, training, etc.)",
     "The app only works with a customer account. Please contact taktwerk GmbH for this": "The app only works with a customer account. Please contact taktwerk GmbH for this",
+    "Or try the demo": "Or try the demo",
     "Scan the received": "Scan the received",
     "QR-Code": "QR-Code",
     "Setup": "Setup",
@@ -194,27 +197,24 @@
   },
   "guider": {
     "header": "Guide Capture",
-    "No information here yet.": "No information here yet.",
-    "Assets": "Assets"
+    "No information here yet.": "No information here yet."
   },
   "editguide": {
     "header": "Edit Guide",
-    "No information here yet.": "No information here yet.",
-    "Assets": "Assets"
+    "No information here yet.": "No information here yet."
   },
   "editguidestep": {
     "header": "Edit Step",
     "No information here yet.": "No information here yet.",
-    "Assets": "Assets",
     "Description": "Description",
     "Note description": "Note description"
   },
   "addstep": {
     "header": "Add Step",
     "No information here yet.": "No information here yet.",
-    "Assets": "Assets",
     "Description": "Description",
-    "Note description": "Note description"
+    "Note description": "Note description",
+    "Open in editor": "Open in editor"
   },
   "CKEditor" : {
     "header": "Text Editor"

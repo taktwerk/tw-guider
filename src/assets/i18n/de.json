@@ -21,6 +21,9 @@
   "dont_save": "Nicht speichern",
   "cancel": "Abbrechen",
   "noResults": "Kein Resultat",
+  "Order": "Reihenfolge",
+  "created_by": "Erstellt von",
+  "updated_by": "Aktualisiert von",
   "about": {
     "header": "Über",
     "App Version": "App Version",
@@ -60,13 +63,13 @@
     "header": "Anleitungen",
     "duration": "Dauer",
     "revision": "Revision",
-    "created_by": "erstellt von",
-    "updated_by": "aktualisiert von",
+    "Description": "Beschreibung",
     "Show Guide": "Zeige Anleitung",
     "New Protocol": "Neues Protokoll",
     "Protocol": "Protokoll",
     "specifySearchMessage": "{{ guidesCount }} Anleitungen gefunden. Spezifizieren Sie die Suche",
-    "specifyMoreSearchMessage": "{{ guidesCount }} Anleitungen gefunden. Spezifizieren Sie die Suche weiter"
+    "specifyMoreSearchMessage": "{{ guidesCount }} Anleitungen gefunden. Spezifizieren Sie die Suche weiter",
+    "Show Collection": "Zeige Sammlung"
   },
   "feedback": {
     "header": "Feedback",
@@ -151,6 +154,7 @@
     "Application was successfully configured": "Die App wurde erfolgreich konfiguriert",
     "The Guider app enables the display of digital instructions (assembly, training, etc.)": "Die Guider App ermöglicht die Anzeige von digitalen Anleitungen (Montage, Schulungen, etc.)",
     "The app only works with a customer account. Please contact taktwerk GmbH for this": "Die App funktioniert nur mit einem Kundenkonto. Bitte kontaktieren Sie dafür die taktwerk GmbH",
+    "Or try the demo": "Oder testen Sie die Demo",
     "Scan the received": "Scannen Sie den erhaltenen",
     "QR-Code": "QR-Code",
     "Setup": "Setup",
@@ -188,28 +192,25 @@
     "are_you_sure_go_back": "Bist du sicher, dass du zurück willst? Nicht gespeicherte Änderungen gehen verloren."
   },
   "guider": {
-    "header": "Leitfadenerfassung",
-    "No information here yet.": "No information here yet.",
-    "Assets": "Assets"
+    "header": "Guide Erfassung",
+    "No information here yet.": "No information here yet."
   },
   "editguide": {
-    "header": "Handbuch bearbeiten",
-    "No information here yet.": "No information here yet.",
-    "Assets": "Assets"
+    "header": "Guide bearbeiten",
+    "No information here yet.": "No information here yet."
   },
   "editguidestep": {
     "header": "Schritt bearbeiten",
     "No information here yet.": "No information here yet.",
-    "Assets": "Assets",
     "Description": "Beschreibung",
     "Note description": "Beschreibung beachten"
   },
   "addstep": {
     "header": "Schritt hinzufügen",
     "No information here yet.": "No information here yet.",
-    "Assets": "Assets",
     "Description": "Beschreibung",
-    "Note description": "Beschreibung beachten"
+    "Note description": "Beschreibung beachten",
+    "Open in editor": "Im Editor öffnen"
   },
   "CKEditor": {
     "header": "Texteditor"

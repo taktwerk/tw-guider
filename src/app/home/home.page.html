@@ -28,10 +28,21 @@
       <p>
         {{ 'qr.The app only works with a customer account. Please contact taktwerk GmbH for this' | translate:params }}: <a href="mailto:support@taktwerk.ch">support@taktwerk.ch</a>
       </p>
+      <p>
+        <a href="https://taktwerk.ch/guider/demo">{{ 'qr.Or try the demo' | translate:params }}</a>
+      </p>
+      <hr>
       <div class="ion-text-center">
         <h1>
           {{ 'qr.Setup' | translate:params }}
         </h1>
+        <p>{{ 'qr.Scan the received' | translate:params }}<strong>
+          {{ 'qr.QR-Code' | translate:params }}</strong>
+        </p>
+        <ion-button size="large" expand="full" (click)="scanQrcode()">
+          <ion-icon name="qr-scanner"></ion-icon>
+          {{ 'qr.QR-Code' | translate:params }}
+        </ion-button>
         <ion-list>
           <ion-item>
             <ion-label>{{ 'Enable USB mode' | translate:params }}</ion-label>
@@ -42,13 +53,6 @@
             </ion-toggle>
           </ion-item>
         </ion-list>
-        <p>{{ 'qr.Scan the received' | translate:params }}<strong>
-          {{ 'qr.QR-Code' | translate:params }}</strong>
-        </p>
-        <ion-button size="large" expand="full" (click)="scanQrcode()">
-          <ion-icon name="qr-scanner"></ion-icon>
-          {{ 'qr.QR-Code' | translate:params }}
-        </ion-button>
       </div>
     </ion-card-header>
   </ion-card>
