@@ -4,19 +4,18 @@
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
+  "linuxAndroidStudioPath": "/snap/android-studio/current/android-studio/bin/studio.sh",
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 3000,
-      "launchAutoHide": true,
+      "launchAutoHide": false,
       "androidScaleType": "CENTER_INSIDE",
       "splashFullScreen": false,
       "splashImmersive": false,
-      "backgroundColor": "#1C3461"
+      "backgroundColor": "#1C3461",
+      "androidSplashResourceName": "splash"
+
     }
   },
-  "cordova": {},
-  "server": {
-    "url": "http://10.102.1.98:8100",
-    "cleartext": true
-  }
+  "cordova": {}
 }
