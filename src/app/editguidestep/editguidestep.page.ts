@@ -1,3 +1,5 @@
+import { GuiderModel } from './../../models/db/api/guider-model';
+import { GuiderService } from './../../providers/api/guider-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GuideStepModel } from './../../models/db/api/guide-step-model';
 import { Component, OnInit } from '@angular/core';
@@ -15,6 +17,7 @@ import { ApiSync } from 'src/providers/api-sync';
 import { HttpClient } from '../../services/http-client';
 import { CKEditorComponent } from './../../components/ckeditor/ckeditor.page';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { UserService } from 'src/services/user-service';
 
 @Component({
   selector: 'app-editguidestep',
@@ -26,6 +29,7 @@ export class EditguidestepPage implements OnInit {
 
   public params;
   public model: GuideStepModel;
+  public guide: GuiderModel;
   public previousDescription;
   public previousTitle;
   public stepId: any;
@@ -41,6 +45,7 @@ export class EditguidestepPage implements OnInit {
     private translateConfigService: TranslateConfigService,
     private activatedRoute: ActivatedRoute,
     private guideStepService: GuideStepService,
+    private guiderService: GuiderService,
     public downloadService: DownloadService,
     private videoService: VideoService,
     private photoViewer: PhotoViewer,
@@ -50,7 +55,8 @@ export class EditguidestepPage implements OnInit {
     private apiSync: ApiSync,
     private router: Router,
     public http: HttpClient,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private userService: UserService
   ) {
     // this.authService.checkAccess('guider');
 
@@ -63,7 +69,9 @@ export class EditguidestepPage implements OnInit {
         })[0];
         this.previousDescription = this.model.description_html;
         this.previousTitle = this.model.title
-        this.setGuideSteps(this.guideId)
+        this.setGuideSteps(this.guideId);
+        this.setGuide(this.guideId);
+
       });
     })
   }
@@ -138,12 +146,29 @@ export class EditguidestepPage implements OnInit {
     else { this.shouldUpdate = false }
   }
 
-  public setGuideSteps(id) {
-    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
-      this.guideSteps = results.filter(model => {
-        return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
-      });
+  public async setGuideSteps(id) {
+    const results = await this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC');
+    this.guideSteps = results.filter(model => {
+      return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
     });
+  }
+
+  public async setGuide(id) {
+    const guiderById = await this.guiderService.getById(this.guideId);
+    if (guiderById.length) {
+      this.guide = guiderById[0];
+      console.log(this.guide)
+    }
+  }
+
+  updateGuide() {
+    if (this.guide) {
+      this.userService.getUser().then((res) => {
+        this.guide.updated_by = res.userId;
+      });
+
+      this.guiderService.save(this.guide);
+    }
   }
 
   async save() {
@@ -153,6 +178,7 @@ export class EditguidestepPage implements OnInit {
     }
     this.guideStepService.save(this.model).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
+      this.updateGuide();
       const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'GuideStep' });
       this.http.showToast(alertMessage);
       this.shouldUpdate = false;
@@ -182,6 +208,7 @@ export class EditguidestepPage implements OnInit {
   delete() {
     this.guideStepService.remove(this.model).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
+      this.updateGuide();
       const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'GuideStep' });
       this.http.showToast(alertMessage);
 

@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
-import {UserDb} from '../models/db/user-db';
-import {Events, Platform} from '@ionic/angular';
-import {DbProvider} from '../providers/db-provider';
-import {DownloadService} from './download-service';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { UserDb } from '../models/db/user-db';
+import { Events, Platform } from '@ionic/angular';
+import { DbProvider } from '../providers/db-provider';
+import { DownloadService } from './download-service';
 
 @Injectable()
 export class UserService {
@@ -13,9 +13,9 @@ export class UserService {
     userDb: UserDb;
 
     constructor(private platform: Platform,
-                public events: Events,
-                private db: DbProvider,
-                private downloadService: DownloadService) {
+        public events: Events,
+        private db: DbProvider,
+        private downloadService: DownloadService) {
     }
 
     async saveUser(data: UserDb) {
@@ -24,7 +24,6 @@ export class UserService {
             return false;
         }
         this.userDb.save();
-
         return true;
     }
 
@@ -38,15 +37,12 @@ export class UserService {
                 resolve(this.userDb);
             });
         }
-
         return new Promise(resolve => {
             new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
-
                     resolve(this.userDb);
                 }
-
                 resolve(null);
             });
         });

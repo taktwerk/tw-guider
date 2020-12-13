@@ -1,21 +1,23 @@
+import { GuiderModel } from './../../models/db/api/guider-model';
+import { GuiderService } from './../../providers/api/guider-service';
 
 import { CKEditorComponent } from './../../components/ckeditor/ckeditor.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { GuideAssetService } from 'src/providers/api/guide-asset-service';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
-import { DownloadService, RecordedFile } from '../../services/download-service';
+import { DownloadService } from '../../services/download-service';
 import { VideoService } from 'src/services/video-service';
 import { PictureService } from 'src/services/picture-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { AuthService } from 'src/services/auth-service';
-import { TranslateConfigService } from 'src/services/translate-config.service';
-import { AlertController, ToastController, ModalController, NavParams } from '@ionic/angular';
+import { AlertController, ToastController, ModalController } from '@ionic/angular';
 import { ApiSync } from 'src/providers/api-sync';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { UserService } from 'src/services/user-service';
 
 @Component({
   selector: 'app-addstep',
@@ -26,16 +28,18 @@ export class AddstepPage implements OnInit {
   public Editor = ClassicEditor;
 
   public model: GuideStepModel;
+  public guide: GuiderModel;
   public params;
   guideId;
 
-  ckeConfig 
+  ckeConfig
 
   public guideSteps: GuideStepModel[] = [];
 
   constructor(
     private guideStepService: GuideStepService,
-    private guideAssetService: GuideAssetService,
+    private guiderService: GuiderService,
+    private userService: UserService,
     public downloadService: DownloadService,
     private videoService: VideoService,
     private photoViewer: PhotoViewer,
@@ -46,8 +50,6 @@ export class AddstepPage implements OnInit {
     private apiSync: ApiSync,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private filePath: FilePath,
-    private fileChooser: FileChooser,
     private modalController: ModalController,
   ) {
     this.model = this.guideStepService.newModel();
@@ -65,7 +67,8 @@ export class AddstepPage implements OnInit {
       if (paramMap.has('id')) {
         this.guideId = paramMap.get("id");
         this.model.guide_id = this.guideId;
-        this.setGuideSteps(this.guideId)
+        this.setGuideSteps(this.guideId);
+        this.setGuide(this.guideId);
       }
     })
   }
@@ -132,6 +135,22 @@ export class AddstepPage implements OnInit {
     });
   }
 
+  public async setGuide(id) {
+    const guiderById = await this.guiderService.getById(this.guideId);
+    if (guiderById.length) {
+      this.guide = guiderById[0];
+    }
+  }
+
+  updateGuide() {
+    if (this.guide) {
+      this.userService.getUser().then((res) => {
+        this.guide.created_by = res.userId;
+      });
+      this.guiderService.save(this.guide);
+    }
+  }
+
   async save() {
     const user = await this.authService.getLastUser();
     if (!user) { return; }
@@ -141,7 +160,8 @@ export class AddstepPage implements OnInit {
     this.guideSteps.map((step, index) => {
       step.order_number = index + 1;
       this.setGuideSteps(this.guideId).then(() => {
-        this.guideStepService.save(step).then((res) => {
+        this.guideStepService.save(step).then(() => {
+          this.updateGuide();
           this.apiSync.setIsPushAvailableData(true);
           this.showToast(`${this.model.title} saved`);
           this.router.navigate(["/", "editguide", this.guideId]);
@@ -174,7 +194,7 @@ export class AddstepPage implements OnInit {
     return await modal.present();
   }
 
-  onReady(e) {
+  onReady() {
 
   }
 }
