@@ -15,12 +15,14 @@ export class GuideinfoPage implements OnInit {
   guide: GuiderModel
   public params;
 
-  constructor(public modalController: ModalController, private guiderService: GuiderService, private router: Router,private apiSync: ApiSync) { }
+  constructor(public modalController: ModalController, private guiderService: GuiderService, private router: Router, private apiSync: ApiSync) { }
 
   async ngOnInit() {
     const guiderById = await this.guiderService.getById(this.guideId)
     if (guiderById.length) {
       this.guide = guiderById[0];
+      console.log("Guide from api >>>>>>>>>>>>>>>>>>>>>>>>>")
+      console.log(this.guide)
     }
   }
 

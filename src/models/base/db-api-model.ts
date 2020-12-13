@@ -41,6 +41,8 @@ export abstract class DbApiModel extends DbBaseModel {
     public updated_at: Date;
     public local_updated_at: Date;
     public updated_by: number;
+    public created_term: string;
+    public updated_term: string;
     public deleted_at: Date;
     public local_deleted_at: Date;
     public deleted_by: number;
@@ -59,10 +61,14 @@ export abstract class DbApiModel extends DbBaseModel {
     public COL_CREATED_AT: string = 'created_at';
     public COL_LOCAL_CREATED_AT: string = 'local_created_at';
     public COL_CREATED_BY: string = 'created_by';
+    public COL_CREATED_TERM: string = 'created_term';
+
     /** date time when this record was updated on API */
     public COL_UPDATED_AT: string = 'updated_at';
     public COL_LOCAL_UPDATED_AT: string = 'local_updated_at';
     public COL_UPDATED_BY: string = 'updated_by';
+    public COL_UPDATED_TERM: string = 'updated_term';
+
     /** date time when this record was deleted on API */
     public COL_DELETED_AT: string = 'deleted_at';
     public COL_LOCAL_DELETED_AT: string = 'local_deleted_at';
@@ -141,9 +147,11 @@ export abstract class DbApiModel extends DbBaseModel {
         this.created_at = this.getDateFromString(apiObj.created_at);
         this.local_created_at = this.getDateFromString(apiObj.local_created_at);
         this.created_by = this.getNumberValue(apiObj.created_by);
+        this.created_term = this.getStringValue(apiObj.created_term);
         this.updated_at = this.getDateFromString(apiObj.updated_at);
         this.local_updated_at = this.getDateFromString(apiObj.local_updated_at);
         this.updated_by = this.getNumberValue(apiObj.updated_by);
+        this.updated_term = this.getStringValue(apiObj.updated_term);
         this.deleted_at = this.getDateFromString(apiObj.deleted_at);
         this.local_deleted_at = this.getDateFromString(apiObj.local_deleted_at);
         this.deleted_by = this.getNumberValue(apiObj.deleted_by);
@@ -161,6 +169,8 @@ export abstract class DbApiModel extends DbBaseModel {
         this.TABLE.push([this.COL_UPDATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_LOCAL_UPDATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_UPDATED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
+        this.TABLE.push([this.COL_CREATED_TERM, 'VARCHAR(50)', DbBaseModel.TYPE_STRING]);
+        this.TABLE.push([this.COL_UPDATED_TERM, 'VARCHAR(50)', DbBaseModel.TYPE_STRING]);
         this.TABLE.push([this.COL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_LOCAL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_DELETED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
@@ -185,6 +195,8 @@ export abstract class DbApiModel extends DbBaseModel {
         this.updated_at = this.getDateValue(item[this.COL_UPDATED_AT]);
         this.local_updated_at = this.getDateValue(item[this.COL_LOCAL_UPDATED_AT]);
         this.updated_by = this.getNumberValue(item[this.COL_UPDATED_BY]);
+        this.created_term = this.getStringValue(item[this.COL_CREATED_TERM]);
+        this.updated_term = this.getStringValue(item[this.COL_UPDATED_TERM]);
         this.deleted_at = this.getDateValue(item[this.COL_DELETED_AT]);
         this.local_deleted_at = this.getDateValue(item[this.COL_LOCAL_DELETED_AT]);
         this.deleted_by = this.getNumberValue(item[this.COL_DELETED_BY]);
