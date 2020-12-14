@@ -6,7 +6,7 @@ import { VideoService } from 'src/services/video-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Viewer3dService } from 'src/services/viewer-3d-service';
 import { GuideAssetModel, GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
-import { faExpand, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faExpand, faQuestion, faCubes, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { ModalController } from '@ionic/angular';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 
@@ -18,17 +18,25 @@ import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-
 
 export class AssetviewComponent implements OnInit {
   @Input() model: any;
-  @Input() isthumbnail: boolean;
-  @Input() showIcon: boolean;
+  @Input() isthumbnail: boolean = false;
+  @Input() showIcon: boolean = true;
+  @Input() floatingIcon: boolean = false;
   /**Set to true to make image small */
-  @Input() mini: boolean;
+  @Input() mini: boolean = false;
+
+  /** set to true to prevent default open function */
+  @Input() preventDefaultClickFunction: boolean = false;
 
   filePath3d
 
   faExpand = faExpand;
   faQuestion = faQuestion;
+  faCubes = faCubes;
+  faFilePdf = faFilePdf;
 
   guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
+
+  isPdf;
 
   constructor(private downloadService: DownloadService,
     private videoService: VideoService,
@@ -41,40 +49,45 @@ export class AssetviewComponent implements OnInit {
   ngOnInit() { }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
-    const filePath = basePath;
-    let fileTitle = this.model.title; // change later
-    if (title) {
-      fileTitle = title;
-    }
-    const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-
-    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
-      this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
-      if (!fileApiUrl) {
-        return false;
+    if (!this.preventDefaultClickFunction) {
+      const filePath = basePath;
+      let fileTitle = this.model.title; // change later
+      if (title) {
+        fileTitle = title;
       }
-      this.videoService.playVideo(fileUrl, fileTitle);
-    }
-    else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
-      this.photoViewer.show(fileUrl, fileTitle);
-    }
-    else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-      this.pictureService.openFile(fileUrl, fileTitle);
-    }
-    else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
-      this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
-    }
-  }
+      const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
 
+      if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
+        this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
+        if (!fileApiUrl) {
+          return false;
+        }
+        this.videoService.playVideo(fileUrl, fileTitle);
+      }
+      else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
+        this.photoViewer.show(fileUrl, fileTitle);
+      }
+      else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
+        this.pictureService.openFile(fileUrl, fileTitle);
+      }
+      else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
+        this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
+      }
+    }
+
+  }
 
   async openAssetTextModal() {
-    const modal = await this.modalController.create({
-      component: GuideAssetTextModalComponent,
-      componentProps: {
-        asset: this.model
-      },
-      cssClass: "modal-fullscreen"
-    });
-    return await modal.present();
+    if (!this.preventDefaultClickFunction) {
+      const modal = await this.modalController.create({
+        component: GuideAssetTextModalComponent,
+        componentProps: {
+          asset: this.model
+        },
+        cssClass: "modal-fullscreen"
+      });
+      return await modal.present();
+    }
   }
+
 }

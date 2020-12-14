@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 
 /**
  * Generated class for the TodoPage page.
@@ -16,8 +16,9 @@ import {ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@a
 })
 export class HtmlDescriptionComponent {
 
-    @Input() html: string;
-
-    constructor() {
-    }
+  @Input() html: string;
+  @Input() sliceText: boolean;
+  
+  constructor() {
+  }
 }

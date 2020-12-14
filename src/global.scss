@@ -25,11 +25,9 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-
-
 ckeditor {
   -webkit-user-select: text;
-  user-select: text
+  user-select: text;
 }
 
 ckeditor.inline_editor {
@@ -184,5 +182,21 @@ ion-menu ion-content ion-list,
 ion-thumbnail {
   div {
     height: 100%;
+    width: 100%;
+  }
+}
+
+.no__preview {
+  --ion-background: #173262;
+  --background: #173262;
+  background-color: #173262;
+
+  ion-icon,
+  fa-icon {
+    color: #ffffff !important;
+  }
+  p,
+  strong {
+    color: #ffffff !important;
   }
 }

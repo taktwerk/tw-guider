@@ -31,3 +31,37 @@ ion-icon.thumbnail,
 fa-icon.thumbnail {
     font-size: 3.2rem !important;
 }
+
+.icon__wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999999;
+    margin: 19px 8px;
+    max-height: 45px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    div {
+        height: 100%;
+        width: 100%;
+        padding: 8px;
+        background: #1c346178;
+        ion-icon,
+        fa-icon {
+            font-size: 1.8rem;
+        }
+    }
+}
+
+.no__preview__show__icon {
+    ion-icon,
+    fa-icon {
+        font-size: 1.8rem;
+        color: #fff;
+        width: 100%;
+        height: 100%;
+    }
+}

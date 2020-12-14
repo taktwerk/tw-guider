@@ -511,11 +511,6 @@ export abstract class DbApiModel extends DbBaseModel {
 
     async setFile(recordedFile: RecordedFile, fileMapIndex = 0) {
         recordedFile.uri = await this.downloadService.copy(recordedFile.uri, this.TABLE_NAME);
-
-        console.log(">>>>>>>>>>>>>>>>  recordedFile.uri  ><>>>>>>>>>>>>>>>>>")
-        console.log(recordedFile.uri)
-        console.log(">>>>>>>>>>>>>>>>  recordedFile.uri  ><>>>>>>>>>>>>>>>>>")
-
         if (recordedFile.thumbnailUri) {
             recordedFile.thumbnailUri = await this.downloadService.copy(recordedFile.thumbnailUri, this.TABLE_NAME);
         }

@@ -12,14 +12,14 @@
         <ion-item detail="true" button (click)="onEdit(step)">
           <ion-reorder slot="start" *ngIf="disableReorder == false"></ion-reorder>
           <ion-thumbnail slot="start">
-            <model-assetcomponent [model]="step"  isthumbnail="true"></model-assetcomponent>
+            <model-assetcomponent [model]="step" [isthumbnail]="true" [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
           <ion-label>
             <h2> <strong>#{{step.order_number}} {{step.title}}</strong></h2>
             <div *ngIf="step.description_html" class="ion-text-left" class="html_element">
               <p>
-                <html-description-component [html]="step.description_html" class="step-description">
+                <html-description-component [html]="step.description_html" [sliceText]="true" class="step-description">
                 </html-description-component>
               </p>
             </div>
@@ -29,16 +29,16 @@
     </ion-reorder-group>
   </ion-list>
 
-
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
-  
+
 </ion-content>
 
 
 <ion-buttons class="floating_cta" *ngIf="canReorder && !isScrolling">
-  <ion-button (click)="onReorder()" *ngIf="disableReorder && guideSteps?.length > 0" fill="solid">{{ 'Order' | translate:params }}</ion-button>
+  <ion-button (click)="onReorder()" *ngIf="disableReorder && guideSteps?.length > 0" fill="solid">{{ 'Order' |
+    translate:params }}</ion-button>
   <ion-button (click)="save()" *ngIf="!disableReorder" fill="solid">Save</ion-button>
 </ion-buttons>
