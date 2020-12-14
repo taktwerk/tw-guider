@@ -65,3 +65,15 @@ fa-icon.thumbnail {
         height: 100%;
     }
 }
+
+.thumbnails__icon {
+    position: absolute;
+    z-index: 99999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: auto;
+
+    color: #fff;
+}

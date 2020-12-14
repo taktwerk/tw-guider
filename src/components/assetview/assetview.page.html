@@ -1,6 +1,6 @@
 <!-- media icons -->
 <div *ngIf="floatingIcon" class="icon__wrapper">
-    <div *ngIf="model.isVideoFile() && model.isExistThumbOfFile()">
+    <div *ngIf="model.isVideoFile()">
         <!-- video -->
         <ion-icon name="videocam" class="videocam-icon">
         </ion-icon>
@@ -17,10 +17,10 @@
         </ion-icon>
     </div>
 
-    <div *ngIf="model.isImageFile()">
-        <!-- image  -->
-        <ion-icon name="image"></ion-icon>
-    </div>
+    <!-- <div *ngIf="model.isImageFile()"> -->
+    <!-- image  -->
+    <!-- <ion-icon name="image"></ion-icon>
+    </div> -->
 
     <div *ngIf="model.isPdf()">
         <!-- pdf  -->
@@ -44,6 +44,11 @@
         <img *ngIf="!model.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
     </div>
 
+    <ion-icon name="videocam" *ngIf="model.isVideoFile() && model.getFileImagePath() != null && isthumbnail"
+        class="thumbnails__icon">
+    </ion-icon>
+
+
     <!-- image -->
     <img *ngIf="model.isImageFile() && model.getFileImagePath() !==null"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
@@ -57,6 +62,11 @@
         *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) !==null && model.isPdf()"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
         style="width: auto!important;">
+
+    <fa-icon [icon]="faFilePdf"
+        *ngIf="model.isPdf() && model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) != null && isthumbnail"
+        class="thumbnails__icon"></fa-icon>
+
     <div *ngIf="model.isPdf() &&  model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null"
         class="no__preview__show__icon">
         <fa-icon [icon]="faFilePdf" *ngIf="model.isPdf()"></fa-icon>
