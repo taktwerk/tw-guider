@@ -193,8 +193,4 @@ export class AddstepPage implements OnInit {
       });
     return await modal.present();
   }
-
-  onReady() {
-
-  }
 }

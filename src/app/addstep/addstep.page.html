@@ -40,7 +40,7 @@
       <ion-item>
         <ion-label position="floating">{{ 'addstep.Description' | translate:params }}:</ion-label>
 
-        <ckeditor (ready)="onReady($event)" [editor]="Editor" class="inline_editor" [(ngModel)]="model.description_html"
+        <ckeditor [editor]="Editor" class="inline_editor" [(ngModel)]="model.description_html"
           name="description" [config]="ckeConfig" disabled="true">
         </ckeditor>
 
