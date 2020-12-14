@@ -1,12 +1,12 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
-import {GuideStepModel} from './guide-step-model';
-import {GuideAssetModel} from './guide-asset-model';
-import {ProtocolTemplateModel} from './protocol-template-model';
-import {GuideChildModel} from './guide-child-model';
+import { Platform, Events } from '@ionic/angular';
+import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { GuideStepModel } from './guide-step-model';
+import { GuideAssetModel } from './guide-asset-model';
+import { ProtocolTemplateModel } from './protocol-template-model';
+import { GuideChildModel } from './guide-child-model';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -69,7 +69,7 @@ export class GuiderModel extends DbApiModel {
         [GuiderModel.COL_CLIENT_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuiderModel.COL_SHORT_NAME, 'VARCHAR(4)', DbBaseModel.TYPE_STRING],
         [GuiderModel.COL_TITLE, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
-        [GuiderModel. COL_DESCRIPTION, 'TEXT', DbBaseModel.TYPE_STRING],
+        [GuiderModel.COL_DESCRIPTION, 'TEXT', DbBaseModel.TYPE_STRING],
         [GuiderModel.COL_PREVIEW_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuiderModel.COL_API_PREVIEW_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuiderModel.COL_LOCAL_PREVIEW_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
@@ -80,6 +80,9 @@ export class GuiderModel extends DbApiModel {
         [GuiderModel.COL_PROTOCOL_TEMPLATE_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuiderModel.COL_REVISION, 'VARCHAR(255)', DbBaseModel.TYPE_STRING]
     ];
+
+    public migrations = ['AddCreatedTermAndUpdatedTermToGuideTableMigration'];
+
 
     /**
      * @inheritDoc
@@ -98,8 +101,8 @@ export class GuiderModel extends DbApiModel {
 
     public getByCategory() {
         return [
-            {description: 'America', title: 'Title'},
-            {description: 'Guide description', title: 'Guider'}
+            { description: 'America', title: 'Title' },
+            { description: 'Guide description', title: 'Guider' }
         ];
     }
 
@@ -185,7 +188,7 @@ export class GuiderModel extends DbApiModel {
                 ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL' +
                 ' AND ' + this.secure('guide_child') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
                 ' AND ' + this.secure('guide_child') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL'
-                ' GROUP BY guide_child.id';
+            ' GROUP BY guide_child.id';
 
             this.db.query(query).then((res) => {
                 this.guide_collection = [];
@@ -200,7 +203,7 @@ export class GuiderModel extends DbApiModel {
                         this.guide_collection.push(obj);
                     }
                 }
-               // console.log('this.guide_collection', this.guide_collection);
+                // console.log('this.guide_collection', this.guide_collection);
                 resolve(this.guide_collection);
             }).catch((err) => {
                 resolve(this.guide_collection);

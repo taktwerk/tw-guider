@@ -19,6 +19,7 @@ import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-
 export class AssetviewComponent implements OnInit {
   @Input() model: any;
   @Input() isthumbnail: boolean;
+  @Input() showIcon: boolean;
   /**Set to true to make image small */
   @Input() mini: boolean;
 

@@ -169,8 +169,8 @@ export abstract class DbApiModel extends DbBaseModel {
         this.TABLE.push([this.COL_UPDATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_LOCAL_UPDATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_UPDATED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
-        this.TABLE.push([this.COL_CREATED_TERM, 'VARCHAR(50)', DbBaseModel.TYPE_STRING]);
-        this.TABLE.push([this.COL_UPDATED_TERM, 'VARCHAR(50)', DbBaseModel.TYPE_STRING]);
+        this.TABLE.push([this.COL_CREATED_TERM, 'VARCHAR(255)', DbBaseModel.TYPE_STRING]);
+        this.TABLE.push([this.COL_UPDATED_TERM, 'VARCHAR(255)', DbBaseModel.TYPE_STRING]);
         this.TABLE.push([this.COL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_LOCAL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_DELETED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
