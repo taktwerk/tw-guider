@@ -45,21 +45,21 @@
                     [ngClass]="{'no__preview':asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null}">
                     <ion-label>
                       <ion-thumbnail>
-                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="false" [floatingIcon]="false"
-                          [preventDefaultClickFunction]="true">
+                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"
+                          [preventDefaultClickFunction]="true" [largeIcon]="true">
                         </model-assetcomponent>
                       </ion-thumbnail>
                       <p> <strong>{{ asset.name }}</strong> </p>
                     </ion-label>
                   </ion-item>
 
-                  <ion-item *ngIf="asset.isExistFileByIndex() && !asset.isPdf()  && !asset.isVideoFile()" lines="none"
+                  <ion-item *ngIf="asset.isExistFileByIndex() && !asset.isPdf() && !asset.isVideoFile()" lines="none"
                     (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
                     [ngClass]="{'no__preview': asset.getFileImagePath() == null}">
                     <ion-label>
                       <ion-thumbnail>
-                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="false" [floatingIcon]="false"
-                          [preventDefaultClickFunction]="true">
+                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"
+                          [preventDefaultClickFunction]="true" [largeIcon]="true">
                         </model-assetcomponent>
                       </ion-thumbnail>
                       <p> <strong>{{ asset.name }}</strong> </p>
@@ -70,19 +70,20 @@
                     (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)">
                     <ion-label>
                       <ion-thumbnail>
-                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="false" [floatingIcon]="false"
-                          [preventDefaultClickFunction]="true">
+                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"
+                          [preventDefaultClickFunction]="true" [largeIcon]="true">
                         </model-assetcomponent>
                       </ion-thumbnail>
                       <p> <strong>{{ asset.name }}</strong> </p>
                     </ion-label>
                   </ion-item>
 
-                  <ion-item *ngIf="!asset.isExistFileByIndex()" lines="none" (click)="openAssetTextModal(asset)">
+                  <ion-item *ngIf="!asset.isExistFileByIndex()" lines="none" (click)="openAssetTextModal(asset)"
+                    class="no__preview">
                     <ion-label>
                       <ion-thumbnail>
-                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="false" [floatingIcon]="false"
-                          [preventDefaultClickFunction]="true">
+                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"
+                          [preventDefaultClickFunction]="true" [largeIcon]="true">
                         </model-assetcomponent>
                       </ion-thumbnail>
                       <p> <strong>{{ asset.name }}</strong> </p>

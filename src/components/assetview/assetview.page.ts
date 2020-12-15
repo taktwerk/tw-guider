@@ -20,6 +20,8 @@ export class AssetviewComponent implements OnInit {
   @Input() model: any;
   @Input() isthumbnail: boolean = false;
   @Input() showIcon: boolean = true;
+  @Input() largeIcon: boolean;
+
   @Input() floatingIcon: boolean = false;
   /**Set to true to make image small */
   @Input() mini: boolean = false;
@@ -46,7 +48,7 @@ export class AssetviewComponent implements OnInit {
     public modalController: ModalController,
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     if (!this.preventDefaultClickFunction) {

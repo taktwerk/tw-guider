@@ -89,6 +89,10 @@ ion-slide {
 }
 
 .asset__grid {
+  ion-icon,
+  fa-icon {
+    font-size: 4.2rem !important;
+  }
   ion-label {
     text-align: center;
   }

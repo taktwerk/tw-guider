@@ -31,12 +31,15 @@
     <!-- audio  -->
     <img src="model.getFileImagePath()" *ngIf="model.isAudioFile() && model.getFileImagePath() !==null"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)" class="grayoutimage">
-    <div *ngIf="model.isAudioFile() && model.getFileImagePath() == null" class="no__preview__show__icon">
-        <ion-icon name="musical-note"></ion-icon>
+    <div *ngIf="model.isAudioFile() && model.getFileImagePath() == null" class="no__preview__show__icon"
+        style="height: 100%; width:100%">
+        <ion-icon name="musical-note" style="font-size: 193px;min-height: 193px;"></ion-icon>
     </div>
+    <ion-icon name="musical-note" *ngIf="model.isAudioFile() && isthumbnail" class="thumbnails__icon"></ion-icon>
 
     <!-- video -->
-    <fa-icon [icon]="faVideo" *ngIf="model.isVideoFile() && isthumbnail" class="thumbnails__icon"></fa-icon>
+    <fa-icon [icon]="faVideo" *ngIf="model.isVideoFile() && isthumbnail" class="thumbnails__icon"
+        [ngClass]="{'large__icon':largeIcon}"></fa-icon>
 
     <div *ngIf="model.isVideoFile()" style="position: relative;"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
@@ -54,7 +57,7 @@
     </div>
 
     <!-- pdf -->
-    <img [src]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)" class="grayoutimage"
+    <img [src]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)" class="grayoutimage" 
         *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) !==null && model.isPdf()"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
         style="width: auto!important;">
@@ -74,7 +77,8 @@
             (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
             style="position: absolute; bottom: 0; right: 0;"></fa-icon>
 
-        <fa-icon [icon]="faCubes" style="font-size: 1.8rem;" *ngIf="isthumbnail"></fa-icon>
+        <fa-icon [icon]="faCubes" style="font-size: 1.8rem;" *ngIf="isthumbnail" [ngClass]="{'large__icon':largeIcon}">
+        </fa-icon>
 
         <viewer-3d-model-component *ngIf="!isthumbnail" [fileName]="model.getFilePath()" [backgroundColor]="null"
             [fullScreen]="false" [madeUserIteractions]="false" [willStopRotate]="false"

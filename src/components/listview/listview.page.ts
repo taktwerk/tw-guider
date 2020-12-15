@@ -11,6 +11,7 @@ import { GuiderService } from 'src/providers/api/guider-service';
 import { TranslateConfigService } from 'src/services/translate-config.service';
 import { HttpClient } from '../../services/http-client';
 import { GuideChildService } from 'src/providers/api/guide-child-service';
+import { GuideAssetModelFileMapIndexEnum } from 'src/models/db/api/guide-asset-model';
 
 @Component({
   selector: 'listview-component',
@@ -31,6 +32,8 @@ export class ListViewComponent implements OnInit {
   disableReorder = true;
   isScrolling = false;
   displayLimit: number = 10;
+
+  guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
 
   constructor(
     private guideStepService: GuideStepService,

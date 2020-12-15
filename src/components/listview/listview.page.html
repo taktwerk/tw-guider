@@ -11,7 +11,41 @@
 
         <ion-item detail="true" button (click)="onEdit(step)">
           <ion-reorder slot="start" *ngIf="disableReorder == false"></ion-reorder>
-          <ion-thumbnail slot="start">
+
+          <!-- audio video pdf image text thumbnails with no preview >> show icon and dark bg -->
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null && step.isAudioFile()" class="no__preview"
+            style="padding: 8px;">
+            <model-assetcomponent [model]="step" [isthumbnail]="true" [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null && step.isVideoFile()" class="no__preview">
+            <model-assetcomponent [model]="step" [isthumbnail]="true" [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <ion-thumbnail slot="start"
+            *ngIf="step.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null && step.isPdf()"
+            class="no__preview">
+            <model-assetcomponent [model]="step" [isthumbnail]="true" [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <ion-thumbnail slot="start" class="no__preview" *ngIf="step.getFileImagePath() == null && step.isImageFile()">
+            <model-assetcomponent [model]="step" [isthumbnail]="true" [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+   
+          <!-- text -->
+          <ion-thumbnail slot="start" style="padding: 8px;"
+            *ngIf="!step.isAudioFile() && !step.isVideoFile() && !step.isPdf() && !step.isPdf() && !step.isImageFile()"
+            class="no__preview">
+            <model-assetcomponent [model]="step" [isthumbnail]="true" [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <!-- has preview -->
+          <ion-thumbnail slot="start"
+            *ngIf="step.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) != null && step.isPdf()">
+            <model-assetcomponent [model]="step" [isthumbnail]="true" [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() != null && step.isExistFormatFile()">
             <model-assetcomponent [model]="step" [isthumbnail]="true" [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
