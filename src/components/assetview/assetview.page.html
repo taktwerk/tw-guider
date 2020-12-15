@@ -2,8 +2,7 @@
 <div *ngIf="floatingIcon" class="icon__wrapper">
     <div *ngIf="model.isVideoFile()">
         <!-- video -->
-        <ion-icon name="videocam" class="videocam-icon">
-        </ion-icon>
+        <fa-icon [icon]="faVideo"></fa-icon>
     </div>
 
     <div *ngIf="model.is3dFile()">
@@ -13,7 +12,7 @@
 
     <div *ngIf="model.isAudioFile()">
         <!-- audio -->
-        <ion-icon name="musical-note" class="videocam-icon">
+        <ion-icon name="musical-note">
         </ion-icon>
     </div>
 
@@ -37,17 +36,14 @@
     </div>
 
     <!-- video -->
+    <fa-icon [icon]="faVideo" *ngIf="model.isVideoFile() && isthumbnail" class="thumbnails__icon"></fa-icon>
+
     <div *ngIf="model.isVideoFile()" style="position: relative;"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
         [ngClass]="{'video-with-thumbnail': model.isExistThumbOfFile()}">
         <img *ngIf="model.isExistThumbOfFile()" [src]="model.getFileImagePath()" />
         <img *ngIf="!model.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
     </div>
-
-    <ion-icon name="videocam" *ngIf="model.isVideoFile() && model.getFileImagePath() != null && isthumbnail"
-        class="thumbnails__icon">
-    </ion-icon>
-
 
     <!-- image -->
     <img *ngIf="model.isImageFile() && model.getFileImagePath() !==null"
@@ -63,9 +59,7 @@
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
         style="width: auto!important;">
 
-    <fa-icon [icon]="faFilePdf"
-        *ngIf="model.isPdf() && model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) != null && isthumbnail"
-        class="thumbnails__icon"></fa-icon>
+    <fa-icon [icon]="faFilePdf" *ngIf="model.isPdf() &&  isthumbnail" class="thumbnails__icon"></fa-icon>
 
     <div *ngIf="model.isPdf() &&  model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null"
         class="no__preview__show__icon">
