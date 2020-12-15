@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title> {{ 'editguidestep.header' | translate }} </ion-title>
+    <ion-title> {{ action == 'add' ? 'guidestep.add' : 'guidestep.edit' | translate }} </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
     <ion-back-button text=""></ion-back-button>
   </ion-toolbar>
@@ -29,22 +29,26 @@
 
   <form *ngIf="model">
     <ion-list>
+      <ion-item class="" *ngIf="action =='add'">
+        <ion-label position="floating">{{ 'Order' | translate:params }}: </ion-label>
+        <ion-input [(ngModel)]="model.order_number" name="order" clear-input type="number" min="1"> </ion-input>
+      </ion-item>
+
       <ion-item class="">
-        <ion-label position="floating">
-          {{ 'title' | translate:params }}:
-        </ion-label>
+        <ion-label position="floating"> {{ 'title' | translate:params }}: </ion-label>
         <ion-input [(ngModel)]="model.title" name="title" placeholder="{{ defaultTitle }}" clear-input
           (ionChange)="onChanges($event)">
         </ion-input>
       </ion-item>
+
       <ion-item>
-        <ion-label position="floating">{{ 'editguidestep.Description' | translate:params }}:</ion-label>
+        <ion-label position="floating">{{ 'guidestep.Description' | translate:params }}:</ion-label>
         <ckeditor class="inline_editor" [editor]="Editor" [(ngModel)]="model.description_html" [config]="ckeConfig"
           name="description" (change)="editorChanges()" disabled="true">
         </ckeditor>
 
         <ion-buttons slot="end" style="position: absolute;  right: 0;">
-          <ion-button (click)="openEditor()">{{ 'addstep.Open in editor' | translate:params }}</ion-button>
+          <ion-button (click)="openEditor()">{{ 'guidestep.Open in editor' | translate:params }}</ion-button>
         </ion-buttons>
       </ion-item>
     </ion-list>
@@ -59,9 +63,14 @@
           {{ 'save' | translate:params }}
         </ion-button>
       </ion-col>
-      <ion-col>
+      <ion-col *ngIf="action == 'edit'">
         <ion-button color="danger" expand="block" (click)="showDeleteAlert()">
           {{ 'delete' | translate:params }}
+        </ion-button>
+      </ion-col>
+      <ion-col *ngIf="action == 'add'">
+        <ion-button color="danger" expand="block" (click)="onCancel()">
+          {{ 'cancel' | translate:params }}
         </ion-button>
       </ion-col>
     </ion-row>

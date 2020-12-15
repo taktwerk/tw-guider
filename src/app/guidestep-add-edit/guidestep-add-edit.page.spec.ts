@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { AddstepPage } from './addstep.page';
+import { GuidestepAddEditPage } from './guidestep-add-edit.page';
 
-describe('AddstepPage', () => {
-  let component: AddstepPage;
-  let fixture: ComponentFixture<AddstepPage>;
+describe('GuidestepAddEditPage', () => {
+  let component: GuidestepAddEditPage;
+  let fixture: ComponentFixture<GuidestepAddEditPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddstepPage ],
+      declarations: [ GuidestepAddEditPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddstepPage);
+    fixture = TestBed.createComponent(GuidestepAddEditPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

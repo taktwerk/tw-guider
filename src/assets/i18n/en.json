@@ -220,5 +220,11 @@
   },
   "CKEditor" : {
     "header": "Text Editor"
+  },
+  "guidestep":{
+    "add":" Add Step",
+    "edit":"Edit Step",
+    "Open in editor": "Open in editor",
+    "Description": "Description"
   }
 }

@@ -52,6 +52,11 @@ export class GuidecapturePage implements OnInit {
     this.guides = await this.guideCategoryService.getGuides();
   }
 
+  async searchGuides($event) {
+    this.searchValue = $event.detail.value;
+    this.guides = await this.guideCategoryService.getGuides(null, this.searchValue);
+  }
+
   detectChanges() {
     if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
@@ -59,26 +64,30 @@ export class GuidecapturePage implements OnInit {
   }
 
   ngOnInit() {
-
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', () => {
       this.setGuides();
+      this.detectChanges();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', () => {
       this.setGuides();
+      this.detectChanges();
     });
     this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', () => {
       this.setGuides();
+      this.detectChanges();
     });
     this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', () => {
       this.setGuides();
+      this.detectChanges();
     });
     this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', () => {
       this.setGuides();
+      this.detectChanges();
     });
     this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', () => {
       this.setGuides();
+      this.detectChanges();
     });
-
     this.events.subscribe('network:online', () => {
       this.authService.checkAccess('guide');
     });

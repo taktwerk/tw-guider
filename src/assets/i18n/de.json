@@ -216,5 +216,11 @@
   },
   "CKEditor": {
     "header": "Texteditor"
+  },
+  "guidestep":{
+    "add":"Schritt hinzufügen",
+    "edit":"Bearbeitungsschritt",
+    "Open in editor": "Im Editor öffnen",
+    "Description": "Beschreibung"
   }
 }

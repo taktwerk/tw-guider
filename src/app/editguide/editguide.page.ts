@@ -61,5 +61,15 @@ export class EditguidePage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {}
+  addStep(guide, action) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        guideId: guide,
+        action: action
+      }
+    }
+    this.router.navigate(["/", "guidestep-add-edit"], navigationExtras);
+  }
+
+  ngOnDestroy(): void { }
 }

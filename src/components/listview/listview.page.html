@@ -2,7 +2,7 @@
   (ionScrollEnd)="logScrollEnd()">
   <ion-list>
     <ion-reorder-group [disabled]="disableReorder" (ionItemReorder)="Reorder($event)">
-      <ion-item-sliding *ngFor="let step of guideSteps">
+      <ion-item-sliding *ngFor="let step of guideSteps; trackBy: tracklist">
         <ion-item-options side="end">
           <ion-item-option color="danger" (click)="showDeleteAlert(step)">
             <ion-icon name="trash"></ion-icon>
@@ -31,7 +31,7 @@
           <ion-thumbnail slot="start" class="no__preview" *ngIf="step.getFileImagePath() == null && step.isImageFile()">
             <model-assetcomponent [model]="step" [isthumbnail]="true" [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
-   
+
           <!-- text -->
           <ion-thumbnail slot="start" style="padding: 8px;"
             *ngIf="!step.isAudioFile() && !step.isVideoFile() && !step.isPdf() && !step.isPdf() && !step.isImageFile()"

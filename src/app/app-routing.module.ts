@@ -102,17 +102,8 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'editguidestep',
-    loadChildren: () => import('./editguidestep/editguidestep.module').then(m => m.EditguidestepPageModule)
-  },
-  {
-    path: 'addstep',
-    children: [
-      {
-        path: ":id",
-        loadChildren: () => import('./addstep/addstep.module').then(m => m.AddstepPageModule)
-      }
-    ]
+    path: 'guidestep-add-edit',
+    loadChildren: () => import('./guidestep-add-edit/guidestep-add-edit.module').then(m => m.GuidestepAddEditPageModule)
   },
 ];
 

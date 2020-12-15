@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
+import { Component, Input, OnInit, ElementRef, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { ItemReorderEventDetail } from '@ionic/core';
@@ -12,6 +12,8 @@ import { TranslateConfigService } from 'src/services/translate-config.service';
 import { HttpClient } from '../../services/http-client';
 import { GuideChildService } from 'src/providers/api/guide-child-service';
 import { GuideAssetModelFileMapIndexEnum } from 'src/models/db/api/guide-asset-model';
+import { AuthService } from '../../services/auth-service';
+import { GuideAssetPivotService } from 'src/providers/api/guide-asset-pivot-service';
 
 @Component({
   selector: 'listview-component',
@@ -44,11 +46,69 @@ export class ListViewComponent implements OnInit {
     private translateConfigService: TranslateConfigService,
     public http: HttpClient,
     public events: Events,
+    public changeDetectorRef: ChangeDetectorRef,
+    public authService: AuthService,
+    private guideAssetService: GuideAssetService,
+    private guideAssetPivotService: GuideAssetPivotService,
   ) { }
 
   ngOnInit(): void {
-    console.log(this.guideId)
     this.setGuideSteps(this.guideId);
+    this.detectChanges();
+
+    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async () => {
+      this.setGuideSteps(this.guideId);
+      this.detectChanges();
+    });
+
+    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async () => {
+      this.setGuideSteps(this.guideId);
+    this.detectChanges();
+    });
+
+    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async () => {
+      this.setGuideSteps(this.guideId);
+    this.detectChanges();
+    });
+
+    this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':create', async () => {
+      this.setGuideSteps(this.guideId);
+      this.detectChanges();
+    });
+
+    this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':update', async () => {
+      this.setGuideSteps(this.guideId);
+      this.detectChanges();
+    });
+
+    this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':delete', async () => {
+      this.setGuideSteps(this.guideId);
+    this.detectChanges();
+    });
+
+    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', async () => {
+      this.setGuideSteps(this.guideId);
+    this.detectChanges();
+    });
+
+    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', async () => {
+      this.setGuideSteps(this.guideId);
+    this.detectChanges();
+    });
+
+    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async () => {
+      this.setGuideSteps(this.guideId);
+      this.detectChanges();
+    });
+
+    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async () => {
+      this.setGuideSteps(this.guideId);
+    this.detectChanges();
+    });
+
+    this.events.subscribe('network:online', () => {
+      this.authService.checkAccess('guide');
+    });
   }
 
   public setGuideSteps(id) {
@@ -63,10 +123,11 @@ export class ListViewComponent implements OnInit {
     let navigationExtras: NavigationExtras = {
       queryParams: {
         guideId: step.guide_id,
-        stepId: step.idApi
+        stepId: step.idApi,
+        action: 'edit'
       }
     }
-    this.router.navigate(["/", "editguidestep"], navigationExtras);
+    this.router.navigate(["/", "guidestep-add-edit"], navigationExtras);
   }
 
   Reorder(ev: CustomEvent<ItemReorderEventDetail>) {
@@ -154,5 +215,15 @@ export class ListViewComponent implements OnInit {
       ],
     });
     await alert.present();
+  }
+
+  tracklist(element: GuideStepModel) {
+    return element.idApi;
+  }
+
+  detectChanges() {
+    if (!this.changeDetectorRef['destroyed']) {
+      this.changeDetectorRef.detectChanges();
+    }
   }
 }

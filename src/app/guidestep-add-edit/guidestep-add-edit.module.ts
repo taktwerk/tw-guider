@@ -1,26 +1,27 @@
-import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { EditguidestepPageRoutingModule } from './editguidestep-routing.module';
+import { GuidestepAddEditPageRoutingModule } from './guidestep-add-edit-routing.module';
 
-import { EditguidestepPage } from './editguidestep.page';
+import { GuidestepAddEditPage } from './guidestep-add-edit.page';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { HtmlDescriptionComponentModule } from 'src/components/html-description/html-description-component.module';
 import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-component/viewer-3d-model-component.module';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    EditguidestepPageRoutingModule,
+    GuidestepAddEditPageRoutingModule,
     TranslateModule,
     SyncSpinnerComponentModule,
     FontAwesomeModule,
@@ -29,6 +30,6 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     AssetviewComponentModule,
     CKEditorModule,
   ],
-  declarations: [EditguidestepPage]
+  declarations: [GuidestepAddEditPage]
 })
-export class EditguidestepPageModule { }
+export class GuidestepAddEditPageModule { }

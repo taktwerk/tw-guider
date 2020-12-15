@@ -63,7 +63,6 @@ export class CategoriesListPage implements OnInit {
 
   async searchGuides($event) {
     this.searchValue = $event.detail.value;
-
     this.setGuides();
   }
 
