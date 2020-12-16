@@ -714,7 +714,8 @@ export abstract class DbApiModel extends DbBaseModel {
 
         if (this.isImageFile(fileMapIndex)) {
             imageName = this.getFileName(fileMapIndex);
-        } else if (this.isExistThumbOfFile(fileMapIndex)) {
+        } 
+        else if (this.isExistThumbOfFile(fileMapIndex)) {
             imageName = this.getApiThumbFilePath(fileMapIndex);
         } else {
             return null;
