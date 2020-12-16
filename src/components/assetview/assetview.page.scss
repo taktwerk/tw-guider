@@ -57,11 +57,14 @@ fa-icon.thumbnail {
 }
 
 .no__preview__show__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     ion-icon,
     fa-icon {
         font-size: 1.8rem;
         color: #fff;
-        width: 100%;
         height: 100%;
     }
 }
@@ -82,3 +85,4 @@ fa-icon.thumbnail {
 .large__icon {
     font-size: 2.4rem!important;
 }
+

@@ -32,10 +32,13 @@
     <img src="model.getFileImagePath()" *ngIf="model.isAudioFile() && model.getFileImagePath() !==null"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)" class="grayoutimage">
     <div *ngIf="model.isAudioFile() && model.getFileImagePath() == null" class="no__preview__show__icon"
-        style="height: 100%; width:100%">
-        <ion-icon name="musical-note" style="font-size: 193px;min-height: 193px;"></ion-icon>
+        style="height: 100%; width:100%"
+        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
+        <ion-icon name="musical-note" style="font-size: 193px;min-height: 193px;"
+            [ngClass]="{'solid_icon_color':solid_icon_color}"></ion-icon>
     </div>
-    <ion-icon name="musical-note" *ngIf="model.isAudioFile() && isthumbnail" class="thumbnails__icon"></ion-icon>
+    <ion-icon (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
+        name="musical-note" *ngIf="model.isAudioFile() && isthumbnail" class="thumbnails__icon"></ion-icon>
 
     <!-- video -->
     <fa-icon [icon]="faVideo" *ngIf="model.isVideoFile() && isthumbnail" class="thumbnails__icon"
@@ -57,7 +60,7 @@
     </div>
 
     <!-- pdf -->
-    <img [src]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)" class="grayoutimage" 
+    <img [src]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)" class="grayoutimage"
         *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) !==null && model.isPdf()"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
         style="width: auto!important;">

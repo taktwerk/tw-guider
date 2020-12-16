@@ -28,6 +28,7 @@ export class AssetviewComponent implements OnInit {
 
   /** set to true to prevent default open function */
   @Input() preventDefaultClickFunction: boolean = false;
+  @Input() solid_icon_color: boolean;
 
   filePath3d
 
@@ -48,7 +49,7 @@ export class AssetviewComponent implements OnInit {
     public modalController: ModalController,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     if (!this.preventDefaultClickFunction) {
