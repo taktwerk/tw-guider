@@ -29,7 +29,7 @@
 
 <div class="preview-wrapper" [ngClass]="{'mini':mini}">
     <!-- audio  -->
-    <div *ngIf="model.isAudioFile()"
+    <div *ngIf="model.isAudioFile()" class="inner_wrapper"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
         <img src="model.getFileImagePath()" *ngIf="model.getFileImagePath() !==null">
@@ -38,7 +38,7 @@
     </div>
 
     <!-- video -->
-    <div *ngIf="model.isVideoFile()"
+    <div *ngIf="model.isVideoFile()" class="inner_wrapper"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
         <fa-icon [icon]="faVideo" *ngIf="isthumbnail"></fa-icon>
@@ -47,7 +47,7 @@
     </div>
 
     <!-- image -->
-    <div *ngIf="model.isImageFile()"
+    <div *ngIf="model.isImageFile()" class="inner_wrapper"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
         <img *ngIf="model.getFileImagePath() !== null" [src]="model.getFileImagePath()" />
@@ -56,7 +56,7 @@
     </div>
 
     <!-- pdf -->
-    <div *ngIf="model.isPdf()"
+    <div *ngIf="model.isPdf()" class="inner_wrapper"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
         <img [src]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
@@ -65,7 +65,7 @@
     </div>
 
     <!-- 3d model -->
-    <div *ngIf="model.is3dFile()">
+    <div *ngIf="model.is3dFile()" class="inner_wrapper">
         <fa-icon [icon]="faExpand" *ngIf="!isthumbnail"
             (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
             style="position: absolute; bottom: 0; right: 0;"></fa-icon>
@@ -73,13 +73,11 @@
         <fa-icon [icon]="faCubes" *ngIf="isthumbnail"></fa-icon>
 
         <viewer-3d-model-component *ngIf="!isthumbnail" [fileName]="model.getFilePath()" [backgroundColor]="null"
-            [fullScreen]="false" [madeUserIteractions]="false" [willStopRotate]="false"
-            style="height: 100%; width:100%">
-        </viewer-3d-model-component>
+            [fullScreen]="false" [madeUserIteractions]="false" [willStopRotate]="false"></viewer-3d-model-component>
     </div>
 
     <!-- text -->
-    <div (click)="openAssetTextModal()"
+    <div (click)="openAssetTextModal()" class="inner_wrapper"
         *ngIf="!model.is3dFile() && !model.isAudioFile() && !model.isVideoFile() && !model.isImageFile() && !model.isPdf()">
         <ion-icon src="../../assets/icon/text.svg"></ion-icon>
     </div>

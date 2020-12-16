@@ -396,25 +396,6 @@ export abstract class DbApiModel extends DbBaseModel {
             !!this[this.downloadMapping[columnNameIndex].name];
     }
 
-    debugIsExistFileByIndex(columnNameIndex: number = 0): boolean {
-        console.log("columnNameIndex ", columnNameIndex)
-        console.log("downloadMapping ", this.downloadMapping)
-        console.log("downloadMapping ", this.downloadMapping[columnNameIndex])
-        console.log("downloadMapping ", this.downloadMapping[columnNameIndex].name)
-
-        console.log(this.debugIsExistFileIndex(columnNameIndex) &&
-            !!this.downloadMapping[columnNameIndex].name &&
-            !!this[this.downloadMapping[columnNameIndex].name])
-
-        return this.debugIsExistFileIndex(columnNameIndex) &&
-            !!this.downloadMapping[columnNameIndex].name &&
-            !!this[this.downloadMapping[columnNameIndex].name];
-    }
-
-    debugIsExistFileIndex(columnNameIndex: number = 0): boolean {
-        return this.canThereBeFiles() && !!this.downloadMapping[columnNameIndex];
-    }
-
     isExistFileIndex(columnNameIndex: number = 0): boolean {
         return this.canThereBeFiles() && !!this.downloadMapping[columnNameIndex];
     }
@@ -738,32 +719,6 @@ export abstract class DbApiModel extends DbBaseModel {
         imageName = encodeURI(imageName);
         return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
     }
-
-    public debugGetFileImagePath(fileMapIndex = 1, sanitizeType = 'trustResourceUrl') {
-        console.log("debugIsExistFileByIndex", this.debugIsExistFileByIndex(fileMapIndex))
-        if (!this.debugIsExistFileByIndex(fileMapIndex)) {
-            console.log('fileMapIndex does exit ', this.defaultImage);
-        }
-        console.log('FileMapIndex', fileMapIndex);
-
-        let imageName = null;
-        console.log("should be null ", imageName)
-        if (this.isImageFile(fileMapIndex)) {
-            imageName = this.getFileName(fileMapIndex);
-            console.log("Return image name by fileIndex", imageName)
-        }
-        else if (this.isExistThumbOfFile(fileMapIndex)) {
-            imageName = this.getApiThumbFilePath(fileMapIndex);
-            console.log("return image path - usually for video", imageName)
-        }
-        else {
-            return null;
-        }
-        imageName = encodeURI(imageName);
-        console.log("Decode image", imageName)
-        console.log("Sanitize image ", this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType))
-    }
-
 
     public getFilePath(basePath?: string, modelName?: string) {
         if (!basePath) {

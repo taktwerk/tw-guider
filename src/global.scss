@@ -205,5 +205,27 @@ ion-thumbnail {
 }
 
 .solid_icon_color {
-  color: #173262!important;
+  color: #173262 !important;
+}
+
+.inner_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  
+  ion-icon,
+  fa-icon {
+    position: absolute;
+    z-index: 99999999999;
+    font-size: inherit;
+    color: #ffffff !important;
+  }
+
+  viewer-3d-model-component {
+    height: 100%;
+    width: 100%;
+    display: block;
+    min-height: 200px;
+  }
 }

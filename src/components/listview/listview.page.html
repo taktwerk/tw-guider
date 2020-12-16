@@ -37,6 +37,11 @@
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
+          <!-- 3d -->
+          <ion-thumbnail slot="start" *ngIf="step.is3dFile()" class="no__preview">
+            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
 
           <!-- NO PREVIEW | SHOW ICON WITH BACKGROUND -->
           <!-- audio -->
@@ -64,49 +69,11 @@
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
-          <!-- audio video pdf image text thumbnails with no preview >> show icon and dark bg -->
-          <!-- <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null && step.isAudioFile()"
-            class="no__preview 1" style="padding: 8px;">
+          <!-- text  -->
+          <ion-thumbnail slot="start" *ngIf="!step.isExistFormatFile()" class="no__preview">
             <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
-
-          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null && step.isVideoFile()"
-            class="no__preview 2" #2>
-            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
-              [floatingIcon]="false"></model-assetcomponent>
-          </ion-thumbnail>
-
-          <ion-thumbnail slot="start"
-            *ngIf="step.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null && step.isPdf()"
-            class="no__preview 3">
-            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
-              [floatingIcon]="false"></model-assetcomponent>
-          </ion-thumbnail>
-
-          <ion-thumbnail slot="start" class="no__preview 4"
-            *ngIf="step.getFileImagePath() == null && step.isImageFile()">
-            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
-              [floatingIcon]="false"></model-assetcomponent>
-          </ion-thumbnail> -->
-
-          <!-- text -->
-          <!-- <ion-thumbnail slot="start" style="padding: 8px;"
-            *ngIf="!step.isAudioFile() && !step.isVideoFile() && !step.isPdf()  && !step.isImageFile()"
-            class="no__preview 5">
-            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
-              [floatingIcon]="false"></model-assetcomponent>
-          </ion-thumbnail> -->
-
-          <!-- has preview -->
-          <!-- <ion-thumbnail slot="start"
-            *ngIf="step.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) != null && step.isPdf()"
-            class="6">
-            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
-              [floatingIcon]="false"></model-assetcomponent>
-          </ion-thumbnail> -->
-
-
 
           <ion-label>
             <h2> <strong>#{{step.order_number}} {{step.title}}</strong></h2>
