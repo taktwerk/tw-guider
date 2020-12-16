@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DbApiModel } from 'src/models/base/db-api-model';
 import { DownloadService } from 'src/services/download-service';
 import { PictureService } from 'src/services/picture-service';
 import { VideoService } from 'src/services/video-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Viewer3dService } from 'src/services/viewer-3d-service';
-import { GuideAssetModel, GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
+import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
 import { faExpand, faQuestion, faCubes, faFilePdf, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { ModalController } from '@ionic/angular';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
@@ -77,7 +76,6 @@ export class AssetviewComponent implements OnInit {
         this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
       }
     }
-
   }
 
   async openAssetTextModal() {

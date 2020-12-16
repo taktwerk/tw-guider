@@ -11,25 +11,10 @@
     }
 }
 
-// .grayoutimage {
-//     filter: invert(80%) sepia(0%) saturate(3594%) hue-rotate(97deg) brightness(90%) contrast(100%);
-// }
-
 .mini {
     img {
         max-height: 250px;
     }
-}
-
-ion-icon.asset__icons,
-fa-icon.asset__icons {
-    font-size: 4.2rem;
-    color: #c7c4c4;
-}
-
-ion-icon.thumbnail,
-fa-icon.thumbnail {
-    font-size: 3.2rem !important;
 }
 
 .icon__wrapper {
@@ -49,40 +34,5 @@ fa-icon.thumbnail {
         width: 100%;
         padding: 8px;
         background: #1c346178;
-        ion-icon,
-        fa-icon {
-            font-size: 1.8rem;
-        }
     }
 }
-
-.no__preview__show__icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    ion-icon,
-    fa-icon {
-        font-size: 1.8rem;
-        color: #fff;
-        height: 100%;
-    }
-}
-
-.thumbnails__icon {
-    position: absolute;
-    z-index: 99999999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: auto;
-    height: auto;
-
-    color: #fff;
-    font-size: 1.4rem
-}
-
-.large__icon {
-    font-size: 2.4rem!important;
-}
-

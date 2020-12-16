@@ -1,1 +1,2 @@
-<div class="html-description" [innerHTML]="html | safeHtml:sliceText"></div>
+<div class="html-description" [innerHTML]="html | safeHtml" *ngIf="!sliceText"></div>
+<p class="html-description" [innerHTML]="html | safeHtml:sliceText" *ngIf="sliceText"></p>

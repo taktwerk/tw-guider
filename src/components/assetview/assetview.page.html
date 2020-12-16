@@ -29,59 +29,48 @@
 
 <div class="preview-wrapper" [ngClass]="{'mini':mini}">
     <!-- audio  -->
-    <img src="model.getFileImagePath()" *ngIf="model.isAudioFile() && model.getFileImagePath() !==null"
-        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)" class="grayoutimage">
-    <div *ngIf="model.isAudioFile() && model.getFileImagePath() == null" class="no__preview__show__icon"
-        style="height: 100%; width:100%"
+    <div *ngIf="model.isAudioFile()"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
-        <ion-icon name="musical-note" style="font-size: 193px;min-height: 193px;"
-            [ngClass]="{'solid_icon_color':solid_icon_color}"></ion-icon>
+
+        <img src="model.getFileImagePath()" *ngIf="model.getFileImagePath() !==null">
+        <ion-icon name="musical-note" *ngIf="model.getFileImagePath() == null && !isthumbnail"></ion-icon>
+        <ion-icon name="musical-note" *ngIf="model.isAudioFile() && isthumbnail"></ion-icon>
     </div>
-    <ion-icon (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
-        name="musical-note" *ngIf="model.isAudioFile() && isthumbnail" class="thumbnails__icon"></ion-icon>
 
     <!-- video -->
-    <fa-icon [icon]="faVideo" *ngIf="model.isVideoFile() && isthumbnail" class="thumbnails__icon"
-        [ngClass]="{'large__icon':largeIcon}"></fa-icon>
+    <div *ngIf="model.isVideoFile()"
+        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
-    <div *ngIf="model.isVideoFile()" style="position: relative;"
-        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
-        [ngClass]="{'video-with-thumbnail': model.isExistThumbOfFile()}">
+        <fa-icon [icon]="faVideo" *ngIf="isthumbnail"></fa-icon>
         <img *ngIf="model.isExistThumbOfFile()" [src]="model.getFileImagePath()" />
         <img *ngIf="!model.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
     </div>
 
     <!-- image -->
-    <img *ngIf="model.isImageFile() && model.getFileImagePath() !==null"
-        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
-        [src]="model.getFileImagePath()" />
-    <div *ngIf="model.isImageFile() && model.getFileImagePath() == null" class="no__preview__show__icon">
-        <ion-icon name="image"></ion-icon>
+    <div *ngIf="model.isImageFile()"
+        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
+
+        <img *ngIf="model.getFileImagePath() !== null" [src]="model.getFileImagePath()" />
+        <ion-icon name="image" *ngIf="model.getFileImagePath() == null && !isthumbnail"> </ion-icon>
+        <ion-icon name="image" *ngIf="isthumbnail"></ion-icon>
     </div>
 
     <!-- pdf -->
-    <img [src]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)" class="grayoutimage"
-        *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) !==null && model.isPdf()"
-        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
-        style="width: auto!important;">
+    <div *ngIf="model.isPdf()"
+        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
-    <fa-icon [icon]="faFilePdf" *ngIf="model.isPdf() &&  isthumbnail" class="thumbnails__icon"></fa-icon>
-
-    <div *ngIf="model.isPdf() &&  model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null"
-        class="no__preview__show__icon">
-        <fa-icon [icon]="faFilePdf" *ngIf="model.isPdf()"></fa-icon>
+        <img [src]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
+            *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) !== null">
+        <fa-icon [icon]="faFilePdf" *ngIf="isthumbnail"></fa-icon>
     </div>
 
     <!-- 3d model -->
-    <div *ngIf="model.is3dFile()"
-        style="width: 100%; height: 100%; position:relative;display: flex; align-items: center;justify-content: center">
-
+    <div *ngIf="model.is3dFile()">
         <fa-icon [icon]="faExpand" *ngIf="!isthumbnail"
             (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
             style="position: absolute; bottom: 0; right: 0;"></fa-icon>
 
-        <fa-icon [icon]="faCubes" style="font-size: 1.8rem;" *ngIf="isthumbnail" [ngClass]="{'large__icon':largeIcon}">
-        </fa-icon>
+        <fa-icon [icon]="faCubes" *ngIf="isthumbnail"></fa-icon>
 
         <viewer-3d-model-component *ngIf="!isthumbnail" [fileName]="model.getFilePath()" [backgroundColor]="null"
             [fullScreen]="false" [madeUserIteractions]="false" [willStopRotate]="false"
@@ -92,7 +81,6 @@
     <!-- text -->
     <div (click)="openAssetTextModal()"
         *ngIf="!model.is3dFile() && !model.isAudioFile() && !model.isVideoFile() && !model.isImageFile() && !model.isPdf()">
-        <ion-icon class="asset__icons" src="../../assets/icon/text.svg" style="font-size: 4.2rem;"
-            [ngClass]="{'thumbnail' : isthumbnail}"></ion-icon>
+        <ion-icon src="../../assets/icon/text.svg"></ion-icon>
     </div>
 </div>

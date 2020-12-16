@@ -260,8 +260,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       // resume slide at
       this.apiSync.getGuideViewHistory(this.guideId).then(async (res) => {
         this.guideViewHistory = res[0];
+        console.log(this.guideViewHistory)
 
-        if (this.guideViewHistory) {
+        if (this.guideViewHistory && this.guideViewHistory.metadata != undefined) {
           this.guideStepSlides.slideTo(this.guideViewHistory.metadata.step_order_number).then(() => {
             this.toast.create({ message: 'Resume', duration: 1000 });
           })

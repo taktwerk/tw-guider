@@ -231,6 +231,7 @@ export class ApiSync {
                     this.userService.userDb.userSetting.lastModelUpdatedAt = this.lastModelUpdatedAt;
                     this.userService.userDb.save();
                 }
+                console.log("Pull Function >>>>>>>>>>>>>>>>>", isSavedSyncData)
                 resolve(isSavedSyncData);
             } catch (err) {
                 this.failSync(err);
@@ -243,7 +244,6 @@ export class ApiSync {
     protected async prepareDataForSavingPullData(countOfSyncedData) {
         if (this.syncMustBeEnd()) {
             this.isBusy = false;
-
             return false;
         }
         if (this.syncProgressStatus.getValue() === 'resume') {
@@ -292,7 +292,6 @@ export class ApiSync {
             this.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
         }
         this.isStartSyncBehaviorSubject.next(true);
-
         return true;
     }
 
@@ -562,7 +561,7 @@ export class ApiSync {
                     }
                     const pullData = await this.http.get(this.getSyncUrl()).toPromise();
                     this.guideViewHistories = pullData.models.guide_view_history;
-                    // console.log('pullData', pullData);
+                    console.log('pullData', pullData);
                     if (!pullData.syncProcessId) {
                         this.failSync('There was no property syncProcessId in the response');
                         resolve(false);
@@ -595,7 +594,7 @@ export class ApiSync {
                         this.isAvailableForSyncData.next(false);
                     }
                     const isSavedSyncData = await this.pull(syncStatus);
-                    //  console.log('isSavedSyncData', isSavedSyncData);
+                    console.log('isSavedSyncData', isSavedSyncData);
                     if (isSavedSyncData) {
                         this.userService.userDb.userSetting.lastModelUpdatedAt = pullData.lastModelUpdatedAt;
                         this.userService.userDb.userSetting.appDataVersion = pullData.version;

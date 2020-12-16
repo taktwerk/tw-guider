@@ -1,9 +1,9 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
-import {GuiderModel} from './guider-model';
+import { Platform, Events } from '@ionic/angular';
+import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { GuiderModel } from './guider-model';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -46,6 +46,11 @@ export class GuideStepModel extends DbApiModel {
                 localPath: GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE
             }
         },
+        {
+            name: GuideStepModel.COL_THUMB_ATTACHED_FILE,
+            url: GuideStepModel.COL_API_THUMB_ATTACHED_FILE_PATH,
+            localPath: GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE
+        }
     ];
 
     /** @inheritDoc */
@@ -56,7 +61,7 @@ export class GuideStepModel extends DbApiModel {
         [GuideStepModel.COL_GUIDE_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuideStepModel.COL_ORDER_NUMBER, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuideStepModel.COL_TITLE, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
-        [GuideStepModel. COL_DESCRIPTION_HTML, 'TEXT', DbBaseModel.TYPE_STRING],
+        [GuideStepModel.COL_DESCRIPTION_HTML, 'TEXT', DbBaseModel.TYPE_STRING],
         /// attached file columns
         [GuideStepModel.COL_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuideStepModel.COL_API_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],

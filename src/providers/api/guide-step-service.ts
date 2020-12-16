@@ -17,7 +17,6 @@ export class GuideStepService extends ApiService {
     loadUrl = '/guide-step';
     dbModelApi: GuideStepModel = new GuideStepModel(this.p, this.db, this.events, this.downloadService);
 
-
     /**
      * Constructor
      * @param http
