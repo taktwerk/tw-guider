@@ -720,6 +720,25 @@ export abstract class DbApiModel extends DbBaseModel {
         return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
     }
 
+    public de_getFileImagePath(fileMapIndex = 0, sanitizeType = 'trustResourceUrl') {
+        if (!this.isExistFileByIndex(fileMapIndex)) {
+            console.log(this.isExistFileByIndex(fileMapIndex))
+            return this.defaultImage;
+        }
+        let imageName = null;
+        if (this.isImageFile(fileMapIndex)) {
+            imageName = this.getFileName(fileMapIndex);
+        }
+        else if (this.isExistThumbOfFile(fileMapIndex)) {
+            imageName = this.getApiThumbFilePath(fileMapIndex);
+        } else {
+            return null;
+        }
+        imageName = encodeURI(imageName);
+        return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
+    }
+
+
     public getFilePath(basePath?: string, modelName?: string) {
         if (!basePath) {
             basePath = this.getFileName();

@@ -48,7 +48,12 @@ export class AssetviewComponent implements OnInit {
     public modalController: ModalController,
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    if (this.model.isVideoFile()) {
+      console.log("Model ", this.model)
+      console.log(this.model.de_getFileImagePath(this.guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE))
+    }
+  }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     if (!this.preventDefaultClickFunction) {

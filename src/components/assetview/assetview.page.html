@@ -39,13 +39,26 @@
     </div>
 
     <!-- video -->
-    <div *ngIf="model.isVideoFile()" class="inner_wrapper"
+    <div *ngIf="model.isVideoFile() && model.TABLE_NAME === 'guide_asset'" class="inner_wrapper"
+        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
+
+        <fa-icon [icon]="faVideo" *ngIf="isthumbnail" class="thumbnail__icon"></fa-icon>
+        <img *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) !=null"
+            [src]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)" />
+        <img *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null"
+            [src]="'/assets/videooverlay.png'" />
+    </div>
+
+    <div *ngIf="model.isVideoFile() && model.TABLE_NAME !=='guide_asset'" class="inner_wrapper"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
         <fa-icon [icon]="faVideo" *ngIf="isthumbnail" class="thumbnail__icon"></fa-icon>
         <img *ngIf="model.isExistThumbOfFile()" [src]="model.getFileImagePath()" />
         <img *ngIf="!model.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
     </div>
+
+
+
 
     <!-- image -->
     <div *ngIf="model.isImageFile()" class="inner_wrapper"
