@@ -58,15 +58,13 @@
     </div>
 
 
-
-
     <!-- image -->
     <div *ngIf="model.isImageFile()" class="inner_wrapper"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
         <img *ngIf="model.getFileImagePath() !== null" [src]="model.getFileImagePath()" />
         <ion-icon name="image" *ngIf="model.getFileImagePath() == null && !isthumbnail"> </ion-icon>
-        <ion-icon name="image" *ngIf="isthumbnail" class="thumbnail__icon"></ion-icon>
+        <!-- <ion-icon name="image" *ngIf="isthumbnail" class="thumbnail__icon"></ion-icon> -->
     </div>
 
     <!-- pdf -->
