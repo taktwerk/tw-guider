@@ -1,12 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-
+import { ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'html-description-component',
@@ -14,11 +6,19 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from '
   styleUrls: ['html-description-component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class HtmlDescriptionComponent {
+export class HtmlDescriptionComponent implements OnInit {
 
   @Input() html: string;
-  @Input() sliceText: boolean;
-  
-  constructor() {
+  @Input() isRawText: boolean;
+
+  rawText: string;
+
+  ngOnInit(): void {
+    this.getExtractText();
+  }
+
+  getExtractText() {
+    this.rawText = this.html.replace(/(<([^>]+)>)/ig, '');
+    this.rawText = this.rawText.replace('&nbsp;', '');
   }
 }

@@ -1,2 +1,2 @@
-<div class="html-description" [innerHTML]="html | safeHtml" *ngIf="!sliceText"></div>
-<p class="html-description" [innerHTML]="html | safeHtml:sliceText" *ngIf="sliceText"></p>
+<div class="html-description" [innerHTML]="html | safeHtml" *ngIf="!isRawText"></div>
+<p *ngIf="isRawText" class="elipsed">{{rawText}}</p>
