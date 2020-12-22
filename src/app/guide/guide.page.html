@@ -30,12 +30,12 @@
       </ion-slides>
 
       <div *ngIf="guideAssets.length" class="guide-assets">
-        <ion-card>
+        <ion-card class="ion-no-padding">
           <ion-item class="asset-item">
             <ion-icon name="information-circle" slot="start"></ion-icon>
             <ion-label>{{ "guide.Assets" | translate: params }}</ion-label>
           </ion-item>
-          <section class="ion-padding">
+          <section>
             <ion-grid class="asset__grid">
               <ion-row>
                 <ion-col *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" size="6" size-md="3">
