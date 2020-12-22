@@ -159,7 +159,7 @@ export class FeedbackAddEditPage implements OnInit {
     }
     this.feedbackService.save(this.model).then(async (res) => {
       this.apiSync.setIsPushAvailableData(true);
-      const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Feedback' });
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
       this.http.showToast(alertMessage);
       this.dismiss();
     });
@@ -211,13 +211,13 @@ export class FeedbackAddEditPage implements OnInit {
     this.feedbackService.remove(this.model).then(async (res) => {
       this.apiSync.setIsPushAvailableData(true);
       this.dismiss();
-      const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'Feedback' });
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'Entry' });
       this.http.showToast(alertMessage);
     });
   }
 
   async showDeleteAlert() {
-    const alertMessage = await this.translateConfigService.translate('alert.are_you_sure_delete_model', { model: 'Feedback' });
+    const alertMessage = await this.translateConfigService.translate('alert.are_you_sure_delete_model', { model: 'Entry' });
     const alert = await this.alertController.create({
       message: alertMessage,
       buttons: [

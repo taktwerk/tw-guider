@@ -6,19 +6,6 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation, AfterVi
   styleUrls: ['html-description-component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class HtmlDescriptionComponent implements OnInit {
-
+export class HtmlDescriptionComponent {
   @Input() html: string;
-  @Input() isRawText: boolean;
-
-  rawText: string;
-
-  ngOnInit(): void {
-    this.getExtractText();
-  }
-
-  getExtractText() {
-    this.rawText = this.html.replace(/(<([^>]+)>)/ig, '');
-    this.rawText = this.rawText.replace('&nbsp;', '');
-  }
 }

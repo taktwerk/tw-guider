@@ -78,10 +78,7 @@
           <ion-label>
             <h2> <strong>#{{step.order_number}} {{step.title}}</strong></h2>
             <div *ngIf="step.description_html" class="ion-text-left" class="html_element">
-              <p>
-                <html-description-component [html]="step.description_html" [isRawText]="true" class="step-description">
-                </html-description-component>
-              </p>
+              <p class="elipsed"> {{getExtractText(step.description_html)}} </p>
             </div>
           </ion-label>
         </ion-item>

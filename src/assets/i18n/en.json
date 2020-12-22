@@ -17,6 +17,7 @@
   "Status": "Status",
   "Open": "Open",
   "Done": "Done",
+  "dismiss":"Dismiss",
   "save_before_close_warning": "Save changes before closing?",
   "dont_save": "Don't save",
   "cancel": "Cancel",

@@ -63,47 +63,17 @@ export class ListViewComponent implements OnInit {
 
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async () => {
       this.setGuideSteps(this.guideId);
-    this.detectChanges();
+      this.detectChanges();
     });
 
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async () => {
       this.setGuideSteps(this.guideId);
-    this.detectChanges();
+      this.detectChanges();
     });
 
     this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':create', async () => {
       this.setGuideSteps(this.guideId);
       this.detectChanges();
-    });
-
-    this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':update', async () => {
-      this.setGuideSteps(this.guideId);
-      this.detectChanges();
-    });
-
-    this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':delete', async () => {
-      this.setGuideSteps(this.guideId);
-    this.detectChanges();
-    });
-
-    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', async () => {
-      this.setGuideSteps(this.guideId);
-    this.detectChanges();
-    });
-
-    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', async () => {
-      this.setGuideSteps(this.guideId);
-    this.detectChanges();
-    });
-
-    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async () => {
-      this.setGuideSteps(this.guideId);
-      this.detectChanges();
-    });
-
-    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async () => {
-      this.setGuideSteps(this.guideId);
-    this.detectChanges();
     });
 
     this.events.subscribe('network:online', () => {
@@ -119,6 +89,7 @@ export class ListViewComponent implements OnInit {
       this.guideSteps = this.guideStepsData.slice(0, this.displayLimit)
     });
   }
+
   onEdit(step: GuideStepModel) {
     let navigationExtras: NavigationExtras = {
       queryParams: {
@@ -147,9 +118,10 @@ export class ListViewComponent implements OnInit {
 
   async save() {
     this.guideSteps.map((step) => {
-      this.guideStepService.save(step).then(() => {
+      this.guideStepService.save(step).then(async () => {
         this.apiSync.setIsPushAvailableData(true);
-        this.showToast(`${step.title} saved`);
+        const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
+        this.http.showToast(alertMessage);
       }).catch((e) => console.log(e));
     })
     this.disableReorder = true;
@@ -220,6 +192,11 @@ export class ListViewComponent implements OnInit {
   tracklist(element: GuideStepModel) {
     return element.idApi;
   }
+
+  getExtractText(html: string) {
+    return html.replace(/(<([^>]+)>)/ig, '').replace('&nbsp;', '')
+  }
+
 
   detectChanges() {
     if (!this.changeDetectorRef['destroyed']) {

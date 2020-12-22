@@ -213,7 +213,10 @@ ion-thumbnail {
   justify-content: center;
   align-items: center;
   position: relative;
-  
+
+  height: 100%;
+  width: 100%;
+
   ion-icon,
   fa-icon {
     position: absolute;
@@ -228,4 +231,10 @@ ion-thumbnail {
     display: block;
     min-height: 200px;
   }
+}
+
+.elipsed {
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }

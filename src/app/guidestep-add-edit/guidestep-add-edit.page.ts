@@ -31,6 +31,7 @@ export class GuidestepAddEditPage implements OnInit {
   public guide: GuiderModel;
   public previousDescription;
   public previousTitle;
+  public previousOrderNumber;
   public stepId: any;
   public guideId: any;
   public defaultTitle = 'Guide Step';
@@ -39,6 +40,7 @@ export class GuidestepAddEditPage implements OnInit {
   action: string;
 
   shouldUpdate = false;
+  shouldSave = false;
 
   ckeConfig
 
@@ -75,14 +77,16 @@ export class GuidestepAddEditPage implements OnInit {
           })[0];
           this.previousDescription = this.model.description_html;
           this.previousTitle = this.model.title;
-          this.setGuideSteps(this.guideId);
-          this.setGuide();
+          this.previousOrderNumber = this.model.order_number;
         });
       }
       else {
         this.model = this.guideStepService.newModel();
         this.model.description_html = ""
       }
+
+      this.setGuideSteps(this.guideId);
+      this.setGuide();
     })
   }
 
@@ -93,8 +97,6 @@ export class GuidestepAddEditPage implements OnInit {
       isReadOnly: true
     };
   }
-
-
 
   public openFile(basePath: string, modelName: string, title?: string) {
     const filePath = basePath;
@@ -186,33 +188,81 @@ export class GuidestepAddEditPage implements OnInit {
     // save new step
     if (this.action == 'add') {
       if (!this.model.order_number) { this.model.order_number = this.guideSteps.length + 1; }
-      this.guideSteps.splice(this.model.order_number - 1, 0, this.model)
-      this.guideSteps.map((step, index) => {
-        step.order_number = index + 1;
-        this.setGuideSteps(this.guideId).then(() => {
-          this.guideStepService.save(step).then(() => {
-            this.updateGuide();
-            this.apiSync.setIsPushAvailableData(true);
-            this.showToast(`${this.model.title} saved`);
-            this.router.navigate(["/", "editguide", this.guideId]);
-          }).catch((e) => console.log(e))
+      this.guideSteps.splice(this.model.order_number - 1, 0, this.model);
+      console.log(this.model.order_number == this.guideSteps.length);
+      // save one
+      if (this.model.order_number == this.guideSteps.length) {
+        this.guideStepService.save(this.model).then(async () => {
+          this.apiSync.setIsPushAvailableData(true);
+          this.updateGuide();
+          const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
+          this.http.showToast(alertMessage);
+          this.shouldUpdate = false;
+          // this.router.navigate(["/", "editguide", this.guideId]);
+        }).catch((e) => console.log(e))
+      }
+      // save all
+      else {
+        this.guideSteps.map((step, index) => {
+          step.order_number = index + 1;
+          this.setGuideSteps(this.guideId).then(() => {
+            this.guideStepService.save(step).then(async () => {
+              this.updateGuide();
+              this.apiSync.setIsPushAvailableData(true);
+              const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
+              this.http.showToast(alertMessage);
+              // this.router.navigate(["/", "editguide", this.guideId]);
+            }).catch((e) => console.log(e))
+          })
         })
-      })
+      }
+
     }
     // save edited step
     if (this.action == "edit") {
       this.guideStepService.save(this.model).then(async () => {
         this.apiSync.setIsPushAvailableData(true);
         this.updateGuide();
-        const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'GuideStep' });
+        const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
         this.http.showToast(alertMessage);
         this.shouldUpdate = false;
-        this.router.navigate(["/", "editguide", this.guideId]);
+        // this.router.navigate(["/", "editguide", this.guideId]);
       }).catch((e) => console.log(e))
     }
   }
 
-  onCancel() { this.router.navigate(["/", "editguide", this.guideId]); }
+  async showCancelAlert() {
+    if (this.action == "add" && (this.model.description_html != "" || this.model.title != undefined || this.model.order_number != undefined)) {
+      this.shouldSave = true;
+    }
+    if (this.action == "edit" && (this.model.description_html != this.previousDescription || this.model.title != this.previousTitle || this.model.order_number != this.previousOrderNumber)) {
+      this.shouldSave = true;
+    }
+
+    if (this.shouldSave) {
+      const alertMessage = await this.translateConfigService.translate('alert.are_you_sure_go_back');
+      const alert = await this.alertController.create({
+        message: alertMessage,
+        buttons: [
+          {
+            text: await this.translateConfigService.translate('save'),
+            handler: () => this.save(),
+          },
+          {
+            text: await this.translateConfigService.translate('dismiss'),
+            cssClass: 'primary',
+            handler: () => this.cancel(),
+          }
+        ],
+      });
+      await alert.present();
+    }
+    else {
+      this.cancel()
+    }
+  }
+
+  cancel() { this.router.navigate(["/", "editguide", this.guideId]); }
 
   async showToast(message) {
     const toast = await this.toastController.create({ message: message, duration: 800 });
@@ -237,8 +287,7 @@ export class GuidestepAddEditPage implements OnInit {
   }
 
   async showDeleteAlert() {
-    console.log("Delete button")
-    const alertMessage = await this.translateConfigService.translate('alert.are_you_sure_delete_model', { model: 'Step' });
+    const alertMessage = await this.translateConfigService.translate('alert.are_you_sure_delete_model', { model: 'Entry' });
     const alert = await this.alertController.create({
       message: alertMessage,
       buttons: [
@@ -259,7 +308,7 @@ export class GuidestepAddEditPage implements OnInit {
     this.guideStepService.remove(this.model).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
       this.updateGuide();
-      const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'GuideStep' });
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'Entry' });
       this.http.showToast(alertMessage);
 
       this.setGuideSteps(this.guideId).then(() => {

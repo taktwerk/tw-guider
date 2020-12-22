@@ -7,7 +7,12 @@
     <ion-title *ngIf="action == 'edit'">{{ 'guidestep.edit' | translate }} </ion-title>
 
     <sync-spinner-component slot="primary"></sync-spinner-component>
-    <ion-back-button text=""></ion-back-button>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="showCancelAlert()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -29,7 +34,7 @@
     </ion-fab-list>
   </ion-fab>
 
-  <form *ngIf="model">
+  <form *ngIf="model" class="grey__bg">
     <ion-list>
       <ion-item class="" *ngIf="action =='add'">
         <ion-label position="floating">{{ 'Order' | translate:params }}: </ion-label>
@@ -71,7 +76,7 @@
         </ion-button>
       </ion-col>
       <ion-col *ngIf="action == 'add'">
-        <ion-button color="danger" expand="block" (click)="onCancel()">
+        <ion-button color="danger" expand="block" (click)="showCancelAlert()">
           {{ 'cancel' | translate:params }}
         </ion-button>
       </ion-col>

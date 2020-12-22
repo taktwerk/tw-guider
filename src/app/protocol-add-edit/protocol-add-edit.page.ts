@@ -156,7 +156,7 @@ export class ProtocolAddEditPage implements OnInit {
       }
       this.detectChanges();
       this.events.publish('setIsPushAvailableData');
-      const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', {model: 'Protocol'});
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', {model: 'Entry'});
       this.http.showToast(alertMessage);
     }
   }
@@ -225,7 +225,7 @@ export class ProtocolAddEditPage implements OnInit {
     this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
     this.detectChanges();
     this.events.publish('setIsPushAvailableData');
-    const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', {model: 'Protocol'});
+    const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', {model: 'Entry'});
     this.http.showToast(alertMessage);
   }
 

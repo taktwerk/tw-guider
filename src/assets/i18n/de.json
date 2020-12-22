@@ -17,6 +17,7 @@
   "Status": "Status",
   "Open": "Offen",
   "Done": "Erledigt",
+  "dismiss":"Entlassen",
   "save_before_close_warning": "Daten vor dem Schliessen speichern?",
   "dont_save": "Nicht speichern",
   "cancel": "Abbrechen",
