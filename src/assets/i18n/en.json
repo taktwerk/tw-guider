@@ -25,6 +25,7 @@
   "Order": "Order",
   "created_by": "Created By",
   "updated_by": "Updated By",
+  "to guide":"To Guide",
   "about": {
     "header": "About",
     "App Version": "App Version",

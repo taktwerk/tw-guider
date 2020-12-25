@@ -11,7 +11,7 @@
 </ion-header>
 
 <ion-content *ngIf="guide">
-  <ion-card style="box-shadow: none;"> 
+  <ion-card style="box-shadow: none;">
     <ion-card-content>
       <model-assetcomponent [model]="guide" mini="true"></model-assetcomponent>
     </ion-card-content>
@@ -38,5 +38,14 @@
         </ion-label>
       </ion-item>
     </ion-item-group>
+
+    <ion-item lines="none">
+      <ion-buttons slot="start">
+        <ion-button (click)="dismiss()" fill="outline" color="primary">
+          <ion-icon name="arrow-back"></ion-icon>
+          {{'to guide'| translate}}
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
   </ion-list>
 </ion-content>
