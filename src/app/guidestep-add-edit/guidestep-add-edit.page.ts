@@ -161,7 +161,7 @@ export class GuidestepAddEditPage implements OnInit {
       if (this.action == "add") {
         this.model.local_guide_id = this.guide[this.guide.COL_ID];
         this.model.guide_id = this.guide.idApi
-        console.log(this.model)
+        console.log(this.model)   
       }
     }
   }
