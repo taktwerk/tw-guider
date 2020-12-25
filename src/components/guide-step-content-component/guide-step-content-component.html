@@ -19,12 +19,13 @@
               </html-description-component>
             </div>
           </ion-card-content>
-          <ion-toolbar *ngIf="haveFeedbackPermissions">
+          <ion-toolbar *ngIf="step.description_html || haveFeedbackPermissions">
             <ion-icon *ngIf="step.description_html" class="expand-icon" color="primary" name="list"
               (click)="openAssetTextModal()" slot="start"></ion-icon>
             <ion-button class="feedback-btn" slot="end" color="primary" fill="outline" size="small"
-              (click)="openFeedback('guide_step', step.idApi)">
-              <ion-icon name="chatboxes" slot="start"></ion-icon>
+              (click)="openFeedback('guide_step', step.idApi)" *ngIf="haveFeedbackPermissions">
+              <ion-icon name="chatboxes" slot="start">
+              </ion-icon>
               {{ "feedback.header" | translate: params }}
             </ion-button>
           </ion-toolbar>
