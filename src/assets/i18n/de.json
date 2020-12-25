@@ -192,8 +192,8 @@
   "alert": {
     "model_was_saved": "{{ model }} wurde gespeichert",
     "model_was_deleted": "{{ model }} wurde gelöscht",
-    "are_you_sure_delete_model": "Soll dieses {{ model }} wirklich gelöscht werden?",
-    "are_you_sure_go_back": "Bist du sicher, dass du zurück willst? Nicht gespeicherte Änderungen gehen verloren."
+    "are_you_sure_delete_model": "Sind Sie sicher, diesen Eintrag zu löschen?",
+    "are_you_sure_go_back": "Es gibt Änderungen"
   },
   "guider": {
     "header": "Guide Erfassung",

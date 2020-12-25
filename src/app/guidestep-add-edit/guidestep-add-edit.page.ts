@@ -198,6 +198,7 @@ export class GuidestepAddEditPage implements OnInit {
           const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
           this.http.showToast(alertMessage);
           this.shouldUpdate = false;
+          this.shouldSave = false;
           // this.router.navigate(["/", "editguide", this.guideId]);
         }).catch((e) => console.log(e))
       }
@@ -226,16 +227,14 @@ export class GuidestepAddEditPage implements OnInit {
         const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
         this.http.showToast(alertMessage);
         this.shouldUpdate = false;
+        this.shouldSave = false;
         // this.router.navigate(["/", "editguide", this.guideId]);
       }).catch((e) => console.log(e))
     }
   }
 
   async showCancelAlert() {
-    if (this.action == "add" && (this.model.description_html != "" || this.model.title != undefined || this.model.order_number != undefined)) {
-      this.shouldSave = true;
-    }
-    if (this.action == "edit" && (this.model.description_html != this.previousDescription || this.model.title != this.previousTitle || this.model.order_number != this.previousOrderNumber)) {
+    if (this.shouldUpdate) {
       this.shouldSave = true;
     }
 

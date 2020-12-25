@@ -196,8 +196,8 @@
   "alert": {
     "model_was_saved": "{{ model }} was saved",
     "model_was_deleted": "{{ model }} was deleted",
-    "are_you_sure_delete_model": "Are you sure you want to delete this {{ model }}?",
-    "are_you_sure_go_back": "Are you sure you want to go back? Unsaved changes will be lost."
+    "are_you_sure_delete_model": "Are you sure to delete this entry?",
+    "are_you_sure_go_back": "There are changes"
   },
   "guider": {
     "header": "Guide Capture",
