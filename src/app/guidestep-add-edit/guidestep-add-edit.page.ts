@@ -82,7 +82,7 @@ export class GuidestepAddEditPage implements OnInit {
       }
       else {
         this.model = this.guideStepService.newModel();
-        this.model.description_html = ""
+        this.model.description_html = "";
       }
 
       this.setGuideSteps(this.guideId);
@@ -146,6 +146,10 @@ export class GuidestepAddEditPage implements OnInit {
       this.guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
+
+      if (this.action == "add") {
+        this.model.order_number = this.guideSteps.length + 1;
+      }
     });
   }
 
@@ -153,6 +157,12 @@ export class GuidestepAddEditPage implements OnInit {
     const guiderById = await this.guiderService.getById(this.guideId);
     if (guiderById.length) {
       this.guide = guiderById[0];
+
+      if (this.action == "add") {
+        this.model.local_guide_id = this.guide[this.guide.COL_ID];
+        this.model.guide_id = this.guide.idApi
+        console.log(this.model)
+      }
     }
   }
 
@@ -183,13 +193,13 @@ export class GuidestepAddEditPage implements OnInit {
   }
 
   async save() {
+    console.log(this.model)
     const user = await this.authService.getLastUser();
     if (!user) { return; }
     // save new step
     if (this.action == 'add') {
       if (!this.model.order_number) { this.model.order_number = this.guideSteps.length + 1; }
       this.guideSteps.splice(this.model.order_number - 1, 0, this.model);
-      console.log(this.model.order_number == this.guideSteps.length);
       // save one
       if (this.model.order_number == this.guideSteps.length) {
         this.guideStepService.save(this.model).then(async () => {
@@ -217,8 +227,8 @@ export class GuidestepAddEditPage implements OnInit {
           })
         })
       }
-
     }
+
     // save edited step
     if (this.action == "edit") {
       this.guideStepService.save(this.model).then(async () => {

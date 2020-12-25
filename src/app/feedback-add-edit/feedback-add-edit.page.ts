@@ -111,6 +111,7 @@ export class FeedbackAddEditPage implements OnInit {
         }
       }
     }
+
     if (wasChanges) {
       const alert = await this.alertController.create({
         message: this.translateConfigService.translateWord('save_before_close_warning'),
@@ -236,18 +237,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addFileCapacitor() {
-   /*  this.fileChooser.open().then(async (resp) => {
-      const res = await this.downloadService.getResolvedNativeFilePath(resp);
-
-      console.log(">>>>>>>>>>>>>>>> getResolvedNativeFilePath ><>>>>>>>>>>>>>>>>>")
-      console.log(res)
-      console.log(">>>>>>>>>>>>>>>> getResolvedNativeFilePath ><>>>>>>>>>>>>>>>>>")
-
-      const recordedFile = new RecordedFile();
-      recordedFile.uri = res;
-      this.model.setFile(recordedFile);
-    }) */
-    this.downloadService.chooseFile().then((recordedFile) =>{
+    this.downloadService.chooseFile().then((recordedFile) => {
       this.model.setFile(recordedFile);
     })
   }

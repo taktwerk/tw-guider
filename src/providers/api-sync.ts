@@ -853,6 +853,7 @@ export class ApiSync {
     }
 
     private pushDataToServer(url, model, service, isAdditionalData = false) {
+        console.log(url, model, service, isAdditionalData)
         return new Promise(async resolve => {
             if (this.pushProgressStatus.getValue() === 'failed') {
                 this.isBusyPush = false;

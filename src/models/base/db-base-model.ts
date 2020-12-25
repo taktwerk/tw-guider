@@ -1,6 +1,6 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbProvider} from '../../providers/db-provider';
-import {DownloadService} from '../../services/download-service';
+import { Platform, Events } from '@ionic/angular';
+import { DbProvider } from '../../providers/db-provider';
+import { DownloadService } from '../../services/download-service';
 
 /**
  * Extend this abstract Helper class for every DB-Model.
@@ -79,23 +79,23 @@ export abstract class DbBaseModel {
             const columnName = column[3] ? column[3] : column[0];
             const value: any = item[column[0]];
             switch (column[2]) {
-                case DbBaseModel.TYPE_NUMBER :
-                    (<any> this)[columnName] = this.getNumberValue(value);
+                case DbBaseModel.TYPE_NUMBER:
+                    (<any>this)[columnName] = this.getNumberValue(value);
                     break;
-                case DbBaseModel.TYPE_DECIMAL :
-                    (<any> this)[columnName] = this.getDecimalValue(value);
+                case DbBaseModel.TYPE_DECIMAL:
+                    (<any>this)[columnName] = this.getDecimalValue(value);
                     break;
-                case DbBaseModel.TYPE_STRING :
-                    (<any> this)[columnName] = this.getStringValue(value);
+                case DbBaseModel.TYPE_STRING:
+                    (<any>this)[columnName] = this.getStringValue(value);
                     break;
-                case DbBaseModel.TYPE_DATE :
-                    (<any> this)[columnName] = this.getDateValue(value);
+                case DbBaseModel.TYPE_DATE:
+                    (<any>this)[columnName] = this.getDateValue(value);
                     break;
-                case DbBaseModel.TYPE_BOOLEAN :
-                    (<any> this)[columnName] = this.getBooleanValue(value);
+                case DbBaseModel.TYPE_BOOLEAN:
+                    (<any>this)[columnName] = this.getBooleanValue(value);
                     break;
-                case DbBaseModel.TYPE_OBJECT :
-                    (<any> this)[columnName] = this.getObjectValue(value);
+                case DbBaseModel.TYPE_OBJECT:
+                    (<any>this)[columnName] = this.getObjectValue(value);
                     break;
             }
         }
@@ -129,8 +129,8 @@ export abstract class DbBaseModel {
                 this.db.init().then(() => {
                     this.dbCreateTable().then((res) => {
                         if (!res) {
-                           // console.log(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME);
-                           // circular dependency (AppSettings import)
+                            // console.log(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME);
+                            // circular dependency (AppSettings import)
                         }
                         resolve(res);
                     });
@@ -215,14 +215,14 @@ export abstract class DbBaseModel {
                 this.dbIsBusy = true;
                 this.platform.ready().then(() => {
                     this.db.query(query)
-                    .then((res) => {
-                        this.dbIsReady = true;
-                        this.dbIsBusy = false;
-                        resolve(true);
-                    }).catch((err) => {
-                        this.dbIsBusy = false;
-                        resolve(false);
-                    });
+                        .then((res) => {
+                            this.dbIsReady = true;
+                            this.dbIsBusy = false;
+                            resolve(true);
+                        }).catch((err) => {
+                            this.dbIsBusy = false;
+                            resolve(false);
+                        });
                 });
             }
         });
@@ -316,7 +316,7 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
-                  //  console.log('query', query);
+                    //  console.log('query', query);
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             resolve(res);
@@ -334,16 +334,14 @@ export abstract class DbBaseModel {
     public searchAll(where?: any, orderBy?: string, limit?: number, join?: string, selectFrom?: string): Promise<any> {
         const query = this.searchAllQuery(where, orderBy, limit, join, selectFrom);
         const entries: any[] = [];
-
-      //  console.log('query', query);
-
+        //  console.log('query', query);
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
                     resolve(entries);
                 } else {
                     db.query(query).then((res) => {
-                      //  console.log('search all res', res);
+                        //  console.log('search all res', res);
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
                                 const obj = new (this.constructor as any);
@@ -453,7 +451,7 @@ export abstract class DbBaseModel {
         return this.searchAll(conditionString, orderBy, limit);
     }
 
-    public findFirst(condition, orderBy  = 'id ASC'): Promise<any> {
+    public findFirst(condition, orderBy = 'id ASC'): Promise<any> {
         return this.findAllWhere(condition, orderBy, 1);
     }
 
@@ -540,10 +538,10 @@ export abstract class DbBaseModel {
                 }
             }
         } else {
-           // console.debug(this.TAG, 'findAllWhere condition error', condition);
+            // console.debug(this.TAG, 'findAllWhere condition error', condition);
         }
 
-      //  console.log('CONDITIONS', conditions.join(' AND '));
+        //  console.log('CONDITIONS', conditions.join(' AND '));
         return conditions.join(' AND ');
     }
 
@@ -662,17 +660,17 @@ export abstract class DbBaseModel {
      */
     protected getObjectByType(value: string, type: number): any {
         switch (type) {
-            case DbBaseModel.TYPE_NUMBER :
+            case DbBaseModel.TYPE_NUMBER:
                 return this.getNumberValue(value);
-            case DbBaseModel.TYPE_STRING :
+            case DbBaseModel.TYPE_STRING:
                 return this.getStringValue(value);
-            case DbBaseModel.TYPE_BOOLEAN :
+            case DbBaseModel.TYPE_BOOLEAN:
                 return this.getBooleanValue(parseInt(value));
-            case DbBaseModel.TYPE_DATE :
+            case DbBaseModel.TYPE_DATE:
                 return this.getDateFromString(value);
-            case DbBaseModel.TYPE_OBJECT :
+            case DbBaseModel.TYPE_OBJECT:
                 return this.getObjectValue(value);
-            case DbBaseModel.TYPE_DECIMAL :
+            case DbBaseModel.TYPE_DECIMAL:
                 return this.getDecimalValue(value);
         }
     }
@@ -685,15 +683,15 @@ export abstract class DbBaseModel {
      */
     protected getValueByType(value: any, type: number): string {
         switch (type) {
-            case DbBaseModel.TYPE_NUMBER :
+            case DbBaseModel.TYPE_NUMBER:
                 return this.getValueNumber(value);
-            case DbBaseModel.TYPE_STRING :
+            case DbBaseModel.TYPE_STRING:
                 return this.getValueString(value);
-            case DbBaseModel.TYPE_BOOLEAN :
+            case DbBaseModel.TYPE_BOOLEAN:
                 return this.getValueBoolean(value);
-            case DbBaseModel.TYPE_DATE :
+            case DbBaseModel.TYPE_DATE:
                 return this.getValueDate(value);
-            case DbBaseModel.TYPE_OBJECT :
+            case DbBaseModel.TYPE_OBJECT:
                 return this.getValueObject(value);
             case DbBaseModel.TYPE_DECIMAL:
                 return this.getValueDecimal(value);
