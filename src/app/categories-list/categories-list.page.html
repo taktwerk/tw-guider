@@ -41,7 +41,7 @@
             </ion-item>
           </div>
         </div>
-        
+
       </span>
     </div>
     <div *ngSwitchCase="'search'">
@@ -56,10 +56,23 @@
             <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
             </div>
           </div>
-          <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides" [hideCollection]="false"> </guide-list-component>
+          <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides" [hideCollection]="false">
+          </guide-list-component>
         </div>
         <div *ngIf="!guides.length" [ngStyle]="{'margin': '15px'}">{{ 'noResults' | translate:params }}</div>
       </span>
     </div>
   </div>
+
+  <ion-card *ngIf="!isStartSync && guides.length < 1 ">
+    <ion-card-content>
+      <ion-label class="align__all_center">
+        <h2>{{'sync-modal.Start sync to get data' | translate}}</h2>
+        <ion-buttons class="ion-padding">
+          <ion-button (click)="syncData()" color="primary" fill="solid">{{'sync-modal.Synchronize Data' | translate}}
+          </ion-button>
+        </ion-buttons>
+      </ion-label>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

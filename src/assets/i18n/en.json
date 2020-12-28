@@ -56,7 +56,8 @@
     "Data synchronization is not yet possible.": "Data synchronization is not yet possible.",
     "Data is sent to the server": "Data is sent to the server.",
     "Data has been sent to the server": "Data has been sent to the server.",
-    "Sending data to the server failed.": "Sending data to the server failed."
+    "Sending data to the server failed.": "Sending data to the server failed.",
+    "Start sync to get data":"Start sync to get data"
   },
   "guide-categories": {
     "category": "Category",

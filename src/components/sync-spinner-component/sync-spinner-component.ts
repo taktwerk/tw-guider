@@ -13,13 +13,6 @@ import { DbProvider } from '../../providers/db-provider';
 import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
 
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-
 @Component({
     selector: 'sync-spinner-component',
     templateUrl: 'sync-spinner-component.html',

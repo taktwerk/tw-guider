@@ -1,14 +1,19 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit} from '@angular/core';
-import {GuideCategoryService} from '../../providers/api/guide-category-service';
-import {GuideChildService} from '../../providers/api/guide-child-service';
-import {GuiderService} from '../../providers/api/guider-service';
-import {GuiderModel} from '../../models/db/api/guider-model';
-import {AuthService} from '../../services/auth-service';
-import {GuideCategoryModel} from '../../models/db/api/guide-category-model';
-import {Events, LoadingController} from '@ionic/angular';
-import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
-import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
-import {NavigationExtras, Router} from '@angular/router';
+import { AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit } from '@angular/core';
+import { GuideCategoryService } from '../../providers/api/guide-category-service';
+import { GuideChildService } from '../../providers/api/guide-child-service';
+import { GuiderService } from '../../providers/api/guider-service';
+import { GuiderModel } from '../../models/db/api/guider-model';
+import { AuthService } from '../../services/auth-service';
+import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
+import { Events, LoadingController, ModalController } from '@ionic/angular';
+import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
+import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
+import { NavigationExtras, Router } from '@angular/router';
+import { ApiSync } from 'src/providers/api-sync';
+import { AppSetting } from 'src/services/app-setting';
+import { SyncMode } from 'src/components/synchronization-component/synchronization-component';
+import { SyncService } from 'src/services/sync-service';
+import { SyncModalComponent } from 'src/components/sync-modal-component/sync-modal-component';
 
 @Component({
   selector: 'app-list',
@@ -16,6 +21,10 @@ import {NavigationExtras, Router} from '@angular/router';
   styleUrls: ['categories-list.page.scss']
 })
 export class CategoriesListPage implements OnInit {
+  public isStartSync = false;
+  public modeSync = SyncMode.Manual;
+  public syncProgressStatus = 'not_sync';
+
   public guideCategories: GuideCategoryModel[] = [];
   public searchValue: string;
   public haveProtocolPermissions = false;
@@ -29,21 +38,27 @@ export class CategoriesListPage implements OnInit {
 
   public type: string;
   constructor(
-      private guideCategoryBindingService: GuideCategoryBindingService,
-      private guideCategoryService: GuideCategoryService,
-      private guiderService: GuiderService,
-      private guideChildService: GuideChildService,
-      private protocolTemplateService: ProtocolTemplateService,
-      public authService: AuthService,
-      public events: Events,
-      public changeDetectorRef: ChangeDetectorRef,
-      private router: Router,
-      private loader: LoadingController
+    private guideCategoryBindingService: GuideCategoryBindingService,
+    private guideCategoryService: GuideCategoryService,
+    private guiderService: GuiderService,
+    private guideChildService: GuideChildService,
+    private protocolTemplateService: ProtocolTemplateService,
+    public authService: AuthService,
+    public events: Events,
+    public changeDetectorRef: ChangeDetectorRef,
+    private router: Router,
+    private loader: LoadingController,
+    public apiSync: ApiSync,
+    public appSetting: AppSetting,
+    private syncService: SyncService,
+    private modalController: ModalController,
+
+
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
       if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') ||
-          this.authService.auth.isAuthority
+        this.authService.auth.isAuthority
       ) {
         this.haveProtocolPermissions = true;
       }
@@ -106,14 +121,24 @@ export class CategoriesListPage implements OnInit {
     this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }
 
-  getGuidesWithoutCategories()
-  {
+  getGuidesWithoutCategories() {
     return this.guides.filter(guide => {
       return !guide.guide_collection.length;
     });
   }
 
   ngOnInit() {
+    this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
+      this.isStartSync = isSync;
+      this.detectChanges();
+    });
+    this.syncService.syncMode.subscribe((result) => {
+      if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
+        return;
+      }
+      this.modeSync = result;
+      this.detectChanges();
+    });
     this.events.subscribe('user:login', () => {
       this.findAllGuideCategories();
       this.detectChanges();
@@ -160,11 +185,28 @@ export class CategoriesListPage implements OnInit {
       this.setGuides();
       this.setCategoryGuides();
     });
-    
+
     this.events.subscribe('network:online', (isNetwork) => {
       this.authService.checkAccess('guide');
     });
 
     this.type = 'browse';
+  }
+
+  syncData() {
+    if (!this.appSetting.isMigratedDatabase()) {
+      this.appSetting.showIsNotMigratedDbPopup();
+      return;
+    }
+    this.apiSync.makeSyncProcess();
+    this.openSyncModal();
+  }
+
+  async openSyncModal() {
+    const modal = await this.modalController.create({
+      component: SyncModalComponent,
+      cssClass: "modal-fullscreen"
+    });
+    return await modal.present();
   }
 }

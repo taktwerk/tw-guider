@@ -55,7 +55,8 @@
     "No network connection.": "Keine Netzwerkverbindung.",
     "Data synchronization is not yet possible.": "Synchronisierung ist noch nicht möglich.",
     "Data has been sent to the server": "Daten wurden zum Server gesendet.",
-    "Sending data to the server failed.": "Daten zum Server senden ist fehlgeschlagen."
+    "Sending data to the server failed.": "Daten zum Server senden ist fehlgeschlagen.",
+    "Start sync to get data":"Starten Sie die Synchronisierung, um Daten abzurufen"
   },
   "guide-categories": {
     "category": "Kategorie",
