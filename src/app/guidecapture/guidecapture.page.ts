@@ -5,10 +5,7 @@ import { GuideCategoryService } from '../../providers/api/guide-category-service
 import { Events, LoadingController } from '@ionic/angular';
 import { GuiderService } from 'src/providers/api/guider-service';
 import { GuideCategoryModel } from 'src/models/db/api/guide-category-model';
-import { Router } from '@angular/router';
-import { GuideCategoryBindingService } from 'src/providers/api/guide-category-binding-service';
 import { GuideChildService } from 'src/providers/api/guide-child-service';
-import { ProtocolTemplateService } from 'src/providers/api/protocol-template-service';
 
 @Component({
   selector: 'app-guidecapture',

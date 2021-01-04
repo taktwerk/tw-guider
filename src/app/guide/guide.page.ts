@@ -34,7 +34,6 @@ import { Viewer3dService } from "../../services/viewer-3d-service";
 import { GuideStepContentComponent } from "../../components/guide-step-content-component/guide-step-content-component";
 import { PopoverController } from '@ionic/angular';
 
-
 @Component({
   selector: 'app-guide',
   templateUrl: 'guide.page.html',
@@ -49,6 +48,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChild('guideStepContentTemplate', { static: false, read: ViewContainerRef }) guideStepContentTemplate;
 
   @Input() categoryId: number;
+
+  @Input() guides: GuiderModel[] = [];
 
   isInitStepSlider = false;
 
@@ -72,8 +73,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
 
   public guideViewHistory: any;
-
+  guideIndex: number = null;
   restartSub: Subscription;
+  hasPrevious = false;
+  hasNext = false;
 
   constructor(
     private apiSync: ApiSync,
@@ -422,6 +425,56 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     if (willShow_GuideInfo == null) {
       this.miscService.set_guideShown(this.guideId)
       return await modal.present();
+    }
+  }
+
+  ionViewDidEnter() {
+    this.setGuides();
+  }
+
+  async setGuides() {
+    this.guideCategoryService.getGuides().then((res) => {
+      setTimeout(() => {
+        this.guides = res.filter(g => g.guide_collection.length == 0);
+        this.guideIndex = this.guides.findIndex(({ idApi }) => this.guide.idApi == idApi)
+       
+        if (this.guides[this.guideIndex - 1] != undefined) {
+          this.hasPrevious = true;
+        }
+
+        if (this.guides[this.guideIndex + 1] != undefined) {
+          this.hasNext = true;
+        }
+      }, 1000)
+    })
+
+  }
+
+  previousGuide() {
+    this.guideIndex = this.guides.findIndex(({ idApi }) => this.guide.idApi == idApi);
+    if (this.guides[this.guideIndex - 1] != undefined) {
+      this.hasPrevious = true;
+      const previousGuideIndex = this.guides[this.guideIndex - 1].idApi;
+
+      this.miscService.onSlideRestart.next(true);
+      this.router.navigate(['/guide/' + previousGuideIndex]);
+      // set next guide
+    }
+    else {
+      this.hasPrevious = false;
+    }
+  }
+
+  nextGuide() {
+    this.guideIndex = this.guides.findIndex(({ idApi }) => this.guide.idApi == idApi);
+    if (this.guides[this.guideIndex + 1] != undefined) {
+      this.hasNext = true;
+      const nextGuideIndex = this.guides[this.guideIndex + 1].idApi;
+      this.miscService.onSlideRestart.next(true);
+      this.router.navigate(['/guide/' + nextGuideIndex]);
+    }
+    else {
+      this.hasNext = false;
     }
   }
 
