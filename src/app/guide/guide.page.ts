@@ -8,7 +8,7 @@ import {
   ChangeDetectorRef,
   Component, ComponentFactoryResolver, NgZone,
   Input,
-  OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef, ApplicationRef, Injector, ElementRef, Renderer2, OnDestroy
+  OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef, ApplicationRef, Injector, ElementRef, Renderer2, OnDestroy, HostListener
 } from '@angular/core';
 import { GuiderService } from '../../providers/api/guider-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
@@ -86,6 +86,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   hasNext = false;
 
   constructor(
+    private elementRef: ElementRef,
     private apiSync: ApiSync,
     private popoverController: PopoverController,
     private guideCategoryService: GuideCategoryService,
@@ -510,7 +511,15 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     })
   }
 
+
+  ionViewDidLeave() {
+    console.log("did leave");
+    this.elementRef.nativeElement.remove();
+  }
+
+  @HostListener('unloaded')
   ngOnDestroy(): void {
+    console.log("destroyed")
     this.restartSub.unsubscribe();
   }
 }
