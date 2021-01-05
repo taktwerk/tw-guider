@@ -466,7 +466,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   }
 
-  previousGuide() {
+  previousGuide() {   
     this.guideIndex = this.guides.findIndex(({ idApi }) => this.guide.idApi == idApi);
     if (this.guides[this.guideIndex - 1] != undefined) {
       this.hasPrevious = true;
@@ -510,7 +510,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       this.apiSync.saveGuideHistory(this.guideId, index);
     })
   }
-
 
   ionViewDidLeave() {
     console.log("did leave");
