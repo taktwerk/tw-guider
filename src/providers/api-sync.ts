@@ -1034,9 +1034,5 @@ export class ApiSync {
             this.noDataForSync.next(true);
         })
     }
-
-    //TODO:   // unsubscribe all subscription
-
-
 }
 
