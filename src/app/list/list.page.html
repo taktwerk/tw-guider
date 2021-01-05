@@ -21,7 +21,7 @@
     <div *ngIf="guideCategory && guideCategory.guides && guideCategory.guides.length">
       <h4 class="ion-margin-horizontal">{{ 'guide-categories.category' | translate:params }}: {{ guideCategory.name }}
       </h4>
-      <guide-list-component [guides]="guideCategory.guides" [hideCollection]="false"></guide-list-component>
+      <guide-list-component [guides]="guideCategory.guides"></guide-list-component>
     </div>
   </span>
 </ion-content>

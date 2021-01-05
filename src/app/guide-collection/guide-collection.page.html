@@ -18,7 +18,7 @@
       Collection: {{guide.short_name}} {{ guide.title }}
     </h4>
     <div *ngIf="collectionGuides.length">
-      <guide-list-component [guides]="collectionGuides" [hideCollection]="false"></guide-list-component>
+      <guide-list-component [guides]="collectionGuides" [parentCollectionId]="guide.idApi"></guide-list-component>
     </div>
   </span>
 </ion-content>

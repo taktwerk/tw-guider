@@ -15,7 +15,7 @@ export class GuideListComponent implements OnInit {
   public params;
   @Input() guides: GuiderModel[];
   @Input() isCapture = false;
-  @Input() hideCollection = false;
+  @Input() parentCollectionId;
 
   guideList: GuiderModel[];
   displayLimit = 10;
@@ -23,7 +23,7 @@ export class GuideListComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    public appSetting: AppSetting  ) {
+    public appSetting: AppSetting) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
       if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') || this.authService.auth.isAuthority) {
@@ -34,6 +34,7 @@ export class GuideListComponent implements OnInit {
 
   ngOnInit(): void {
     this.guideList = this.guides.slice(0, this.displayLimit);
+    console.log("parentCollectionId", this.parentCollectionId)
   }
 
   loadData(event) {
@@ -75,7 +76,14 @@ export class GuideListComponent implements OnInit {
       this.openCollection(guide);
       return;
     }
-    this.router.navigate(['/guide/' + guide.idApi]);
+    console.log("parentCollectionId", this.parentCollectionId)
+    if (this.parentCollectionId) {
+      this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
+    }
+    else {
+      this.router.navigate(['/guide/' + guide.idApi]);
+    }
+
   }
 
   openGuideSteps(guideId) {

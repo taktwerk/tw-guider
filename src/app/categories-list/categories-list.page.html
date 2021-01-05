@@ -56,7 +56,7 @@
             <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
             </div>
           </div>
-          <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides" [hideCollection]="false">
+          <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides">
           </guide-list-component>
         </div>
         <div *ngIf="!guides.length" [ngStyle]="{'margin': '15px'}">{{ 'noResults' | translate:params }}</div>

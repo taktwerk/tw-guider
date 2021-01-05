@@ -68,6 +68,13 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   public guideId: number = null;
   public guideSteps: GuideStepModel[] = [];
   public guideAssets: GuideAssetModel[] = [];
+
+  public guideParent: GuiderModel;
+  public guideCollection: GuiderModel
+  public parentCollectionId;
+
+  public collections: GuiderModel[] = [];
+
   public virtualGuideStepSlides = [];
   public params;
 
@@ -301,7 +308,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     const loader = await this.loader.create();
     loader.present();
 
+    console.log("snapshot", this.activatedRoute.snapshot)
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
+    this.parentCollectionId = +this.activatedRoute.snapshot.paramMap.get('parentCollectionId');
     if (this.guideId) {
       const guiderById = await this.guiderService.getById(this.guideId);
       if (guiderById.length) {
@@ -435,17 +444,23 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   async setGuides() {
     this.guideCategoryService.getGuides().then((res) => {
       setTimeout(() => {
-        this.guides = res.filter(g => g.guide_collection.length == 0);
-        this.guideIndex = this.guides.findIndex(({ idApi }) => this.guide.idApi == idApi)
-       
-        if (this.guides[this.guideIndex - 1] != undefined) {
-          this.hasPrevious = true;
-        }
+        this.guides = res;
+        if (this.parentCollectionId) {
+          this.collections = this.guides.filter(g => g.guide_collection.length > 0);
+          this.guideCollection = this.collections.filter(c => {
+            return c.guide_collection.find(({ guide_id }) => this.guideId == guide_id)
+          })[0];
+          this.guideIndex = this.guideCollection.guide_collection.findIndex(({ guide_id }) => this.guide.idApi == guide_id);
 
-        if (this.guides[this.guideIndex + 1] != undefined) {
-          this.hasNext = true;
+          if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined) {
+            this.hasPrevious = true;
+          }
+
+          if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined) {
+            this.hasNext = true;
+          }
         }
-      }, 1000)
+      }, 1200)
     })
 
   }
@@ -457,7 +472,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       const previousGuideIndex = this.guides[this.guideIndex - 1].idApi;
 
       this.miscService.onSlideRestart.next(true);
-      this.router.navigate(['/guide/' + previousGuideIndex]);
+      this.router.navigate(['/guide/' + previousGuideIndex + '/' + this.parentCollectionId]);
       // set next guide
     }
     else {
@@ -471,7 +486,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       this.hasNext = true;
       const nextGuideIndex = this.guides[this.guideIndex + 1].idApi;
       this.miscService.onSlideRestart.next(true);
-      this.router.navigate(['/guide/' + nextGuideIndex]);
+      this.router.navigate(['/guide/' + nextGuideIndex + '/' + this.parentCollectionId]);
     }
     else {
       this.hasNext = false;

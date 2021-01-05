@@ -28,6 +28,10 @@ const routes: Routes = [
     loadChildren: () => import('./guide/guide.module').then(m => m.GuidePageModule)
   },
   {
+    path: 'guide/:guideId/:parentCollectionId',
+    loadChildren: () => import('./guide/guide.module').then(m => m.GuidePageModule)
+  },
+  {
     path: 'profile',
     loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
   },
