@@ -444,7 +444,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   async setGuides() {
     this.guideCategoryService.getGuides().then((res) => {
-      setTimeout(() => {
+      setTimeout(async () => {
         this.guides = res;
         if (this.parentCollectionId) {
           this.collections = this.guides.filter(g => g.guide_collection.length > 0);
@@ -453,16 +453,55 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           })[0];
           this.guideIndex = this.guideCollection.guide_collection.findIndex(({ guide_id }) => this.guide.idApi == guide_id);
 
-          if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined) {
-            this.hasPrevious = true;
-          }
 
-          if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined) {
-            this.hasNext = true;
-          }
+          this.guideStepSlides.isBeginning().then((res) => {
+            console.log("isBeginning on Loaded", res)
+            if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined && res) {
+              this.hasPrevious = true;
+            }
+            else {
+              this.hasPrevious = false;
+            }
+          })
+
+          this.guideStepSlides.isEnd().then((res) => {
+            console.log("isEnd on Loaded", res)
+            if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined && res) {
+              this.hasNext = true;
+            }
+            else {
+              this.hasNext = false;
+            }
+          })
+
         }
       }, 1200)
     })
+  }
+
+  ionSlideDidChange() {
+    this.guideStepSlides.isBeginning().then((res) => {
+      console.log("isBeginning", res)
+      if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined && res) {
+        this.hasPrevious = true;
+      }
+      else {
+        this.hasPrevious = false;
+      }
+    })
+
+    this.guideStepSlides.isEnd().then((res) => {
+      console.log("isEnd", res)
+      if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined && res) {
+        this.hasNext = true;
+      }
+      else {
+        this.hasNext = false;
+      }
+    })
+
+
+
 
   }
 
@@ -474,7 +513,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
       this.miscService.onSlideRestart.next(true);
       this.router.navigate(['/guide/' + previousGuideIndex + '/' + this.parentCollectionId]);
-      // set next guide
     }
     else {
       this.hasPrevious = false;
