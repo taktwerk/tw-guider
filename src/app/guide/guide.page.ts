@@ -466,9 +466,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   }
 
-  previousGuide() {   
+  previousGuide() {
     this.guideIndex = this.guides.findIndex(({ idApi }) => this.guide.idApi == idApi);
-    if (this.guides[this.guideIndex - 1] != undefined) {
+    if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined) {
       this.hasPrevious = true;
       const previousGuideIndex = this.guides[this.guideIndex - 1].idApi;
 
@@ -483,7 +483,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   nextGuide() {
     this.guideIndex = this.guides.findIndex(({ idApi }) => this.guide.idApi == idApi);
-    if (this.guides[this.guideIndex + 1] != undefined) {
+    if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined) {
       this.hasNext = true;
       const nextGuideIndex = this.guides[this.guideIndex + 1].idApi;
       this.miscService.onSlideRestart.next(true);
