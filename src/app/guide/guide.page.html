@@ -7,7 +7,11 @@
     <sync-spinner-component slot="primary"></sync-spinner-component>
 
     <ion-buttons slot="primary" class="header_cta">
-      <ion-back-button></ion-back-button>
+      <ion-back-button *ngIf="!parentCollectionId"></ion-back-button>
+
+      <ion-button (click)="backToCollection()" *ngIf="parentCollectionId">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
 
       <ion-button (click)="presentSlideInfo($event)">
         <ion-icon

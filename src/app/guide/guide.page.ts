@@ -17,7 +17,7 @@ import { GuideStepService } from '../../providers/api/guide-step-service';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { File } from '@ionic-native/file/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { Events, IonSlides, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { Events, IonBackButtonDelegate, IonSlides, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
 import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
@@ -40,6 +40,7 @@ import { PopoverController } from '@ionic/angular';
   styleUrls: ['guide.page.scss']
 })
 export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
+  @ViewChild(IonBackButtonDelegate, { static: false }) backButtonDelegate: IonBackButtonDelegate;
 
   @ViewChildren('guideStepContent', { read: ViewContainerRef }) slideComponents: QueryList<any>;
   @ViewChild('guideStepSlide', { static: false }) guideStepSlides: IonSlides;
@@ -475,34 +476,38 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           })
 
         }
-      }, 1200)
+      }, 2000)
     })
   }
 
   ionSlideDidChange() {
     this.guideStepSlides.isBeginning().then((res) => {
       console.log("isBeginning", res)
-      if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined && res) {
-        this.hasPrevious = true;
+
+      console.log("guideCollection", this.guideCollection)
+
+      if (this.guideCollection && this.guideCollection.guide_collection) {
+        if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined && res) {
+          this.hasPrevious = true;
+        }
+        else {
+          this.hasPrevious = false;
+        }
       }
-      else {
-        this.hasPrevious = false;
-      }
+
     })
 
     this.guideStepSlides.isEnd().then((res) => {
       console.log("isEnd", res)
-      if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined && res) {
-        this.hasNext = true;
-      }
-      else {
-        this.hasNext = false;
+      if (this.guideCollection && this.guideCollection.guide_collection) {
+        if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined && res) {
+          this.hasNext = true;
+        }
+        else {
+          this.hasNext = false;
+        }
       }
     })
-
-
-
-
   }
 
   previousGuide() {
@@ -549,14 +554,23 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     })
   }
 
+  backToCollection() {
+    const feedbackNavigationExtras: NavigationExtras = {
+      queryParams: {
+        guideId: this.parentCollectionId,
+      },
+    };
+    this.router.navigate(['/guide-collection/' + this.parentCollectionId], feedbackNavigationExtras);
+  }
+
+  @HostListener('unloaded')
   ionViewDidLeave() {
     console.log("did leave");
     this.elementRef.nativeElement.remove();
   }
 
-  @HostListener('unloaded')
   ngOnDestroy(): void {
-    console.log("destroyed")
     this.restartSub.unsubscribe();
+    console.log("destroyed")
   }
 }
