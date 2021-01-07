@@ -16,7 +16,10 @@
         max-height: 100%;
 
         img {
-            object-fit: cover;
+            object-fit: contain;
+            position: absolute;
+            top: 0;
+            height: auto;
         }
     }
 }
