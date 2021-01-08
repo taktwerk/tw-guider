@@ -355,7 +355,7 @@ export abstract class DbBaseModel {
                         }
                         resolve(entries);
                     }).catch((err) => {
-                        console.log('is errororrr');
+                        console.log('is errororrr', err);
                         resolve(entries);
                     });
                 }

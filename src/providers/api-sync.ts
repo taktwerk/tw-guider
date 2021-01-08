@@ -1,3 +1,4 @@
+import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { GuiderModel } from './../models/db/api/guider-model';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
@@ -39,7 +40,7 @@ export class ApiSync {
     public syncData: any;
     public lastModelUpdatedAt: any;
 
-    public guideViewHistories: any;
+    // public guideViewHistories: any;
     /**
      * Contains all services to sync.
      * Use for each service a key that matches the received key from the API in 'models'.
@@ -60,7 +61,8 @@ export class ApiSync {
         workflow_step: this.workflowStepService,
         workflow_transition: this.workflowTransitionService,
         protocol_comment: this.protocolCommentService,
-        feedback: this.feedbackService
+        feedback: this.feedbackService,
+        guide_view_history: this.guideViewHistoryService
     };
 
     isStartSyncBehaviorSubject: BehaviorSubject<boolean>;
@@ -88,7 +90,8 @@ export class ApiSync {
         protocol_default: this.protocolDefaultService,
         protocol_comment: this.protocolCommentService,
         feedback: this.feedbackService,
-        guide_step: this.guideStepService
+        guide_step: this.guideStepService,
+        guide_view_history: this.guideViewHistoryService
     };
 
     allServicesBodiesForPush: any;
@@ -120,7 +123,8 @@ export class ApiSync {
         private protocolDefaultService: ProtocolDefaultService,
         private protocolCommentService: ProtocolCommentService,
         private workflowTransitionService: WorkflowTransitionService,
-        private guideChildService: GuideChildService
+        private guideChildService: GuideChildService,
+        private guideViewHistoryService: GuideViewHistoryService
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);
@@ -141,8 +145,6 @@ export class ApiSync {
 
         this.init();
         this.initializeEvents();
-
-
     }
 
     initializeEvents() {
@@ -190,7 +192,6 @@ export class ApiSync {
 
     private getUTCDate(date: Date) {
         // date.setTime(date.getTime());
-
         return new Date(
             Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds())
         );
@@ -284,9 +285,9 @@ export class ApiSync {
             this.isBusy = false;
             this.noDataForSync.next(true);
 
-            console.log("syncedItemsPercent ", this.userService.userDb.userSetting.syncPercent)
-            console.log("syncedItemsCount ", this.userService.userDb.userSetting.syncLastElementNumber)
-            console.log("syncAllItemsCount ", this.userService.userDb.userSetting.syncAllItemsCount)
+            // console.log("syncedItemsPercent ", this.userService.userDb.userSetting.syncPercent)
+            // console.log("syncedItemsCount ", this.userService.userDb.userSetting.syncLastElementNumber)
+            // console.log("syncAllItemsCount ", this.userService.userDb.userSetting.syncAllItemsCount)
 
             return false;
         }
@@ -304,9 +305,9 @@ export class ApiSync {
             this.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
         }
 
-        console.log("syncedItemsPercent ", this.userService.userDb.userSetting.syncPercent)
-        console.log("syncedItemsCount ", this.userService.userDb.userSetting.syncLastElementNumber)
-        console.log("syncAllItemsCount ", this.userService.userDb.userSetting.syncAllItemsCount)
+        // console.log("syncedItemsPercent ", this.userService.userDb.userSetting.syncPercent)
+        // console.log("syncedItemsCount ", this.userService.userDb.userSetting.syncLastElementNumber)
+        // console.log("syncAllItemsCount ", this.userService.userDb.userSetting.syncAllItemsCount)
         this.isStartSyncBehaviorSubject.next(true);
         return true;
     }
@@ -376,9 +377,9 @@ export class ApiSync {
             this.sendSyncProgress();
             //  console.log('is all items synced');
         }
-        console.log("syncedItemsPercent ", this.userService.userDb.userSetting.syncPercent)
-        console.log("syncedItemsCount ", this.userService.userDb.userSetting.syncLastElementNumber)
-        console.log("syncAllItemsCount ", this.userService.userDb.userSetting.syncAllItemsCount)
+        // console.log("syncedItemsPercent ", this.userService.userDb.userSetting.syncPercent)
+        // console.log("syncedItemsCount ", this.userService.userDb.userSetting.syncLastElementNumber)
+        // console.log("syncAllItemsCount ", this.userService.userDb.userSetting.syncAllItemsCount)
 
         return this.userService.userDb.save().then(() => {
             // this.sendSyncProgress();
@@ -585,7 +586,7 @@ export class ApiSync {
                     }
 
                     const pullData = await this.http.get(this.getSyncUrl()).toPromise();
-                    this.guideViewHistories = pullData.models.guide_view_history;
+                    // this.guideViewHistories = pullData.models.guide_view_history;
                     console.log('pullData', pullData);
 
                     if (!pullData.syncProcessId) {
@@ -656,87 +657,88 @@ export class ApiSync {
     /**
      * Returns history for all Guides
      */
-    getGuideViewHistories(): Promise<any> {
-        return new Promise(async resolve => {
-            this.http.get(this.getSyncUrl()).subscribe(async (res) => {
-                this.guideViewHistories = res.models.guide_view_history;
-                resolve(this.guideViewHistories);
-            })
-        })
-    }
+    // getGuideViewHistories(): Promise<any> {
+    //     return new Promise(async resolve => {
+    //         this.http.get(this.getSyncUrl()).subscribe(async (res) => {
+    //             this.guideViewHistories = res.models.guide_view_history;
+    //             console.log(res)
+    //             resolve(this.guideViewHistories);
+    //         })
+    //     })
+    // }
 
     /**
      * Returns history for single Guide
      */
-    getGuideViewHistory(id): Promise<any> {
-        return new Promise(async resolve => {
-            this.getGuideViewHistories().then((res) => {
-                console.log(res)
-                const guideHistory = res.filter(h => h.guide_id == id);
-                resolve(guideHistory);
-            })
-        })
-    }
+    // getGuideViewHistory(id): Promise<any> {
+    //     return new Promise(async resolve => {
+    //         this.getGuideViewHistories().then((res) => {
+    //             console.log(res)
+    //             const guideHistory = res.filter(h => h.guide_id == id);
+    //             resolve(guideHistory);
+    //         })
+    //     })
+    // }
 
-    public async saveGuideHistory(guide_id, last_seen_step) {
-        console.log(guide_id)
-        this.getGuideViewHistory(guide_id).then(async (res) => {
-            console.log(res)
+    // public async saveGuideHistory(guide_id, last_seen_step) {
+    //     console.log(guide_id)
+    //     this.getGuideViewHistory(guide_id).then(async (res) => {
+    //         console.log(res)
 
-            let history = res[0];
-            let stepHistory = {};
-            let Url = "";
-            console.log("Guide History " + history)
+    //         let history = res[0];
+    //         let stepHistory = {};
+    //         let Url = "";
+    //         console.log("Guide History " + history)
 
-            // existing history
-            if (history != undefined) {
-                stepHistory = {
-                    client_id: history.client_id,
-                    created_at: history.created_at,
-                    deleted_at: history.deleted_at,
-                    deleted_by: history.deleted_by,
-                    guide_id: history.guide_id,
-                    id: history.id,
-                    metadata: { step_order_number: last_seen_step },
-                    updated_at: this.getUTCDate(new Date),
-                    updated_by: history.updated_by,
-                    user_id: history.user_id
-                }
-                Url = this.appSetting.getApiUrl() + '/guide/view-history/' + history.guide_id;
-            }
-            else {
-                // new history
-                stepHistory = {
-                    client_id: (await this.userService.getUser()).id,
-                    created_at: this.getUTCDate(new Date),
-                    deleted_at: false,
-                    deleted_by: null,
-                    guide_id: guide_id,
-                    id: null,
-                    metadata: { step_order_number: last_seen_step },
-                    updated_at: this.getUTCDate(new Date),
-                    updated_by: (await this.userService.getUser()).id,
-                    user_id: (await this.userService.getUser()).id
-                }
-                Url = this.appSetting.getApiUrl() + '/guide/view-history/' + guide_id;
-            }
+    //         // existing history
+    //         if (history != undefined) {
+    //             stepHistory = {
+    //                 client_id: history.client_id,
+    //                 created_at: history.created_at,
+    //                 deleted_at: history.deleted_at,
+    //                 deleted_by: history.deleted_by,
+    //                 guide_id: history.guide_id,
+    //                 id: history.id,
+    //                 metadata: { step_order_number: last_seen_step },
+    //                 updated_at: this.getUTCDate(new Date),
+    //                 updated_by: history.updated_by,
+    //                 user_id: history.user_id
+    //             }
+    //             Url = this.appSetting.getApiUrl() + '/guide/view-history/' + history.guide_id;
+    //         }
+    //         else {
+    //             // new history
+    //             stepHistory = {
+    //                 client_id: (await this.userService.getUser()).id,
+    //                 created_at: this.getUTCDate(new Date),
+    //                 deleted_at: false,
+    //                 deleted_by: null,
+    //                 guide_id: guide_id,
+    //                 id: null,
+    //                 metadata: { step_order_number: last_seen_step },
+    //                 updated_at: this.getUTCDate(new Date),
+    //                 updated_by: (await this.userService.getUser()).id,
+    //                 user_id: (await this.userService.getUser()).id
+    //             }
+    //             Url = this.appSetting.getApiUrl() + '/guide/view-history/' + guide_id;
+    //         }
 
-            console.log("Step History " + stepHistory)
+    //         console.log("Step History " + stepHistory)
 
-            console.log("Api Url >> " + Url)
+    //         console.log("Api Url >> " + Url)
 
-            const jsonBody = JSON.stringify(stepHistory);
-            console.log("jsonBody " + jsonBody)
+    //         const jsonBody = JSON.stringify(stepHistory);
+    //         console.log("jsonBody " + jsonBody)
 
-            this.http.post(Url, stepHistory).subscribe((response) => {
-                console.log(response)
-                return;
-            }, (err) => {
-                console.log(err)
-                return;
-            });
-        })
-    }
+    //         this.http.post(Url, stepHistory).subscribe((response) => {
+    //             console.log(response)
+    //             return;
+    //         }, (err) => {
+    //             console.log(err)
+    //             return;
+    //         });
+    //     })
+    // }
 
     public unsetSyncProgressData(): Promise<true> {
         return new Promise(resolve => {

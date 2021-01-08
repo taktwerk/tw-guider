@@ -83,7 +83,6 @@ export class GuiderModel extends DbApiModel {
 
     public migrations = ['AddCreatedTermAndUpdatedTermToGuideTableMigration'];
 
-
     /**
      * @inheritDoc
      */

@@ -106,6 +106,7 @@ import { SQLite } from '@ionic-native/sqlite/ngx';
 
 import { CKEditorComponent } from 'src/components/ckeditor/ckeditor.page';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 
 
 export function LanguageLoader(http: Http) {
@@ -171,7 +172,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     StatusBar,
     SplashScreen,
     GuiderService,
-    GuiderService,
+    GuideViewHistoryService,
     GuideCategoryService,
     GuideCategoryBindingService,
     GuideStepService,

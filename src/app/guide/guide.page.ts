@@ -1,3 +1,4 @@
+import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { Subscription } from 'rxjs/Subscription';
 import { MiscService } from './../../services/misc-service';
 import { ApiSync } from 'src/providers/api-sync';
@@ -8,14 +9,13 @@ import {
   ChangeDetectorRef,
   Component, ComponentFactoryResolver, NgZone,
   Input,
-  OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef, ApplicationRef, Injector, ElementRef, Renderer2, OnDestroy, HostListener
+  OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef, ElementRef, OnDestroy, HostListener
 } from '@angular/core';
 import { GuiderService } from '../../providers/api/guider-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { GuideStepService } from '../../providers/api/guide-step-service';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
-import { File } from '@ionic-native/file/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Events, IonBackButtonDelegate, IonSlides, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
@@ -113,6 +113,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     private componentResolver: ComponentFactoryResolver,
     private toast: ToastController,
     private miscService: MiscService,
+    private guideViewHistoryService: GuideViewHistoryService
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -268,19 +269,16 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       this.guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
-
-      // resume slide at
-      this.apiSync.getGuideViewHistory(this.guideId).then(async (res) => {
-        this.guideViewHistory = res[0];
-        console.log(this.guideViewHistory)
-
-        if (this.guideViewHistory && this.guideViewHistory.metadata != undefined) {
-          this.guideStepSlides.slideTo(this.guideViewHistory.metadata.step_order_number).then(() => {
-            this.toast.create({ message: 'Resume', duration: 1000 });
-          })
-        }
-      })
     });
+  }
+
+  public resumeStep(id) {
+    // resume slide at
+    console.log("guide history")
+    this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]).then(async results => {
+      console.log("guide history", results);
+    })
+
   }
 
   public setAssets(id) {
@@ -317,7 +315,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       const guiderById = await this.guiderService.getById(this.guideId);
       if (guiderById.length) {
         this.guide = guiderById[0];
-        await this.setGuideSteps(this.guide.idApi);
+        await this.setGuideSteps(this.guide.idApi).then(() => this.resumeStep(this.guide.idApi))
         await this.setAssets(this.guide.idApi);
         this.detectChanges();
       }
@@ -494,7 +492,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           this.hasPrevious = false;
         }
       }
-
     })
 
     this.guideStepSlides.isEnd().then((res) => {
@@ -549,8 +546,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   ionViewWillLeave() {
     this.guideStepSlides.getActiveIndex().then(index => {
-      console.log(index)
-      this.apiSync.saveGuideHistory(this.guideId, index);
+      // save last seen step
     })
   }
 
