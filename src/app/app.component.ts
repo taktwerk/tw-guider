@@ -1,29 +1,25 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy } from '@angular/core';
-
-import { Events, NavController, Platform } from '@ionic/angular';
-// import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AlertController, Events, IonRouterOutlet, NavController, Platform } from '@ionic/angular';
 import { ApiSync } from '../providers/api-sync';
 import { MigrationProvider } from '../providers/migration-provider';
 import { AuthService } from '../services/auth-service';
-import { AuthDb } from '../models/db/auth-db';
 import { Network } from '@ionic-native/network/ngx';
-import { HttpClient } from '../services/http-client';
 import { SyncService } from '../services/sync-service';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/interval';
 import { UserDb } from '../models/db/user-db';
-import { DbProvider } from '../providers/db-provider';
-import { DownloadService } from '../services/download-service';
 import { TranslateConfigService } from '../services/translate-config.service';
 import { AppSetting } from '../services/app-setting';
 import { UserService } from '../services/user-service';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import * as THREE from 'three';
+
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+
 
 import { Plugins } from '@capacitor/core';
+import { AuthDb } from 'src/models/db/auth-db';
 
-const { SplashScreen } = Plugins;
+const { SplashScreen, App } = Plugins;
 
 export enum ConnectionStatusEnum {
   Online,
@@ -43,23 +39,21 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private platform: Platform,
-    private statusBar: StatusBar,
     private events: Events,
     private apiSync: ApiSync,
     private authService: AuthService,
     private network: Network,
-    private http: HttpClient,
     private syncService: SyncService,
-    private downloadService: DownloadService,
-    private db: DbProvider,
     private translateConfigService: TranslateConfigService,
     private changeDetectorRef: ChangeDetectorRef,
     private appSetting: AppSetting,
     private userService: UserService,
-    private appVersion: AppVersion,
     public navCtrl: NavController,
     private ngZone: NgZone,
-    private migrationProvider: MigrationProvider
+    private migrationProvider: MigrationProvider,
+    private router: Router,
+    private alertController: AlertController,
+    private location: Location
   ) {
     (async () => {
       await this.platform.ready();
@@ -75,16 +69,56 @@ export class AppComponent implements OnInit, OnDestroy {
   periodicSync: any;
   checkAvailableSyncChanges: any;
 
+  // hardware back button
+  @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
+
+  backButtonEvent() {
+    this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
+      this.routerOutlets.forEach(async (r) => {
+        console.log(this.router.url)
+        console.log(r)
+        // if (this.router.url != '/guide-categories') {
+        if (!r.canGoBack()) {
+          this.presentAlertConfirm();
+        }
+        else {
+          this.location.back();
+        }
+      });
+    });
+  }
+
+  async presentAlertConfirm() {
+    const alert = await this.alertController.create({
+      header: 'Are you sure you want to exit the app?',
+      // message: '',
+      buttons: [{
+        text: 'Cancel',
+        role: 'cancel',
+        cssClass: 'secondary',
+        handler: () => { }
+      }, {
+        text: 'Close App',
+        handler: () => {
+          App.exitApp();
+        }
+      }]
+    });
+
+    await alert.present();
+  }
+
+
+
   //// TODO in future save device info via API in this place
   async initializeApp() {
     this.platform.ready().then(async () => {
 
-      setTimeout(()=>{
+      setTimeout(() => {
         SplashScreen.hide({
           fadeOutDuration: 1000
         });
       }, 2000)
-     
 
       await this.migrationProvider.init();
 
@@ -143,9 +177,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.setPages();
       this.initNetwork();
       this.registerEvents();
-
-      //  this.statusBar.overlaysWebView(false);
-      //  this.statusBar.show();
     })
 
   }
