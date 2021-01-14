@@ -73,7 +73,9 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
 
   backButtonEvent() {
-    this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
+    // this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
+    this.platform.backButton.subscribeWithPriority(10, () => {
+
       this.routerOutlets.forEach(async (r) => {
         console.log(this.router.url)
         console.log(r)
