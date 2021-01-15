@@ -535,6 +535,11 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           this.hasNext = false;
         }
       }
+    });
+
+    // save last seen step
+    this.guideStepSlides.getActiveIndex().then(index => {
+      this.saveStep();
     })
   }
 
@@ -576,10 +581,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   ionViewWillLeave() {
-    this.guideStepSlides.getActiveIndex().then(index => {
-      // save last seen step
-      this.saveStep();
-    })
+
   }
 
   backToCollection() {
