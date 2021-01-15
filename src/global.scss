@@ -240,11 +240,9 @@ ion-thumbnail {
 }
 
 .swiper-pagination.swiper-pagination-bullets {
-  display: flex !important;
+  display: none !important;
 }
 
 .swiper-pagination-bullet {
-  border-radius: 0 !important;
-  height: 1px !important;
-  width: 100% !important;
+   display: none !important;
 }
