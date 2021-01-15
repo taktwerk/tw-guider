@@ -238,3 +238,13 @@ ion-thumbnail {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
+
+.swiper-pagination.swiper-pagination-bullets {
+  display: flex !important;
+}
+
+.swiper-pagination-bullet {
+  border-radius: 0 !important;
+  height: 1px !important;
+  width: 100% !important;
+}

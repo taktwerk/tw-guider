@@ -18,7 +18,7 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { GuideStepService } from '../../providers/api/guide-step-service';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { Events, IonBackButtonDelegate, IonSlides, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { Events, IonBackButtonDelegate, IonContent, IonSlides, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
 import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
@@ -54,6 +54,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   @Input() categoryId: number;
 
   @Input() guides: GuiderModel[] = [];
+
+  @ViewChild(IonContent, { static: false }) content: IonContent;
 
   isInitStepSlider = false;
 
@@ -587,6 +589,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       },
     };
     this.router.navigate(['/guide-collection/' + this.parentCollectionId], feedbackNavigationExtras);
+  }
+
+  onScrollTop() {
+    this.content.scrollToTop(800);
   }
 
   @HostListener('unloaded')
