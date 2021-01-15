@@ -161,7 +161,7 @@ export class GuidestepAddEditPage implements OnInit {
       if (this.action == "add") {
         this.model.local_guide_id = this.guide[this.guide.COL_ID];
         this.model.guide_id = this.guide.idApi
-        console.log(this.model)   
+        console.log(this.model)
       }
     }
   }
@@ -195,7 +195,7 @@ export class GuidestepAddEditPage implements OnInit {
   async save() {
     console.log(this.model)
     const user = await this.authService.getLastUser();
-    if (!user) { return; }
+    if (!user) { return; }  
     // save new step
     if (this.action == 'add') {
       if (!this.model.order_number) { this.model.order_number = this.guideSteps.length + 1; }

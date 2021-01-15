@@ -198,7 +198,8 @@
     "model_was_saved": "{{ model }} was saved",
     "model_was_deleted": "{{ model }} was deleted",
     "are_you_sure_delete_model": "Are you sure to delete this entry?",
-    "are_you_sure_go_back": "There are changes"
+    "are_you_sure_go_back": "There are changes",
+    "resumed":"Resumed"
   },
   "guider": {
     "header": "Guide Capture",

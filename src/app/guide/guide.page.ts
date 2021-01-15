@@ -1,3 +1,4 @@
+import { GuideViewHistoryModel } from 'src/models/db/api/guide-view-history-model';
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { Subscription } from 'rxjs/Subscription';
 import { MiscService } from './../../services/misc-service';
@@ -33,6 +34,8 @@ import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { Viewer3dService } from "../../services/viewer-3d-service";
 import { GuideStepContentComponent } from "../../components/guide-step-content-component/guide-step-content-component";
 import { PopoverController } from '@ionic/angular';
+import { TranslateConfigService } from 'src/services/translate-config.service';
+import { HttpClient } from 'src/services/http-client';
 
 @Component({
   selector: 'app-guide',
@@ -69,6 +72,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   public guideId: number = null;
   public guideSteps: GuideStepModel[] = [];
   public guideAssets: GuideAssetModel[] = [];
+  public guideViewHistory: GuideViewHistoryModel = this.guideViewHistoryService.newModel();
+  public guideHistories: GuideViewHistoryModel[] = [];
 
   public guideParent: GuiderModel;
   public guideCollection: GuiderModel
@@ -79,14 +84,14 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   public virtualGuideStepSlides = [];
   public params;
 
-
-  public guideViewHistory: any;
   guideIndex: number = null;
   restartSub: Subscription;
   hasPrevious = false;
   hasNext = false;
 
   constructor(
+    public http: HttpClient,
+    private translateConfigService: TranslateConfigService,
     private elementRef: ElementRef,
     private apiSync: ApiSync,
     private popoverController: PopoverController,
@@ -272,13 +277,33 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     });
   }
 
-  public resumeStep(id) {
-    // resume slide at
-    console.log("guide history")
-    this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]).then(async results => {
-      console.log("guide history", results);
-    })
+  public async resumeStep(id) {
+    console.log("guideViewHistory", this.guideViewHistory)
+    this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]);
+    // in collection
+    if (this.parentCollectionId) {
+      this.guideViewHistory = this.guideHistories.filter(h => h.parent_guide_id != undefined).sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate())[0];
+    }
+    else {
+      this.guideViewHistory = this.guideHistories.sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate()).filter((h: GuideViewHistoryModel) => !h.parent_guide_id)[0];
+    }
+    this.guideStepSlides.slideTo(this.guideViewHistory.step);
+  }
 
+  public async saveStep() {
+    const user = await this.authService.getLastUser();
+    if (!user) { return; }
+    // update
+    this.guideViewHistory.client_id = this.guide.client_id;
+    this.guideViewHistory.user_id = user.userId;
+    this.guideViewHistory.guide_id = this.guide.idApi;
+    this.guideViewHistory.step = await this.guideStepSlides.getActiveIndex();
+
+    this.guideViewHistoryService.save(this.guideViewHistory).then(async () => {
+      this.apiSync.setIsPushAvailableData(true);
+      const alertMessage = await this.translateConfigService.translate('alert.resumed');
+      this.http.showToast(alertMessage);
+    })
   }
 
   public setAssets(id) {
@@ -315,13 +340,14 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       const guiderById = await this.guiderService.getById(this.guideId);
       if (guiderById.length) {
         this.guide = guiderById[0];
-        await this.setGuideSteps(this.guide.idApi).then(() => this.resumeStep(this.guide.idApi))
+        await this.setGuideSteps(this.guide.idApi);
         await this.setAssets(this.guide.idApi);
         this.detectChanges();
       }
     }
     loader.dismiss();
     this.isLoadedContent = true;
+    this.resumeStep(this.guide.idApi);
 
     this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async () => {
       if (this.guide) {
@@ -547,6 +573,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   ionViewWillLeave() {
     this.guideStepSlides.getActiveIndex().then(index => {
       // save last seen step
+      this.saveStep();
     })
   }
 

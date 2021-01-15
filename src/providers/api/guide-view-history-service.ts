@@ -13,7 +13,8 @@ import { GuideViewHistoryModel } from 'src/models/db/api/guide-view-history-mode
 @Injectable()
 export class GuideViewHistoryService extends ApiService {
     data: GuideViewHistoryModel[] = [];
-    loadUrl = '/guide-view-history';
+    loadUrl = '/guide/view-history';
+
     dbModelApi: GuideViewHistoryModel = new GuideViewHistoryModel(this.p, this.db, this.events, this.downloadService);
 
     /**
