@@ -195,7 +195,8 @@
     "model_was_deleted": "{{ model }} wurde gelöscht",
     "are_you_sure_delete_model": "Sind Sie sicher, diesen Eintrag zu löschen?",
     "are_you_sure_go_back": "Es gibt Änderungen",
-    "resumed":"Wieder aufgenommen"
+    "resumed":"Wieder aufgenommen",
+    "saved":"Gerettet"
   },
   "guider": {
     "header": "Guide Erfassung",

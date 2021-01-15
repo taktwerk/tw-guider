@@ -287,7 +287,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     else {
       this.guideViewHistory = this.guideHistories.sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate()).filter((h: GuideViewHistoryModel) => !h.parent_guide_id)[0];
     }
-    this.guideStepSlides.slideTo(this.guideViewHistory.step);
+    this.guideStepSlides.slideTo(this.guideViewHistory.step).then(async () => {
+      const alertMessage = await this.translateConfigService.translate('alert.resumed');
+      this.http.showToast(alertMessage);
+    });
   }
 
   public async saveStep() {
@@ -301,7 +304,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
     this.guideViewHistoryService.save(this.guideViewHistory).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
-      const alertMessage = await this.translateConfigService.translate('alert.resumed');
+      const alertMessage = await this.translateConfigService.translate('alert.saved');
       this.http.showToast(alertMessage);
     })
   }
