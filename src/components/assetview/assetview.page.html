@@ -78,14 +78,17 @@
 
     <!-- 3d model -->
     <div *ngIf="model.is3dFile()" class="inner_wrapper" style="width:100%; width:100%">
-        <fa-icon [icon]="faExpand" *ngIf="!isthumbnail"
-            (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
-            style="position: absolute; bottom: 0; right: 0;"></fa-icon>
-
         <fa-icon [icon]="faCubes" *ngIf="isthumbnail" class="thumbnail__icon"></fa-icon>
 
+        <div (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)"
+            class="preview_3D_overlay">
+        </div>
         <viewer-3d-model-component *ngIf="!isthumbnail" [fileName]="model.getFilePath()" [backgroundColor]="null"
-            [fullScreen]="false" [madeUserIteractions]="false" [willStopRotate]="false"></viewer-3d-model-component>
+            [fullScreen]="false" [madeUserIteractions]="false" [willStopRotate]="false">
+        </viewer-3d-model-component>
+
+
+
     </div>
 
     <!-- text -->

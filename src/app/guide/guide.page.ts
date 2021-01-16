@@ -306,8 +306,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
     this.guideViewHistoryService.save(this.guideViewHistory).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
-      const alertMessage = await this.translateConfigService.translate('alert.saved');
-      this.http.showToast(alertMessage);
+      // const alertMessage = await this.translateConfigService.translate('alert.saved');
+      // this.http.showToast(alertMessage);
     })
   }
 

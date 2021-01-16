@@ -23,13 +23,6 @@ import { createGesture, Gesture, GestureDetail } from '@ionic/core';
 import { Storage } from '@ionic/storage';
 import { Viewer3dService } from "../../services/viewer-3d-service";
 
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-
 const { Filesystem } = Plugins;
 
 @Component({
