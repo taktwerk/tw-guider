@@ -28,6 +28,6 @@ export class GuideinfoPage implements OnInit {
 
   dismiss() {
     this.modalController.dismiss({ 'dismissed': true, 'guideId': this.guideId });
-    this.router.navigate(['/guide/' + this.guide.idApi]);
+    // this.router.navigate(['/guide/' + this.guide.idApi]);
   }
 }

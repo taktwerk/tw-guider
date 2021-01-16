@@ -1,9 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
 
 import { AuthService } from '../../services/auth-service';
 import { AppSetting } from '../../services/app-setting';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
+import { ModalController, PopoverController } from '@ionic/angular';
 
 @Component({
   selector: 'guide-list-component',
@@ -21,6 +23,9 @@ export class GuideListComponent implements OnInit {
   displayLimit = 10;
 
   constructor(
+    private popoverController: PopoverController,
+
+    private modalController: ModalController,
     private authService: AuthService,
     private router: Router,
     public appSetting: AppSetting) {
@@ -92,5 +97,17 @@ export class GuideListComponent implements OnInit {
 
   trackByFn(item: GuiderModel) {
     return item.idApi;
+  }
+
+  async presentGuideInfo(guideId) {
+    const modal = await this.modalController.create({
+      component: GuideinfoPage,
+      componentProps: {
+        'guideId': guideId
+      },
+      cssClass: "modal-fullscreen"
+    });
+    this.popoverController.dismiss();
+    return await modal.present();
   }
 }

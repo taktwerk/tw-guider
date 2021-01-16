@@ -1,13 +1,14 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit} from '@angular/core';
-import {GuideCategoryService} from '../../providers/api/guide-category-service';
-import {GuiderService} from '../../providers/api/guider-service';
-import {GuiderModel} from '../../models/db/api/guider-model';
-import {AuthService} from '../../services/auth-service';
-import {GuideCategoryModel} from '../../models/db/api/guide-category-model';
-import {Events, LoadingController} from '@ionic/angular';
-import {GuideCategoryBindingService} from '../../providers/api/guide-category-binding-service';
-import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
-import {NavigationExtras, Router} from '@angular/router';
+import { AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit } from '@angular/core';
+import { GuideCategoryService } from '../../providers/api/guide-category-service';
+import { GuiderService } from '../../providers/api/guider-service';
+import { GuiderModel } from '../../models/db/api/guider-model';
+import { AuthService } from '../../services/auth-service';
+import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
+import { Events, LoadingController, ModalController, PopoverController } from '@ionic/angular';
+import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
+import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
+import { NavigationExtras, Router } from '@angular/router';
+import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
 
 @Component({
   selector: 'app-list',
@@ -23,20 +24,23 @@ export class ListPage implements OnInit {
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(
-      private guideCategoryBindingService: GuideCategoryBindingService,
-      private guideCategoryService: GuideCategoryService,
-      private guiderService: GuiderService,
-      private protocolTemplateService: ProtocolTemplateService,
-      public authService: AuthService,
-      public events: Events,
-      public changeDetectorRef: ChangeDetectorRef,
-      private router: Router,
-      private loader: LoadingController
+    private guideCategoryBindingService: GuideCategoryBindingService,
+    private guideCategoryService: GuideCategoryService,
+    private guiderService: GuiderService,
+    private protocolTemplateService: ProtocolTemplateService,
+    public authService: AuthService,
+    public events: Events,
+    public changeDetectorRef: ChangeDetectorRef,
+    private router: Router,
+    private loader: LoadingController,
+    private modalController: ModalController,
+    private popoverController: PopoverController,
+
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
       if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') ||
-          this.authService.auth.isAuthority
+        this.authService.auth.isAuthority
       ) {
         this.haveProtocolPermissions = true;
       }
@@ -63,8 +67,8 @@ export class ListPage implements OnInit {
 
   async findAllGuideCategories() {
     this.guideCategories = this.searchValue ?
-        await this.guideCategoryService.findByGuides(this.searchValue) :
-        await this.guideCategoryService.findAll();
+      await this.guideCategoryService.findByGuides(this.searchValue) :
+      await this.guideCategoryService.findAll();
     for (let i = 0; i < this.guideCategories.length; i++) {
       this.guideCategories[i].guides = await this.guideCategoryService.getGuides(this.guideCategories[i].idApi, this.searchValue);
     }

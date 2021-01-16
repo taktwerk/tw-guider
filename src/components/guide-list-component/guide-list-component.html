@@ -11,6 +11,11 @@
         </div>
         <ion-card-header>
           <ion-card-title>{{item.title}}</ion-card-title>
+          <ion-buttons style="position: absolute; right: 0; top: 0;margin: 8px;">
+            <ion-button (click)="presentGuideInfo(item.idApi)">
+              <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+            </ion-button>
+          </ion-buttons>
         </ion-card-header>
         <ion-card-content>
           <div class="guide-info" margin-bottom>
