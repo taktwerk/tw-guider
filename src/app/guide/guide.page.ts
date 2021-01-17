@@ -594,7 +594,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   onScrollTop() {
-    this.content.scrollToTop(800);
+    this.content.scrollToTop();
   }
 
   @HostListener('unloaded')
