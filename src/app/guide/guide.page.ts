@@ -580,9 +580,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     return await popover.present();
   }
 
-  ionViewWillLeave() {
-
-  }
+  ionViewWillLeave() {}
 
   backToCollection() {
     const feedbackNavigationExtras: NavigationExtras = {
@@ -594,7 +592,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   onScrollTop() {
-    this.content.scrollToTop();
+    this.content.scrollToTop(1000);
   }
 
   @HostListener('unloaded')
