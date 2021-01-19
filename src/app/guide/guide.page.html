@@ -47,7 +47,7 @@
         </ion-slide>
       </ion-slides>
 
-      <div *ngIf="guideAssets.length" class="guide-assets">
+      <div *ngIf="guideAssets.length" class="guide-assets" #assetSection>
         <ion-card class="ion-no-padding">
           <ion-item class="asset-item" lines="none" button (click)="onScrollTop()">
             <ion-icon name="information-circle" slot="start"></ion-icon>

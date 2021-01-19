@@ -56,6 +56,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   @Input() guides: GuiderModel[] = [];
 
   @ViewChild(IonContent, { static: false }) content: IonContent;
+  @ViewChild('assetSection', { static: false }) assetSection: any;
 
   isInitStepSlider = false;
 
@@ -580,7 +581,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     return await popover.present();
   }
 
-  ionViewWillLeave() {}
+  ionViewWillLeave() { }
 
   backToCollection() {
     const feedbackNavigationExtras: NavigationExtras = {
@@ -592,7 +593,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   onScrollTop() {
-    this.content.scrollToTop(1000);
+    // let yOffset = document.getElementById("assetSection").offsetTop;
+    this.content.scrollToPoint(0, this.assetSection.nativeElement.offsetTop, 500);
+    // this.content.scrollToTop(1000);
   }
 
   @HostListener('unloaded')
