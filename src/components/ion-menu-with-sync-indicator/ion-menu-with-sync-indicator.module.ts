@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
-import { SyncSpinnerComponent } from './sync-spinner-component';
+import { ionMenuWithSyncIndicator } from './ion-menu-with-sync-indicator';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 
 @NgModule({
   declarations: [
-    SyncSpinnerComponent,
+    ionMenuWithSyncIndicator,
   ],
   imports: [
     CommonModule,
     IonicModule,
   ],
   exports: [
-    SyncSpinnerComponent
+    ionMenuWithSyncIndicator
   ],
 })
-export class SyncSpinnerComponentModule { }
+export class ionMenuWithSyncIndicatorComponentModule { }

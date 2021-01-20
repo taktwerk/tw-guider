@@ -10,6 +10,7 @@ import {MainPipe} from '../../pipes/main-pipe.module';
 import {HtmlDescriptionComponentModule} from '../../components/html-description/html-description-component.module';
 import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
 import {TranslateModule} from '@ngx-translate/core';
+import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
     imports: [
@@ -23,6 +24,8 @@ import {TranslateModule} from '@ngx-translate/core';
             }
         ]),
         SyncSpinnerComponentModule,
+    ionMenuWithSyncIndicatorComponentModule,
+
         MainPipe,
         HtmlDescriptionComponentModule,
         LanguageSelectorComponentModule,

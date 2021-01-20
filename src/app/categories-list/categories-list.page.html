@@ -1,8 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+     <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
+    
     <ion-title> {{ 'guides.header' | translate:params }} </ion-title>
     <sync-spinner-component slot="primary"></sync-spinner-component>
   </ion-toolbar>
@@ -64,7 +65,7 @@
     </div>
   </div>
 
-  <ion-card *ngIf="!isStartSync && guides.length < 1 ">
+  <ion-card *ngIf="!isStartSync && iconStatus !== 'synced'">
     <ion-card-content>
       <ion-label class="align__all_center">
         <h2>{{'sync-modal.Start sync to get data' | translate}}</h2>

@@ -2,12 +2,15 @@
   ion-buttons {
     margin-right: 20px;
   }
+
   ion-spinner {
     font-size: 25px;
   }
+
   .wifi-icon {
     font-size: 25px;
   }
+
   .sync-status {
     margin-left: 5px;
     font-size: 25px;
@@ -15,33 +18,40 @@
 </style>
 
 <ion-buttons *ngIf="isLoggedUser" slot="primary">
-  <div (click)="openSyncModal()"
-       class="sync-status"
-  >
-      <span *ngIf="isAvailableForPushData">
-        <ion-icon color="success" name="send"></ion-icon>
+  <div (click)="openSyncModal()" class="sync-status">
+
+    <span *ngIf="isAvailableForPushData">
+      <ion-icon color="success" name="send"></ion-icon>
+    </span>
+
+    <span *ngIf="appSetting.isEnabledUsb">
+      <ion-icon *ngIf="!isAvailableForPushData" name="laptop"></ion-icon>
+    </span>
+
+    <span *ngIf="!isNetwork && !appSetting.isEnabledUsb">
+      <ion-icon *ngIf="!isAvailableForPushData" name="cloud-outline"></ion-icon>
+    </span>
+
+    <span *ngIf="isNetwork || appSetting.isEnabledUsb">
+
+      <span *ngIf="(isStartSync && iconStatus === 'progress')">
+        <ion-spinner name="lines" color="primary"></ion-spinner>
       </span>
-      <span *ngIf="appSetting.isEnabledUsb">
-          <ion-icon *ngIf="!isAvailableForPushData" name="laptop"></ion-icon>
-      </span>
-      <span *ngIf="!isNetwork && !appSetting.isEnabledUsb">
-          <ion-icon *ngIf="!isAvailableForPushData" name="cloud-outline"></ion-icon>
-      </span>
-      <span *ngIf="isNetwork || appSetting.isEnabledUsb">
-        <span *ngIf="(isStartSync && iconStatus === 'progress')">
-            <ion-spinner name="lines" color="primary"></ion-spinner>
+
+      <span *ngIf="!(isStartSync && iconStatus === 'progress')">
+
+        <span *ngIf="isAvailableForSyncData">
+          <ion-icon color="success" name="sync"></ion-icon>
         </span>
-        <span *ngIf="!(isStartSync && iconStatus === 'progress')">
-          <span *ngIf="isAvailableForSyncData">
-              <ion-icon color="success" name="sync"></ion-icon>
-          </span>
-          <span *ngIf="!isAvailableForSyncData">
-              <ion-icon *ngIf="iconStatus === 'synced'" color="success" name="checkmark-circle"></ion-icon>
-              <ion-icon *ngIf="iconStatus === 'pause'" name="pause"></ion-icon>
-              <ion-icon *ngIf="iconStatus === 'failed'" color="danger" name="alert"></ion-icon>
-              <ion-icon *ngIf="!iconStatus" class="wifi-icon" name="wifi"></ion-icon>
-          </span>
+
+        <span *ngIf="!isAvailableForSyncData">
+          <ion-icon *ngIf="iconStatus === 'synced'" color="success" name="checkmark-circle"></ion-icon>
+          <ion-icon *ngIf="iconStatus === 'pause'" name="pause"></ion-icon>
+          <ion-icon *ngIf="iconStatus === 'failed'" color="danger" name="alert"></ion-icon>
+          <ion-icon *ngIf="!iconStatus" class="wifi-icon" name="wifi"></ion-icon>
         </span>
+        
       </span>
+    </span>
   </div>
 </ion-buttons>

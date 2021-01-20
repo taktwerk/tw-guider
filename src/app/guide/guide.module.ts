@@ -16,6 +16,7 @@ import { GuideStepContentComponentModule } from "../../components/guide-step-con
 import { GuideStepContentComponent } from "../../components/guide-step-content-component/guide-step-content-component";
 import { GuideinfoPageModule } from 'src/components/guideinfo/guideinfo.module';
 import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
     declarations: [
@@ -28,6 +29,8 @@ import { AssetviewComponentModule } from 'src/components/assetview/assetview.mod
         RouterModule.forChild([{ path: '', component: GuidePage }]),
         FontAwesomeModule,
         SyncSpinnerComponentModule,
+        ionMenuWithSyncIndicatorComponentModule,
+
         HtmlDescriptionComponentModule,
         MainPipe,
         LanguageSelectorComponentModule,

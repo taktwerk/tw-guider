@@ -15,6 +15,7 @@ import { HtmlDescriptionComponentModule } from 'src/components/html-description/
 import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-component/viewer-3d-model-component.module';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   imports: [
@@ -24,6 +25,8 @@ import { AssetviewComponentModule } from 'src/components/assetview/assetview.mod
     GuidestepAddEditPageRoutingModule,
     TranslateModule,
     SyncSpinnerComponentModule,
+    ionMenuWithSyncIndicatorComponentModule,
+
     FontAwesomeModule,
     Viewer3dModelComponentModule,
     HtmlDescriptionComponentModule,

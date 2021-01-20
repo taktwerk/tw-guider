@@ -107,6 +107,7 @@ import { SQLite } from '@ionic-native/sqlite/ngx';
 import { CKEditorComponent } from 'src/components/ckeditor/ckeditor.page';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
+import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 
 export function LanguageLoader(http: Http) {
@@ -155,6 +156,7 @@ Sentry.init({ dsn: environment.sentryDsn });
       }
     }),
     SyncSpinnerComponentModule,
+    ionMenuWithSyncIndicatorComponentModule,
     GuideListComponentModule,
     ListviewComponentModule,
     PdfViewerComponentModule,

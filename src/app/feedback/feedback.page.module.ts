@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MainPipe } from '../../pipes/main-pipe.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,8 @@ import { AssetviewComponentModule } from 'src/components/assetview/assetview.mod
     FormsModule,
     RouterModule.forChild([{ path: '', component: FeedbackPage }]),
     SyncSpinnerComponentModule,
+    ionMenuWithSyncIndicatorComponentModule,
+
     LanguageSelectorComponentModule,
     TranslateModule,
     MainPipe,

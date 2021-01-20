@@ -14,6 +14,7 @@ import { AppSetting } from 'src/services/app-setting';
 import { SyncMode } from 'src/components/synchronization-component/synchronization-component';
 import { SyncService } from 'src/services/sync-service';
 import { SyncModalComponent } from 'src/components/sync-modal-component/sync-modal-component';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-list',
@@ -22,6 +23,8 @@ import { SyncModalComponent } from 'src/components/sync-modal-component/sync-mod
 })
 export class CategoriesListPage implements OnInit {
   public isStartSync = false;
+  public iconStatus: string = 'unsynced';
+
   public modeSync = SyncMode.Manual;
   public syncProgressStatus = 'not_sync';
 
@@ -132,6 +135,34 @@ export class CategoriesListPage implements OnInit {
       this.isStartSync = isSync;
       this.detectChanges();
     });
+    
+    this.apiSync.syncProgressStatus
+    .pipe(debounceTime(500))
+    .subscribe(syncProgressStatus => {
+        switch (syncProgressStatus) {
+            case ('initial'):
+                this.iconStatus = 'unsynced';
+                break;
+            case ('success'):
+                this.iconStatus = 'synced';
+                break;
+            case ('resume'):
+            case ('progress'):
+                this.iconStatus = 'progress';
+                break;
+            case ('pause'):
+                this.iconStatus = 'pause';
+                break;
+            case ('failed'):
+                this.iconStatus = 'failed';
+                break;
+            default:
+                this.iconStatus = null;
+        }
+        this.detectChanges();
+    });
+
+
     this.syncService.syncMode.subscribe((result) => {
       if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
         return;

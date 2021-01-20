@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy, QueryList, ViewChild, ViewChildren, Renderer2 } from '@angular/core';
 import { AlertController, Events, IonRouterOutlet, NavController, Platform } from '@ionic/angular';
 import { ApiSync } from '../providers/api-sync';
 import { MigrationProvider } from '../providers/migration-provider';
@@ -18,6 +18,7 @@ import { Location } from '@angular/common';
 
 import { Plugins } from '@capacitor/core';
 import { AuthDb } from 'src/models/db/auth-db';
+import { debounceTime } from 'rxjs/operators';
 
 const { SplashScreen, App } = Plugins;
 
@@ -53,7 +54,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private migrationProvider: MigrationProvider,
     private router: Router,
     private alertController: AlertController,
-    private location: Location
+    private location: Location,
+    private renderer: Renderer2
   ) {
     (async () => {
       await this.platform.ready();
@@ -238,6 +240,9 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    
+
   }
 
   protected async setPages() {

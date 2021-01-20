@@ -14,10 +14,11 @@ import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
 
 @Component({
-    selector: 'sync-spinner-component',
-    templateUrl: 'sync-spinner-component.html',
+    selector: 'ion-menu-with-sync-indicator',
+    templateUrl: 'ion-menu-with-sync-indicator.html',
+    styleUrls: ['ion-menu-with-sync-indicator.scss']
 })
-export class SyncSpinnerComponent implements OnInit {
+export class ionMenuWithSyncIndicator implements OnInit {
     @Input() shouldOpenPopup = true;
 
     public userDb: UserDb;
@@ -114,7 +115,7 @@ export class SyncSpinnerComponent implements OnInit {
         this.apiSync.isAvailableForPushData.subscribe(isAvailableForPushData => {
             this.isAvailableForPushData = isAvailableForPushData;
         });
-        
+
         this.apiSync.syncProgressStatus
             .pipe(debounceTime(500))
             .subscribe(syncProgressStatus => {
