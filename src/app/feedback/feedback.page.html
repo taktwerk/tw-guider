@@ -13,21 +13,25 @@
 
 <ion-content class="grey-background">
   <ion-item *ngFor="let feedback of feedbackList">
+    
     <ion-thumbnail slot="start">
       <div *ngIf="feedback.attached_file">
         <model-assetcomponent [model]="feedback" isthumbnail="true"></model-assetcomponent>
       </div>
     </ion-thumbnail>
+
     <ion-label>
       <h2><span *ngIf="feedback.title">{{ feedback.title }}</span></h2>
       <p>{{ (feedback.local_created_at || feedback.created_at) | datePipe: 'dd.MM.yyyy hh:mm:ss' }}</p>
       <p>{{ feedback.description }}</p>
       <p>{{ 'Status' | translate:params }} : {{ feedback.status | translate:params }}</p>
     </ion-label>
+
     <ion-button slot="end" fill="clear" *ngIf="feedback.isOpenStatus()"
       (click)="openAddEditPage(feedback[feedback.COL_ID])">
       <ion-icon slot="icon-only" name="create"></ion-icon>
     </ion-button>
+
   </ion-item>
 
   <div *ngIf="!feedbackList.length" [ngStyle]="{'margin': '15px', 'text-align': 'center'}">

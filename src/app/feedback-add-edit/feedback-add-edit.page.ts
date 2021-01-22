@@ -36,6 +36,8 @@ export class FeedbackAddEditPage implements OnInit {
     speed: 400,
     autoHeight: true,
   };
+
+  public reference_title: string;
   public reference_id: number = null;
   public reference_model: string = null;
   public reference_model_alias: string = null;
@@ -264,7 +266,8 @@ export class FeedbackAddEditPage implements OnInit {
       return `Feedback:${this.model.idApi}`;
     }
     if (this.reference_model_alias && this.reference_id) {
-      return `${this.reference_model_alias}:${this.reference_id}`;
+      // return `${this.reference_model_alias}:${this.reference_id}`;
+      return this.reference_title;
     }
     if (this.model[this.model.COL_ID]) {
       return `Feedback:${this.model[this.model.COL_ID]}`;
@@ -277,6 +280,7 @@ export class FeedbackAddEditPage implements OnInit {
     this.activatedRoute.queryParams.subscribe(async (params) => {
       const feedbackData = params;
       this.reference_id = +feedbackData.referenceId;
+      this.reference_title = feedbackData.referenceTitle;
       this.reference_model_alias = feedbackData.referenceModelAlias;
       this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
       console.log('feedback add edit this.reference_model_alias', this.reference_model_alias);

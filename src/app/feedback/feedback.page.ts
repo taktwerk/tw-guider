@@ -19,6 +19,7 @@ import { AudioService } from '../../services/audio-service';
 })
 export class FeedbackPage implements OnInit {
   public backDefaultHref: string;
+  public reference_title: string = '';
   public reference_id: number = null;
   public reference_model: string = null;
   public reference_model_alias: string = null;
@@ -127,6 +128,7 @@ export class FeedbackPage implements OnInit {
         feedbackId,
         referenceModelAlias: this.reference_model_alias,
         referenceId: this.reference_id,
+        referenceTitle: this.reference_title
       },
     };
     this.router.navigate(['/feedback/save/' + feedbackId], feedbackNavigationExtras);
@@ -136,6 +138,7 @@ export class FeedbackPage implements OnInit {
     this.activatedRoute.queryParams.subscribe((params) => {
       const feedbackData = params;
       this.reference_id = +feedbackData.referenceId;
+      this.reference_title = feedbackData.referenceTitle;
       this.reference_model_alias = feedbackData.referenceModelAlias;
       this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
       console.log('feedback page reference_model', this.reference_model);

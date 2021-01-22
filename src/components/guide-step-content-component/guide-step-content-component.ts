@@ -16,12 +16,6 @@ import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-componen
 import { DbProvider } from '../../providers/db-provider';
 import { SafeResourceUrl } from '@angular/platform-browser';
 
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 
 @Component({
   selector: 'guide-step-content-component',
@@ -71,7 +65,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     private viewer3dService: Viewer3dService,
     public navCtrl: NavController,
     private pictureService: PictureService
-  ) {}
+  ) { }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     const filePath = basePath;
@@ -82,8 +76,8 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
 
     const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
 
-    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || 
-    this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
+    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
+      this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
       if (!fileApiUrl) {
         return false;
       }
@@ -97,12 +91,13 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     }
   }
 
-  openFeedback(referenceModelAlias, referenceId) {
+  openFeedback(referenceModelAlias, referenceId, referenceTitle) {
     const feedbackNavigationExtras: NavigationExtras = {
       queryParams: {
         backUrl: this.router.url,
         referenceModelAlias: referenceModelAlias,
         referenceId: referenceId,
+        referenceTitle: referenceTitle
       },
     };
     this.router.navigate(['feedback'], feedbackNavigationExtras);
