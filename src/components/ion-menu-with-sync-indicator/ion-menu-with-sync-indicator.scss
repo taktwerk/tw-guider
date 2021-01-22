@@ -1,13 +1,31 @@
-ion-menu-button.notSynced {
+ion-menu-button {
   &::after {
     content: "";
     display: block;
     height: 10px;
     width: 10px;
-    background: #10dc60;
+    background: #fff;
     position: absolute;
     border-radius: 100%;
     top: 2px;
     right: 7px;
+  }
+}
+
+ion-menu-button.allSynced {
+  &::after {
+    background: green;
+  }
+}
+
+ion-menu-button.dataAvailable {
+  &::after {
+    background: orange;
+  }
+}
+
+ion-menu-button.error {
+  &::after {
+    background: red;
   }
 }
