@@ -21,7 +21,7 @@
   <div (click)="openSyncModal()" class="sync-status">
 
     <span *ngIf="isAvailableForPushData">
-      <ion-icon color="success" name="send"></ion-icon>
+      <ion-icon class="orangeColor" name="send"></ion-icon>
     </span>
 
     <span *ngIf="appSetting.isEnabledUsb">
@@ -41,7 +41,7 @@
       <span *ngIf="!(isStartSync && iconStatus === 'progress')">
 
         <span *ngIf="isAvailableForSyncData">
-          <ion-icon color="success" name="sync"></ion-icon>
+          <ion-icon name="sync" class="orangeColor"></ion-icon>
         </span>
 
         <span *ngIf="!isAvailableForSyncData">
@@ -50,7 +50,7 @@
           <ion-icon *ngIf="iconStatus === 'failed'" color="danger" name="alert"></ion-icon>
           <ion-icon *ngIf="!iconStatus" class="wifi-icon" name="wifi"></ion-icon>
         </span>
-        
+
       </span>
     </span>
   </div>
