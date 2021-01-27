@@ -13,7 +13,9 @@
     "importHelpers": true,
     "target": "es5",
     "preserveSymlinks": true,
-    "types": [ "node" ],
+    "types": [
+      "node"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -21,10 +23,12 @@
       "es2018",
       "dom",
       "es6"
-    ]
+    ],
+     "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
+    "strictInjectionParameters": true,
+   
   }
 }

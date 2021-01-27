@@ -109,6 +109,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
+import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.page';
+
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -121,6 +123,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     AppComponent,
     GuideAssetTextModalComponent,
     CKEditorComponent,
+    ImageEditorComponent,
     SyncModalComponent,
     VideoModalComponent,
     DrawImageModalComponent,
@@ -130,6 +133,7 @@ Sentry.init({ dsn: environment.sentryDsn });
   entryComponents: [
     GuideAssetTextModalComponent,
     CKEditorComponent,
+    ImageEditorComponent,
     SyncModalComponent,
     VideoModalComponent,
     DrawImageModalComponent,

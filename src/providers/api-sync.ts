@@ -929,7 +929,7 @@ export class ApiSync {
             if (this.userService.userDb.userSetting.syncLastElementNumber != this.userService.userDb.userSetting.syncAllItemsCount) {
                 // pause
                 console.log("need to stop or resume and resync data");
-                this.makeSyncPause().then(() => {
+                this.makeSyncPause().then(() => { 
                     this.isBusy = false;
                     // resume
                     this.makeSyncProcess("resume").then(() => {

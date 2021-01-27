@@ -8,6 +8,7 @@ import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset
 import { faExpand, faQuestion, faCubes, faFilePdf, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { ModalController } from '@ionic/angular';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
+import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.page';
 
 @Component({
   selector: 'model-assetcomponent',
@@ -29,6 +30,8 @@ export class AssetviewComponent implements OnInit {
   @Input() preventDefaultClickFunction: boolean = false;
   @Input() solid_icon_color: boolean;
 
+  @Input() mayEditImage: boolean = false;
+  
   filePath3d
 
   faExpand = faExpand;
@@ -48,7 +51,7 @@ export class AssetviewComponent implements OnInit {
     public modalController: ModalController,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     if (!this.preventDefaultClickFunction) {
@@ -91,4 +94,21 @@ export class AssetviewComponent implements OnInit {
     }
   }
 
+
+  async openImageEditor() {
+    const modal = await this.modalController.create({
+      component: ImageEditorComponent,
+      componentProps: {
+        model: this.model
+      },
+      cssClass: "modal-fullscreen",
+    });
+    // modal.onDidDismiss()
+    //   .then((res: any) => {
+    //     if (res != null) {
+    //       this.model.description_html = res.data.data
+    //     }
+    //});
+    return await modal.present();
+  }
 }

@@ -29,7 +29,7 @@
 
 <div class="preview-wrapper" [ngClass]="{'mini':mini}">
     <!-- audio  -->
-    <div *ngIf="model.isAudioFile()" class="inner_wrapper" style="    min-height: 130px;"
+    <div *ngIf="model.isAudioFile()" class="inner_wrapper" style="min-height: 130px;"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
         <img src="model.getFileImagePath()" *ngIf="model.getFileImagePath() !==null">
@@ -59,6 +59,12 @@
 
 
     <!-- image -->
+    <ion-buttons *ngIf="model.isImageFile() && mayEditImage" class="imageEditorIcon">
+        <ion-button (click)="openImageEditor()">
+            <ion-icon name="create"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+
     <div *ngIf="model.isImageFile()" class="inner_wrapper"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
