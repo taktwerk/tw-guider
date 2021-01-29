@@ -4,6 +4,8 @@ import ImageEditor from 'tui-image-editor';
 import { RecordedFile, DownloadService } from 'src/services/download-service';
 import { Filesystem, FilesystemDirectory } from '@capacitor/core';
 import { File } from '@ionic-native/file/ngx';
+import { ApiSync } from 'src/providers/api-sync';
+import { GuideStepService } from 'src/providers/api/guide-step-service';
 
 interface CustomControls {
   name: string
@@ -41,7 +43,10 @@ export class ImageEditorComponent implements OnInit {
       ]
     }
   ]
-  constructor(private modalController: ModalController, private downloadService: DownloadService, private file: File) { }
+  constructor(
+    private guideStepService: GuideStepService,
+    private modalController: ModalController, private downloadService: DownloadService, private file: File, private apiSync: ApiSync,
+  ) { }
 
   ngOnInit() {
     // var FileSaver = require('file-saver');
@@ -123,7 +128,12 @@ export class ImageEditorComponent implements OnInit {
         console.log(res)
         recordedFile.uri = await this.downloadService.getResolvedNativeFilePath(res.nativeURL);
         this.model.setFile(recordedFile);
-        await this.modalController.dismiss();
+
+        this.guideStepService.save(this.model).then(async () => {
+          this.apiSync.setIsPushAvailableData(true);
+          await this.modalController.dismiss();
+        }).catch((e) => console.log(e))
+      
       }).catch((e) => console.log(e))
     })
   }
