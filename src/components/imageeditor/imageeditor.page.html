@@ -13,3 +13,35 @@
 <ion-content>
   <div id="tui-image-editor"></div>
 </ion-content>
+
+
+<ion-footer>
+
+  <ion-toolbar *ngIf="currentControl.name !=null">
+    <ion-buttons>
+      <span *ngFor="let subControl of currentControl.subControls" class="subControlWrapper">
+        <ion-button shape="round" (click)="onSubControl(subControl)"
+          [ngClass]="{'currentControl' :currentSubControl.name == subControl.name}">
+          <ion-icon [name]="subControl.icon"> </ion-icon>
+        </ion-button>
+        <ion-text [ngClass]="{'currentControl' :currentSubControl.name == subControl.name}">{{subControl.name}}
+        </ion-text>
+      </span>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button class="parentControl" shape="round" (click)="onControl(control)" *ngFor="let control of controls"
+        [ngClass]="{'currentControl' :currentControl?.name ==control.name}">
+        <ion-icon [name]="control.icon"> </ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="currentSubControl.name!=null">
+    <ion-buttons slot="primary">
+      <ion-button (click)="closeControl()" style="width: 100%; font-size: 10px; color:#fff">Cancel </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
