@@ -295,8 +295,6 @@ export class GuidestepAddEditPage implements OnInit {
     return await modal.present();
   }
 
-
-
   async showDeleteAlert() {
     const alertMessage = await this.translateConfigService.translate('alert.are_you_sure_delete_model', { model: 'Entry' });
     const alert = await this.alertController.create({

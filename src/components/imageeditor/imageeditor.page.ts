@@ -1,7 +1,9 @@
 import { ModalController } from '@ionic/angular';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import ImageEditor from 'tui-image-editor';
-// import blackTheme from 'black-theme'
+import { RecordedFile, DownloadService } from 'src/services/download-service';
+import { Filesystem, FilesystemDirectory } from '@capacitor/core';
+import { File } from '@ionic-native/file/ngx';
 
 interface CustomControls {
   name: string
@@ -39,7 +41,7 @@ export class ImageEditorComponent implements OnInit {
       ]
     }
   ]
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController, private downloadService: DownloadService, private file: File) { }
 
   ngOnInit() {
     // var FileSaver = require('file-saver');
@@ -80,7 +82,6 @@ export class ImageEditorComponent implements OnInit {
           break;
         default:
       }
-
     }
 
   }
@@ -97,7 +98,55 @@ export class ImageEditorComponent implements OnInit {
   }
 
   async onDone() {
-    await this.modalController.dismiss();
+    var dataURL = this.ImageEditor.toDataURL();
+    var blob = this.base64ToBlob(dataURL);
+
+    const fileName = new Date().getTime() + '.png';
+    const recordedFile = new RecordedFile();
+
+    // const savedFile = await Filesystem.writeFile({
+    //   path: fileName,
+    //   data: dataURL,
+    //   directory: Filesystem.DEFAULT_DIRECTORY
+    // }).then(async (res) => {
+    //   console.log(res)
+    //   // recordedFile.uri = "file:///storage/emulated/0/Android/data/com.taktwerk.twguider2/cache/" + fileName;
+    //   recordedFile.uri = await this.downloadService.getResolvedNativeFilePath('file:///storage/emulated/0/Android/data/com.taktwerk.twguider2/cache/' + fileName);
+    //   console.log(recordedFile)
+    //   this.model.setFile(recordedFile);
+    //   await this.modalController.dismiss();
+    // }).catch((e) => {
+    //   console.log(e)
+    // })
+    this.downloadService.checkTempDir().then((e) => {
+      this.file.writeFile(this.file.dataDirectory + '/_temp', fileName, blob, { replace: true }).then(async (res) => {
+        console.log(res)
+        recordedFile.uri = await this.downloadService.getResolvedNativeFilePath(res.nativeURL);
+        this.model.setFile(recordedFile);
+        await this.modalController.dismiss();
+      }).catch((e) => console.log(e))
+    })
+  }
+
+  base64ToBlob(data) {
+    var rImageType = /data:(image\/.+);base64,/;
+    var mimeString = '';
+    var raw, uInt8Array, i, rawLength;
+
+    raw = data.replace(rImageType, (header, imageType) => {
+      mimeString = imageType;
+      return '';
+    });
+
+    raw = atob(raw);
+    rawLength = raw.length;
+    uInt8Array = new Uint8Array(rawLength);
+
+    for (i = 0; i < rawLength; i += 1) {
+      uInt8Array[i] = raw.charCodeAt(i);
+    }
+
+    return new Blob([uInt8Array], { type: mimeString });
   }
 
   onReady(e) {

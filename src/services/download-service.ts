@@ -324,6 +324,22 @@ export class DownloadService {
     });
   }
 
+  checkTempDir(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.file
+        .checkDir(this.file.dataDirectory, '_temp')
+        .then((_) => {
+          resolve(true);
+        })
+        .catch((err) => {
+          this.file.createDir(this.file.dataDirectory, '_temp', false).then((_) => {
+            resolve(true);
+          });
+        });
+    });
+  }
+
+
   /**
    * Check if a dir exists and delete it if exists.
    *
