@@ -18,6 +18,7 @@ export class RecordedFile {
   uri: string;
   thumbnailUri?: string;
   type?: string;
+  objectProperties: Object[];
 }
 
 const { Filesystem } = Plugins;

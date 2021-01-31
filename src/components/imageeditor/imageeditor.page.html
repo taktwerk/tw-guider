@@ -36,7 +36,11 @@
         [ngClass]="{'currentControl' :currentControl?.name ==control.name}">
         <ion-icon [name]="control.icon"> </ion-icon>
       </ion-button>
+
+      <ion-button (click)="addShape()">Test Editable</ion-button>
     </ion-buttons>
+
+
   </ion-toolbar>
 
 </ion-footer>
