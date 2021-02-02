@@ -108,7 +108,11 @@ const routes: Routes = [
   {
     path: 'guidestep-add-edit',
     loadChildren: () => import('./guidestep-add-edit/guidestep-add-edit.module').then(m => m.GuidestepAddEditPageModule)
+  },  {
+    path: 'logs',
+    loadChildren: () => import('./logs/logs.module').then( m => m.LogsPageModule)
   },
+
 ];
 
 @NgModule({

@@ -17,7 +17,7 @@
   "Status": "Status",
   "Open": "Open",
   "Done": "Done",
-  "dismiss":"Dismiss",
+  "dismiss": "Dismiss",
   "save_before_close_warning": "Save changes before closing?",
   "dont_save": "Don't save",
   "cancel": "Cancel",
@@ -25,12 +25,15 @@
   "Order": "Order",
   "created_by": "Created By",
   "updated_by": "Updated By",
-  "to guide":"To Guide",
+  "to guide": "To Guide",
   "about": {
     "header": "About",
     "App Version": "App Version",
     "API Version": "API Version",
     "Copyright": "Copyright"
+  },
+  "log": {
+    "header": "Logs"
   },
   "start": {
     "header": "Start"
@@ -46,18 +49,18 @@
     "In progress": "In progress",
     "(Prepare data)": "(Prepare data)",
     "(Prepare data for resume)": "(Prepare data for resume)",
-    "Paused" : "Paused",
-    "Failed" : "Failed",
-    "Success" : "Success",
-    "No data for sync" : "No data for sync",
-    "No data for pull" : "No data for pull",
+    "Paused": "Paused",
+    "Failed": "Failed",
+    "Success": "Success",
+    "No data for sync": "No data for sync",
+    "No data for pull": "No data for pull",
     "There is data available for pushing to the server.": "There is data available for pushing to the server.",
     "No network connection.": "No network connection.",
     "Data synchronization is not yet possible.": "Data synchronization is not yet possible.",
     "Data is sent to the server": "Data is sent to the server.",
     "Data has been sent to the server": "Data has been sent to the server.",
     "Sending data to the server failed.": "Sending data to the server failed.",
-    "Start sync to get data":"Start sync to get data"
+    "Start sync to get data": "Start sync to get data"
   },
   "guide-categories": {
     "category": "Category",
@@ -102,8 +105,8 @@
     "header": "Guide",
     "No information here yet.": "No information here yet.",
     "Assets": "Assets",
-    "Information":"Information",
-    "Restart":"Restart Guide"
+    "Information": "Information",
+    "Restart": "Restart Guide"
   },
   "profile": {
     "header": "Profile",
@@ -199,8 +202,8 @@
     "model_was_deleted": "{{ model }} was deleted",
     "are_you_sure_delete_model": "Are you sure to delete this entry?",
     "are_you_sure_go_back": "There are changes",
-    "resumed":"Resumed",
-    "saved":"Saved"
+    "resumed": "Resumed",
+    "saved": "Saved"
   },
   "guider": {
     "header": "Guide Capture",
@@ -223,12 +226,12 @@
     "Note description": "Note description",
     "Open in editor": "Open in editor"
   },
-  "CKEditor" : {
+  "CKEditor": {
     "header": "Text Editor"
   },
-  "guidestep":{
-    "add":"Add Step",
-    "edit":"Edit Step",
+  "guidestep": {
+    "add": "Add Step",
+    "edit": "Edit Step",
     "Open in editor": "Open in editor",
     "Description": "Description"
   }

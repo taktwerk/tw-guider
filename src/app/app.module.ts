@@ -111,6 +111,8 @@ import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu
 
 import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.page';
 
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { CustomLoggerMonitor, LoggerService } from 'src/services/logger-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -172,7 +174,8 @@ Sentry.init({ dsn: environment.sentryDsn });
     IonicImageLoader.forRoot(),
     Viewer3dModelComponentModule,
     PdfJsViewerModule,
-    CKEditorModule
+    CKEditorModule,
+    LoggerModule.forRoot(environment.logger),
   ],
   providers: [
     StatusBar,
@@ -241,7 +244,9 @@ Sentry.init({ dsn: environment.sentryDsn });
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     MigrationService,
-    Base64ToGallery
+    Base64ToGallery,
+    LoggerService,
+    CustomLoggerMonitor
   ],
   exports: [
     ProtocolDefaultComponent

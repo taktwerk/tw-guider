@@ -73,10 +73,8 @@ export class ionMenuWithSyncIndicator implements OnInit {
             new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
-
                     resolve(true);
                 }
-
                 resolve(false);
             });
         });
@@ -89,29 +87,36 @@ export class ionMenuWithSyncIndicator implements OnInit {
                 this.detectChanges();
             }
         });
+
         this.apiSync.isStartSyncBehaviorSubject.subscribe(isSync => {
             this.isStartSync = isSync;
             this.detectChanges();
         });
+
         this.events.subscribe('user:login', (isNetwork) => {
             this.isLoggedUser = true;
             this.detectChanges();
         });
+
         this.events.subscribe('user:logout', (isNetwork) => {
             this.isLoggedUser = false;
             this.detectChanges();
         });
+
         this.events.subscribe('network:offline', (isNetwork) => {
             this.isNetwork = false;
             this.detectChanges();
         });
+
         this.events.subscribe('network:online', (isNetwork) => {
             this.isNetwork = true;
             this.detectChanges();
         });
+
         this.apiSync.isAvailableForSyncData.subscribe(isAvailableForSyncData => {
             this.isAvailableForSyncData = isAvailableForSyncData;
         });
+
         this.apiSync.isAvailableForPushData.subscribe(isAvailableForPushData => {
             this.isAvailableForPushData = isAvailableForPushData;
         });

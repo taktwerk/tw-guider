@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
+    </ion-buttons>
+    <ion-title> {{ 'log.header' | translate }} </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-toolbar>
+    <ion-searchbar></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
+
+    <ion-segment (ionChange)="segmentChanged($event)" scrollable value="All">
+      <ion-segment-button value="All">
+        <ion-label>
+          All
+        </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Debug">
+        <ion-label>
+          Debug
+          <ion-badge slot="end" color="secondary">22</ion-badge>
+        </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Info">
+        <ion-label>
+          Info
+          <ion-badge slot="end" color="dark">22</ion-badge>
+        </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Warn">
+        <ion-label>
+          Warn
+          <ion-badge slot="end" color="warning">22</ion-badge>
+        </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Error">
+        <ion-label>
+          Error
+          <ion-badge slot="end" color="danger">22</ion-badge>
+        </ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+  </ion-toolbar>
+
+  <ion-list>
+    <ion-label *ngFor="let log of logs">
+      <h3>{{log.level}} {{log.timestamp}}</h3>
+      <p>{{log.message}}</p>
+    </ion-label>
+  </ion-list>
+</ion-content>

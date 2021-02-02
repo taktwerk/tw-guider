@@ -127,6 +127,7 @@
     "ionic-native": "^2.9.0",
     "jose-jwe": "^0.2.2",
     "ng2-pdfjs-viewer": "^5.0.7",
+    "ngx-logger": "^4.1.9",
     "ngx-virtual-scroller": "^3.0.3",
     "node-forge": "git://github.com/digitalbazaar/forge.git#ef835fafe",
     "pbkdf2-sha256": "^1.1.1",
@@ -225,7 +226,8 @@
       "cordova-plugin-media": {
         "KEEP_AVAUDIOSESSION_ALWAYS_ACTIVE": "NO"
       },
-      "cordova-base64-to-gallery": {}
+      "cordova-base64-to-gallery": {},
+      "com.moust.cordova.videoplayer": {}
     },
     "platforms": [
       "android",

@@ -240,15 +240,13 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
     });
-
-    
-
   }
 
   protected async setPages() {
     this.appPages = this.getTopMenuPages();
     this.appPages.push(
-      { title: this.translateConfigService.translateWord('about.header'), url: '/about', icon: 'information-circle' }
+      { title: this.translateConfigService.translateWord('about.header'), url: '/about', icon: 'information-circle' },
+      { title: this.translateConfigService.translateWord('log.header'), url: '/logs', icon: 'hourglass' },
     );
   }
 
