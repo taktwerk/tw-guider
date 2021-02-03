@@ -1,16 +1,18 @@
 import { Subscription } from 'rxjs/Subscription';
 import { CustomLoggerMonitor, Log, LoggerService } from './../../services/logger-service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { IonSegment } from '@ionic/angular';
 import { NGXLogInterface } from 'ngx-logger';
+import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-logs',
   templateUrl: './logs.page.html',
   styleUrls: ['./logs.page.scss'],
 })
-export class LogsPage implements OnInit, OnDestroy {
+export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
   constructor(private loggerService: LoggerService) { }
+
 
   currentSegment = 'All'
 
@@ -22,8 +24,8 @@ export class LogsPage implements OnInit, OnDestroy {
 
   logSubscription: Subscription;
 
-  ngOnInit() {
-    this.logSubscription = this.loggerService.LogsSub.subscribe((logs) => {
+  ngAfterViewInit(): void {
+    this.logSubscription = this.loggerService.LogsSub.pipe(delay(0)).subscribe((logs) => {
       this.allLogs = logs;
       if (logs) {
         this.debugLogs = logs.filter(l => l.level == 1);
@@ -32,22 +34,6 @@ export class LogsPage implements OnInit, OnDestroy {
         this.errorLogs = logs.filter(l => l.level == 5);
       }
     })
-
-    // setTimeout(() => {
-    //   var d = new Error('some debug Test');
-    //   this.loggerService.getLogger().debug('getLogger Test', d.stack);
-
-    //   var e = new Error('some error');
-    //   this.loggerService.getLogger().error('Test', e.stack);
-
-    //   var i = new Error('some info Test');
-    //   this.loggerService.getLogger().info('Test', i.stack);
-
-    //   var w = new Error('some warning Test');
-    //   this.loggerService.getLogger().warn('Test', w.stack);
-
-    // }, 3000)
-
   }
 
   ngOnDestroy(): void {

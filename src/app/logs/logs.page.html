@@ -7,7 +7,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+
+<ion-content style="max-height: 120px;">
   <ion-toolbar>
     <ion-searchbar></ion-searchbar>
   </ion-toolbar>
@@ -47,6 +48,10 @@
     </ion-segment>
 
   </ion-toolbar>
+
+</ion-content>
+
+<ion-content>
 
   <ion-list lines="none">
     <ion-item *ngFor="let log of allLogs; trackBy: trackLog" [hidden]="currentSegment != 'All'"
