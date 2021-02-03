@@ -3,7 +3,6 @@ import { CustomLoggerMonitor, Log, LoggerService } from './../../services/logger
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonSegment } from '@ionic/angular';
 import { NGXLogInterface } from 'ngx-logger';
-import { debug, info, warn } from 'console';
 
 @Component({
   selector: 'app-logs',
@@ -34,20 +33,20 @@ export class LogsPage implements OnInit, OnDestroy {
       }
     })
 
-    setTimeout(() => {
-      var d = new Error('some debug Test');
-      this.loggerService.getLogger().debug('getLogger Test', d.stack);
+    // setTimeout(() => {
+    //   var d = new Error('some debug Test');
+    //   this.loggerService.getLogger().debug('getLogger Test', d.stack);
 
-      var e = new Error('some error');
-      this.loggerService.getLogger().error('Test', e.stack);
+    //   var e = new Error('some error');
+    //   this.loggerService.getLogger().error('Test', e.stack);
 
-      var i = new Error('some info Test');
-      this.loggerService.getLogger().info('Test', i.stack);
+    //   var i = new Error('some info Test');
+    //   this.loggerService.getLogger().info('Test', i.stack);
 
-      var w = new Error('some warning Test');
-      this.loggerService.getLogger().warn('Test', w.stack);
+    //   var w = new Error('some warning Test');
+    //   this.loggerService.getLogger().warn('Test', w.stack);
 
-    }, 3000)
+    // }, 3000)
 
   }
 

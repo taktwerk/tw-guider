@@ -10,6 +10,10 @@ ion-segment {
 .Debug {
     h3 {
         color: #118888;
+        padding: 4px;
+        border: solid #f3f3f3;
+        border-right-color: transparent;
+        border-left-color: transparent;
     }
     p {
         color: #2f2f2f;
@@ -19,6 +23,10 @@ ion-segment {
 .Info {
     h3 {
         color: #929292;
+        padding: 4px;
+        border: solid #f3f3f3;
+        border-right-color: transparent;
+        border-left-color: transparent;
     }
     p {
         color: #2f2f2f;
@@ -28,8 +36,11 @@ ion-segment {
 .Warn {
     h3 {
         background-color: #fffbe5;
-        max-width: fit-content;
         color: #ff1d1a;
+        padding: 4px;
+        border: solid #fff9dc;
+        border-right-color: transparent;
+        border-left-color: transparent;
     }
     p {
         color: #2f2f2f;
@@ -39,8 +50,11 @@ ion-segment {
 .Error {
     h3 {
         background-color: #fff0f0;
-        max-width: fit-content;
         color: #ff0000;
+        padding: 4px;
+        border: solid #ffd9d9;
+        border-right-color: transparent;
+        border-left-color: transparent;
     }
     p {
         color: #2f2f2f;
@@ -49,4 +63,9 @@ ion-segment {
 
 p {
     white-space: normal;
+}
+
+h3 {
+    font-weight: 500;
+    padding-left: 0px;
 }

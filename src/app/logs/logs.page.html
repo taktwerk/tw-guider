@@ -48,7 +48,7 @@
 
   </ion-toolbar>
 
-  <ion-list>
+  <ion-list lines="none">
     <ion-item *ngFor="let log of allLogs; trackBy: trackLog" [hidden]="currentSegment != 'All'"
       [ngClass]="{'Debug':log.level==1,'Info':log.level==2, 'Warn':log.level==4,'Error':log.level==5}">
       <ion-label>

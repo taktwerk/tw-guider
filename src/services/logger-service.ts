@@ -1,5 +1,4 @@
-import { Subscription } from 'rxjs/Subscription';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { NGXLoggerMonitor, NGXLogInterface, NGXLogger } from 'ngx-logger';
 
