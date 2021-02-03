@@ -178,7 +178,6 @@ Sentry.init({ dsn: environment.sentryDsn });
     LoggerModule.forRoot({
       level: NgxLoggerLevel.DEBUG,
       serverLogLevel: NgxLoggerLevel.ERROR,
-      serverLoggerUrl: 'https://taktwerkloggertest.free.beeceptor.com/logs'
     }),
   ],
   providers: [
