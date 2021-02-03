@@ -13,7 +13,6 @@ import { delay } from 'rxjs/operators';
 export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
   constructor(private loggerService: LoggerService) { }
 
-
   currentSegment = 'All'
 
   allLogs: NGXLogInterface[] = [];
@@ -23,6 +22,8 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
   errorLogs: NGXLogInterface[] = [];
 
   logSubscription: Subscription;
+
+  ngOnInit(): void { }
 
   ngAfterViewInit(): void {
     this.logSubscription = this.loggerService.LogsSub.pipe(delay(0)).subscribe((logs) => {
