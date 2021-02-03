@@ -15,6 +15,7 @@ import { SyncMode } from '../synchronization-component/synchronization-component
 import { AppSetting } from '../../services/app-setting';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { TranslateConfigService } from '../../services/translate-config.service';
+import { LoggerService } from 'src/services/logger-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -66,7 +67,8 @@ export class SyncModalComponent implements OnInit {
     public datepipe: DatePipe,
     private userService: UserService,
     public appSetting: AppSetting,
-    private insomnia: Insomnia
+    private insomnia: Insomnia,
+    private loggerService: LoggerService
   ) {
     this.isNetwork = this.network.type !== 'none';
     this.initUser().then(() => {
@@ -179,26 +181,39 @@ export class SyncModalComponent implements OnInit {
     });
     this.apiSync.isAvailableForSyncData.subscribe((isAvailableForSyncData) => {
       this.isAvailableForSyncData = isAvailableForSyncData;
+      this.loggerService.getLogger().info("isAvailableForSyncData", isAvailableForSyncData)
+
     });
     this.apiSync.isAvailableForPushData.subscribe((isAvailableForPushData) => {
       this.isAvailableForPushData = isAvailableForPushData;
+      this.loggerService.getLogger().info("isAvailableForPushData", isAvailableForPushData)
     });
     this.apiSync.pushProgressStatus.subscribe((pushProgressStatus) => {
-      console.log('pushProgressStatus subscribe', pushProgressStatus);
+      // console.log('pushProgressStatus subscribe', pushProgressStatus);
       this.pushProgressStatus = pushProgressStatus;
+      this.loggerService.getLogger().info("pushProgressStatus", pushProgressStatus)
+
     });
     this.events.subscribe('UserDb:update', (userDb) => {
       this.userService.userDb = userDb;
+      this.loggerService.getLogger().info("userDb", userDb)
+
     });
     this.events.subscribe('network:offline', (isNetwork) => {
       this.isNetwork = false;
+      this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+
       this.detectChanges();
     });
     this.events.subscribe('network:online', (isNetwork) => {
       this.isNetwork = true;
+      this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+
       this.detectChanges();
     });
     this.events.subscribe('user:logout', () => {
+      this.loggerService.getLogger().info("user:logout")
+
       this.dismiss();
     });
   }
@@ -206,10 +221,13 @@ export class SyncModalComponent implements OnInit {
   getProgressText() {
     switch (this.syncProgressStatus) {
       case 'pause':
+        this.loggerService.getLogger().info("Sync", 'pause')
         return '(' + this.translateConfigService.translateWord('sync-modal.Paused') + ')';
       case 'failed':
+        this.loggerService.getLogger().debug("Sync", 'failed', new Error().stack)
         return '(' + this.translateConfigService.translateWord('sync-modal.Failed') + ')';
       case 'success':
+        this.loggerService.getLogger().info("Sync", 'success')
         return '(' + this.translateConfigService.translateWord('sync-modal.Success') + ')';
 
       default:

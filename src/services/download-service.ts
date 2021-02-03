@@ -13,6 +13,7 @@ import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
 import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
+import { LoggerService } from './logger-service';
 
 export class RecordedFile {
   uri: string;
@@ -56,7 +57,8 @@ export class DownloadService {
     private mediaCapture: MediaCapture,
     private camera: Camera,
     private videoEditor: VideoEditor,
-    protected sanitizerImpl: ɵDomSanitizerImpl
+    protected sanitizerImpl: ɵDomSanitizerImpl,
+    private loggerService: LoggerService
   ) { }
 
   /**
@@ -128,11 +130,13 @@ export class DownloadService {
         .then(
           (response) => {
             console.log('SYNC4');
+            this.loggerService.getLogger().info("SYNC4")
             resolve(response);
             return;
           },
           (downloadErr) => {
             console.log('downloadErr', downloadErr);
+            this.loggerService.getLogger().error("Download Error at download-service 139", downloadErr, new Error().stack)
             resolve(false);
             return;
           }
@@ -190,6 +194,8 @@ export class DownloadService {
   uploadFile(formData: FormData, url: string, headers?: Headers): Promise<any> {
     formData.forEach((value, key) => {
       console.log('formData', key, value);
+      this.loggerService.getLogger().info("formData", key, value)
+
     });
     return new Promise((resolve) => {
       this.http
@@ -197,10 +203,14 @@ export class DownloadService {
         .toPromise()
         .then((res) => {
           console.log('subscribe file uploading', res);
+          this.loggerService.getLogger().info("subscribe file uploading", res)
+
           resolve(res);
         })
         .catch((err) => {
           console.log('subscribe file uploading', err);
+          this.loggerService.getLogger().error("File Upload Error at download-service 212", err, new Error().stack)
+
           resolve(false);
         });
     });
@@ -235,7 +245,7 @@ export class DownloadService {
    */
   public copy(fullPath: string, modelName: string, isDuplicate = false): Promise<string> {
     return new Promise((resolve) => {
-      console.log('fullPath', fullPath);
+      // console.log('fullPath', fullPath);
       const date = new Date();
       const correctPath = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
       const currentName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
@@ -256,14 +266,17 @@ export class DownloadService {
             this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then((success) => {
               if (success) {
                 console.log('is sucessss copieng');
+                this.loggerService.getLogger().info("File Copy Successful")
                 resolve(newFilePath + '/' + newFileName);
               } else {
                 console.log('is not success copy dir');
+                this.loggerService.getLogger().error("File Copy unsuccessful", new Error().stack)
                 resolve('');
               }
             },
               (error) => {
                 console.log('copyToLocalDir error', error);
+                this.loggerService.getLogger().error('copyToLocalDir error at download-service 279', error, new Error().stack)
                 resolve('');
               }
             );
@@ -271,6 +284,7 @@ export class DownloadService {
         },
         (err) => {
           console.log('checkDir error', err);
+          this.loggerService.getLogger().error('checkDir error at download-service 287', err, new Error().stack)
           resolve('');
         }
       );
@@ -287,16 +301,18 @@ export class DownloadService {
    */
   public copyToLocalDir(namePath: string, currentName: string, newFilePath: string, newFileName: string): Promise<boolean> {
     return new Promise((resolve) => {
-      console.log('START HEREEEE');
-      console.log(namePath);
-      console.log(currentName);
-      console.log(newFilePath);
-      console.log(newFileName);
+      // console.log('START HEREEEE');
+      // console.log(namePath);
+      // console.log(currentName);
+      // console.log(newFilePath);
+      // console.log(newFileName);
       this.file.copyFile(namePath, currentName, newFilePath, newFileName).then((success) => {
         resolve(true);
       },
         (error) => {
           console.log('copyFile error', error);
+          this.loggerService.getLogger().error('copyFile error at download-service 314', error, new Error().stack)
+
           resolve(false);
         }
       );
@@ -338,7 +354,6 @@ export class DownloadService {
         });
     });
   }
-
 
   /**
    * Check if a dir exists and delete it if exists.
@@ -397,9 +412,11 @@ export class DownloadService {
       this.file.removeFile(path, fileName).then(
         (success) => {
           console.log('is removed file', success);
+          this.loggerService.getLogger().info("File removed", success)
         },
         (error) => {
           console.error('DownloadService', 'deleteFile', path, fileName, error);
+          this.loggerService.getLogger().error("error deleting file at download-service 419", error, new Error().stack)
         }
       );
     }
@@ -435,11 +452,14 @@ export class DownloadService {
     let uri = '';
     if (this.platform.is('ios')) {
       if (!this.filePicker) {
+        this.loggerService.getLogger().error("IOSFilePicker plugin is not defined", new Error("IOSFilePicker plugin is not defined").stack)
         throw new Error('IOSFilePicker plugin is not defined');
       }
       uri = await this.filePicker.pickFile();
     } else {
       if (!this.fileChooser) {
+        this.loggerService.getLogger().error("FileChooser plugin is not defined", new Error("FileChooser plugin is not defined").stack)
+
         throw new Error('FileChooser plugin is not defined');
       }
       uri = await this.fileChooser.open();
@@ -533,10 +553,14 @@ export class DownloadService {
 
   public async recordVideo(withThumbnail = false): Promise<RecordedFile> {
     if (!this.mediaCapture) {
+      this.loggerService.getLogger().error("MediaCapture plugin is not defined", new Error("MediaCapture plugin is not defined").stack)
+
       throw new Error('MediaCapture plugin is not defined');
     }
     const videoFile = await this.mediaCapture.captureVideo({ limit: 1 });
     if (!videoFile || !videoFile[0]) {
+      this.loggerService.getLogger().error("Video was not uploaded.", new Error("Video was not uploaded.").stack)
+
       throw new Error('Video was not uploaded.');
     }
     const fullPath = videoFile[0].fullPath;
@@ -551,6 +575,8 @@ export class DownloadService {
 
   public async makePhoto(targetWidth = 1000, targetHeight = 1000): Promise<RecordedFile> {
     if (!this.camera) {
+      this.loggerService.getLogger().error("MediaCapture plugin is not defined", new Error("MediaCapture plugin is not defined").stack)
+
       throw new Error('MediaCapture plugin is not defined');
     }
     const cameraOptions = {
@@ -563,16 +589,16 @@ export class DownloadService {
     };
     const photoFullPath = await this.camera.getPicture(cameraOptions);
 
-    console.log(">>>>>>>>>>>>>> photoFullPath >>>>>>>>>>>>>>>>>>>>>>>")
-    console.log(photoFullPath)
-    console.log(">>>>>>>>>>>>>> photoFullPath >>>>>>>>>>>>>>>>>>>>>>>")
+    // console.log(">>>>>>>>>>>>>> photoFullPath >>>>>>>>>>>>>>>>>>>>>>>")
+    // console.log(photoFullPath)
+    // console.log(">>>>>>>>>>>>>> photoFullPath >>>>>>>>>>>>>>>>>>>>>>>")
 
     const recordedFile = new RecordedFile();
 
     recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath);
-    console.log(">>>>>>>>>>>>>> recordedFile >>>>>>>>>>>>>>>>>>>>>>>");
-    console.log(recordedFile.uri)
-    console.log(">>>>>>>>>>>>>> recordedFile >>>>>>>>>>>>>>>>>>>>>>>");
+    // console.log(">>>>>>>>>>>>>> recordedFile >>>>>>>>>>>>>>>>>>>>>>>");
+    // console.log(recordedFile.uri)
+    // console.log(">>>>>>>>>>>>>> recordedFile >>>>>>>>>>>>>>>>>>>>>>>");
 
     return recordedFile;
   }
@@ -596,6 +622,8 @@ export class DownloadService {
   public getResolvedNativeFilePath(uri): Promise<string> {
     console.log('URIII', uri);
     if (!this.filePath) {
+      this.loggerService.getLogger().error("FilePath plugin is not defined", new Error("FilePath plugin is not defined").stack)
+
       throw new Error('FilePath plugin is not defined');
     }
     if (this.platform.is('ios') && uri.indexOf('file://') < 0) {
