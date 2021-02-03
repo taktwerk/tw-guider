@@ -175,7 +175,11 @@ Sentry.init({ dsn: environment.sentryDsn });
     Viewer3dModelComponentModule,
     PdfJsViewerModule,
     CKEditorModule,
-    LoggerModule.forRoot(environment.logger),
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.DEBUG,
+      serverLogLevel: NgxLoggerLevel.ERROR,
+      serverLoggerUrl: 'https://taktwerkloggertest.free.beeceptor.com/logs'
+    }),
   ],
   providers: [
     StatusBar,
