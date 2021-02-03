@@ -11,9 +11,10 @@
   <ion-toolbar>
     <ion-searchbar></ion-searchbar>
   </ion-toolbar>
+
   <ion-toolbar>
 
-    <ion-segment (ionChange)="segmentChanged($event)" scrollable value="All">
+    <ion-segment #ionSegment (ionChange)="segmentChanged(ionSegment)" scrollable value="All">
       <ion-segment-button value="All">
         <ion-label>
           All
@@ -22,25 +23,25 @@
       <ion-segment-button value="Debug">
         <ion-label>
           Debug
-          <ion-badge slot="end" color="secondary">22</ion-badge>
+          <ion-badge slot="end" color="secondary">{{debugLogs.length}}</ion-badge>
         </ion-label>
       </ion-segment-button>
       <ion-segment-button value="Info">
         <ion-label>
           Info
-          <ion-badge slot="end" color="dark">22</ion-badge>
+          <ion-badge slot="end" color="dark">{{infoLogs.length}}</ion-badge>
         </ion-label>
       </ion-segment-button>
       <ion-segment-button value="Warn">
         <ion-label>
           Warn
-          <ion-badge slot="end" color="warning">22</ion-badge>
+          <ion-badge slot="end" color="warning">{{warnLogs.length}}</ion-badge>
         </ion-label>
       </ion-segment-button>
       <ion-segment-button value="Error">
         <ion-label>
           Error
-          <ion-badge slot="end" color="danger">22</ion-badge>
+          <ion-badge slot="end" color="danger">{{errorLogs.length}}</ion-badge>
         </ion-label>
       </ion-segment-button>
     </ion-segment>
@@ -48,9 +49,51 @@
   </ion-toolbar>
 
   <ion-list>
-    <ion-label *ngFor="let log of logs">
-      <h3>{{log.level}} {{log.timestamp}}</h3>
-      <p>{{log.message}}</p>
-    </ion-label>
+    <ion-item *ngFor="let log of allLogs; trackBy: trackLog" [hidden]="currentSegment != 'All'"
+      [ngClass]="{'Debug':log.level==1,'Info':log.level==2, 'Warn':log.level==4,'Error':log.level==5}">
+      <ion-label>
+        <h3> {{log.timestamp | datePipe: 'dd.MM.yyyy
+          hh:mm:ss' }} {{getDebugLevel(log.level)}} [{{log.fileName}}:{{log.lineNumber}}] </h3>
+        <p>{{log.message}}</p>
+        <p>{{log.additional}}</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngFor=" let log of debugLogs; trackBy: trackLog" [hidden]="currentSegment != 'Debug'" class="Debug">
+      <ion-label>
+        <h3> {{log.timestamp | datePipe: 'dd.MM.yyyy
+          hh:mm:ss' }} {{getDebugLevel(log.level)}} [{{log.fileName}}:{{log.lineNumber}}] </h3>
+        <p>{{log.message}}</p>
+        <p>{{log.additional}}</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngFor="let log of infoLogs; trackBy: trackLog" [hidden]="currentSegment != 'Info'" class="Info">
+      <ion-label>
+        <h3> {{log.timestamp | datePipe: 'dd.MM.yyyy
+          hh:mm:ss' }} {{getDebugLevel(log.level)}} [{{log.fileName}}:{{log.lineNumber}}] </h3>
+        <p>{{log.message}}</p>
+        <p>{{log.additional}}</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngFor="let log of warnLogs; trackBy: trackLog" [hidden]="currentSegment != 'Warn'" class="Warn">
+      <ion-label>
+        <h3> {{log.timestamp | datePipe: 'dd.MM.yyyy
+          hh:mm:ss' }} {{getDebugLevel(log.level)}} [{{log.fileName}}:{{log.lineNumber}}] </h3>
+        <p>{{log.message}}</p>
+        <p>{{log.additional}}</p>
+
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngFor="let log of errorLogs; trackBy: trackLog" [hidden]="currentSegment != 'Error'" class="Error">
+      <ion-label>
+        <h3> {{log.timestamp | datePipe: 'dd.MM.yyyy
+          hh:mm:ss' }} {{getDebugLevel(log.level)}} [{{log.fileName}}:{{log.lineNumber}}] </h3>
+        <p>{{log.message}}</p>
+        <p>{{log.additional}}</p>
+      </ion-label>
+    </ion-item>
   </ion-list>
 </ion-content>

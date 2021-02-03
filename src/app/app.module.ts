@@ -177,7 +177,6 @@ Sentry.init({ dsn: environment.sentryDsn });
     CKEditorModule,
     LoggerModule.forRoot({
       level: NgxLoggerLevel.DEBUG,
-      serverLogLevel: NgxLoggerLevel.ERROR,
     }),
   ],
   providers: [

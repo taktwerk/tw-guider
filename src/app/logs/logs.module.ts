@@ -9,6 +9,7 @@ import { LogsPageRoutingModule } from './logs-routing.module';
 import { LogsPage } from './logs.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { MainPipe } from 'src/pipes/main-pipe.module';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu
     LogsPageRoutingModule,
     ionMenuWithSyncIndicatorComponentModule,
     TranslateModule,
+    MainPipe,
   ],
   declarations: [LogsPage]
 })

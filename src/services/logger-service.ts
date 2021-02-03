@@ -25,19 +25,9 @@ export interface Log {
 
 @Injectable()
 export class CustomLoggerMonitor implements NGXLoggerMonitor {
-    Logs: NGXLogInterface[] = [];
-    LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
+    constructor(private loggerService: LoggerService) { }
 
-    onLog(log: NGXLogInterface) {
-        // emit logs
-        this.Logs.push(log);
-        this.LogsSub.next(this.Logs);
-        // console.log(this.Logs)
-    }
-
-    logChanges() {
-        return this.LogsSub;
-    }
+    onLog(log: NGXLogInterface) { this.loggerService.setLogs(log) }
 
     writeToFile() {
 
@@ -54,12 +44,20 @@ export class CustomLoggerMonitor implements NGXLoggerMonitor {
 
 @Injectable()
 export class LoggerService {
+    Logs: NGXLogInterface[] = [];
+    LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
+
     constructor(private logger: NGXLogger) {
-        this.logger.registerMonitor(new CustomLoggerMonitor())
+        this.logger.registerMonitor(new CustomLoggerMonitor(this))
     }
 
     getLogger(): NGXLogger {
         return this.logger
+    }
+
+    public setLogs(log: NGXLogInterface) {
+        this.Logs.push(log);
+        this.LogsSub.next([...this.Logs])
     }
 
     // debug(message: string | any) {
