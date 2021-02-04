@@ -1,9 +1,10 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
-import {WorkflowModel} from './workflow-model';
+import { LoggerService } from './../../../services/logger-service';
+import { Platform, Events } from '@ionic/angular';
+import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { WorkflowModel } from './workflow-model';
 
 /**
  * API Db Model for 'Protocol Template Model'.
@@ -85,7 +86,7 @@ export class ProtocolTemplateModel extends DbApiModel {
         if (this.workflow && this.workflow[this.COL_ID_API] === this.workflow_id) {
             return this.workflow;
         }
-        const workflowModel = new WorkflowModel(this.platform, this.db, this.events, this.downloadService);
+        const workflowModel = new WorkflowModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
         const workflows = await workflowModel.findFirst([workflowModel.COL_ID_API, this.workflow_id]);
 
         this.workflow = workflows.length ? workflows[0] : null;
@@ -96,7 +97,7 @@ export class ProtocolTemplateModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
-        super(platform, db, events, downloadService);
+    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService, public loggerService: LoggerService) {
+        super(platform, db, events, downloadService, loggerService);
     }
 }

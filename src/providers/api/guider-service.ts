@@ -1,3 +1,4 @@
+import { LoggerService } from './../../services/logger-service';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { Platform, Events } from '@ionic/angular';
@@ -13,7 +14,7 @@ import { AppSetting } from '../../services/app-setting';
 export class GuiderService extends ApiService {
     data: GuiderModel[] = [];
     loadUrl: string = '/guider';
-    dbModelApi: GuiderModel = new GuiderModel(this.p, this.db, this.events, this.downloadService);
+    dbModelApi: GuiderModel = new GuiderModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
 
     /**
      * Constructor
@@ -31,6 +32,7 @@ export class GuiderService extends ApiService {
         public authService: AuthService,
         public events: Events,
         public downloadService: DownloadService,
+        public loggerService: LoggerService,
         public appSetting: AppSetting) {
         super(http, events, appSetting);
         console.debug('GuiderService', 'initialized');
@@ -41,7 +43,7 @@ export class GuiderService extends ApiService {
      * @returns {GuiderModel}
      */
     public newModel() {
-        return new GuiderModel(this.p, this.db, this.events, this.downloadService);
+        return new GuiderModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
     }
 
     public getById(id): Promise<any> {

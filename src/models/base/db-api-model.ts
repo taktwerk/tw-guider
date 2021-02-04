@@ -1,3 +1,4 @@
+import { LoggerService } from './../../services/logger-service';
 import { Platform, Events } from '@ionic/angular';
 import { DbBaseModel } from './db-base-model';
 import { DbProvider } from '../../providers/db-provider';
@@ -84,9 +85,10 @@ export abstract class DbApiModel extends DbBaseModel {
     constructor(public platform: Platform,
         public db: DbProvider,
         public events: Events,
-        public downloadService: DownloadService
+        public downloadService: DownloadService,
+        public loggerService: LoggerService
     ) {
-        super(platform, db, events, downloadService);
+        super(platform, db, events, downloadService, loggerService);
     }
 
     /**

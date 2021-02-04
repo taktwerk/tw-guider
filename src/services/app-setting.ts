@@ -1,12 +1,13 @@
-import {Injectable} from '@angular/core';
+import { LoggerService } from './logger-service';
+import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
-import {UserService} from './user-service';
-import {AppSettingsDb} from '../models/db/app-settings-db';
-import {AlertController, Events, Platform} from '@ionic/angular';
-import {DbProvider} from '../providers/db-provider';
-import {DownloadService} from './download-service';
-import {BehaviorSubject} from 'rxjs';
-import {TranslateConfigService} from './translate-config.service';
+import { UserService } from './user-service';
+import { AppSettingsDb } from '../models/db/app-settings-db';
+import { AlertController, Events, Platform } from '@ionic/angular';
+import { DbProvider } from '../providers/db-provider';
+import { DownloadService } from './download-service';
+import { BehaviorSubject } from 'rxjs';
+import { TranslateConfigService } from './translate-config.service';
 import config from '../environments/config.json';
 
 export enum AppConfigurationModeEnum {
@@ -30,8 +31,8 @@ export class AppSetting {
     public dbMigrationVersion = '1';
 
     private defaultData = {
-        mode : AppConfigurationModeEnum.ONLY_CONFIGURE,
-        taktwerk : environment.taktwerk,
+        mode: AppConfigurationModeEnum.ONLY_CONFIGURE,
+        taktwerk: environment.taktwerk,
         isWasQrCodeSetup: false,
         dbMigrationVersion: '1',
         usbHost: environment.usbHost,
@@ -41,15 +42,16 @@ export class AppSetting {
     appSetting: AppSettingsDb;
 
     constructor(private userService: UserService,
-                public platform: Platform,
-                public db: DbProvider,
-                public events: Events,
-                public downloadService: DownloadService,
-                public alertController: AlertController,
-                private translateConfigService: TranslateConfigService
+        public platform: Platform,
+        public db: DbProvider,
+        public events: Events,
+        public downloadService: DownloadService,
+        public alertController: AlertController,
+        private translateConfigService: TranslateConfigService,
+        private loggerService: LoggerService
     ) {
         this.isWasQrCodeSetupSubscribtion = new BehaviorSubject<boolean>(false);
-        this.appSetting = new AppSettingsDb(platform, db, events, downloadService);
+        this.appSetting = new AppSettingsDb(platform, db, events, downloadService, loggerService);
         this.appSetting.find().then(async (result) => {
             if (result) {
                 Object.keys(result.settings).map((key) => {
@@ -64,7 +66,7 @@ export class AppSetting {
                 this.isWasQrCodeSetupSubscribtion.next(this.defaultData.isWasQrCodeSetup);
                 await this.appSetting.save();
                 this.appSetting = await this.appSetting.find();
-               // console.log('this.appSetting', this.appSetting);
+                // console.log('this.appSetting', this.appSetting);
             }
         });
     }
@@ -128,7 +130,7 @@ export class AppSetting {
         const user = await this.userService.getUser();
         this.appSetting.settings = userSettingsObject;
         this.appSetting.find().then(async (result) => {
-           // console.log('app setting result', result);
+            // console.log('app setting result', result);
             if (result) {
                 result.settings = userSettingsObject;
                 await result.save();

@@ -1,3 +1,4 @@
+import { LoggerService } from './logger-service';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { UserDb } from '../models/db/user-db';
@@ -15,7 +16,9 @@ export class UserService {
     constructor(private platform: Platform,
         public events: Events,
         private db: DbProvider,
-        private downloadService: DownloadService) {
+        private downloadService: DownloadService,
+        private loggerService: LoggerService
+    ) {
     }
 
     async saveUser(data: UserDb) {
@@ -38,7 +41,7 @@ export class UserService {
             });
         }
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
+            new UserDb(this.platform, this.db, this.events, this.downloadService, this.loggerService).getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
                     resolve(this.userDb);

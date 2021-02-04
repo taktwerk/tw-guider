@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import {Platform, Events} from '@ionic/angular';
-import {ApiService} from './base/api-service';
-import {DbProvider} from '../db-provider';
-import {AuthService} from '../../services/auth-service';
-import {HttpClient} from '../../services/http-client';
-import {DownloadService} from '../../services/download-service';
-import {FeedbackModel} from '../../models/db/api/feedback-model';
-import {AppSetting} from '../../services/app-setting';
+import { Platform, Events } from '@ionic/angular';
+import { ApiService } from './base/api-service';
+import { DbProvider } from '../db-provider';
+import { AuthService } from '../../services/auth-service';
+import { HttpClient } from '../../services/http-client';
+import { DownloadService } from '../../services/download-service';
+import { FeedbackModel } from '../../models/db/api/feedback-model';
+import { AppSetting } from '../../services/app-setting';
+import { LoggerService } from 'src/services/logger-service';
 
 @Injectable()
 export class FeedbackService extends ApiService {
     data: FeedbackModel[] = [];
     loadUrl: string = '/feedback';
-    dbModelApi: FeedbackModel = new FeedbackModel(this.p, this.db, this.events, this.downloadService);
+    dbModelApi: FeedbackModel = new FeedbackModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
 
     /**
      * Constructor
@@ -26,11 +27,13 @@ export class FeedbackService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-                private p: Platform, private db: DbProvider,
-                public authService: AuthService,
-                public events: Events,
-                public downloadService: DownloadService,
-                public appSetting: AppSetting) {
+        private p: Platform, private db: DbProvider,
+        public authService: AuthService,
+        public events: Events,
+        public downloadService: DownloadService,
+        public loggerService: LoggerService,
+
+        public appSetting: AppSetting) {
         super(http, events, appSetting);
         console.debug('FeedbackService', 'initialized');
     }
@@ -40,6 +43,6 @@ export class FeedbackService extends ApiService {
      * @returns {FeedbackModel}
      */
     public newModel() {
-        return new FeedbackModel(this.p, this.db, this.events, this.downloadService);
+        return new FeedbackModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
     }
 }

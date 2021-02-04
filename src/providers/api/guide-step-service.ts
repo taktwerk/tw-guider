@@ -10,12 +10,13 @@ import { DownloadService } from '../../services/download-service';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AppSetting } from '../../services/app-setting';
+import { LoggerService } from 'src/services/logger-service';
 
 @Injectable()
 export class GuideStepService extends ApiService {
     data: GuideStepModel[] = [];
     loadUrl = '/guide-step';
-    dbModelApi: GuideStepModel = new GuideStepModel(this.p, this.db, this.events, this.downloadService);
+    dbModelApi: GuideStepModel = new GuideStepModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
 
     /**
      * Constructor
@@ -34,6 +35,8 @@ export class GuideStepService extends ApiService {
         public authService: AuthService,
         public events: Events,
         public downloadService: DownloadService,
+        public loggerService: LoggerService,
+
         private sanitized: DomSanitizer,
         public appSetting: AppSetting) {
         super(http, events, appSetting);
@@ -45,7 +48,7 @@ export class GuideStepService extends ApiService {
      * @returns {GuideStepModel}
      */
     public newModel() {
-        return new GuideStepModel(this.p, this.db, this.events, this.downloadService);
+        return new GuideStepModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
     }
 
     public getDescriptionHtml(descriptionHtml) {

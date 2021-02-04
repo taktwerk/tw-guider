@@ -1,3 +1,4 @@
+import { LoggerService } from './../../../services/logger-service';
 import { Platform, Events } from '@ionic/angular';
 import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
 import { DbProvider } from '../../../providers/db-provider';
@@ -76,8 +77,8 @@ export class GuideStepModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
-        super(platform, db, events, downloadService);
+    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService, public loggerService: LoggerService) {
+        super(platform, db, events, downloadService, loggerService);
     }
 
     async updateLocalRelations() {
@@ -85,7 +86,7 @@ export class GuideStepModel extends DbApiModel {
             return;
         }
 
-        const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService);
+        const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
         if (guiderModel) {
             const guiderModels = await guiderModel.findFirst(
                 [guiderModel.COL_ID_API, this.guide_id]
@@ -107,7 +108,7 @@ export class GuideStepModel extends DbApiModel {
             if (!this[this.COL_ID]) {
                 return;
             }
-            const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService);
+            const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
             const guiderModels = await guiderModel.findFirst([guiderModel.COL_ID, this.local_guide_id]);
             if (guiderModels && guiderModels.length) {
                 console.log('guiderModels is not 0000');

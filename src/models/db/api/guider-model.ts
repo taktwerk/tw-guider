@@ -1,3 +1,4 @@
+import { LoggerService } from './../../../services/logger-service';
 import { Platform, Events } from '@ionic/angular';
 import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
 import { DbProvider } from '../../../providers/db-provider';
@@ -86,8 +87,8 @@ export class GuiderModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
-        super(platform, db, events, downloadService);
+    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService, public loggerService: LoggerService) {
+        super(platform, db, events, downloadService, loggerService);
     }
 
     /**
@@ -134,7 +135,7 @@ export class GuiderModel extends DbApiModel {
     }
 
     public setSteps() {
-        const guideStepModel = new GuideStepModel(this.platform, this.db, this.events, this.downloadService);
+        const guideStepModel = new GuideStepModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
         guideStepModel.findAllWhere(['guide_id', this.idApi], 'order_number ASC').then(results => {
             results.map(model => {
                 if (!model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]) {
@@ -162,7 +163,7 @@ export class GuiderModel extends DbApiModel {
                 this.assets = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService);
+                        const obj: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
                         obj.platform = this.platform;
                         obj.db = this.db;
                         obj.events = this.events;
@@ -193,7 +194,7 @@ export class GuiderModel extends DbApiModel {
                 this.guide_collection = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideChildModel = new GuideChildModel(this.platform, this.db, this.events, this.downloadService);
+                        const obj: GuideChildModel = new GuideChildModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
                         obj.platform = this.platform;
                         obj.db = this.db;
                         obj.events = this.events;
@@ -224,7 +225,7 @@ export class GuiderModel extends DbApiModel {
             this.db.query(query).then((res) => {
                 this.protocol_template = null;
                 if (res.rows.length > 0) {
-                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.events, this.downloadService);
+                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
                     obj.platform = this.platform;
                     obj.db = this.db;
                     obj.events = this.events;

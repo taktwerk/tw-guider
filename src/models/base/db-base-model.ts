@@ -117,6 +117,7 @@ export abstract class DbBaseModel {
         public db: DbProvider,
         public events: Events,
         public downloadService: DownloadService,
+        public loggerService: LoggerService
     ) {
     }
 
@@ -132,7 +133,7 @@ export abstract class DbBaseModel {
                     this.dbCreateTable().then((res) => {
                         if (!res) {
                             // console.log(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME);
-                            LoggerService.prototype.getLogger().error(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME, new Error().stack)
+                            this.loggerService.getLogger().error(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME, new Error().stack)
                             // circular dependency (AppSettings import)
                         }
                         resolve(res);
@@ -359,7 +360,7 @@ export abstract class DbBaseModel {
                         resolve(entries);
                     }).catch((err) => {
                         // console.log('is errororrr', err);
-                        LoggerService.prototype.getLogger().error("error at db-base-model 362", err, new Error().stack)
+                        this.loggerService.getLogger().error("error at db-base-model 362", err, new Error().stack)
                         resolve(entries);
                     });
                 }
@@ -741,7 +742,7 @@ export abstract class DbBaseModel {
 
                     }).catch((err) => {
                         // console.log('errrr', err);
-                        LoggerService.prototype.getLogger().error("error at db-base-model 744", err, new Error().stack)
+                        this.loggerService.getLogger().error("error at db-base-model 744", err, new Error().stack)
                         resolve(false);
                     });
                 }
@@ -769,13 +770,13 @@ export abstract class DbBaseModel {
                         resolve(res);
                     }).catch((err) => {
                         console.log('errrr', err);
-                        LoggerService.prototype.getLogger().error("error at db-base-model 772", err, new Error().stack)
+                        this.loggerService.getLogger().error("error at db-base-model 772", err, new Error().stack)
                         resolve(false);
                     });
                 }
             }).catch((err) => {
                 console.log('dbReady errrr', err);
-                LoggerService.prototype.getLogger().error("error at db-base-model 777", err, new Error().stack)
+                this.loggerService.getLogger().error("error at db-base-model 777", err, new Error().stack)
 
                 resolve(false);
             });
@@ -795,7 +796,7 @@ export abstract class DbBaseModel {
                         resolve(res);
                     }).catch((err) => {
                         console.log('delete error', err);
-                        LoggerService.prototype.getLogger().error("error at db-base-model 798", err, new Error().stack)
+                        this.loggerService.getLogger().error("error at db-base-model 798", err, new Error().stack)
 
                         resolve(false);
                     });

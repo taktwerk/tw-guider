@@ -1,3 +1,4 @@
+import { LoggerService } from './../../services/logger-service';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { Platform, Events } from '@ionic/angular';
@@ -15,7 +16,7 @@ export class GuideViewHistoryService extends ApiService {
     data: GuideViewHistoryModel[] = [];
     loadUrl = '/guide-view-history';
 
-    dbModelApi: GuideViewHistoryModel = new GuideViewHistoryModel(this.p, this.db, this.events, this.downloadService);
+    dbModelApi: GuideViewHistoryModel = new GuideViewHistoryModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
 
     /**
      * Constructor
@@ -34,6 +35,7 @@ export class GuideViewHistoryService extends ApiService {
         public authService: AuthService,
         public events: Events,
         public downloadService: DownloadService,
+        public loggerService: LoggerService,
         private sanitized: DomSanitizer,
         public appSetting: AppSetting) {
         super(http, events, appSetting);
@@ -45,6 +47,6 @@ export class GuideViewHistoryService extends ApiService {
      * @returns {GuideViewHistoryModel}
      */
     public newModel() {
-        return new GuideViewHistoryModel(this.p, this.db, this.events, this.downloadService);
+        return new GuideViewHistoryModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
     }
 }

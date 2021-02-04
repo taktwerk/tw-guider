@@ -1,3 +1,4 @@
+import { LoggerService } from './../../services/logger-service';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Events, ModalController, Platform } from '@ionic/angular';
 
@@ -30,6 +31,7 @@ export class SyncSpinnerComponent implements OnInit {
 
     constructor(private platform: Platform,
         private downloadService: DownloadService,
+        private loggerService: LoggerService,
         private db: DbProvider,
         private apiSync: ApiSync,
         private modalController: ModalController,
@@ -69,7 +71,7 @@ export class SyncSpinnerComponent implements OnInit {
         }
 
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
+            new UserDb(this.platform, this.db, this.events, this.downloadService, this.loggerService).getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
 
@@ -114,7 +116,7 @@ export class SyncSpinnerComponent implements OnInit {
         this.apiSync.isAvailableForPushData.subscribe(isAvailableForPushData => {
             this.isAvailableForPushData = isAvailableForPushData;
         });
-        
+
         this.apiSync.syncProgressStatus
             .pipe(debounceTime(500))
             .subscribe(syncProgressStatus => {

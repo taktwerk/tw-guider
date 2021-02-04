@@ -1,3 +1,4 @@
+import { LoggerService } from './../../services/logger-service';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Events, ModalController, Platform } from '@ionic/angular';
 
@@ -31,6 +32,7 @@ export class ionMenuWithSyncIndicator implements OnInit {
 
     constructor(private platform: Platform,
         private downloadService: DownloadService,
+        private loggerService: LoggerService,
         private db: DbProvider,
         private apiSync: ApiSync,
         private modalController: ModalController,
@@ -70,7 +72,7 @@ export class ionMenuWithSyncIndicator implements OnInit {
         }
 
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService).getCurrent().then((userDb) => {
+            new UserDb(this.platform, this.db, this.events, this.downloadService, this.loggerService).getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
                     resolve(true);

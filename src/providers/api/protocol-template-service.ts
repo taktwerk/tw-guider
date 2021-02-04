@@ -1,23 +1,24 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import {Platform, Events} from '@ionic/angular';
-import {ApiService} from './base/api-service';
-import {DbProvider} from '../db-provider';
-import {AuthService} from '../../services/auth-service';
-import {HttpClient} from '../../services/http-client';
-import {DownloadService} from '../../services/download-service';
-import {AppSetting} from '../../services/app-setting';
-import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model';
-import {WorkflowStepService} from './workflow-step-service';
-import {UserService} from '../../services/user-service';
-import {AuthDb} from '../../models/db/auth-db';
-import {WorkflowService} from './workflow-service';
+import { Platform, Events } from '@ionic/angular';
+import { ApiService } from './base/api-service';
+import { DbProvider } from '../db-provider';
+import { AuthService } from '../../services/auth-service';
+import { HttpClient } from '../../services/http-client';
+import { DownloadService } from '../../services/download-service';
+import { AppSetting } from '../../services/app-setting';
+import { ProtocolTemplateModel } from '../../models/db/api/protocol-template-model';
+import { WorkflowStepService } from './workflow-step-service';
+import { UserService } from '../../services/user-service';
+import { AuthDb } from '../../models/db/auth-db';
+import { WorkflowService } from './workflow-service';
+import { LoggerService } from 'src/services/logger-service';
 
 @Injectable()
 export class ProtocolTemplateService extends ApiService {
     data: ProtocolTemplateModel[] = [];
     loadUrl: string = '/protocol-template';
-    dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService);
+    dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
     user: AuthDb;
 
     /**
@@ -34,15 +35,17 @@ export class ProtocolTemplateService extends ApiService {
      * @param userService
      */
     constructor(http: HttpClient,
-                private p: Platform,
-                private db: DbProvider,
-                public authService: AuthService,
-                public events: Events,
-                public downloadService: DownloadService,
-                public appSetting: AppSetting,
-                private workflowStepService: WorkflowStepService,
-                private workflowService: WorkflowService,
-                private userService: UserService) {
+        private p: Platform,
+        private db: DbProvider,
+        public authService: AuthService,
+        public events: Events,
+        public downloadService: DownloadService,
+        public loggerService: LoggerService,
+
+        public appSetting: AppSetting,
+        private workflowStepService: WorkflowStepService,
+        private workflowService: WorkflowService,
+        private userService: UserService) {
         super(http, events, appSetting);
     }
 
@@ -105,6 +108,6 @@ export class ProtocolTemplateService extends ApiService {
      * @returns {ProtocolTemplateModel}
      */
     public newModel() {
-        return new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService);
+        return new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
     }
 }

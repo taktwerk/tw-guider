@@ -1,9 +1,10 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
-import {WorkflowStepModel} from './workflow-step-model';
+import { LoggerService } from './../../../services/logger-service';
+import { Platform, Events } from '@ionic/angular';
+import { DbApiModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { WorkflowStepModel } from './workflow-step-model';
 
 /**
  * API Db Model for 'Workflow Model'.
@@ -39,16 +40,17 @@ export class WorkflowModel extends DbApiModel {
         public platform: Platform,
         public db: DbProvider,
         public events: Events,
-        public downloadService: DownloadService
+        public downloadService: DownloadService,
+        public loggerService: LoggerService
     ) {
-        super(platform, db, events, downloadService);
+        super(platform, db, events, downloadService, loggerService);
     }
 
     async getSteps() {
         if (this.steps && this.steps.length && this.steps[0][WorkflowStepModel.COL_WORKFLOW_ID] === this.idApi) {
             return this.steps;
         }
-        const stepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService);
+        const stepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
         const steps = await stepModel.searchAll([WorkflowStepModel.COL_WORKFLOW_ID, this.idApi]);
 
         this.steps = steps;

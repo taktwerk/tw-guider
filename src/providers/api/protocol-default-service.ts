@@ -1,26 +1,27 @@
+import { LoggerService } from './../../services/logger-service';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import {Platform, Events, AlertController} from '@ionic/angular';
-import {ApiService} from './base/api-service';
-import {DbProvider} from '../db-provider';
-import {AuthService} from '../../services/auth-service';
-import {HttpClient} from '../../services/http-client';
-import {DownloadService} from '../../services/download-service';
-import {AppSetting} from '../../services/app-setting';
-import {ProtocolDefaultModel} from '../../models/db/api/protocol-default-model';
-import {ProtocolModel} from '../../models/db/api/protocol-model';
-import {PictureService} from '../../services/picture-service';
-import {DrawImageService} from '../../services/draw-image-service';
-import {ProtocolTemplateService} from './protocol-template-service';
-import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model';
-import {TranslateConfigService} from '../../services/translate-config.service';
-import {Md5} from 'ts-md5/dist/md5';
+import { Platform, Events, AlertController } from '@ionic/angular';
+import { ApiService } from './base/api-service';
+import { DbProvider } from '../db-provider';
+import { AuthService } from '../../services/auth-service';
+import { HttpClient } from '../../services/http-client';
+import { DownloadService } from '../../services/download-service';
+import { AppSetting } from '../../services/app-setting';
+import { ProtocolDefaultModel } from '../../models/db/api/protocol-default-model';
+import { ProtocolModel } from '../../models/db/api/protocol-model';
+import { PictureService } from '../../services/picture-service';
+import { DrawImageService } from '../../services/draw-image-service';
+import { ProtocolTemplateService } from './protocol-template-service';
+import { ProtocolTemplateModel } from '../../models/db/api/protocol-template-model';
+import { TranslateConfigService } from '../../services/translate-config.service';
+import { Md5 } from 'ts-md5/dist/md5';
 
 @Injectable()
 export class ProtocolDefaultService extends ApiService {
     data: ProtocolDefaultModel[] = [];
     loadUrl: string = '/protocol-default';
-    dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService);
+    dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
     saveInformation: {
         clientId: number,
         protocol: ProtocolModel,
@@ -47,17 +48,18 @@ export class ProtocolDefaultService extends ApiService {
      * @param protocolTemplateService
      */
     constructor(http: HttpClient,
-                private platform: Platform,
-                private db: DbProvider,
-                public alertController: AlertController,
-                private translateConfigService: TranslateConfigService,
-                public authService: AuthService,
-                public events: Events,
-                public downloadService: DownloadService,
-                public appSetting: AppSetting,
-                private pictureService: PictureService,
-                private drawImageService: DrawImageService,
-                private protocolTemplateService: ProtocolTemplateService) {
+        private platform: Platform,
+        private db: DbProvider,
+        public alertController: AlertController,
+        private translateConfigService: TranslateConfigService,
+        public authService: AuthService,
+        public events: Events,
+        public downloadService: DownloadService,
+        public loggerService: LoggerService,
+        public appSetting: AppSetting,
+        private pictureService: PictureService,
+        private drawImageService: DrawImageService,
+        private protocolTemplateService: ProtocolTemplateService) {
         super(http, events, appSetting);
     }
 
@@ -73,7 +75,7 @@ export class ProtocolDefaultService extends ApiService {
             if (!workflowFirstStep) {
                 return;
             }
-            protocol = new ProtocolModel(this.platform, this.db, this.events, this.downloadService);
+            protocol = new ProtocolModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
             const md5 = new Md5();
             const protocolName = ('' + md5.appendStr('' + (new Date()).getTime()).end()).substr(0, 5).toUpperCase();
             protocol.client_id = saveInformation.clientId;
@@ -176,7 +178,7 @@ export class ProtocolDefaultService extends ApiService {
         if (!protocolTemplate || !protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE]) {
             return;
         }
-        this.saveInformation = {clientId, protocol: null, protocolFormModel: null, protocolTemplate, referenceModel, referenceId, fileMapIndex: 1};
+        this.saveInformation = { clientId, protocol: null, protocolFormModel: null, protocolTemplate, referenceModel, referenceId, fileMapIndex: 1 };
         // const editFilePath = '';
         // this.drawImageService.open(editFilePath, protocolTemplate.name);
         // this.pictureService.editFile(editFilePath, protocolTemplate.name);
@@ -207,6 +209,6 @@ export class ProtocolDefaultService extends ApiService {
      * @returns {ProtocolDefaultModel}
      */
     public newModel() {
-        return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService);
+        return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
     }
 }

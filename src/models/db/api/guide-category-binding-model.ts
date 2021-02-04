@@ -1,8 +1,9 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
+import { Platform, Events } from '@ionic/angular';
+import { DbApiModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { LoggerService } from 'src/services/logger-service';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -32,7 +33,7 @@ export class GuideCategoryBindingModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
-        super(platform, db, events, downloadService);
+    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService, public loggerService: LoggerService) {
+        super(platform, db, events, downloadService, loggerService);
     }
 }

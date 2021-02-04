@@ -15,6 +15,7 @@ import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
 import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { DbProvider } from '../../providers/db-provider';
 import { SafeResourceUrl } from '@angular/platform-browser';
+import { LoggerService } from 'src/services/logger-service';
 
 
 @Component({
@@ -60,6 +61,8 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     public changeDetectorRef: ChangeDetectorRef,
     public modalController: ModalController,
     public downloadService: DownloadService,
+    public loggerService: LoggerService,
+
     private router: Router,
     private videoService: VideoService,
     private viewer3dService: Viewer3dService,
@@ -119,7 +122,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   }
 
   async openAssetTextModal() {
-    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService);
+    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
     guideAsset.asset_html = this.step.description_html;
     guideAsset.name = this.step.title;
 

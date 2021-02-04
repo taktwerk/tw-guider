@@ -1,7 +1,8 @@
-import {DbBaseModel} from '../base/db-base-model';
-import {Platform, Events} from '@ionic/angular';
-import {DbProvider} from '../../providers/db-provider';
-import {DownloadService} from '../../services/download-service';
+import { DbBaseModel } from '../base/db-base-model';
+import { Platform, Events } from '@ionic/angular';
+import { DbProvider } from '../../providers/db-provider';
+import { DownloadService } from '../../services/download-service';
+import { LoggerService } from 'src/services/logger-service';
 
 /**
  * Db Model for 'Auth'
@@ -45,14 +46,14 @@ export class AuthDb extends DbBaseModel {
   TABLE_NAME: string = 'auth';
   /** @inheritDoc */
   TABLE: any = [
-    [AuthDb.COL_USER_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'userId' ],
+    [AuthDb.COL_USER_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'userId'],
     [AuthDb.COL_CLIENT_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER],
     [AuthDb.COL_IS_AUTHORITY, 'TINYINT(1) DEFAULT 0', DbBaseModel.TYPE_BOOLEAN, 'isAuthority'],
-    [AuthDb.COL_USERNAME, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'username' ],
-    [AuthDb.COL_PASSWORD, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'password' ],
-    [AuthDb.COL_AUTH_TOKEN, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'authToken' ],
-    [AuthDb.COL_LOGIN_DATE, 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP', DbBaseModel.TYPE_DATE, 'loginDate' ],
-    [AuthDb.LAST_AUTH_ITEM_CHANGED_AT, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'lastAuthItemChangedAt' ],
+    [AuthDb.COL_USERNAME, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'username'],
+    [AuthDb.COL_PASSWORD, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'password'],
+    [AuthDb.COL_AUTH_TOKEN, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'authToken'],
+    [AuthDb.COL_LOGIN_DATE, 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP', DbBaseModel.TYPE_DATE, 'loginDate'],
+    [AuthDb.LAST_AUTH_ITEM_CHANGED_AT, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'lastAuthItemChangedAt'],
     [AuthDb.COL_ADDITIONAL_INFO, 'TEXT', DbBaseModel.TYPE_OBJECT, 'additionalInfo'],
   ];
 
@@ -60,12 +61,13 @@ export class AuthDb extends DbBaseModel {
    * @inheritDoc
    */
   constructor(
-      public platform: Platform,
-      public db: DbProvider,
-      public events: Events,
-      public downloadService: DownloadService
+    public platform: Platform,
+    public db: DbProvider,
+    public events: Events,
+    public downloadService: DownloadService,
+    public loggerService: LoggerService
   ) {
-    super(platform, db, events, downloadService);
+    super(platform, db, events, downloadService, loggerService);
   }
 
   /**

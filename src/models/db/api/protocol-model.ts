@@ -1,11 +1,12 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
-import {ProtocolDefaultModel} from './protocol-default-model';
-import {WorkflowStepModel} from './workflow-step-model';
-import {ProtocolCommentModel} from './protocol-comment-model';
+import { LoggerService } from './../../../services/logger-service';
+import { Platform, Events } from '@ionic/angular';
+import { DbApiModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { ProtocolDefaultModel } from './protocol-default-model';
+import { WorkflowStepModel } from './workflow-step-model';
+import { ProtocolCommentModel } from './protocol-comment-model';
 
 /**
  * API Db Model for 'Protocol Model'.
@@ -71,9 +72,10 @@ export class ProtocolModel extends DbApiModel {
         public platform: Platform,
         public db: DbProvider,
         public events: Events,
-        public downloadService: DownloadService
+        public downloadService: DownloadService,
+        public loggerService: LoggerService
     ) {
-        super(platform, db, events, downloadService);
+        super(platform, db, events, downloadService, loggerService);
     }
 
     getReferenceModelByAlias(referenceModelAlias) {
@@ -94,11 +96,11 @@ export class ProtocolModel extends DbApiModel {
 
     getProtocolFormModel(protocolFormTable: string) {
         if (!protocolFormTable) {
-            return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService);
+            return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
         }
         switch (protocolFormTable) {
             case 'protocol_default':
-                return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService);
+                return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
             default:
                 return null;
         }
