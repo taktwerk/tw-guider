@@ -4,9 +4,14 @@
       <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
     <ion-title> {{ 'log.header' | translate }} </ion-title>
+
+    <ion-buttons slot="primary">
+      <ion-button (click)="onLogMenu()">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 
 <ion-content style="max-height: 60px;">
   <ion-toolbar>

@@ -159,7 +159,7 @@ export class ImageEditorComponent implements OnInit {
     const fileName = new Date().getTime() + '.png';
     const recordedFile = new RecordedFile();
 
-    this.downloadService.checkTempDir().then((e) => {
+    this.downloadService.checkTempDir('_temp').then((e) => {
       this.file.writeFile(this.file.dataDirectory + '/_temp', fileName, blob, { replace: true }).then(async (res) => {
         console.log(res)
         recordedFile.uri = await this.downloadService.getResolvedNativeFilePath(res.nativeURL);

@@ -181,17 +181,13 @@ export class SyncModalComponent implements OnInit {
     });
     this.apiSync.isAvailableForSyncData.subscribe((isAvailableForSyncData) => {
       this.isAvailableForSyncData = isAvailableForSyncData;
-      this.loggerService.getLogger().info("isAvailableForSyncData", isAvailableForSyncData)
-
     });
     this.apiSync.isAvailableForPushData.subscribe((isAvailableForPushData) => {
       this.isAvailableForPushData = isAvailableForPushData;
-      this.loggerService.getLogger().info("isAvailableForPushData", isAvailableForPushData)
     });
     this.apiSync.pushProgressStatus.subscribe((pushProgressStatus) => {
-      // console.log('pushProgressStatus subscribe', pushProgressStatus);
       this.pushProgressStatus = pushProgressStatus;
-      this.loggerService.getLogger().info("pushProgressStatus", pushProgressStatus)
+      // 
 
     });
     this.events.subscribe('UserDb:update', (userDb) => {
@@ -213,7 +209,6 @@ export class SyncModalComponent implements OnInit {
     });
     this.events.subscribe('user:logout', () => {
       this.loggerService.getLogger().info("user:logout")
-
       this.dismiss();
     });
   }
@@ -221,13 +216,13 @@ export class SyncModalComponent implements OnInit {
   getProgressText() {
     switch (this.syncProgressStatus) {
       case 'pause':
-        this.loggerService.getLogger().info("Sync", 'pause')
+        // this.loggerService.getLogger().info("Sync", 'pause')
         return '(' + this.translateConfigService.translateWord('sync-modal.Paused') + ')';
       case 'failed':
-        this.loggerService.getLogger().debug("Sync", 'failed', new Error().stack)
+        // this.loggerService.getLogger().debug("Sync", 'failed', new Error().stack)
         return '(' + this.translateConfigService.translateWord('sync-modal.Failed') + ')';
       case 'success':
-        this.loggerService.getLogger().info("Sync", 'success')
+        // this.loggerService.getLogger().info("Sync", 'success')
         return '(' + this.translateConfigService.translateWord('sync-modal.Success') + ')';
 
       default:

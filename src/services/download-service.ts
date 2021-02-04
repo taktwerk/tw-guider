@@ -340,15 +340,15 @@ export class DownloadService {
     });
   }
 
-  checkTempDir(): Promise<boolean> {
+  checkTempDir(dir): Promise<boolean> {
     return new Promise((resolve) => {
       this.file
-        .checkDir(this.file.dataDirectory, '_temp')
+        .checkDir(this.file.dataDirectory, dir)
         .then((_) => {
           resolve(true);
         })
         .catch((err) => {
-          this.file.createDir(this.file.dataDirectory, '_temp', false).then((_) => {
+          this.file.createDir(this.file.dataDirectory, dir, false).then((_) => {
             resolve(true);
           });
         });

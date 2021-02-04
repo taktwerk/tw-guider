@@ -4,6 +4,12 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { IonSegment } from '@ionic/angular';
 import { NGXLogInterface } from 'ngx-logger';
 import { delay } from 'rxjs/operators';
+import { File } from '@ionic-native/file/ngx';
+import { FilesystemDirectory, FilesystemEncoding, Plugins } from '@capacitor/core';
+import { ActionSheetController } from '@ionic/angular';
+
+const { Filesystem } = Plugins;
+
 
 @Component({
   selector: 'app-logs',
@@ -11,7 +17,7 @@ import { delay } from 'rxjs/operators';
   styleUrls: ['./logs.page.scss'],
 })
 export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
-  constructor(private loggerService: LoggerService) { }
+  constructor(private loggerService: LoggerService, public file: File, public actionSheetController: ActionSheetController) { }
 
   currentSegment = 'All'
 
@@ -28,12 +34,13 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     this.logSubscription = this.loggerService.LogsSub.pipe(delay(0)).subscribe((logs) => {
       this.allLogs = logs;
-      if (logs) {
-        this.debugLogs = logs.filter(l => l.level == 1);
-        this.infoLogs = logs.filter(l => l.level == 2);
-        this.warnLogs = logs.filter(l => l.level == 4);
-        this.errorLogs = logs.filter(l => l.level == 5);
+      if (logs !== null) {
+        this.debugLogs = this.allLogs.filter(l => l.level == 1);
+        this.infoLogs = this.allLogs.filter(l => l.level == 2);
+        this.warnLogs = this.allLogs.filter(l => l.level == 4);
+        this.errorLogs = this.allLogs.filter(l => l.level == 5);
       }
+      this.allLogs = [];
     })
   }
 
@@ -68,5 +75,28 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
 
   trackLog(log: NGXLogInterface) {
     return log;
+  }
+
+  async onLogMenu() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Log',
+      buttons: [{
+        text: 'Download',
+        role: 'destructive',
+        icon: 'download',
+        handler: () => {
+          this.loggerService.downloadLog();
+        }
+      }, {
+        text: 'Clear Log',
+        icon: 'trash',
+        role: 'destructive',
+        handler: () => {
+          this.loggerService.clearLogFile();
+        }
+      },
+      ]
+    });
+    await actionSheet.present();
   }
 }
