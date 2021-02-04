@@ -4,6 +4,7 @@ import { NGXLoggerMonitor, NGXLogInterface, NGXLogger } from 'ngx-logger';
 import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
 import { File } from '@ionic-native/file/ngx';
 import { resolve } from 'url';
+import { DomSanitizer } from '@angular/platform-browser';
 
 const { Filesystem } = Plugins;
 
@@ -39,7 +40,7 @@ export class LoggerService {
     Logs: NGXLogInterface[] = [];
     LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
 
-    constructor(private logger: NGXLogger, public file: File,
+    constructor(private logger: NGXLogger, public file: File, private domSanitizer: DomSanitizer,
     ) {
         this.logger.registerMonitor(new CustomLoggerMonitor(this))
     }
@@ -93,7 +94,9 @@ export class LoggerService {
             encoding: FilesystemEncoding.UTF8
         });
         console.log(contents);
-        let blob = new Blob([JSON.stringify(contents)], { type: 'application/json' });
+
+        let blob = new Blob([JSON.stringify(contents)], { type: 'application/json' }); 
+       
     }
 
     async clearLogFile() {
