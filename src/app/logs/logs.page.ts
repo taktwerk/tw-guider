@@ -33,14 +33,20 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.logSubscription = this.loggerService.LogsSub.pipe(delay(0)).subscribe((logs) => {
-      this.allLogs = logs;
       if (logs !== null) {
+        this.allLogs = logs;
         this.debugLogs = this.allLogs.filter(l => l.level == 1);
         this.infoLogs = this.allLogs.filter(l => l.level == 2);
         this.warnLogs = this.allLogs.filter(l => l.level == 4);
         this.errorLogs = this.allLogs.filter(l => l.level == 5);
       }
-      this.allLogs = [];
+      else {
+        this.allLogs = [];
+        this.debugLogs = this.allLogs.filter(l => l.level == 1);
+        this.infoLogs = this.allLogs.filter(l => l.level == 2);
+        this.warnLogs = this.allLogs.filter(l => l.level == 4);
+        this.errorLogs = this.allLogs.filter(l => l.level == 5);
+      }
     })
   }
 
@@ -80,21 +86,24 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
   async onLogMenu() {
     const actionSheet = await this.actionSheetController.create({
       header: 'Log',
-      buttons: [{
-        text: 'Download',
-        role: 'destructive',
-        icon: 'download',
-        handler: () => {
-          this.loggerService.downloadLog();
-        }
-      }, {
-        text: 'Clear Log',
-        icon: 'trash',
-        role: 'destructive',
-        handler: () => {
-          this.loggerService.clearLogFile();
-        }
-      },
+      buttons: [
+        //   {
+        //   text: 'Download',
+        //   role: 'destructive',
+        //   icon: 'download',
+        //   handler: () => {
+        //     this.loggerService.downloadLog();
+        //   }
+        // }, 
+        {
+          text: 'Clear Log',
+          icon: 'trash',
+          role: 'destructive',
+          handler: () => {
+            this.loggerService.clearLogFile();
+          }
+        },
+
       ]
     });
     await actionSheet.present();

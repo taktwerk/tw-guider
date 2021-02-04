@@ -59,37 +59,30 @@ export class LoggerService {
      * @param log 
      */
     async writeToFile(log) {
-        this.logDir('TaktwerkLogs').then(async () => {
-            this.file.writeFile(this.file.dataDirectory + '/TaktwerkLogs', 'log.txt', log, { append: true })
-                .then(async (res) => {
-                    console.log(res)
-                    // add ,
-                    this.file.writeFile(this.file.dataDirectory + '/TaktwerkLogs', 'log.txt', ',', { append: true })
-                    // .catch((e) => {
-                    //     console.log('error', e)
-                    // });
-                })
-            // .catch((e) => {
-            //     console.log('error', e)
-            // });
-        })
+        try {
+            const contents = await Filesystem.appendFile({
+                path: '/TaktwerkLogs/log.txt',
+                data: JSON.stringify(log),
+                directory: FilesystemDirectory.Data,
+                encoding: FilesystemEncoding.UTF8
+            });
+        } catch (e) {
+            console.error('Unable to write log file', e);
+        }
     }
 
     logDir(dir) {
-        return new Promise((resolve) => {
-            this.file
-                .checkDir(this.file.dataDirectory, dir)
-                .then((e) => {
-                    resolve(true);
-                })
-                .catch((e) => {
-                    console.log('File not exit', e)
-                    this.file.createDir(this.file.dataDirectory, dir, false).then((e) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                this.file.checkDir(this.file.dataDirectory, dir)
+                    .then((e) => {
+                        console.log("logDir", e)
                         resolve(true);
-                    }).catch((e) => {
-                        console.log('createDir error', e)
                     })
-                });
+            } catch (e) {
+                console.error('Unable to make directory', e);
+                resolve(true)
+            }
         });
     }
 
@@ -100,12 +93,8 @@ export class LoggerService {
             encoding: FilesystemEncoding.UTF8
         });
         console.log(contents);
-
         let blob = new Blob([JSON.stringify(contents)], { type: 'application/json' });
-
     }
-
-
 
     async clearLogFile() {
         try {
