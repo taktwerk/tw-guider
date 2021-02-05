@@ -87,14 +87,14 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
     const actionSheet = await this.actionSheetController.create({
       header: 'Log',
       buttons: [
-        // {
-        //   text: 'Download',
-        //   role: 'destructive',
-        //   icon: 'download',
-        //   handler: () => {
-        //     this.loggerService.downloadLog();
-        //   }
-        // },
+        {
+          text: 'Download',
+          role: 'destructive',
+          icon: 'download',
+          handler: () => {
+            this.loggerService.downloadLog();
+          }
+        },
         {
           text: 'Clear Log',
           icon: 'trash',

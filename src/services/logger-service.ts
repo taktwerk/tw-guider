@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { NGXLoggerMonitor, NGXLogInterface, NGXLogger } from 'ngx-logger';
 import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
 import { File } from '@ionic-native/file/ngx';
-import { resolve } from 'url';
-import { DomSanitizer } from '@angular/platform-browser';
+import { FileSaverService } from 'ngx-filesaver';
 
 const { Filesystem } = Plugins;
 
@@ -40,7 +39,7 @@ export class LoggerService {
     Logs: NGXLogInterface[] = [];
     LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
 
-    constructor(private logger: NGXLogger, public file: File, private domSanitizer: DomSanitizer,
+    constructor(private logger: NGXLogger, public file: File, private fileSaverService: FileSaverService
     ) {
         this.logger.registerMonitor(new CustomLoggerMonitor(this))
     }
@@ -52,28 +51,22 @@ export class LoggerService {
     public setLogs(log: NGXLogInterface) {
         this.Logs.push(log);
         this.LogsSub.next([...this.Logs]);
-        this.writeToFile(log)
+        this.writeToFile()
     }
 
     /**
      * appends log message to file
      * @param log 
      */
-    async writeToFile(log) {
+    async writeToFile() {
         try {
-            const contents = await Filesystem.appendFile({
-                path: '/TaktwerkLogs/log.txt',
-                data: JSON.stringify(log),
-                directory: FilesystemDirectory.Data,
-                encoding: FilesystemEncoding.UTF8
-            });
         } catch (e) {
             console.error('Unable to write log file', e);
         }
     }
 
     logDir(dir) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             try {
                 this.file.checkDir(this.file.dataDirectory, dir)
                     .then((e) => {
@@ -94,19 +87,12 @@ export class LoggerService {
             encoding: FilesystemEncoding.UTF8
         });
         console.log(contents);
-
-        let blob = new Blob([JSON.stringify(contents)], { type: 'application/json' }); 
-       
+        let blob = new Blob([JSON.stringify(contents.data)], { type: 'application/json' });
+        this.fileSaverService.save(blob, `${Date.now()}_taktwerk_log.txt`);
     }
 
     async clearLogFile() {
         try {
-            const contents = await Filesystem.writeFile({
-                path: '/TaktwerkLogs/log.txt',
-                data: "",
-                directory: FilesystemDirectory.Data,
-                encoding: FilesystemEncoding.UTF8
-            });
         } catch (e) {
             console.error('Unable to clear log file', e);
         }

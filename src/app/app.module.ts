@@ -113,6 +113,7 @@ import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.pag
 
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { CustomLoggerMonitor, LoggerService } from 'src/services/logger-service';
+import { FileSaverModule, FileSaverService } from 'ngx-filesaver';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -178,6 +179,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     LoggerModule.forRoot({
       level: NgxLoggerLevel.DEBUG,
     }),
+    FileSaverModule
   ],
   providers: [
     StatusBar,
@@ -248,7 +250,8 @@ Sentry.init({ dsn: environment.sentryDsn });
     MigrationService,
     Base64ToGallery,
     LoggerService,
-    CustomLoggerMonitor
+    CustomLoggerMonitor,
+    FileSaverService 
   ],
   exports: [
     ProtocolDefaultComponent
