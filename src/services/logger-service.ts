@@ -51,59 +51,68 @@ export class LoggerService {
     public setLogs(log: NGXLogInterface) {
         this.Logs.push(log);
         this.LogsSub.next([...this.Logs]);
-        this.writeToFile()
+        this.writeToFile(log)
     }
 
     /**
      * appends log message to file
      * @param log 
      */
-    async writeToFile() {
-        try {
-        } catch (e) {
-            console.error('Unable to write log file', e);
-        }
+    async writeToFile(log) {
+        this.logDir().then(async e => {
+            const contents = await Filesystem.appendFile({
+                path: '/TaktwerkLogs/log.txt',
+                data: JSON.stringify(log),
+                directory: FilesystemDirectory.External,
+                encoding: FilesystemEncoding.UTF8,
+            }).catch(e => {
+                console.error('Unable to write log file', e);
+            })
+        })
     }
 
-    logDir(dir) {
+    logDir() {
         return new Promise(async (resolve) => {
-            try {
-                this.file.checkDir(this.file.dataDirectory, dir)
-                    .then((e) => {
-                        console.log("logDir", e)
-                        resolve(true);
-                    })
-            } catch (e) {
-                console.error('Unable to make directory', e);
+            const dir = await Filesystem.readdir({
+                path: '/TaktwerkLogs/log.txt',
+                directory: FilesystemDirectory.External,
+            }).then(e => {
                 resolve(true)
-            }
+            }).catch(async e => {
+                console.log("Directory not created", e)
+                // create dir
+                const contents = await Filesystem.writeFile({
+                    path: '/TaktwerkLogs/log.txt',
+                    data: "",
+                    directory: FilesystemDirectory.External,
+                    encoding: FilesystemEncoding.UTF8,
+                    recursive: true
+                }).then(e => {
+                    resolve(true)
+                })
+            })
         });
-    }
-
-    async downloadLog() {
-        const contents = await Filesystem.readFile({
-            path: '/TaktwerkLogs/log.txt',
-            directory: FilesystemDirectory.Data,
-            encoding: FilesystemEncoding.UTF8
-        });
-        console.log(contents);
-        let blob = new Blob([JSON.stringify(contents.data)], { type: 'application/json' });
-        this.fileSaverService.save(blob, `${Date.now()}_taktwerk_log.txt`);
     }
 
     async clearLogFile() {
         try {
+            const contents = await Filesystem.writeFile({
+                path: '/TaktwerkLogs/log.txt',
+                data: "",
+                directory: FilesystemDirectory.External,
+                encoding: FilesystemEncoding.UTF8,
+                recursive: true
+            });
         } catch (e) {
             console.error('Unable to clear log file', e);
         }
-
         this.LogsSub.next(null);
     }
 
     async deleteLogFile() {
         await Filesystem.deleteFile({
             path: '/TaktwerkLogs/log.txt',
-            directory: FilesystemDirectory.Data
+            directory: FilesystemDirectory.External
         });
     }
 }

@@ -88,14 +88,6 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
       header: 'Log',
       buttons: [
         {
-          text: 'Download',
-          role: 'destructive',
-          icon: 'download',
-          handler: () => {
-            this.loggerService.downloadLog();
-          }
-        },
-        {
           text: 'Clear Log',
           icon: 'trash',
           role: 'destructive',
