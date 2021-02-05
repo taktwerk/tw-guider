@@ -59,16 +59,18 @@ export class LoggerService {
      * @param log 
      */
     async writeToFile(log) {
-        this.logDir().then(async e => {
-            const contents = await Filesystem.appendFile({
-                path: '/TaktwerkLogs/log.txt',
-                data: JSON.stringify(log),
-                directory: FilesystemDirectory.External,
-                encoding: FilesystemEncoding.UTF8,
-            }).catch(e => {
-                console.error('Unable to write log file', e);
-            })
+        const contents = await Filesystem.appendFile({
+            path: '/TaktwerkLogs/log.txt',
+            data: JSON.stringify(log),
+            directory: FilesystemDirectory.External,
+            encoding: FilesystemEncoding.UTF8,
+        }).catch(e => {
+            console.error('Unable to write log file', e);
         })
+    }
+
+    createLogFile() {
+        this.logDir().then(async e => { })
     }
 
     logDir() {

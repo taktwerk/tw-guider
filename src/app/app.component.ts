@@ -1,3 +1,4 @@
+import { LoggerService } from 'src/services/logger-service';
 import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy, QueryList, ViewChild, ViewChildren, Renderer2 } from '@angular/core';
 import { AlertController, Events, IonRouterOutlet, NavController, Platform } from '@ionic/angular';
 import { ApiSync } from '../providers/api-sync';
@@ -55,7 +56,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     private alertController: AlertController,
     private location: Location,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private loggerService: LoggerService
   ) {
     (async () => {
       await this.platform.ready();
@@ -183,6 +185,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.registerEvents();
     })
 
+    this.loggerService.createLogFile();
   }
 
   protected initUserDB() {
