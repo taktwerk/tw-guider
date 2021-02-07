@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title *ngIf="guide"> {{guide.title}}</ion-title>
+    <ion-title *ngIf="guide">{{ 'guides.Information' | translate:params }}</ion-title>
 
     <ion-buttons slot="primary">
       <ion-button (click)="dismiss()">
@@ -21,7 +21,8 @@
     <ion-item-group>
       <ion-item lines="full" style="border-bottom: 1px solid #eeeeeea8;">
         <ion-label>
-          <h2 class=""> <strong>{{guide.short_name}}</strong></h2>
+          <h2 class=""><strong>{{guide.title}}</strong></h2>
+          <p><strong>{{guide.short_name}}</strong></p>
           <p *ngIf="guide.duration">{{ 'guides.duration' | translate:params }}: {{ guide.getDuration() }}</p>
           <p *ngIf="guide.revision">{{ 'guides.revision' | translate:params }}: {{ guide.revision }}</p>
           <p *ngIf="guide.created_by">{{ 'created_by' | translate:params }}: {{ guide.created_term }}</p>
