@@ -80,6 +80,7 @@ import { ProtocolDefaultService } from '../providers/api/protocol-default-servic
 import { WorkflowService } from '../providers/api/workflow-service';
 import { WorkflowStepService } from '../providers/api/workflow-step-service';
 import { ProtocolDefaultComponent } from '../components/protocol-form-components/protocol-default-component/protocol-default-component';
+// tslint:disable-next-line:max-line-length
 import { ProtocolDefaultComponentModule } from '../components/protocol-form-components/protocol-default-component/protocol-default-component.module';
 import { WorkflowTransitionService } from '../providers/api/workflow-transition-service';
 import { ProtocolCommentService } from '../providers/api/protocol-comment-service';
@@ -88,10 +89,10 @@ import { DateAgoPipe } from '../pipes/date-ago.pipe';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Media } from '@ionic-native/media/ngx';
 import { AudioService } from '../services/audio-service';
-import { GuideListComponentModule } from "../components/guide-list-component/guide-list-component.module";
-import { Viewer3dService } from "../services/viewer-3d-service";
-import { Viewer3dModalComponent } from "../components/modals/viewer-3d-modal-component/viewer-3d-modal-component";
-import { Viewer3dModelComponentModule } from "../components/viewer-3d-model-component/viewer-3d-model-component.module";
+import { GuideListComponentModule } from '../components/guide-list-component/guide-list-component.module';
+import { Viewer3dService } from '../services/viewer-3d-service';
+import { Viewer3dModalComponent } from '../components/modals/viewer-3d-modal-component/viewer-3d-modal-component';
+import { Viewer3dModelComponentModule } from '../components/viewer-3d-model-component/viewer-3d-model-component.module';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
