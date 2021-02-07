@@ -77,7 +77,8 @@
     "Protocol": "Protocol",
     "specifySearchMessage": "There are {{ guidesCount }} guides. Specify a detailed search",
     "specifyMoreSearchMessage": "There are {{ guidesCount }} guides. Specify a more detailed search",
-    "Show Collection": "Show Collection"
+    "Show Collection": "Show Collection",
+    "Information": "Information"
   },
   "feedback": {
     "header": "Feedback",

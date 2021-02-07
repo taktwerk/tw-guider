@@ -72,7 +72,8 @@
     "Protocol": "Protokoll",
     "specifySearchMessage": "{{ guidesCount }} Anleitungen gefunden. Spezifizieren Sie die Suche",
     "specifyMoreSearchMessage": "{{ guidesCount }} Anleitungen gefunden. Spezifizieren Sie die Suche weiter",
-    "Show Collection": "Zeige Sammlung"
+    "Show Collection": "Zeige Sammlung",
+    "Information": "Information"
   },
   "feedback": {
     "header": "Feedback",
