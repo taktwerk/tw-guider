@@ -32,7 +32,7 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void { }
 
   ngAfterViewInit(): void {
-    this.logSubscription = this.loggerService.LogsSub.pipe(delay(0)).subscribe((logs) => {
+    this.logSubscription =    this.loggerService.LogsSub.pipe(delay(0)).subscribe((logs) => {
       if (logs !== null) {
         this.allLogs = logs;
         this.debugLogs = this.allLogs.filter(l => l.level == 1);
@@ -92,7 +92,7 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
           icon: 'trash',
           role: 'destructive',
           handler: () => {
-            this.loggerService.clearLogFile();
+               this.loggerService.clearLogFile();
           }
         },
       ]

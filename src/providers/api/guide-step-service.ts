@@ -16,7 +16,7 @@ import { LoggerService } from 'src/services/logger-service';
 export class GuideStepService extends ApiService {
     data: GuideStepModel[] = [];
     loadUrl = '/guide-step';
-    dbModelApi: GuideStepModel = new GuideStepModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: GuideStepModel = new GuideStepModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -48,7 +48,7 @@ export class GuideStepService extends ApiService {
      * @returns {GuideStepModel}
      */
     public newModel() {
-        return new GuideStepModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new GuideStepModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 
     public getDescriptionHtml(descriptionHtml) {

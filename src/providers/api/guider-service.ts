@@ -14,7 +14,7 @@ import { AppSetting } from '../../services/app-setting';
 export class GuiderService extends ApiService {
     data: GuiderModel[] = [];
     loadUrl: string = '/guider';
-    dbModelApi: GuiderModel = new GuiderModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: GuiderModel = new GuiderModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -43,7 +43,7 @@ export class GuiderService extends ApiService {
      * @returns {GuiderModel}
      */
     public newModel() {
-        return new GuiderModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new GuiderModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 
     public getById(id): Promise<any> {

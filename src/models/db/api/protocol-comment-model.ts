@@ -76,7 +76,7 @@ export class ProtocolCommentModel extends DbApiModel {
             return faComment;
         }
         if (this.new_workflow_step_id) {
-            const newWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+            const newWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
             const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
                 [newWorkflowStepModel.COL_ID_API, this.new_workflow_step_id]
             );
@@ -93,7 +93,7 @@ export class ProtocolCommentModel extends DbApiModel {
 
     async getColour() {
         if (this.new_workflow_step_id) {
-            const newWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+            const newWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
             const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
                 [newWorkflowStepModel.COL_ID_API, this.new_workflow_step_id]
             );
@@ -117,7 +117,7 @@ export class ProtocolCommentModel extends DbApiModel {
             return;
         }
 
-        const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+        const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
         if (protocolModel) {
             const protocolModels = await protocolModel.findFirst(
                 [protocolModel.COL_ID_API, this.protocol_id]
@@ -138,7 +138,7 @@ export class ProtocolCommentModel extends DbApiModel {
             if (!this[this.COL_ID]) {
                 return;
             }
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
             const protocolModels = await protocolModel.findFirst([protocolModel.COL_ID, this.local_protocol_id]);
             if (protocolModels && protocolModels.length) {
                 const protocol = protocolModels[0];

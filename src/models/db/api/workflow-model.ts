@@ -50,7 +50,7 @@ export class WorkflowModel extends DbApiModel {
         if (this.steps && this.steps.length && this.steps[0][WorkflowStepModel.COL_WORKFLOW_ID] === this.idApi) {
             return this.steps;
         }
-        const stepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+        const stepModel = new WorkflowStepModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
         const steps = await stepModel.searchAll([WorkflowStepModel.COL_WORKFLOW_ID, this.idApi]);
 
         this.steps = steps;

@@ -15,7 +15,7 @@ import { LoggerService } from 'src/services/logger-service';
 export class GuideAssetService extends ApiService {
     data: GuideAssetModel[] = [];
     loadUrl = '/guide-asset';
-    dbModelApi: GuideAssetModel = new GuideAssetModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: GuideAssetModel = new GuideAssetModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -45,6 +45,6 @@ export class GuideAssetService extends ApiService {
      * @returns {GuideAssetModel}
      */
     public newModel() {
-        return new GuideAssetModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new GuideAssetModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

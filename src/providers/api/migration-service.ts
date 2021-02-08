@@ -14,7 +14,7 @@ import { LoggerService } from 'src/services/logger-service';
 export class MigrationService extends ApiService {
     data: MigrationModel[] = [];
     loadUrl: string = null;
-    dbModelApi: MigrationModel = new MigrationModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: MigrationModel = new MigrationModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -42,6 +42,6 @@ export class MigrationService extends ApiService {
      * @returns {MigrationkModel}
      */
     public newModel() {
-        return new MigrationModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new MigrationModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

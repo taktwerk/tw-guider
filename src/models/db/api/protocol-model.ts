@@ -96,11 +96,11 @@ export class ProtocolModel extends DbApiModel {
 
     getProtocolFormModel(protocolFormTable: string) {
         if (!protocolFormTable) {
-            return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+            return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
         }
         switch (protocolFormTable) {
             case 'protocol_default':
-                return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+                return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
             default:
                 return null;
         }

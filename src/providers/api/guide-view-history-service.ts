@@ -16,7 +16,7 @@ export class GuideViewHistoryService extends ApiService {
     data: GuideViewHistoryModel[] = [];
     loadUrl = '/guide-view-history';
 
-    dbModelApi: GuideViewHistoryModel = new GuideViewHistoryModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: GuideViewHistoryModel = new GuideViewHistoryModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -47,6 +47,6 @@ export class GuideViewHistoryService extends ApiService {
      * @returns {GuideViewHistoryModel}
      */
     public newModel() {
-        return new GuideViewHistoryModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new GuideViewHistoryModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

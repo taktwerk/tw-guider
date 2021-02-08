@@ -18,7 +18,7 @@ import { LoggerService } from 'src/services/logger-service';
 export class ProtocolService extends ApiService {
     data: ProtocolModel[] = [];
     loadUrl: string = '/protocol';
-    dbModelApi: ProtocolModel = new ProtocolModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: ProtocolModel = new ProtocolModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     user: AuthDb;
 
     possibleDatabaseNamespaces = [
@@ -240,6 +240,6 @@ export class ProtocolService extends ApiService {
      * @returns {ProtocolModel}
      */
     public newModel() {
-        return new ProtocolModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new ProtocolModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

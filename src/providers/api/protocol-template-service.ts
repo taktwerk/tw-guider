@@ -18,7 +18,7 @@ import { LoggerService } from 'src/services/logger-service';
 export class ProtocolTemplateService extends ApiService {
     data: ProtocolTemplateModel[] = [];
     loadUrl: string = '/protocol-template';
-    dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     user: AuthDb;
 
     /**
@@ -108,6 +108,6 @@ export class ProtocolTemplateService extends ApiService {
      * @returns {ProtocolTemplateModel}
      */
     public newModel() {
-        return new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

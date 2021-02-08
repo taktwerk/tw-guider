@@ -16,7 +16,7 @@ import { WorkflowTransitionService } from './workflow-transition-service';
 export class WorkflowStepService extends ApiService {
     data: WorkflowStepModel[] = [];
     loadUrl: string = '/workflow-step';
-    dbModelApi: WorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: WorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     private workflowStepsListCache: WorkflowStepModel[] = [];
 
     /**
@@ -88,6 +88,6 @@ export class WorkflowStepService extends ApiService {
      * @returns {WorkflowStepModel}
      */
     public newModel() {
-        return new WorkflowStepModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new WorkflowStepModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

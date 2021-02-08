@@ -15,7 +15,7 @@ import { WorkflowTransitionModel } from '../../models/db/api/workflow-transition
 export class WorkflowTransitionService extends ApiService {
     data: WorkflowTransitionModel[] = [];
     loadUrl: string = '/workflow-transition';
-    dbModelApi: WorkflowTransitionModel = new WorkflowTransitionModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: WorkflowTransitionModel = new WorkflowTransitionModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -42,6 +42,6 @@ export class WorkflowTransitionService extends ApiService {
      * @returns {WorkflowStepModel}
      */
     public newModel() {
-        return new WorkflowTransitionModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new WorkflowTransitionModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

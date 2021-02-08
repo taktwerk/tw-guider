@@ -16,7 +16,7 @@ import { AppSetting } from '../../services/app-setting';
 export class GuideCategoryService extends ApiService {
     data: GuideCategoryModel[] = [];
     loadUrl: string = '/guide-category';
-    dbModelApi: GuideCategoryModel = new GuideCategoryModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: GuideCategoryModel = new GuideCategoryModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -45,7 +45,7 @@ export class GuideCategoryService extends ApiService {
      * @returns {GuideCategoryModel}
      */
     public newModel() {
-        return new GuideCategoryModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new GuideCategoryModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 
     public findByGuides(searchValue): Promise<any> {
@@ -254,7 +254,7 @@ export class GuideCategoryService extends ApiService {
             this.dbModelApi.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom, groupby).then((res) => {
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuiderModel = new GuiderModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+                        const obj: GuiderModel = new GuiderModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
                         obj.platform = this.dbModelApi.platform;
                         obj.db = this.db;
                         obj.events = this.events;

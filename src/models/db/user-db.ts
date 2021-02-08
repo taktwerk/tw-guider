@@ -48,7 +48,7 @@ export class UserDb extends DbBaseModel {
      */
     public getCurrent(): Promise<any | boolean> {
         return new Promise((resolve) => {
-            new AuthDb(this.platform, this.db, this.events, this.downloadService, this.loggerService).loadLast().then((authDb) => {
+            new AuthDb(this.platform, this.db, this.events, this.downloadService,    this.loggerService).loadLast().then((authDb) => {
                 if (!authDb) {
                     resolve(null);
                 } else {

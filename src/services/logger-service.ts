@@ -31,7 +31,7 @@ export interface Log {
 export class CustomLoggerMonitor implements NGXLoggerMonitor {
     constructor(private loggerService: LoggerService) { }
 
-    onLog(log: NGXLogInterface) { this.loggerService.setLogs(log) }
+    onLog(log: NGXLogInterface) {    this.loggerService.setLogs(log) }
 }
 
 @Injectable()

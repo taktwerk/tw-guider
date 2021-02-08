@@ -86,7 +86,7 @@ export class ProtocolTemplateModel extends DbApiModel {
         if (this.workflow && this.workflow[this.COL_ID_API] === this.workflow_id) {
             return this.workflow;
         }
-        const workflowModel = new WorkflowModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+        const workflowModel = new WorkflowModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
         const workflows = await workflowModel.findFirst([workflowModel.COL_ID_API, this.workflow_id]);
 
         this.workflow = workflows.length ? workflows[0] : null;

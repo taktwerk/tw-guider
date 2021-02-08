@@ -15,7 +15,7 @@ import { LoggerService } from 'src/services/logger-service';
 export class GuideChildService extends ApiService {
     data: GuideChildModel[] = [];
     loadUrl = '/guide-child';
-    dbModelApi: GuideChildModel = new GuideChildModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: GuideChildModel = new GuideChildModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
 
     /**
@@ -48,6 +48,6 @@ export class GuideChildService extends ApiService {
      * @returns {GuideChildModel}
      */
     public newModel() {
-        return new GuideChildModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new GuideChildModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

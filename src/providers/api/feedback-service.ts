@@ -14,7 +14,7 @@ import { LoggerService } from 'src/services/logger-service';
 export class FeedbackService extends ApiService {
     data: FeedbackModel[] = [];
     loadUrl: string = '/feedback';
-    dbModelApi: FeedbackModel = new FeedbackModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: FeedbackModel = new FeedbackModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -43,6 +43,6 @@ export class FeedbackService extends ApiService {
      * @returns {FeedbackModel}
      */
     public newModel() {
-        return new FeedbackModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new FeedbackModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

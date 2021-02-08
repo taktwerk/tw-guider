@@ -122,7 +122,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   }
 
   async openAssetTextModal() {
-    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
     guideAsset.asset_html = this.step.description_html;
     guideAsset.name = this.step.title;
 

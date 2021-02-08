@@ -14,7 +14,7 @@ import { LoggerService } from 'src/services/logger-service';
 export class WorkflowService extends ApiService {
     data: WorkflowModel[] = [];
     loadUrl: string = '/workflow';
-    dbModelApi: WorkflowModel = new WorkflowModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: WorkflowModel = new WorkflowModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -42,6 +42,6 @@ export class WorkflowService extends ApiService {
      * @returns {WorkflowModel}
      */
     public newModel() {
-        return new WorkflowModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new WorkflowModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

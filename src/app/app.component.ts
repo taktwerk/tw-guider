@@ -185,7 +185,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.registerEvents();
     })
 
-    this.loggerService.createLogFile();
+       this.loggerService.createLogFile();
   }
 
   protected initUserDB() {

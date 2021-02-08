@@ -41,7 +41,7 @@ export class UserService {
             });
         }
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService, this.loggerService).getCurrent().then((userDb) => {
+            new UserDb(this.platform, this.db, this.events, this.downloadService,    this.loggerService).getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
                     resolve(this.userDb);

@@ -15,7 +15,7 @@ import { LoggerService } from 'src/services/logger-service';
 export class GuideCategoryBindingService extends ApiService {
     data: GuideCategoryBindingModel[] = [];
     loadUrl: string = '/guide-category-binding';
-    dbModelApi: GuideCategoryBindingModel = new GuideCategoryBindingModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: GuideCategoryBindingModel = new GuideCategoryBindingModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -45,6 +45,6 @@ export class GuideCategoryBindingService extends ApiService {
      * @returns {GuideCategoryBindingModel}
      */
     public newModel() {
-        return new GuideCategoryBindingModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new GuideCategoryBindingModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

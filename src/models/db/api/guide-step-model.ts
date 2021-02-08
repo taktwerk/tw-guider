@@ -86,7 +86,7 @@ export class GuideStepModel extends DbApiModel {
             return;
         }
 
-        const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+        const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
         if (guiderModel) {
             const guiderModels = await guiderModel.findFirst(
                 [guiderModel.COL_ID_API, this.guide_id]
@@ -108,7 +108,7 @@ export class GuideStepModel extends DbApiModel {
             if (!this[this.COL_ID]) {
                 return;
             }
-            const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+            const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
             const guiderModels = await guiderModel.findFirst([guiderModel.COL_ID, this.local_guide_id]);
             if (guiderModels && guiderModels.length) {
                 console.log('guiderModels is not 0000');

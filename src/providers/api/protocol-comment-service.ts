@@ -16,7 +16,7 @@ import { TranslateConfigService } from '../../services/translate-config.service'
 export class ProtocolCommentService extends ApiService {
     data: ProtocolCommentModel[] = [];
     loadUrl: string = '/protocol-comment';
-    dbModelApi: ProtocolCommentModel = new ProtocolCommentModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: ProtocolCommentModel = new ProtocolCommentModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -67,7 +67,7 @@ export class ProtocolCommentService extends ApiService {
         if (!protocolComment.new_workflow_step_id || !protocolComment.old_workflow_step_id) {
             return null;
         }
-        const newWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        const newWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
         const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
             [newWorkflowStepModel.COL_ID_API, protocolComment.new_workflow_step_id]
         );
@@ -79,7 +79,7 @@ export class ProtocolCommentService extends ApiService {
             return await this.translateConfigService.translate('Final');
         }
 
-        const oldWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        const oldWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
         const oldWorkflowStepSearchResult = await oldWorkflowStepModel.findFirst(
             [newWorkflowStepModel.COL_ID_API, protocolComment.old_workflow_step_id]
         );
@@ -103,6 +103,6 @@ export class ProtocolCommentService extends ApiService {
      * @returns {ProtocolCommentModel}
      */
     public newModel() {
-        return new ProtocolCommentModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new ProtocolCommentModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

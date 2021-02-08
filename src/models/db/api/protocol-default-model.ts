@@ -79,7 +79,7 @@ export class ProtocolDefaultModel extends DbApiModel {
         console.log('after check');
 
         if (this.protocol_id) {
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
             const protocolModels = await protocolModel.findFirst(
                 [protocolModel.COL_ID_API, this.protocol_id]
             );
@@ -101,7 +101,7 @@ export class ProtocolDefaultModel extends DbApiModel {
             if (!this[this.COL_ID]) {
                 return;
             }
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
             const protocolModels = await protocolModel.findFirst([protocolModel.COL_ID, this.local_protocol_id]);
             if (protocolModels && protocolModels.length) {
                 const protocol = protocolModels[0];
@@ -120,7 +120,7 @@ export class ProtocolDefaultModel extends DbApiModel {
             if (!this[this.COL_ID] || !this.idApi) {
                 return;
             }
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
             const protocolModels = await protocolModel.findFirst([protocolModel.COL_ID_API, this.protocol_id]);
             if (protocolModels && protocolModels.length) {
                 const protocol = protocolModels[0];

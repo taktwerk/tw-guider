@@ -93,7 +93,7 @@ export class GuideCategoryModel extends DbApiModel {
             this.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom).then((res) => {
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+                        const obj: GuiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
                         obj.platform = this.platform;
                         obj.db = this.db;
                         obj.events = this.events;

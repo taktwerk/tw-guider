@@ -513,7 +513,7 @@ export class AuthService {
      * @returns {AuthDb}
      */
     public newAuthModel(): AuthDb {
-        return new AuthDb(this.platform, this.dbProvider, this.events, this.downloadService, this.loggerService);
+        return new AuthDb(this.platform, this.dbProvider, this.events, this.downloadService,    this.loggerService);
     }
 
     /**
@@ -521,6 +521,6 @@ export class AuthService {
      * @returns {UserDb}
      */
     public newUserModel(): UserDb {
-        return new UserDb(this.platform, this.dbProvider, this.events, this.downloadService, this.loggerService);
+        return new UserDb(this.platform, this.dbProvider, this.events, this.downloadService,    this.loggerService);
     }
 }

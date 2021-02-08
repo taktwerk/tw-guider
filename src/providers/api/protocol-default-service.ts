@@ -21,7 +21,7 @@ import { Md5 } from 'ts-md5/dist/md5';
 export class ProtocolDefaultService extends ApiService {
     data: ProtocolDefaultModel[] = [];
     loadUrl: string = '/protocol-default';
-    dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
     saveInformation: {
         clientId: number,
         protocol: ProtocolModel,
@@ -75,7 +75,7 @@ export class ProtocolDefaultService extends ApiService {
             if (!workflowFirstStep) {
                 return;
             }
-            protocol = new ProtocolModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+            protocol = new ProtocolModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
             const md5 = new Md5();
             const protocolName = ('' + md5.appendStr('' + (new Date()).getTime()).end()).substr(0, 5).toUpperCase();
             protocol.client_id = saveInformation.clientId;
@@ -209,6 +209,6 @@ export class ProtocolDefaultService extends ApiService {
      * @returns {ProtocolDefaultModel}
      */
     public newModel() {
-        return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+        return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }

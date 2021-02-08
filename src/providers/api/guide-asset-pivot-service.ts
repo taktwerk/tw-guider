@@ -14,7 +14,7 @@ import { LoggerService } from 'src/services/logger-service';
 export class GuideAssetPivotService extends ApiService {
     data: GuideAssetPivotModel[] = [];
     loadUrl: string = '/guide-asset-pivot';
-    dbModelApi: GuideAssetPivotModel = new GuideAssetPivotModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+    dbModelApi: GuideAssetPivotModel = new GuideAssetPivotModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
 
     /**
      * Constructor
@@ -44,6 +44,6 @@ export class GuideAssetPivotService extends ApiService {
      * @returns {GuideAssetPivotModel}
      */
     public newModel() {
-        return new GuideAssetPivotModel(this.p, this.db, this.events, this.downloadService, this.loggerService);
+        return new GuideAssetPivotModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
     }
 }
