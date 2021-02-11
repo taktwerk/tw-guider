@@ -1,3 +1,5 @@
-<ion-menu-button
+<ion-menu-button *ngIf="resumeMode" class="menu_has_status"
     [ngClass]="{'dataAvailable': isAvailableForPushData || isAvailableForSyncData, 'allSynced': iconStatus=='synced','error': iconStatus=='failed' }">
 </ion-menu-button>
+
+<ion-menu-button *ngIf="!resumeMode"></ion-menu-button>

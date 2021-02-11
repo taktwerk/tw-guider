@@ -11,7 +11,9 @@ import { SyncMode } from '../components/synchronization-component/synchronizatio
 export class SyncService {
 
     syncMode = new BehaviorSubject<number>(null);
-  
+    resumeMode = new BehaviorSubject<boolean>(null);
+
+
     constructor(public platform: Platform,
         public dbProvider: DbProvider,
         public loadingController: LoadingController,

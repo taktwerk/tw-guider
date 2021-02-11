@@ -104,13 +104,14 @@ export class SynchronizationComponent implements OnInit {
     this.syncService.syncMode.next(this.modeSync);
   }
 
-
   changeResumeMode() {
-    this.resumeMode != this.resumeMode;
+    this.resumeMode == false ? this.resumeMode = true : this.resumeMode = false;
     console.log(this.resumeMode)
     this.initUser().then(() => {
       this.userService.userDb.userSetting.resumeMode = this.resumeMode;
-      this.userService.userDb.save();
+      this.userService.userDb.save().then(() => {
+        this.syncService.resumeMode.next(this.resumeMode);
+      });
     });
   }
 
