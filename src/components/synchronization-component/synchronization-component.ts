@@ -39,7 +39,7 @@ export class SynchronizationComponent implements OnInit {
   public syncProgressStatus = 'not_sync';
   public isPrepareSynData = true;
   public modeSync;
-  public resumeMode;
+  public resumeMode: boolean = null;
   public userDb: UserDb;
   public syncAllItemsCount = 0;
   public params;
