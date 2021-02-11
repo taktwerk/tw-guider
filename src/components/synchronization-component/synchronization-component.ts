@@ -37,8 +37,9 @@ export class SynchronizationComponent implements OnInit {
   public syncedItemsCount = 0;
   public syncedItemsPercent = 0;
   public syncProgressStatus = 'not_sync';
-  public isPrepareSynData = false;
+  public isPrepareSynData = true;
   public modeSync;
+  public resumeMode;
   public userDb: UserDb;
   public syncAllItemsCount = 0;
   public params;
@@ -62,7 +63,9 @@ export class SynchronizationComponent implements OnInit {
       } else {
         this.modeSync = SyncMode.Manual;
       }
+
       this.syncProgressStatus = this.userService.userDb.userSetting.syncStatus;
+      this.resumeMode = this.userService.userDb.userSetting.resumeMode;
     });
   }
 
@@ -99,6 +102,16 @@ export class SynchronizationComponent implements OnInit {
       this.userService.userDb.save();
     });
     this.syncService.syncMode.next(this.modeSync);
+  }
+
+
+  changeResumeMode() {
+    this.resumeMode != this.resumeMode;
+    console.log(this.resumeMode)
+    this.initUser().then(() => {
+      this.userService.userDb.userSetting.resumeMode = this.resumeMode;
+      this.userService.userDb.save();
+    });
   }
 
   async showRefreshDataAlert() {
@@ -177,12 +190,14 @@ export class SynchronizationComponent implements OnInit {
       this.apiSync.syncAllItemsCount.next(this.userService.userDb.userSetting.syncAllItemsCount);
       this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
     });
+
     this.syncService.syncMode.subscribe((result) => {
       if (result === null) {
         return;
       }
       this.modeSync = result;
     });
+
     this.apiSync.isStartSyncBehaviorSubject.subscribe(isSync => {
       this.isStartSync = isSync;
       this.detectChanges();

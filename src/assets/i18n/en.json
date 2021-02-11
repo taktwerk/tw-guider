@@ -122,6 +122,7 @@
   },
   "synchronization-component": {
     "Sync Modes": "Sync Modes",
+    "Enable Resume Synchronisation": "Enable Resume Synchronisation",
     "Manually": "Manually",
     "Online": "Online",
     "Periodic": "Periodic",

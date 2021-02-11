@@ -6,7 +6,7 @@
     <ion-title>
       {{ 'profile.header' | translate:{name:authService.auth.username} }}
     </ion-title>
-          
+
   </ion-toolbar>
 </ion-header>
 
@@ -21,7 +21,7 @@
     <ion-label>
       <ion-icon name="logo-twitter"></ion-icon>
       <span>
-          {{ 'profile.ID' | translate:params }}
+        {{ 'profile.ID' | translate:params }}
       </span>
     </ion-label>
     <ion-badge class="ion-align-items-end">{{ authService.auth.userId }}</ion-badge>
@@ -30,75 +30,70 @@
     <ion-label>
       <ion-icon name="person"></ion-icon>
       <span>
-          {{ 'profile.Username' | translate:params }}
+        {{ 'profile.Username' | translate:params }}
       </span>
     </ion-label>
     <span class="ion-align-items-end">{{ authService.auth.username }}</span>
   </ion-item>
   <span *ngIf="authService.auth.additionalInfo">
-      <ion-item>
-        <ion-label>
-          <ion-icon name="person-add"></ion-icon>
-          <span>
-              {{ 'profile.Full name' | translate:params }}
-          </span>
-        </ion-label>
-        <span class="ion-align-items-end">{{ authService.auth.additionalInfo.fullname }}</span>
-      </ion-item>
-      <ion-item>
-          <ion-label>
-            <ion-icon name="mail"></ion-icon>
-            <span>
-                {{ 'profile.Email' | translate:params }}
-            </span>
-          </ion-label>
-          <span class="ion-align-items-end">{{ authService.auth.additionalInfo.email }}</span>
-      </ion-item>
-      <ion-item>
-            <ion-label>
-              <ion-icon name="exit"></ion-icon>
-              <span>
-                  {{ 'profile.Last Login At' | translate:params }}
-              </span>
-            </ion-label>
+    <ion-item>
+      <ion-label>
+        <ion-icon name="person-add"></ion-icon>
+        <span>
+          {{ 'profile.Full name' | translate:params }}
+        </span>
+      </ion-label>
+      <span class="ion-align-items-end">{{ authService.auth.additionalInfo.fullname }}</span>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-icon name="mail"></ion-icon>
+        <span>
+          {{ 'profile.Email' | translate:params }}
+        </span>
+      </ion-label>
+      <span class="ion-align-items-end">{{ authService.auth.additionalInfo.email }}</span>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-icon name="exit"></ion-icon>
+        <span>
+          {{ 'profile.Last Login At' | translate:params }}
+        </span>
+      </ion-label>
 
-            <span *ngIf="authService.auth.additionalInfo.last_login_at"
-                  class="ion-align-items-end"
-            >
-                {{ authService.auth.additionalInfo.last_login_at }}
-            </span>
-       </ion-item>
-      <ion-item>
-            <ion-label>
-              <ion-icon name="key"></ion-icon>
-              <span>
-                  {{ 'profile.Roles' | translate:params }}
-              </span>
-            </ion-label>
-            <span class="ion-align-items-end">
-                <div *ngFor="let role of authService.auth.additionalInfo.roles">{{ role }}</div>
-            </span>
-       </ion-item>
-      <ion-item>
-            <ion-label>
-              <ion-icon name="briefcase"></ion-icon>
-              <span>
-                  {{ 'profile.Company' | translate:params }}
-              </span>
-            </ion-label>
-            <span class="ion-align-items-end">{{ authService.auth.additionalInfo.clientName }}</span>
-       </ion-item>
+      <span *ngIf="authService.auth.additionalInfo.last_login_at" class="ion-align-items-end">
+        {{ authService.auth.additionalInfo.last_login_at }}
+      </span>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-icon name="key"></ion-icon>
+        <span>
+          {{ 'profile.Roles' | translate:params }}
+        </span>
+      </ion-label>
+      <span class="ion-align-items-end">
+        <div *ngFor="let role of authService.auth.additionalInfo.roles">{{ role }}</div>
+      </span>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-icon name="briefcase"></ion-icon>
+        <span>
+          {{ 'profile.Company' | translate:params }}
+        </span>
+      </ion-label>
+      <span class="ion-align-items-end">{{ authService.auth.additionalInfo.clientName }}</span>
+    </ion-item>
   </span>
   <language-selector-component></language-selector-component>
   <ion-list>
-      <ion-item>
-          <ion-label>{{ 'Enable USB mode' | translate:params }}</ion-label>
-          <ion-toggle slot="start"
-                      checked="{{ appSetting.isEnabledUsb }}"
-                      (click)="changeUsbMode()"
-          >
-          </ion-toggle>
-      </ion-item>
+    <ion-item>
+      <ion-label>{{ 'Enable USB mode' | translate:params }}</ion-label>
+      <ion-toggle slot="start" checked="{{ appSetting.isEnabledUsb }}" (click)="changeUsbMode()">
+      </ion-toggle>
+    </ion-item>
   </ion-list>
   <ion-item>
     <ion-button [routerLink]="['/logout']">
