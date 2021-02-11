@@ -1,3 +1,4 @@
+import { SyncService } from 'src/services/sync-service';
 import { LoggerService } from './../../services/logger-service';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Events, ModalController, Platform } from '@ionic/angular';
@@ -28,6 +29,7 @@ export class SyncSpinnerComponent implements OnInit {
     public isAvailableForSyncData: boolean = false;
     public isAvailableForPushData: boolean = false;
     public isLoggedUser: boolean = false;
+    public resumeMode: boolean;
 
     constructor(private platform: Platform,
         private downloadService: DownloadService,
@@ -41,7 +43,8 @@ export class SyncSpinnerComponent implements OnInit {
         private network: Network,
         private events: Events,
         private userService: UserService,
-        public appSetting: AppSetting
+        public appSetting: AppSetting,
+        public syncService: SyncService
     ) {
         this.isNetwork = (this.network.type !== 'none');
     }
@@ -71,7 +74,7 @@ export class SyncSpinnerComponent implements OnInit {
         }
 
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService,    this.loggerService).getCurrent().then((userDb) => {
+            new UserDb(this.platform, this.db, this.events, this.downloadService, this.loggerService).getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
 
@@ -142,5 +145,10 @@ export class SyncSpinnerComponent implements OnInit {
                 }
                 this.detectChanges();
             });
+
+
+        this.syncService.resumeMode.subscribe((mode) => {
+            this.resumeMode = mode;
+        })
     }
 }
