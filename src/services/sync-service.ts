@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '../services/http-client';
 import { Platform, LoadingController } from '@ionic/angular';
 import { DbProvider } from '../providers/db-provider';
-import { Events, NavController } from '@ionic/angular';
+import { Events } from '@ionic/angular';
 import { ApiSync } from '../providers/api-sync';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { SyncMode } from '../components/synchronization-component/synchronization-component';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class SyncService {
@@ -13,12 +11,12 @@ export class SyncService {
     syncMode = new BehaviorSubject<number>(null);
     resumeMode = new BehaviorSubject<boolean>(null);
 
-
-    constructor(public platform: Platform,
-        public dbProvider: DbProvider,
-        public loadingController: LoadingController,
-        public events: Events,
-        public apiSync: ApiSync
+    constructor(
+        // public platform: Platform,
+        // public dbProvider: DbProvider,
+        // public loadingController: LoadingController,
+        // public events: Events,
+        // public apiSync: ApiSync
     ) {
     }
 }

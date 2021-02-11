@@ -1,3 +1,5 @@
+import { UserService } from 'src/services/user-service';
+import { SyncService } from 'src/services/sync-service';
 import { GuideViewHistoryModel } from 'src/models/db/api/guide-view-history-model';
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { Subscription } from 'rxjs/Subscription';
@@ -36,6 +38,7 @@ import { GuideStepContentComponent } from "../../components/guide-step-content-c
 import { PopoverController } from '@ionic/angular';
 import { TranslateConfigService } from 'src/services/translate-config.service';
 import { HttpClient } from 'src/services/http-client';
+import { UserDb } from 'src/models/db/user-db';
 
 @Component({
   selector: 'app-guide',
@@ -92,6 +95,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   hasPrevious = false;
   hasNext = false;
 
+  resumeModeSub: Subscription;
+  resumeMode: boolean;
+  public userDb: UserDb;
+
   constructor(
     public http: HttpClient,
     private translateConfigService: TranslateConfigService,
@@ -121,7 +128,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     private componentResolver: ComponentFactoryResolver,
     private toast: ToastController,
     private miscService: MiscService,
-    private guideViewHistoryService: GuideViewHistoryService
+    private guideViewHistoryService: GuideViewHistoryService,
+    private syncService: SyncService,
+    private userService: UserService
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -130,6 +139,15 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         this.haveFeedbackPermissions = true;
       }
     }
+    this.initUser().then(() => {
+      this.resumeMode = this.userService.userDb.userSetting.resumeMode;
+    });
+  }
+
+  protected initUser() {
+    return this.userService.getUser().then(result => {
+      this.userDb = result;
+    });
   }
 
   ngAfterContentChecked(): void {
@@ -306,9 +324,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.guideViewHistory.step = await this.guideStepSlides.getActiveIndex();
 
     this.guideViewHistoryService.save(this.guideViewHistory).then(async () => {
-      this.apiSync.setIsPushAvailableData(true);
-      // const alertMessage = await this.translateConfigService.translate('alert.saved');
-      // this.http.showToast(alertMessage);
+      if (this.resumeMode) { this.apiSync.setIsPushAvailableData(true) }
     })
   }
 
@@ -451,6 +467,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     })
 
     this.presentGuideInfo(this.guideId);
+
+    this.resumeModeSub = this.syncService.resumeMode.subscribe((mode) => {
+      this.resumeMode = mode
+    })
   }
 
   async presentGuideInfo(guideId) {
@@ -606,6 +626,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   ngOnDestroy(): void {
     this.restartSub.unsubscribe();
-    console.log("destroyed")
+    this.resumeModeSub.unsubscribe();
   }
 }

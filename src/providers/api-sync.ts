@@ -30,6 +30,7 @@ import { WorkflowStepService } from './api/workflow-step-service';
 import { ProtocolCommentService } from './api/protocol-comment-service';
 import { WorkflowTransitionService } from './api/workflow-transition-service';
 import { LoggerService } from 'src/services/logger-service';
+import { SyncService } from 'src/services/sync-service';
 
 @Injectable()
 /**
@@ -37,8 +38,6 @@ import { LoggerService } from 'src/services/logger-service';
  * Make sure to add this Instance to the constructor of your page, that should first call this ApiSync.
  */
 export class ApiSync {
-
-
 
     private isBusy: boolean = false;
     public syncData: any;
@@ -95,7 +94,7 @@ export class ApiSync {
         protocol_comment: this.protocolCommentService,
         feedback: this.feedbackService,
         guide_step: this.guideStepService,
-        guide_view_history: this.guideViewHistoryService
+        // guide_view_history: this.guideViewHistoryService
     };
 
     allServicesBodiesForPush: any;
@@ -129,7 +128,9 @@ export class ApiSync {
         private protocolCommentService: ProtocolCommentService,
         private workflowTransitionService: WorkflowTransitionService,
         private guideChildService: GuideChildService,
-        private guideViewHistoryService: GuideViewHistoryService
+        private guideViewHistoryService: GuideViewHistoryService,
+        public syncService: SyncService,
+
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
         this.syncedItemsCount = new BehaviorSubject<number>(0);
@@ -150,6 +151,17 @@ export class ApiSync {
 
         this.init();
         this.initializeEvents();
+
+
+        this.syncService.resumeMode.subscribe((mode) => {
+            console.log("Resume Mode", mode)
+            if (mode) {
+                this.apiPushServices.guide_view_history = this.guideViewHistoryService;
+            }
+            else {
+                delete this.apiPushServices.guide_view_history
+            }
+        })
     }
 
     initializeEvents() {
@@ -262,7 +274,7 @@ export class ApiSync {
         if (this.syncProgressStatus.getValue() === 'resume') {
             if (!countOfSyncedData || countOfSyncedData < this.userService.userDb.userSetting.syncLastElementNumber) {
                 //  console.log("!countOfSyncedData || countOfSyncedData < this.userService.userDb.userSetting.syncLastElementNumber", !countOfSyncedData || countOfSyncedData < this.userService.userDb.userSetting.syncLastElementNumber)
-                   this.loggerService.getLogger().info("!countOfSyncedData || countOfSyncedData < this.userService.userDb.userSetting.syncLastElementNumber", !countOfSyncedData || countOfSyncedData < this.userService.userDb.userSetting.syncLastElementNumber)
+                this.loggerService.getLogger().info("!countOfSyncedData || countOfSyncedData < this.userService.userDb.userSetting.syncLastElementNumber", !countOfSyncedData || countOfSyncedData < this.userService.userDb.userSetting.syncLastElementNumber)
 
                 this.unsetSyncProgressData().then(() => {
                     this.userService.userDb.userSetting.lastSyncedAt = new Date();
@@ -325,7 +337,7 @@ export class ApiSync {
             if (this.syncMustBeEnd()) {
                 return false;
             }
-            const apiService = this.apiServices[key];    
+            const apiService = this.apiServices[key];
             if (!apiService) {
                 continue;
             }
@@ -378,7 +390,7 @@ export class ApiSync {
             this.syncProgressStatus.next('success');
             this.isStartSyncBehaviorSubject.next(false);
             this.isAvailableForSyncData.next(false);
-               this.loggerService.getLogger().info("isAvailableForSyncData", false)
+            this.loggerService.getLogger().info("isAvailableForSyncData", false)
 
             this.userService.userDb.userSetting.lastSyncedAt = new Date();
             this.userService.userDb.userSetting.syncStatus = 'success';
@@ -413,7 +425,7 @@ export class ApiSync {
             this.http.get(this.getSyncUrl(true)).subscribe(async (response) => {
                 const isAvailableData = !!response.result;
                 this.isAvailableForSyncData.next(isAvailableData);
-                   this.loggerService.getLogger().info("isAvailableForSyncData", isAvailableData)
+                this.loggerService.getLogger().info("isAvailableForSyncData", isAvailableData)
 
                 this.userService.userDb.userSetting.isSyncAvailableData = isAvailableData;
                 this.userService.userDb.save();
@@ -421,7 +433,7 @@ export class ApiSync {
                 return;
             }, (err) => {
                 this.isAvailableForSyncData.next(false);
-                   this.loggerService.getLogger().info("isAvailableForSyncData", false)
+                this.loggerService.getLogger().info("isAvailableForSyncData", false)
 
                 resolve(false);
                 return;
@@ -556,7 +568,7 @@ export class ApiSync {
         return new Promise(async resolve => {
             const data = await this.init();
             console.log("Init Status ", data)
-               this.loggerService.getLogger().info("Init Status", data)
+            this.loggerService.getLogger().info("Init Status", data)
             if (!data) {
                 this.isStartSyncBehaviorSubject.next(false);
                 resolve(false);
@@ -586,13 +598,13 @@ export class ApiSync {
                 isCanPullData = await this.prepareDataForSavingPullData(countOfSyncedData);
                 // console.log('isCanPullData', isCanPullData);
                 // console.log('this.countOfAllChangedItems', this.countOfAllChangedItems);
-                   this.loggerService.getLogger().info("isCanPullData", isCanPullData)
-                   this.loggerService.getLogger().info("countOfAllChangedItems", this.countOfAllChangedItems)
+                this.loggerService.getLogger().info("isCanPullData", isCanPullData)
+                this.loggerService.getLogger().info("countOfAllChangedItems", this.countOfAllChangedItems)
 
                 if (!isCanPullData) {
                     // no pull data
                     this.isAvailableForSyncData.next(false);
-                       this.loggerService.getLogger().info("isAvailableForSyncData", false)
+                    this.loggerService.getLogger().info("isAvailableForSyncData", false)
 
                 }
                 // there is data for sync
@@ -610,21 +622,21 @@ export class ApiSync {
 
                     if (!pullData.syncProcessId) {
                         this.failSync('There was no property syncProcessId in the response');
-                           this.loggerService.getLogger().warn("There was no property syncProcessId in the response", data);
+                        this.loggerService.getLogger().warn("There was no property syncProcessId in the response", data);
                         resolve(false);
                         return;
                     }
 
                     this.syncData = pullData.models;
                     console.log("Sync Data ", this.syncData);
-                       this.loggerService.getLogger().info("Sync Data", this.syncData);
+                    this.loggerService.getLogger().info("Sync Data", this.syncData);
 
                     for (const key of Object.keys(this.syncData)) {
                         countOfSyncedData += this.syncData[key].length;
                     }
 
                     console.log("countOfSyncedData", countOfSyncedData)
-                       this.loggerService.getLogger().info("countOfSyncedData", countOfSyncedData);
+                    this.loggerService.getLogger().info("countOfSyncedData", countOfSyncedData);
 
                     this.userService.userDb.userSetting.lastSyncProcessId = pullData.syncProcessId;
 
@@ -632,7 +644,7 @@ export class ApiSync {
 
                     if (!countOfSyncedData) {
                         // console.log("count Of Synced Data with !countOfSyncedData", countOfSyncedData)
-                           this.loggerService.getLogger().info("count Of Synced Data with !countOfSyncedData", countOfSyncedData);
+                        this.loggerService.getLogger().info("count Of Synced Data with !countOfSyncedData", countOfSyncedData);
 
                         this.isStartSyncBehaviorSubject.next(false);
                         this.syncProgressStatus.next('success');
@@ -652,18 +664,18 @@ export class ApiSync {
 
                     isCanPullData = await this.prepareDataForSavingPullData(countOfSyncedData);
                     console.log("isCanPullData", isCanPullData)
-                       this.loggerService.getLogger().info("isCanPullData", isCanPullData)
+                    this.loggerService.getLogger().info("isCanPullData", isCanPullData)
 
 
                     if (!isCanPullData) {
                         this.isAvailableForSyncData.next(false);
-                           this.loggerService.getLogger().info("isCanPullData", false)
+                        this.loggerService.getLogger().info("isCanPullData", false)
                     }
 
                     const isSavedSyncData = await this.pull(syncStatus);
 
                     console.log('isSavedSyncData', isSavedSyncData);
-                       this.loggerService.getLogger().info("isSavedSyncData", isSavedSyncData)
+                    this.loggerService.getLogger().info("isSavedSyncData", isSavedSyncData)
 
 
 
@@ -674,7 +686,7 @@ export class ApiSync {
                     }
                 } catch (err) {
                     console.log('sync errrrorrrr', err);
-                       this.loggerService.getLogger().error("Sync Error at api-sync 664", err, new Error().stack)
+                    this.loggerService.getLogger().error("Sync Error at api-sync 664", err, new Error().stack)
                     this.failSync();
                     this.isStartSyncBehaviorSubject.next(false);
                     resolve(false);
@@ -727,7 +739,7 @@ export class ApiSync {
         this.userService.userDb.userSetting.isPushAvailableData = isAvailable;
         this.userService.userDb.save().then(() => {
             this.isAvailableForPushData.next(isAvailable);
-               this.loggerService.getLogger().info("isAvailableForPushData", isAvailable)
+            this.loggerService.getLogger().info("isAvailableForPushData", isAvailable)
         });
     }
 
@@ -766,7 +778,7 @@ export class ApiSync {
             if (Object.keys(this.allServicesBodiesForPush).length === 0) {
                 this.isStartPushBehaviorSubject.next(false);
                 this.pushProgressStatus.next('no_push_data');
-                   this.loggerService.getLogger().info("pushProgressStatus", 'no_push_data');
+                this.loggerService.getLogger().info("pushProgressStatus", 'no_push_data');
                 this.userService.userDb.userSetting.pushStatus = 'no_push_data';
                 await this.userService.userDb.save();
                 this.setIsPushAvailableData(false);
@@ -778,7 +790,7 @@ export class ApiSync {
 
             this.isStartPushBehaviorSubject.next(true);
             this.pushProgressStatus.next('progress');
-               this.loggerService.getLogger().info("pushProgressStatus", 'progress');
+            this.loggerService.getLogger().info("pushProgressStatus", 'progress');
 
             this.userService.userDb.userSetting.pushStatus = 'progress';
             await this.userService.userDb.save();
@@ -798,7 +810,7 @@ export class ApiSync {
                     if (!isPushedData) {
                         this.isStartPushBehaviorSubject.next(false);
                         this.pushProgressStatus.next('failed');
-                           this.loggerService.getLogger().debug("pushProgressStatus", 'failed');
+                        this.loggerService.getLogger().debug("pushProgressStatus", 'failed');
 
                         this.userService.userDb.userSetting.pushStatus = 'failed';
                         await this.userService.userDb.save();
@@ -811,7 +823,7 @@ export class ApiSync {
             }
             this.isStartPushBehaviorSubject.next(false);
             this.pushProgressStatus.next('success');
-               this.loggerService.getLogger().info("pushProgressStatus", 'success');
+            this.loggerService.getLogger().info("pushProgressStatus", 'success');
 
             this.userService.userDb.userSetting.pushStatus = 'success';
             await this.userService.userDb.save();
@@ -963,7 +975,7 @@ export class ApiSync {
         // this.makeSyncProcess();
         this.pushProgressStatus.subscribe((status) => {
             console.log("pushProgressStatus", status);
-               this.loggerService.getLogger().info("pushProgressStatus", status);
+            this.loggerService.getLogger().info("pushProgressStatus", status);
             // console.log(this.userService.userDb.userSetting.syncLastElementNumber, this.userService.userDb.userSetting.syncAllItemsCount);
             // console.log(this.userService.userDb.userSetting.syncLastElementNumber != this.userService.userDb.userSetting.syncAllItemsCount)
             if (this.userService.userDb.userSetting.syncLastElementNumber != this.userService.userDb.userSetting.syncAllItemsCount) {
@@ -979,9 +991,9 @@ export class ApiSync {
                 });
             }
             this.syncProgressStatus.next('success');
-               this.loggerService.getLogger().info("syncProgressStatus", 'success')
+            this.loggerService.getLogger().info("syncProgressStatus", 'success')
             this.userService.userDb.userSetting.syncStatus = 'success';
-               this.loggerService.getLogger().info("syncStatus", 'success')
+            this.loggerService.getLogger().info("syncStatus", 'success')
             this.userService.userDb.userSetting.lastSyncedAt = new Date();
 
             if (this.lastModelUpdatedAt) {
@@ -989,9 +1001,9 @@ export class ApiSync {
             }
             this.userService.userDb.save();
             this.isBusy = false;
-               this.loggerService.getLogger().info("isBusy", 'false');
+            this.loggerService.getLogger().info("isBusy", 'false');
             this.noDataForSync.next(true);
-               this.loggerService.getLogger().info("noDataForSync", 'true');
+            this.loggerService.getLogger().info("noDataForSync", 'true');
         })
     }
 }
