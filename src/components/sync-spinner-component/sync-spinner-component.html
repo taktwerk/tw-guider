@@ -18,7 +18,7 @@
 </style>
 
 <ion-buttons *ngIf="isLoggedUser" slot="primary">
-  <div (click)="openSyncModal()" class="sync-status" *ngIf="resumeMode">
+  <div (click)="openSyncModal()" class="sync-status">
 
     <span *ngIf="isAvailableForPushData">
       <ion-icon class="orangeColor" name="send"></ion-icon>
