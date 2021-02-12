@@ -22,6 +22,7 @@ export class GuideStepModel extends DbApiModel {
     public attached_file: string;
     public local_attached_file: string;
     public local_guide_id: number;
+    public design_canvas_meta: string;
 
     //db columns
     static COL_GUIDE_ID = 'guide_id';
@@ -35,6 +36,7 @@ export class GuideStepModel extends DbApiModel {
     static COL_API_THUMB_ATTACHED_FILE_PATH = 'thumb_attached_file_path';
     static COL_LOCAL_THUMB_ATTACHED_FILE = 'local_thumb_attached_file';
     static COL_LOCAL_GUIDE_ID = 'local_guide_id';
+    static COL_DESIGN_CANVAS_META = "design_canvas_meta";
 
     public downloadMapping: FileMapInModel[] = [
         {
@@ -71,7 +73,8 @@ export class GuideStepModel extends DbApiModel {
         [GuideStepModel.COL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuideStepModel.COL_API_THUMB_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
-        [GuideStepModel.COL_LOCAL_GUIDE_ID, 'INT', DbBaseModel.TYPE_NUMBER]
+        [GuideStepModel.COL_LOCAL_GUIDE_ID, 'INT', DbBaseModel.TYPE_NUMBER],
+        [GuideStepModel.COL_DESIGN_CANVAS_META, 'LONGTEXT', DbBaseModel.TYPE_STRING]
     ];
 
     /**
@@ -86,7 +89,7 @@ export class GuideStepModel extends DbApiModel {
             return;
         }
 
-        const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+        const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
         if (guiderModel) {
             const guiderModels = await guiderModel.findFirst(
                 [guiderModel.COL_ID_API, this.guide_id]
@@ -101,14 +104,14 @@ export class GuideStepModel extends DbApiModel {
         }
     }
 
-    public migrations = ['AddLocalGuideIdToGuideStepTableMigration'];
+    public migrations = ['AddLocalGuideIdToGuideStepTableMigration', 'AddDesignCanvasMetaToGuideStepTableMigration'];
 
     async beforePushDataToServer(isInsert?: boolean) {
         if (isInsert) {
             if (!this[this.COL_ID]) {
                 return;
             }
-            const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+            const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
             const guiderModels = await guiderModel.findFirst([guiderModel.COL_ID, this.local_guide_id]);
             if (guiderModels && guiderModels.length) {
                 console.log('guiderModels is not 0000');

@@ -14,9 +14,7 @@
   <div id="tui-image-editor"></div>
 </ion-content>
 
-
 <ion-footer>
-
   <ion-toolbar *ngIf="currentControl.name !=null">
     <ion-buttons>
       <span *ngFor="let subControl of currentControl.subControls" class="subControlWrapper">
@@ -36,11 +34,7 @@
         [ngClass]="{'currentControl' :currentControl?.name ==control.name}">
         <ion-icon [name]="control.icon"> </ion-icon>
       </ion-button>
-
-      <ion-button (click)="addShape()">Test Editable</ion-button>
     </ion-buttons>
-
-
   </ion-toolbar>
 
 </ion-footer>

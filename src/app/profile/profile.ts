@@ -1,18 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {Events, NavController} from '@ionic/angular';
-import {AuthService} from '../../services/auth-service';
-import {AppSetting} from '../../services/app-setting';
+import { Component, OnInit } from '@angular/core';
+import { Events, NavController } from '@ionic/angular';
+import { AuthService } from '../../services/auth-service';
+import { AppSetting } from '../../services/app-setting';
 
-
-/**
- * Generated class for the ProfilePage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @Component({
-  selector: 'page-profile',
-  templateUrl: 'profile.html',
+    selector: 'page-profile',
+    templateUrl: 'profile.html',
 })
 export class ProfilePage implements OnInit {
 
@@ -24,7 +17,7 @@ export class ProfilePage implements OnInit {
         public events: Events,
         public appSetting: AppSetting
     ) {
-            this.authService.checkAccess();
+        this.authService.checkAccess();
     }
 
     changeUsbMode() {

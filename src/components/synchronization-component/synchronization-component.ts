@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { AlertController, Events, Platform } from '@ionic/angular';
 
 import { ApiSync } from '../../providers/api-sync';
@@ -12,13 +12,6 @@ import { DatePipe } from '@angular/common';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
-
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 
 export enum SyncMode {
   Manual,
@@ -39,7 +32,7 @@ export class SynchronizationComponent implements OnInit {
   public syncProgressStatus = 'not_sync';
   public isPrepareSynData = true;
   public modeSync;
-  public resumeMode: boolean = null;
+  public resumeMode: boolean;
   public userDb: UserDb;
   public syncAllItemsCount = 0;
   public params;
@@ -56,16 +49,17 @@ export class SynchronizationComponent implements OnInit {
     public alertController: AlertController,
     private translateConfigService: TranslateConfigService,
     private userService: UserService,
-    public appSetting: AppSetting) {
+    public appSetting: AppSetting,
+  ) {
     this.initUser().then(() => {
       if ([0, 1, 2].includes(this.userService.userDb.userSetting.syncMode)) {
         this.modeSync = this.userService.userDb.userSetting.syncMode;
       } else {
         this.modeSync = SyncMode.Manual;
       }
-
-      this.syncProgressStatus = this.userService.userDb.userSetting.syncStatus;
       this.resumeMode = this.userService.userDb.userSetting.resumeMode;
+      console.log(this.resumeMode)
+      this.syncProgressStatus = this.userService.userDb.userSetting.syncStatus;
     });
   }
 
@@ -190,12 +184,13 @@ export class SynchronizationComponent implements OnInit {
       this.apiSync.syncedItemsCount.next(this.userService.userDb.userSetting.syncLastElementNumber);
       this.apiSync.syncAllItemsCount.next(this.userService.userDb.userSetting.syncAllItemsCount);
       this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
+
+      // this.resumeMode = this.userService.userDb.userSetting.resumeMode;
+      // console.log("this.resumeMode", this.resumeMode)
     });
 
     this.syncService.syncMode.subscribe((result) => {
-      if (result === null) {
-        return;
-      }
+      if (result === null) { return; }
       this.modeSync = result;
     });
 
