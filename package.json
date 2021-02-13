@@ -81,7 +81,7 @@
     "@ionic-native/toast": "^5.20.0",
     "@ionic-native/video-editor": "^5.22.0",
     "@ionic-native/video-player": "^5.30.0",
-    "@ionic/angular": "^4.11.10",
+    "@ionic/angular": "^4.11.13",
     "@ionic/app-scripts": "^3.2.4",
     "@ionic/storage": "^2.2.0",
     "@ngx-translate/core": "^11.0.1",
