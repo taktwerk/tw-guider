@@ -151,6 +151,7 @@
     "@angular-devkit/schematics": "~8.1.2",
     "@angular/cli": "8.3.28",
     "@angular/compiler": "~8.2.14",
+    "@angular/compiler-cli": "~8.2.14",
     "@angular/language-service": "~8.2.14",
     "@biesbjerg/ngx-translate-extract": "^4.2.0",
     "@capacitor/cli": "2.4.2",
