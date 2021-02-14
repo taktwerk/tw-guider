@@ -1,14 +1,13 @@
 import { Subscription } from 'rxjs/Subscription';
-import { CustomLoggerMonitor, Log, LoggerService } from './../../services/logger-service';
+import { LoggerService } from './../../services/logger-service';
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { IonSegment } from '@ionic/angular';
 import { NGXLogInterface } from 'ngx-logger';
 import { delay } from 'rxjs/operators';
 import { File } from '@ionic-native/file/ngx';
-import { FilesystemDirectory, FilesystemEncoding, Plugins } from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
 import { ActionSheetController } from '@ionic/angular';
 
-const { Filesystem } = Plugins;
 
 
 @Component({

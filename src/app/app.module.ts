@@ -59,7 +59,6 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { AppSetting } from '../services/app-setting';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
-import { IonicImageLoader } from 'ionic-image-loader';
 import { Camera } from '@ionic-native/camera/ngx';
 import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { VideoEditor } from '@ionic-native/video-editor/ngx';
@@ -113,8 +112,7 @@ import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu
 import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.page';
 
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
-import { CustomLoggerMonitor, LoggerService } from 'src/services/logger-service';
-import { FileSaverModule, FileSaverService } from 'ngx-filesaver';
+import { LoggerService } from 'src/services/logger-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -173,14 +171,13 @@ Sentry.init({ dsn: environment.sentryDsn });
     MainPipe,
     HtmlDescriptionComponentModule,
     VirtualScrollerModule,
-    IonicImageLoader.forRoot(),
     Viewer3dModelComponentModule,
     PdfJsViewerModule,
     CKEditorModule,
     LoggerModule.forRoot({
       level: NgxLoggerLevel.DEBUG,
     }),
-    FileSaverModule
+
   ],
   providers: [
     StatusBar,
@@ -251,8 +248,6 @@ Sentry.init({ dsn: environment.sentryDsn });
     MigrationService,
     Base64ToGallery,
     LoggerService,
-    CustomLoggerMonitor,
-    FileSaverService 
   ],
   exports: [
     ProtocolDefaultComponent

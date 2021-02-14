@@ -25,7 +25,7 @@ export class GuiderModel extends DbApiModel {
 
     public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_CLIENT_ID + ')';
 
-    //members
+    // members
     public client_id: number = null;
     public short_name: string;
     public title: string;
@@ -39,7 +39,7 @@ export class GuiderModel extends DbApiModel {
     public protocol_template_id: number;
     public revision: string;
 
-    //db columns
+    // db columns
     static COL_CLIENT_ID = 'client_id';
     static COL_SHORT_NAME = 'short_name';
     static COL_TITLE = 'title';
@@ -135,7 +135,7 @@ export class GuiderModel extends DbApiModel {
     }
 
     public setSteps() {
-        const guideStepModel = new GuideStepModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+        const guideStepModel = new GuideStepModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
         guideStepModel.findAllWhere(['guide_id', this.idApi], 'order_number ASC').then(results => {
             results.map(model => {
                 if (!model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]) {
@@ -163,7 +163,7 @@ export class GuiderModel extends DbApiModel {
                 this.assets = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+                        const obj: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
                         obj.platform = this.platform;
                         obj.db = this.db;
                         obj.events = this.events;
@@ -194,7 +194,7 @@ export class GuiderModel extends DbApiModel {
                 this.guide_collection = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideChildModel = new GuideChildModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+                        const obj: GuideChildModel = new GuideChildModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
                         obj.platform = this.platform;
                         obj.db = this.db;
                         obj.events = this.events;
@@ -225,7 +225,7 @@ export class GuiderModel extends DbApiModel {
             this.db.query(query).then((res) => {
                 this.protocol_template = null;
                 if (res.rows.length > 0) {
-                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
                     obj.platform = this.platform;
                     obj.db = this.db;
                     obj.events = this.events;

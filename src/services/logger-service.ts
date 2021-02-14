@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { NGXLoggerMonitor, NGXLogInterface, NGXLogger } from 'ngx-logger';
 import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
 import { File } from '@ionic-native/file/ngx';
-import { FileSaverService } from 'ngx-filesaver';
 
 const { Filesystem } = Plugins;
 
@@ -31,7 +30,7 @@ export interface Log {
 export class CustomLoggerMonitor implements NGXLoggerMonitor {
     constructor(private loggerService: LoggerService) { }
 
-    onLog(log: NGXLogInterface) {    this.loggerService.setLogs(log) }
+    onLog(log: NGXLogInterface) { this.loggerService.setLogs(log) }
 }
 
 @Injectable()
@@ -39,8 +38,7 @@ export class LoggerService {
     Logs: NGXLogInterface[] = [];
     LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
 
-    constructor(private logger: NGXLogger, public file: File, private fileSaverService: FileSaverService
-    ) {
+    constructor(private logger: NGXLogger, public file: File) {
         this.logger.registerMonitor(new CustomLoggerMonitor(this))
     }
 

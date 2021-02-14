@@ -1,12 +1,10 @@
 import { ModalController } from '@ionic/angular';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import ImageEditor from 'tui-image-editor';
 import { RecordedFile, DownloadService } from 'src/services/download-service';
-import { Filesystem, FilesystemDirectory } from '@capacitor/core';
 import { File as nFile } from '@ionic-native/file/ngx';
 import { ApiSync } from 'src/providers/api-sync';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
-import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 
 
 interface CustomControls {
@@ -88,7 +86,7 @@ export class ImageEditorComponent implements OnInit {
       console.log(props);
     });
 
-    this.ImageEditor.on('mousedown', (event, originPointer) => {
+    this.ImageEditor.on('mousedown', () => {
       console.log("mousedown");
       console.log(this.ImageEditor._graphics._objects[0]);
     });
@@ -145,7 +143,7 @@ export class ImageEditorComponent implements OnInit {
     const fileName = new Date().getTime() + '.png';
     const recordedFile = new RecordedFile();
 
-    this.downloadService.checkTempDir('_temp').then((e) => {
+    this.downloadService.checkTempDir('_temp').then(() => {
       this.file.writeFile(this.file.dataDirectory + '/_temp', fileName, blob, { replace: true }).then(async (res) => {
       //  console.log(res)
         recordedFile.uri = await this.downloadService.getResolvedNativeFilePath(res.nativeURL);
@@ -182,5 +180,5 @@ export class ImageEditorComponent implements OnInit {
     return new Blob([uInt8Array], { type: mimeString });
   }
 
-  onReady(e) {}
+  onReady() {}
 }
