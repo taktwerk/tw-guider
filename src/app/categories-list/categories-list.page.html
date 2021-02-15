@@ -65,7 +65,7 @@
     </div>
   </div>
 
-  <ion-card *ngIf="!isStartSync && iconStatus !== 'synced'">
+  <ion-card *ngIf="!onboardingSyncShown">
     <ion-card-content>
       <ion-label class="align__all_center">
         <h2>{{'sync-modal.Start sync to get data' | translate}}</h2>

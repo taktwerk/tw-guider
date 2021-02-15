@@ -1,3 +1,4 @@
+import { MiscService } from './../../services/misc-service';
 import { AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit } from '@angular/core';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
 import { GuideChildService } from '../../providers/api/guide-child-service';
@@ -40,6 +41,9 @@ export class CategoriesListPage implements OnInit {
   public items: Array<{ title: string; note: string; icon: string }> = [];
 
   public type: string;
+
+  onboardingSyncShown: boolean;
+
   constructor(
     private guideCategoryBindingService: GuideCategoryBindingService,
     private guideCategoryService: GuideCategoryService,
@@ -55,7 +59,7 @@ export class CategoriesListPage implements OnInit {
     public appSetting: AppSetting,
     private syncService: SyncService,
     private modalController: ModalController,
-
+    private miscService: MiscService
 
   ) {
     this.authService.checkAccess('guide');
@@ -68,7 +72,6 @@ export class CategoriesListPage implements OnInit {
     }
     this.showAllGuides();
   }
-
 
   async showAllGuides() {
     const loader = await this.loader.create();
@@ -130,37 +133,46 @@ export class CategoriesListPage implements OnInit {
     });
   }
 
+  async ionViewWillEnter() {
+    this.onboardingSyncShown = await this.miscService.get_guideShown("onboardingSyncShown");
+    console.log("isStartSync", this.isStartSync)
+    if (this.isStartSync) {
+      console.log(this.isStartSync)
+      this.miscService.set_guideShown("onboardingSyncShown");
+    }
+  }
+
   ngOnInit() {
     this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
       this.isStartSync = isSync;
       this.detectChanges();
     });
-    
+
     this.apiSync.syncProgressStatus
-    .pipe(debounceTime(500))
-    .subscribe(syncProgressStatus => {
+      .pipe(debounceTime(500))
+      .subscribe(syncProgressStatus => {
         switch (syncProgressStatus) {
-            case ('initial'):
-                this.iconStatus = 'unsynced';
-                break;
-            case ('success'):
-                this.iconStatus = 'synced';
-                break;
-            case ('resume'):
-            case ('progress'):
-                this.iconStatus = 'progress';
-                break;
-            case ('pause'):
-                this.iconStatus = 'pause';
-                break;
-            case ('failed'):
-                this.iconStatus = 'failed';
-                break;
-            default:
-                this.iconStatus = null;
+          case ('initial'):
+            this.iconStatus = 'unsynced';
+            break;
+          case ('success'):
+            this.iconStatus = 'synced';
+            break;
+          case ('resume'):
+          case ('progress'):
+            this.iconStatus = 'progress';
+            break;
+          case ('pause'):
+            this.iconStatus = 'pause';
+            break;
+          case ('failed'):
+            this.iconStatus = 'failed';
+            break;
+          default:
+            this.iconStatus = null;
         }
         this.detectChanges();
-    });
+      });
 
 
     this.syncService.syncMode.subscribe((result) => {
@@ -229,6 +241,8 @@ export class CategoriesListPage implements OnInit {
       this.appSetting.showIsNotMigratedDbPopup();
       return;
     }
+    this.miscService.set_guideShown("onboardingSyncShown");
+    this.onboardingSyncShown = true;
     this.apiSync.makeSyncProcess();
     this.openSyncModal();
   }
