@@ -31,7 +31,8 @@ export class AssetviewComponent implements OnInit {
   @Input() solid_icon_color: boolean;
 
   @Input() mayEditImage: boolean = false;
-  
+  @Input() imageby50: boolean = false;
+
   filePath3d
 
   faExpand = faExpand;

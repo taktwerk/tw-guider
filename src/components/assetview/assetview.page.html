@@ -27,7 +27,7 @@
     </div>
 </div>
 
-<div class="preview-wrapper" [ngClass]="{'mini':mini}">
+<div class="preview-wrapper" [ngClass]="{'mini':mini, 'imageby50':imageby50}">
     <!-- audio  -->
     <div *ngIf="model.isAudioFile()" class="inner_wrapper" style="min-height: 130px;"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">

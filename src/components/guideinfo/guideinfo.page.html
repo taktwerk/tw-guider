@@ -11,9 +11,10 @@
 </ion-header>
 
 <ion-content *ngIf="guide">
+
   <ion-card style="box-shadow: none;">
     <ion-card-content>
-      <model-assetcomponent [model]="guide" mini="true"></model-assetcomponent>
+      <model-assetcomponent [model]="guide" [imageby50]="true"></model-assetcomponent>
     </ion-card-content>
   </ion-card>
 
@@ -21,7 +22,7 @@
     <ion-item-group>
       <ion-item lines="full" style="border-bottom: 1px solid #eeeeeea8;">
         <ion-label>
-          <h2 class=""><strong>{{guide.title}}</strong></h2>
+          <h1 class=""><strong>{{guide.title}}</strong></h1>
           <p><strong>{{guide.short_name}}</strong></p>
           <p *ngIf="guide.duration">{{ 'guides.duration' | translate:params }}: {{ guide.getDuration() }}</p>
           <p *ngIf="guide.revision">{{ 'guides.revision' | translate:params }}: {{ guide.revision }}</p>
@@ -34,7 +35,7 @@
     <ion-item-group>
       <ion-item lines="full">
         <ion-label>
-          <h2> <strong>{{ 'guides.Description' | translate:params }}</strong></h2>
+          <h1> <strong>{{ 'guides.Description' | translate:params }}</strong></h1>
           <p class="guide-description">{{guide.description}}</p>
         </ion-label>
       </ion-item>

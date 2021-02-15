@@ -74,6 +74,12 @@
     right: 0;
 }
 
+.imageby50 {
+    img {
+        max-width: 50vh;
+    }
+}
+
 @media (orientation: portrait) {
     .preview-wrapper {
         max-height: 100%;
