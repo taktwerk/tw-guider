@@ -10,12 +10,19 @@
           <div class="shortname-label badge badge-secondary">{{ item.short_name }}</div>
         </div>
         <ion-card-header>
-          <ion-card-title>{{item.title}}</ion-card-title>
-          <ion-buttons style="position: absolute; right: 0; top: 0;margin: 8px;">
-            <ion-button (click)="presentGuideInfo(item.idApi)">
-              <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-            </ion-button>
-          </ion-buttons>
+          <ion-card-title
+            style="display: flex;  flex-direction: row;  align-items: center;  justify-content: space-between; align-items: start;">
+            <ion-label>
+              {{item.title}}
+            </ion-label>
+
+            <ion-buttons>
+              <ion-button (click)="presentGuideInfo(item.idApi)">
+                <ion-icon name="information-circle-outline" slot="start" style="margin:0; font-size: 30px;"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-card-title>
+
         </ion-card-header>
         <ion-card-content>
           <div class="guide-info" margin-bottom>

@@ -200,3 +200,8 @@ ion-card {
   }
 }
 
+@media (max-width: 320px) {
+  .description {
+    min-height: initial;
+  }
+}
