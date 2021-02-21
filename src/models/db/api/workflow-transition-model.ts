@@ -1,9 +1,10 @@
-import { Platform, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { DbApiModel } from '../../base/db-api-model';
 import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
 import { DownloadService } from '../../../services/download-service';
 import { LoggerService } from 'src/services/logger-service';
+import { MiscService } from 'src/services/misc-service';
 
 /**
  * API Db Model for 'Workflow Transition Model'.
@@ -43,10 +44,11 @@ export class WorkflowTransitionModel extends DbApiModel {
     constructor(
         public platform: Platform,
         public db: DbProvider,
-        public events: Events,
         public downloadService: DownloadService,
-        public loggerService: LoggerService
+        public loggerService: LoggerService,
+        public miscService: MiscService
+
     ) {
-        super(platform, db, events, downloadService, loggerService);
+        super(platform, db, downloadService, loggerService, miscService);
     }
 }

@@ -3,7 +3,6 @@ import 'rxjs/add/operator/map';
 import { DbApiModel } from '../../../models/base/db-api-model';
 import { HttpClient } from '../../../services/http-client';
 import { AppSetting } from '../../../services/app-setting';
-import { Events } from '@ionic/angular';
 import { UserDb } from '../../../models/db/user-db';
 import { HttpHeaders as Headers } from '@angular/common/http';
 
@@ -28,7 +27,6 @@ export abstract class ApiService {
     public dataVersion = 0;
 
     protected constructor(public http: HttpClient,
-        public events: Events,
         public appSetting: AppSetting) {
         this.data = [];
         this.currentData = [];

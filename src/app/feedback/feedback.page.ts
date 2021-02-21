@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Events, ModalController, NavController } from '@ionic/angular';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { FeedbackService } from '../../providers/api/feedback-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
 import { AuthService } from '../../services/auth-service';
@@ -8,16 +8,15 @@ import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
-import { Media, MediaObject } from '@ionic-native/media/ngx';
-import { AudioService } from '../../services/audio-service';
+import { Subscription } from 'rxjs';
+import { MiscService } from 'src/services/misc-service';
 
 @Component({
   selector: 'feedback-page',
   templateUrl: 'feedback.page.html',
   styleUrls: ['feedback.page.scss'],
 })
-export class FeedbackPage implements OnInit {
+export class FeedbackPage implements OnInit, OnDestroy {
   public backDefaultHref: string;
   public reference_title: string = '';
   public reference_id: number = null;
@@ -30,11 +29,10 @@ export class FeedbackPage implements OnInit {
     'app',
     'taktwerk\\yiiboilerplate'
   ];
+  eventSubscription: Subscription;
 
   constructor(
     private feedbackService: FeedbackService,
-    private modalController: ModalController,
-    public events: Events,
     public authService: AuthService,
     public changeDetectorRef: ChangeDetectorRef,
     private downloadService: DownloadService,
@@ -44,9 +42,7 @@ export class FeedbackPage implements OnInit {
     private router: Router,
     private videoService: VideoService,
     private pictureService: PictureService,
-    private nativeAudio: NativeAudio,
-    private media: Media,
-    private audio: AudioService
+    private miscService: MiscService
   ) {
     this.authService.checkAccess('feedback');
   }
@@ -114,11 +110,11 @@ export class FeedbackPage implements OnInit {
     }
   }
 
-  itemHeightFn(item, index) {
+  itemHeightFn() {
     return 99;
   }
 
-  trackByFn(index, item) {
+  trackByFn(item) {
     return item[item.COL_ID];
   }
 
@@ -150,17 +146,39 @@ export class FeedbackPage implements OnInit {
       this.detectChanges();
     });
 
-    this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':create', (model) => {
-      this.setModels();
-      this.detectChanges();
-    });
-    this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':update', (model) => {
-      this.setModels();
-      this.detectChanges();
-    });
-    this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':delete', (model) => {
-      this.setModels();
-      this.detectChanges();
-    });
+    // this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':create', () => {
+    //   this.setModels();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':update', () => {
+    //   this.setModels();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':delete', () => {
+    //   this.setModels();
+    //   this.detectChanges();
+    // });
+
+    this.eventSubscription = this.miscService.events.subscribe((event) => {
+      switch (event.TAG) {
+        case this.feedbackService.dbModelApi.TAG + ':create':
+          this.setModels();
+          this.detectChanges();
+          break;
+        case this.feedbackService.dbModelApi.TAG + ':update':
+          this.setModels();
+          this.detectChanges();
+          break;
+        case this.feedbackService.dbModelApi.TAG + ':delete':
+          this.setModels();
+          this.detectChanges();
+          break;
+        default:
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
   }
 }

@@ -1,7 +1,7 @@
 import { LoggerService } from './../../services/logger-service';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import { Platform, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { ApiService } from './base/api-service';
 import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
@@ -11,12 +11,13 @@ import { AppSetting } from '../../services/app-setting';
 import { ProtocolCommentModel } from '../../models/db/api/protocol-comment-model';
 import { WorkflowStepModel } from '../../models/db/api/workflow-step-model';
 import { TranslateConfigService } from '../../services/translate-config.service';
+import { MiscService } from 'src/services/misc-service';
 
 @Injectable()
 export class ProtocolCommentService extends ApiService {
     data: ProtocolCommentModel[] = [];
     loadUrl: string = '/protocol-comment';
-    dbModelApi: ProtocolCommentModel = new ProtocolCommentModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+    dbModelApi: ProtocolCommentModel = new ProtocolCommentModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
 
     /**
      * Constructor
@@ -32,12 +33,14 @@ export class ProtocolCommentService extends ApiService {
     constructor(http: HttpClient,
         private p: Platform, private db: DbProvider,
         public authService: AuthService,
-        public events: Events,
         public downloadService: DownloadService,
         public loggerService: LoggerService,
         public appSetting: AppSetting,
-        private translateConfigService: TranslateConfigService) {
-        super(http, events, appSetting);
+        private translateConfigService: TranslateConfigService,
+        private miscService: MiscService,
+
+    ) {
+        super(http, appSetting);
     }
 
     getByProtocolId(protocolId: number): Promise<ProtocolCommentModel[]> {
@@ -67,7 +70,7 @@ export class ProtocolCommentService extends ApiService {
         if (!protocolComment.new_workflow_step_id || !protocolComment.old_workflow_step_id) {
             return null;
         }
-        const newWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+        const newWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
         const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
             [newWorkflowStepModel.COL_ID_API, protocolComment.new_workflow_step_id]
         );
@@ -79,7 +82,7 @@ export class ProtocolCommentService extends ApiService {
             return await this.translateConfigService.translate('Final');
         }
 
-        const oldWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+        const oldWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
         const oldWorkflowStepSearchResult = await oldWorkflowStepModel.findFirst(
             [newWorkflowStepModel.COL_ID_API, protocolComment.old_workflow_step_id]
         );
@@ -94,7 +97,6 @@ export class ProtocolCommentService extends ApiService {
                 { oldWorkflowStepName: oldWorkflowStep.name, newWorkflowStepName: newWorkflowStep.name }
             );
         }
-
         return null;
     }
 
@@ -103,6 +105,6 @@ export class ProtocolCommentService extends ApiService {
      * @returns {ProtocolCommentModel}
      */
     public newModel() {
-        return new ProtocolCommentModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+        return new ProtocolCommentModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
     }
 }

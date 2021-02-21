@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
-import { Events, LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
+import { LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
 
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
@@ -16,7 +16,7 @@ import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-componen
 import { DbProvider } from '../../providers/db-provider';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { LoggerService } from 'src/services/logger-service';
-
+import { MiscService } from 'src/services/misc-service';
 
 @Component({
   selector: 'guide-step-content-component',
@@ -56,7 +56,6 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     public platform: Platform,
     public db: DbProvider,
     private photoViewer: PhotoViewer,
-    public events: Events,
     public authService: AuthService,
     public changeDetectorRef: ChangeDetectorRef,
     public modalController: ModalController,
@@ -67,7 +66,8 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     private videoService: VideoService,
     private viewer3dService: Viewer3dService,
     public navCtrl: NavController,
-    private pictureService: PictureService
+    private pictureService: PictureService,
+    public miscService: MiscService
   ) { }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
@@ -122,7 +122,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   }
 
   async openAssetTextModal() {
-    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
     guideAsset.asset_html = this.step.description_html;
     guideAsset.name = this.step.title;
 

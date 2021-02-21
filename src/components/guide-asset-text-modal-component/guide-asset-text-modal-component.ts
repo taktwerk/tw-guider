@@ -1,7 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
-import { Events, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
+import { Subscription } from 'rxjs';
+import { MiscService } from 'src/services/misc-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -14,14 +16,16 @@ import { GuideAssetService } from '../../providers/api/guide-asset-service';
   selector: 'guide-asset-text-modal-component',
   templateUrl: 'guide-asset-text-modal-component.html',
 })
-export class GuideAssetTextModalComponent implements OnInit {
+export class GuideAssetTextModalComponent implements OnInit, OnDestroy {
   public asset: GuideAssetModel;
+  eventSubscription: Subscription;
 
   constructor(
     private modalController: ModalController,
-    private events: Events,
     private guideAssetService: GuideAssetService,
-    public changeDetectorRef: ChangeDetectorRef
+    public changeDetectorRef: ChangeDetectorRef,
+    private miscService: MiscService,
+    //    public miscService: MiscService,
   ) { }
 
   dismiss() {
@@ -35,13 +39,28 @@ export class GuideAssetTextModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', (model) => {
-      this.asset = model;
-      this.detectChanges();
+    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', (model) => {
+    //   this.asset = model;
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', (model) => {
+    //   this.asset = model;
+    //   this.detectChanges();
+    // });
+
+    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+      switch (event.TAG) {
+        case this.guideAssetService.dbModelApi.TAG + ':create':
+        case this.guideAssetService.dbModelApi.TAG + ':update':
+          this.asset = event.data;
+          this.detectChanges();
+          break;
+        default:
+      }
     });
-    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', (model) => {
-      this.asset = model;
-      this.detectChanges();
-    });
+  }
+
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
   }
 }

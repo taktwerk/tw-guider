@@ -1,11 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-     <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
+      <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
-    
+
     <ion-title> {{ 'guides.header' | translate:params }} </ion-title>
-    
+
   </ion-toolbar>
 </ion-header>
 
@@ -13,7 +13,7 @@
   <ion-segment color="light" [(ngModel)]="type" scrollable mode="md">
     <ion-segment-button value="browse" checked mode="md">
       <ion-label>{{ 'guide-categories.categories' | translate:params }}</ion-label>
-      <ion-icon name="filing"></ion-icon>
+      <ion-icon name="file-tray-stacked-outline"></ion-icon>
     </ion-segment-button>
     <ion-segment-button value="search" mode="md">
       <ion-label>{{ 'Search' | translate:params }}</ion-label>

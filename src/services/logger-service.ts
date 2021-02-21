@@ -35,15 +35,15 @@ export class CustomLoggerMonitor implements NGXLoggerMonitor {
 
 @Injectable()
 export class LoggerService {
-    Logs: NGXLogInterface[] = [];
-    LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
+    public Logs: NGXLogInterface[] = [];
+    public LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
 
     constructor(private logger: NGXLogger, public file: File) {
         this.logger.registerMonitor(new CustomLoggerMonitor(this))
     }
 
-    getLogger(): NGXLogger {
-        return this.logger
+    public getLogger(): NGXLogger {
+        return this.logger;
     }
 
     public setLogs(log: NGXLogInterface) {
@@ -56,7 +56,7 @@ export class LoggerService {
      * appends log message to file
      * @param log 
      */
-    async writeToFile(log) {
+    public async writeToFile(log) {
         const contents = await Filesystem.appendFile({
             path: '/TaktwerkLogs/log.txt',
             data: JSON.stringify(log),
@@ -67,11 +67,11 @@ export class LoggerService {
         })
     }
 
-    createLogFile() {
+    public createLogFile() {
         this.logDir().then(async e => { })
     }
 
-    logDir() {
+    public logDir() {
         return new Promise(async (resolve) => {
             const dir = await Filesystem.readdir({
                 path: '/TaktwerkLogs/log.txt',
@@ -94,7 +94,7 @@ export class LoggerService {
         });
     }
 
-    async clearLogFile() {
+    public async clearLogFile() {
         try {
             const contents = await Filesystem.writeFile({
                 path: '/TaktwerkLogs/log.txt',
@@ -109,7 +109,7 @@ export class LoggerService {
         this.LogsSub.next(null);
     }
 
-    async deleteLogFile() {
+    public async deleteLogFile() {
         await Filesystem.deleteFile({
             path: '/TaktwerkLogs/log.txt',
             directory: FilesystemDirectory.External

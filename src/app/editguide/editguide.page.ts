@@ -1,15 +1,9 @@
 import { Subscription } from 'rxjs/Subscription';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { GuiderService } from 'src/providers/api/guider-service';
-import { GuiderModel } from 'src/models/db/api/guider-model';
-import { GuideAssetModel } from 'src/models/db/api/guide-asset-model';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
-import { GuideAssetService } from 'src/providers/api/guide-asset-service';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
 
-import { Events, ToastController } from '@ionic/angular';
-import { ApiSync } from 'src/providers/api-sync';
 import { AuthService } from '../../services/auth-service';
 
 @Component({
@@ -19,13 +13,8 @@ import { AuthService } from '../../services/auth-service';
 })
 export class EditguidePage implements OnInit, OnDestroy {
   constructor(private activatedRoute: ActivatedRoute,
-    private guiderService: GuiderService,
     private guideStepService: GuideStepService,
-    private guideAssetService: GuideAssetService,
     private router: Router,
-    private toastController: ToastController,
-    private apiSync: ApiSync,
-    public events: Events,
     public authService: AuthService,
     public changeDetectorRef: ChangeDetectorRef,
   ) { }

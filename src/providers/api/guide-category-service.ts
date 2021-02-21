@@ -1,7 +1,7 @@
 import { LoggerService } from './../../services/logger-service';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import { Platform, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { ApiService } from './base/api-service';
 import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
@@ -11,12 +11,13 @@ import { DownloadService } from '../../services/download-service';
 import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
 import { DbBaseModel } from '../../models/base/db-base-model';
 import { AppSetting } from '../../services/app-setting';
+import { MiscService } from 'src/services/misc-service';
 
 @Injectable()
 export class GuideCategoryService extends ApiService {
     data: GuideCategoryModel[] = [];
     loadUrl: string = '/guide-category';
-    dbModelApi: GuideCategoryModel = new GuideCategoryModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+    dbModelApi: GuideCategoryModel = new GuideCategoryModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
 
     /**
      * Constructor
@@ -32,11 +33,14 @@ export class GuideCategoryService extends ApiService {
         private p: Platform,
         private db: DbProvider,
         public authService: AuthService,
-        public events: Events,
+
         public downloadService: DownloadService,
         public loggerService: LoggerService,
-        public appSetting: AppSetting) {
-        super(http, events, appSetting);
+        public appSetting: AppSetting,
+        public miscService: MiscService,
+
+    ) {
+        super(http, appSetting);
         console.debug('GuideCategoryService', 'initialized');
     }
 
@@ -45,7 +49,7 @@ export class GuideCategoryService extends ApiService {
      * @returns {GuideCategoryModel}
      */
     public newModel() {
-        return new GuideCategoryModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+        return new GuideCategoryModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
     }
 
     public findByGuides(searchValue): Promise<any> {
@@ -105,7 +109,6 @@ export class GuideCategoryService extends ApiService {
                         const obj: DbBaseModel = this.newModel();
                         obj.platform = this.dbModelApi.platform;
                         obj.db = this.db;
-                        obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         entries.push(obj);
@@ -143,7 +146,6 @@ export class GuideCategoryService extends ApiService {
                         const obj: DbBaseModel = this.newModel();
                         obj.platform = this.dbModelApi.platform;
                         obj.db = this.db;
-                        obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         entries.push(obj);
@@ -254,10 +256,9 @@ export class GuideCategoryService extends ApiService {
             this.dbModelApi.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom, groupby).then((res) => {
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuiderModel = new GuiderModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+                        const obj: GuiderModel = new GuiderModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
                         obj.platform = this.dbModelApi.platform;
                         obj.db = this.db;
-                        obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         obj.setChildren();

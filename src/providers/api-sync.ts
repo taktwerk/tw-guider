@@ -1,12 +1,12 @@
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { GuiderModel } from './../models/db/api/guider-model';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { HttpClient } from '../services/http-client';
 import { AppSetting } from '../services/app-setting';
 import { DbProvider } from './db-provider';
-import { Platform, Events } from '@ionic/angular';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Platform, } from '@ionic/angular';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { ApiService } from './api/base/api-service';
 
 import { GuiderService } from './api/guider-service';
@@ -31,13 +31,14 @@ import { ProtocolCommentService } from './api/protocol-comment-service';
 import { WorkflowTransitionService } from './api/workflow-transition-service';
 import { LoggerService } from 'src/services/logger-service';
 import { SyncService } from 'src/services/sync-service';
+import { MiscService } from 'src/services/misc-service';
 
 @Injectable()
 /**
  * This Service provides a sync of all registered API Services under apiService.
  * Make sure to add this Instance to the constructor of your page, that should first call this ApiSync.
  */
-export class ApiSync {
+export class ApiSync implements OnDestroy {
 
     private isBusy: boolean = false;
     public syncData: any;
@@ -98,6 +99,7 @@ export class ApiSync {
     };
 
     allServicesBodiesForPush: any;
+    eventSubscription: Subscription;
 
     /**
      * ApiSync Constructor
@@ -107,7 +109,6 @@ export class ApiSync {
         public http: HttpClient,
         private platform: Platform,
         private db: DbProvider,
-        private events: Events,
         private downloadService: DownloadService,
         private network: Network,
         private appSetting: AppSetting,
@@ -130,6 +131,7 @@ export class ApiSync {
         private guideChildService: GuideChildService,
         private guideViewHistoryService: GuideViewHistoryService,
         public syncService: SyncService,
+        public miscService: MiscService,
 
     ) {
         this.isStartSyncBehaviorSubject = new BehaviorSubject<boolean>(false);
@@ -165,12 +167,20 @@ export class ApiSync {
     }
 
     initializeEvents() {
-        this.events.subscribe('UserDb:create', (userDb) => {
-            this.userService.userDb = userDb;
-        });
-        this.events.subscribe('UserDb:update', (userDb) => {
-            this.userService.userDb = userDb;
-        });
+        // this.events.subscribe('UserDb:create', (userDb) => {
+        //     this.userService.userDb = userDb;
+        // });
+        // this.events.subscribe('UserDb:update', (userDb) => {
+        //     this.userService.userDb = userDb;
+        // });
+
+        this.eventSubscription = this.miscService.events.subscribe((event) => {
+            switch (event.TAG) {
+                case 'UserDb:create':
+                case 'UserDb:update':
+                    this.userService.userDb = event.data;
+            }
+        })
     }
 
     /**
@@ -1005,6 +1015,10 @@ export class ApiSync {
             this.noDataForSync.next(true);
             this.loggerService.getLogger().info("noDataForSync", 'true');
         })
+    }
+
+    ngOnDestroy(): void {
+        this.eventSubscription.unsubscribe();
     }
 }
 

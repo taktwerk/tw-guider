@@ -1,6 +1,7 @@
-import { Platform, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 // import { AppSetting } from 'src/services/app-setting';
 import { LoggerService } from 'src/services/logger-service';
+import { MiscService } from 'src/services/misc-service';
 import { DbProvider } from '../../providers/db-provider';
 import { DownloadService } from '../../services/download-service';
 
@@ -115,11 +116,10 @@ export abstract class DbBaseModel {
     constructor(
         public platform: Platform,
         public db: DbProvider,
-        public events: Events,
         public downloadService: DownloadService,
-        public loggerService: LoggerService
-    ) {
-    }
+        public loggerService: LoggerService,
+        public miscService: MiscService
+    ) { }
 
     /**
      * Initializes the database incl. the create table statement
@@ -275,7 +275,6 @@ export abstract class DbBaseModel {
                             let obj: DbBaseModel = new (<any>this.constructor);
                             obj.platform = this.platform;
                             obj.db = this.db;
-                            obj.events = this.events;
                             obj.downloadService = this.downloadService;
                             obj.loadFromAttributes(res.rows.item(0));
                             resolve(obj);
@@ -351,7 +350,7 @@ export abstract class DbBaseModel {
                                 const obj = new (this.constructor as any);
                                 obj.platform = this.platform;
                                 obj.db = this.db;
-                                obj.events = this.events;
+
                                 obj.downloadService = this.downloadService;
                                 obj.loadFromAttributes(res.rows.item(i));
                                 entries.push(obj);
@@ -383,7 +382,7 @@ export abstract class DbBaseModel {
                                 const obj: DbBaseModel = new (<any>this.constructor);
                                 obj.platform = this.platform;
                                 obj.db = this.db;
-                                obj.events = this.events;
+
                                 obj.downloadService = this.downloadService;
                                 obj.loadFromAttributes(res.rows.item(i));
                                 // console.debug(this.TAG, 'new instance', obj);
@@ -737,7 +736,8 @@ export abstract class DbBaseModel {
                         console.log('after execute query');
                         this[this.COL_ID] = res.insertId;
                         this.updateCondition = [this.COL_ID, this[this.COL_ID]];
-                        this.events.publish(this.TAG + ':create', this);
+                        // this.events.publish(this.TAG + ':create', this);
+                        this.miscService.events.next({ TAG: this.TAG + ':create', data: this });
                         resolve(res);
 
                     }).catch((err) => {
@@ -766,10 +766,13 @@ export abstract class DbBaseModel {
                     let query = 'UPDATE ' + this.secure(this.TABLE_NAME) + ' ' +
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(condition);
                     db.query(query).then((res) => {
-                        this.events.publish(this.TAG + ':update', this);
+                        // this.events.publish(this.TAG + ':update', this);
+                        console.log(this.miscService)
+                        this.miscService.events.next({ TAG: this.TAG + ':create', data: this });
                         resolve(res);
                     }).catch((err) => {
                         console.log('errrr', err);
+                        console.log(this.loggerService)
                         this.loggerService.getLogger().error("error at db-base-model 772", err, new Error().stack)
                         resolve(false);
                     });
@@ -792,12 +795,12 @@ export abstract class DbBaseModel {
                     let query = 'DELETE FROM ' + this.secure(this.TABLE_NAME) + ' ' +
                         'WHERE ' + this.parseWhere(this.updateCondition);
                     db.query(query).then((res) => {
-                        this.events.publish(this.TAG + ':delete', this);
+                        // this.events.publish(this.TAG + ':delete', this);
+                        this.miscService.events.next({ TAG: this.TAG + ':create', data: this })
                         resolve(res);
                     }).catch((err) => {
                         console.log('delete error', err);
                         this.loggerService.getLogger().error("error at db-base-model 798", err, new Error().stack)
-
                         resolve(false);
                     });
                 }

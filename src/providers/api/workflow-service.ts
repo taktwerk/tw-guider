@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import { Platform, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { ApiService } from './base/api-service';
 import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
@@ -9,12 +9,13 @@ import { DownloadService } from '../../services/download-service';
 import { AppSetting } from '../../services/app-setting';
 import { WorkflowModel } from '../../models/db/api/workflow-model';
 import { LoggerService } from 'src/services/logger-service';
+import { MiscService } from 'src/services/misc-service';
 
 @Injectable()
 export class WorkflowService extends ApiService {
     data: WorkflowModel[] = [];
     loadUrl: string = '/workflow';
-    dbModelApi: WorkflowModel = new WorkflowModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+    dbModelApi: WorkflowModel = new WorkflowModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
 
     /**
      * Constructor
@@ -29,12 +30,12 @@ export class WorkflowService extends ApiService {
     constructor(http: HttpClient,
         private p: Platform, private db: DbProvider,
         public authService: AuthService,
-        public events: Events,
         public downloadService: DownloadService,
         public loggerService: LoggerService,
+        private miscService: MiscService,
 
         public appSetting: AppSetting) {
-        super(http, events, appSetting);
+        super(http, appSetting);
     }
 
     /**
@@ -42,6 +43,6 @@ export class WorkflowService extends ApiService {
      * @returns {WorkflowModel}
      */
     public newModel() {
-        return new WorkflowModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+        return new WorkflowModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
     }
 }

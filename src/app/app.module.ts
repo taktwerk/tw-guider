@@ -161,6 +161,8 @@ Sentry.init({ dsn: environment.sentryDsn });
         deps: [Http]
       }
     }),
+    // MiscService,
+    // LoggerService,
     SyncSpinnerComponentModule,
     ionMenuWithSyncIndicatorComponentModule,
     GuideListComponentModule,
@@ -180,6 +182,8 @@ Sentry.init({ dsn: environment.sentryDsn });
 
   ],
   providers: [
+    MiscService,
+    LoggerService,
     StatusBar,
     SplashScreen,
     GuiderService,
@@ -201,7 +205,6 @@ Sentry.init({ dsn: environment.sentryDsn });
     DbProvider,
     MigrationProvider,
     AuthService,
-    MiscService,
     HttpClient,
     DownloadService,
     VideoService,
@@ -247,7 +250,6 @@ Sentry.init({ dsn: environment.sentryDsn });
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     MigrationService,
     Base64ToGallery,
-    LoggerService,
   ],
   exports: [
     ProtocolDefaultComponent

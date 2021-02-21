@@ -1,10 +1,11 @@
 import { LoggerService } from './../../../services/logger-service';
-import { Platform, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
 import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
 import { DownloadService } from '../../../services/download-service';
 import { GuiderModel } from './guider-model';
+import { MiscService } from 'src/services/misc-service';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -80,8 +81,11 @@ export class GuideStepModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService, public loggerService: LoggerService) {
-        super(platform, db, events, downloadService, loggerService);
+    constructor(public platform: Platform, public db: DbProvider, public downloadService: DownloadService,
+        public loggerService: LoggerService,
+        public miscService: MiscService,
+    ) {
+        super(platform, db, downloadService, loggerService, miscService);
     }
 
     async updateLocalRelations() {
@@ -89,7 +93,7 @@ export class GuideStepModel extends DbApiModel {
             return;
         }
 
-        const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+        const guiderModel = new GuiderModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
         if (guiderModel) {
             const guiderModels = await guiderModel.findFirst(
                 [guiderModel.COL_ID_API, this.guide_id]
@@ -111,7 +115,7 @@ export class GuideStepModel extends DbApiModel {
             if (!this[this.COL_ID]) {
                 return;
             }
-            const guiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+            const guiderModel = new GuiderModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
             const guiderModels = await guiderModel.findFirst([guiderModel.COL_ID, this.local_guide_id]);
             if (guiderModels && guiderModels.length) {
                 console.log('guiderModels is not 0000');

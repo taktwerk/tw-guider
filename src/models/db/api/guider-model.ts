@@ -1,5 +1,5 @@
 import { LoggerService } from './../../../services/logger-service';
-import { Platform, Events } from '@ionic/angular';
+import { Platform, } from '@ionic/angular';
 import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
 import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
@@ -8,6 +8,7 @@ import { GuideStepModel } from './guide-step-model';
 import { GuideAssetModel } from './guide-asset-model';
 import { ProtocolTemplateModel } from './protocol-template-model';
 import { GuideChildModel } from './guide-child-model';
+import { MiscService } from 'src/services/misc-service';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -87,8 +88,8 @@ export class GuiderModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService, public loggerService: LoggerService) {
-        super(platform, db, events, downloadService, loggerService);
+    constructor(public platform: Platform, public db: DbProvider, public downloadService: DownloadService, public loggerService: LoggerService, public miscService: MiscService,) {
+        super(platform, db, downloadService, loggerService, miscService);
     }
 
     /**
@@ -135,7 +136,7 @@ export class GuiderModel extends DbApiModel {
     }
 
     public setSteps() {
-        const guideStepModel = new GuideStepModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+        const guideStepModel = new GuideStepModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
         guideStepModel.findAllWhere(['guide_id', this.idApi], 'order_number ASC').then(results => {
             results.map(model => {
                 if (!model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]) {
@@ -163,10 +164,9 @@ export class GuiderModel extends DbApiModel {
                 this.assets = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+                        const obj: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
                         obj.platform = this.platform;
                         obj.db = this.db;
-                        obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         this.assets.push(obj);
@@ -194,10 +194,9 @@ export class GuiderModel extends DbApiModel {
                 this.guide_collection = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideChildModel = new GuideChildModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+                        const obj: GuideChildModel = new GuideChildModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
                         obj.platform = this.platform;
                         obj.db = this.db;
-                        obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         this.guide_collection.push(obj);
@@ -225,10 +224,9 @@ export class GuiderModel extends DbApiModel {
             this.db.query(query).then((res) => {
                 this.protocol_template = null;
                 if (res.rows.length > 0) {
-                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.events, this.downloadService, this.loggerService);
+                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
                     obj.platform = this.platform;
                     obj.db = this.db;
-                    obj.events = this.events;
                     obj.downloadService = this.downloadService;
                     obj.loadFromAttributes(res.rows.item(0));
                     this.protocol_template = obj;

@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Events, ModalController, Platform } from '@ionic/angular';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { ModalController, Platform } from '@ionic/angular';
 import { UserDb } from '../../models/db/user-db';
 import { ApiSync } from '../../providers/api-sync';
 import { DownloadService } from '../../services/download-service';
@@ -16,6 +16,8 @@ import { AppSetting } from '../../services/app-setting';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { LoggerService } from 'src/services/logger-service';
+import { Subscription } from 'rxjs';
+import { MiscService } from 'src/services/misc-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -29,7 +31,7 @@ import { LoggerService } from 'src/services/logger-service';
   templateUrl: 'sync-modal-component.html',
   styleUrls: ['sync-modal-component.scss'],
 })
-export class SyncModalComponent implements OnInit {
+export class SyncModalComponent implements OnInit, OnDestroy {
   public isStartSync = false;
   public noDataForSync = false;
   public syncedItemsCount = 0;
@@ -50,6 +52,7 @@ export class SyncModalComponent implements OnInit {
   public pushProgressStatus: string;
   public isAvailableForPushData: boolean;
   public params;
+  eventSubscription: Subscription;
 
   constructor(
     private modalController: ModalController,
@@ -61,14 +64,15 @@ export class SyncModalComponent implements OnInit {
     private platform: Platform,
     private db: DbProvider,
     private translateConfigService: TranslateConfigService,
-    private events: Events,
     private syncService: SyncService,
     public network: Network,
     public datepipe: DatePipe,
     private userService: UserService,
     public appSetting: AppSetting,
     private insomnia: Insomnia,
-    private loggerService: LoggerService
+    private loggerService: LoggerService,
+    private miscService: MiscService,
+
   ) {
     this.isNetwork = this.network.type !== 'none';
     this.initUser().then(() => {
@@ -190,26 +194,49 @@ export class SyncModalComponent implements OnInit {
       // 
 
     });
-    this.events.subscribe('UserDb:update', (userDb) => {
-      this.userService.userDb = userDb;
-         this.loggerService.getLogger().info("userDb", userDb)
+    // this.events.subscribe('UserDb:update', (userDb) => {
+    //   this.userService.userDb = userDb;
+    //   this.loggerService.getLogger().info("userDb", userDb)
 
-    });
-    this.events.subscribe('network:offline', (isNetwork) => {
-      this.isNetwork = false;
-         this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+    // });
+    // this.events.subscribe('network:offline', (isNetwork) => {
+    //   this.isNetwork = false;
+    //   this.loggerService.getLogger().info("isNetwork", this.isNetwork)
 
-      this.detectChanges();
-    });
-    this.events.subscribe('network:online', (isNetwork) => {
-      this.isNetwork = true;
-         this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe('network:online', (isNetwork) => {
+    //   this.isNetwork = true;
+    //   this.loggerService.getLogger().info("isNetwork", this.isNetwork)
 
-      this.detectChanges();
-    });
-    this.events.subscribe('user:logout', () => {
-         this.loggerService.getLogger().info("user:logout")
-      this.dismiss();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe('user:logout', () => {
+    //   this.loggerService.getLogger().info("user:logout")
+    //   this.dismiss();
+    // });
+
+
+    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+      switch (event.TAG) {
+        case 'UserDb:update':
+          this.userService.userDb = event.data;
+          this.loggerService.getLogger().info("userDb", event.data)
+          break;
+        case 'network:offline':
+          this.isNetwork = false;
+          this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+          break;
+        case 'network:online':
+          this.isNetwork = true;
+          this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+          break;
+        case 'user:logout':
+          this.loggerService.getLogger().info("user:logout")
+          this.dismiss();
+          break;
+        default:
+      }
     });
   }
 
@@ -224,9 +251,12 @@ export class SyncModalComponent implements OnInit {
       case 'success':
         //    this.loggerService.getLogger().info("Sync", 'success')
         return '(' + this.translateConfigService.translateWord('sync-modal.Success') + ')';
-
       default:
         return '';
     }
+  }
+
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
   }
 }

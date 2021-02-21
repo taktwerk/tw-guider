@@ -1,21 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { Events, NavController } from '@ionic/angular';
+import { MiscService } from './../../services/misc-service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { AppSetting } from '../../services/app-setting';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'page-profile',
     templateUrl: 'profile.html',
 })
-export class ProfilePage implements OnInit {
-
+export class ProfilePage implements OnInit, OnDestroy {
     public params;
+    eventSubscription: Subscription;
 
     constructor(
         public navCtrl: NavController,
         public authService: AuthService,
-        public events: Events,
-        public appSetting: AppSetting
+        public appSetting: AppSetting,
+        public miscService: MiscService
     ) {
         this.authService.checkAccess();
     }
@@ -32,8 +34,18 @@ export class ProfilePage implements OnInit {
     }
 
     ngOnInit(): void {
-        this.events.subscribe('network:online', (isNetwork) => {
-            this.authService.checkAccess();
-        });
+        // this.events.subscribe('network:online', (isNetwork) => {
+        //     this.authService.checkAccess();
+        // });
+
+        this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+            if (event.TAG == 'network:online') { 
+                this.authService.checkAccess();
+            }
+        })
+    }
+
+    ngOnDestroy(): void {
+        this.eventSubscription.unsubscribe();
     }
 }

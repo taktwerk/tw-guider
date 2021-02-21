@@ -3,7 +3,7 @@ import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { AlertController, Events, IonItem, ToastController } from '@ionic/angular';
+import { AlertController, IonItem, ToastController } from '@ionic/angular';
 import { ApiSync } from 'src/providers/api-sync';
 import { GuideAssetService } from 'src/providers/api/guide-asset-service';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
@@ -14,6 +14,8 @@ import { GuideChildService } from 'src/providers/api/guide-child-service';
 import { GuideAssetModelFileMapIndexEnum } from 'src/models/db/api/guide-asset-model';
 import { AuthService } from '../../services/auth-service';
 import { GuideAssetPivotService } from 'src/providers/api/guide-asset-pivot-service';
+import { MiscService } from 'src/services/misc-service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'listview-component',
@@ -36,6 +38,7 @@ export class ListViewComponent implements OnInit {
   displayLimit: number = 10;
 
   guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
+  eventSubscription: Subscription;
 
   constructor(
     private guideStepService: GuideStepService,
@@ -45,39 +48,57 @@ export class ListViewComponent implements OnInit {
     public alertController: AlertController,
     private translateConfigService: TranslateConfigService,
     public http: HttpClient,
-    public events: Events,
+
     public changeDetectorRef: ChangeDetectorRef,
     public authService: AuthService,
     private guideAssetService: GuideAssetService,
     private guideAssetPivotService: GuideAssetPivotService,
+    private miscService: MiscService,
+
   ) { }
 
   ngOnInit(): void {
     this.setGuideSteps(this.guideId);
     this.detectChanges();
 
-    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async () => {
-      this.setGuideSteps(this.guideId);
-      this.detectChanges();
-    });
+    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async () => {
+    //   this.setGuideSteps(this.guideId);
+    //   this.detectChanges();
+    // });
 
-    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async () => {
-      this.setGuideSteps(this.guideId);
-      this.detectChanges();
-    });
+    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async () => {
+    //   this.setGuideSteps(this.guideId);
+    //   this.detectChanges();
+    // });
 
-    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async () => {
-      this.setGuideSteps(this.guideId);
-      this.detectChanges();
-    });
+    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async () => {
+    //   this.setGuideSteps(this.guideId);
+    //   this.detectChanges();
+    // });
 
-    this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':create', async () => {
-      this.setGuideSteps(this.guideId);
-      this.detectChanges();
-    });
+    // this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':create', async () => {
+    //   this.setGuideSteps(this.guideId);
+    //   this.detectChanges();
+    // });
 
-    this.events.subscribe('network:online', () => {
-      this.authService.checkAccess('guide');
+    // this.events.subscribe('network:online', () => {
+    //   this.authService.checkAccess('guide');
+    // });
+
+    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+      switch (event.TAG) {
+        case this.guideStepService.dbModelApi.TAG + ':create':
+        case this.guideStepService.dbModelApi.TAG + ':delete':
+        case this.guideStepService.dbModelApi.TAG + ':update':
+        case this.guideAssetPivotService.dbModelApi.TAG + ':create':
+          this.setGuideSteps(this.guideId);
+          this.detectChanges();
+          break;
+        case 'network:online':
+          this.authService.checkAccess('guide');
+          break;
+        default:
+      }
     });
   }
 

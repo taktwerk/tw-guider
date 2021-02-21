@@ -1,10 +1,11 @@
 import { LoggerService } from './../../services/logger-service';
 import { DbBaseModel } from '../base/db-base-model';
-import { Platform, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { DbProvider } from '../../providers/db-provider';
 import { UserSetting } from '../user-setting';
 import { AuthDb } from './auth-db';
 import { DownloadService } from '../../services/download-service';
+import { MiscService } from 'src/services/misc-service';
 
 export class AppSettingsDb extends DbBaseModel {
     /** @inheritDoc */
@@ -31,10 +32,10 @@ export class AppSettingsDb extends DbBaseModel {
     constructor(
         public platform: Platform,
         public db: DbProvider,
-        public events: Events,
         public downloadService: DownloadService,
-        public loggerService: LoggerService
+        public loggerService: LoggerService,
+        public miscService: MiscService
     ) {
-        super(platform, db, events, downloadService, loggerService);
+        super(platform, db, downloadService, loggerService, miscService);
     }
 }

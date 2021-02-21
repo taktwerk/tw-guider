@@ -1,10 +1,11 @@
-import { Platform, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
 import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
 import { DownloadService } from '../../../services/download-service';
 import { ProtocolModel } from './protocol-model';
 import { LoggerService } from 'src/services/logger-service';
+import { MiscService } from 'src/services/misc-service';
 
 /**
  * API Db Model for 'Protocol Default Model'.
@@ -79,7 +80,7 @@ export class ProtocolDefaultModel extends DbApiModel {
         console.log('after check');
 
         if (this.protocol_id) {
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+            const protocolModel = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
             const protocolModels = await protocolModel.findFirst(
                 [protocolModel.COL_ID_API, this.protocol_id]
             );
@@ -101,7 +102,7 @@ export class ProtocolDefaultModel extends DbApiModel {
             if (!this[this.COL_ID]) {
                 return;
             }
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+            const protocolModel = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
             const protocolModels = await protocolModel.findFirst([protocolModel.COL_ID, this.local_protocol_id]);
             if (protocolModels && protocolModels.length) {
                 const protocol = protocolModels[0];
@@ -120,7 +121,7 @@ export class ProtocolDefaultModel extends DbApiModel {
             if (!this[this.COL_ID] || !this.idApi) {
                 return;
             }
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+            const protocolModel = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
             const protocolModels = await protocolModel.findFirst([protocolModel.COL_ID_API, this.protocol_id]);
             if (protocolModels && protocolModels.length) {
                 const protocol = protocolModels[0];
@@ -138,7 +139,10 @@ export class ProtocolDefaultModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService, public loggerService: LoggerService) {
-        super(platform, db, events, downloadService, loggerService);
+    constructor(public platform: Platform, public db: DbProvider,
+        public downloadService: DownloadService, public loggerService: LoggerService,
+        public miscService: MiscService
+    ) {
+        super(platform, db, downloadService, loggerService, miscService);
     }
 }

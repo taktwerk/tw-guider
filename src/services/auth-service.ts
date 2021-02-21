@@ -1,3 +1,4 @@
+import { MiscService } from 'src/services/misc-service';
 import { LoggerService } from './logger-service';
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient, HttpHeaders as Headers, HttpHeaders } from '@angular/common/http';
@@ -7,7 +8,7 @@ import { DbProvider } from '../providers/db-provider';
 import { AuthDb } from '../models/db/auth-db';
 import { UserDb } from '../models/db/user-db';
 import { UserSetting } from '../models/user-setting';
-import { Events, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { DownloadService } from './download-service';
 import { CryptoProvider } from '../providers/crypto-provider';
 import { Network } from '@ionic-native/network/ngx';
@@ -43,7 +44,6 @@ export class AuthService {
         public platform: Platform,
         public dbProvider: DbProvider,
         public loadingController: LoadingController,
-        public events: Events,
         public downloadService: DownloadService,
         public navCtrl: NavController,
         public cryptoProvider: CryptoProvider,
@@ -57,6 +57,7 @@ export class AuthService {
         private alertController: AlertController,
         private userService: UserService,
         private translateConfigService: TranslateConfigService,
+        private miscService: MiscService
 
     ) {
         // Create a tmp user until everything has properly been loaded
@@ -194,7 +195,8 @@ export class AuthService {
                         this.createUserSettingsIfNotExists().then((res) => {
                             if (res) {
                                 // send a notification to the rest of the app
-                                this.events.publish('user:login', user.userId);
+                                // this.events.publish('user:login', user.userId);
+                                this.miscService.events.next({ TAG: 'user:login', data: user.userId })
                                 resolve(user.userId);
                                 return;
                             } else {
@@ -331,7 +333,8 @@ export class AuthService {
                         this.createUserSettingsIfNotExists().then((res) => {
                             if (res) {
                                 // send a notification to the rest of the app
-                                this.events.publish('user:login', user.user_id);
+                                // this.events.publish('user:login', user.user_id);
+                                this.miscService.events.next({ TAG: 'user:login', data: user.user_id });
                                 this.userService.userDb = res;
                                 // console.log('after login this.userService.userDb', this.userService.userDb);
                                 resolve(user.user_id);
@@ -382,7 +385,8 @@ export class AuthService {
             this.auth.save(true).then(() => {
                 this.isLoggedin = false;
                 this.userService.userDb = null;
-                this.events.publish('user:logout');
+                // this.events.publish('user:logout');
+                this.miscService.events.next({ TAG: 'user:logout' });
                 resolve(true);
             });
         });
@@ -513,7 +517,7 @@ export class AuthService {
      * @returns {AuthDb}
      */
     public newAuthModel(): AuthDb {
-        return new AuthDb(this.platform, this.dbProvider, this.events, this.downloadService,    this.loggerService);
+        return new AuthDb(this.platform, this.dbProvider, this.downloadService, this.loggerService, this.miscService);
     }
 
     /**
@@ -521,6 +525,6 @@ export class AuthService {
      * @returns {UserDb}
      */
     public newUserModel(): UserDb {
-        return new UserDb(this.platform, this.dbProvider, this.events, this.downloadService,    this.loggerService);
+        return new UserDb(this.platform, this.dbProvider, this.downloadService, this.loggerService, this.miscService);
     }
 }

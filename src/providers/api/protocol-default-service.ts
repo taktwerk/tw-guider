@@ -1,7 +1,7 @@
 import { LoggerService } from './../../services/logger-service';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import { Platform, Events, AlertController } from '@ionic/angular';
+import { Platform, AlertController } from '@ionic/angular';
 import { ApiService } from './base/api-service';
 import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
@@ -16,12 +16,13 @@ import { ProtocolTemplateService } from './protocol-template-service';
 import { ProtocolTemplateModel } from '../../models/db/api/protocol-template-model';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { Md5 } from 'ts-md5/dist/md5';
+import { MiscService } from 'src/services/misc-service';
 
 @Injectable()
 export class ProtocolDefaultService extends ApiService {
     data: ProtocolDefaultModel[] = [];
     loadUrl: string = '/protocol-default';
-    dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+    dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
     saveInformation: {
         clientId: number,
         protocol: ProtocolModel,
@@ -53,14 +54,16 @@ export class ProtocolDefaultService extends ApiService {
         public alertController: AlertController,
         private translateConfigService: TranslateConfigService,
         public authService: AuthService,
-        public events: Events,
+
         public downloadService: DownloadService,
         public loggerService: LoggerService,
         public appSetting: AppSetting,
         private pictureService: PictureService,
         private drawImageService: DrawImageService,
-        private protocolTemplateService: ProtocolTemplateService) {
-        super(http, events, appSetting);
+        private protocolTemplateService: ProtocolTemplateService,
+        public miscService: MiscService,
+    ) {
+        super(http, appSetting);
     }
 
     async saveProtocol(saveInformation) {
@@ -75,7 +78,7 @@ export class ProtocolDefaultService extends ApiService {
             if (!workflowFirstStep) {
                 return;
             }
-            protocol = new ProtocolModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+            protocol = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
             const md5 = new Md5();
             const protocolName = ('' + md5.appendStr('' + (new Date()).getTime()).end()).substr(0, 5).toUpperCase();
             protocol.client_id = saveInformation.clientId;
@@ -106,7 +109,8 @@ export class ProtocolDefaultService extends ApiService {
                     protocol.local_protocol_form_number = protocolDefault[protocol.COL_ID];
                 }
                 await protocol.save();
-                this.events.publish('setIsPushAvailableData');
+                // this.events.publish('setIsPushAvailableData');
+                this.miscService.events.next({ TAG: 'setIsPushAvailableData' });
             }
         });
     }
@@ -209,6 +213,6 @@ export class ProtocolDefaultService extends ApiService {
      * @returns {ProtocolDefaultModel}
      */
     public newModel() {
-        return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService,    this.loggerService);
+        return new ProtocolDefaultModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
     }
 }

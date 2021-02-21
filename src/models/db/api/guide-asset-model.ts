@@ -1,4 +1,5 @@
-import { Platform, Events } from '@ionic/angular';
+import { MiscService } from 'src/services/misc-service';
+import { Platform } from '@ionic/angular';
 import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
 import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
@@ -74,8 +75,11 @@ export class GuideAssetModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService, public loggerService: LoggerService) {
-        super(platform, db, events, downloadService, loggerService);
+    constructor(public platform: Platform, public db: DbProvider,
+        public downloadService: DownloadService, public loggerService: LoggerService,
+        public miscService: MiscService
+    ) {
+        super(platform, db, downloadService, loggerService, miscService);
     }
 
     setUpdateCondition() {

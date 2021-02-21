@@ -1,26 +1,16 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { File } from '@ionic-native/file/ngx';
-import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { Events, NavController, Platform, AlertController, IonBackButtonDelegate } from '@ionic/angular';
+import { AlertController, IonBackButtonDelegate } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
-import { DownloadService, RecordedFile } from '../../services/download-service';
+import { DownloadService } from '../../services/download-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
 import { FeedbackService } from '../../providers/api/feedback-service';
-import { Network } from '@ionic-native/network/ngx';
 import { HttpClient } from '../../services/http-client';
-import { FilePath } from '@ionic-native/file-path/ngx';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { VideoService } from '../../services/video-service';
-import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { PictureService } from '../../services/picture-service';
 import { ApiSync } from '../../providers/api-sync';
-import { CameraResultType, CameraSource, Capacitor } from '@capacitor/core';
-import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
-import { FileChooser } from '@ionic-native/file-chooser/ngx';
-
-const { Filesystem } = Plugins;
 
 @Component({
   selector: 'feedback-add-edit-page',
@@ -48,28 +38,19 @@ export class FeedbackAddEditPage implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private file: File,
-    private streamingMedia: StreamingMedia,
     private photoViewer: PhotoViewer,
-    public events: Events,
     public http: HttpClient,
     public authService: AuthService,
     public changeDetectorRef: ChangeDetectorRef,
     public downloadService: DownloadService,
     private feedbackService: FeedbackService,
-    private navCtrl: NavController,
-    private network: Network,
-    private platform: Platform,
-    private filePath: FilePath,
     private ngZone: NgZone,
     public alertController: AlertController,
     private translateConfigService: TranslateConfigService,
     private router: Router,
     private videoService: VideoService,
-    private fileOpener: FileOpener,
     private pictureService: PictureService,
     private apiSync: ApiSync,
-    private fileChooser: FileChooser,
   ) {
     this.authService.checkAccess('feedback');
     if (!this.model) {
@@ -160,7 +141,7 @@ export class FeedbackAddEditPage implements OnInit {
     if (!this.model.title) {
       this.model.title = this.defaultTitle;
     }
-    this.feedbackService.save(this.model).then(async (res) => {
+    this.feedbackService.save(this.model).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
       const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
       this.http.showToast(alertMessage);
@@ -203,15 +184,13 @@ export class FeedbackAddEditPage implements OnInit {
     if (errorMessage) {
       const headerMessage = await this.translateConfigService.translate('validation.Validation error');
       this.http.showToast(errorMessage, headerMessage, 'danger', false);
-
       return false;
     }
-
     return true;
   }
 
   public delete() {
-    this.feedbackService.remove(this.model).then(async (res) => {
+    this.feedbackService.remove(this.model).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
       this.dismiss();
       const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'Entry' });
@@ -272,7 +251,6 @@ export class FeedbackAddEditPage implements OnInit {
     if (this.model[this.model.COL_ID]) {
       return `Feedback:${this.model[this.model.COL_ID]}`;
     }
-
     return 'Feedback';
   }
 

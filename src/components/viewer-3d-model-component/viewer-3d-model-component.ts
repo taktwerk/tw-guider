@@ -301,7 +301,8 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
                 console.log('end my presss');
             }
         });
-        gesture.setDisabled(false);
+        // gesture.setDisabled(false);
+        gesture.destroy();
 
         window.dispatchEvent(new Event('resize'));
         this.isRendered = true;

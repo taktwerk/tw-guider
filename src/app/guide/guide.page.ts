@@ -20,7 +20,7 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { GuideStepService } from '../../providers/api/guide-step-service';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { Events, IonBackButtonDelegate, IonContent, IonSlides, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { IonBackButtonDelegate, IonContent, IonSlides, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
 import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
@@ -97,6 +97,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   resumeModeSub: Subscription;
   resumeMode: boolean;
+  eventSubscription: Subscription;
+
   public userDb: UserDb;
 
   constructor(
@@ -113,7 +115,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     private guideAssetPivotService: GuideAssetPivotService,
     private activatedRoute: ActivatedRoute,
     private photoViewer: PhotoViewer,
-    public events: Events,
     public authService: AuthService,
     public changeDetectorRef: ChangeDetectorRef,
     public modalController: ModalController,
@@ -371,89 +372,168 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.isLoadedContent = true;
     this.resumeStep(this.guide.idApi);
 
-    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async () => {
-      if (this.guide) {
-        this.setGuideSteps(this.guide.idApi).then(() => {
-          this.detectChanges();
-          this.reinitializeGuideStepSlides();
-          this.detectChanges();
-        });
-      }
-    });
-    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async () => {
-      // console.log('model delete', model);
-      if (this.guide) {
-        this.setGuideSteps(this.guide.idApi).then(() => {
-          this.detectChanges();
-          this.reinitializeGuideStepSlides();
-          // console.log('after reinitialize');
-        });
-      }
-    });
-    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async () => {
-      //  console.log('model update', model);
-      if (this.guide) {
+    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async () => {
+    //   if (this.guide) {
+    //     this.setGuideSteps(this.guide.idApi).then(() => {
+    //       this.detectChanges();
+    //       this.reinitializeGuideStepSlides();
+    //       this.detectChanges();
+    //     });
+    //   }
+    // });
+    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async () => {
+    //   // console.log('model delete', model);
+    //   if (this.guide) {
+    //     this.setGuideSteps(this.guide.idApi).then(() => {
+    //       this.detectChanges();
+    //       this.reinitializeGuideStepSlides();
+    //       // console.log('after reinitialize');
+    //     });
+    //   }
+    // });
+    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async () => {
+    //   //  console.log('model update', model);
+    //   if (this.guide) {
 
-        this.setGuideSteps(this.guide.idApi).then(() => {
-          this.detectChanges();
-          this.reinitializeGuideStepSlides();
-          //  console.log('after reinitialize');
-        });
+    //     this.setGuideSteps(this.guide.idApi).then(() => {
+    //       this.detectChanges();
+    //       this.reinitializeGuideStepSlides();
+    //       //  console.log('after reinitialize');
+    //     });
+    //   }
+    // });
+    // this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':create', async () => {
+    //   if (this.guide) {
+    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+    //   }
+    // });
+    // this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':update', async () => {
+    //   if (this.guide) {
+    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+    //   }
+    // });
+    // this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':delete', async () => {
+    //   if (this.guide) {
+    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+    //   }
+    // });
+    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', async () => {
+    //   if (this.guide) {
+    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+    //   }
+    // });
+    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', async () => {
+    //   if (this.guide) {
+    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+    //   }
+    // });
+    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async () => {
+    //   if (this.guide) {
+    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+    //   }
+    // });
+    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async () => {
+    //   if (this.guide) {
+    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+    //   }
+    // });
+    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', async () => {
+    //   this.ngZone.run(() => {
+    //     this.navCtrl.navigateRoot('/guide-categories');
+    //   });
+    // });
+    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', async () => {
+    //   this.ngZone.run(() => {
+    //     this.navCtrl.navigateRoot('/guide-categories');
+    //   });
+    // });
+    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', () => {
+    //   this.ngZone.run(() => {
+    //     this.navCtrl.navigateRoot('/guide-categories');
+    //   });
+    // });
+    // this.events.subscribe('network:online', () => {
+    //   this.authService.checkAccess('guide');
+    // });
+
+
+    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+      switch (event.TAG) {
+        case this.guideStepService.dbModelApi.TAG + ':create':
+          if (this.guide) {
+            this.setGuideSteps(this.guide.idApi).then(() => {
+              this.detectChanges();
+              this.reinitializeGuideStepSlides();
+              this.detectChanges();
+            });
+          }
+          break;
+        case this.guideStepService.dbModelApi.TAG + ':delete':
+          if (this.guide) {
+            this.setGuideSteps(this.guide.idApi).then(() => {
+              this.detectChanges();
+              this.reinitializeGuideStepSlides();
+            });
+          }
+          break;
+        case this.guideStepService.dbModelApi.TAG + ':update':
+          if (this.guide) {
+            this.setGuideSteps(this.guide.idApi).then(() => {
+              this.detectChanges();
+              this.reinitializeGuideStepSlides();
+            });
+          }
+          break;
+        case this.guideAssetPivotService.dbModelApi.TAG + ':create':
+          if (this.guide) {
+            this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+          }
+          break;
+        case this.guideAssetPivotService.dbModelApi.TAG + ':update':
+          if (this.guide) {
+            this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+          }
+        case this.guideAssetPivotService.dbModelApi.TAG + ':delete':
+          if (this.guide) {
+            this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+          }
+          break;
+        case this.guideAssetService.dbModelApi.TAG + ':create':
+          if (this.guide) {
+            this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+          }
+          break;
+        case this.guideAssetService.dbModelApi.TAG + ':update':
+          if (this.guide) {
+            this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+          }
+          break;
+        case this.guideAssetService.dbModelApi.TAG + ':delete':
+          if (this.guide) {
+            this.setAssets(this.guide.idApi).then(() => this.detectChanges());
+          }
+          break;
+        case this.guiderService.dbModelApi.TAG + ':delete':
+          this.ngZone.run(() => {
+            this.navCtrl.navigateRoot('/guide-categories');
+          });
+          break;
+        case this.guideCategoryService.dbModelApi.TAG + ':delete':
+          this.ngZone.run(() => {
+            this.navCtrl.navigateRoot('/guide-categories');
+          });
+          break;
+        case this.guideCategoryBindingService.dbModelApi.TAG + ':delete':
+          this.ngZone.run(() => {
+            this.navCtrl.navigateRoot('/guide-categories');
+          });
+          break;
+        case 'network:online':
+          this.authService.checkAccess('guide');
+          break;
+        default:
       }
-    });
-    this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':create', async () => {
-      if (this.guide) {
-        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-      }
-    });
-    this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':update', async () => {
-      if (this.guide) {
-        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-      }
-    });
-    this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':delete', async () => {
-      if (this.guide) {
-        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-      }
-    });
-    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', async () => {
-      if (this.guide) {
-        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-      }
-    });
-    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', async () => {
-      if (this.guide) {
-        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-      }
-    });
-    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async () => {
-      if (this.guide) {
-        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-      }
-    });
-    this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async () => {
-      if (this.guide) {
-        this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-      }
-    });
-    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', async () => {
-      this.ngZone.run(() => {
-        this.navCtrl.navigateRoot('/guide-categories');
-      });
-    });
-    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', async () => {
-      this.ngZone.run(() => {
-        this.navCtrl.navigateRoot('/guide-categories');
-      });
-    });
-    this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', () => {
-      this.ngZone.run(() => {
-        this.navCtrl.navigateRoot('/guide-categories');
-      });
-    });
-    this.events.subscribe('network:online', () => {
-      this.authService.checkAccess('guide');
-    });
+    })
 
     this.restartSub = this.miscService.onSlideRestart.subscribe((res) => {
       if (res) {
@@ -627,5 +707,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   ngOnDestroy(): void {
     this.restartSub.unsubscribe();
     this.resumeModeSub.unsubscribe();
+    this.eventSubscription.unsubscribe();
   }
 }

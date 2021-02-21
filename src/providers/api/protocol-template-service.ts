@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import { Platform, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { ApiService } from './base/api-service';
 import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
@@ -13,12 +13,13 @@ import { UserService } from '../../services/user-service';
 import { AuthDb } from '../../models/db/auth-db';
 import { WorkflowService } from './workflow-service';
 import { LoggerService } from 'src/services/logger-service';
+import { MiscService } from 'src/services/misc-service';
 
 @Injectable()
 export class ProtocolTemplateService extends ApiService {
     data: ProtocolTemplateModel[] = [];
     loadUrl: string = '/protocol-template';
-    dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+    dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
     user: AuthDb;
 
     /**
@@ -38,15 +39,17 @@ export class ProtocolTemplateService extends ApiService {
         private p: Platform,
         private db: DbProvider,
         public authService: AuthService,
-        public events: Events,
+
         public downloadService: DownloadService,
         public loggerService: LoggerService,
 
         public appSetting: AppSetting,
         private workflowStepService: WorkflowStepService,
         private workflowService: WorkflowService,
-        private userService: UserService) {
-        super(http, events, appSetting);
+        private userService: UserService
+        , private miscService: MiscService
+    ) {
+        super(http, appSetting);
     }
 
     async getCurrentUser() {
@@ -108,6 +111,6 @@ export class ProtocolTemplateService extends ApiService {
      * @returns {ProtocolTemplateModel}
      */
     public newModel() {
-        return new ProtocolTemplateModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+        return new ProtocolTemplateModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
     }
 }

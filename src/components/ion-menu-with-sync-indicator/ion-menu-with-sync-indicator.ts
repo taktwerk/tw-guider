@@ -1,6 +1,6 @@
 import { LoggerService } from './../../services/logger-service';
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { Events, ModalController, Platform } from '@ionic/angular';
+import { ChangeDetectorRef, Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { ModalController, Platform } from '@ionic/angular';
 
 import { ApiSync } from '../../providers/api-sync';
 import { AuthService } from '../../services/auth-service';
@@ -13,13 +13,15 @@ import { DownloadService } from '../../services/download-service';
 import { DbProvider } from '../../providers/db-provider';
 import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
+import { Subscription } from 'rxjs';
+import { MiscService } from 'src/services/misc-service';
 
 @Component({
     selector: 'ion-menu-with-sync-indicator',
     templateUrl: 'ion-menu-with-sync-indicator.html',
     styleUrls: ['ion-menu-with-sync-indicator.scss']
 })
-export class ionMenuWithSyncIndicator implements OnInit {
+export class ionMenuWithSyncIndicator implements OnInit, OnDestroy {
     @Input() shouldOpenPopup = true;
 
     public userDb: UserDb;
@@ -30,6 +32,8 @@ export class ionMenuWithSyncIndicator implements OnInit {
     public isAvailableForPushData: boolean = false;
     public isLoggedUser: boolean = false;
 
+    eventSubscription: Subscription;
+
     constructor(private platform: Platform,
         private downloadService: DownloadService,
         private loggerService: LoggerService,
@@ -37,12 +41,9 @@ export class ionMenuWithSyncIndicator implements OnInit {
         private apiSync: ApiSync,
         private modalController: ModalController,
         private changeDetectorRef: ChangeDetectorRef,
-        private http: HttpClient,
-        private authService: AuthService,
         private network: Network,
-        private events: Events,
-        private userService: UserService,
-        public appSetting: AppSetting
+        public appSetting: AppSetting,
+        private miscService: MiscService,
     ) {
         this.isNetwork = (this.network.type !== 'none');
     }
@@ -72,7 +73,7 @@ export class ionMenuWithSyncIndicator implements OnInit {
         }
 
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService,    this.loggerService).getCurrent().then((userDb) => {
+            new UserDb(this.platform, this.db, this.downloadService, this.loggerService, this.miscService).getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
                     resolve(true);
@@ -95,25 +96,47 @@ export class ionMenuWithSyncIndicator implements OnInit {
             this.detectChanges();
         });
 
-        this.events.subscribe('user:login', (isNetwork) => {
-            this.isLoggedUser = true;
-            this.detectChanges();
-        });
+        // this.events.subscribe('user:login', () => {
+        //     this.isLoggedUser = true;
+        //     this.detectChanges();
+        // });
 
-        this.events.subscribe('user:logout', (isNetwork) => {
-            this.isLoggedUser = false;
-            this.detectChanges();
-        });
+        // this.events.subscribe('user:logout', () => {
+        //     this.isLoggedUser = false;
+        //     this.detectChanges();
+        // });
 
-        this.events.subscribe('network:offline', (isNetwork) => {
-            this.isNetwork = false;
-            this.detectChanges();
-        });
+        // this.events.subscribe('network:offline', () => {
+        //     this.isNetwork = false;
+        //     this.detectChanges();
+        // });
 
-        this.events.subscribe('network:online', (isNetwork) => {
-            this.isNetwork = true;
-            this.detectChanges();
-        });
+        // this.events.subscribe('network:online', () => {
+        //     this.isNetwork = true;
+        //     this.detectChanges();
+        // });
+
+        this.eventSubscription = this.miscService.events.subscribe((event) => {
+            switch (event.TAG) {
+                case 'user:login':
+                    this.isLoggedUser = true;
+                    this.detectChanges();
+                    break;
+                case 'user:logout':
+                    this.isLoggedUser = false;
+                    this.detectChanges();
+                    break;
+                case 'network:offline':
+                    this.isNetwork = false;
+                    this.detectChanges();
+                    break;
+                case 'network:online':
+                    this.isNetwork = true;
+                    this.detectChanges();
+                    break;
+                default:
+            }
+        })
 
         this.apiSync.isAvailableForSyncData.subscribe(isAvailableForSyncData => {
             this.isAvailableForSyncData = isAvailableForSyncData;
@@ -148,5 +171,9 @@ export class ionMenuWithSyncIndicator implements OnInit {
                 }
                 this.detectChanges();
             });
+    }
+
+    ngOnDestroy(): void {
+        this.eventSubscription.unsubscribe();
     }
 }

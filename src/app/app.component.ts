@@ -1,6 +1,8 @@
+import { MiscService } from './../services/misc-service';
+import { Subscription } from 'rxjs/Subscription';
 import { LoggerService } from 'src/services/logger-service';
-import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy, QueryList, ViewChild, ViewChildren, Renderer2 } from '@angular/core';
-import { AlertController, Events, IonRouterOutlet, NavController, Platform } from '@ionic/angular';
+import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy, QueryList, ViewChildren, Renderer2 } from '@angular/core';
+import { AlertController, IonRouterOutlet, NavController, Platform } from '@ionic/angular';
 import { ApiSync } from '../providers/api-sync';
 import { MigrationProvider } from '../providers/migration-provider';
 import { AuthService } from '../services/auth-service';
@@ -19,7 +21,6 @@ import { Location } from '@angular/common';
 
 import { Plugins } from '@capacitor/core';
 import { AuthDb } from 'src/models/db/auth-db';
-import { debounceTime } from 'rxjs/operators';
 
 const { SplashScreen, App } = Plugins;
 
@@ -39,9 +40,10 @@ export class AppComponent implements OnInit, OnDestroy {
   public versionNumber = '0.0.1';
   public showPageView = false;
 
+  eventSubscription: Subscription;
+
   constructor(
     private platform: Platform,
-    private events: Events,
     private apiSync: ApiSync,
     private authService: AuthService,
     private network: Network,
@@ -56,8 +58,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     private alertController: AlertController,
     private location: Location,
-    private renderer: Renderer2,
-    private loggerService: LoggerService
+    private loggerService: LoggerService,
+    private miscService: MiscService
   ) {
     (async () => {
       await this.platform.ready();
@@ -77,9 +79,8 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
 
   backButtonEvent() {
-    // this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
-    this.platform.backButton.subscribeWithPriority(10, () => {
-
+    this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
+      // this.platform.backButton.subscribeWithPriority(10, () => {
       this.routerOutlets.forEach(async (r) => {
         console.log(this.router.url)
         console.log(r)
@@ -113,8 +114,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     await alert.present();
   }
-
-
 
   //// TODO in future save device info via API in this place
   async initializeApp() {
@@ -185,7 +184,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.registerEvents();
     })
 
-       this.loggerService.createLogFile();
+    this.loggerService.createLogFile();
   }
 
   protected initUserDB() {
@@ -195,19 +194,19 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   protected registerEvents() {
-    this.events.subscribe('user:login', (userId) => {
-      this.setPages();
-      this.baseProjectSetup();
-      this.detectChanges();
-    });
-    this.events.subscribe('qr-code:setup', () => {
-      this.setPages();
-      this.baseProjectSetup();
-      this.detectChanges();
-    });
-    this.events.subscribe('user:logout', () => {
-      this.setPages();
-    });
+    // this.events.subscribe('user:login', (userId) => {
+    //   this.setPages();
+    //   this.baseProjectSetup();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe('qr-code:setup', () => {
+    //   this.setPages();
+    //   this.baseProjectSetup();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe('user:logout', () => {
+    //   this.setPages();
+    // });
   }
 
   protected initNetwork() {
@@ -223,13 +222,15 @@ export class AppComponent implements OnInit, OnDestroy {
   protected initializeNetworkEvents(): void {
     this.network.onDisconnect().subscribe(() => {
       if (this.previousStatus === ConnectionStatusEnum.Online) {
-        this.events.publish('network:offline', true);
+        this.miscService.events.next({ TAG: 'network:offline' });
+        // this.events.publish('network:offline', true);
         this.previousStatus = ConnectionStatusEnum.Offline;
       }
     });
     this.network.onConnect().subscribe(() => {
       if (this.previousStatus === ConnectionStatusEnum.Offline) {
-        this.events.publish('network:online', true);
+        // this.events.publish('network:online', true);
+        this.miscService.events.next({ TAG: 'network:online' });
         this.previousStatus = ConnectionStatusEnum.Online;
         if (this.authService.isLoggedin) {
           // this.apiSync.pushOneAtTime();
@@ -271,7 +272,7 @@ export class AppComponent implements OnInit, OnDestroy {
       appPages.push({ title: this.translateConfigService.translateWord('guides.header'), url: '/guide-categories', icon: 'move' });
     }
     if (this.authService.isHaveUserRole('FeedbackViewer') || this.authService.auth.isAuthority) {
-      appPages.push({ title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'chatboxes' });
+      appPages.push({ title: this.translateConfigService.translateWord('feedback.header'), url: '/feedback', icon: 'chatbox' });
     }
     if (this.authService.isHaveUserRole('ProtocolViewer') || this.authService.auth.isAuthority) {
       appPages.push({ title: this.translateConfigService.translateWord('protocol.Protocols'), url: '/protocol', icon: 'list' });
@@ -373,12 +374,36 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
     this.baseProjectSetup();
-    this.events.subscribe('user:logout', () => {
-      this.logoutAction();
-    });
-    this.events.subscribe('setIsPushAvailableData', () => {
-      this.apiSync.setIsPushAvailableData(true);
-    });
+
+    this.eventSubscription = this.miscService.events.subscribe((event) => {
+      switch (event.TAG) {
+        case 'user:logout':
+          this.logoutAction();
+          this.setPages();
+          break;
+        case 'setIsPushAvailableData':
+          this.apiSync.setIsPushAvailableData(true);
+          break;
+        case 'qr-code:setup':
+          this.setPages();
+          this.baseProjectSetup();
+          this.detectChanges();
+          break;
+        case 'user:login':
+          this.setPages();
+          this.baseProjectSetup();
+          this.detectChanges();
+          break;
+        default:
+      }
+    })
+
+    // this.events.subscribe('user:logout', () => {
+    //   this.logoutAction();
+    // });
+    // this.events.subscribe('setIsPushAvailableData', () => {
+    //   this.apiSync.setIsPushAvailableData(true);
+    // });
     this.syncService.syncMode.subscribe((syncMode) => {
       this.changeSyncModeAction(syncMode);
     });
@@ -388,6 +413,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // THREE.Cache.clear();
+    this.eventSubscription.unsubscribe();
   }
 }

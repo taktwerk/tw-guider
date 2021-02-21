@@ -1,18 +1,20 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
-import { Events, LoadingController } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 import { GuiderService } from 'src/providers/api/guider-service';
 import { GuideCategoryModel } from 'src/models/db/api/guide-category-model';
 import { GuideChildService } from 'src/providers/api/guide-child-service';
+import { Subscription } from 'rxjs';
+import { MiscService } from 'src/services/misc-service';
 
 @Component({
   selector: 'app-guidecapture',
   templateUrl: './guidecapture.page.html',
   styleUrls: ['./guidecapture.page.scss'],
 })
-export class GuidecapturePage implements OnInit {
+export class GuidecapturePage implements OnInit, OnDestroy {
   public guideCategories: GuideCategoryModel[] = [];
   public searchValue: string;
   public haveProtocolPermissions = false;
@@ -24,14 +26,16 @@ export class GuidecapturePage implements OnInit {
   public items: Array<{ title: string; note: string; icon: string }> = [];
   public type: string;
 
+  eventSubscription: Subscription;
+
   constructor(
     private guideCategoryService: GuideCategoryService,
     private guiderService: GuiderService,
     private guideChildService: GuideChildService,
     public authService: AuthService,
-    public events: Events,
     public changeDetectorRef: ChangeDetectorRef,
-    private loader: LoadingController
+    private loader: LoadingController,
+    private miscService: MiscService,
   ) {
     this.authService.checkAccess('guide');
     this.showAllGuides();
@@ -61,33 +65,65 @@ export class GuidecapturePage implements OnInit {
   }
 
   ngOnInit() {
-    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', () => {
-      this.setGuides();
-      this.detectChanges();
-    });
-    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', () => {
-      this.setGuides();
-      this.detectChanges();
-    });
-    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', () => {
-      this.setGuides();
-      this.detectChanges();
-    });
-    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', () => {
-      this.setGuides();
-      this.detectChanges();
-    });
-    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', () => {
-      this.setGuides();
-      this.detectChanges();
-    });
-    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', () => {
-      this.setGuides();
-      this.detectChanges();
-    });
-    this.events.subscribe('network:online', () => {
-      this.authService.checkAccess('guide');
-    });
+    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', () => {
+    //   this.setGuides();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', () => {
+    //   this.setGuides();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', () => {
+    //   this.setGuides();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', () => {
+    //   this.setGuides();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', () => {
+    //   this.setGuides();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', () => {
+    //   this.setGuides();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe('network:online', () => {
+    //   this.authService.checkAccess('guide');
+    // });
+
+    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+      switch (event.TAG) {
+        case this.guiderService.dbModelApi.TAG + ':update':
+          this.setGuides();
+          this.detectChanges();
+          break;
+        case this.guiderService.dbModelApi.TAG + ':create':
+          this.setGuides();
+          this.detectChanges();
+          break;
+        case this.guiderService.dbModelApi.TAG + ':delete':
+          this.setGuides();
+          this.detectChanges();
+          break;
+        case this.guiderService.dbModelApi.TAG + ':delete'
+          || this.guideChildService.dbModelApi.TAG + ':update'
+          || this.guideChildService.dbModelApi.TAG + ':delete'
+          || this.guideChildService.dbModelApi.TAG + ':create':
+          this.setGuides();
+          this.detectChanges();
+          break;
+        case 'network:online':
+          this.authService.checkAccess('guide');
+          break;
+        default:
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
   }
 }
 

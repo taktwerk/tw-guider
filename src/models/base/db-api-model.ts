@@ -1,8 +1,9 @@
 import { LoggerService } from './../../services/logger-service';
-import { Platform, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { DbBaseModel } from './db-base-model';
 import { DbProvider } from '../../providers/db-provider';
 import { DownloadService, RecordedFile } from '../../services/download-service';
+import { MiscService } from 'src/services/misc-service';
 
 export class BaseFileMapInModel {
     public name: string;
@@ -84,11 +85,11 @@ export abstract class DbApiModel extends DbBaseModel {
      */
     constructor(public platform: Platform,
         public db: DbProvider,
-        public events: Events,
         public downloadService: DownloadService,
-        public loggerService: LoggerService
+        public loggerService: LoggerService,
+        public miscService: MiscService
     ) {
-        super(platform, db, events, downloadService, loggerService);
+        super(platform, db, downloadService, loggerService, miscService);
     }
 
     /**
@@ -101,7 +102,7 @@ export abstract class DbApiModel extends DbBaseModel {
         obj = new (<any>this.constructor);
         obj.platform = this.platform;
         obj.db = this.db;
-        obj.events = this.events;
+        // obj.events = this.events;
         obj.downloadService = this.downloadService;
 
         obj.loadFromApiToCurrentObject(apiObj, oldModel);

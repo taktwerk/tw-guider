@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, AfterViewChecked, AfterViewInit } from '@angular/core';
-import { AlertController, Events, Platform } from '@ionic/angular';
+import { AlertController, Platform } from '@ionic/angular';
 
 import { ApiSync } from '../../providers/api-sync';
 import { DownloadService } from '../../services/download-service';
@@ -12,6 +12,8 @@ import { DatePipe } from '@angular/common';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
+import { Subscription } from 'rxjs';
+import { MiscService } from 'src/services/misc-service';
 
 export enum SyncMode {
   Manual,
@@ -36,6 +38,7 @@ export class SynchronizationComponent implements OnInit {
   public userDb: UserDb;
   public syncAllItemsCount = 0;
   public params;
+  eventSubscription: Subscription;
 
   constructor(public apiSync: ApiSync,
     private downloadService: DownloadService,
@@ -44,7 +47,7 @@ export class SynchronizationComponent implements OnInit {
     public authService: AuthService,
     private platform: Platform,
     private db: DbProvider,
-    private events: Events,
+    private miscService: MiscService,
     private syncService: SyncService,
     public alertController: AlertController,
     private translateConfigService: TranslateConfigService,
@@ -218,16 +221,30 @@ export class SynchronizationComponent implements OnInit {
       this.syncAllItemsCount = syncAllItemsCount;
       this.detectChanges();
     });
-    this.events.subscribe('UserDb:update', (userDb) => {
-      this.userService.userDb = userDb;
-    });
+    // this.events.subscribe('UserDb:update', (userDb) => {
+    //   this.userService.userDb = userDb;
+    // });
     this.apiSync.isStartPushBehaviorSubject.subscribe(isPush => {
       this.isStartPush = isPush;
       this.detectChanges();
     });
-    this.events.subscribe(this.appSetting.appSetting.TAG + ':update', (model) => {
-      if (model.settings.isEnabledUsb && this.modeSync === SyncMode.NetworkConnect) {
-        this.changeSyncMode(SyncMode.Manual);
+    // this.events.subscribe(this.appSetting.appSetting.TAG + ':update', (model) => {
+    //   if (model.settings.isEnabledUsb && this.modeSync === SyncMode.NetworkConnect) {
+    //     this.changeSyncMode(SyncMode.Manual);
+    //   }
+    // });
+
+    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+      switch (event.TAG) {
+        case 'UserDb:update':
+          this.userService.userDb = event.data;
+          break;
+        case this.appSetting.appSetting.TAG + ':update':
+          if (event.data.settings.isEnabledUsb && this.modeSync === SyncMode.NetworkConnect) {
+            this.changeSyncMode(SyncMode.Manual);
+          }
+          break;
+        default:
       }
     });
   }

@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { UserService } from './user-service';
 import { AppSettingsDb } from '../models/db/app-settings-db';
-import { AlertController, Events, Platform } from '@ionic/angular';
+import { AlertController, Platform } from '@ionic/angular';
 import { DbProvider } from '../providers/db-provider';
 import { DownloadService } from './download-service';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateConfigService } from './translate-config.service';
 import config from '../environments/config.json';
+import { MiscService } from './misc-service';
 
 export enum AppConfigurationModeEnum {
     ONLY_CONFIGURE,
@@ -44,14 +45,14 @@ export class AppSetting {
     constructor(private userService: UserService,
         public platform: Platform,
         public db: DbProvider,
-        public events: Events,
         public downloadService: DownloadService,
         public alertController: AlertController,
         private translateConfigService: TranslateConfigService,
         private loggerService: LoggerService
+        ,private miscService: MiscService
     ) {
         this.isWasQrCodeSetupSubscribtion = new BehaviorSubject<boolean>(false);
-        this.appSetting = new AppSettingsDb(platform, db, events, downloadService, loggerService);
+        this.appSetting = new AppSettingsDb(platform, db, downloadService, loggerService, miscService);
         this.appSetting.find().then(async (result) => {
             if (result) {
                 Object.keys(result.settings).map((key) => {

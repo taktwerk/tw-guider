@@ -1,14 +1,14 @@
+import { Subscription } from 'rxjs/Subscription';
 import { MiscService } from './../../services/misc-service';
-import { AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
 import { GuideChildService } from '../../providers/api/guide-child-service';
 import { GuiderService } from '../../providers/api/guider-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { AuthService } from '../../services/auth-service';
 import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
-import { Events, LoadingController, ModalController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
 import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
-import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
 import { NavigationExtras, Router } from '@angular/router';
 import { ApiSync } from 'src/providers/api-sync';
 import { AppSetting } from 'src/services/app-setting';
@@ -22,7 +22,7 @@ import { debounceTime } from 'rxjs/operators';
   templateUrl: 'categories-list.page.html',
   styleUrls: ['categories-list.page.scss']
 })
-export class CategoriesListPage implements OnInit {
+export class CategoriesListPage implements OnInit, OnDestroy {
   public isStartSync = false;
   public iconStatus: string = 'unsynced';
 
@@ -44,14 +44,14 @@ export class CategoriesListPage implements OnInit {
 
   onboardingSyncShown: boolean;
 
+  eventSubscription: Subscription;
+
   constructor(
     private guideCategoryBindingService: GuideCategoryBindingService,
     private guideCategoryService: GuideCategoryService,
     private guiderService: GuiderService,
     private guideChildService: GuideChildService,
-    private protocolTemplateService: ProtocolTemplateService,
     public authService: AuthService,
-    public events: Events,
     public changeDetectorRef: ChangeDetectorRef,
     private router: Router,
     private loader: LoadingController,
@@ -72,6 +72,7 @@ export class CategoriesListPage implements OnInit {
     }
     this.showAllGuides();
   }
+
 
   async showAllGuides() {
     const loader = await this.loader.create();
@@ -110,7 +111,7 @@ export class CategoriesListPage implements OnInit {
     }
   }
 
-  trackByFn(item, index) {
+  trackByFn(item) {
     return item[item.COL_ID];
   }
 
@@ -174,7 +175,6 @@ export class CategoriesListPage implements OnInit {
         this.detectChanges();
       });
 
-
     this.syncService.syncMode.subscribe((result) => {
       if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
         return;
@@ -182,56 +182,113 @@ export class CategoriesListPage implements OnInit {
       this.modeSync = result;
       this.detectChanges();
     });
-    this.events.subscribe('user:login', () => {
-      this.findAllGuideCategories();
-      this.detectChanges();
-    });
-    this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
-      this.findAllGuideCategories();
-    });
-    this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
-      this.findAllGuideCategories();
-    });
-    this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':create', (model) => {
-      this.findAllGuideCategories();
-    });
-    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
-      this.findAllGuideCategories();
-    });
-    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', (model) => {
-      this.findAllGuideCategories();
-    });
-    this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', (model) => {
-      this.findAllGuideCategories();
-    });
-    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
-      this.setGuides();
-      this.setCategoryGuides();
-    });
-    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
-      this.setGuides();
-      this.setCategoryGuides();
-    });
-    this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
-      this.setGuides();
-      this.setCategoryGuides();
-    });
-    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', (model) => {
-      this.setGuides();
-      this.setCategoryGuides();
-    });
-    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', (model) => {
-      this.setGuides();
-      this.setCategoryGuides();
-    });
-    this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', (model) => {
-      this.setGuides();
-      this.setCategoryGuides();
-    });
 
-    this.events.subscribe('network:online', (isNetwork) => {
-      this.authService.checkAccess('guide');
-    });
+    this.eventSubscription = this.miscService.events.subscribe((event) => {
+      switch (event.TAG) {
+        case 'user:login':
+          this.findAllGuideCategories();
+          this.detectChanges();
+          break;
+        case this.guideCategoryBindingService.dbModelApi.TAG + ':update':
+          this.apiSync.setIsPushAvailableData(true);
+          break;
+        case this.guideCategoryBindingService.dbModelApi.TAG + ':delete':
+          this.findAllGuideCategories();
+          break;
+        case this.guideCategoryBindingService.dbModelApi.TAG + ':create':
+          this.findAllGuideCategories();
+          break;
+        case this.guideCategoryService.dbModelApi.TAG + ':update':
+          this.findAllGuideCategories();
+          break;
+        case this.guideCategoryService.dbModelApi.TAG + ':create':
+          this.findAllGuideCategories();
+          break;
+        case this.guideCategoryService.dbModelApi.TAG + ':delete':
+          this.findAllGuideCategories();
+          break;
+        case this.guiderService.dbModelApi.TAG + ':update':
+          this.setGuides();
+          this.setCategoryGuides();
+          break;
+        case this.guiderService.dbModelApi.TAG + ':create':
+          this.setGuides();
+          this.setCategoryGuides();
+          break;
+        case this.guiderService.dbModelApi.TAG + ':delete':
+          this.setGuides();
+          this.setCategoryGuides();
+          break;
+        case this.guideChildService.dbModelApi.TAG + ':update':
+          this.setGuides();
+          this.setCategoryGuides();
+          break;
+        case this.guideChildService.dbModelApi.TAG + ':delete':
+          this.setGuides();
+          this.setCategoryGuides();
+          break;
+        case this.guideChildService.dbModelApi.TAG + ':create':
+          this.setGuides();
+          this.setCategoryGuides();
+          break;
+        case 'network:online':
+          this.authService.checkAccess('guide');
+          break;
+        default:
+      }
+    })
+
+    // this.events.subscribe('user:login', () => {
+    //   this.findAllGuideCategories();
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
+    //   this.findAllGuideCategories();
+    // });
+    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
+    //   this.findAllGuideCategories();
+    // });
+    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':create', (model) => {
+    //   this.findAllGuideCategories();
+    // });
+    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
+    //   this.findAllGuideCategories();
+    // });
+    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', (model) => {
+    //   this.findAllGuideCategories();
+    // });
+
+    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', (model) => {
+    //   this.findAllGuideCategories();
+    // });
+    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
+    //   this.setGuides();
+    //   this.setCategoryGuides();
+    // });
+    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
+    //   this.setGuides();
+    //   this.setCategoryGuides();
+    // });
+    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
+    //   this.setGuides();
+    //   this.setCategoryGuides();
+    // });
+    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', (model) => {
+    //   this.setGuides();
+    //   this.setCategoryGuides();
+    // });
+    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', (model) => {
+    //   this.setGuides();
+    //   this.setCategoryGuides();
+    // });
+    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', (model) => {
+    //   this.setGuides();
+    //   this.setCategoryGuides();
+    // });
+
+    // this.events.subscribe('network:online', (isNetwork) => {
+    //   this.authService.checkAccess('guide');
+    // });
 
     this.type = 'browse';
   }
@@ -253,5 +310,9 @@ export class CategoriesListPage implements OnInit {
       cssClass: "modal-fullscreen"
     });
     return await modal.present();
+  }
+
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import { Platform, Events } from '@ionic/angular';
+import { Platform, } from '@ionic/angular';
 import { ApiService } from './base/api-service';
 import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
@@ -11,12 +11,13 @@ import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AppSetting } from '../../services/app-setting';
 import { LoggerService } from 'src/services/logger-service';
+import { MiscService } from 'src/services/misc-service';
 
 @Injectable()
 export class GuideStepService extends ApiService {
     data: GuideStepModel[] = [];
     loadUrl = '/guide-step';
-    dbModelApi: GuideStepModel = new GuideStepModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+    dbModelApi: GuideStepModel = new GuideStepModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
 
     /**
      * Constructor
@@ -33,13 +34,13 @@ export class GuideStepService extends ApiService {
         private p: Platform,
         private db: DbProvider,
         public authService: AuthService,
-        public events: Events,
+
         public downloadService: DownloadService,
         public loggerService: LoggerService,
-
+        private miscService: MiscService,
         private sanitized: DomSanitizer,
         public appSetting: AppSetting) {
-        super(http, events, appSetting);
+        super(http, appSetting);
         console.debug('GuideStepService', 'initialized');
     }
 
@@ -48,7 +49,7 @@ export class GuideStepService extends ApiService {
      * @returns {GuideStepModel}
      */
     public newModel() {
-        return new GuideStepModel(this.p, this.db, this.events, this.downloadService,    this.loggerService);
+        return new GuideStepModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
     }
 
     public getDescriptionHtml(descriptionHtml) {

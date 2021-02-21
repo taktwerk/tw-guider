@@ -1,6 +1,6 @@
 import { LoggerService } from './../../services/logger-service';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { Events, ModalController, Platform } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 
 import { ApiSync } from '../../providers/api-sync';
 import { AuthService } from '../../services/auth-service';
@@ -13,6 +13,8 @@ import { DownloadService } from '../../services/download-service';
 import { DbProvider } from '../../providers/db-provider';
 import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
+import { MiscService } from 'src/services/misc-service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'sync-spinner-component',
@@ -28,6 +30,7 @@ export class SyncSpinnerComponent implements OnInit {
     public isAvailableForSyncData: boolean = false;
     public isAvailableForPushData: boolean = false;
     public isLoggedUser: boolean = false;
+    eventSubscription: Subscription;
 
     constructor(private platform: Platform,
         private downloadService: DownloadService,
@@ -39,9 +42,11 @@ export class SyncSpinnerComponent implements OnInit {
         private http: HttpClient,
         private authService: AuthService,
         private network: Network,
-        private events: Events,
+
         private userService: UserService,
-        public appSetting: AppSetting
+        public appSetting: AppSetting,
+        private miscService: MiscService,
+
     ) {
         this.isNetwork = (this.network.type !== 'none');
     }
@@ -71,7 +76,7 @@ export class SyncSpinnerComponent implements OnInit {
         }
 
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.events, this.downloadService,    this.loggerService).getCurrent().then((userDb) => {
+            new UserDb(this.platform, this.db, this.downloadService, this.loggerService, this.miscService).getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
 
@@ -94,22 +99,45 @@ export class SyncSpinnerComponent implements OnInit {
             this.isStartSync = isSync;
             this.detectChanges();
         });
-        this.events.subscribe('user:login', (isNetwork) => {
-            this.isLoggedUser = true;
-            this.detectChanges();
+        // this.events.subscribe('user:login', (isNetwork) => {
+        //     this.isLoggedUser = true;
+        //     this.detectChanges();
+        // });
+        // this.events.subscribe('user:logout', (isNetwork) => {
+        //     this.isLoggedUser = false;
+        //     this.detectChanges();
+        // });
+        // this.events.subscribe('network:offline', (isNetwork) => {
+        //     this.isNetwork = false;
+        //     this.detectChanges();
+        // });
+        // this.events.subscribe('network:online', (isNetwork) => {
+        //     this.isNetwork = true;
+        //     this.detectChanges();
+        // });
+
+        this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+            switch (event.TAG) {
+                case 'user:login':
+                    this.isLoggedUser = true;
+                    this.detectChanges();
+                    break;
+                case 'user:logout':
+                    this.isLoggedUser = false;
+                    this.detectChanges();
+                    break;
+                case 'network:offline':
+                    this.isNetwork = false;
+                    this.detectChanges();
+                    break;
+                case 'network:online':
+                    this.isNetwork = true;
+                    this.detectChanges();
+                    break;
+                default:
+            }
         });
-        this.events.subscribe('user:logout', (isNetwork) => {
-            this.isLoggedUser = false;
-            this.detectChanges();
-        });
-        this.events.subscribe('network:offline', (isNetwork) => {
-            this.isNetwork = false;
-            this.detectChanges();
-        });
-        this.events.subscribe('network:online', (isNetwork) => {
-            this.isNetwork = true;
-            this.detectChanges();
-        });
+
         this.apiSync.isAvailableForSyncData.subscribe(isAvailableForSyncData => {
             this.isAvailableForSyncData = isAvailableForSyncData;
         });
