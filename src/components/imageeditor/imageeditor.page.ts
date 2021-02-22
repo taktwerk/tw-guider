@@ -1,10 +1,11 @@
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { Component, Input, OnInit } from '@angular/core';
 import ImageEditor from 'tui-image-editor';
 import { RecordedFile, DownloadService } from 'src/services/download-service';
 import { File as nFile } from '@ionic-native/file/ngx';
 import { ApiSync } from 'src/providers/api-sync';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
+import { Location } from '@angular/common';
 
 
 interface CustomControls {
@@ -46,8 +47,15 @@ export class ImageEditorComponent implements OnInit {
   ]
   constructor(
     private guideStepService: GuideStepService,
-    private modalController: ModalController, private downloadService: DownloadService, private file: nFile, private apiSync: ApiSync,
-  ) { }
+    private modalController: ModalController,
+    private downloadService: DownloadService,
+    private file: nFile,
+    private apiSync: ApiSync,
+    private location: Location,
+    private platform: Platform
+  ) {
+    this.backButtonEvent();
+  }
 
   ngOnInit() {
     this.ImageEditor = new ImageEditor(document.querySelector('#tui-image-editor'), {
@@ -145,7 +153,7 @@ export class ImageEditorComponent implements OnInit {
 
     this.downloadService.checkTempDir('_temp').then(() => {
       this.file.writeFile(this.file.dataDirectory + '/_temp', fileName, blob, { replace: true }).then(async (res) => {
-      //  console.log(res)
+        //  console.log(res)
         recordedFile.uri = await this.downloadService.getResolvedNativeFilePath(res.nativeURL);
         this.model.setFile(recordedFile);
         this.model.design_canvas_meta = JSON.stringify(this.iCanvas);
@@ -180,5 +188,24 @@ export class ImageEditorComponent implements OnInit {
     return new Blob([uInt8Array], { type: mimeString });
   }
 
-  onReady() {}
+  onReady() { }
+
+
+  backButtonEvent() {
+    this.platform.backButton.subscribeWithPriority(1, (processNextHandler) => {
+      // this.platform.backButton.subscribeWithPriority(10, () => {
+      // this.routerOutlets.forEach(async (r) => {
+      // console.log(this.location.path)
+      console.log(this.location)
+      if (this.location.isCurrentPathEqualTo('/guide-categories')) {
+        processNextHandler();
+        console.log("no back")
+      }
+      else {
+        this.location.back();
+        processNextHandler();
+        console.log("is back")
+      }
+    });
+  }
 }

@@ -65,6 +65,8 @@ export class AppComponent implements OnInit, OnDestroy {
       await this.platform.ready();
       await this.initializeApp();
     })();
+
+    this.backButtonEvent()
   }
 
   public userDb: UserDb;
@@ -79,26 +81,27 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
 
   backButtonEvent() {
-    this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
+    this.platform.backButton.subscribeWithPriority(1, (processNextHandler) => {
       // this.platform.backButton.subscribeWithPriority(10, () => {
-      this.routerOutlets.forEach(async (r) => {
-        console.log(this.router.url)
-        console.log(r)
-        // if (this.router.url != '/guide-categories') {
-        if (!r.canGoBack()) {
-          this.presentAlertConfirm();
-        }
-        else {
-          this.location.back();
-        }
-      });
+      // this.routerOutlets.forEach(async (r) => {
+      // console.log(this.location.path)
+      console.log(this.location)
+      if (this.location.isCurrentPathEqualTo('/guide-categories')) {
+        this.presentAlertConfirm();
+        processNextHandler();
+        console.log("no back")
+      }
+      else {
+        this.location.back();
+        processNextHandler();
+        console.log("is back")
+      }
     });
   }
 
   async presentAlertConfirm() {
     const alert = await this.alertController.create({
-      header: 'Are you sure you want to exit the app?',
-      // message: '',
+      header: await this.translateConfigService.translate('exitApp'),
       buttons: [{
         text: 'Cancel',
         role: 'cancel',

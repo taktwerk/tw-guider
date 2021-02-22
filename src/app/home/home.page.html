@@ -6,27 +6,25 @@
     <ion-title>
       {{ 'start.header' | translate:params }}
     </ion-title>
-          
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content [ngClass]="{'bg-camera': isScanning}">
   <div class="ion-text-center">
-    <ion-button *ngIf="isScanning"
-                id="close-scanner-button"
-                (click)="closeScanner()"
-                color="warning"
-    >
+    <ion-button *ngIf="isScanning" id="close-scanner-button" (click)="closeScanner()" color="warning">
       {{ 'qr.Close Scanner' | translate:params }}
     </ion-button>
   </div>
   <ion-card *ngIf="!isScanning" [ngClass]="{'bg-none': isScanning}">
     <ion-card-header>
       <p>
-        {{ 'qr.The Guider app enables the display of digital instructions (assembly, training, etc.)' | translate:params }}
+        {{ 'qr.The Guider app enables the display of digital instructions (assembly, training, etc.)' | translate:params
+        }}
       </p>
       <p>
-        {{ 'qr.The app only works with a customer account. Please contact taktwerk GmbH for this' | translate:params }}: <a href="mailto:support@taktwerk.ch">support@taktwerk.ch</a>
+        {{ 'qr.The app only works with a customer account. Please contact taktwerk GmbH for this' | translate:params }}:
+        <a href="mailto:support@taktwerk.ch">support@taktwerk.ch</a>
       </p>
       <p>
         <a href="https://taktwerk.ch/guider/demo">{{ 'qr.Or try the demo' | translate:params }}</a>
@@ -37,19 +35,16 @@
           {{ 'qr.Setup' | translate:params }}
         </h1>
         <p>{{ 'qr.Scan the received' | translate:params }}<strong>
-          {{ 'qr.QR-Code' | translate:params }}</strong>
+            {{ 'qr.QR-Code' | translate:params }}</strong>
         </p>
         <ion-button size="large" expand="full" (click)="scanQrcode()">
-          <ion-icon name="qr-scanner"></ion-icon>
+          <ion-icon name="qr-code" style="margin-right: 10px;"></ion-icon>
           {{ 'qr.QR-Code' | translate:params }}
         </ion-button>
         <ion-list>
           <ion-item>
             <ion-label>{{ 'Enable USB mode' | translate:params }}</ion-label>
-            <ion-toggle slot="start"
-                        checked="{{ appSetting.isEnabledUsb }}"
-                        (click)="changeUsbMode()"
-            >
+            <ion-toggle slot="start" checked="{{ appSetting.isEnabledUsb }}" (click)="changeUsbMode()">
             </ion-toggle>
           </ion-item>
         </ion-list>
