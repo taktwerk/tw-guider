@@ -73,7 +73,6 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     this.showAllGuides();
   }
 
-
   async showAllGuides() {
     const loader = await this.loader.create();
     loader.present();

@@ -100,7 +100,8 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
         backUrl: this.router.url,
         referenceModelAlias: referenceModelAlias,
         referenceId: referenceId,
-        referenceTitle: referenceTitle
+        referenceTitle: referenceTitle,
+        guideId: this.guide.idApi
       },
     };
     this.router.navigate(['feedback'], feedbackNavigationExtras);

@@ -151,13 +151,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     });
   }
 
-  ngAfterContentChecked(): void {
-    if (!this.isInitStepSlider && this.slideComponents && this.slideComponents.toArray().length > 0) {
-      this.isInitStepSlider = true;
-      this.haveAssets = this.guideAssets.length > 0;
-      this.initializeGuideStepSlide();
-    }
-  }
+
 
   protected initializeGuideStepSlide() {
     const slideComponents = this.slideComponents.toArray();
@@ -292,15 +286,18 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   public setGuideSteps(id) {
+    // console.log("id", id)
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(async results => {
+      // console.log("results", results)
       this.guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
+      //  console.log("guideSteps", this.guideSteps);
     });
   }
 
   public async resumeStep(id) {
-    console.log("guideViewHistory", this.guideViewHistory)
+    // console.log("guideViewHistory", this.guideViewHistory)
     this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]);
     // in collection
     if (this.parentCollectionId) {
@@ -348,114 +345,53 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.router.navigate(['feedback'], feedbackNavigationExtras);
   }
 
-  async ngOnInit() {
+  ngAfterContentChecked(): void {
+    if (!this.isInitStepSlider && this.slideComponents && this.slideComponents.toArray().length > 0) {
+      this.isInitStepSlider = true;
+      this.haveAssets = this.guideAssets.length > 0;
+      this.initializeGuideStepSlide();
+    }
+  }
+
+  async ngOnInit() { }
+
+  async ionViewDidEnter() {
+   // console.log("this.isInitStepSlider", this.isInitStepSlider)
+   // console.log("this.slideComponents", this.slideComponents)
+   // console.log("this.slideComponents.toArray().length", this.slideComponents.toArray().length)
+
     this.slideOpts = {
       initialSlide: 0,
       speed: 400,
     };
+
     const loader = await this.loader.create();
     loader.present();
 
-    console.log("snapshot", this.activatedRoute.snapshot)
+    // console.log("snapshot", this.activatedRoute.snapshot)
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
+    // console.log("guideId", this.guideId)
     this.parentCollectionId = +this.activatedRoute.snapshot.paramMap.get('parentCollectionId');
+    // console.log("parentCollectionId", this.parentCollectionId)
+
     if (this.guideId) {
       const guiderById = await this.guiderService.getById(this.guideId);
+      // console.log("guiderById", guiderById)
       if (guiderById.length) {
         this.guide = guiderById[0];
+        //  console.log("guide", this.guide)
         await this.setGuideSteps(this.guide.idApi);
         await this.setAssets(this.guide.idApi);
         this.detectChanges();
+
+        if (this.isInitStepSlider) {
+          this.reinitializeGuideStepSlides();
+        }
       }
     }
     loader.dismiss();
     this.isLoadedContent = true;
     this.resumeStep(this.guide.idApi);
-
-    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async () => {
-    //   if (this.guide) {
-    //     this.setGuideSteps(this.guide.idApi).then(() => {
-    //       this.detectChanges();
-    //       this.reinitializeGuideStepSlides();
-    //       this.detectChanges();
-    //     });
-    //   }
-    // });
-    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async () => {
-    //   // console.log('model delete', model);
-    //   if (this.guide) {
-    //     this.setGuideSteps(this.guide.idApi).then(() => {
-    //       this.detectChanges();
-    //       this.reinitializeGuideStepSlides();
-    //       // console.log('after reinitialize');
-    //     });
-    //   }
-    // });
-    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async () => {
-    //   //  console.log('model update', model);
-    //   if (this.guide) {
-
-    //     this.setGuideSteps(this.guide.idApi).then(() => {
-    //       this.detectChanges();
-    //       this.reinitializeGuideStepSlides();
-    //       //  console.log('after reinitialize');
-    //     });
-    //   }
-    // });
-    // this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':create', async () => {
-    //   if (this.guide) {
-    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-    //   }
-    // });
-    // this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':update', async () => {
-    //   if (this.guide) {
-    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-    //   }
-    // });
-    // this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':delete', async () => {
-    //   if (this.guide) {
-    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-    //   }
-    // });
-    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', async () => {
-    //   if (this.guide) {
-    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-    //   }
-    // });
-    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', async () => {
-    //   if (this.guide) {
-    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-    //   }
-    // });
-    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async () => {
-    //   if (this.guide) {
-    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-    //   }
-    // });
-    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':delete', async () => {
-    //   if (this.guide) {
-    //     this.setAssets(this.guide.idApi).then(() => this.detectChanges());
-    //   }
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', async () => {
-    //   this.ngZone.run(() => {
-    //     this.navCtrl.navigateRoot('/guide-categories');
-    //   });
-    // });
-    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', async () => {
-    //   this.ngZone.run(() => {
-    //     this.navCtrl.navigateRoot('/guide-categories');
-    //   });
-    // });
-    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', () => {
-    //   this.ngZone.run(() => {
-    //     this.navCtrl.navigateRoot('/guide-categories');
-    //   });
-    // });
-    // this.events.subscribe('network:online', () => {
-    //   this.authService.checkAccess('guide');
-    // });
-
 
     this.eventSubscription = this.miscService.events.subscribe(async (event) => {
       switch (event.TAG) {
@@ -569,9 +505,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     }
   }
 
-  ionViewDidEnter() {
-    this.setGuides();
-  }
+  // ionViewDidEnter() {
+  //   this.setGuides();
+  // }
 
   async setGuides() {
     this.guideCategoryService.getGuides().then((res) => {
@@ -586,7 +522,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
 
           this.guideStepSlides.isBeginning().then((res) => {
-            console.log("isBeginning on Loaded", res)
+            // console.log("isBeginning on Loaded", res)
             if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined && res) {
               this.hasPrevious = true;
             }
@@ -596,7 +532,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           })
 
           this.guideStepSlides.isEnd().then((res) => {
-            console.log("isEnd on Loaded", res)
+            // console.log("isEnd on Loaded", res)
             if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined && res) {
               this.hasNext = true;
             }
@@ -612,9 +548,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   ionSlideDidChange() {
     this.guideStepSlides.isBeginning().then((res) => {
-      console.log("isBeginning", res)
+      // console.log("isBeginning", res)
 
-      console.log("guideCollection", this.guideCollection)
+      // console.log("guideCollection", this.guideCollection)
 
       if (this.guideCollection && this.guideCollection.guide_collection) {
         if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined && res) {
@@ -627,7 +563,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     })
 
     this.guideStepSlides.isEnd().then((res) => {
-      console.log("isEnd", res)
+      // console.log("isEnd", res)
       if (this.guideCollection && this.guideCollection.guide_collection) {
         if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined && res) {
           this.hasNext = true;
@@ -700,7 +636,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   @HostListener('unloaded')
   ionViewDidLeave() {
-    console.log("did leave");
+    // console.log("did leave");
     this.elementRef.nativeElement.remove();
   }
 

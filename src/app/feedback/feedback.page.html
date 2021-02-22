@@ -6,14 +6,15 @@
     <ion-title> {{ 'feedback.header' | translate:params }} </ion-title>
     <!-- <ion-back-button *ngIf="isComponentLikeModal" text="" defaultHref="{{ backDefaultHref || '/guide-categories' }}">
     </ion-back-button> -->
-    <ion-back-button *ngIf="isComponentLikeModal" text=""></ion-back-button>
-       
+    <ion-back-button *ngIf="isComponentLikeModal" [routerLink]="['/guide/'+guideId]"></ion-back-button>
+    <!-- <ion-back-button *ngIf="isComponentLikeModal" text=""></ion-back-button> -->
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="grey-background">
   <ion-item *ngFor="let feedback of feedbackList">
-    
+
     <ion-thumbnail slot="start">
       <div *ngIf="feedback.attached_file">
         <model-assetcomponent [model]="feedback" isthumbnail="true"></model-assetcomponent>

@@ -18,6 +18,7 @@ import { MiscService } from 'src/services/misc-service';
 })
 export class FeedbackPage implements OnInit, OnDestroy {
   public backDefaultHref: string;
+  public guideId: string;
   public reference_title: string = '';
   public reference_id: number = null;
   public reference_model: string = null;
@@ -137,27 +138,15 @@ export class FeedbackPage implements OnInit, OnDestroy {
       this.reference_title = feedbackData.referenceTitle;
       this.reference_model_alias = feedbackData.referenceModelAlias;
       this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
-      console.log('feedback page reference_model', this.reference_model);
       if (this.reference_model) {
         this.isComponentLikeModal = true;
       }
       this.backDefaultHref = feedbackData.backUrl;
+      this.guideId = feedbackData.guideId;
+      console.log("this.guideId", this.guideId)
       this.setModels();
       this.detectChanges();
     });
-
-    // this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':create', () => {
-    //   this.setModels();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':update', () => {
-    //   this.setModels();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':delete', () => {
-    //   this.setModels();
-    //   this.detectChanges();
-    // });
 
     this.eventSubscription = this.miscService.events.subscribe((event) => {
       switch (event.TAG) {
