@@ -768,12 +768,16 @@ export abstract class DbBaseModel {
                     db.query(query).then((res) => {
                         // this.events.publish(this.TAG + ':update', this);
                         console.log(this.miscService)
-                        this.miscService.events.next({ TAG: this.TAG + ':create', data: this });
+                        if (this.miscService) {
+                            this.miscService.events.next({ TAG: this.TAG + ':create', data: this });
+                        }
                         resolve(res);
                     }).catch((err) => {
                         console.log('errrr', err);
                         console.log(this.loggerService)
-                        this.loggerService.getLogger().error("error at db-base-model 772", err, new Error().stack)
+                        if (this.loggerService) {
+                            this.loggerService.getLogger().error("error at db-base-model 772", err, new Error().stack)
+                        }
                         resolve(false);
                     });
                 }
