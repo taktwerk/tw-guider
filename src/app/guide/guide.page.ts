@@ -334,16 +334,16 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     });
   }
 
-  openFeedback(referenceModelAlias, referenceId) {
-    const feedbackNavigationExtras: NavigationExtras = {
-      queryParams: {
-        backUrl: this.router.url,
-        referenceModelAlias: referenceModelAlias,
-        referenceId: referenceId
-      }
-    };
-    this.router.navigate(['feedback'], feedbackNavigationExtras);
-  }
+  // openFeedback(referenceModelAlias, referenceId) {
+  //   const feedbackNavigationExtras: NavigationExtras = {
+  //     queryParams: {
+  //       backUrl: this.router.url,
+  //       referenceModelAlias: referenceModelAlias,
+  //       referenceId: referenceId
+  //     }
+  //   };
+  //   this.router.navigate(['feedback'], feedbackNavigationExtras);
+  // }
 
   ngAfterContentChecked(): void {
     if (!this.isInitStepSlider && this.slideComponents && this.slideComponents.toArray().length > 0) {

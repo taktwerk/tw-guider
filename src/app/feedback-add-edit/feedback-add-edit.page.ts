@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { AlertController, IonBackButtonDelegate } from '@ionic/angular';
+import { AlertController, IonBackButtonDelegate, Platform } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
@@ -32,6 +32,9 @@ export class FeedbackAddEditPage implements OnInit {
   public reference_model: string = null;
   public reference_model_alias: string = null;
   public defaultTitle = 'Feedback';
+
+  public guideId: string;
+
   public params;
 
   @ViewChild(IonBackButtonDelegate, { static: false }) backButton: IonBackButtonDelegate;
@@ -51,12 +54,20 @@ export class FeedbackAddEditPage implements OnInit {
     private videoService: VideoService,
     private pictureService: PictureService,
     private apiSync: ApiSync,
+    private platform: Platform
   ) {
     this.authService.checkAccess('feedback');
     if (!this.model) {
       this.model = feedbackService.newModel();
       this.originalModel = this.model;
     }
+
+    this.platform.backButton.subscribe((res) => {
+      console.log(this.router.url)
+      if (this.router.url.includes('/feedback/save/') && this.router.url.includes('guideId=' + this.guideId)) {
+        this.dismiss();
+      }
+    })
   }
 
   @ViewChild('filePicker', { static: false }) filePickerRef: ElementRef<HTMLInputElement>;
@@ -69,6 +80,8 @@ export class FeedbackAddEditPage implements OnInit {
         queryParams: {
           referenceModelAlias: this.reference_model_alias,
           referenceId: this.reference_id,
+          referenceTitle: this.reference_title,
+          guideId: this.guideId
         },
       };
       this.router.navigate(['feedback'], feedbackNavigationExtras);
@@ -261,6 +274,10 @@ export class FeedbackAddEditPage implements OnInit {
       this.reference_title = feedbackData.referenceTitle;
       this.reference_model_alias = feedbackData.referenceModelAlias;
       this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
+      this.guideId = feedbackData.guideId
+
+      console.log("guideId at feedback-add-edit", this.guideId)
+
       console.log('feedback add edit this.reference_model_alias', this.reference_model_alias);
       this.feedbackId = +feedbackData.feedbackId;
       if (this.feedbackId) {

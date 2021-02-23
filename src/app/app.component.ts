@@ -88,14 +88,6 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       })
     });
-
-    this.platform.backButton.subscribe((res) => {
-      // this.location.back();
-
-      console.log(this.router.url);
-      console.log(this.location)
-     
-    })
   }
 
   async presentAlertConfirm() {

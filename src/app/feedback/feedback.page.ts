@@ -49,10 +49,16 @@ export class FeedbackPage implements OnInit, OnDestroy {
     this.authService.checkAccess('feedback');
 
     this.platform.backButton.subscribe((res) => {
-      if (this.router.url.includes('feedback') && this.router.url.includes('guideId')) {
+      if (this.router.url.includes('feedback')
+        && this.router.url.includes('guideId')
+        && this.reference_id != null && this.reference_model != null) {
         this.router.navigate(['/guide/' + this.guideId])
       }
     })
+  }
+  ionViewDidLeave() {
+    this.reference_id = null
+    console.log(this.reference_id, "this.reference_id")
   }
 
   public async setModels() {
@@ -132,7 +138,8 @@ export class FeedbackPage implements OnInit, OnDestroy {
         feedbackId,
         referenceModelAlias: this.reference_model_alias,
         referenceId: this.reference_id,
-        referenceTitle: this.reference_title
+        referenceTitle: this.reference_title,
+        guideId: this.guideId
       },
     };
     this.router.navigate(['/feedback/save/' + feedbackId], feedbackNavigationExtras);
@@ -150,7 +157,9 @@ export class FeedbackPage implements OnInit, OnDestroy {
       }
       this.backDefaultHref = feedbackData.backUrl;
       this.guideId = feedbackData.guideId;
+
       console.log("this.guideId", this.guideId)
+
       this.setModels();
       this.detectChanges();
     });
