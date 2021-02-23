@@ -55,6 +55,8 @@ export class ListPage implements OnInit, OnDestroy {
       }
     }
     this.showAllGuides();
+
+    console.log("Guides / Category guides", this.router.url)
   }
 
   async showAllGuides() {
@@ -65,6 +67,7 @@ export class ListPage implements OnInit, OnDestroy {
       const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
       if (guiderCategoryById.length) {
         this.guideCategory = guiderCategoryById[0];
+        console.log("this.guideCategory.idApi", this.guideCategory.idApi)
         this.detectChanges();
       }
     } else {
@@ -117,68 +120,6 @@ export class ListPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    // this.events.subscribe('user:login', () => {
-    //   this.findAllGuideCategories();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', async (model) => {
-    //   const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
-    //   if (guiderCategoryById.length) {
-    //     this.guideCategory = guiderCategoryById[0];
-    //     this.detectChanges();
-    //   }
-    // });
-    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', async (model) => {
-    //   const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
-    //   if (guiderCategoryById.length) {
-    //     this.guideCategory = guiderCategoryById[0];
-    //     this.detectChanges();
-    //   }
-    // });
-    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', async (model) => {
-    //   const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
-    //   if (guiderCategoryById.length) {
-    //     this.guideCategory = guiderCategoryById[0];
-    //     this.detectChanges();
-    //   }
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
-    //   this.setGuideInfo();
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
-    //   this.setGuideInfo();
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.setGuideInfo();
-    // });
-    // this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':create', (model) => {
-    //   this.setGuideInfo();
-    // });
-    // this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
-    //   this.setGuideInfo();
-    // });
-    // this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.setGuideInfo();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', (model) => {
-    //   this.setGuideInfo();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.setGuideInfo();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', (model) => {
-    //   this.setGuideInfo();
-    // });
-    // this.events.subscribe('network:online', (isNetwork) => {
-    //   this.authService.checkAccess('guide');
-    // });
-
     this.eventSubscription = this.miscService.events.subscribe(async (event) => {
       const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId);
       switch (event.TAG) {

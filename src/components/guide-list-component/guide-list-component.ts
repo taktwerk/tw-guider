@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
 
@@ -18,6 +19,7 @@ export class GuideListComponent implements OnInit {
   @Input() guides: GuiderModel[];
   @Input() isCapture = false;
   @Input() parentCollectionId;
+  @Input() guideCategoryId;
 
   guideList: GuiderModel[];
   displayLimit = 10;
@@ -29,7 +31,8 @@ export class GuideListComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     public appSetting: AppSetting,
-    public platform: Platform
+    public platform: Platform,
+    public location: Location
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -37,8 +40,10 @@ export class GuideListComponent implements OnInit {
         this.haveProtocolPermissions = true;
       }
     }
+  }
 
-  
+  ionViewDidLeave() {
+    this.parentCollectionId = undefined;
   }
 
   ngOnInit(): void {
@@ -75,6 +80,7 @@ export class GuideListComponent implements OnInit {
     const feedbackNavigationExtras: NavigationExtras = {
       queryParams: {
         guideId: guide.idApi,
+        guideCategoryId: this.guideCategoryId
       },
     };
     this.router.navigate(['/guide-collection/' + guide.idApi], feedbackNavigationExtras);
