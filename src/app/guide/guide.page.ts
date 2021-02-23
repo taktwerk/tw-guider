@@ -151,8 +151,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     });
   }
 
-
-
   protected initializeGuideStepSlide() {
     const slideComponents = this.slideComponents.toArray();
     for (let i = 0; i < this.guideSteps.length; i++) {
@@ -353,12 +351,12 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     }
   }
 
-  async ngOnInit() { }
+  // async ngOnInit() { }
 
-  async ionViewDidEnter() {
-   // console.log("this.isInitStepSlider", this.isInitStepSlider)
-   // console.log("this.slideComponents", this.slideComponents)
-   // console.log("this.slideComponents.toArray().length", this.slideComponents.toArray().length)
+  async ngOnInit() {
+    // console.log("this.isInitStepSlider", this.isInitStepSlider)
+    // console.log("this.slideComponents", this.slideComponents)
+    // console.log("this.slideComponents.toArray().length", this.slideComponents.toArray().length)
 
     this.slideOpts = {
       initialSlide: 0,
@@ -384,9 +382,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         await this.setAssets(this.guide.idApi);
         this.detectChanges();
 
-        if (this.isInitStepSlider) {
-          this.reinitializeGuideStepSlides();
-        }
+        // if (this.isInitStepSlider) {
+        //   this.reinitializeGuideStepSlides();
+        // }
       }
     }
     loader.dismiss();
@@ -637,7 +635,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   @HostListener('unloaded')
   ionViewDidLeave() {
     // console.log("did leave");
-    this.elementRef.nativeElement.remove();
+    // this.elementRef.nativeElement.remove();
   }
 
   ngOnDestroy(): void {
