@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth-service';
 import { AppSetting } from '../../services/app-setting';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
-import { ModalController, PopoverController } from '@ionic/angular';
+import { ModalController, PopoverController, Platform } from '@ionic/angular';
 
 @Component({
   selector: 'guide-list-component',
@@ -28,13 +28,17 @@ export class GuideListComponent implements OnInit {
     private modalController: ModalController,
     private authService: AuthService,
     private router: Router,
-    public appSetting: AppSetting) {
+    public appSetting: AppSetting,
+    public platform: Platform
+  ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
       if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') || this.authService.auth.isAuthority) {
         this.haveProtocolPermissions = true;
       }
     }
+
+  
   }
 
   ngOnInit(): void {

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { FeedbackService } from '../../providers/api/feedback-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
 import { AuthService } from '../../services/auth-service';
@@ -43,9 +43,16 @@ export class FeedbackPage implements OnInit, OnDestroy {
     private router: Router,
     private videoService: VideoService,
     private pictureService: PictureService,
-    private miscService: MiscService
+    private miscService: MiscService,
+    private platform: Platform
   ) {
     this.authService.checkAccess('feedback');
+
+    this.platform.backButton.subscribe((res) => {
+      if (this.router.url.includes('feedback') && this.router.url.includes('guideId')) {
+        this.router.navigate(['/guide/' + this.guideId])
+      }
+    })
   }
 
   public async setModels() {

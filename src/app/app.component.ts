@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private alertController: AlertController,
     private location: Location,
     private loggerService: LoggerService,
-    private miscService: MiscService
+    private miscService: MiscService,
   ) {
     (async () => {
       await this.platform.ready();
@@ -81,22 +81,21 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
 
   backButtonEvent() {
-    this.platform.backButton.subscribeWithPriority(1, (processNextHandler) => {
-      // this.platform.backButton.subscribeWithPriority(10, () => {
-      // this.routerOutlets.forEach(async (r) => {
-      // console.log(this.location.path)
-      console.log(this.location)
-      if (this.location.isCurrentPathEqualTo('/guide-categories')) {
-        this.presentAlertConfirm();
-        processNextHandler();
-        console.log("no back")
-      }
-      else {
-        this.location.back();
-        processNextHandler();
-        console.log("is back")
-      }
+    this.platform.backButton.subscribeWithPriority(-1, (processNextHandler) => {
+      this.routerOutlets.forEach(async (r) => {
+        if (!r.canGoBack()) {
+          this.presentAlertConfirm();
+        }
+      })
     });
+
+    this.platform.backButton.subscribe((res) => {
+      // this.location.back();
+
+      console.log(this.router.url);
+      console.log(this.location)
+     
+    })
   }
 
   async presentAlertConfirm() {

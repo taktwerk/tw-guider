@@ -1,9 +1,9 @@
 import { MiscService } from './../services/misc-service';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, ViewContainerRef } from '@angular/core';
 import { BrowserModule, ɵDomSanitizerImpl } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicModule, IonicRouteStrategy, IonRouterOutlet } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 

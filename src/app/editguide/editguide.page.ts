@@ -1,3 +1,5 @@
+import { Location } from '@angular/common';
+import { Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs/Subscription';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
@@ -5,7 +7,6 @@ import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
 
 import { AuthService } from '../../services/auth-service';
-
 @Component({
   selector: 'app-editguide',
   templateUrl: './editguide.page.html',
@@ -17,7 +18,16 @@ export class EditguidePage implements OnInit, OnDestroy {
     private router: Router,
     public authService: AuthService,
     public changeDetectorRef: ChangeDetectorRef,
-  ) { }
+    public platform: Platform,
+    public location: Location
+  ) {
+
+    this.platform.backButton.subscribe((res) => {
+      if (this.location.isCurrentPathEqualTo('/editguide/' + this.guideId)) {
+        this.router.navigate(['/guidecapture'])
+      }
+    })
+  }
 
   guideId: string;
   public guideSteps: GuideStepModel[] = [];

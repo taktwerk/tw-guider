@@ -4,7 +4,7 @@ import { GuiderService } from '../../providers/api/guider-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { AuthService } from '../../services/auth-service';
 import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
-import { LoadingController, ModalController, PopoverController } from '@ionic/angular';
+import { LoadingController, ModalController, PopoverController, Platform } from '@ionic/angular';
 import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
 import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
 import { NavigationExtras, Router } from '@angular/router';
@@ -36,6 +36,7 @@ export class ListPage implements OnInit, OnDestroy {
     private router: Router,
     private loader: LoadingController,
     private miscService: MiscService,
+    private platform: Platform
 
   ) {
     this.authService.checkAccess('guide');
@@ -47,6 +48,8 @@ export class ListPage implements OnInit, OnDestroy {
       }
     }
     this.showAllGuides();
+
+   
   }
 
   async showAllGuides() {
