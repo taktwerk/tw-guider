@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { AlertController, IonBackButtonDelegate, Platform } from '@ionic/angular';
+import { AlertController, IonBackButtonDelegate, Platform, NavController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
@@ -54,7 +54,8 @@ export class FeedbackAddEditPage implements OnInit {
     private videoService: VideoService,
     private pictureService: PictureService,
     private apiSync: ApiSync,
-    private platform: Platform
+    private platform: Platform,
+    private navCtrl: NavController
   ) {
     this.authService.checkAccess('feedback');
     if (!this.model) {
@@ -75,17 +76,20 @@ export class FeedbackAddEditPage implements OnInit {
   dismiss() {
     this.model.deleteAttachedFilesForDelete();
 
-    this.ngZone.run(() => {
-      const feedbackNavigationExtras: NavigationExtras = {
-        queryParams: {
-          referenceModelAlias: this.reference_model_alias,
-          referenceId: this.reference_id,
-          referenceTitle: this.reference_title,
-          guideId: this.guideId
-        },
-      };
-      this.router.navigate(['feedback'], feedbackNavigationExtras);
-    });
+    // this.ngZone.run(() => {
+    //   const feedbackNavigationExtras: NavigationExtras = {
+    //     queryParams: {
+    //       referenceModelAlias: this.reference_model_alias,
+    //       referenceId: this.reference_id,
+    //       referenceTitle: this.reference_title,
+    //       guideId: this.guideId
+    //     },
+    //   };
+    //   this.router.navigate(['feedback'], feedbackNavigationExtras);
+    //  
+    // });
+
+    this.navCtrl.back();
   }
 
   async backToFeedbackList() {

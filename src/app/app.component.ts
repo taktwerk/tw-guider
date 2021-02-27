@@ -81,10 +81,16 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
 
   backButtonEvent() {
-    this.platform.backButton.subscribeWithPriority(-1, (processNextHandler) => {
+    this.platform.backButton.subscribe((processNextHandler) => {
       this.routerOutlets.forEach(async (r) => {
+        console.log(r)
+        console.log(r.canGoBack())
+        console.log(this.navCtrl)
         if (!r.canGoBack()) {
           this.presentAlertConfirm();
+        }
+        else {
+          this.navCtrl.back();
         }
       })
     });
