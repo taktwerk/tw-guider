@@ -1,8 +1,9 @@
+import { Storage } from '@ionic/storage';
 import { MiscService } from './../services/misc-service';
 import { Subscription } from 'rxjs/Subscription';
 import { LoggerService } from 'src/services/logger-service';
 import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy, QueryList, ViewChildren, Renderer2 } from '@angular/core';
-import { AlertController, IonRouterOutlet, NavController, Platform } from '@ionic/angular';
+import { AlertController, IonRouterOutlet, NavController, Platform, ModalController } from '@ionic/angular';
 import { ApiSync } from '../providers/api-sync';
 import { MigrationProvider } from '../providers/migration-provider';
 import { AuthService } from '../services/auth-service';
@@ -60,6 +61,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private location: Location,
     private loggerService: LoggerService,
     private miscService: MiscService,
+    private modalCtrl: ModalController,
+    private storage: Storage
   ) {
     (async () => {
       await this.platform.ready();
@@ -90,7 +93,14 @@ export class AppComponent implements OnInit, OnDestroy {
           this.presentAlertConfirm();
         }
         else {
-          this.navCtrl.back();
+          const guideInfoModalOpen = await this.storage.get('guideInfoModalOpen');
+          if (guideInfoModalOpen) {
+            this.modalCtrl.dismiss()
+            this.storage.set('guideInfoModalOpen', false);
+          }
+          else {
+            this.navCtrl.pop();
+          }
         }
       })
     });

@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth-service';
 import { AppSetting } from '../../services/app-setting';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
-import { ModalController, PopoverController, Platform } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 
 @Component({
   selector: 'guide-list-component',
@@ -25,8 +25,6 @@ export class GuideListComponent implements OnInit {
   displayLimit = 10;
 
   constructor(
-    private popoverController: PopoverController,
-
     private modalController: ModalController,
     private authService: AuthService,
     private router: Router,
@@ -117,7 +115,6 @@ export class GuideListComponent implements OnInit {
       },
       cssClass: "modal-fullscreen"
     });
-    this.popoverController.dismiss();
     return await modal.present();
   }
 }

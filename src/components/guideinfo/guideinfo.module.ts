@@ -16,6 +16,9 @@ import { AssetviewComponentModule } from '../assetview/assetview.module';
     TranslateModule,
     AssetviewComponentModule
   ],
+  exports: [
+    GuideinfoPage
+  ],
   declarations: [GuideinfoPage],
   entryComponents: [GuideinfoPage]
 })
