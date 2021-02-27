@@ -86,9 +86,6 @@ export class AppComponent implements OnInit, OnDestroy {
   backButtonEvent() {
     this.platform.backButton.subscribe((processNextHandler) => {
       this.routerOutlets.forEach(async (r) => {
-        console.log(r)
-        console.log(r.canGoBack())
-        console.log(this.navCtrl)
         if (!r.canGoBack()) {
           this.presentAlertConfirm();
         }
@@ -99,19 +96,19 @@ export class AppComponent implements OnInit, OnDestroy {
           const Viewer3dModalComponentOpen = await this.storage.get('Viewer3dModalComponentOpen');
           const GuideAssetTextModalComponentOpen = await this.storage.get('GuideAssetTextModalComponentOpen');
 
-          console.log(VideoModalComponentOpen)
           if (
             guideInfoModalOpen
-            || pdfViewerComponentOpen
             || VideoModalComponentOpen
+            || pdfViewerComponentOpen
             || Viewer3dModalComponentOpen
             || GuideAssetTextModalComponentOpen) {
-            
+
             this.storage.set('guideInfoModalOpen', false);
             this.storage.set('pdfViewerComponentOpen', false);
-            this.storage.set('VideoModalComponentOpen', false);
+
             this.storage.set('Viewer3dModalComponentOpen', false);
             this.storage.set('GuideAssetTextModalComponentOpen', false);
+            this.storage.set('VideoModalComponentOpen', false);
 
             this.modalCtrl.dismiss()
           }

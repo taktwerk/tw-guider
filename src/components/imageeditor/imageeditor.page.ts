@@ -192,20 +192,20 @@ export class ImageEditorComponent implements OnInit {
 
 
   backButtonEvent() {
-    this.platform.backButton.subscribeWithPriority(1, (processNextHandler) => {
-      // this.platform.backButton.subscribeWithPriority(10, () => {
-      // this.routerOutlets.forEach(async (r) => {
-      // console.log(this.location.path)
-      console.log(this.location)
-      if (this.location.isCurrentPathEqualTo('/guide-categories')) {
-        processNextHandler();
-        console.log("no back")
-      }
-      else {
-        this.location.back();
-        processNextHandler();
-        console.log("is back")
-      }
-    });
+    // this.platform.backButton.subscribeWithPriority(1, (processNextHandler) => {
+    //   // this.platform.backButton.subscribeWithPriority(10, () => {
+    //   // this.routerOutlets.forEach(async (r) => {
+    //   // console.log(this.location.path)
+    //   console.log(this.location)
+    //   if (this.location.isCurrentPathEqualTo('/guide-categories')) {
+    //     processNextHandler();
+    //     console.log("no back")
+    //   }
+    //   else {
+    //     this.location.back();
+    //     processNextHandler();
+    //     console.log("is back")
+    //   }
+    // });
   }
 }

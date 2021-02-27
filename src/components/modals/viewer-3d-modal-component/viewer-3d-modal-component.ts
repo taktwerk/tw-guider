@@ -33,7 +33,6 @@ export class Viewer3dModalComponent implements OnInit, OnDestroy {
         this.viewer3d.cancelRender();
         this.modalController.dismiss();
         this.storage.set('Viewer3dModalComponentOpen', false)
-
     }
 
     ionViewDidEnter() {

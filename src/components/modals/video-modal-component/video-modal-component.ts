@@ -24,7 +24,7 @@ export class VideoModalComponent implements OnInit, OnDestroy {
     videoElement: HTMLVideoElement;
     @Input() fileUrl: string;
     @Input() fileTitle: string;
-    backButtonSubscribe;
+    // backButtonSubscribe;
 
     constructor(private modalController: ModalController,
         private storage: Storage,
@@ -34,15 +34,15 @@ export class VideoModalComponent implements OnInit, OnDestroy {
         private streamingMedia: StreamingMedia,
         private downloadService: DownloadService,
         private ngZone: NgZone) {
-        document['ionicComponentRef'] = { name: 'video-modal-component', component: this, zone: ngZone };
+        //  document['ionicComponentRef'] = { name: 'video-modal-component', component: this, zone: ngZone };
     }
 
     dismiss() {
         this.modalController.dismiss();
         this.storage.set('VideoModalComponentOpen', false)
+        console.log("dismiss", "VideoModalComponentOpen")
+
     }
-
-
 
     async playVideo() {
         try {
@@ -66,12 +66,10 @@ export class VideoModalComponent implements OnInit, OnDestroy {
     }
 
     ionViewDidEnter() {
+        this.storage.set('VideoModalComponentOpen', true)
         if (!this.videoElement || this.videoElement.paused) {
             this.playVideo();
         }
-
-        this.storage.set('VideoModalComponentOpen', true)
-        console.log("VideoModalComponentOpen")
     }
 
     openVideoViaMediaStreamingPlugin(fileUrl) {
@@ -86,21 +84,21 @@ export class VideoModalComponent implements OnInit, OnDestroy {
         this.streamingMedia.playVideo(fileUrl, options);
     }
 
-    backbuttonAction() {
-        this.dismiss();
-    }
+    // backbuttonAction() {
+    //     this.dismiss();
+    // }
 
     ngOnInit() {
         this.platform.ready().then(async () => {
-            this.backButtonSubscribe = this.platform.backButton.subscribeWithPriority(9999, () => {
-                document.addEventListener('backbutton', () => this.backbuttonAction());
-            });
+            // this.backButtonSubscribe = this.platform.backButton.subscribeWithPriority(9999, () => {
+            //     document.addEventListener('backbutton', () => this.backbuttonAction());
+            // });
         });
     }
 
     ngOnDestroy() {
-        document['ionicComponentRef'] = null;
-        this.backButtonSubscribe.unsubscribe();
-        document.removeEventListener('backbutton', () => { });
+        // document['ionicComponentRef'] = null;
+        // this.backButtonSubscribe.unsubscribe();
+        // document.removeEventListener('backbutton', () => { });
     }
 }
