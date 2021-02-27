@@ -56,13 +56,13 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
       }
     }
 
-    this.platform.backButton.subscribe((res) => {
-      console.log(this.router.url)
-      console.log("Testing", '/guide-collection/' + this.guide.idApi + '?guideId=' + this.guide.idApi, this.guideCategoryId)
-      if (this.router.url.includes('/guide-collection/' + this.guide.idApi + '?guideId=' + this.guide.idApi) && this.guideCategoryId != null) {
-        this.router.navigate(['/guides/' + this.guideCategoryId])
-      }
-    })
+    // this.platform.backButton.subscribe((res) => {
+    //   console.log(this.router.url)
+    //   console.log("Testing", '/guide-collection/' + this.guide.idApi + '?guideId=' + this.guide.idApi, this.guideCategoryId)
+    //   if (this.router.url.includes('/guide-collection/' + this.guide.idApi + '?guideId=' + this.guide.idApi) && this.guideCategoryId != null) {
+    //     this.router.navigate(['/guides/' + this.guideCategoryId])
+    //   }
+    // })
   }
 
   ionViewDidLeave() {

@@ -22,11 +22,11 @@ export class EditguidePage implements OnInit, OnDestroy {
     public location: Location
   ) {
 
-    this.platform.backButton.subscribe((res) => {
-      if (this.location.isCurrentPathEqualTo('/editguide/' + this.guideId)) {
-        this.router.navigate(['/guidecapture'])
-      }
-    })
+    // this.platform.backButton.subscribe((res) => {
+    //   if (this.location.isCurrentPathEqualTo('/editguide/' + this.guideId)) {
+    //     this.router.navigate(['/guidecapture'])
+    //   }
+    // })
   }
 
   guideId: string;

@@ -63,12 +63,12 @@ export class FeedbackAddEditPage implements OnInit {
       this.originalModel = this.model;
     }
 
-    this.platform.backButton.subscribe((res) => {
-      console.log(this.router.url)
-      if (this.router.url.includes('/feedback/save/') && this.router.url.includes('guideId=' + this.guideId)) {
-        this.dismiss();
-      }
-    })
+    // this.platform.backButton.subscribe((res) => {
+    //   console.log(this.router.url)
+    //   if (this.router.url.includes('/feedback/save/') && this.router.url.includes('guideId=' + this.guideId)) {
+    //     this.dismiss();
+    //   }
+    // })
   }
 
   @ViewChild('filePicker', { static: false }) filePickerRef: ElementRef<HTMLInputElement>;
