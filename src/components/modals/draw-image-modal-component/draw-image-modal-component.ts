@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TranslateConfigService } from '../../../services/translate-config.service';
 import { MiscService } from 'src/services/misc-service';
 
-
+import { Storage } from '@ionic/storage';
 /**
  * Generated class for the TodoPage page.
  *
@@ -65,6 +65,7 @@ export class DrawImageModalComponent implements AfterViewChecked {
     private downloadService: DownloadService,
     private translateConfigService: TranslateConfigService,
     private miscService: MiscService,
+    private storage: Storage,
   ) {
     this.saveTranslatdWord = this.translateConfigService.translateWord('save');
   }

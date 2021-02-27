@@ -84,7 +84,9 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
       if (!fileApiUrl) {
         return false;
       }
+
       this.videoService.playVideo(fileUrl, fileTitle);
+      
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {

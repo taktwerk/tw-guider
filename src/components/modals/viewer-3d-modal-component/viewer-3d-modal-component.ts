@@ -4,6 +4,7 @@ import { ToastService } from '../../../services/toast-service';
 import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media/ngx';
 import { DownloadService } from '../../../services/download-service';
 import { Viewer3dModelComponent } from "../../viewer-3d-model-component/viewer-3d-model-component";
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the TodoPage page.
@@ -24,12 +25,19 @@ export class Viewer3dModalComponent implements OnInit, OnDestroy {
     @Input() fileTitle: string;
     @ViewChild('viewer3d', { 'static': false }) viewer3d: Viewer3dModelComponent;
 
-    constructor(private modalController: ModalController,
+
+    constructor(private modalController: ModalController, private storage: Storage,
         private platform: Platform) { }
 
     dismiss() {
         this.viewer3d.cancelRender();
         this.modalController.dismiss();
+        this.storage.set('Viewer3dModalComponentOpen', false)
+
+    }
+
+    ionViewDidEnter() {
+        this.storage.set('Viewer3dModalComponentOpen', true)
     }
 
     backbuttonAction() {

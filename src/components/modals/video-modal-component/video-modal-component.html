@@ -10,17 +10,12 @@
 <ion-content class="vertical-align-content ion-text-center black-background">
     <ion-grid>
         <ion-row>
-            <video #video
-                   [ngStyle]="{display: !this.canPlayVideoViaHtml5VideoTag() ? 'none' : 'block'}"
-                   controls
-            >
+            <video #video [ngStyle]="{display: !this.canPlayVideoViaHtml5VideoTag() ? 'none' : 'block'}" controls>
             </video>
         </ion-row>
     </ion-grid>
 </ion-content>
-<ion-footer *ngIf="this.canPlayVideoViaHtml5VideoTag()"
-            class="ion-padding ion-text-center"
-            [ngStyle]="{color: 'white', backgroundColor: 'black'}"
->
+<ion-footer *ngIf="this.canPlayVideoViaHtml5VideoTag()" class="ion-padding ion-text-center"
+    [ngStyle]="{color: 'white', backgroundColor: 'black'}">
     {{ fileTitle }}
 </ion-footer>

@@ -1,11 +1,12 @@
 import { Component, ViewChild, OnInit, Input } from '@angular/core';
-import {FileOpener} from '@ionic-native/file-opener/ngx';
-import {FileTransfer} from '@ionic-native/file-transfer/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
-import {ModalController} from '@ionic/angular';
-import {DownloadService} from '../../services/download-service';
+import { ModalController } from '@ionic/angular';
+import { DownloadService } from '../../services/download-service';
 import { map } from 'rxjs/operators';
 import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the TodoPage page.
@@ -21,40 +22,48 @@ const { Filesystem } = Plugins;
   templateUrl: 'pdf-viewer-component.html',
 })
 export class PdfViewerComponent implements OnInit {
-    @Input() url: string;
-    @ViewChild('viewer', { static: true }) public embeddedPdfViewer;
+  @Input() url: string;
+  @ViewChild('viewer', { static: true }) public embeddedPdfViewer;
 
-    public pdfUrl = '';
+  public pdfUrl = '';
 
-    constructor(
-       private modalController: ModalController,
-       private http: HttpClient,
-       private download: DownloadService
-   ) {}
+  constructor(
+    private storage: Storage,
 
-   dismiss() {
+    private modalController: ModalController,
+    private http: HttpClient,
+    private download: DownloadService
+  ) { }
+
+  dismiss() {
     this.modalController.dismiss();
-   }
+    this.storage.set('pdfViewerComponentOpen', false)
 
-    async ngOnInit() {
-     const reqOptions = {
-        method: 'get' as any,
-        responseType: 'blob' as any,
-        headers: {
-          accept: 'application/pdf'
-        }
-      };
+  }
 
-     const headerObject: any = {
-       'Content-Type': 'application/pdf'
-     };
+  ionViewDidEnter() {
+    this.storage.set('pdfViewerComponentOpen', true)
+  }
 
-     console.log('headerObject', headerObject);
-    
-     const headers = new Headers(headerObject);
+  async ngOnInit() {
+    const reqOptions = {
+      method: 'get' as any,
+      responseType: 'blob' as any,
+      headers: {
+        accept: 'application/pdf'
+      }
+    };
 
-     this.url = this.download.getWebviewFileSrc(this.url);
-     this.embeddedPdfViewer.pdfSrc = this.url;
-     this.embeddedPdfViewer.refresh();
-    }
+    const headerObject: any = {
+      'Content-Type': 'application/pdf'
+    };
+
+    console.log('headerObject', headerObject);
+
+    const headers = new Headers(headerObject);
+
+    this.url = this.download.getWebviewFileSrc(this.url);
+    this.embeddedPdfViewer.pdfSrc = this.url;
+    this.embeddedPdfViewer.refresh();
+  }
 }

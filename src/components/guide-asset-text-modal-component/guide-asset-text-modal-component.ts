@@ -4,6 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
 import { Subscription } from 'rxjs';
 import { MiscService } from 'src/services/misc-service';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the TodoPage page.
@@ -25,17 +26,23 @@ export class GuideAssetTextModalComponent implements OnInit, OnDestroy {
     private guideAssetService: GuideAssetService,
     public changeDetectorRef: ChangeDetectorRef,
     private miscService: MiscService,
+    private storage: Storage,
     //    public miscService: MiscService,
   ) { }
 
   dismiss() {
     this.modalController.dismiss();
+    this.storage.set('GuideAssetTextModalComponentOpen', false)
   }
 
   detectChanges() {
     if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
     }
+  }
+
+  ionViewDidEnter() {
+    this.storage.set('GuideAssetTextModalComponentOpen', true)
   }
 
   ngOnInit() {

@@ -94,12 +94,29 @@ export class AppComponent implements OnInit, OnDestroy {
         }
         else {
           const guideInfoModalOpen = await this.storage.get('guideInfoModalOpen');
-          if (guideInfoModalOpen) {
-            this.modalCtrl.dismiss()
+          const pdfViewerComponentOpen = await this.storage.get('pdfViewerComponentOpen');
+          const VideoModalComponentOpen = await this.storage.get('VideoModalComponentOpen');
+          const Viewer3dModalComponentOpen = await this.storage.get('Viewer3dModalComponentOpen');
+          const GuideAssetTextModalComponentOpen = await this.storage.get('GuideAssetTextModalComponentOpen');
+
+          console.log(VideoModalComponentOpen)
+          if (
+            guideInfoModalOpen
+            || pdfViewerComponentOpen
+            || VideoModalComponentOpen
+            || Viewer3dModalComponentOpen
+            || GuideAssetTextModalComponentOpen) {
+            
             this.storage.set('guideInfoModalOpen', false);
+            this.storage.set('pdfViewerComponentOpen', false);
+            this.storage.set('VideoModalComponentOpen', false);
+            this.storage.set('Viewer3dModalComponentOpen', false);
+            this.storage.set('GuideAssetTextModalComponentOpen', false);
+
+            this.modalCtrl.dismiss()
           }
           else {
-            this.navCtrl.pop();
+            this.navCtrl.back();
           }
         }
       })
