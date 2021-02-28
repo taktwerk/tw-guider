@@ -6,6 +6,7 @@ import { File as nFile } from '@ionic-native/file/ngx';
 import { ApiSync } from 'src/providers/api-sync';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
 import { Location } from '@angular/common';
+import { Storage } from '@ionic/storage';
 
 
 interface CustomControls {
@@ -45,7 +46,7 @@ export class ImageEditorComponent implements OnInit {
       ]
     }
   ]
-  constructor(
+  constructor(private storage: Storage,
     private guideStepService: GuideStepService,
     private modalController: ModalController,
     private downloadService: DownloadService,
@@ -54,7 +55,11 @@ export class ImageEditorComponent implements OnInit {
     private location: Location,
     private platform: Platform
   ) {
-    this.backButtonEvent();
+
+  }
+
+  ionViewDidEnter() {
+    this.storage.set('ImageEditorComponentOpen', true);
   }
 
   ngOnInit() {
@@ -161,6 +166,8 @@ export class ImageEditorComponent implements OnInit {
         this.guideStepService.save(this.model).then(async () => {
           this.apiSync.setIsPushAvailableData(true);
           await this.modalController.dismiss();
+          this.storage.set('ImageEditorComponentOpen', false)
+
         }).catch((e) => console.log(e))
 
       }).catch((e) => console.log(e))
@@ -191,21 +198,5 @@ export class ImageEditorComponent implements OnInit {
   onReady() { }
 
 
-  backButtonEvent() {
-    // this.platform.backButton.subscribeWithPriority(1, (processNextHandler) => {
-    //   // this.platform.backButton.subscribeWithPriority(10, () => {
-    //   // this.routerOutlets.forEach(async (r) => {
-    //   // console.log(this.location.path)
-    //   console.log(this.location)
-    //   if (this.location.isCurrentPathEqualTo('/guide-categories')) {
-    //     processNextHandler();
-    //     console.log("no back")
-    //   }
-    //   else {
-    //     this.location.back();
-    //     processNextHandler();
-    //     console.log("is back")
-    //   }
-    // });
-  }
+
 }

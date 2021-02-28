@@ -18,6 +18,7 @@ import { TranslateConfigService } from '../../services/translate-config.service'
 import { LoggerService } from 'src/services/logger-service';
 import { Subscription } from 'rxjs';
 import { MiscService } from 'src/services/misc-service';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the TodoPage page.
@@ -55,6 +56,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
   eventSubscription: Subscription;
 
   constructor(
+    private storage: Storage,
     private modalController: ModalController,
     public apiSync: ApiSync,
     private downloadService: DownloadService,
@@ -80,6 +82,10 @@ export class SyncModalComponent implements OnInit, OnDestroy {
     });
   }
 
+  ionViewDidEnter() {
+    this.storage.set('SyncModalComponentOpen', true)
+  }
+
   dismiss() {
     this.modalController.dismiss().then(() => {
       this.insomnia.allowSleepAgain().then(
@@ -87,6 +93,8 @@ export class SyncModalComponent implements OnInit, OnDestroy {
         () => console.log('insomnia.allowSleepAgain error')
       );
     });
+
+    this.storage.set('SyncModalComponentOpen', false)
   }
 
   syncData() {

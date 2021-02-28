@@ -24,9 +24,11 @@ import { MiscService } from 'src/services/misc-service';
   styleUrls: ['guide-step-content-component.scss'],
 })
 export class GuideStepContentComponent implements OnInit, OnDestroy {
+  
   ngOnDestroy(): void {
     console.log('destroy GuideStepContentComponent');
   }
+
   public faFilePdf = faFilePdf;
   @Input() step: GuideStepModel = null;
   @Input() portraitOriginal: boolean = false;

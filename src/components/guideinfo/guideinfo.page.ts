@@ -25,11 +25,11 @@ export class GuideinfoPage implements OnInit {
     const guiderById = await this.guiderService.getById(this.guideId)
     if (guiderById.length) {
       this.guide = guiderById[0];
-      console.log("Guide from api >>>>>>>>>>>>>>>>>>>>>>>>>")
-      console.log(this.guide)
-
-      this.storage.set('guideInfoModalOpen', true)
     }
+  }
+
+  ionViewDidEnter() {
+    this.storage.set('guideInfoModalOpen', true)
   }
 
   dismiss() {

@@ -69,7 +69,7 @@ export class AppComponent implements OnInit, OnDestroy {
       await this.initializeApp();
     })();
 
-    this.backButtonEvent()
+
   }
 
   public userDb: UserDb;
@@ -84,39 +84,71 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
 
   backButtonEvent() {
-    this.platform.backButton.subscribe((processNextHandler) => {
-      this.routerOutlets.forEach(async (r) => {
-        if (!r.canGoBack()) {
-          this.presentAlertConfirm();
-        }
-        else {
-          const guideInfoModalOpen = await this.storage.get('guideInfoModalOpen');
-          const pdfViewerComponentOpen = await this.storage.get('pdfViewerComponentOpen');
-          const VideoModalComponentOpen = await this.storage.get('VideoModalComponentOpen');
-          const Viewer3dModalComponentOpen = await this.storage.get('Viewer3dModalComponentOpen');
-          const GuideAssetTextModalComponentOpen = await this.storage.get('GuideAssetTextModalComponentOpen');
+    this.platform.backButton.subscribe(async (processNextHandler) => {
+      const guideInfoModalOpen = await this.storage.get('guideInfoModalOpen');
+      const pdfViewerComponentOpen = await this.storage.get('pdfViewerComponentOpen');
+      const VideoModalComponentOpen = await this.storage.get('VideoModalComponentOpen');
+      const Viewer3dModalComponentOpen = await this.storage.get('Viewer3dModalComponentOpen');
+      const GuideAssetTextModalComponentOpen = await this.storage.get('GuideAssetTextModalComponentOpen');
+      const CKEditorComponentOpen = await this.storage.get('CKEditorComponentOpen');
+      const SyncModalComponentOpen = await this.storage.get('SyncModalComponentOpen');
+      const ImageEditorComponentOpen = await this.storage.get('ImageEditorComponentOpen');
 
-          if (
-            guideInfoModalOpen
-            || VideoModalComponentOpen
-            || pdfViewerComponentOpen
-            || Viewer3dModalComponentOpen
-            || GuideAssetTextModalComponentOpen) {
-
-            this.storage.set('guideInfoModalOpen', false);
-            this.storage.set('pdfViewerComponentOpen', false);
-
-            this.storage.set('Viewer3dModalComponentOpen', false);
-            this.storage.set('GuideAssetTextModalComponentOpen', false);
-            this.storage.set('VideoModalComponentOpen', false);
-
-            this.modalCtrl.dismiss()
+      console.log("modal dismiss", guideInfoModalOpen
+        || VideoModalComponentOpen
+        || pdfViewerComponentOpen
+        || Viewer3dModalComponentOpen
+        || GuideAssetTextModalComponentOpen
+        || CKEditorComponentOpen
+        || SyncModalComponentOpen
+        || ImageEditorComponentOpen
+      )
+      if (
+        guideInfoModalOpen
+        || VideoModalComponentOpen
+        || pdfViewerComponentOpen
+        || Viewer3dModalComponentOpen
+        || GuideAssetTextModalComponentOpen
+        || CKEditorComponentOpen
+        || SyncModalComponentOpen
+        || ImageEditorComponentOpen
+      ) {
+        this.storage.set('guideInfoModalOpen', false);
+        this.storage.set('pdfViewerComponentOpen', false);
+        this.storage.set('Viewer3dModalComponentOpen', false);
+        this.storage.set('GuideAssetTextModalComponentOpen', false);
+        this.storage.set('VideoModalComponentOpen', false);
+        this.storage.set('CKEditorComponentOpen', false);
+        this.storage.set('SyncModalComponentOpen', false);
+        this.storage.set('ImageEditorComponentOpen', false);
+        this.modalCtrl.dismiss();
+      }
+      else {
+        this.routerOutlets.forEach(async (r) => {
+          if (!r.canGoBack()) {
+            this.presentAlertConfirm();
           }
           else {
-            this.navCtrl.back();
+            this.location.back()
           }
-        }
-      })
+        })
+      }
+    });
+
+    this.platform.backButton.subscribeWithPriority(1, async (processNextHandler) => {
+      processNextHandler();
+    });
+
+    this.platform.backButton.subscribeWithPriority(0, async (processNextHandler) => {
+      processNextHandler();
+    });
+
+    this.platform.backButton.subscribeWithPriority(100, async (processNextHandler) => {
+
+    });
+
+    this.platform.backButton.subscribeWithPriority(99, async (processNextHandler) => {
+
     });
   }
 
@@ -206,6 +238,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.setPages();
       this.initNetwork();
       this.registerEvents();
+      this.backButtonEvent();
     })
 
     this.loggerService.createLogFile();

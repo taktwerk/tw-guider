@@ -503,10 +503,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     }
   }
 
-  // ionViewDidEnter() {
-  //   this.setGuides();
-  // }
-
   async setGuides() {
     this.guideCategoryService.getGuides().then((res) => {
       setTimeout(async () => {
@@ -538,7 +534,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
               this.hasNext = false;
             }
           })
-
         }
       }, 2000)
     })
@@ -546,10 +541,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   ionSlideDidChange() {
     this.guideStepSlides.isBeginning().then((res) => {
-      // console.log("isBeginning", res)
-
-      // console.log("guideCollection", this.guideCollection)
-
       if (this.guideCollection && this.guideCollection.guide_collection) {
         if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined && res) {
           this.hasPrevious = true;
@@ -627,18 +618,12 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   onScrollTop() {
-    // let yOffset = document.getElementById("assetSection").offsetTop;
     this.content.scrollToPoint(0, this.assetSection.nativeElement.offsetTop, 500);
-    // this.content.scrollToTop(1000);
   }
 
   @HostListener('unloaded')
-  ionViewDidLeave() {
-    // console.log("did leave");
-    // this.elementRef.nativeElement.remove();
-  }
-
   ngOnDestroy(): void {
+    console.log("Enterrrrrrrrrr")
     this.restartSub.unsubscribe();
     this.resumeModeSub.unsubscribe();
     this.eventSubscription.unsubscribe();

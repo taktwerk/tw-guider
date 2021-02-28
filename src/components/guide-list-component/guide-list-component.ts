@@ -96,7 +96,6 @@ export class GuideListComponent implements OnInit {
     else {
       this.router.navigate(['/guide/' + guide.idApi]);
     }
-
   }
 
   openGuideSteps(guideId) {
