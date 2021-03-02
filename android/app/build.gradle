@@ -6,8 +6,8 @@ android {
         applicationId "com.taktwerk.twguider2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 205002
-        versionName '2.5.2'
+        versionCode 206000
+        versionName '2.6.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
