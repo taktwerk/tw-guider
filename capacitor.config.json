@@ -13,7 +13,6 @@
       "splashImmersive": false,
       "backgroundColor": "#1C3461",
       "androidSplashResourceName": "splash"
-
     }
   },
   "cordova": {},
