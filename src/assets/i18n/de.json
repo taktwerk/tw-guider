@@ -25,12 +25,15 @@
   "Order": "Reihenfolge",
   "created_by": "Erstellt von",
   "updated_by": "Aktualisiert von",
-  "to guide":"Leiten",
+  "to guide":"Zur Anleitung",
   "about": {
     "header": "Über",
     "App Version": "App Version",
     "API Version": "API Version",
     "Copyright": "Copyright"
+  },
+  "log": {
+    "header": "Logs"
   },
   "start": {
     "header": "Start"
@@ -102,7 +105,7 @@
     "No information here yet.": "Noch keine Informationen verfügbar.",
     "Assets": "Zusatzinformationen",
     "Information":"Information",
-    "Restart":"Anleitung zum Neustart"
+    "Restart":"Anleitung neu starten"
   },
   "profile": {
     "header": "Profil",
@@ -200,11 +203,11 @@
     "saved":"Gerettet"
   },
   "guider": {
-    "header": "Guide Erfassung",
+    "header": "Anleitung erfassen",
     "No information here yet.": "No information here yet."
   },
   "editguide": {
-    "header": "Guide bearbeiten",
+    "header": "Anleitung bearbeiten",
     "No information here yet.": "No information here yet."
   },
   "editguidestep": {
