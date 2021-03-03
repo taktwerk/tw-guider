@@ -109,9 +109,9 @@ ion-header {
     background-color: #173262;
     --background: #173262;
 
-    * {
-      color: white;
-    }
+    // * {
+    //   color: white;
+    // }
   }
 
   sync-spinner-component {
@@ -260,4 +260,8 @@ svg.ck.ck-icon {
 
 .popover-content {
   --width: 270px;
+}
+
+ion-searchbar {
+  --placeholder-color: #000!important;
 }
