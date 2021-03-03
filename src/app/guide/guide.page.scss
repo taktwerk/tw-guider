@@ -111,6 +111,13 @@ ion-slide {
     border: 1px solid #eee;
     border-radius: 8px;
   }
+
+  p {
+    strong {
+      font-size: 18px;
+      color: #000;
+    }
+  }
 }
 
 .asset_wrapper {
@@ -159,4 +166,3 @@ ion-slide {
     }
   }
 }
-
