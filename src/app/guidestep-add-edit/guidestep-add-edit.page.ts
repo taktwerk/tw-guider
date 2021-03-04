@@ -10,7 +10,7 @@ import { PictureService } from 'src/services/picture-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { AuthService } from 'src/services/auth-service';
 import { TranslateConfigService } from 'src/services/translate-config.service';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController, Platform } from '@ionic/angular';
 import { ApiSync } from 'src/providers/api-sync';
 import { HttpClient } from '../../services/http-client';
 import { CKEditorComponent } from './../../components/ckeditor/ckeditor.page';
@@ -63,6 +63,7 @@ export class GuidestepAddEditPage implements OnInit {
     private modalController: ModalController,
     private userService: UserService,
     private toastController: ToastController,
+    public platform: Platform
   ) {
 
     this.activatedRoute.queryParams.subscribe((param) => {

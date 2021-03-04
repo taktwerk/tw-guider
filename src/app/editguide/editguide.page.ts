@@ -27,6 +27,7 @@ export class EditguidePage implements OnInit, OnDestroy {
     //     this.router.navigate(['/guidecapture'])
     //   }
     // })
+  
   }
 
   guideId: string;

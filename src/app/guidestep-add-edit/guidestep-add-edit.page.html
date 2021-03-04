@@ -8,7 +8,8 @@
 
     <ion-buttons slot="end" class="header_cta">
       <ion-button (click)="showCancelAlert()">
-        <ion-icon name="chevron-back" style="color: #ffffff;"></ion-icon>
+        <ion-icon name="chevron-back" style="color: #ffffff;" *ngIf="platform.is('ios')"></ion-icon>
+        <ion-icon name="arrow-back" style="color: #ffffff;" *ngIf="platform.is('android')"></ion-icon>
       </ion-button>
     </ion-buttons>
 
