@@ -6,9 +6,12 @@
     <ion-title> {{ 'feedback.header' | translate:params }} </ion-title>
     <!-- <ion-back-button *ngIf="isComponentLikeModal" text="" defaultHref="{{ backDefaultHref || '/guide-categories' }}">
     </ion-back-button> -->
-    <ion-back-button *ngIf="isComponentLikeModal" [routerLink]="['/guide/'+guideId]"></ion-back-button>
     <!-- <ion-back-button *ngIf="isComponentLikeModal" text=""></ion-back-button> -->
 
+    <ion-buttons>
+      <ion-back-button style="color: #ffffff;"  *ngIf="isComponentLikeModal" [routerLink]="['/guide/'+guideId]"></ion-back-button>
+
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

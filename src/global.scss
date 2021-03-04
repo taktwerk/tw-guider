@@ -269,3 +269,15 @@ ion-searchbar {
 .searchbar-input {
   padding-inline-end: 0px!important;
 }
+
+
+.header_cta {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
+  max-width: 100px;
+
+  ion-back-button {
+    display: contents !important;
+  }
+}
