@@ -39,6 +39,7 @@ import { PopoverController } from '@ionic/angular';
 import { TranslateConfigService } from 'src/services/translate-config.service';
 import { HttpClient } from 'src/services/http-client';
 import { UserDb } from 'src/models/db/user-db';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-guide',
@@ -98,6 +99,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   resumeModeSub: Subscription;
   resumeMode: boolean;
   eventSubscription: Subscription;
+
+  guiderSubscription: Subscription;
+  guiderSubject = new Subject<number>();
 
   public userDb: UserDb;
 
@@ -189,6 +193,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         this.activeGuideStepSlideIndex = index;
         this.updateGuideStepSlides();
       });
+
+    this.ionSlideDidChange();
   }
 
   protected updateGuideStepSlides() {
@@ -332,17 +338,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     });
   }
 
-  // openFeedback(referenceModelAlias, referenceId) {
-  //   const feedbackNavigationExtras: NavigationExtras = {
-  //     queryParams: {
-  //       backUrl: this.router.url,
-  //       referenceModelAlias: referenceModelAlias,
-  //       referenceId: referenceId
-  //     }
-  //   };
-  //   this.router.navigate(['feedback'], feedbackNavigationExtras);
-  // }
-
   ngAfterContentChecked(): void {
     if (!this.isInitStepSlider && this.slideComponents && this.slideComponents.toArray().length > 0) {
       this.isInitStepSlider = true;
@@ -351,27 +346,15 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     }
   }
 
-  // async ngOnInit() { }
-
   async ngOnInit() {
-    // console.log("this.isInitStepSlider", this.isInitStepSlider)
-    // console.log("this.slideComponents", this.slideComponents)
-    // console.log("this.slideComponents.toArray().length", this.slideComponents.toArray().length)
-
-    this.slideOpts = {
-      initialSlide: 0,
-      speed: 400,
-    };
-
+    this.slideOpts = { initialSlide: 0, speed: 400 };
     const loader = await this.loader.create();
     loader.present();
-
     // console.log("snapshot", this.activatedRoute.snapshot)
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     // console.log("guideId", this.guideId)
     this.parentCollectionId = +this.activatedRoute.snapshot.paramMap.get('parentCollectionId');
-    // console.log("parentCollectionId", this.parentCollectionId)
-
+    console.log("parentCollectionId", this.parentCollectionId);
     if (this.guideId) {
       const guiderById = await this.guiderService.getById(this.guideId);
       // console.log("guiderById", guiderById)
@@ -381,15 +364,34 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         await this.setGuideSteps(this.guide.idApi);
         await this.setAssets(this.guide.idApi);
         this.detectChanges();
-
-        // if (this.isInitStepSlider) {
-        //   this.reinitializeGuideStepSlides();
-        // }
+        this.setGuides();
       }
     }
     loader.dismiss();
     this.isLoadedContent = true;
     this.resumeStep(this.guide.idApi);
+
+    this.presentGuideInfo(this.guideId);
+    this.guiderSubscription = this.guiderSubject.subscribe(async (guideId) => {
+      console.log("this.guiderResetSubject.subscribe((guideId)", guideId);
+      const loader = await this.loader.create();
+      loader.present();
+      this.guideId = guideId;
+      const guiderById = await this.guiderService.getById(this.guideId);
+      if (guiderById.length) {
+        this.guide = guiderById[0];
+        await this.setGuideSteps(this.guide.idApi);
+        await this.setAssets(this.guide.idApi);
+        this.detectChanges();
+        this.setGuides();
+        loader.dismiss();
+        this.isLoadedContent = true;
+        this.resumeStep(this.guide.idApi);
+        this.presentGuideInfo(this.guideId);
+        this.miscService.onSlideRestart.next(true);
+        this.reinitializeGuideStepSlides();
+      }
+    })
 
     this.eventSubscription = this.miscService.events.subscribe(async (event) => {
       switch (event.TAG) {
@@ -480,8 +482,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       }
     })
 
-    this.presentGuideInfo(this.guideId);
-
     this.resumeModeSub = this.syncService.resumeMode.subscribe((mode) => {
       this.resumeMode = mode
     })
@@ -505,8 +505,12 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   async setGuides() {
     this.guideCategoryService.getGuides().then((res) => {
+      console.log("guideCategoryService.getGuides().then((res)", res);
+
       setTimeout(async () => {
         this.guides = res;
+        console.log("this.parentCollectionId in guide slider", this.parentCollectionId);
+
         if (this.parentCollectionId) {
           this.collections = this.guides.filter(g => g.guide_collection.length > 0);
           this.guideCollection = this.collections.filter(c => {
@@ -514,9 +518,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           })[0];
           this.guideIndex = this.guideCollection.guide_collection.findIndex(({ guide_id }) => this.guide.idApi == guide_id);
 
-
           this.guideStepSlides.isBeginning().then((res) => {
-            // console.log("isBeginning on Loaded", res)
+            console.log("isBeginning on Loaded", res)
             if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined && res) {
               this.hasPrevious = true;
             }
@@ -526,7 +529,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           })
 
           this.guideStepSlides.isEnd().then((res) => {
-            // console.log("isEnd on Loaded", res)
+            console.log("isEnd on Loaded", res)
             if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined && res) {
               this.hasNext = true;
             }
@@ -574,9 +577,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined) {
       this.hasPrevious = true;
       const previousGuideIndex = this.guides[this.guideIndex - 1].idApi;
-
-      this.miscService.onSlideRestart.next(true);
-      this.router.navigate(['/guide/' + previousGuideIndex + '/' + this.parentCollectionId]);
+      // this.router.navigate(['/guide/' + previousGuideIndex + '/' + this.parentCollectionId]);
+      // reset guide
+      this.guideId = previousGuideIndex;
+      this.guiderSubject.next(this.guideId);
     }
     else {
       this.hasPrevious = false;
@@ -588,8 +592,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined) {
       this.hasNext = true;
       const nextGuideIndex = this.guides[this.guideIndex + 1].idApi;
-      this.miscService.onSlideRestart.next(true);
-      this.router.navigate(['/guide/' + nextGuideIndex + '/' + this.parentCollectionId]);
+      // this.router.navigate(['/guide/' + nextGuideIndex + '/' + this.parentCollectionId]);
+      // reset guide
+      this.guideId = nextGuideIndex;
+      this.guiderSubject.next(this.guideId);
     }
     else {
       this.hasNext = false;

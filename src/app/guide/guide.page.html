@@ -3,8 +3,8 @@
     <ion-buttons slot="start">
       <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
-    <ion-title> {{ "guide.header" | translate: params }} </ion-title>
-          
+    <ion-title> {{ "guide.header" | translate: params }}</ion-title>
+
 
     <ion-buttons slot="primary" class="header_cta">
       <ion-back-button *ngIf="!parentCollectionId" style="color: #ffffff;"></ion-back-button>
@@ -41,7 +41,7 @@
   <span *ngIf="isLoadedContent">
     <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
       <ion-slides #guideStepSlide #guideStepSlideElemRef pager="true" [options]="slideOpts"
-        (ionSlideWillChange)="changeGuideStepCurrentSlide()" (ionSlideDidChange)="ionSlideDidChange()">
+        (ionSlideWillChange)="changeGuideStepCurrentSlide()">
         <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">
           <ng-template #guideStepContent></ng-template>
         </ion-slide>
