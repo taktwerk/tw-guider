@@ -1,4 +1,4 @@
-import { ModalController, Platform } from '@ionic/angular';
+import { LoadingController, ModalController, Platform } from '@ionic/angular';
 import { Component, Input, OnInit } from '@angular/core';
 import ImageEditor from 'tui-image-editor';
 import { RecordedFile, DownloadService } from 'src/services/download-service';
@@ -7,6 +7,7 @@ import { ApiSync } from 'src/providers/api-sync';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
 import { Location } from '@angular/common';
 import { Storage } from '@ionic/storage';
+import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 
 
 interface CustomControls {
@@ -22,10 +23,11 @@ interface CustomControls {
 })
 export class ImageEditorComponent implements OnInit {
 
-  @Input() model;
+  @Input() model: GuideStepModel;
 
   ImageEditor;
   iCanvas
+  loading = (message?) => this.loadingController.create({ duration: 2000, message: message || 'Please wait' });
 
   currentControl: CustomControls = { name: null, icon: null };
   currentSubControl: CustomControls = { name: null, icon: null };
@@ -53,7 +55,8 @@ export class ImageEditorComponent implements OnInit {
     private file: nFile,
     private apiSync: ApiSync,
     private location: Location,
-    private platform: Platform
+    private platform: Platform,
+    public loadingController: LoadingController
   ) {
 
   }
@@ -62,15 +65,14 @@ export class ImageEditorComponent implements OnInit {
     this.storage.set('ImageEditorComponentOpen', true);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    (await this.loading('Loading Canvas')).present();
+
     this.ImageEditor = new ImageEditor(document.querySelector('#tui-image-editor'), {
       cssMaxWidth: document.documentElement.clientWidth,
       cssMaxHeight: document.documentElement.clientHeight,
     });
 
-    // this.ImageEditor.loadImageFromURL(this.model.getFileImagePath().changingThisBreaksApplicationSecurity, 'Editor Test').then(() => {
-    // this.ImageEditor.clearUndoStack();
-    //  console.log("this.model.design_canvas_meta", this.model.design_canvas_meta)
     // load metadata
     var canvasMeta = JSON.parse(this.model.design_canvas_meta);
     // console.log("this.model.design_canvas_meta", canvasMeta);
@@ -81,18 +83,20 @@ export class ImageEditorComponent implements OnInit {
     var selectionStyle = this.ImageEditor._graphics.cropSelectionStyle;
     // console.log("selectionStyle", selectionStyle)
 
-    setTimeout(() => {
+    setTimeout(async () => {
       this.iCanvas.lowerCanvasEl.style.border = "double #2d2d2b";
-      this.ImageEditor.loadImageFromURL(this.model.getFileImagePath().changingThisBreaksApplicationSecurity, 'Editor Test')
-
-      this.iCanvas.loadFromJSON(canvasMeta, () => {
+      this.ImageEditor.loadImageFromURL(this.model.getFileImagePath(), 'Editor Test');
+      this.iCanvas.loadFromJSON(canvasMeta, async () => {
         var list = this.iCanvas.getObjects();
         list.forEach(function (obj) {
           obj.set(selectionStyle);
         });
+
+
       });
+
+      (await this.loading()).dismiss();
     }, 200);
-    // })
 
     this.ImageEditor.on('objectAdded', (props) => {
       console.log("objectAdded");
@@ -150,6 +154,7 @@ export class ImageEditorComponent implements OnInit {
   }
 
   async onDone() {
+    (await this.loading('Saving Changes')).present();
     var dataURL = this.ImageEditor.toDataURL({ format: 'png' });
     var blob = this.base64ToBlob(dataURL);
 
@@ -161,12 +166,15 @@ export class ImageEditorComponent implements OnInit {
         //  console.log(res)
         recordedFile.uri = await this.downloadService.getResolvedNativeFilePath(res.nativeURL);
         this.model.setFile(recordedFile);
-        this.model.design_canvas_meta = JSON.stringify(this.iCanvas);
+
+        this.model.design_canvas_file = JSON.stringify(this.iCanvas);
         // console.log("onSave this.model.design_canvas_meta", this.model.design_canvas_meta)
         this.guideStepService.save(this.model).then(async () => {
           this.apiSync.setIsPushAvailableData(true);
-          await this.modalController.dismiss();
-          this.storage.set('ImageEditorComponentOpen', false)
+          await this.modalController.dismiss({ canvasSaved: true });
+          this.storage.set('ImageEditorComponentOpen', false);
+
+          (await this.loading()).dismiss();
 
         }).catch((e) => console.log(e))
 

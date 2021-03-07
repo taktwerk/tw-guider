@@ -24,6 +24,7 @@ export class GuideStepModel extends DbApiModel {
     public local_attached_file: string;
     public local_guide_id: number;
     public design_canvas_meta: string;
+    public design_canvas_file: string;
 
     //db columns
     static COL_GUIDE_ID = 'guide_id';
@@ -38,6 +39,8 @@ export class GuideStepModel extends DbApiModel {
     static COL_LOCAL_THUMB_ATTACHED_FILE = 'local_thumb_attached_file';
     static COL_LOCAL_GUIDE_ID = 'local_guide_id';
     static COL_DESIGN_CANVAS_META = "design_canvas_meta";
+    static COL_DESIGN_CANVAS_FILE = "design_canvas_file";
+
 
     public downloadMapping: FileMapInModel[] = [
         {
@@ -75,7 +78,8 @@ export class GuideStepModel extends DbApiModel {
         [GuideStepModel.COL_API_THUMB_ATTACHED_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuideStepModel.COL_LOCAL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuideStepModel.COL_LOCAL_GUIDE_ID, 'INT', DbBaseModel.TYPE_NUMBER],
-        [GuideStepModel.COL_DESIGN_CANVAS_META, 'LONGTEXT', DbBaseModel.TYPE_STRING]
+        [GuideStepModel.COL_DESIGN_CANVAS_META, 'LONGTEXT', DbBaseModel.TYPE_STRING],
+        [GuideStepModel.COL_DESIGN_CANVAS_FILE, 'LONGTEXT', DbBaseModel.TYPE_STRING],
     ];
 
     /**
@@ -108,7 +112,7 @@ export class GuideStepModel extends DbApiModel {
         }
     }
 
-    public migrations = ['AddLocalGuideIdToGuideStepTableMigration', 'AddDesignCanvasMetaToGuideStepTableMigration'];
+    public migrations = ['AddLocalGuideIdToGuideStepTableMigration', 'AddDesignCanvasMetaToGuideStepTableMigration', 'AddDesignCanvasFileToGuideStepTableMigration'];
 
     async beforePushDataToServer(isInsert?: boolean) {
         if (isInsert) {

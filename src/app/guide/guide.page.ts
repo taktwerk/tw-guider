@@ -20,7 +20,7 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { GuideStepService } from '../../providers/api/guide-step-service';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { IonBackButtonDelegate, IonContent, IonSlides, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { IonBackButtonDelegate, IonContent, IonSlides, LoadingController, ModalController, NavController, ToastController, Platform } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
 import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
@@ -135,7 +135,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     private miscService: MiscService,
     private guideViewHistoryService: GuideViewHistoryService,
     private syncService: SyncService,
-    private userService: UserService
+    private userService: UserService,
+    public platform: Platform
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {

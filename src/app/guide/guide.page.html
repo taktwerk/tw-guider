@@ -10,7 +10,8 @@
       <ion-back-button *ngIf="!parentCollectionId" style="color: #ffffff;"></ion-back-button>
 
       <ion-button (click)="backToCollection()" *ngIf="parentCollectionId">
-        <ion-icon name="arrow-back" style="color: #ffffff;"></ion-icon>
+        <ion-icon name="arrow-back" style="color: #ffffff;" *ngIf="platform.is('android')"></ion-icon>
+        <ion-icon name="chevron-back" style="color: #ffffff;" *ngIf="platform.is('ios')"></ion-icon>
       </ion-button>
 
       <ion-button (click)="presentSlideInfo($event)">
