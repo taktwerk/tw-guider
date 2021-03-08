@@ -146,7 +146,7 @@ Sentry.init({ dsn: environment.sentryDsn });
   imports: [
     BrowserModule,
     FormsModule,
-    IonicModule.forRoot(),
+    IonicModule.forRoot({ backButtonText: ''}),
     IonicStorageModule.forRoot({
       driverOrder: ['indexeddb', 'websql', 'sqlite']
     }),

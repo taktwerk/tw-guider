@@ -5,7 +5,7 @@
     </ion-buttons>
 
     <ion-buttons slot="end">
-      <ion-button (click)="onDone()" style="color: #ffffff;" > Done </ion-button>
+      <ion-button (click)="onDone()" color="light"> Done </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -32,7 +32,7 @@
     <ion-buttons>
       <ion-button class="parentControl" shape="round" (click)="onControl(control)" *ngFor="let control of controls"
         [ngClass]="{'currentControl' :currentControl?.name ==control.name}">
-        <ion-icon [name]="control.icon"> </ion-icon>
+        <ion-icon [name]="control.icon" style="color: #ffffff;"> </ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
