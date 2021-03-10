@@ -74,10 +74,13 @@ export class ImageEditorComponent implements OnInit {
     });
 
     // load metadata
-    var canvasMeta = JSON.parse(this.model.design_canvas_meta);
+    var canvasMeta = JSON.parse(this.model.design_canvas_file);
     // console.log("this.model.design_canvas_meta", canvasMeta);
 
     this.iCanvas = this.ImageEditor._graphics.getCanvas();
+    // this.iCanvas.height = window.screen.height;
+    // this.iCanvas.width = window.screen.width;
+    console.log("this.iCanvas", this.iCanvas)
     // console.log("this.iCanvas", this.iCanvas)
 
     var selectionStyle = this.ImageEditor._graphics.cropSelectionStyle;
@@ -85,7 +88,12 @@ export class ImageEditorComponent implements OnInit {
 
     setTimeout(async () => {
       this.iCanvas.lowerCanvasEl.style.border = "double #2d2d2b";
-      this.ImageEditor.loadImageFromURL(this.model.getFileImagePath(), 'Editor Test');
+      // console.log("this.model.getFileImagePath().changingThisBreaksApplicationSecurity", this.model.getFileImagePath().changingThisBreaksApplicationSecurity)
+      this.ImageEditor.loadImageFromURL(this.model.getFileImagePath().changingThisBreaksApplicationSecurity, 'Editor Test');
+      canvasMeta.backgroundImage.src = this.model.getFileImagePath().changingThisBreaksApplicationSecurity;
+      // canvasMeta.backgroundImage.height = window.screen.height;
+      // canvasMeta.backgroundImage.width = window.screen.width;
+      console.log(canvasMeta)
       this.iCanvas.loadFromJSON(canvasMeta, async () => {
         var list = this.iCanvas.getObjects();
         list.forEach(function (obj) {
@@ -165,7 +173,7 @@ export class ImageEditorComponent implements OnInit {
       this.file.writeFile(this.file.dataDirectory + '/_temp', fileName, blob, { replace: true }).then(async (res) => {
         //  console.log(res)
         recordedFile.uri = await this.downloadService.getResolvedNativeFilePath(res.nativeURL);
-        this.model.setFile(recordedFile);
+        // this.model.setFile(recordedFile);
 
         this.model.design_canvas_file = JSON.stringify(this.iCanvas);
         // console.log("onSave this.model.design_canvas_meta", this.model.design_canvas_meta)
