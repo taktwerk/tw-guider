@@ -291,9 +291,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   public setGuideSteps(id) {
+    console.log("id", id)
     // console.log("id", id)
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(async results => {
-      // console.log("results", results)
+      console.log("results", results)
       this.guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
@@ -302,19 +303,27 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   public async resumeStep(id) {
-    // console.log("guideViewHistory", this.guideViewHistory)
+    console.log("guideViewHistory", this.guideViewHistory)
     this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]);
     // in collection
     if (this.parentCollectionId) {
       this.guideViewHistory = this.guideHistories.filter(h => h.parent_guide_id != undefined).sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate())[0];
+      if (!this.guideViewHistory) {
+        this.guideViewHistory = this.guideViewHistoryService.newModel();
+      }
     }
     else {
       this.guideViewHistory = this.guideHistories.sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate()).filter((h: GuideViewHistoryModel) => !h.parent_guide_id)[0];
+      if (!this.guideViewHistory) {
+        this.guideViewHistory = this.guideViewHistoryService.newModel();
+      }
     }
-    this.guideStepSlides.slideTo(this.guideViewHistory.step).then(async () => {
-      const alertMessage = await this.translateConfigService.translate('alert.resumed');
-      this.http.showToast(alertMessage);
-    });
+    if (this.guideStepSlides && this.guideViewHistory) {
+      this.guideStepSlides.slideTo(this.guideViewHistory.step).then(async () => {
+        const alertMessage = await this.translateConfigService.translate('alert.resumed');
+        this.http.showToast(alertMessage);
+      });
+    }
   }
 
   public async saveStep() {
@@ -326,7 +335,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.guideViewHistory.guide_id = this.guide.idApi;
     this.guideViewHistory.step = await this.guideStepSlides.getActiveIndex();
 
-    this.guideViewHistoryService.save(this.guideViewHistory).then(async () => {
+    this.guideViewHistoryService.save(this.guideViewHistory).then(async (res) => {
       if (this.resumeMode) { this.apiSync.setIsPushAvailableData(true) }
     })
   }
@@ -543,6 +552,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     })
   }
 
+
   ionSlideDidChange() {
     this.guideStepSlides.isBeginning().then((res) => {
       if (this.guideCollection && this.guideCollection.guide_collection) {
@@ -569,6 +579,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
     // save last seen step
     this.guideStepSlides.getActiveIndex().then(index => {
+      this.activeIndex = index
       this.saveStep();
     })
   }
@@ -630,7 +641,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   @HostListener('unloaded')
   ngOnDestroy(): void {
-    console.log("Enterrrrrrrrrr")
     this.restartSub.unsubscribe();
     this.resumeModeSub.unsubscribe();
     this.eventSubscription.unsubscribe();
