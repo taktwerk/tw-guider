@@ -23,7 +23,7 @@ interface CustomControls {
 })
 export class ImageEditorComponent implements OnInit {
 
-  @Input() model: GuideStepModel;
+  @Input() model;
 
   ImageEditor;
   iCanvas
