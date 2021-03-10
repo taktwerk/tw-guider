@@ -579,7 +579,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
     // save last seen step
     this.guideStepSlides.getActiveIndex().then(index => {
-      this.activeIndex = index
       this.saveStep();
     })
   }
