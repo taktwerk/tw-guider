@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Storage } from '@ionic/storage';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class MiscService {
     constructor(private storage: Storage) { }
 

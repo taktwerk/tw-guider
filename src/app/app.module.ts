@@ -146,7 +146,7 @@ Sentry.init({ dsn: environment.sentryDsn });
   imports: [
     BrowserModule,
     FormsModule,
-    IonicModule.forRoot({ backButtonText: ''}),
+    IonicModule.forRoot({ backButtonText: '' }),
     IonicStorageModule.forRoot({
       driverOrder: ['indexeddb', 'websql', 'sqlite']
     }),
@@ -182,8 +182,7 @@ Sentry.init({ dsn: environment.sentryDsn });
 
   ],
   providers: [
-    MiscService,
-    LoggerService,
+
     StatusBar,
     SplashScreen,
     GuiderService,
@@ -250,6 +249,9 @@ Sentry.init({ dsn: environment.sentryDsn });
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     MigrationService,
     Base64ToGallery,
+
+    MiscService,
+    LoggerService,
   ],
   exports: [
     ProtocolDefaultComponent

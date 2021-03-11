@@ -25,7 +25,7 @@ export class GuideAssetModel extends DbApiModel {
     public name: string;
     public asset_file: string;
     public asset_html: string;
-    public thumb_asset_file: string; //pdf_image
+    public thumb_asset_file: string; // pdf_image
     public client_id: number;
 
     //db columns

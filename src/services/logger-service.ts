@@ -26,14 +26,14 @@ export interface Log {
     additional: any[];
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CustomLoggerMonitor implements NGXLoggerMonitor {
     constructor(private loggerService: LoggerService) { }
 
     onLog(log: NGXLogInterface) { this.loggerService.setLogs(log) }
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class LoggerService {
     public Logs: NGXLogInterface[] = [];
     public LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ElementRef, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, ElementRef, ViewChildren, QueryList, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { ItemReorderEventDetail } from '@ionic/core';
@@ -22,7 +22,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './listview.page.html',
   styleUrls: ['./listview.page.scss'],
 })
-export class ListViewComponent implements OnInit {
+export class ListViewComponent implements OnInit, OnDestroy {
   guideSteps: GuideStepModel[];
   guideStepsData: GuideStepModel[] = [];
 
@@ -57,33 +57,12 @@ export class ListViewComponent implements OnInit {
 
   ) { }
 
+
   ngOnInit(): void {
+    console.log(" ionViewDidEnter")
+    
     this.setGuideSteps(this.guideId);
     this.detectChanges();
-
-    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async () => {
-    //   this.setGuideSteps(this.guideId);
-    //   this.detectChanges();
-    // });
-
-    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async () => {
-    //   this.setGuideSteps(this.guideId);
-    //   this.detectChanges();
-    // });
-
-    // this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async () => {
-    //   this.setGuideSteps(this.guideId);
-    //   this.detectChanges();
-    // });
-
-    // this.events.subscribe(this.guideAssetPivotService.dbModelApi.TAG + ':create', async () => {
-    //   this.setGuideSteps(this.guideId);
-    //   this.detectChanges();
-    // });
-
-    // this.events.subscribe('network:online', () => {
-    //   this.authService.checkAccess('guide');
-    // });
 
     this.eventSubscription = this.miscService.events.subscribe(async (event) => {
       switch (event.TAG) {
@@ -91,6 +70,7 @@ export class ListViewComponent implements OnInit {
         case this.guideStepService.dbModelApi.TAG + ':delete':
         case this.guideStepService.dbModelApi.TAG + ':update':
         case this.guideAssetPivotService.dbModelApi.TAG + ':create':
+          console.log("Changes Detected")
           this.setGuideSteps(this.guideId);
           this.detectChanges();
           break;
@@ -223,5 +203,9 @@ export class ListViewComponent implements OnInit {
     if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
     }
+  }
+
+  ngOnDestroy() {
+    this.eventSubscription.unsubscribe();
   }
 }

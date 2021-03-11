@@ -47,14 +47,6 @@ export class FeedbackPage implements OnInit, OnDestroy {
     private platform: Platform
   ) {
     this.authService.checkAccess('feedback');
-
-    // this.platform.backButton.subscribe((res) => {
-    //   if (this.router.url.includes('feedback')
-    //     && this.router.url.includes('guideId')
-    //     && this.reference_id != null && this.reference_model != null) {
-    //     this.router.navigate(['/guide/' + this.guideId])
-    //   }
-    // })
   }
   ionViewDidLeave() {
     this.reference_id = null

@@ -20,15 +20,7 @@ export class EditguidePage implements OnInit, OnDestroy {
     public changeDetectorRef: ChangeDetectorRef,
     public platform: Platform,
     public location: Location
-  ) {
-
-    // this.platform.backButton.subscribe((res) => {
-    //   if (this.location.isCurrentPathEqualTo('/editguide/' + this.guideId)) {
-    //     this.router.navigate(['/guidecapture'])
-    //   }
-    // })
-  
-  }
+  ) { }
 
   guideId: string;
   public guideSteps: GuideStepModel[] = [];
@@ -42,6 +34,9 @@ export class EditguidePage implements OnInit, OnDestroy {
       }
     })
   }
+
+  ionViewWillEnter() {}
+
 
   public setGuideSteps(id) {
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {

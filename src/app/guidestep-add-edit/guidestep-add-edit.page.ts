@@ -1,3 +1,4 @@
+import { MiscService } from 'src/services/misc-service';
 import { GuiderModel } from './../../models/db/api/guider-model';
 import { GuiderService } from './../../providers/api/guider-service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -63,7 +64,8 @@ export class GuidestepAddEditPage implements OnInit {
     private modalController: ModalController,
     private userService: UserService,
     private toastController: ToastController,
-    public platform: Platform
+    public platform: Platform,
+    public miscService: MiscService
   ) {
 
     this.activatedRoute.queryParams.subscribe((param) => {
@@ -121,6 +123,7 @@ export class GuidestepAddEditPage implements OnInit {
   async addFileCapacitor() {
     this.downloadService.chooseFile().then((recordedFile) => {
       this.model.setFile(recordedFile);
+      this.shouldUpdate = true;
     })
   }
 
@@ -129,6 +132,7 @@ export class GuidestepAddEditPage implements OnInit {
       .recordVideo(true)
       .then((recordedFile) => {
         this.model.setFile(recordedFile)
+        this.shouldUpdate = true;
       })
       .catch((e) => console.log('model', 'addVideoUsingCamera', e));
   }
@@ -137,7 +141,9 @@ export class GuidestepAddEditPage implements OnInit {
     this.downloadService
       .makePhoto(1000, 1000)
       .then((recordedFile) => {
-        this.model.setFile(recordedFile)
+        this.model.setFile(recordedFile);
+        this.model.design_canvas_file = null;
+        this.shouldUpdate = true;
       })
       .catch((e) => console.log('model', 'addPhotoUsingCamera', e));
   }
@@ -211,6 +217,7 @@ export class GuidestepAddEditPage implements OnInit {
           this.shouldUpdate = false;
           this.shouldSave = false;
           // this.router.navigate(["/", "editguide", this.guideId]);
+          this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
         }).catch((e) => console.log(e))
       }
       // save all
@@ -224,6 +231,7 @@ export class GuidestepAddEditPage implements OnInit {
               const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
               this.http.showToast(alertMessage);
               // this.router.navigate(["/", "editguide", this.guideId]);
+              this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
             }).catch((e) => console.log(e))
           })
         })
@@ -239,6 +247,7 @@ export class GuidestepAddEditPage implements OnInit {
         this.http.showToast(alertMessage);
         this.shouldUpdate = false;
         this.shouldSave = false;
+        this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
         // this.router.navigate(["/", "editguide", this.guideId]);
       }).catch((e) => console.log(e))
     }

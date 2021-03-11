@@ -1,3 +1,4 @@
+import { Self } from '@angular/core';
 import { Platform } from '@ionic/angular';
 // import { AppSetting } from 'src/services/app-setting';
 import { LoggerService } from 'src/services/logger-service';
@@ -133,8 +134,9 @@ export abstract class DbBaseModel {
                     this.dbCreateTable().then((res) => {
                         if (!res) {
                             // console.log(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME);
-                            this.loggerService.getLogger().error(this.TAG, 'Could not initialize db ', new Error().stack)
-                            // circular dependency (AppSettings import)
+                            if (this.loggerService) {
+                                this.loggerService.getLogger().error(this.TAG, 'Could not initialize db ', new Error().stack) // TODO: Loggerservice & MiscService seems unreachable here
+                            }
                         }
                         resolve(res);
                     });
@@ -767,9 +769,9 @@ export abstract class DbBaseModel {
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(condition);
                     db.query(query).then((res) => {
                         // this.events.publish(this.TAG + ':update', this);
-                        console.log(this.miscService)
+                        console.log("this.miscService", this.miscService)
                         if (this.miscService) {
-                            this.miscService.events.next({ TAG: this.TAG + ':create', data: this });
+                            this.miscService.events.next({ TAG: this.TAG + ':update', data: this });
                         }
                         resolve(res);
                     }).catch((err) => {
@@ -783,8 +785,9 @@ export abstract class DbBaseModel {
                 }
             }).catch((err) => {
                 console.log('dbReady errrr', err);
-                this.loggerService.getLogger().error("error at db-base-model 777", err, new Error().stack)
-
+                if (this.loggerService) {
+                    this.loggerService.getLogger().error("error at db-base-model 777", err, new Error().stack)
+                }
                 resolve(false);
             });
         });

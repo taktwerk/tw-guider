@@ -1,3 +1,4 @@
+import { MiscService } from './../../services/misc-service';
 import { LoadingController, ModalController, Platform } from '@ionic/angular';
 import { Component, Input, OnInit } from '@angular/core';
 import ImageEditor from 'tui-image-editor';
@@ -8,7 +9,7 @@ import { GuideStepService } from 'src/providers/api/guide-step-service';
 import { Location } from '@angular/common';
 import { Storage } from '@ionic/storage';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
-
+import { AuthService } from 'src/services/auth-service';
 
 interface CustomControls {
   name: string
@@ -23,11 +24,12 @@ interface CustomControls {
 })
 export class ImageEditorComponent implements OnInit {
 
-  @Input() model;
+  @Input() model; // TODO:Remove the Type GuideStepModel to prevent --prod fail
 
   ImageEditor;
   iCanvas
   loading = (message?) => this.loadingController.create({ duration: 2000, message: message || 'Please wait' });
+  canvasFile
 
   currentControl: CustomControls = { name: null, icon: null };
   currentSubControl: CustomControls = { name: null, icon: null };
@@ -56,10 +58,10 @@ export class ImageEditorComponent implements OnInit {
     private apiSync: ApiSync,
     private location: Location,
     private platform: Platform,
-    public loadingController: LoadingController
-  ) {
-
-  }
+    public loadingController: LoadingController,
+    public authService: AuthService,
+    public miscService: MiscService
+  ) { }
 
   ionViewDidEnter() {
     this.storage.set('ImageEditorComponentOpen', true);
@@ -67,42 +69,41 @@ export class ImageEditorComponent implements OnInit {
 
   async ngOnInit() {
     (await this.loading('Loading Canvas')).present();
-
     this.ImageEditor = new ImageEditor(document.querySelector('#tui-image-editor'), {
       cssMaxWidth: document.documentElement.clientWidth,
       cssMaxHeight: document.documentElement.clientHeight,
     });
 
     // load metadata
-    var canvasMeta = JSON.parse(this.model.design_canvas_file);
-    // console.log("this.model.design_canvas_meta", canvasMeta);
-
+    this.canvasFile = JSON.parse(this.model.design_canvas_file);
     this.iCanvas = this.ImageEditor._graphics.getCanvas();
-    // this.iCanvas.height = window.screen.height;
-    // this.iCanvas.width = window.screen.width;
-    console.log("this.iCanvas", this.iCanvas)
-    // console.log("this.iCanvas", this.iCanvas)
-
     var selectionStyle = this.ImageEditor._graphics.cropSelectionStyle;
-    // console.log("selectionStyle", selectionStyle)
+
+    console.log("this.model.local_attached_file", this.model.local_attached_file)
+    console.log("this.model.getFileImagePath(1)", this.model.getFileImagePath(1))
+    console.log("this.model.getFileImagePath()", this.model.getFileImagePath())
+
+    var originalImageFile = encodeURI(this.model.local_attached_file);
+    const convertFileSrc = this.downloadService.getWebviewFileSrc(originalImageFile);
+    const SafeImageUrl = this.downloadService.getSafeUrl(convertFileSrc);
+
+    console.log("SafeUrl", SafeImageUrl);
+    console.log("this.canvasFile", this.canvasFile);
 
     setTimeout(async () => {
       this.iCanvas.lowerCanvasEl.style.border = "double #2d2d2b";
-      // console.log("this.model.getFileImagePath().changingThisBreaksApplicationSecurity", this.model.getFileImagePath().changingThisBreaksApplicationSecurity)
-      this.ImageEditor.loadImageFromURL(this.model.getFileImagePath().changingThisBreaksApplicationSecurity, 'Editor Test');
-      canvasMeta.backgroundImage.src = this.model.getFileImagePath().changingThisBreaksApplicationSecurity;
-      // canvasMeta.backgroundImage.height = window.screen.height;
-      // canvasMeta.backgroundImage.width = window.screen.width;
-      console.log(canvasMeta)
-      this.iCanvas.loadFromJSON(canvasMeta, async () => {
+      if (this.canvasFile != null) {
+        this.ImageEditor.loadImageFromURL(this.canvasFile.backgroundImage.src, 'Editor Test');
+      }
+      else {
+        this.ImageEditor.loadImageFromURL(this.model.getFileImagePath().changingThisBreaksApplicationSecurity, 'Editor Test');
+      }
+      this.iCanvas.loadFromJSON(this.canvasFile, async () => {
         var list = this.iCanvas.getObjects();
         list.forEach(function (obj) {
           obj.set(selectionStyle);
         });
-
-
       });
-
       (await this.loading()).dismiss();
     }, 200);
 
@@ -132,7 +133,6 @@ export class ImageEditorComponent implements OnInit {
   onSubControl(control: CustomControls) {
     // stop all modes
     this.ImageEditor.stopDrawingMode();
-
     // 
     this.currentSubControl.name != control.name ? this.currentSubControl = control : this.currentSubControl = { name: null, icon: null };
     if (this.currentSubControl.name != null) {
@@ -162,30 +162,59 @@ export class ImageEditorComponent implements OnInit {
   }
 
   async onDone() {
+    const user = await this.authService.getLastUser();
+    if (!user) {
+      return;
+    }
+    this.model.user_id = user.userId;
+    this.model.created_by = user.userId;
+    this.model.client_id = user.client_id;
+
+
+    this.model.design_canvas_file = JSON.stringify(this.iCanvas);
     (await this.loading('Saving Changes')).present();
-    var dataURL = this.ImageEditor.toDataURL({ format: 'png' });
-    var blob = this.base64ToBlob(dataURL);
+    var renderedImageUrl = this.ImageEditor.toDataURL({ format: 'png' });
+    var blob = this.base64ToBlob(renderedImageUrl);
 
     const fileName = new Date().getTime() + '.png';
     const recordedFile = new RecordedFile();
 
+    var xhr = new XMLHttpRequest();
+    var originalImageDataUrl;
+    var originalImageDataUrlBlob;
+    xhr.onload = () => {
+      var reader = new FileReader();
+      reader.onloadend = () => {
+        originalImageDataUrl = reader.result;
+        originalImageDataUrlBlob = this.base64ToBlob(originalImageDataUrl);
+      }
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', JSON.parse(this.model.design_canvas_file).backgroundImage.src);
+    xhr.responseType = 'blob';
+    xhr.send();
+
     this.downloadService.checkTempDir('_temp').then(() => {
-      this.file.writeFile(this.file.dataDirectory + '/_temp', fileName, blob, { replace: true }).then(async (res) => {
-        //  console.log(res)
-        recordedFile.uri = await this.downloadService.getResolvedNativeFilePath(res.nativeURL);
-        // this.model.setFile(recordedFile);
+      this.file.writeFile(this.file.dataDirectory + '/_temp', fileName, originalImageDataUrlBlob, { replace: true }).then(async (thumbres) => {
+        recordedFile.thumbnailUri = await this.downloadService.getResolvedNativeFilePath(thumbres.nativeURL);
 
-        this.model.design_canvas_file = JSON.stringify(this.iCanvas);
-        // console.log("onSave this.model.design_canvas_meta", this.model.design_canvas_meta)
-        this.guideStepService.save(this.model).then(async () => {
-          this.apiSync.setIsPushAvailableData(true);
-          await this.modalController.dismiss({ canvasSaved: true });
-          this.storage.set('ImageEditorComponentOpen', false);
+        this.file.writeFile(this.file.dataDirectory + '/_temp', fileName, blob, { replace: true }).then(async (urires) => {
 
-          (await this.loading()).dismiss();
+          recordedFile.uri = await this.downloadService.getResolvedNativeFilePath(urires.nativeURL);
+          this.model.setFile(recordedFile);
 
+          setTimeout(() => {
+            this.guideStepService.save(this.model).then(async (res) => {
+              this.apiSync.setIsPushAvailableData(true);
+
+              this.storage.set('ImageEditorComponentOpen', false);
+              (await this.loading()).dismiss({ canvasSaved: true });
+              this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
+
+              await this.modalController.dismiss();
+            }).catch((e) => console.log(e))
+          }, 300)
         }).catch((e) => console.log(e))
-
       }).catch((e) => console.log(e))
     })
   }

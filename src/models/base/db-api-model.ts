@@ -730,8 +730,6 @@ export abstract class DbApiModel extends DbBaseModel {
         if (!modelName) {
             modelName = this.TABLE_NAME;
         }
-        // console.log('this.downloadService.getWebviewFileSrc(this.downloadService.getNativeFilePath(basePath, modelName))', this.downloadService.getWebviewFileSrc(this.downloadService.getNativeFilePath(basePath, modelName)));
-        // return this.downloadService.getWebviewFileSrc(this.downloadService.getNativeFilePath(basePath, modelName));
         return this.downloadService.getNativeFilePath(basePath, modelName);
     }
 
