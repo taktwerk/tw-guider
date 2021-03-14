@@ -5,7 +5,17 @@
     </ion-buttons>
 
     <ion-buttons slot="end">
+
+      <ion-button (click)="onUndo()" color="light" *ngIf="willUndo">
+        <ion-icon name="arrow-undo"></ion-icon>
+      </ion-button>
+
+      <ion-button (click)="onRedo()" color="light" *ngIf="willRedo">
+        <ion-icon name="arrow-redo"></ion-icon>
+      </ion-button>
+
       <ion-button (click)="onDone()" color="light"> Done </ion-button>
+
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -35,6 +45,13 @@
         <ion-icon [name]="control.icon" style="color: #ffffff;"> </ion-icon>
       </ion-button>
     </ion-buttons>
+
+    <ion-buttons slot="end" *ngIf="selectedAnnotation !=null">
+      <ion-button (click)="deleteSelected()" color="light">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 
 </ion-footer>

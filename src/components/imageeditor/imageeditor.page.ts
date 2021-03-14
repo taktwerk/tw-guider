@@ -34,6 +34,10 @@ export class ImageEditorComponent implements OnInit {
   currentControl: CustomControls = { name: null, icon: null };
   currentSubControl: CustomControls = { name: null, icon: null };
 
+  selectedAnnotation = null;
+  willRedo = false;
+  willUndo = false;
+
   controls: CustomControls[] = [
     {
       name: 'Draw',
@@ -103,23 +107,43 @@ export class ImageEditorComponent implements OnInit {
         list.forEach(function (obj) {
           obj.set(selectionStyle);
         });
+
+
       });
       (await this.loading()).dismiss();
     }, 200);
 
-    this.ImageEditor.on('objectAdded', (props) => {
-      console.log("objectAdded");
-      console.log(props);
-    });
+    if (this.ImageEditor._invoker._undoStack.length > 1) {
+      this.willUndo = true;
+    }
+    if (!this.ImageEditor.isEmptyRedoStack()) {
+      this.willRedo = true;
+    }
 
-    this.ImageEditor.on('mousedown', () => {
-      console.log("mousedown");
-      console.log(this.ImageEditor._graphics._objects[0]);
-    });
+    this.ImageEditor.on('objectAdded', (props) => { });
+
+    this.ImageEditor.on('mousedown', (e) => { });
 
     this.ImageEditor.on('objectActivated', (props) => {
-      console.log("objectActivated");
-      console.log(props);
+      this.selectedAnnotation = props;
+    });
+
+    this.ImageEditor.on('redoStackChanged', (length) => {
+      console.log("redoStackChanged", length);
+      if (this.ImageEditor.isEmptyRedoStack()) {
+        this.willRedo = false;
+      } else {
+        this.willRedo = true;
+      }
+    });
+
+    this.ImageEditor.on('undoStackChanged', (length) => {
+      console.log("undoStackChanged", length);
+      if (this.ImageEditor._invoker._undoStack.length === 1 || length === 1) {
+        this.willUndo = false;
+      } else {
+        this.willUndo = true;
+      }
     });
   }
 
@@ -148,6 +172,32 @@ export class ImageEditorComponent implements OnInit {
         default:
       }
     }
+  }
+
+  onRedo() {
+    this.ImageEditor.redo().then(() => {
+      if (this.ImageEditor.isEmptyRedoStack()) {
+        this.willRedo = false;
+      }
+    })
+  }
+
+  onUndo() {
+    if (this.ImageEditor._invoker._undoStack.length > 1) {
+      this.ImageEditor.undo().then(() => {
+        if (this.ImageEditor._invoker._undoStack.length == 1) {
+          this.willUndo = false;
+        }
+      })
+    }
+  }
+
+  deleteSelected() {
+    this.ImageEditor.removeObject(this.selectedAnnotation.id)
+      .then(() => {
+        this.selectedAnnotation = null
+      })
+      .catch((e) => console.log("delete error", e))
   }
 
   closeControl() {
@@ -190,7 +240,11 @@ export class ImageEditorComponent implements OnInit {
       }
       reader.readAsDataURL(xhr.response);
     };
-    xhr.open('GET', JSON.parse(this.model.design_canvas_file).backgroundImage.src);
+
+    if (JSON.parse(this.model.design_canvas_file).backgroundImage.src) {
+      xhr.open('GET', JSON.parse(this.model.design_canvas_file).backgroundImage.src);
+    }
+
     xhr.responseType = 'blob';
     xhr.send();
 
