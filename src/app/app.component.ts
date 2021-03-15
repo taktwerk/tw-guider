@@ -210,7 +210,21 @@ export class AppComponent implements OnInit, OnDestroy {
             }
           }
           if (this.userService.userDb.userSetting.language) {
-            console.log("this.userService.userDb.userSetting.language", this.userService.userDb.userSetting.language)
+            console.log(this.userService.userDb.userSetting.language, "this.userService.userDb.userSetting.language") // always device lang
+            // first time opening app?
+            // const storedLang = await this.storage.get("storedLang");
+            // console.log(storedLang, "storedLang")
+            // if (storedLang != null) {
+            //   currentLanguage = storedLang;
+            //   if (this.userService.userDb.userSetting.language != storedLang) {
+            //     this.userService.userDb.userSetting.language = storedLang;
+            //     this.userService.userDb.save();
+            //   }
+            // }
+            // else {
+            //   currentLanguage = this.userService.userDb.userSetting.language;
+            //   this.storage.set("storedLang", currentLanguage)
+            // }
             currentLanguage = this.userService.userDb.userSetting.language;
           }
           this.syncService.syncMode.next(this.userService.userDb.userSetting.syncMode);

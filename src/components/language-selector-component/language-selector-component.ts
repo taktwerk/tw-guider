@@ -13,7 +13,7 @@ import { TranslateConfigService } from '../../services/translate-config.service'
 import { UserService } from '../../services/user-service';
 import { MiscService } from 'src/services/misc-service';
 import { Subscription } from 'rxjs';
-
+import { Storage } from '@ionic/storage';
 /**
  * Generated class for the TodoPage page.
  *
@@ -53,6 +53,7 @@ export class LanguageSelectorComponent implements OnInit {
         private translateConfigService: TranslateConfigService,
         private userService: UserService,
         private miscService: MiscService,
+        private storage: Storage
     ) {
         this.init();
     }
@@ -67,7 +68,6 @@ export class LanguageSelectorComponent implements OnInit {
                 ) {
                     this.selectedLanguage = this.userService.userDb.userSetting.language;
                     this.translateConfigService.setLanguage(this.selectedLanguage);
-
                     return;
                 }
             }
@@ -82,6 +82,7 @@ export class LanguageSelectorComponent implements OnInit {
             if (isExist) {
                 this.userService.userDb.userSetting.language = this.selectedLanguage;
                 this.userService.userDb.save();
+               // this.storage.set("storedLang", this.selectedLanguage);
             }
         });
     }
