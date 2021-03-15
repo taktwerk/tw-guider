@@ -13,11 +13,14 @@ export class TranslateConfigService {
         de: germanyLanguageObject
     };
 
-    static DEFAULT_LANGUAGE: string = 'en';
+    static DEFAULT_LANGUAGE: string;
 
     constructor(
         private translator: TranslateService
-    ) {}
+    ) {
+        TranslateConfigService.DEFAULT_LANGUAGE = this.getDeviceLanguage();
+        console.log(TranslateConfigService.DEFAULT_LANGUAGE, "TranslateConfigService.DEFAULT_LANGUAGE")
+    }
 
     getDefaultLanguage() {
         if (this.translator.currentLang && this.isLanguageAvailable(this.translator.currentLang)) {
@@ -33,6 +36,7 @@ export class TranslateConfigService {
     }
 
     setLanguage(setLang?: string) {
+        console.log("setLang", setLang)
         if (!setLang || !this.isLanguageAvailable(setLang)) {
             setLang = TranslateConfigService.DEFAULT_LANGUAGE;
         }
@@ -59,5 +63,14 @@ export class TranslateConfigService {
 
     onLangChange() {
         return this.translator.onLangChange;
+    }
+
+    getDeviceLanguage() {
+        const deviceLang = navigator.language.split("-")[0]
+        const osLang = TranslateConfigService.AVAILABLE_LANGUAGES[deviceLang];
+        if (osLang) {
+            return deviceLang;
+        }
+        return 'en';
     }
 }

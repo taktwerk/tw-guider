@@ -68,8 +68,6 @@ export class AppComponent implements OnInit, OnDestroy {
       await this.platform.ready();
       await this.initializeApp();
     })();
-
-
   }
 
   public userDb: UserDb;
@@ -183,7 +181,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
       await this.migrationProvider.init();
 
-      this.translateConfigService.setLanguage();
+      this.translateConfigService.setLanguage(this.translateConfigService.getDeviceLanguage());
 
       const result = await this.login();
 
@@ -212,6 +210,7 @@ export class AppComponent implements OnInit, OnDestroy {
             }
           }
           if (this.userService.userDb.userSetting.language) {
+            console.log("this.userService.userDb.userSetting.language", this.userService.userDb.userSetting.language)
             currentLanguage = this.userService.userDb.userSetting.language;
           }
           this.syncService.syncMode.next(this.userService.userDb.userSetting.syncMode);
