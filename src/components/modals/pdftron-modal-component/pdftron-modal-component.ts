@@ -24,7 +24,7 @@ declare const WebViewer: any;
 export class PdftronModalComponent implements OnInit, OnDestroy {
     @Input() fileUrl: string;
     @Input() fileTitle: string;
-    @ViewChild('viewer', { static: false }) viewer: ElementRef;
+    @ViewChild('viewer') viewer: ElementRef;
     wvInstance: any;
 
     constructor(private modalController: ModalController,

@@ -37,7 +37,7 @@ export class FeedbackAddEditPage implements OnInit {
 
   public params;
 
-  @ViewChild(IonBackButtonDelegate, { static: false }) backButton: IonBackButtonDelegate;
+  @ViewChild(IonBackButtonDelegate) backButton: IonBackButtonDelegate;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -71,7 +71,7 @@ export class FeedbackAddEditPage implements OnInit {
     // })
   }
 
-  @ViewChild('filePicker', { static: false }) filePickerRef: ElementRef<HTMLInputElement>;
+  @ViewChild('filePicker') filePickerRef: ElementRef<HTMLInputElement>;
 
   dismiss() {
     this.model.deleteAttachedFilesForDelete();

@@ -37,7 +37,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     @Input() willStopRotate = true;
     @Input() fullScreen = true;
 
-    @ViewChild('domObj', { static: false }) domObj: ElementRef;
+    @ViewChild('domObj') domObj: ElementRef;
 
     isInit = false;
     isRendered = false;

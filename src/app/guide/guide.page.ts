@@ -47,20 +47,20 @@ import { Subject, Subscription } from 'rxjs';
   styleUrls: ['guide.page.scss']
 })
 export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
-  @ViewChild(IonBackButtonDelegate, { static: false }) backButtonDelegate: IonBackButtonDelegate;
+  @ViewChild(IonBackButtonDelegate) backButtonDelegate: IonBackButtonDelegate;
 
   @ViewChildren('guideStepContent', { read: ViewContainerRef }) slideComponents: QueryList<any>;
-  @ViewChild('guideStepSlide', { static: false }) guideStepSlides: IonSlides;
-  @ViewChild('guideStepSlideElemRef', { static: false }) guideStepSlideElemRef: ElementRef;
+  @ViewChild('guideStepSlide') guideStepSlides: IonSlides;
+  @ViewChild('guideStepSlideElemRef') guideStepSlideElemRef: ElementRef;
 
-  @ViewChild('guideStepContentTemplate', { static: false, read: ViewContainerRef }) guideStepContentTemplate;
+  @ViewChild('guideStepContentTemplate', { read: ViewContainerRef }) guideStepContentTemplate;
 
   @Input() categoryId: number;
 
   @Input() guides: GuiderModel[] = [];
 
-  @ViewChild(IonContent, { static: false }) content: IonContent;
-  @ViewChild('assetSection', { static: false }) assetSection: any;
+  @ViewChild(IonContent) content: IonContent;
+  @ViewChild('assetSection') assetSection: any;
 
   isInitStepSlider = false;
 

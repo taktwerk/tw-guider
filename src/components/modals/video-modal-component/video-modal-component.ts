@@ -20,7 +20,7 @@ import { Storage } from '@ionic/storage';
 })
 
 export class VideoModalComponent implements OnInit, OnDestroy {
-    @ViewChild('video', { static: false }) video: ElementRef; // binds to #video in video.html
+    @ViewChild('video') video: ElementRef; // binds to #video in video.html
     videoElement: HTMLVideoElement;
     @Input() fileUrl: string;
     @Input() fileTitle: string;

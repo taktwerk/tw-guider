@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { GuidestepAddEditPage } from './guidestep-add-edit.page';
@@ -7,7 +7,7 @@ describe('GuidestepAddEditPage', () => {
   let component: GuidestepAddEditPage;
   let fixture: ComponentFixture<GuidestepAddEditPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ GuidestepAddEditPage ],
       imports: [IonicModule.forRoot()]

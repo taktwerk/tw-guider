@@ -32,8 +32,8 @@ export class DrawImageModalComponent implements AfterViewChecked {
 
   consoleLog: any;
 
-  @ViewChild('imageCanvas', { static: false }) canvas: any;
-  @ViewChild('mainCanvas', { static: false }) mainCanvas: any;
+  @ViewChild('imageCanvas') canvas: any;
+  @ViewChild('mainCanvas') mainCanvas: any;
   canvasElement: any;
   mainCanvasElement: any;
   saveX: number;
@@ -47,7 +47,7 @@ export class DrawImageModalComponent implements AfterViewChecked {
 
   isInit = false;
 
-  @ViewChild('domObj', { static: false }) domObj: ElementRef;
+  @ViewChild('domObj') domObj: ElementRef;
 
   selectedColor = '#9e2956';
   colors = ['#9e2956', '#c2281d', '#de722f', '#edbf4c', '#5db37e', '#459cde', '#4250ad', '#802fa3'];

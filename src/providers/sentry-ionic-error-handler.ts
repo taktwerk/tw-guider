@@ -1,7 +1,8 @@
-import { ErrorHandler } from '@angular/core';
+import { ErrorHandler, Injectable } from '@angular/core';
 
 import * as Sentry from 'sentry-cordova';
 
+@Injectable()
 export class SentryIonicErrorHandler extends ErrorHandler {
     handleError(error) {
         super.handleError(error);

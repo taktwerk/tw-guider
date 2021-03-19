@@ -13,8 +13,6 @@
   },
   "include": [
     "src/**/*.ts",
-    "node_modules/com-sarriaroman-photoviewer/source/PhotoViewer.ts",
-    "node_modules/com-sarriaroman-photoviewer/source/PhotoViewer.ts"
   ],
   "exclude": [
     "src/test.ts",
