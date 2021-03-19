@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs/Subscription';
+
 import { MiscService } from './../../services/misc-service';
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
@@ -16,6 +16,7 @@ import { SyncMode } from 'src/components/synchronization-component/synchronizati
 import { SyncService } from 'src/services/sync-service';
 import { SyncModalComponent } from 'src/components/sync-modal-component/sync-modal-component';
 import { debounceTime } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-list',

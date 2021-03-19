@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/map';
+
 import { DbApiModel } from '../../../models/base/db-api-model';
 import { HttpClient } from '../../../services/http-client';
 import { AppSetting } from '../../../services/app-setting';
 import { UserDb } from '../../../models/db/user-db';
 import { HttpHeaders as Headers } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export abstract class ApiService {
@@ -77,7 +78,7 @@ export abstract class ApiService {
         return new Promise(resolve => {
             this.isReady = false;
             this.http.get(this.appSetting.getApiUrl() + this.loadUrl)
-                .map(res => res.json())
+                .pipe(map(res => res.json()))
                 .subscribe(data => {
                     this.isReady = true;
                     for (const record of data) {

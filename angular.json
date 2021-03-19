@@ -46,14 +46,9 @@
               },
               {
                 "input": "src/theme/virtual-scroll.scss"
-              },
-              {
-                "input": "node_modules/swiper/css/swiper.css"
               }
             ],
-            "scripts": [
-              "node_modules/swiper/js/swiper.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -137,7 +132,9 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         },
         "e2e": {

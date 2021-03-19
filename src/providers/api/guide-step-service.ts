@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/map';
+
 import { Platform, } from '@ionic/angular';
 import { ApiService } from './base/api-service';
 import { DbProvider } from '../db-provider';

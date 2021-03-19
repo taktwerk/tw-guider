@@ -1,12 +1,13 @@
 import { Location } from '@angular/common';
 import { Platform } from '@ionic/angular';
-import { Subscription } from 'rxjs/Subscription';
+
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
 
 import { AuthService } from '../../services/auth-service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-editguide',
   templateUrl: './editguide.page.html',

@@ -7,8 +7,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { AppConfigurationModeEnum, AppSetting } from '../../services/app-setting';
 import { UserService } from '../../services/user-service';
 import { environment } from '../../environments/environment';
-import { Subscription } from 'rxjs/Subscription';
 import { MiscService } from 'src/services/misc-service';
+import { Subscription } from 'rxjs';
 
 /**
  * Generated class for the TodoPage page.

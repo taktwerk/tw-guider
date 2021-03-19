@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/catch';
+
 import {ToastController} from '@ionic/angular';
 import {TranslateConfigService} from './translate-config.service';
 

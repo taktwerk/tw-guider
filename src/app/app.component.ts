@@ -1,6 +1,6 @@
 import { Storage } from '@ionic/storage';
 import { MiscService } from './../services/misc-service';
-import { Subscription } from 'rxjs/Subscription';
+
 import { LoggerService } from 'src/services/logger-service';
 import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy, QueryList, ViewChildren, Renderer2 } from '@angular/core';
 import { AlertController, IonRouterOutlet, NavController, Platform, ModalController } from '@ionic/angular';
@@ -9,8 +9,7 @@ import { MigrationProvider } from '../providers/migration-provider';
 import { AuthService } from '../services/auth-service';
 import { Network } from '@ionic-native/network/ngx';
 import { SyncService } from '../services/sync-service';
-import { Observable } from 'rxjs';
-import 'rxjs/add/observable/interval';
+
 import { UserDb } from '../models/db/user-db';
 import { TranslateConfigService } from '../services/translate-config.service';
 import { AppSetting } from '../services/app-setting';
@@ -22,6 +21,7 @@ import { Location } from '@angular/common';
 
 import { Plugins } from '@capacitor/core';
 import { AuthDb } from 'src/models/db/auth-db';
+import { interval, Subscription } from 'rxjs';
 
 const { SplashScreen, App } = Plugins;
 
@@ -390,7 +390,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.apiSync.isAvailableForSyncData.next(this.userService.userDb.userSetting.isSyncAvailableData);
       this.apiSync.isAvailableForPushData.next(this.userService.userDb.userSetting.isPushAvailableData);
       this.apiSync.checkAvailableChanges().then(() => {
-        this.checkAvailableSyncChanges = Observable.interval(30000)
+        this.checkAvailableSyncChanges = interval(30000)
           .subscribe(() => {
             this.apiSync.checkAvailableChanges();
           });
@@ -418,7 +418,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.periodicSync = null;
     }
     if (syncMode === 2) {
-      this.periodicSync = Observable.interval(15000)
+      this.periodicSync = interval(15000)
         .subscribe(() => {
           let syncProcessStatus = this.apiSync.syncProgressStatus.getValue();
           if (['pause'].includes(syncProcessStatus)) {

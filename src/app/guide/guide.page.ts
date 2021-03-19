@@ -2,7 +2,7 @@ import { UserService } from 'src/services/user-service';
 import { SyncService } from 'src/services/sync-service';
 import { GuideViewHistoryModel } from 'src/models/db/api/guide-view-history-model';
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
-import { Subscription } from 'rxjs/Subscription';
+
 import { MiscService } from './../../services/misc-service';
 import { ApiSync } from 'src/providers/api-sync';
 import { MenuPopoverComponent } from 'src/components/menupopover/menupopover.page';
@@ -39,7 +39,7 @@ import { PopoverController } from '@ionic/angular';
 import { TranslateConfigService } from 'src/services/translate-config.service';
 import { HttpClient } from 'src/services/http-client';
 import { UserDb } from 'src/models/db/user-db';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-guide',

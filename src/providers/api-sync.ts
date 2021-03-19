@@ -1,7 +1,7 @@
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { GuiderModel } from './../models/db/api/guider-model';
 import { Injectable, OnDestroy } from '@angular/core';
-import 'rxjs/add/operator/map';
+
 import { HttpClient } from '../services/http-client';
 import { AppSetting } from '../services/app-setting';
 import { DbProvider } from './db-provider';
@@ -11,7 +11,7 @@ import { ApiService } from './api/base/api-service';
 
 import { GuiderService } from './api/guider-service';
 import { DownloadService } from '../services/download-service';
-import 'rxjs/add/observable/forkJoin';
+
 import { GuideCategoryService } from './api/guide-category-service';
 import { GuideCategoryBindingService } from './api/guide-category-binding-service';
 import { GuideStepService } from './api/guide-step-service';

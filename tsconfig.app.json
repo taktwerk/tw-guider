@@ -4,7 +4,9 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "outDir": "./out-tsc/app",
-    "types": [ "node", "webgl2" ],
+    "types": [
+      "node"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ]
