@@ -22,7 +22,7 @@ export class DatePipe extends BaseDatePipe implements PipeTransform {
             }
         }
 
-        return super.transform(value, format, timezone, locale);
+        return super.transform(value, format, timezone, locale); 
     }
 
    

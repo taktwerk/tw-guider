@@ -90,6 +90,7 @@
     "cordova-android-support-gradle-release": "^3.0.1",
     "cordova-plugin-aes256-encryption": "^2.0.1",
     "cordova-plugin-device": "^2.0.3",
+    "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-insomnia": "^4.3.0",
     "cordova-plugin-qrscanner": "^3.0.1",
     "cordova-plugin-video-editor": "^1.1.3",
