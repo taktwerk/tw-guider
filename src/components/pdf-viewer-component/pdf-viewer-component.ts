@@ -1,11 +1,8 @@
 import { Component, ViewChild, OnInit, Input } from '@angular/core';
-import { FileOpener } from '@ionic-native/file-opener/ngx';
-import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { DownloadService } from '../../services/download-service';
-import { map } from 'rxjs/operators';
-import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
 import { Storage } from '@ionic/storage';
 
 /**
@@ -19,7 +16,7 @@ const { Filesystem } = Plugins;
 
 @Component({
   selector: 'pdf-viewer-component',
-  templateUrl: 'pdf-viewer-component.html',
+  templateUrl: 'pdf-viewer-component.html'
 })
 export class PdfViewerComponent implements OnInit {
   @Input() url: string;
