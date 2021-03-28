@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="header_bg" [style.padding-top]="platform.is('ipad')? '20px': ''">
     <ion-title> {{ 'sync-modal.header' | translate:params }} </ion-title>
-    <sync-spinner-component [shouldOpenPopup]="false" slot="start"> </sync-spinner-component>
+    <sync-spinner-component [shouldOpenPopup]="false" slot="primary"> </sync-spinner-component>
   
     <ion-buttons slot="primary">
       <ion-button (click)="dismiss()">
