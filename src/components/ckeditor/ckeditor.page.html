@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar [style.padding-top]="platform.is('ipad')? '20px': ''">
     <ion-buttons slot="start">
       <ion-back-button style="display: contents!important;color: #fff;" (click)="onDone()"></ion-back-button>
     </ion-buttons>

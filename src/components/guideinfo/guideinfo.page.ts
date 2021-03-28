@@ -1,7 +1,7 @@
 import { ApiSync } from './../../providers/api-sync';
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { GuiderModel } from 'src/models/db/api/guider-model';
 import { GuiderService } from 'src/providers/api/guider-service';
 import { Storage } from '@ionic/storage';
@@ -17,6 +17,7 @@ export class GuideinfoPage implements OnInit {
   public params;
 
   constructor(
+    public platform: Platform,
     private storage: Storage,
 
     public modalController: ModalController, private guiderService: GuiderService, private router: Router, private apiSync: ApiSync) { }

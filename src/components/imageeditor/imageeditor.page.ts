@@ -61,7 +61,7 @@ export class ImageEditorComponent implements OnInit {
     private file: nFile,
     private apiSync: ApiSync,
     private location: Location,
-    private platform: Platform,
+    public platform: Platform,
     public loadingController: LoadingController,
     public authService: AuthService,
     public miscService: MiscService

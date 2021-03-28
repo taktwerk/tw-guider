@@ -1,4 +1,4 @@
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Storage } from '@ionic/storage';
@@ -15,7 +15,10 @@ export class CKEditorComponent implements OnInit {
   ckeditorContent
   ckeConfig
 
-  constructor(private storage: Storage, private modalController: ModalController) { }
+  constructor(
+    public platform:Platform,
+    private storage: Storage,
+     private modalController: ModalController) { }
 
   ngOnInit() {
     this.ckeditorContent = this.content || '';

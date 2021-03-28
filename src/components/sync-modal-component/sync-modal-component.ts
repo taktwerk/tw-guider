@@ -71,8 +71,10 @@ export class SyncModalComponent implements OnInit, OnDestroy {
     private insomnia: Insomnia,
     private loggerService: LoggerService,
     private miscService: MiscService,
+    public platform: Platform
 
   ) {
+
     this.isNetwork = this.network.type !== 'none';
     this.initUser().then(() => {
       this.syncProgressStatus = this.userService.userDb.userSetting.syncStatus;
