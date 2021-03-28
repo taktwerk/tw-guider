@@ -99,7 +99,7 @@ import { MigrationService } from '../providers/api/migration-service';
 import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewer-component';
 import { PdfViewerComponentModule } from '../components/pdf-viewer-component/pdf-viewer-component.module';
 
-import { Base64ToGallery } from '@ionic-native/base64-to-gallery/ngx';
+
 import { ProgressBarModule } from '../components/progress-bar/progress-bar.module';
 import { ListviewComponentModule } from 'src/components/listview/listview.module';
 import { SQLite } from '@ionic-native/sqlite/ngx';
@@ -248,8 +248,6 @@ Sentry.init({ dsn: environment.sentryDsn });
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     MigrationService,
-    Base64ToGallery,
-
     MiscService,
     LoggerService,
   ],

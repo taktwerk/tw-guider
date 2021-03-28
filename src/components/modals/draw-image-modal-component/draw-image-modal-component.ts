@@ -3,7 +3,7 @@ import { ModalController, ToastController, Platform, } from '@ionic/angular';
 import { ToastService } from '../../../services/toast-service';
 import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media/ngx';
 import { DownloadService } from '../../../services/download-service';
-import { Base64ToGallery, Base64ToGalleryOptions } from '@ionic-native/base64-to-gallery/ngx';
+
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateConfigService } from '../../../services/translate-config.service';
 import { MiscService } from 'src/services/misc-service';
@@ -59,7 +59,6 @@ export class DrawImageModalComponent implements AfterViewChecked {
 
   constructor(
     private plt: Platform,
-    private base64ToGallery: Base64ToGallery,
     private toastCtrl: ToastController,
     private modalController: ModalController,
     private downloadService: DownloadService,
