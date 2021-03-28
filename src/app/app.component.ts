@@ -154,12 +154,12 @@ export class AppComponent implements OnInit, OnDestroy {
     const alert = await this.alertController.create({
       header: await this.translateConfigService.translate('exitApp'),
       buttons: [{
-        text: 'Cancel',
+        text: await this.translateConfigService.translate('cancel'),
         role: 'cancel',
         cssClass: 'secondary',
         handler: () => { }
       }, {
-        text: 'Close App',
+        text: await this.translateConfigService.translate('close'),
         handler: () => {
           App.exitApp();
         }
