@@ -5,7 +5,7 @@
   }
 </style>
 
-<section>
+<section *ngIf="this.authService.isHaveUserRole('Betatest')">
   <ion-item>
     <ion-toggle [checked]="resumeMode" (ionChange)="changeResumeMode()"></ion-toggle>
     <ion-label>{{ 'synchronization-component.Enable Resume Synchronisation' | translate:params }}</ion-label>

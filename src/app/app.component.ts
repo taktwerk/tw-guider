@@ -347,7 +347,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.authService.isHaveUserRole('ProtocolViewer') || this.authService.auth.isAuthority) {
       appPages.push({ title: this.translateConfigService.translateWord('protocol.Protocols'), url: '/protocol', icon: 'list' });
     }
-    if (this.authService.isHaveUserRole('GuiderAdmin') || this.authService.auth.isAuthority) {
+    if ((this.authService.isHaveUserRole('GuiderAdmin') && this.authService.isHaveUserRole('Betatest')) || this.authService.auth.isAuthority) {
       appPages.push({ title: this.translateConfigService.translateWord('guider.header'), url: '/guidecapture', icon: 'camera' });
     }
     appPages.push({ title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person' });
