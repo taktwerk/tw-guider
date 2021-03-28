@@ -16,5 +16,7 @@
     }
   },
   "cordova": {},
-  "linuxAndroidStudioPath": "/snap/android-studio/current/android-studio/bin/studio.sh"
+  "linuxAndroidStudioPath": "/snap/android-studio/current/android-studio/bin/studio.sh",
+  "build": "261",
+  "version": "2.6.1"
 }

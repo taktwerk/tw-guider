@@ -1,8 +1,8 @@
 {
-  "name": "guide",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "name": "Guider",
+  "version": "2.6.1",
+  "author": "taktwerk GmbH",
+  "homepage": "https://taktwerk.ch",
   "scripts": {
     "taktwerk": "npm install && ionic cordova plugin add https://github.com/moust/cordova-plugin-videoplayer.git --no-save",
     "ng": "ng",

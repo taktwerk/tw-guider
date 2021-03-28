@@ -6,21 +6,12 @@
     <param name="ios-package" value="PhotoViewer"/>
   </feature>
 
-  <feature name="Base64ToGallery">
-    <param name="ios-package" value="Base64ToGallery"/>
-    <param name="onload" value="true"/>
-  </feature>
-
   <feature name="AES256">
     <param name="ios-package" value="AES256"/>
   </feature>
 
-  <feature name="AppVersion">
-    <param name="ios-package" value="AppVersion"/>
-  </feature>
-
-  <feature name="Camera">
-    <param name="ios-package" value="CDVCamera"/>
+  <feature name="Device">
+    <param name="ios-package" value="CDVDevice"/>
   </feature>
 
   <feature name="File">
@@ -28,44 +19,12 @@
     <param name="onload" value="true"/>
   </feature>
 
-  <feature name="FileOpener2">
-    <param name="ios-package" value="FileOpener2"/>
-  </feature>
-
-  <feature name="FileTransfer">
-    <param name="ios-package" value="CDVFileTransfer"/>
-  </feature>
-
-  <feature name="FilePicker">
-    <param name="ios-package" value="FilePicker"/>
-  </feature>
-
   <feature name="Insomnia">
     <param name="ios-package" value="Insomnia"/>
   </feature>
 
-  <feature name="Media">
-    <param name="ios-package" value="CDVSound"/>
-  </feature>
-
-  <feature name="Capture">
-    <param name="ios-package" value="CDVCapture"/>
-  </feature>
-
-  <feature name="NativeAudio">
-    <param name="ios-package" value="NativeAudio"/>
-  </feature>
-
-  <feature name="NetworkStatus">
-    <param name="ios-package" value="CDVConnection"/>
-  </feature>
-
   <feature name="QRScanner">
     <param name="ios-package" value="QRScanner"/>
-  </feature>
-
-  <feature name="StreamingMedia">
-    <param name="ios-package" value="StreamingMedia"/>
   </feature>
 
   <feature name="VideoEditor">
@@ -78,10 +37,6 @@
 
   <feature name="Sentry">
     <param name="ios-package" value="SentryCordova" onload="true"/>
-  </feature>
-
-  <feature name="Device">
-    <param name="ios-package" value="CDVDevice"/>
   </feature>
 
   
