@@ -164,21 +164,62 @@ export class DownloadService {
   startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<any> {
     return new Promise(async (resolve) => {
       fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
+
       const fileUriObject = await Filesystem.getUri({
         directory: FilesystemDirectory.Data,
         path: directoryName + '/' + fileName
       });
+
       const fileUri = Capacitor.convertFileSrc(fileUriObject.uri);
+
       const downloadedImage = await this.download(fileUri);
       const imgBlob = downloadedImage.body;
+
+      const filebBase64 = await Filesystem.readFile({
+        directory: FilesystemDirectory.Data,
+        path: path
+      });
+
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      console.log("filebBase64", filebBase64)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+
+      const customBlob = this.base64ToBlob(filebBase64.data)
+
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      console.log("customBlob", customBlob)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+
       const formData = new FormData();
-      formData.append(fileKey, imgBlob, fileName);
+      formData.append(fileKey, customBlob, fileName);
 
       const isUploadedFile = await this.uploadFile(formData, url, headers);
       resolve(isUploadedFile);
       return;
     });
   }
+
+  base64ToBlob(data) {
+    var rImageType = /data:(image\/.+);base64,/;
+    var mimeString = '';
+    var raw, uInt8Array, i, rawLength;
+
+    raw = data.replace(rImageType, (header, imageType) => {
+      mimeString = imageType;
+      return '';
+    });
+
+    raw = atob(raw);
+    rawLength = raw.length;
+    uInt8Array = new Uint8Array(rawLength);
+
+    for (i = 0; i < rawLength; i += 1) {
+      uInt8Array[i] = raw.charCodeAt(i);
+    }
+
+    return new Blob([uInt8Array], { type: mimeString });
+  }
+
 
   readFile(fileKey: string, file: any, url: string, headers?: Headers): Promise<Blob> {
     return new Promise((resolve) => {
@@ -456,6 +497,9 @@ export class DownloadService {
         throw new Error('IOSFilePicker plugin is not defined');
       }
       uri = await this.filePicker.pickFile();
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+      console.log('uri', uri)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
     } else {
       if (!this.fileChooser) {
         this.loggerService.getLogger().error("FileChooser plugin is not defined", new Error("FileChooser plugin is not defined").stack)
@@ -466,6 +510,10 @@ export class DownloadService {
     }
     if (uri) {
       recordedFile.uri = await this.getResolvedNativeFilePath(uri);
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+      console.log('recordedFile.uri', recordedFile.uri)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+
       if (withThumbnailForVideo && this.checkFileTypeByExtension(recordedFile.uri, 'video')) {
         recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
       }
