@@ -24,7 +24,7 @@ interface CustomControls {
 })
 export class ImageEditorComponent implements OnInit {
 
-  @Input() model; // TODO:Remove the Type GuideStepModel to prevent --prod fail
+  @Input() model;
 
   ImageEditor;
   iCanvas
@@ -79,7 +79,15 @@ export class ImageEditorComponent implements OnInit {
     });
 
     // load metadata
-    this.canvasFile = JSON.parse(this.model.design_canvas_file);
+    try {
+      this.canvasFile = JSON.parse(this.model.design_canvas_file)
+    } catch (error) {
+      console.log(error)
+      console.log("this.model.design_canvas_file", this.model.design_canvas_file)
+      console.log("design_canvas_file is probably not an object", this.model.design_canvas_file)
+      this.canvasFile = null;
+    }
+
     this.iCanvas = this.ImageEditor._graphics.getCanvas();
     var selectionStyle = this.ImageEditor._graphics.cropSelectionStyle;
 
