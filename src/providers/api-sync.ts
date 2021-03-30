@@ -577,8 +577,11 @@ export class ApiSync implements OnDestroy {
     public makeSyncProcess(syncStatus = 'progress') {
         return new Promise(async resolve => {
             const data = await this.init();
+
             console.log("Init Status ", data)
+
             this.loggerService.getLogger().info("Init Status", data)
+
             if (!data) {
                 this.isStartSyncBehaviorSubject.next(false);
                 resolve(false);
@@ -595,12 +598,16 @@ export class ApiSync implements OnDestroy {
 
             this.userService.userDb.userSetting.syncStatus = syncStatus;
             await this.userService.userDb.save();
+
             this.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
             this.isPrepareSynData.next(true);
             let isCanPullData = false;
             let countOfSyncedData = 0;
+
             await this.preparePushData();
+            
             countOfSyncedData = this.countOfAllChangedItems;
+
             // check data available for sync
             if (!this.userService.userDb.userSetting.isSyncAvailableData) {
                 this.noDataForSync.next(true);
@@ -615,8 +622,8 @@ export class ApiSync implements OnDestroy {
                     // no pull data
                     this.isAvailableForSyncData.next(false);
                     this.loggerService.getLogger().info("isAvailableForSyncData", false)
-
                 }
+
                 // there is data for sync
             } else {
                 try {
@@ -627,7 +634,7 @@ export class ApiSync implements OnDestroy {
                     }
 
                     const pullData = await this.http.get(this.getSyncUrl()).toPromise();
-                    // this.guideViewHistories = pullData.models.guide_view_history;
+                  
                     console.log('pullData', pullData);
 
                     if (!pullData.syncProcessId) {

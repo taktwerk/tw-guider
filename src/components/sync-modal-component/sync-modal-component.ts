@@ -99,10 +99,16 @@ export class SyncModalComponent implements OnInit, OnDestroy {
   syncData() {
     if (!this.appSetting.isMigratedDatabase()) {
       this.appSetting.showIsNotMigratedDbPopup();
-
       return;
     }
-    this.apiSync.makeSyncProcess();
+
+    // force sync when data changes on server
+    this.apiSync.checkAvailableChanges().then((res) => {
+      console.log(res)
+      if (res) {
+        this.apiSync.makeSyncProcess();
+      }
+    })
   }
 
   stopSyncData() {
