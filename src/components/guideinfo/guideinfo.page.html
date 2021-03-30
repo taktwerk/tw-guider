@@ -33,7 +33,7 @@
     </ion-item-group>
 
     <ion-item-group>
-      <ion-item lines="full">
+      <ion-item lines="none">
         <ion-label>
           <h1> <strong>{{ 'guides.Description' | translate:params }}</strong></h1>
           <p class="guide-description">{{guide.description}}</p>
@@ -42,10 +42,11 @@
     </ion-item-group>
 
     <ion-item lines="none">
-      <ion-buttons slot="start">
-        <ion-button (click)="dismiss()" fill="outline" color="primary">
-          <ion-icon name="arrow-back"></ion-icon>
-          {{'to guide'| translate}}
+      <ion-buttons style="width: 100%; height: 40px;">
+        <ion-button (click)="onDismiss()" color="primary" fill="solid" size="large" expand="full"
+          style="width: 100%; height: 100%;">
+          <!-- <ion-icon name="arrow-back" slot="start"></ion-icon> -->
+          {{from ==='guide-list-component' ? 'open guide':'dismiss'| translate}}
         </ion-button>
       </ion-buttons>
     </ion-item>

@@ -1,6 +1,6 @@
 import { ApiSync } from './../../providers/api-sync';
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
 import { GuiderModel } from 'src/models/db/api/guider-model';
 import { GuiderService } from 'src/providers/api/guider-service';
@@ -13,6 +13,10 @@ import { Storage } from '@ionic/storage';
 })
 export class GuideinfoPage implements OnInit {
   @Input() guideId: any;
+  @Input() from: any;
+  @Input() parentCollectionId: any;
+  @Input() guideCategoryId;
+
   guide: GuiderModel
   public params;
 
@@ -37,4 +41,37 @@ export class GuideinfoPage implements OnInit {
     this.modalController.dismiss();
     this.storage.set('guideInfoModalOpen', false)
   }
+
+  onDismiss() {
+    this.from === 'guide-list-component' ? this.openGuide(this.guide) : this.dismiss();
+  }
+
+  openCollection(guide: GuiderModel) {
+    const feedbackNavigationExtras: NavigationExtras = {
+      queryParams: {
+        guideId: guide.idApi,
+        guideCategoryId: this.guideCategoryId
+      },
+    };
+    this.router.navigate(['/guide-collection/' + guide.idApi], feedbackNavigationExtras);
+  }
+
+  openGuide(guide: GuiderModel) {
+    if (guide.guide_collection.length) {
+      this.openCollection(guide);
+      return;
+    }
+    console.log("parentCollectionId", this.parentCollectionId)
+    if (this.parentCollectionId) {
+      this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
+    }
+    else {
+      this.router.navigate(['/guide/' + guide.idApi]);
+    }
+
+    this.dismiss();
+  }
+
 }
+
+

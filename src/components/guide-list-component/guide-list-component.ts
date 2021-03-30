@@ -110,7 +110,9 @@ export class GuideListComponent implements OnInit {
     const modal = await this.modalController.create({
       component: GuideinfoPage,
       componentProps: {
-        'guideId': guideId
+        'guideId': guideId,
+        'from': 'guide-list-component',
+        'parentCollectionId': this.parentCollectionId
       },
       cssClass: "modal-fullscreen"
     });
