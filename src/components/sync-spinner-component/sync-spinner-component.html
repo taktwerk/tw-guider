@@ -35,7 +35,7 @@
     <span *ngIf="isNetwork || appSetting.isEnabledUsb">
 
       <span *ngIf="(isStartSync && iconStatus === 'progress')">
-        <ion-spinner name="lines" color="primary"></ion-spinner>
+        <ion-spinner name="lines" style="color:#173262" color="primary"></ion-spinner>
       </span>
 
       <span *ngIf="!(isStartSync && iconStatus === 'progress')">
