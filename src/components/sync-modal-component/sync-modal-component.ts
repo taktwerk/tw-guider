@@ -102,9 +102,14 @@ export class SyncModalComponent implements OnInit, OnDestroy {
       return;
     }
 
+    console.log(this.isAvailableForPushData)
+    // make sync if local changes
+    if (this.isAvailableForPushData) {
+      this.apiSync.makeSyncProcess();
+    }
     // force sync when data changes on server
     this.apiSync.checkAvailableChanges().then((res) => {
-      console.log(res)
+      // make sync if changes from server
       if (res) {
         this.apiSync.makeSyncProcess();
       }

@@ -543,6 +543,9 @@ export abstract class DbApiModel extends DbBaseModel {
         this[modelFileMap.localPath] = recordedFile.uri;
         this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = recordedFile.uri;
 
+        console.log(" this[modelFileMap.name]", this[modelFileMap.name])
+        console.log(" this[modelFileMap.localPath]", this[modelFileMap.localPath])
+
         /// If exist thumbnail for file
         if (modelFileMap.thumbnail) {
             if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile) {

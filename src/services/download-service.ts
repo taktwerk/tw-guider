@@ -98,11 +98,17 @@ export class DownloadService {
                   });
               });
             },
-            (downloadErr) => {
+            // (downloadErr) => {
+            //   resolve(false);
+            //   // Download failed
+            // }
+          )
+            .catch((e) => {
+              console.log("Error at this.download(url, authToken).then(")
+              console.log(e)
               resolve(false);
               // Download failed
-            }
-          );
+            })
         }
       });
     });
@@ -127,20 +133,32 @@ export class DownloadService {
       this.http
         .get(url, { headers: headers, observe: 'response', responseType: 'blob' })
         .toPromise()
-        .then(
-          (response) => {
-            console.log('SYNC4');
-            this.loggerService.getLogger().info("SYNC4")
-            resolve(response);
-            return;
-          },
-          (downloadErr) => {
-            console.log('downloadErr', downloadErr);
-            this.loggerService.getLogger().error("Download Error at download-service 139", downloadErr, new Error().stack)
-            resolve(false);
-            return;
-          }
-        );
+        // .then(
+        //   (response) => {
+        //     console.log('SYNC4');
+        //     this.loggerService.getLogger().info("SYNC4")
+        //     resolve(response);
+        //     return;
+        //   },
+        //   (downloadErr) => {
+        //     console.log('downloadErr', downloadErr);
+        //     this.loggerService.getLogger().error("Download Error at download-service 139", downloadErr, new Error().stack)
+        //     resolve(false);
+        //     return;
+        //   }
+        // );
+        .then((response) => {
+          console.log('SYNC4');
+          this.loggerService.getLogger().info("SYNC4")
+          resolve(response);
+          return;
+        })
+        .catch((downloadErr) => {
+          console.log('downloadErr', downloadErr);
+          this.loggerService.getLogger().error("Download Error at download-service 139", downloadErr, new Error().stack)
+          resolve(false);
+          return;
+        })
     });
   }
 
@@ -165,36 +183,53 @@ export class DownloadService {
     return new Promise(async (resolve) => {
       fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
 
-      const fileUriObject = await Filesystem.getUri({
+      // const fileUriObject = await Filesystem.getUri({
+      //   directory: FilesystemDirectory.Data,
+      //   path: directoryName + '/' + fileName
+      // });
+
+      // const fileUri = Capacitor.convertFileSrc(fileUriObject.uri);
+
+      // const downloadedImage = await this.download(fileUri);
+      // const imgBlob = downloadedImage.body;
+
+      // const filebBase64 = await Filesystem.readFile({
+      //   directory: FilesystemDirectory.Data,
+      //   path: path
+      // });
+
+
+      Filesystem.readFile({
         directory: FilesystemDirectory.Data,
         path: directoryName + '/' + fileName
-      });
+      }).then(async (res) => {
+        console.log(res)
+        const customBlob = this.base64ToBlob(res.data)
+        const formData = new FormData();
+        formData.append(fileKey, customBlob, fileName);
+        const isUploadedFile = await this.uploadFile(formData, url, headers);
+        resolve(isUploadedFile);
 
-      const fileUri = Capacitor.convertFileSrc(fileUriObject.uri);
+      }).catch((e) => {
+        console.log("erro at startUpload when readFile")
+        console.log(e)
+      })
 
-      const downloadedImage = await this.download(fileUri);
-      const imgBlob = downloadedImage.body;
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      // console.log("filebBase64", filebBase64)
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
 
-      const filebBase64 = await Filesystem.readFile({
-        directory: FilesystemDirectory.Data,
-        path: path
-      });
+      // const customBlob = this.base64ToBlob(filebBase64.data)
 
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-      console.log("filebBase64", filebBase64)
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      // console.log("customBlob", customBlob)
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
 
-      const customBlob = this.base64ToBlob(filebBase64.data)
+      // const formData = new FormData();
+      // formData.append(fileKey, customBlob, fileName);
 
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-      console.log("customBlob", customBlob)
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-
-      const formData = new FormData();
-      formData.append(fileKey, customBlob, fileName);
-
-      const isUploadedFile = await this.uploadFile(formData, url, headers);
-      resolve(isUploadedFile);
+      // const isUploadedFile = await this.uploadFile(formData, url, headers);
+      // resolve(isUploadedFile);
       return;
     });
   }
@@ -299,36 +334,59 @@ export class DownloadService {
         newFileName = date.getTime() + '.' + currentExt;
       }
 
-      this.checkDir(modelName).then(
-        (suc) => {
-          console.log(suc)
-          if (suc) {
-            console.log(correctPath, currentName, newFilePath, newFileName)
-            this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then((success) => {
-              if (success) {
-                console.log('is sucessss copieng');
-                this.loggerService.getLogger().info("File Copy Successful")
-                resolve(newFilePath + '/' + newFileName);
-              } else {
-                console.log('is not success copy dir');
-                this.loggerService.getLogger().error("File Copy unsuccessful", new Error().stack)
-                resolve('');
-              }
-            },
-              (error) => {
-                console.log('copyToLocalDir error', error);
-                this.loggerService.getLogger().error('copyToLocalDir error at download-service 279', error, new Error().stack)
-                resolve('');
-              }
-            );
-          }
-        },
-        (err) => {
+      // this.checkDir(modelName).then(
+      //   (suc) => {
+      //     console.log(suc)
+      //     if (suc) {
+      //       console.log(correctPath, currentName, newFilePath, newFileName)
+      //       this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then((success) => {
+      //         if (success) {
+      //           console.log('is sucessss copieng');
+      //           this.loggerService.getLogger().info("File Copy Successful")
+      //           resolve(newFilePath + '/' + newFileName);
+      //         } else {
+      //           console.log('is not success copy dir');
+      //           this.loggerService.getLogger().error("File Copy unsuccessful", new Error().stack)
+      //           resolve('');
+      //         }
+      //       },
+      //         (error) => {
+      //           console.log('copyToLocalDir error', error);
+      //           this.loggerService.getLogger().error('copyToLocalDir error at download-service 279', error, new Error().stack)
+      //           resolve('');
+      //         }
+      //       );
+      //     }
+      //   },
+      //   (err) => {
+      //     console.log('checkDir error', err);
+      //     this.loggerService.getLogger().error('checkDir error at download-service 287', err, new Error().stack)
+      //     resolve('');
+      //   }
+      // );
+
+      this.checkDir(modelName).then((res) => {
+        console.log(res)
+        console.log(correctPath, currentName, newFilePath, newFileName)
+
+        this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then((success) => {
+          console.log('is sucessss copieng');
+          this.loggerService.getLogger().info("File Copy Successful")
+          resolve(newFilePath + '/' + newFileName);
+        })
+          .catch((e) => {
+            console.log('copyToLocalDir error', e);
+            this.loggerService.getLogger().error('copyToLocalDir error at download-service', e, new Error().stack)
+            resolve('');
+          })
+      })
+        .catch((err) => {
           console.log('checkDir error', err);
-          this.loggerService.getLogger().error('checkDir error at download-service 287', err, new Error().stack)
+          this.loggerService.getLogger().error('checkDir error at download-service', err, new Error().stack);
           resolve('');
-        }
-      );
+        })
+
+
     });
   }
 
@@ -342,18 +400,19 @@ export class DownloadService {
    */
   public copyToLocalDir(namePath: string, currentName: string, newFilePath: string, newFileName: string): Promise<boolean> {
     return new Promise((resolve) => {
-      // console.log('START HEREEEE');
-      // console.log(namePath);
-      // console.log(currentName);
-      // console.log(newFilePath);
-      // console.log(newFileName);
+      console.log("on copyToLocalDir");
+
+      console.log(namePath);
+      console.log(currentName);
+      console.log(newFilePath);
+      console.log(newFileName);
+
       this.file.copyFile(namePath, currentName, newFilePath, newFileName).then((success) => {
         resolve(true);
       },
         (error) => {
           console.log('copyFile error', error);
           this.loggerService.getLogger().error('copyFile error at download-service 314', error, new Error().stack)
-
           resolve(false);
         }
       );
@@ -500,7 +559,8 @@ export class DownloadService {
       console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
       console.log('uri', uri)
       console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-    } else {
+    }
+    else {
       if (!this.fileChooser) {
         this.loggerService.getLogger().error("FileChooser plugin is not defined", new Error("FileChooser plugin is not defined").stack)
 
@@ -602,18 +662,22 @@ export class DownloadService {
   public async recordVideo(withThumbnail = false): Promise<RecordedFile> {
     if (!this.mediaCapture) {
       this.loggerService.getLogger().error("MediaCapture plugin is not defined", new Error("MediaCapture plugin is not defined").stack)
-
       throw new Error('MediaCapture plugin is not defined');
     }
+
     const videoFile = await this.mediaCapture.captureVideo({ limit: 1 });
+
     if (!videoFile || !videoFile[0]) {
       this.loggerService.getLogger().error("Video was not uploaded.", new Error("Video was not uploaded.").stack)
-
       throw new Error('Video was not uploaded.');
     }
+
     const fullPath = videoFile[0].fullPath;
+    console.log("const fullPath = videoFile[0].fullPath;", videoFile[0]);
+
     const recordedFile = new RecordedFile();
     recordedFile.uri = await this.getResolvedNativeFilePath(fullPath);
+
     if (recordedFile.uri && withThumbnail) {
       recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
     }
@@ -626,14 +690,16 @@ export class DownloadService {
       this.loggerService.getLogger().error("MediaCapture plugin is not defined", new Error("MediaCapture plugin is not defined").stack)
       throw new Error('MediaCapture plugin is not defined');
     }
+
     const cameraOptions = {
-      targetWidth: targetWidth,
-      targetHeight: targetHeight,
+      // targetWidth: targetWidth,
+      // targetHeight: targetHeight,
       sourceType: this.camera.PictureSourceType.CAMERA,
       destinationType: this.camera.DestinationType.FILE_URI,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
+      // encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.ALLMEDIA,
     };
+
     const photoFullPath = await this.camera.getPicture(cameraOptions);
     const recordedFile = new RecordedFile();
     recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath);
@@ -661,12 +727,13 @@ export class DownloadService {
     console.log('URIII', uri);
     if (!this.filePath) {
       this.loggerService.getLogger().error("FilePath plugin is not defined", new Error("FilePath plugin is not defined").stack)
-
       throw new Error('FilePath plugin is not defined');
     }
+
     if (this.platform.is('ios') && uri.indexOf('file://') < 0) {
       uri = 'file://' + uri;
     }
+
     if (this.platform.is('android')) {
       return this.filePath.resolveNativePath(uri);
     }
