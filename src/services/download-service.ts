@@ -193,43 +193,45 @@ export class DownloadService {
       // const downloadedImage = await this.download(fileUri);
       // const imgBlob = downloadedImage.body;
 
-      // const filebBase64 = await Filesystem.readFile({
-      //   directory: FilesystemDirectory.Data,
-      //   path: path
-      // });
-
-
-      Filesystem.readFile({
+      const filebBase64 = await Filesystem.readFile({
         directory: FilesystemDirectory.Data,
-        path: this.platform.is('ios') ? path : this.platform.is('android') ? directoryName + '/' + fileName : directoryName + '/' + fileName
-      }).then(async (res) => {
-        console.log(res)
-        const customBlob = this.base64ToBlob(res.data)
-        const formData = new FormData();
-        formData.append(fileKey, customBlob, fileName);
-        const isUploadedFile = await this.uploadFile(formData, url, headers);
-        resolve(isUploadedFile);
+        path: path
+      });
 
-      }).catch((e) => {
-        console.log("erro at startUpload when readFile")
-        console.log(e)
-      })
+      // console.log(" directoryName + '/' + fileName ", directoryName + '/' + fileName) 
+      // console.log("path", path)
 
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-      // console.log("filebBase64", filebBase64)
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      // Filesystem.readFile({
+      //   directory: FilesystemDirectory.Data,
+      //   path: this.platform.is('ios') ? path : this.platform.is('android') ? directoryName + '/' + fileName : directoryName + '/' + fileName
+      // }).then(async (res) => {
+      //   console.log(res)
+      //   const customBlob = this.base64ToBlob(res.data)
+      //   const formData = new FormData();
+      //   formData.append(fileKey, customBlob, fileName);
+      //   const isUploadedFile = await this.uploadFile(formData, url, headers);
+      //   resolve(isUploadedFile);
 
-      // const customBlob = this.base64ToBlob(filebBase64.data)
+      // }).catch((e) => {
+      //   console.log("erro at startUpload when readFile")
+      //   console.log(e)
+      // })
 
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-      // console.log("customBlob", customBlob)
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      console.log("filebBase64", filebBase64)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
 
-      // const formData = new FormData();
-      // formData.append(fileKey, customBlob, fileName);
+      const customBlob = this.base64ToBlob(filebBase64.data)
 
-      // const isUploadedFile = await this.uploadFile(formData, url, headers);
-      // resolve(isUploadedFile);
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      console.log("customBlob", customBlob)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")   
+
+      const formData = new FormData();
+      formData.append(fileKey, customBlob, fileName);
+
+      const isUploadedFile = await this.uploadFile(formData, url, headers);
+      resolve(isUploadedFile);
       return;
     });
   }
