@@ -195,7 +195,7 @@ export class DownloadService {
 
       const filebBase64 = await Filesystem.readFile({
         directory: FilesystemDirectory.Data,
-        path: path
+        path: this.platform.is('android') ? directoryName + '/' + fileName : this.platform.is('ios') ? path : directoryName + '/' + fileName
       });
 
       // console.log(" directoryName + '/' + fileName ", directoryName + '/' + fileName) 
@@ -225,7 +225,7 @@ export class DownloadService {
 
       console.log(">>>>>>>>>>>>>>>>>>>>>>>")
       console.log("customBlob", customBlob)
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>")   
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
 
       const formData = new FormData();
       formData.append(fileKey, customBlob, fileName);
