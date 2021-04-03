@@ -201,7 +201,7 @@ export class DownloadService {
 
       Filesystem.readFile({
         directory: FilesystemDirectory.Data,
-        path: directoryName + '/' + fileName
+        path: this.platform.is('ios') ? path : this.platform.is('android') ? directoryName + '/' + fileName : directoryName + '/' + fileName
       }).then(async (res) => {
         console.log(res)
         const customBlob = this.base64ToBlob(res.data)
