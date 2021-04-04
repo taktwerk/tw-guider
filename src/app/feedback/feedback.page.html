@@ -9,7 +9,8 @@
     <!-- <ion-back-button *ngIf="isComponentLikeModal" text=""></ion-back-button> -->
 
     <ion-buttons slot="primary">
-      <ion-back-button style="color: #ffffff;"  *ngIf="isComponentLikeModal" [routerLink]="['/guide/'+guideId]"></ion-back-button>
+      <ion-back-button style="color: #ffffff;" *ngIf="isComponentLikeModal" [routerLink]="['/guide/'+guideId]">
+      </ion-back-button>
 
     </ion-buttons>
   </ion-toolbar>
@@ -20,7 +21,8 @@
 
     <ion-thumbnail slot="start">
       <div *ngIf="feedback.attached_file">
-        <model-assetcomponent [model]="feedback" isthumbnail="true"></model-assetcomponent>
+        <model-assetcomponent [model]="feedback" isthumbnail="true" style=" height: 100%; width: 100%;">
+        </model-assetcomponent>
       </div>
     </ion-thumbnail>
 
