@@ -303,7 +303,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   public async resumeStep(id) {
-    console.log("guideViewHistory", this.guideViewHistory)
     this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]);
     // in collection
     if (this.parentCollectionId) {
@@ -319,7 +318,13 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       }
     }
     if (this.guideStepSlides && this.guideViewHistory) {
-      this.guideStepSlides.slideTo(this.guideViewHistory.step).then(async () => {
+      let stepValue = this.guideViewHistory.step;
+
+      if (this.guideViewHistory.step === this.guideSteps.length - 1) {
+        stepValue = 0;
+      }
+
+      this.guideStepSlides.slideTo(stepValue).then(async () => {
         const alertMessage = await this.translateConfigService.translate('alert.resumed');
         this.http.showToast(alertMessage);
       });
