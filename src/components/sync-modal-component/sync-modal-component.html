@@ -34,15 +34,18 @@
           </section>
 
           <section *ngIf="modeSync === 0" class="modeSync0">
+
             <span *ngIf="!isStartSync" class="notStartSync">
-              <ion-button class="sync-btn" *ngIf="!['progress', 'resume', 'pause'].includes(syncProgressStatus)"
+              <ion-button class="sync-btn" *ngIf="!['progress', 'resume'].includes(syncProgressStatus) || isAvailableForSyncData"
                 (click)="syncData()" color="primary">
                 {{ 'sync-modal.Synchronize Data' | translate:params }}
               </ion-button>
+
               <ion-button *ngIf="syncProgressStatus === 'pause'" (click)="resumeSyncData()" color="primary">
                 {{ 'sync-modal.Resume' | translate:params }}
               </ion-button>
             </span>
+
             <span *ngIf="isStartSync">
               <ion-button *ngIf="['progress', 'resume'].includes(syncProgressStatus)" (click)="stopSyncData()"
                 color="primary">

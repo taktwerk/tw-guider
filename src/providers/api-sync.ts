@@ -554,10 +554,8 @@ export class ApiSync implements OnDestroy {
             this.makeSyncPause().then(() => {
                 this.isBusy = false;
             });
-
             return true;
         }
-
         return false;
     }
 
