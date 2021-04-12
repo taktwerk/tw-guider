@@ -10,8 +10,4 @@ export class ProgressBarComponent {
   @Input('progress') progress;
   @Input('color') color;
 
-  constructor() {
-
-  }
-
 }

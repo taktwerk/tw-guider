@@ -372,6 +372,7 @@ export class DownloadService {
         console.log(correctPath, currentName, newFilePath, newFileName)
 
         this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then((success) => {
+          console.log(success)
           console.log('is sucessss copieng');
           this.loggerService.getLogger().info("File Copy Successful")
           resolve(newFilePath + '/' + newFileName);
@@ -387,8 +388,6 @@ export class DownloadService {
           this.loggerService.getLogger().error('checkDir error at download-service', err, new Error().stack);
           resolve('');
         })
-
-
     });
   }
 
@@ -408,16 +407,26 @@ export class DownloadService {
       console.log(currentName);
       console.log(newFilePath);
       console.log(newFileName);
+      this.loggerService.getLogger().info("Will start copyToLocalDir")
+      this.loggerService.getLogger().info("namePath", namePath)
+      this.loggerService.getLogger().info("currentName", currentName)
+      this.loggerService.getLogger().info("newFilePath", newFilePath)
+      this.loggerService.getLogger().info("newFileName", newFileName)
 
-      this.file.copyFile(namePath, currentName, newFilePath, newFileName).then((success) => {
-        resolve(true);
-      },
-        (error) => {
+      // TODO: Replace with Capacitor https://capacitorjs.com/docs/v3/apis/filesystem#copyoptions
+      this.file.copyFile(namePath, currentName, newFilePath, newFileName)
+        .then(() => resolve(true))
+        .catch((error) => {
           console.log('copyFile error', error);
-          this.loggerService.getLogger().error('copyFile error at download-service 314', error, new Error().stack)
+          this.loggerService.getLogger().error('copyFile error at download-service 417', error, new Error().stack);
           resolve(false);
-        }
-      );
+        })
+
+        // const _copyToLocalDir = await Filesystem.copy({
+        //   from: namePath,
+        //   to: newFileName,
+          
+        // })
     });
   }
 

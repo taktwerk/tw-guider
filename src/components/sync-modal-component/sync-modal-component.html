@@ -2,7 +2,7 @@
   <ion-toolbar class="header_bg" [style.padding-top]="platform.is('ipad')? '20px': ''">
     <ion-title> {{ 'sync-modal.header' | translate:params }} </ion-title>
     <sync-spinner-component [shouldOpenPopup]="false" slot="primary"> </sync-spinner-component>
-  
+
     <ion-buttons slot="primary">
       <ion-button (click)="dismiss()">
         <ion-icon name="close" style="color: #ffffff; font-size: 24px;"></ion-icon>
@@ -20,9 +20,14 @@
           {{ this.getLastSyncDate() }}
         </section>
         <div *ngIf="isNetwork || appSetting.isEnabledUsb">
+
           <section>
-            <app-progress-bar [progress]="syncedItemsPercent"
-              [color]="syncProgressStatus === 'failed' ? '#989aa2' : '#babcbf'"></app-progress-bar>
+            
+            <app-progress-bar 
+            [progress]="syncedItemsPercent"
+              [color]="syncProgressStatus === 'failed' ? '#989aa2' : '#babcbf'">
+            </app-progress-bar>
+
             <div style="font-size: 15px">
               {{ syncedItemsCount }}/{{ syncAllItemsCount }}{{getProgressText()}}
               <span style="font-size: 15px"
@@ -31,12 +36,14 @@
                   class="dot2">.</span><span class="dot3">.</span>
               </span>
             </div>
+
           </section>
 
           <section *ngIf="modeSync === 0" class="modeSync0">
 
             <span *ngIf="!isStartSync" class="notStartSync">
-              <ion-button class="sync-btn" *ngIf="!['progress', 'resume'].includes(syncProgressStatus) || isAvailableForSyncData"
+              <ion-button class="sync-btn"
+                *ngIf="!['progress', 'resume'].includes(syncProgressStatus) || isAvailableForSyncData"
                 (click)="syncData()" color="primary">
                 {{ 'sync-modal.Synchronize Data' | translate:params }}
               </ion-button>
