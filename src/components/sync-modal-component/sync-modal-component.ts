@@ -209,11 +209,6 @@ export class SyncModalComponent implements OnInit, OnDestroy {
     });
     this.apiSync.pushProgressStatus.subscribe((pushProgressStatus) => {
       this.pushProgressStatus = pushProgressStatus;
-      // 
-      //may get stuck on errors
-      if (this.pushProgressStatus === 'no_push_data') {
-        this.apiSync.monitorSyncProgress();
-      }
     });
     // this.events.subscribe('UserDb:update', (userDb) => {
     //   this.userService.userDb = userDb;
