@@ -121,7 +121,7 @@ export class GuidestepAddEditPage implements OnInit {
   }
 
   async addFileCapacitor() {
-    this.downloadService.chooseFile().then((recordedFile) => {
+    this.downloadService.chooseFile(true).then((recordedFile) => {
       this.model.setFile(recordedFile);
       this.shouldUpdate = true;
     })

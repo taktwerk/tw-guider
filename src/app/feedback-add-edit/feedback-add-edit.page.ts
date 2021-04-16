@@ -236,7 +236,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addFileCapacitor() {
-    this.downloadService.chooseFile().then((recordedFile) => {
+    this.downloadService.chooseFile(true).then((recordedFile) => {
       this.model.setFile(recordedFile);
     })
   }
