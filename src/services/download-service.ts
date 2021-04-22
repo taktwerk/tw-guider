@@ -422,11 +422,11 @@ export class DownloadService {
           resolve(false);
         })
 
-        // const _copyToLocalDir = await Filesystem.copy({
-        //   from: namePath,
-        //   to: newFileName,
-          
-        // })
+      // const _copyToLocalDir = await Filesystem.copy({
+      //   from: namePath,
+      //   to: newFileName,
+
+      // })
     });
   }
 
@@ -735,7 +735,7 @@ export class DownloadService {
   }
 
   public getResolvedNativeFilePath(uri): Promise<string> {
-    console.log('URIII', uri);
+    // console.log('URIII', uri);
     if (!this.filePath) {
       this.loggerService.getLogger().error("FilePath plugin is not defined", new Error("FilePath plugin is not defined").stack)
       throw new Error('FilePath plugin is not defined');

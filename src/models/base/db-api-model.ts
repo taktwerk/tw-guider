@@ -722,7 +722,13 @@ export abstract class DbApiModel extends DbBaseModel {
         } else {
             return null;
         }
-        imageName = encodeURI(imageName);
+
+        try {
+            imageName = encodeURI(imageName);
+        } catch (error) {
+            console.log(error)
+        }
+
         return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
     }
 
