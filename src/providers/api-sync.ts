@@ -157,30 +157,13 @@ export class ApiSync implements OnDestroy {
 
         this.syncService.resumeMode.subscribe((mode) => {
             console.log("Resume Mode", mode)
-            if (mode) {
-                this.apiPushServices.guide_view_history = this.guideViewHistoryService;
-            }
-            else {
-                delete this.apiPushServices.guide_view_history
-            }
-        })
-
-        this.pushProgressStatus.subscribe((pushProgressStatus) => {
-            console.log("this.pushProgressStatus.subscribe((pushProgressStatus) ", pushProgressStatus)
-            // if (pushProgressStatus === 'no_push_data') {
-            // this.monitorSyncProgress();
-            // }
+            if (mode) this.apiPushServices.guide_view_history = this.guideViewHistoryService;
+            else delete this.apiPushServices.guide_view_history
         })
     }
 
     initializeEvents() {
-        // this.events.subscribe('UserDb:create', (userDb) => {
-        //     this.userService.userDb = userDb;
-        // });
-        // this.events.subscribe('UserDb:update', (userDb) => {
-        //     this.userService.userDb = userDb;
-        // });
-
+       
         this.eventSubscription = this.miscService.events.subscribe((event) => {
             switch (event.TAG) {
                 case 'UserDb:create':
@@ -1152,6 +1135,14 @@ export class ApiSync implements OnDestroy {
         //   }
 
         //  })
+    }
+
+    pullPayload() {
+        this.http.get(this.getSyncUrl()).subscribe((res) => {
+            console.log("pullPayload =>>>>>>>>>>>>>>>>>>>>>>")
+            console.log(res)
+            console.log("pullPayload <<<<<<<<<<<<<<<<<<<<<<=")
+        });
     }
 
     ngOnDestroy(): void {

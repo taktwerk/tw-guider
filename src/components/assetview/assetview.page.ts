@@ -12,6 +12,7 @@ import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.pag
 import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
 import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
 import { ApiSync } from 'src/providers/api-sync';
+import { File } from '@ionic-native/file/ngx';
 
 const { Filesystem } = Plugins;
 
@@ -60,64 +61,70 @@ export class AssetviewComponent implements OnInit {
     public modalController: ModalController,
     private videoEditor: VideoEditor,
     private apiSync: ApiSync,
+    public file: File,
   ) { }
 
   async ngOnInit() {
     // check image preview for video error
     if (this.model.isVideoFile()) {
-      if (this.model.TABLE_NAME !== 'guide_asset') {
-        this.defaultVideoPreview = this.model.getFileImagePath();
+      // this.videoPreview = this.model.getFileImagePath().changingThisBreaksApplicationSecurity;
+      // console.log(this.videoPreview)
+      // console.log(this.model)
+      // 
+      // if (this.model.TABLE_NAME !== 'guide_asset') {
+      //   this.defaultVideoPreview = this.model.getFileImagePath();
 
-        if (this.defaultVideoPreview) {
-          const image = new Image();
-          image.src = this.defaultVideoPreview;
-          console.log(this.model.title, this.defaultVideoPreview);
+      //   if (this.defaultVideoPreview) {
+      //     const image = new Image();
+      //     image.src = this.defaultVideoPreview;
+      //     console.log(this.model.title, this.defaultVideoPreview);
 
-          image.onload = () => {
-            this.videoPreview = this.defaultVideoPreview;
-          }
+      //     image.onload = () => {
+      //       this.videoPreview = this.defaultVideoPreview;
+      //     }
 
-          image.onerror = async (e) => {
-            console.log('Error loading image for ', this.model.title, e)
-          }
-        }
-        else {
-          // console.log(this.model.title, 'defaultPreview is', this.defaultVideoPreview)
-          // check there is video file to be played
-          if (this.model.attached_file_path && this.model.attached_file) {
-            // console.log(this.model.title, 'has attachment path at', this.model.attached_file_path);
-            const videoFileUri = this.downloadService.getNativeFilePath(this.model.getFileName(), this.model.TABLE_NAME);
-            // console.log(videoFileUri)
-            // make temporarily thumbnail
-            const option: CreateThumbnailOptions = {
-              fileUri: videoFileUri,
-              width: 160,
-              height: 206,
-              atTime: 1,
-              outputFileName: 'sample' + Date.now(),
-            };
+      //     image.onerror = async (e) => {
+      //       console.log('Error loading image for ', this.model.title, e)
+      //     }
+      //   }
+      //   else {
+      //     // console.log(this.model.title, 'defaultPreview is', this.defaultVideoPreview)
+      //     // check there is video file to be played
+      //     if (this.model.attached_file_path && this.model.attached_file) {
+      //       // console.log(this.model.title, 'has attachment path at', this.model.attached_file_path);
+      //       const videoFileUri = this.downloadService.getNativeFilePath(this.model.getFileName(), this.model.TABLE_NAME);
+      //       // console.log(videoFileUri)
+      //       // make temporarily thumbnail
+      //       const option: CreateThumbnailOptions = {
+      //         fileUri: videoFileUri,
+      //         width: 160,
+      //         height: 206,
+      //         atTime: 1,
+      //         outputFileName: 'sample' + Date.now(),
+      //       };
 
-            // create thumbnail
-            let _videoEditor = new VideoEditor()
-            let videoThumbnailPath = await _videoEditor.createThumbnail(option);
-            console.log(this.model.title, 'videoEditor createThumbnail', videoThumbnailPath);
-            if (videoThumbnailPath) {
-              videoThumbnailPath = 'file://' + videoThumbnailPath;
-            }
-            const resolvedPath = await this.downloadService.getResolvedNativeFilePath(videoThumbnailPath);
-            console.log(resolvedPath)
+      //       // create thumbnail
+      //       let videoThumbnailPath = await this.videoEditor.createThumbnail(option);
+      //       console.log(this.model.title, 'videoEditor createThumbnail', videoThumbnailPath);
+      //       if (videoThumbnailPath) {
+      //         videoThumbnailPath = 'file://' + videoThumbnailPath;
+      //       }
+      //       const resolvedPath = await this.downloadService.getResolvedNativeFilePath(videoThumbnailPath);
+      //       console.log(resolvedPath)
 
-            // generate base64 data
-            Filesystem.readFile({ path: resolvedPath }).then((filebBase64) => {
-              this.videoPreview = 'data:image/jpeg;base64,' + filebBase64.data;
-              console.log(this.videoPreview)
-            })
-          }
-          else {
-            this.videoPreview = '/assets/videooverlay.png';
-          }
-        }
-      }
+      //       // generate base64 data
+      //       Filesystem.readFile({ path: resolvedPath }).then((filebBase64) => {
+      //         this.videoPreview = 'data:image/jpeg;base64,' + filebBase64.data;
+      //         console.log(this.videoPreview)
+      //       })
+
+
+      //     }
+      //     else {
+      //       this.videoPreview = '/assets/videooverlay.png';
+      //     }
+      //   }
+      // }
     }
   }
 
@@ -135,7 +142,6 @@ export class AssetviewComponent implements OnInit {
       atTime: 1,
       outputFileName: 'sample' + Date.now(),
     };
-
 
     this.videoEditor.createThumbnail(option).then(async (videoThumbnailPath) => {
       console.log(this.model.title, 'videoEditor createThumbnail', videoThumbnailPath)
@@ -211,7 +217,6 @@ export class AssetviewComponent implements OnInit {
     }
   }
 
-
   async openImageEditor() {
     const modal = await this.modalController.create({
       component: ImageEditorComponent,
@@ -229,10 +234,19 @@ export class AssetviewComponent implements OnInit {
     return await modal.present();
   }
 
+  async onImageError(event) {
+    console.log("Image has error")
+    console.log(event.target.src)
+    console.log(this.model)
 
-  onImageError(event) {
-    // console.log("Image has error")
-    // console.log(event)
-    // this.generateVideoPreview(event);
+    console.log(this.model.local_thumb_attached_file)
+    // resolve path
+    const resolvedPath = await this.downloadService.getResolvedNativeFilePath(this.model.local_thumb_attached_file);
+    console.log(resolvedPath)
+
+    // check directory
+    const checkDirExist = await Filesystem.readdir({ path: this.file.dataDirectory + this.model.TABLE_NAME });
+    console.log("Is checking directory with Capacitor");
+    console.log("checkDirExist", checkDirExist);
   }
 }
