@@ -73,6 +73,8 @@ export class DownloadService {
   async downloadAndSaveFile(url: string, name: string, modelFolder: string, authToken = ''): Promise<any> {
     const promise = new Promise((resolve) => {
       const finalPath = this.file.dataDirectory + modelFolder + '/' + name;
+      console.log("Will downloadAndSaveFile")
+      console.log(finalPath)
 
       this.isExistFile(this.file.dataDirectory + modelFolder + '/', name).then((isExist) => {
         if (isExist) {
@@ -117,6 +119,11 @@ export class DownloadService {
   }
 
   download(url, authToken?: string): Promise<any> {
+    console.log("url to download from", url)
+    if (url.includes('/api/api/')) {
+      url = url.replace('/api/api/', '/api/');
+    }
+
     const headerObject: any = {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*'
@@ -133,22 +140,9 @@ export class DownloadService {
       this.http
         .get(url, { headers: headers, observe: 'response', responseType: 'blob' })
         .toPromise()
-        // .then(
-        //   (response) => {
-        //     console.log('SYNC4');
-        //     this.loggerService.getLogger().info("SYNC4")
-        //     resolve(response);
-        //     return;
-        //   },
-        //   (downloadErr) => {
-        //     console.log('downloadErr', downloadErr);
-        //     this.loggerService.getLogger().error("Download Error at download-service 139", downloadErr, new Error().stack)
-        //     resolve(false);
-        //     return;
-        //   }
-        // );
         .then((response) => {
           console.log('SYNC4');
+          console.log("download response ", response)
           this.loggerService.getLogger().info("SYNC4")
           resolve(response);
           return;
@@ -256,7 +250,6 @@ export class DownloadService {
 
     return new Blob([uInt8Array], { type: mimeString });
   }
-
 
   readFile(fileKey: string, file: any, url: string, headers?: Headers): Promise<Blob> {
     return new Promise((resolve) => {
@@ -407,6 +400,7 @@ export class DownloadService {
       console.log(currentName);
       console.log(newFilePath);
       console.log(newFileName);
+
       this.loggerService.getLogger().info("Will start copyToLocalDir")
       this.loggerService.getLogger().info("namePath", namePath)
       this.loggerService.getLogger().info("currentName", currentName)

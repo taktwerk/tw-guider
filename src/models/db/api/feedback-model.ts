@@ -74,6 +74,7 @@ export class FeedbackModel extends DbApiModel {
             name: FeedbackModel.COL_ATTACHED_FILE,
             url: FeedbackModel.COL_ATTACHED_FILE_PATH,
             localPath: FeedbackModel.COL_LOCAL_ATTACHED_FILE,
+
             thumbnail: {
                 name: FeedbackModel.COL_THUMB_ATTACHED_FILE,
                 url: FeedbackModel.COL_API_THUMB_ATTACHED_FILE_PATH,

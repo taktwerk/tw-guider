@@ -242,6 +242,9 @@ export class AuthService {
                 .then(async data => {
                     if (data) {
                         await this.saveAuthenticatedUser(data).then(() => {
+                            console.log("saveAuthenticatedUser==========>")
+                            console.log(data)
+                            console.log("saveAuthenticatedUser==========>")
                             resolve(data);
                             return true;
                         });

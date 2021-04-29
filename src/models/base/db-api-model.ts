@@ -488,7 +488,7 @@ export abstract class DbApiModel extends DbBaseModel {
             (!oldModel || oldModel[fileMap.url] !== this[fileMap.url])
         ) {
             console.log('download thumbnail');
-            // await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
+            await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
         }
 
         return true;
@@ -526,9 +526,7 @@ export abstract class DbApiModel extends DbBaseModel {
         const modelFileMap = this.downloadMapping[columnNameIndex];
         if (willDeleteFile) {
             if (this[modelFileMap.name]) {
-                const attachedFileForDelete = this[modelFileMap.name] ?
-                    this.downloadService.getNativeFilePath(this[modelFileMap.name], this.TABLE_NAME) :
-                    '';
+                const attachedFileForDelete = this[modelFileMap.name] ? this.downloadService.getNativeFilePath(this[modelFileMap.name], this.TABLE_NAME) : '';
                 if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].originalFile && attachedFileForDelete) {
                     this.downloadMapping[columnNameIndex].originalFile = attachedFileForDelete;
                 }
@@ -553,9 +551,7 @@ export abstract class DbApiModel extends DbBaseModel {
             }
             if (willDeleteFile) {
                 if (this[modelFileMap.thumbnail.name]) {
-                    const thumbnailAttachedFileForDelete = this[modelFileMap.thumbnail.name] ?
-                        this.downloadService.getNativeFilePath(this[modelFileMap.thumbnail.name], this.TABLE_NAME) :
-                        '';
+                    const thumbnailAttachedFileForDelete = this[modelFileMap.thumbnail.name] ? this.downloadService.getNativeFilePath(this[modelFileMap.thumbnail.name], this.TABLE_NAME) : '';
                     if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile && thumbnailAttachedFileForDelete) {
                         this.downloadMapping[columnNameIndex].thumbnail.originalFile = thumbnailAttachedFileForDelete;
                     }
@@ -565,14 +561,10 @@ export abstract class DbApiModel extends DbBaseModel {
                     this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete.push(thumbnailAttachedFileForDelete);
                 }
             }
-            this[modelFileMap.thumbnail.name] = recordedFile.thumbnailUri ?
-                recordedFile.thumbnailUri.substr(recordedFile.thumbnailUri.lastIndexOf('/') + 1) :
-                '';
+            this[modelFileMap.thumbnail.name] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri.substr(recordedFile.thumbnailUri.lastIndexOf('/') + 1) : '';
             this[modelFileMap.thumbnail.url] = '';
             this[modelFileMap.thumbnail.localPath] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
-            this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = recordedFile.thumbnailUri ?
-                recordedFile.thumbnailUri :
-                '';
+            this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
         }
     }
 
