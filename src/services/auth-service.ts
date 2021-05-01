@@ -19,7 +19,6 @@ import { TranslateConfigService } from './translate-config.service';
 
 @Injectable()
 export class AuthService {
-
     /**
      * Auth Service
      * @param http
@@ -309,6 +308,7 @@ export class AuthService {
                     }
                     this.auth.loginDate = new Date();
                     this.auth.additionalInfo = user.additionalInfo;
+                    this.auth.groups = user.groups;
                 } else {
                     if ((formData && !formData.username) || (!formData && !user.username)) {
                         resolve(false);
@@ -328,6 +328,7 @@ export class AuthService {
                     }
                     this.auth.loginDate = new Date();
                     this.auth.additionalInfo = user.additionalInfo;
+                    this.auth.groups = user.groups;
                 }
                 this.auth.save(!!(existUser.length)).then((authSaveResult) => {
                     if (authSaveResult) {

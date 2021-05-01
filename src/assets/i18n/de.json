@@ -17,7 +17,7 @@
   "Status": "Status",
   "Open": "Offen",
   "Done": "Erledigt",
-  "dismiss":"Entlassen",
+  "dismiss": "Entlassen",
   "save_before_close_warning": "Daten vor dem Schliessen speichern?",
   "dont_save": "Nicht speichern",
   "cancel": "Abbrechen",
@@ -25,7 +25,7 @@
   "Order": "Reihenfolge",
   "created_by": "Erstellt von",
   "updated_by": "Aktualisiert von",
-  "to guide":"Zur Anleitung",
+  "to guide": "Zur Anleitung",
   "exitApp": "Soll die App geschlossen werden?",
   "about": {
     "header": "Über",
@@ -61,7 +61,7 @@
     "Data is sent to the server": "Daten werden zum Server gesendet.",
     "Data has been sent to the server": "Daten wurden zum Server gesendet.",
     "Sending data to the server failed.": "Daten zum Server senden ist fehlgeschlagen.",
-    "Start sync to get data":"Starten Sie die Synchronisierung, um Daten abzurufen"
+    "Start sync to get data": "Starten Sie die Synchronisierung, um Daten abzurufen"
   },
   "guide-categories": {
     "category": "Kategorie",
@@ -107,8 +107,8 @@
     "header": "Guide",
     "No information here yet.": "Noch keine Informationen verfügbar.",
     "Assets": "Zusatzinformationen",
-    "Information":"Information",
-    "Restart":"Anleitung neu starten"
+    "Information": "Information",
+    "Restart": "Anleitung neu starten"
   },
   "profile": {
     "header": "Profil",
@@ -118,6 +118,7 @@
     "Full name": "Name",
     "Email": "Email",
     "Last Login At": "Letzte Anmeldung am",
+    "Groups": "Groups",
     "Roles": "Rollen",
     "Company": "Firma"
   },
@@ -203,8 +204,8 @@
     "model_was_deleted": "{{ model }} wurde gelöscht",
     "are_you_sure_delete_model": "Sind Sie sicher, diesen Eintrag zu löschen?",
     "are_you_sure_go_back": "Es gibt Änderungen",
-    "resumed":"Wieder aufgenommen",
-    "saved":"Gerettet"
+    "resumed": "Wieder aufgenommen",
+    "saved": "Gerettet"
   },
   "guider": {
     "header": "Anleitung erfassen",
@@ -230,9 +231,9 @@
   "CKEditor": {
     "header": "Texteditor"
   },
-  "guidestep":{
-    "add":"Schritt hinzufügen",
-    "edit":"Bearbeitungsschritt",
+  "guidestep": {
+    "add": "Schritt hinzufügen",
+    "edit": "Bearbeitungsschritt",
     "Open in editor": "Im Editor öffnen",
     "Description": "Beschreibung"
   }
