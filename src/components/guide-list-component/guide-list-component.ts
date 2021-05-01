@@ -1,12 +1,13 @@
 import { Location } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
-
+import { Storage } from '@ionic/storage';
 import { AuthService } from '../../services/auth-service';
 import { AppSetting } from '../../services/app-setting';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
+import { MiscService } from 'src/services/misc-service';
 
 @Component({
   selector: 'guide-list-component',
@@ -25,12 +26,14 @@ export class GuideListComponent implements OnInit {
   displayLimit = 10;
 
   constructor(
+    private storage: Storage,
     private modalController: ModalController,
     private authService: AuthService,
     private router: Router,
     public appSetting: AppSetting,
     public platform: Platform,
-    public location: Location
+    public location: Location,
+    private miscService: MiscService,
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -116,6 +119,8 @@ export class GuideListComponent implements OnInit {
       },
       cssClass: "modal-fullscreen"
     });
-    return await modal.present();
+    modal.present().then(re => {
+      this.miscService.set_guideShown(guideId);
+    });
   }
 }
