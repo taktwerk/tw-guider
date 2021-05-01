@@ -187,7 +187,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   changeGuideStepCurrentSlide() {
-    console.log('changeGuideStepCurrentSlide')
+    console.log('changeGuideStepCurrentSlide');
     this.guideStepSlides
       .getActiveIndex()
       .then(index => {
@@ -291,10 +291,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   public setGuideSteps(id) {
-    console.log("id", id)
     // console.log("id", id)
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(async results => {
-      console.log("results", results)
+    // console.log("results", results)
       this.guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
@@ -306,13 +305,19 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]);
     // in collection
     if (this.parentCollectionId) {
-      this.guideViewHistory = this.guideHistories.filter(h => h.parent_guide_id != undefined).sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate())[0];
+      //  console.log(" in COllection")
+      // this.guideViewHistory = this.guideHistories.filter(h => h.parent_guide_id != undefined).sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate())[0];
+      this.guideViewHistory = this.guideHistories.filter(h => h.parent_guide_id === this.parentCollectionId)[0];
+     // console.log(this.guideHistories.filter(h => h.parent_guide_id === this.parentCollectionId));
       if (!this.guideViewHistory) {
         this.guideViewHistory = this.guideViewHistoryService.newModel();
       }
     }
     else {
-      this.guideViewHistory = this.guideHistories.sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate()).filter((h: GuideViewHistoryModel) => !h.parent_guide_id)[0];
+      // console.log("Not in COllection")
+      // console.log(this.guideHistories);
+      // this.guideViewHistory = this.guideHistories.sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate()).filter((h: GuideViewHistoryModel) => !h.parent_guide_id)[0];
+      this.guideViewHistory = this.guideHistories.filter(h => h.guide_id === this.guide.idApi)[0];
       if (!this.guideViewHistory) {
         this.guideViewHistory = this.guideViewHistoryService.newModel();
       }
@@ -331,12 +336,19 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         }
       });
     }
+
+    // console.log("guideViewHistory ===============");
+    // console.log(this.parentCollectionId);
+    // console.log(this.guideHistories);
+    // console.log(this.guideViewHistory);
+    // console.log("guideViewHistory ===============");
   }
 
   public async saveStep() {
     const user = await this.authService.getLastUser();
     if (!user) { return; }
     // update
+    this.guideViewHistory.parent_guide_id = this.parentCollectionId;
     this.guideViewHistory.client_id = this.guide.client_id;
     this.guideViewHistory.user_id = user.userId;
     this.guideViewHistory.guide_id = this.guide.idApi;
@@ -371,7 +383,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     // console.log("guideId", this.guideId)
     this.parentCollectionId = +this.activatedRoute.snapshot.paramMap.get('parentCollectionId');
-    console.log("parentCollectionId", this.parentCollectionId);
+   // console.log("parentCollectionId", this.parentCollectionId);
     if (this.guideId) {
       const guiderById = await this.guiderService.getById(this.guideId);
       // console.log("guiderById", guiderById)
@@ -390,7 +402,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
     this.presentGuideInfo(this.guideId);
     this.guiderSubscription = this.guiderSubject.subscribe(async (guideId) => {
-      console.log("this.guiderResetSubject.subscribe((guideId)", guideId);
+     // console.log("this.guiderResetSubject.subscribe((guideId)", guideId);
       const loader = await this.loader.create();
       loader.present();
       this.guideId = guideId;
@@ -522,11 +534,11 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   async setGuides() {
     this.guideCategoryService.getGuides().then((res) => {
-      console.log("guideCategoryService.getGuides().then((res)", res);
+     // console.log("guideCategoryService.getGuides().then((res)", res);
 
       setTimeout(async () => {
         this.guides = res;
-        console.log("this.parentCollectionId in guide slider", this.parentCollectionId);
+       // console.log("this.parentCollectionId in guide slider", this.parentCollectionId);
 
         if (this.parentCollectionId) {
           this.collections = this.guides.filter(g => g.guide_collection.length > 0);
@@ -536,7 +548,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           this.guideIndex = this.guideCollection.guide_collection.findIndex(({ guide_id }) => this.guide.idApi == guide_id);
 
           this.guideStepSlides.isBeginning().then((res) => {
-            console.log("isBeginning on Loaded", res)
+           // console.log("isBeginning on Loaded", res)
             if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined && res) {
               this.hasPrevious = true;
             }
@@ -546,7 +558,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           })
 
           this.guideStepSlides.isEnd().then((res) => {
-            console.log("isEnd on Loaded", res)
+           // console.log("isEnd on Loaded", res)
             if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined && res) {
               this.hasNext = true;
             }
