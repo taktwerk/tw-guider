@@ -47,6 +47,9 @@ export class AuthDb extends DbBaseModel {
 
   /** @inheritDoc */
   TABLE_NAME: string = 'auth';
+
+  public migrations = ['AddGroupColumnToUserTableMigration'];
+
   /** @inheritDoc */
   TABLE: any = [
     [AuthDb.COL_USER_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'userId'],
@@ -99,7 +102,6 @@ export class AuthDb extends DbBaseModel {
     if (this.additionalInfo.permissions.hasAllPermissions) {
       return true;
     }
-
     return this.additionalInfo.permissions.list && this.additionalInfo.permissions.list.includes(permissionName);
   }
 }
