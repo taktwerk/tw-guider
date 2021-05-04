@@ -19,9 +19,9 @@ export class AddGroupColumnToUserTableMigration {
 					return;
 				}
 			}
-			const userModel = await this.auth.findAll();
-			for (let i = 0; i < userModel.length; i++) {
-				userModel[i].updateLocalRelations();
+			const authmodel = await this.auth.findAll();
+			for (let i = 0; i < authmodel.length; i++) {
+				authmodel[i].updateLocalRelations();
 			}
 			resolve(true);
 		});

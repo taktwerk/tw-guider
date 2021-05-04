@@ -1,3 +1,4 @@
+import { AuthDb } from 'src/models/db/auth-db';
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { Injectable } from '@angular/core';
 import { AppSetting } from '../services/app-setting';
@@ -44,7 +45,8 @@ export class MigrationProvider {
     private protocolCommentService: ProtocolCommentService,
     private workflowTransitionService: WorkflowTransitionService,
     private guideChildService: GuideChildService,
-    private guideViewHistoryService: GuideViewHistoryService
+    private guideViewHistoryService: GuideViewHistoryService,
+    private authDb: AuthDb
   ) { }
 
   modelsServices: any = {
@@ -63,7 +65,8 @@ export class MigrationProvider {
     workflow_transition: this.workflowTransitionService,
     protocol_comment: this.protocolCommentService,
     feedback: this.feedbackService,
-    guide_view_history: this.guideViewHistoryService
+    guide_view_history: this.guideViewHistoryService,
+    auth_db: this.authDb
   };
 
   async init() {
@@ -149,7 +152,6 @@ export class MigrationProvider {
 
   getNotActiveMigrations(tableName?: string): Promise<any[]> {
     return new Promise(async (resolve) => {
-
       const condition: any = ['1=1', ['is_active', 1], ['name', 'AddLocalGuideIdToGuideStepTableMigration']];
       if (tableName) {
         condition.push(['table_name', tableName]);
