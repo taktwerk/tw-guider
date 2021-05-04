@@ -28,7 +28,8 @@ import * as migrationList from '../migrations/base/migration-list';
 @Injectable()
 export class MigrationProvider {
 
-  constructor(private migration: MigrationService,
+  constructor(
+    private migration: MigrationService,
     private userService: UserService,
     private guideService: GuiderService,
     private guideCategoryService: GuideCategoryService,
