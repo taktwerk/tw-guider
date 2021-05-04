@@ -4,6 +4,7 @@ import { DbProvider } from '../../providers/db-provider';
 import { DownloadService } from '../../services/download-service';
 import { LoggerService } from 'src/services/logger-service';
 import { MiscService } from 'src/services/misc-service';
+import { Injectable } from '@angular/core';
 
 /**
  * Db Model for 'Auth'
@@ -13,6 +14,7 @@ import { MiscService } from 'src/services/misc-service';
  *
  * @augments DbBaseModel
  */
+@Injectable()
 export class AuthDb extends DbBaseModel {
   /** @inheritDoc */
   TAG: string = 'AuthDb';

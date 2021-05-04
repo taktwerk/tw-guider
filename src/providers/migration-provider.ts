@@ -67,7 +67,7 @@ export class MigrationProvider {
     protocol_comment: this.protocolCommentService,
     feedback: this.feedbackService,
     guide_view_history: this.guideViewHistoryService,
-    auth_db: this.authDb
+   // auth_db: this.authDb
   };
 
   async init() {

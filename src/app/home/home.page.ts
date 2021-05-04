@@ -64,23 +64,30 @@ export class HomePage {
         this.scanSub = this.qrScanner.scan().subscribe(async (text: string) => {
           const config = JSON.parse(text);
           const scanErrors = this.appSetting.validateData(config);
+
           if (scanErrors.length) {
             this.http.showToast('validation.QR-code has wrong information', '', 'danger');
             this.closeScanner();
             return;
-          } else {
+          } 
+          
+          else {
             try {
               const user = await this.userService.getUser();
+
               if (user) {
                 await this.authService.logout();
               }
               const host = this.appSetting.isEnabledUsb ? this.appSetting.usbHost : config.host;
               const appConfirmUrl = host + environment.apiUrlPath + '/login/';
+
               if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
                 await this.authService.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
-              } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT && config.client) {
+              }
+               else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT && config.client) {
                 await this.authService.loginByIdentifier(appConfirmUrl, 'client-default-user', config.client);
-              } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
+              } 
+              else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
                 await this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
               }
 

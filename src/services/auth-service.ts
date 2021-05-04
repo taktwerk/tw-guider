@@ -185,6 +185,7 @@ export class AuthService {
                     resolve(false);
                     return;
                 }
+
                 user.password = this.cryptoProvider.hashPassword(formData.password);
                 user.loginDate = new Date();
                 user.save(true).then((authSaveResult) => {
@@ -198,7 +199,8 @@ export class AuthService {
                                 this.miscService.events.next({ TAG: 'user:login', data: user.userId })
                                 resolve(user.userId);
                                 return;
-                            } else {
+                            }
+                            else {
                                 resolve(false);
                                 return;
                             }
@@ -215,24 +217,29 @@ export class AuthService {
 
     loginByIdentifier(appConfirmUrl, type: string, identifier: string) {
         return new Promise(async (resolve, reject) => {
-            if (type === 'client' ||
-                type === 'client-default-user'
-            ) {
+            if (type === 'client' || type === 'client-default-user') {
                 const version = await this.appVersion.getVersionNumber();
+
                 if (!version) {
                     resolve(false);
                     reject(new Error('Missed version number in config'));
                     return false;
                 }
+
                 appConfirmUrl += 'by-client-identifier?client=' + identifier;
+
                 if (type === 'client-default-user') {
                     appConfirmUrl += '&is_login_by_default_user=1';
-                } else {
+                }
+
+                else {
                     appConfirmUrl += '&device_key=' + this.device.uuid +
                         '&device_name=' + this.device.model +
                         '&version=' + version;
                 }
-            } else if (type === 'user') {
+            }
+
+            else if (type === 'user') {
                 appConfirmUrl += 'by-user-identifier?user=' + identifier;
             }
 
@@ -296,6 +303,7 @@ export class AuthService {
     saveAuthenticatedUser(user, formData?: any) {
         return new Promise(resolve => {
             const findAuthModel = this.newAuthModel();
+
             findAuthModel.findFirst(['user_id', user.user_id], 'login_at DESC').then((existUser) => {
                 if (existUser.length) {
                     this.auth = existUser[0];
@@ -303,33 +311,43 @@ export class AuthService {
                     this.auth.client_id = user.client_id;
                     this.auth.lastAuthItemChangedAt = user.lastAuthItemChangedAt;
                     this.auth.isAuthority = user.isAuthority;
+
                     if (formData) {
                         this.auth.password = this.cryptoProvider.hashPassword(formData.password);
                     }
+
                     this.auth.loginDate = new Date();
                     this.auth.additionalInfo = user.additionalInfo;
                     this.auth.groups = user.groups;
-                } else {
+                }
+
+                else {
                     if ((formData && !formData.username) || (!formData && !user.username)) {
                         resolve(false);
                         return false;
                     }
+
                     this.auth = this.newAuthModel();
                     this.auth.userId = user.user_id;
                     this.auth.client_id = user.client_id;
                     this.auth.isAuthority = user.isAuthority;
                     this.auth.lastAuthItemChangedAt = user.lastAuthItemChangedAt;
                     this.auth.authToken = user.access_token;
+
                     if (formData) {
                         this.auth.username = formData.username;
                         this.auth.password = this.cryptoProvider.hashPassword(formData.password);
-                    } else {
+                    }
+
+                    else {
                         this.auth.username = user.username;
                     }
+
                     this.auth.loginDate = new Date();
                     this.auth.additionalInfo = user.additionalInfo;
                     this.auth.groups = user.groups;
                 }
+
                 this.auth.save(!!(existUser.length)).then((authSaveResult) => {
                     if (authSaveResult) {
                         this.isLoggedin = true;
