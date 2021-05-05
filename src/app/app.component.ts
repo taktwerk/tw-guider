@@ -359,6 +359,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.authService.getLastUser().then((res) => {
         resolve(res);
         let lastUser: AuthDb = null;
+        console.log("lastUser", res);
         if (res) {
           lastUser = res;
         }

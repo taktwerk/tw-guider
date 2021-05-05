@@ -8,7 +8,6 @@ import { Injectable } from '@angular/core';
 
 /**
  * Db Model for 'Auth'
- *
  * Holds information about the last auths and its credentials incl
  * the received auth token from the API.
  *

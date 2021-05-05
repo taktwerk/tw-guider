@@ -320,7 +320,6 @@ export class AuthService {
                     this.auth.additionalInfo = user.additionalInfo;
                     this.auth.groups = user.groups;
                 }
-
                 else {
                     if ((formData && !formData.username) || (!formData && !user.username)) {
                         resolve(false);
@@ -338,7 +337,6 @@ export class AuthService {
                         this.auth.username = formData.username;
                         this.auth.password = this.cryptoProvider.hashPassword(formData.password);
                     }
-
                     else {
                         this.auth.username = user.username;
                     }
@@ -347,6 +345,8 @@ export class AuthService {
                     this.auth.additionalInfo = user.additionalInfo;
                     this.auth.groups = user.groups;
                 }
+
+                console.log("user.groups ", user.groups)
 
                 this.auth.save(!!(existUser.length)).then((authSaveResult) => {
                     if (authSaveResult) {

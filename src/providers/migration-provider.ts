@@ -67,7 +67,7 @@ export class MigrationProvider {
     protocol_comment: this.protocolCommentService,
     feedback: this.feedbackService,
     guide_view_history: this.guideViewHistoryService,
-   // auth_db: this.authDb
+    // auth: this.authDb
   };
 
   async init() {
@@ -77,25 +77,65 @@ export class MigrationProvider {
     }
     await this.addMigrations();
     await this.executeMigrations();
+
+    // this.checkAuthMigration();
+  }
+
+  // update auth migration
+  async checkAuthMigration() {
+    // auth group column exist?
+    // check auth table exist == safety check
+    this.migration.dbModelApi.isExistTable().then(async res => {
+      // check all auth TABLE attributes exist
+      console.log(this.authDb.TABLE)
+
+      // get migrations list
+      const migrations = this.authDb.migrations;
+      for (let i = 0; i < migrations.length; i++) {
+        console.log("migrations[i]", migrations[i]);
+        let isExecutedMigration = false;
+        // console.log(migrationList[migrations[i]]);
+
+        if (migrationList[migrations[i]]) {
+          const migrationInstance = new migrationList[migrations[i]](this.authDb);
+          isExecutedMigration = await migrationInstance.execute();
+        }
+
+        if (isExecutedMigration) {
+          // migrations[i].is_active = 1;
+          await this.authDb.save();
+        }
+      }
+      // this.authDb.TABLE.map(async c => {
+      //   const groupColExit = await this.migration.dbModelApi.isExitColInTable('auth', c[0]);
+      //   console.log("groupColExit ", groupColExit, c[0])
+      // })
+    })
   }
 
   async addMigrations() {
     const migrationModels = [];
     Object.keys(this.modelsServices).forEach(async (modelKey) => {
-      const service: ApiService = this.modelsServices[modelKey];
-      const modelMigrations = service.dbModelApi.migrations;
-      const tableName = service.dbModelApi.TABLE_NAME;
+      const service = this.modelsServices[modelKey];
+      let modelMigrations;
+      if (service.TAG === 'AuthDb') {
+        modelMigrations = service.migrations;
+      }
+      else {
+        modelMigrations = service.dbModelApi.migrations;
+      }
+      let tableName;
+      if (service.TAG === 'AuthDb') {
+        tableName = service.TABLE_NAME;
+      }
+      else {
+        tableName = service.dbModelApi.TABLE_NAME;
+      }
 
       if (modelMigrations.length) {
         Object.keys(modelMigrations).forEach(async (migrationKey) => {
           const migrationName = modelMigrations[migrationKey];
-
-          migrationModels.push(
-            {
-              migrationName: modelMigrations[migrationKey],
-              tableName: tableName
-            }
-          );
+          migrationModels.push({ migrationName: modelMigrations[migrationKey], tableName: tableName });
         });
       }
     });
@@ -107,6 +147,7 @@ export class MigrationProvider {
       const isExistsModel = await migrationModel.exists(
         ['1=1', ['name', migrationName], ['table_name', tableName]]
       );
+
       if (!isExistsModel) {
         migrationModel.name = migrationName;
         migrationModel.table_name = tableName;
@@ -118,16 +159,40 @@ export class MigrationProvider {
 
   async executeMigrations() {
     const dbServices = [];
-    Object.keys(this.modelsServices).forEach(async (modelKey) => {
-      dbServices.push(this.modelsServices[modelKey]);
-    });
+    Object.keys(this.modelsServices).forEach(async (modelKey) => { dbServices.push(this.modelsServices[modelKey]) });
+
     for (let i = 0; i < dbServices.length; i++) {
-      const service: ApiService = dbServices[i];
-      const modelMigrations = service.dbModelApi.migrations;
-      const tableName = service.dbModelApi.TABLE_NAME;
-      const isExistModelTable = await service.dbModelApi.isExistTable();
+      const service = dbServices[i];
+
+      let modelMigrations;
+
+      if (service.TAG === 'AuthDb') {
+        modelMigrations = service.migrations;
+      }
+      else {
+        modelMigrations = service.dbModelApi.migrations;
+      }
+
+      let tableName;
+      let isExistModelTable;
+
+      if (service.TAG === 'AuthDb') {
+        tableName = service.TABLE_NAME;
+        isExistModelTable = await service.isExistTable();
+      }
+      else {
+        tableName = service.dbModelApi.TABLE_NAME;
+        isExistModelTable = await service.dbModelApi.isExistTable();
+      }
+
       if (!isExistModelTable) {
-        await service.dbModelApi.dbCreateTable();
+        if (service.TAG === 'AuthDb') {
+          await service.dbCreateTable();
+        }
+        else {
+          await service.dbModelApi.dbCreateTable();
+        }
+
         const migrations = await this.getNotActiveMigrations(tableName);
         for (let i = 0; i < migrations.length; i++) {
           migrations[i].is_active = 1;
@@ -135,15 +200,24 @@ export class MigrationProvider {
         }
       }
     }
+
     const migrations = await this.getNotActiveMigrations();
+    // console.log("this.getNotActiveMigrations(); ", migrations)
+    // console.log("Length of migration list seems to 0 for some reason")
+
     for (let i = 0; i < migrations.length; i++) {
+      // console.log(migrations[i])
       const className = migrations[i].name;
+
       let isExecutedMigration = false;
+
       if (migrationList[className]) {
         const service = this.modelsServices[migrations[i].table_name];
         const migrationInstance = new migrationList[className](service);
+        // console.log("migrationInstance ", migrationInstance);
         isExecutedMigration = await migrationInstance.execute();
       }
+
       if (isExecutedMigration) {
         migrations[i].is_active = 1;
         await migrations[i].save();
@@ -154,14 +228,19 @@ export class MigrationProvider {
   getNotActiveMigrations(tableName?: string): Promise<any[]> {
     return new Promise(async (resolve) => {
       const condition: any = ['1=1', ['is_active', 1], ['name', 'AddLocalGuideIdToGuideStepTableMigration']];
+
       if (tableName) {
         condition.push(['table_name', tableName]);
       }
+
       this.migration.dbModelApi.searchAll(condition).then((res) => {
         resolve(res);
-      }).catch((err) => {
-        resolve([]);
-      });
+        // console.log("this.migration.dbModelApi.searchAll", res);
+      })
+        .catch((err) => {
+          console.log("this.migration.dbModelApi.searchAll Error ", err)
+          resolve([]);
+        });
     });
   }
 }

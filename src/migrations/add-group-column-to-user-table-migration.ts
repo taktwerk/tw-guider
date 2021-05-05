@@ -19,10 +19,11 @@ export class AddGroupColumnToUserTableMigration {
 					return;
 				}
 			}
-			const authmodel = await this.auth.findAll();
-			for (let i = 0; i < authmodel.length; i++) {
-				authmodel[i].updateLocalRelations();
-			}
+			//const authmodel = await this.auth.findAll();
+			//	console.log("authmodel", authmodel)
+			// for (let i = 0; i < authmodel.length; i++) {
+			// 	authmodel[i].updateLocalRelations();
+			// }
 			resolve(true);
 		});
 	}

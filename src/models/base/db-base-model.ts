@@ -191,6 +191,28 @@ export abstract class DbBaseModel {
         return query;
     }
 
+    public isExitColInTable(tableName, colName) {
+        return new Promise((resolve) => {
+            if (this.dbIsBusy) {
+                resolve(false);
+            } else {
+                this.dbIsBusy = true;
+                this.platform.ready().then(() => {
+                    this.db.query(`SELECT ${colName} FROM ${tableName}`)
+                        .then((res) => {
+                            this.dbIsReady = true;
+                            this.dbIsBusy = false;
+                            resolve(true);
+                        }).catch((err) => {
+                            this.dbIsBusy = false;
+                            resolve(false);
+                            console.log(err)
+                        });
+                });
+            }
+        });
+    }
+
     public isExistTable() {
         return new Promise((resolve) => {
             if (this.dbIsBusy) {
@@ -198,16 +220,15 @@ export abstract class DbBaseModel {
             } else {
                 this.dbIsBusy = true;
                 this.platform.ready().then(() => {
-                    this.db.query(
-                        "SELECT COUNT(*) FROM " + this.secure(this.TABLE_NAME)
-                    ).then((res) => {
-                        this.dbIsReady = true;
-                        this.dbIsBusy = false;
-                        resolve(true);
-                    }).catch((err) => {
-                        this.dbIsBusy = false;
-                        resolve(false);
-                    });
+                    this.db.query("SELECT COUNT(*) FROM " + this.secure(this.TABLE_NAME))
+                        .then((res) => {
+                            this.dbIsReady = true;
+                            this.dbIsBusy = false;
+                            resolve(true);
+                        }).catch((err) => {
+                            this.dbIsBusy = false;
+                            resolve(false);
+                        });
                 });
             }
         });
@@ -337,16 +358,19 @@ export abstract class DbBaseModel {
     }
 
     public searchAll(where?: any, orderBy?: string, limit?: number, join?: string, selectFrom?: string): Promise<any> {
+
         const query = this.searchAllQuery(where, orderBy, limit, join, selectFrom);
         const entries: any[] = [];
-        //  console.log('query', query);
+
+        // console.log('query', query);
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
                     resolve(entries);
-                } else {
+                }
+                else {
                     db.query(query).then((res) => {
-                        //  console.log('search all res', res);
+                        // console.log('search all res', res);
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
                                 const obj = new (this.constructor as any);
@@ -358,9 +382,11 @@ export abstract class DbBaseModel {
                                 entries.push(obj);
                             }
                         }
+                        //  console.log("entries", entries);
                         resolve(entries);
+
                     }).catch((err) => {
-                        // console.log('is errororrr', err);
+                        console.log('searchAll error ', err);
                         this.loggerService.getLogger().error("error at db-base-model 362", err, new Error().stack)
                         resolve(entries);
                     });
@@ -743,8 +769,8 @@ export abstract class DbBaseModel {
                         resolve(res);
 
                     }).catch((err) => {
-                        // console.log('errrr', err);
-                        this.loggerService.getLogger().error("error at db-base-model 744", err, new Error().stack)
+                        console.log('Db Create errrr', err);
+                        this.loggerService.getLogger().error("error at db-base-model 746", err, new Error().stack)
                         resolve(false);
                     });
                 }
@@ -775,10 +801,10 @@ export abstract class DbBaseModel {
                         }
                         resolve(res);
                     }).catch((err) => {
-                        console.log('errrr', err);
+                        console.log('Db Update errrr', err);
                         console.log(this.loggerService)
                         if (this.loggerService) {
-                            this.loggerService.getLogger().error("error at db-base-model 772", err, new Error().stack)
+                            this.loggerService.getLogger().error("error at db-base-model 780", err, new Error().stack)
                         }
                         resolve(false);
                     });

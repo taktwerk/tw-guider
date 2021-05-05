@@ -14,7 +14,6 @@ export abstract class ApiService {
     // tslint:disable-next-line:jsdoc-format
     /** holds the current "query" data **/
     public currentData: DbApiModel[];
-
     /** API URL to load data from the remote server */
     abstract loadUrl: string;
     /** new instance of a DbHelperApi Model to load records into model instances */
@@ -27,8 +26,7 @@ export abstract class ApiService {
      */
     public dataVersion = 0;
 
-    protected constructor(public http: HttpClient,
-        public appSetting: AppSetting) {
+    protected constructor(public http: HttpClient, public appSetting: AppSetting) {
         this.data = [];
         this.currentData = [];
     }
