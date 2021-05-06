@@ -180,7 +180,8 @@ export class AppComponent implements OnInit, OnDestroy {
       }, 2000)
 
       await this.migrationProvider.init();
-
+      this.migrationProvider.checkAuthMigration();
+      
       this.translateConfigService.setLanguage(this.translateConfigService.getDeviceLanguage());
 
       const result = await this.login();

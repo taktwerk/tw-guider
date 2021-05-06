@@ -50,6 +50,8 @@ export class AuthDb extends DbBaseModel {
   TABLE_NAME: string = 'auth';
 
   public migrations = ['AddGroupColumnToUserTableMigration'];
+  // add new columns to list to fetch the required data from Authentication API
+  // public columnsForMigrations = ['groups'];
 
   /** @inheritDoc */
   TABLE: any = [

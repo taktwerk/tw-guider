@@ -20,6 +20,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         public miscService: MiscService
     ) {
         this.authService.checkAccess();
+       // console.log('this.authService.auth.groups ', this.authService.auth.groups);
     }
 
     changeUsbMode() {
@@ -39,7 +40,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         // });
 
         this.eventSubscription = this.miscService.events.subscribe(async (event) => {
-            if (event.TAG == 'network:online') { 
+            if (event.TAG == 'network:online') {
                 this.authService.checkAccess();
             }
         })

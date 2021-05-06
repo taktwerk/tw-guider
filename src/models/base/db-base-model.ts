@@ -213,6 +213,27 @@ export abstract class DbBaseModel {
         });
     }
 
+    public checkTableExit(TABLE_NAME) {
+        return new Promise((resolve) => {
+            if (this.dbIsBusy) {
+                resolve(false);
+            } else {
+                this.dbIsBusy = true;
+                this.platform.ready().then(() => {
+                    this.db.query("SELECT COUNT(*) FROM " + this.secure(TABLE_NAME))
+                        .then((res) => {
+                            this.dbIsReady = true;
+                            this.dbIsBusy = false;
+                            resolve(true);
+                        }).catch((err) => {
+                            this.dbIsBusy = false;
+                            resolve(false);
+                        });
+                });
+            }
+        });
+    }
+
     public isExistTable() {
         return new Promise((resolve) => {
             if (this.dbIsBusy) {

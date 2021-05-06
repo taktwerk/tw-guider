@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
+import { MigrationProvider } from './../../providers/migration-provider';
+import { ChangeDetectorRef, Component, NgZone, OnDestroy } from '@angular/core';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
@@ -25,6 +26,8 @@ export class HomePage {
   public isScanning: boolean;
   public params;
   private scanSub: Subscription;
+  private config;
+  private appConfirmUrl;
 
   constructor(
     private loadingCtrl: LoadingController,
@@ -39,6 +42,7 @@ export class HomePage {
     public changeDetectorRef: ChangeDetectorRef,
     private ngZone: NgZone,
     private miscService: MiscService,
+    private migrationProvider: MigrationProvider
   ) { }
 
   b: any;
@@ -60,39 +64,36 @@ export class HomePage {
         this.qrScanner.show().then(res => {
           this.detectChanges();
         });
+
         // start scanning
         this.scanSub = this.qrScanner.scan().subscribe(async (text: string) => {
-          const config = JSON.parse(text);
-          const scanErrors = this.appSetting.validateData(config);
-
+          this.config = JSON.parse(text);
+          const scanErrors = this.appSetting.validateData(this.config);
           if (scanErrors.length) {
             this.http.showToast('validation.QR-code has wrong information', '', 'danger');
             this.closeScanner();
             return;
-          } 
-          
+          }
           else {
             try {
               const user = await this.userService.getUser();
-
               if (user) {
                 await this.authService.logout();
               }
-              const host = this.appSetting.isEnabledUsb ? this.appSetting.usbHost : config.host;
-              const appConfirmUrl = host + environment.apiUrlPath + '/login/';
-
-              if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
-                await this.authService.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
+              const host = this.appSetting.isEnabledUsb ? this.appSetting.usbHost : this.config.host;
+              this.appConfirmUrl = host + environment.apiUrlPath + '/login/';
+              if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && this.config.clientIdentifier) {
+                await this.authService.loginByIdentifier(this.appConfirmUrl, 'client', this.config.clientIdentifier);
               }
-               else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT && config.client) {
-                await this.authService.loginByIdentifier(appConfirmUrl, 'client-default-user', config.client);
-              } 
-              else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
-                await this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
+              else if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT && this.config.client) {
+                await this.authService.loginByIdentifier(this.appConfirmUrl, 'client-default-user', this.config.client);
+              }
+              else if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && this.config.userIdentifier) {
+                await this.authService.loginByIdentifier(this.appConfirmUrl, 'user', this.config.userIdentifier);
               }
 
-              config.isWasQrCodeSetup = true;
-              this.appSetting.save(config).then(() => {
+              this.config.isWasQrCodeSetup = true;
+              this.appSetting.save(this.config).then(() => {
                 this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
                 this.userService.getUser().then(loggedUser => {
                   const isUserLoggedIn = !!loggedUser;

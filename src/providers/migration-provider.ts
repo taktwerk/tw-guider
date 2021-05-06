@@ -1,3 +1,5 @@
+import { AuthService } from 'src/services/auth-service';
+import { Subject } from 'rxjs';
 import { AuthDb } from 'src/models/db/auth-db';
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { Injectable } from '@angular/core';
@@ -47,7 +49,10 @@ export class MigrationProvider {
     private workflowTransitionService: WorkflowTransitionService,
     private guideChildService: GuideChildService,
     private guideViewHistoryService: GuideViewHistoryService,
-    private authDb: AuthDb
+    private authDb: AuthDb,
+    private authService: AuthService,
+    private network: Network,
+    private appSetting: AppSetting,
   ) { }
 
   modelsServices: any = {
@@ -67,7 +72,6 @@ export class MigrationProvider {
     protocol_comment: this.protocolCommentService,
     feedback: this.feedbackService,
     guide_view_history: this.guideViewHistoryService,
-    // auth: this.authDb
   };
 
   async init() {
@@ -77,39 +81,61 @@ export class MigrationProvider {
     }
     await this.addMigrations();
     await this.executeMigrations();
-
-    // this.checkAuthMigration();
   }
 
   // update auth migration
   async checkAuthMigration() {
     // auth group column exist?
     // check auth table exist == safety check
-    this.migration.dbModelApi.isExistTable().then(async res => {
+    this.migration.dbModelApi.checkTableExit('auth').then(async tableRes => {
       // check all auth TABLE attributes exist
-      console.log(this.authDb.TABLE)
-
+      console.log('is auth table exist ? ', tableRes);
       // get migrations list
       const migrations = this.authDb.migrations;
-      for (let i = 0; i < migrations.length; i++) {
-        console.log("migrations[i]", migrations[i]);
-        let isExecutedMigration = false;
-        // console.log(migrationList[migrations[i]]);
+      migrations.map(async (m, i) => {
+        const migrationInstance = new migrationList[m](this.authDb);
+        // execute migration
+        const isExecutedMigration = await migrationInstance.execute();
+        console.log('Auth isExecutedMigration ', isExecutedMigration);
+      });
 
-        if (migrationList[migrations[i]]) {
-          const migrationInstance = new migrationList[migrations[i]](this.authDb);
-          isExecutedMigration = await migrationInstance.execute();
-        }
+      // re-authenticate user previous with authentication data
+      // get username and password
+      // const auth = await this.authService.getLastUser();
+      // console.log('Auth ', auth);
+      // console.log('username', auth.username);
+      // console.log('password', auth.password);
+      // const form = { username: auth.username, password: auth.password }
 
-        if (isExecutedMigration) {
-          // migrations[i].is_active = 1;
-          await this.authDb.save();
-        }
-      }
-      // this.authDb.TABLE.map(async c => {
-      //   const groupColExit = await this.migration.dbModelApi.isExitColInTable('auth', c[0]);
-      //   console.log("groupColExit ", groupColExit, c[0])
-      // })
+      // if (this.network.type === 'none' && !this.appSetting.isEnabledUsb) {
+      //   this.authService.offlineAuthenticate(form).then((result) => {
+      //     if (!result) {
+      //       console.log('validation.Wrong password or login!');
+      //     } else {
+      //       console.log('login.You are logged in after migration.');
+      //     }
+      //   });
+      // }
+      // else {
+      //   this.authService.authenticate(form).then((result: number) => {
+      //     switch (result) {
+      //       case AuthService.STATE_ERROR_NETWORK:
+      //         // network problem
+      //         break;
+      //       case AuthService.STATE_ERROR_INVALID_LOGIN:
+      //         // invalid login
+      //         break;
+      //       case AuthService.STATE_ERROR_USER_BLOCKED:
+      //         console.log('validation.user_blocked');
+      //         break;
+      //       case AuthService.STATE_ERROR_USER_CANT_LOGIN:
+      //         console.log('validation.user_cant_login');
+      //         break;
+      //       default:
+      //         console.log('login.You are logged in.');
+      //     }
+      //   });
+      // }
     })
   }
 
