@@ -17,7 +17,7 @@
   "Status": "Status",
   "Open": "Offen",
   "Done": "Erledigt",
-  "dismiss": "Entlassen",
+  "dismiss": "Schliessen",
   "save_before_close_warning": "Daten vor dem Schliessen speichern?",
   "dont_save": "Nicht speichern",
   "cancel": "Abbrechen",
@@ -118,7 +118,7 @@
     "Full name": "Name",
     "Email": "Email",
     "Last Login At": "Letzte Anmeldung am",
-    "Groups": "Groups",
+    "Groups": "Gruppen",
     "Roles": "Rollen",
     "Company": "Firma"
   },
