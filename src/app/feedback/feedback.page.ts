@@ -68,7 +68,6 @@ export class FeedbackPage implements OnInit, OnDestroy {
         if (this.possibleDatabaseNamespaces.length > 1 && i !== (this.possibleDatabaseNamespaces.length - 1)) {
           referenceModelQuery = referenceModelQuery + ' OR ';
         }
-
       }
       referenceModelQuery = referenceModelQuery + ')';
       feedbackSearchCondition.push(
@@ -86,6 +85,14 @@ export class FeedbackPage implements OnInit, OnDestroy {
       feedbackSearchCondition,
       'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC'
     );
+
+    // console.log(this.feedbackList[0]);
+    // console.log(this.feedbackList[0].getFileImagePath());
+    // console.log(this.feedbackList[1]);
+    // console.log(this.feedbackList[1].getFileImagePath());
+
+    // 
+
   }
 
   public openFile(basePath: string, modelName: string, title?: string) {
@@ -95,6 +102,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
       fileTitle = title;
     }
     const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
       this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
@@ -121,7 +129,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
   }
 
   trackByFn(item) {
-    return item[item.COL_ID];
+    return item;
   }
 
   openAddEditPage(feedbackId?: number) {
@@ -157,15 +165,10 @@ export class FeedbackPage implements OnInit, OnDestroy {
     });
 
     this.eventSubscription = this.miscService.events.subscribe((event) => {
+      console.log('What causing the thingy to flicker? ', event.TAG)
       switch (event.TAG) {
         case this.feedbackService.dbModelApi.TAG + ':create':
-          this.setModels();
-          this.detectChanges();
-          break;
         case this.feedbackService.dbModelApi.TAG + ':update':
-          this.setModels();
-          this.detectChanges();
-          break;
         case this.feedbackService.dbModelApi.TAG + ':delete':
           this.setModels();
           this.detectChanges();

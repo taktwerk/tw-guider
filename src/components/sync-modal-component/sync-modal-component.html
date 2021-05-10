@@ -59,12 +59,16 @@
                 {{ 'sync-modal.Stop' | translate:params }}
               </ion-button>
             </span>
+
             <ion-button style="margin-left: 8px" *ngIf="['progress', 'resume', 'pause'].includes(syncProgressStatus)"
               (click)="cancelSyncData()" color="primary">
               {{ 'sync-modal.Cancel' | translate:params }}
             </ion-button>
+
           </section>
+
         </div>
+        
         <div *ngIf="!isNetwork && !appSetting.isEnabledUsb">
           <div>{{ 'sync-modal.No network connection.' | translate:params }}</div>
           <div>{{ 'sync-modal.Data synchronization is not yet possible.' | translate:params }}</div>

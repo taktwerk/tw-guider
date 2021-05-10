@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth-service';
 import { DbProvider } from '../../providers/db-provider';
 import { SyncService } from '../../services/sync-service';
 import { Network } from '@ionic-native/network/ngx';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, take } from 'rxjs/operators';
 import { DatePipe } from '../../pipes/date-pipe/date-pipe';
 import { UserService } from '../../services/user-service';
 import { SyncMode } from '../synchronization-component/synchronization-component';
@@ -16,7 +16,7 @@ import { AppSetting } from '../../services/app-setting';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { LoggerService } from 'src/services/logger-service';
-import { Subscription } from 'rxjs';
+import { Subscription} from 'rxjs';
 import { MiscService } from 'src/services/misc-service';
 import { Storage } from '@ionic/storage';
 
@@ -101,8 +101,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
       this.appSetting.showIsNotMigratedDbPopup();
       return;
     }
-
-    console.log(this.isAvailableForPushData)
+    console.log('this.isAvailableForPushData', this.isAvailableForPushData)
     // make sync if local changes
     if (this.isAvailableForPushData) {
       this.apiSync.makeSyncProcess();
@@ -170,7 +169,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
       this.isStartSync = isSync;
       this.detectChanges();
     });
-    this.apiSync.syncProgressStatus.pipe(debounceTime(200)).subscribe((syncProgressStatus) => {
+    this.apiSync.syncProgressStatus.subscribe((syncProgressStatus) => {
       if (syncProgressStatus) {
         this.syncProgressStatus = syncProgressStatus;
       }
@@ -192,7 +191,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
       this.syncedItemsPercent = syncedItemsPercent ? syncedItemsPercent : 0;
       this.detectChanges();
     });
-    this.apiSync.noDataForSync.subscribe((noDataForSync) => {
+    this.apiSync.noDataForSync.pipe(take(1)).subscribe((noDataForSync) => {
       this.noDataForSync = noDataForSync;
       if (noDataForSync) {
         setTimeout(() => {
@@ -207,7 +206,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
     this.apiSync.isAvailableForPushData.subscribe((isAvailableForPushData) => {
       this.isAvailableForPushData = isAvailableForPushData;
     });
-    this.apiSync.pushProgressStatus.subscribe((pushProgressStatus) => {
+    this.apiSync.pushProgressStatus.pipe(take(1)).subscribe((pushProgressStatus) => {
       this.pushProgressStatus = pushProgressStatus;
     });
     // this.events.subscribe('UserDb:update', (userDb) => {

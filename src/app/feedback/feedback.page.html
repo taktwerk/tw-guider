@@ -17,7 +17,7 @@
 </ion-header>
 
 <ion-content class="grey-background">
-  <ion-item *ngFor="let feedback of feedbackList">
+  <ion-item *ngFor="let feedback of feedbackList; trackBy: trackByFn">
 
     <ion-thumbnail slot="start">
       <div *ngIf="feedback.attached_file">
