@@ -30,6 +30,12 @@ ckeditor {
   user-select: text;
 }
 
+.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_se,
+.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_sw {
+  top: -50px !important;
+  bottom: auto;
+}
+
 ckeditor.inline_editor {
   margin-top: 32px;
   width: 100%;
@@ -247,7 +253,7 @@ ion-thumbnail {
 }
 
 svg.ck.ck-icon {
- // display: none !important;
+  // display: none !important;
 }
 
 .orangeColor {
