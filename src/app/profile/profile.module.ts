@@ -9,6 +9,7 @@ import {FormsModule} from '@angular/forms';
 import {LanguageSelectorComponentModule} from '../../components/language-selector-component/language-selector-component.module';
 import {TranslateModule} from '@ngx-translate/core';
 import {MainPipe} from '../../pipes/main-pipe.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,8 @@ import {MainPipe} from '../../pipes/main-pipe.module';
             }
         ]),
         SynchronizationComponentModule,
+    ionMenuWithSyncIndicatorComponentModule,
+
         SyncSpinnerComponentModule,
         LanguageSelectorComponentModule,
         TranslateModule,

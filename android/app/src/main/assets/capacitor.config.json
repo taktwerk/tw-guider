@@ -1,32 +1,20 @@
 {
-  "appId": "com.taktwerk.twguider2",
+  "appId": "com.taktwerk.guider",
   "appName": "Guider 2",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
-  "linuxAndroidStudioPath": "/snap/android-studio/current/android-studio/bin/studio.sh",
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 0
+      "launchShowDuration": 3000,
+      "launchAutoHide": false,
+      "androidScaleType": "CENTER_INSIDE",
+      "splashFullScreen": false,
+      "splashImmersive": false,
+      "backgroundColor": "#1C3461",
+      "androidSplashResourceName": "splash"
     }
   },
-  "cordova": {
-    "preferences": {
-      "ScrollEnabled": "false",
-      "android-minSdkVersion": "19",
-      "android-targetSdkVersion": "29",
-      "BackupWebStorage": "none",
-      "SplashMaintainAspectRatio": "true",
-      "FadeSplashScreenDuration": "300",
-      "SplashShowOnlyFirstTime": "false",
-      "SplashScreen": "screen",
-      "SplashScreenDelay": "3000",
-      "AndroidPersistentFileLocation": "Compatibility",
-      "UseSwiftLanguageVersion": "4.2",
-      "StatusBarOverlaysWebView": "true"
-    }
-  },
-  "server": {
-    "url": "http://192.168.1.103:8100"
-  }
+  "cordova": {},
+  "linuxAndroidStudioPath": "/snap/android-studio/current/android-studio/bin/studio.sh"
 }

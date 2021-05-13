@@ -1,11 +1,13 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {ProtocolModel} from '../../../models/db/api/protocol-model';
-import {ProtocolService} from '../../../providers/api/protocol-service';
-import {ProtocolDefaultService} from '../../../providers/api/protocol-default-service';
-import {ProtocolDefaultModel} from '../../../models/db/api/protocol-default-model';
-import {DownloadService} from '../../../services/download-service';
-import {AlertController, Events} from '@ionic/angular';
-import {TranslateConfigService} from '../../../services/translate-config.service';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ProtocolModel } from '../../../models/db/api/protocol-model';
+import { ProtocolService } from '../../../providers/api/protocol-service';
+import { ProtocolDefaultService } from '../../../providers/api/protocol-default-service';
+import { ProtocolDefaultModel } from '../../../models/db/api/protocol-default-model';
+import { DownloadService } from '../../../services/download-service';
+import { AlertController } from '@ionic/angular';
+import { TranslateConfigService } from '../../../services/translate-config.service';
+import { Subscription } from 'rxjs';
+import { MiscService } from 'src/services/misc-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -16,9 +18,9 @@ import {TranslateConfigService} from '../../../services/translate-config.service
 
 
 @Component({
-  selector: 'protocol-default-component',
-  templateUrl: 'protocol-default-component.html',
-  styleUrls: ['protocol-default-component.scss']
+    selector: 'protocol-default-component',
+    templateUrl: 'protocol-default-component.html',
+    styleUrls: ['protocol-default-component.scss']
 })
 
 export class ProtocolDefaultComponent implements OnInit, OnDestroy {
@@ -28,14 +30,18 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
     @Input() isInsert: boolean;
 
     public params;
+    eventSubscription: Subscription;
 
     constructor(private protocolService: ProtocolService,
-                private protocolDefaultService: ProtocolDefaultService,
-                private downloadService: DownloadService,
-                public events: Events,
-                public alertController: AlertController,
-                private translateConfigService: TranslateConfigService) {
+        private protocolDefaultService: ProtocolDefaultService,
+        private downloadService: DownloadService,
+
+        public alertController: AlertController,
+        private translateConfigService: TranslateConfigService,
+        private miscService: MiscService,
+    ) {
         //
+
     }
 
     public async editProtocolFile() {
@@ -98,13 +104,23 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         console.log('protocolDefaultService componennt init');
-        this.events.subscribe('pdfWasSaved', () => {
-            const saveInformation = this.protocolDefaultService.saveInformation;
-            this.showSaveFilePopup(saveInformation);
+        // this.events.subscribe('pdfWasSaved', () => {
+        //     const saveInformation = this.protocolDefaultService.saveInformation;
+        //     this.showSaveFilePopup(saveInformation);
+        // });
+
+        this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+            switch (event.TAG) {
+                case 'pdfWasSaved':
+                    const saveInformation = this.protocolDefaultService.saveInformation;
+                    this.showSaveFilePopup(saveInformation);
+                    break;
+                default:
+            }
         });
     }
 
     ngOnDestroy(): void {
-        this.events.unsubscribe('pdfWasSaved');
+        this.eventSubscription.unsubscribe();
     }
 }

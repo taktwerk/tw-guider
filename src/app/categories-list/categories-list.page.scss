@@ -17,17 +17,17 @@ ion-segment {
   flex-wrap: wrap;
   width: 100%;
 
-  ion-row{
-     width: 100%;
+  ion-row {
+    width: 100%;
   }
-  ion-col{
-     display: flex;
-     width: 100%;
+  ion-col {
+    display: flex;
+    width: 100%;
   }
-  ion-card{
-     width: 100%;
+  ion-card {
+    width: 100%;
   }
- }
+}
 
 .shortname-label {
   position: absolute;
@@ -74,4 +74,11 @@ ion-segment {
 
 .search-categories {
   margin-top: 5px;
+}
+
+.align__all_center {
+  * {
+    display: block;
+    text-align: center;
+  }
 }

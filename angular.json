@@ -46,14 +46,9 @@
               },
               {
                 "input": "src/theme/virtual-scroll.scss"
-              },
-              {
-                "input": "node_modules/swiper/css/swiper.css"
               }
             ],
-            "scripts": [
-              "node_modules/swiper/js/swiper.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -75,8 +70,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "9mb",
+                  "maximumError": "10mb"
                 }
               ]
             },
@@ -137,7 +132,9 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         },
         "e2e": {
@@ -183,6 +180,7 @@
     }
   },
   "cli": {
+    "analytics": "588ae6fd-3f58-42d6-8025-4296be923e62",
     "defaultCollection": "@ionic/angular-toolkit"
   },
   "schematics": {

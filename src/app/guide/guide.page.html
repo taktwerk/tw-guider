@@ -1,63 +1,117 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
-    <ion-title> {{ "guide.header" | translate: params }} </ion-title>
-    <sync-spinner-component slot="primary"></sync-spinner-component>
-    <ion-back-button text=""></ion-back-button>
+    <ion-title> {{ "guide.header" | translate: params }}</ion-title>
+
+
+    <ion-buttons slot="primary" class="header_cta">
+      <ion-back-button *ngIf="!parentCollectionId" style="color: #ffffff;"></ion-back-button>
+
+      <ion-button (click)="backToCollection()" *ngIf="parentCollectionId">
+        <ion-icon name="arrow-back" style="color: #ffffff;" *ngIf="platform.is('android')"></ion-icon>
+        <ion-icon name="chevron-back" style="color: #ffffff;" *ngIf="platform.is('ios')"></ion-icon>
+      </ion-button>
+
+      <ion-button (click)="presentSlideInfo($event)">
+        <ion-icon style="color: #ffffff;"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Ellipsis Vertical</title><circle cx='256' cy='256' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='256' cy='416' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='256' cy='96' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>">
+        </ion-icon>
+      </ion-button>
+
+      <ion-button (click)="nextGuide()" *ngIf="hasNext">
+        <ion-icon style="color: #ffffff;"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Play Skip Forward</title><path d='M400 64a16 16 0 00-16 16v136.43L151.23 77.11a35.13 35.13 0 00-35.77-.44C103.46 83.47 96 96.63 96 111v290c0 14.37 7.46 27.53 19.46 34.33a35.14 35.14 0 0035.77-.45L384 295.57V432a16 16 0 0032 0V80a16 16 0 00-16-16z'/></svg>">
+        </ion-icon>
+      </ion-button>
+
+      <ion-button (click)="previousGuide()" *ngIf="hasPrevious">
+        <ion-icon style="color: #ffffff;"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Play Skip Back</title><path d='M112 64a16 16 0 0116 16v136.43L360.77 77.11a35.13 35.13 0 0135.77-.44c12 6.8 19.46 20 19.46 34.33v290c0 14.37-7.46 27.53-19.46 34.33a35.14 35.14 0 01-35.77-.45L128 295.57V432a16 16 0 01-32 0V80a16 16 0 0116-16z'/></svg>">
+        </ion-icon>
+      </ion-button>
+
+
+
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="grey-background">
+<ion-content class="grey-background" [scrollEvents]="true">
   <span *ngIf="isLoadedContent">
     <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
-      <ion-slides #guideStepSlide #guideStepSlideElemRef pager="true" [options]="slideOpts" (ionSlideWillChange)="changeGuideStepCurrentSlide()">
+      <ion-slides #guideStepSlide #guideStepSlideElemRef pager="true" [options]="slideOpts"
+        (ionSlideWillChange)="changeGuideStepCurrentSlide()">
         <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">
           <ng-template #guideStepContent></ng-template>
         </ion-slide>
       </ion-slides>
-      <div *ngIf="guideAssets.length" class="guide-assets">
-        <ion-card>
-          <ion-item class="asset-item">
+
+      <div *ngIf="guideAssets.length" class="guide-assets" #assetSection>
+        <ion-card class="ion-no-padding">
+          <ion-item class="asset-item" lines="none" button (click)="onScrollTop()">
             <ion-icon name="information-circle" slot="start"></ion-icon>
             <ion-label>{{ "guide.Assets" | translate: params }}</ion-label>
           </ion-item>
           <section>
-            <ion-row>
-              <span *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" class="ion-padding">
-                <span *ngIf="asset.isExistFileByIndex()">
-                  <div *ngIf="asset.isPdf()">
-                    <ion-button color="medium" (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)">
-                      <ion-icon name="document" slot="start"></ion-icon> {{ asset.name }}
-                    </ion-button>
-                    <img
-                      (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
-                      class="image-preview"
-                      [src]="asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
-                    />
-                  </div>
-                  <ion-button
-                    *ngIf="asset.is3dFile()"
-                    color="medium"
+            <ion-grid class="asset__grid">
+              <ion-row>
+                <ion-col *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" size="6" size-md="3">
+
+                  <ion-item *ngIf="asset.isExistFileByIndex() && asset.isPdf()" lines="none"
+                    (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                    [ngClass]="{'no__preview':asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null}">
+                    <ion-label>
+                      <ion-thumbnail>
+                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"
+                          [preventDefaultClickFunction]="true" [largeIcon]="true">
+                        </model-assetcomponent>
+                      </ion-thumbnail>
+                      <p> <strong>{{ asset.name }}</strong> </p>
+                    </ion-label>
+                  </ion-item>
+
+                  <ion-item *ngIf="asset.isExistFileByIndex() && !asset.isPdf() && !asset.isVideoFile()" lines="none"
+                    (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                    [ngClass]="{'no__preview': asset.getFileImagePath() == null}">
+                    <ion-label>
+                      <ion-thumbnail>
+                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"
+                          [preventDefaultClickFunction]="true" [largeIcon]="true">
+                        </model-assetcomponent>
+                      </ion-thumbnail>
+                      <p> <strong>{{ asset.name }}</strong> </p>
+                    </ion-label>
+                  </ion-item>
+
+                  <ion-item *ngIf="asset.isExistFileByIndex() && asset.isVideoFile()" lines="none"
                     (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)">
-                    <ion-icon name="cube" slot="start"></ion-icon> {{ asset.name }}
-                  </ion-button>
-                  <div *ngIf="!asset.isPdf() && !asset.is3dFile()">
-                    <ion-button color="medium" (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)">
-                      <ion-icon name="folder" slot="start"></ion-icon> {{ asset.name }}
-                    </ion-button>
-                    <img
-                      (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
-                      class="image-preview"
-                      [src]="asset.getFileImagePath()"/>
-                  </div>
-                </span>
-                <ion-button *ngIf="!asset.isExistFileByIndex()" color="medium" (click)="openAssetTextModal(asset)">
-                  <ion-icon name="list" slot="start"></ion-icon> {{ asset.name }}
-                </ion-button>
-              </span>
-            </ion-row>
+                    <ion-label>
+                      <ion-thumbnail>
+                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"
+                          [preventDefaultClickFunction]="true" [largeIcon]="true">
+                        </model-assetcomponent>
+                      </ion-thumbnail>
+                      <p> <strong>{{ asset.name }}</strong> </p>
+                    </ion-label>
+                  </ion-item>
+
+                  <ion-item *ngIf="!asset.isExistFileByIndex()" lines="none" (click)="openAssetTextModal(asset)"
+                    class="no__preview">
+                    <ion-label>
+                      <ion-thumbnail>
+                        <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"
+                          [preventDefaultClickFunction]="true" [largeIcon]="true">
+                        </model-assetcomponent>
+                      </ion-thumbnail>
+                      <p> <strong>{{ asset.name }}</strong> </p>
+                    </ion-label>
+                  </ion-item>
+
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </section>
         </ion-card>
       </div>

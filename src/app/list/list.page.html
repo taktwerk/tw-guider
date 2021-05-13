@@ -1,30 +1,32 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
     <ion-title>
       {{ 'guides.header' | translate:params }}
     </ion-title>
-    <sync-spinner-component slot="primary"></sync-spinner-component>
-    <ion-back-button text=""></ion-back-button>
+
+   
+<ion-buttons slot="primary">
+  <ion-back-button text="" style="color: #ffffff;"></ion-back-button>
+</ion-buttons>
+
   </ion-toolbar>
   <ion-toolbar class="search-toolbar">
-    <ion-searchbar animated="true"
-                   autocomplete="on"
-                   debounce="250"
-                   placeholder="{{ 'Search guides by current category' | translate:params }}"
-                   (ionChange)="searchGuides($event)"
-    >
+    <ion-searchbar animated="true" autocomplete="on" debounce="250"
+      placeholder="{{ 'Search guides by current category' | translate:params }}" (ionChange)="searchGuides($event)">
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="grey-background">
   <span *ngIf="isLoadedContent">
-      <div *ngIf="guideCategory && guideCategory.guides && guideCategory.guides.length">
-        <h4 class="ion-margin-horizontal">{{ 'guide-categories.category' | translate:params }}: {{ guideCategory.name }}</h4>
-        <guide-list-component [guides]="guideCategory.guides"></guide-list-component>
-      </div>
+    <div *ngIf="guideCategory && guideCategory.guides && guideCategory.guides.length">
+      <h4 class="ion-margin-horizontal">{{ 'guide-categories.category' | translate:params }}: {{ guideCategory.name }}
+      </h4>
+      <guide-list-component [guides]="guideCategory.guides" [guideCategoryId]="guideCategory.idApi">
+      </guide-list-component>
+    </div>
   </span>
 </ion-content>

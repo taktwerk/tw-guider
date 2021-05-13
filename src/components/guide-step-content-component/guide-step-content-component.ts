@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
-import { Events, LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
+import { LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
 
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
@@ -15,13 +15,8 @@ import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
 import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { DbProvider } from '../../providers/db-provider';
 import { SafeResourceUrl } from '@angular/platform-browser';
-
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
+import { LoggerService } from 'src/services/logger-service';
+import { MiscService } from 'src/services/misc-service';
 
 @Component({
   selector: 'guide-step-content-component',
@@ -29,9 +24,11 @@ import { SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ['guide-step-content-component.scss'],
 })
 export class GuideStepContentComponent implements OnInit, OnDestroy {
+  
   ngOnDestroy(): void {
     console.log('destroy GuideStepContentComponent');
   }
+
   public faFilePdf = faFilePdf;
   @Input() step: GuideStepModel = null;
   @Input() portraitOriginal: boolean = false;
@@ -61,17 +58,19 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     public platform: Platform,
     public db: DbProvider,
     private photoViewer: PhotoViewer,
-    public events: Events,
     public authService: AuthService,
     public changeDetectorRef: ChangeDetectorRef,
     public modalController: ModalController,
     public downloadService: DownloadService,
+    public loggerService: LoggerService,
+
     private router: Router,
     private videoService: VideoService,
     private viewer3dService: Viewer3dService,
     public navCtrl: NavController,
-    private pictureService: PictureService
-  ) {}
+    private pictureService: PictureService,
+    public miscService: MiscService
+  ) { }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     const filePath = basePath;
@@ -81,11 +80,15 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     }
 
     const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
+
+    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
+      this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
       if (!fileApiUrl) {
         return false;
       }
+
       this.videoService.playVideo(fileUrl, fileTitle);
+      
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
@@ -95,12 +98,14 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     }
   }
 
-  openFeedback(referenceModelAlias, referenceId) {
+  openFeedback(referenceModelAlias, referenceId, referenceTitle) {
     const feedbackNavigationExtras: NavigationExtras = {
       queryParams: {
         backUrl: this.router.url,
         referenceModelAlias: referenceModelAlias,
         referenceId: referenceId,
+        referenceTitle: referenceTitle,
+        guideId: this.guide.idApi
       },
     };
     this.router.navigate(['feedback'], feedbackNavigationExtras);
@@ -122,7 +127,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   }
 
   async openAssetTextModal() {
-    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService);
+    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
     guideAsset.asset_html = this.step.description_html;
     guideAsset.name = this.step.title;
 

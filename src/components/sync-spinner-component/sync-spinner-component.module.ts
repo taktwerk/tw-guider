@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import {SyncSpinnerComponent} from './sync-spinner-component';
-import {CommonModule} from '@angular/common';
-import {IonicModule} from '@ionic/angular';
+import { SyncSpinnerComponent } from './sync-spinner-component';
+import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 
 @NgModule({
   declarations: [
@@ -15,4 +15,4 @@ import {IonicModule} from '@ionic/angular';
     SyncSpinnerComponent
   ],
 })
-export class SyncSpinnerComponentModule {}
+export class SyncSpinnerComponentModule { }

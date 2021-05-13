@@ -1,8 +1,10 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
+import { MiscService } from 'src/services/misc-service';
+import { Platform } from '@ionic/angular';
+import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { LoggerService } from 'src/services/logger-service';
 
 export enum GuideAssetModelFileMapIndexEnum {
     ASSET_FILE,
@@ -23,7 +25,7 @@ export class GuideAssetModel extends DbApiModel {
     public name: string;
     public asset_file: string;
     public asset_html: string;
-    public pdf_image: string;
+    public thumb_asset_file: string; // pdf_image
     public client_id: number;
 
     //db columns
@@ -34,8 +36,8 @@ export class GuideAssetModel extends DbApiModel {
     static COL_ASSET_FILE = 'asset_file';
     static COL_API_ASSET_FILE_PATH = 'asset_file_path';
     static COL_LOCAL_ASSET_FILE = 'local_asset_file';
-    static COL_PDF_IMAGE = 'pdf_image';
-    static COL_API_PDF_IMAGE_PATH = 'pdf_image_path';
+    static COL_PDF_IMAGE = 'thumb_asset_file';
+    static COL_API_PDF_IMAGE_PATH = 'thumb_asset_file_path';
     static COL_LOCAL_PDF_IMAGE = 'local_pdf_image';
 
     public downloadMapping: FileMapInModel[] = [
@@ -73,8 +75,11 @@ export class GuideAssetModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
-        super(platform, db, events, downloadService);
+    constructor(public platform: Platform, public db: DbProvider,
+        public downloadService: DownloadService, public loggerService: LoggerService,
+        public miscService: MiscService
+    ) {
+        super(platform, db, downloadService, loggerService, miscService);
     }
 
     setUpdateCondition() {

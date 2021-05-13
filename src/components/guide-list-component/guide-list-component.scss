@@ -44,3 +44,14 @@
   background-size: cover;
   background-position: center;
 }
+
+
+.capture__guide__preview {
+  max-height: 144px;
+  object-fit: cover;
+}
+
+.capture__guide__stretch_item {
+  --padding-start: 0px;
+  --inner-padding-end: 0px;
+}

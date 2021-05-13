@@ -37,8 +37,7 @@ npm-debug.log*
 *.db-*
 local_*
 
-/src/environments/environment.ts
-/src/environments/environment.prod.ts
+
 resources/android/xml/network_security_config.xml
 local.properties
 scripts/cli_env.js

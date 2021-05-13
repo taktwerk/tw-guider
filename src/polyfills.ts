@@ -64,9 +64,17 @@ import './zone-flags.ts';
 
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
+(window as any)['__importDefault'] =
+    (this && (this as any).__importDefault) ||
+    function (mod: any): any {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
+
 (window as any).global = window;
 global.Buffer = global.Buffer || require('buffer').Buffer;
 (window as any).process = { browser: true };
+
+
 
 /***************************************************************************************************
  * APPLICATION IMPORTS

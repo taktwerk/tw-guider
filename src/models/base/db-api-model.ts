@@ -1,7 +1,9 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbBaseModel} from './db-base-model';
-import {DbProvider} from '../../providers/db-provider';
-import {DownloadService, RecordedFile} from '../../services/download-service';
+import { LoggerService } from './../../services/logger-service';
+import { Platform } from '@ionic/angular';
+import { DbBaseModel } from './db-base-model';
+import { DbProvider } from '../../providers/db-provider';
+import { DownloadService, RecordedFile } from '../../services/download-service';
+import { MiscService } from 'src/services/misc-service';
 
 export class BaseFileMapInModel {
     public name: string;
@@ -22,6 +24,7 @@ export class FileMapInModel extends BaseFileMapInModel {
  *
  * IMPORTANT: Do not extend this class if you only want to create a DbModel but not a model that has to be synced
  * with the remote API. In that case you'd have to extend only DbHelper.
+ * 
  */
 export abstract class DbApiModel extends DbBaseModel {
     loadUrl: string;
@@ -40,6 +43,8 @@ export abstract class DbApiModel extends DbBaseModel {
     public updated_at: Date;
     public local_updated_at: Date;
     public updated_by: number;
+    public created_term: string;
+    public updated_term: string;
     public deleted_at: Date;
     public local_deleted_at: Date;
     public deleted_by: number;
@@ -58,10 +63,14 @@ export abstract class DbApiModel extends DbBaseModel {
     public COL_CREATED_AT: string = 'created_at';
     public COL_LOCAL_CREATED_AT: string = 'local_created_at';
     public COL_CREATED_BY: string = 'created_by';
+    public COL_CREATED_TERM: string = 'created_term';
+
     /** date time when this record was updated on API */
     public COL_UPDATED_AT: string = 'updated_at';
     public COL_LOCAL_UPDATED_AT: string = 'local_updated_at';
     public COL_UPDATED_BY: string = 'updated_by';
+    public COL_UPDATED_TERM: string = 'updated_term';
+
     /** date time when this record was deleted on API */
     public COL_DELETED_AT: string = 'deleted_at';
     public COL_LOCAL_DELETED_AT: string = 'local_deleted_at';
@@ -75,11 +84,12 @@ export abstract class DbApiModel extends DbBaseModel {
      * @param downloadService
      */
     constructor(public platform: Platform,
-                public db: DbProvider,
-                public events: Events,
-                public downloadService: DownloadService
+        public db: DbProvider,
+        public downloadService: DownloadService,
+        public loggerService: LoggerService,
+        public miscService: MiscService
     ) {
-        super(platform, db, events, downloadService);
+        super(platform, db, downloadService, loggerService, miscService);
     }
 
     /**
@@ -92,7 +102,7 @@ export abstract class DbApiModel extends DbBaseModel {
         obj = new (<any>this.constructor);
         obj.platform = this.platform;
         obj.db = this.db;
-        obj.events = this.events;
+        // obj.events = this.events;
         obj.downloadService = this.downloadService;
 
         obj.loadFromApiToCurrentObject(apiObj, oldModel);
@@ -117,8 +127,8 @@ export abstract class DbApiModel extends DbBaseModel {
                                     }
                                 }
                                 if (apiObj[memberNameOfFile] !== undefined && this[memberNameOfFile] === apiObj[memberNameOfFile]) {
-                                    console.log('not willChangeColumn', memberNameOfFile);
-                                    console.log('not willChangeColumn in model', this);
+                                    // console.log('not willChangeColumn', memberNameOfFile);
+                                    // console.log('not willChangeColumn in model', this);
                                     willChangeColumn = false;
                                 }
                             }
@@ -140,9 +150,11 @@ export abstract class DbApiModel extends DbBaseModel {
         this.created_at = this.getDateFromString(apiObj.created_at);
         this.local_created_at = this.getDateFromString(apiObj.local_created_at);
         this.created_by = this.getNumberValue(apiObj.created_by);
+        this.created_term = this.getStringValue(apiObj.created_term);
         this.updated_at = this.getDateFromString(apiObj.updated_at);
         this.local_updated_at = this.getDateFromString(apiObj.local_updated_at);
         this.updated_by = this.getNumberValue(apiObj.updated_by);
+        this.updated_term = this.getStringValue(apiObj.updated_term);
         this.deleted_at = this.getDateFromString(apiObj.deleted_at);
         this.local_deleted_at = this.getDateFromString(apiObj.local_deleted_at);
         this.deleted_by = this.getNumberValue(apiObj.deleted_by);
@@ -160,6 +172,8 @@ export abstract class DbApiModel extends DbBaseModel {
         this.TABLE.push([this.COL_UPDATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_LOCAL_UPDATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_UPDATED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
+        this.TABLE.push([this.COL_CREATED_TERM, 'VARCHAR(255)', DbBaseModel.TYPE_STRING]);
+        this.TABLE.push([this.COL_UPDATED_TERM, 'VARCHAR(255)', DbBaseModel.TYPE_STRING]);
         this.TABLE.push([this.COL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_LOCAL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_DELETED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
@@ -184,6 +198,8 @@ export abstract class DbApiModel extends DbBaseModel {
         this.updated_at = this.getDateValue(item[this.COL_UPDATED_AT]);
         this.local_updated_at = this.getDateValue(item[this.COL_LOCAL_UPDATED_AT]);
         this.updated_by = this.getNumberValue(item[this.COL_UPDATED_BY]);
+        this.created_term = this.getStringValue(item[this.COL_CREATED_TERM]);
+        this.updated_term = this.getStringValue(item[this.COL_UPDATED_TERM]);
         this.deleted_at = this.getDateValue(item[this.COL_DELETED_AT]);
         this.local_deleted_at = this.getDateValue(item[this.COL_LOCAL_DELETED_AT]);
         this.deleted_by = this.getNumberValue(item[this.COL_DELETED_BY]);
@@ -241,9 +257,9 @@ export abstract class DbApiModel extends DbBaseModel {
                     this[this.COL_LOCAL_CREATED_AT] = new Date();
                     this[this.COL_LOCAL_UPDATED_AT] = new Date();
                 }
-                console.log('before create');
+                // console.log('before create');
                 await this.create();
-                console.log('after create');
+                // console.log('after create');
                 this.unsetNotSavedModelUploadedFilePaths();
                 resolve(true);
                 return;
@@ -287,7 +303,7 @@ export abstract class DbApiModel extends DbBaseModel {
      * of this DbApiModel instance by its `updateCondition`
      * @returns {Promise<T>}
      */
-    public exists(condition?:any): Promise<boolean> {
+    public exists(condition?: any): Promise<boolean> {
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
@@ -349,7 +365,7 @@ export abstract class DbApiModel extends DbBaseModel {
 
     /// Model file part
     doesHaveFilesForPush() {
-        console.log('this.downloadMapping doesHaveFilesForPush', this.downloadMapping);
+        // console.log('this.downloadMapping doesHaveFilesForPush', this.downloadMapping);
         if (!this.downloadMapping) {
             return false;
         }
@@ -419,15 +435,12 @@ export abstract class DbApiModel extends DbBaseModel {
             return false;
         }
         let fileName = this[fileMap.name];
-        if (oldModel &&
-            oldModel[fileMap.url] === this[fileMap.url]
-        ) {
+        if (oldModel && oldModel[fileMap.url] === this[fileMap.url]) {
             this[fileMap.name] = oldModel[fileMap.name];
             if (this.isExistThumbnail(fileMap)) {
                 await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
             }
             await this.saveSynced(true);
-
             return true;
         }
         if (!this.isExistFilePathInModel(fileMap)) {
@@ -513,9 +526,7 @@ export abstract class DbApiModel extends DbBaseModel {
         const modelFileMap = this.downloadMapping[columnNameIndex];
         if (willDeleteFile) {
             if (this[modelFileMap.name]) {
-                const attachedFileForDelete = this[modelFileMap.name] ?
-                    this.downloadService.getNativeFilePath(this[modelFileMap.name], this.TABLE_NAME) :
-                    '';
+                const attachedFileForDelete = this[modelFileMap.name] ? this.downloadService.getNativeFilePath(this[modelFileMap.name], this.TABLE_NAME) : '';
                 if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].originalFile && attachedFileForDelete) {
                     this.downloadMapping[columnNameIndex].originalFile = attachedFileForDelete;
                 }
@@ -530,6 +541,9 @@ export abstract class DbApiModel extends DbBaseModel {
         this[modelFileMap.localPath] = recordedFile.uri;
         this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = recordedFile.uri;
 
+        console.log(" this[modelFileMap.name]", this[modelFileMap.name])
+        console.log(" this[modelFileMap.localPath]", this[modelFileMap.localPath])
+
         /// If exist thumbnail for file
         if (modelFileMap.thumbnail) {
             if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile) {
@@ -537,9 +551,7 @@ export abstract class DbApiModel extends DbBaseModel {
             }
             if (willDeleteFile) {
                 if (this[modelFileMap.thumbnail.name]) {
-                    const thumbnailAttachedFileForDelete = this[modelFileMap.thumbnail.name] ?
-                        this.downloadService.getNativeFilePath(this[modelFileMap.thumbnail.name], this.TABLE_NAME) :
-                        '';
+                    const thumbnailAttachedFileForDelete = this[modelFileMap.thumbnail.name] ? this.downloadService.getNativeFilePath(this[modelFileMap.thumbnail.name], this.TABLE_NAME) : '';
                     if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile && thumbnailAttachedFileForDelete) {
                         this.downloadMapping[columnNameIndex].thumbnail.originalFile = thumbnailAttachedFileForDelete;
                     }
@@ -549,14 +561,10 @@ export abstract class DbApiModel extends DbBaseModel {
                     this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete.push(thumbnailAttachedFileForDelete);
                 }
             }
-            this[modelFileMap.thumbnail.name] = recordedFile.thumbnailUri ?
-                recordedFile.thumbnailUri.substr(recordedFile.thumbnailUri.lastIndexOf('/') + 1) :
-                '';
+            this[modelFileMap.thumbnail.name] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri.substr(recordedFile.thumbnailUri.lastIndexOf('/') + 1) : '';
             this[modelFileMap.thumbnail.url] = '';
             this[modelFileMap.thumbnail.localPath] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
-            this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = recordedFile.thumbnailUri ?
-                recordedFile.thumbnailUri :
-                '';
+            this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
         }
     }
 
@@ -698,28 +706,31 @@ export abstract class DbApiModel extends DbBaseModel {
             return this.defaultImage;
         }
         let imageName = null;
-
         if (this.isImageFile(fileMapIndex)) {
             imageName = this.getFileName(fileMapIndex);
-        } else if (this.isExistThumbOfFile(fileMapIndex)) {
+        }
+        else if (this.isExistThumbOfFile(fileMapIndex)) {
             imageName = this.getApiThumbFilePath(fileMapIndex);
         } else {
             return null;
         }
-        imageName = encodeURI(imageName);
+
+        try {
+            imageName = encodeURI(imageName);
+        } catch (error) {
+            console.log(error)
+        }
 
         return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
     }
 
-    public getFilePath(basePath?:string, modelName?:string) {
+    public getFilePath(basePath?: string, modelName?: string) {
         if (!basePath) {
             basePath = this.getFileName();
         }
         if (!modelName) {
             modelName = this.TABLE_NAME;
         }
-        // console.log('this.downloadService.getWebviewFileSrc(this.downloadService.getNativeFilePath(basePath, modelName))', this.downloadService.getWebviewFileSrc(this.downloadService.getNativeFilePath(basePath, modelName)));
-        // return this.downloadService.getWebviewFileSrc(this.downloadService.getNativeFilePath(basePath, modelName));
         return this.downloadService.getNativeFilePath(basePath, modelName);
     }
 
@@ -735,6 +746,4 @@ export abstract class DbApiModel extends DbBaseModel {
     async afterPushDataToServer(isInsert: boolean) {
         return [];
     }
-
-
 }

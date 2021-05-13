@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {AppSetting} from '../services/app-setting';
+import { AppSetting } from '../services/app-setting';
 
 declare var window: any;
 

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import {UserService} from '../services/user-service';
+import {GuiderService} from '../providers/api/guider-service';
 
 @Injectable()
 export class AddPdfImageColumnsToProtocolDefaultTableMigration {
 
-	constructor(private userService: UserService) { }
+	constructor(private guiderService: GuiderService) { }
 
 	execute() {
 		return new Promise(async (resolve) => {
@@ -27,9 +28,8 @@ export class AddPdfImageColumnsToProtocolDefaultTableMigration {
 
 	executeQuery(query): Promise<boolean>  {
 		return new Promise(async (resolve) => {
-			this.userService
-				.userDb
-				.db
+			this.guiderService
+				.dbModelApi
 				.query(query)
 				.then((res) => {
 					console.log('success when execute code');

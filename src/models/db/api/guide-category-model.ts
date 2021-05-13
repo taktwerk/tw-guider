@@ -1,9 +1,11 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
-import {GuiderModel} from './guider-model';
+import { LoggerService } from './../../../services/logger-service';
+import { Platform } from '@ionic/angular';
+import { DbApiModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { GuiderModel } from './guider-model';
+import { MiscService } from 'src/services/misc-service';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -42,10 +44,12 @@ export class GuideCategoryModel extends DbApiModel {
     constructor(
         public platform: Platform,
         public db: DbProvider,
-        public events: Events,
-        public downloadService: DownloadService
+
+        public downloadService: DownloadService,
+        public loggerService: LoggerService,
+        public miscService: MiscService,
     ) {
-        super(platform, db, events, downloadService);
+        super(platform, db, downloadService, loggerService, miscService);
     }
 
     public addGuide(newData) {
@@ -91,10 +95,10 @@ export class GuideCategoryModel extends DbApiModel {
             this.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom).then((res) => {
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuiderModel = new GuiderModel(this.platform, this.db, this.events, this.downloadService);
+                        const obj: GuiderModel = new GuiderModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
                         obj.platform = this.platform;
                         obj.db = this.db;
-                        obj.events = this.events;
+
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         this.addGuide(obj);
