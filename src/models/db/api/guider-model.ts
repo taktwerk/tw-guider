@@ -1,12 +1,14 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
-import {GuideStepModel} from './guide-step-model';
-import {GuideAssetModel} from './guide-asset-model';
-import {ProtocolTemplateModel} from './protocol-template-model';
-import {GuideChildModel} from './guide-child-model';
+import { LoggerService } from './../../../services/logger-service';
+import { Platform, } from '@ionic/angular';
+import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { GuideStepModel } from './guide-step-model';
+import { GuideAssetModel } from './guide-asset-model';
+import { ProtocolTemplateModel } from './protocol-template-model';
+import { GuideChildModel } from './guide-child-model';
+import { MiscService } from 'src/services/misc-service';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -24,7 +26,7 @@ export class GuiderModel extends DbApiModel {
 
     public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_CLIENT_ID + ')';
 
-    //members
+    // members
     public client_id: number = null;
     public short_name: string;
     public title: string;
@@ -38,7 +40,7 @@ export class GuiderModel extends DbApiModel {
     public protocol_template_id: number;
     public revision: string;
 
-    //db columns
+    // db columns
     static COL_CLIENT_ID = 'client_id';
     static COL_SHORT_NAME = 'short_name';
     static COL_TITLE = 'title';
@@ -69,7 +71,7 @@ export class GuiderModel extends DbApiModel {
         [GuiderModel.COL_CLIENT_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuiderModel.COL_SHORT_NAME, 'VARCHAR(4)', DbBaseModel.TYPE_STRING],
         [GuiderModel.COL_TITLE, 'VARCHAR(45)', DbBaseModel.TYPE_STRING],
-        [GuiderModel. COL_DESCRIPTION, 'TEXT', DbBaseModel.TYPE_STRING],
+        [GuiderModel.COL_DESCRIPTION, 'TEXT', DbBaseModel.TYPE_STRING],
         [GuiderModel.COL_PREVIEW_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuiderModel.COL_API_PREVIEW_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
         [GuiderModel.COL_LOCAL_PREVIEW_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
@@ -81,11 +83,13 @@ export class GuiderModel extends DbApiModel {
         [GuiderModel.COL_REVISION, 'VARCHAR(255)', DbBaseModel.TYPE_STRING]
     ];
 
+    public migrations = ['AddCreatedTermAndUpdatedTermToGuideTableMigration'];
+
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
-        super(platform, db, events, downloadService);
+    constructor(public platform: Platform, public db: DbProvider, public downloadService: DownloadService, public loggerService: LoggerService, public miscService: MiscService,) {
+        super(platform, db, downloadService, loggerService, miscService);
     }
 
     /**
@@ -98,8 +102,8 @@ export class GuiderModel extends DbApiModel {
 
     public getByCategory() {
         return [
-            {description: 'America', title: 'Title'},
-            {description: 'Guide description', title: 'Guider'}
+            { description: 'America', title: 'Title' },
+            { description: 'Guide description', title: 'Guider' }
         ];
     }
 
@@ -132,7 +136,7 @@ export class GuiderModel extends DbApiModel {
     }
 
     public setSteps() {
-        const guideStepModel = new GuideStepModel(this.platform, this.db, this.events, this.downloadService);
+        const guideStepModel = new GuideStepModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
         guideStepModel.findAllWhere(['guide_id', this.idApi], 'order_number ASC').then(results => {
             results.map(model => {
                 if (!model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]) {
@@ -160,10 +164,9 @@ export class GuiderModel extends DbApiModel {
                 this.assets = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.events, this.downloadService);
+                        const obj: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
                         obj.platform = this.platform;
                         obj.db = this.db;
-                        obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         this.assets.push(obj);
@@ -185,22 +188,21 @@ export class GuiderModel extends DbApiModel {
                 ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL' +
                 ' AND ' + this.secure('guide_child') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
                 ' AND ' + this.secure('guide_child') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL'
-                ' GROUP BY guide_child.id';
+            ' GROUP BY guide_child.id';
 
             this.db.query(query).then((res) => {
                 this.guide_collection = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideChildModel = new GuideChildModel(this.platform, this.db, this.events, this.downloadService);
+                        const obj: GuideChildModel = new GuideChildModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
                         obj.platform = this.platform;
                         obj.db = this.db;
-                        obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         this.guide_collection.push(obj);
                     }
                 }
-                console.log('this.guide_collection', this.guide_collection);
+                // console.log('this.guide_collection', this.guide_collection);
                 resolve(this.guide_collection);
             }).catch((err) => {
                 resolve(this.guide_collection);
@@ -222,10 +224,9 @@ export class GuiderModel extends DbApiModel {
             this.db.query(query).then((res) => {
                 this.protocol_template = null;
                 if (res.rows.length > 0) {
-                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.events, this.downloadService);
+                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
                     obj.platform = this.platform;
                     obj.db = this.db;
-                    obj.events = this.events;
                     obj.downloadService = this.downloadService;
                     obj.loadFromAttributes(res.rows.item(0));
                     this.protocol_template = obj;

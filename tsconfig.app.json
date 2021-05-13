@@ -4,15 +4,15 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "outDir": "./out-tsc/app",
-    "types": [ "node", "webgl2" ],
+    "types": [
+      "node"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ]
   },
   "include": [
     "src/**/*.ts",
-    "node_modules/com-sarriaroman-photoviewer/source/PhotoViewer.ts",
-    "node_modules/com-sarriaroman-photoviewer/source/PhotoViewer.ts"
   ],
   "exclude": [
     "src/test.ts",

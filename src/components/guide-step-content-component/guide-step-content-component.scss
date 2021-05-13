@@ -15,28 +15,44 @@
   height: 100%;
 }
 
-.audio-icon {
-  position: absolute;
-  top: 15%;
-  left: 31%;
-}
-
-.audio-icon, .fa-icon {
+.audio-icon,
+.fa-icon {
   color: white;
   font-size: 100pt;
 }
 
 .guide-step-img {
   text-align: center;
+  overflow: hidden;
   height: 100%;
   img {
     border-radius: 2px;
-    -webkit-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-    max-width: 50%;
-    max-height: 50%;
-    transform: scale(2);
-    transform-origin: top center;
+    object-fit: contain;
+    object-position: center top;
+    -webkit-box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+      0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media (min-width: 576px) and (orientation: portrait) {
+  .video-thumb {
+    min-height: calc(50vh - 163px);
+  }
+  .three-model {
+    max-height: 33vh;
+  }
+}
+
+@media (min-width: 576px) and (orientation: landscape) {
+  .video-thumb {
+    min-height: calc(50vh - 14px);
+  }
+}
+
+@media (max-width: 575px) {
+  .video-thumb {
+    min-height: 223px;
   }
 }
 
@@ -45,50 +61,147 @@
   color: var(--ion-text-color, black);
 }
 
-/* no media, only text (portrait & landscape) */
-/* all without or with assets bar */
-.guide-step-text ion-card-content {
-  max-height: calc(100vh - 15rem);
+.expand-icon {
+  font-size: 23px;
+  margin: 1px 0 0 10px;
 }
 
-.has-assets .guide-step-text ion-card-content {
-  max-height: calc(100vh - 18rem);
+.feedback-btn {
+  font-size: 12px;
+  margin-right: 10px;
 }
 
-/* with media, with text (landscape) */
-.has-media .guide-step-text ion-card-content {
-  max-height: calc(100vh - 15rem);
+.description {
+  background-color: white;
+  color: black;
+  padding: 3px 10px 5px 10px;
 }
 
-.has-assets .has-media  .guide-step-text ion-card-content {
-  max-height: calc(100vh - 18rem);
-}
-
-/* with media, with text (portrait) */
-@media screen and (orientation:portrait) {
-  .has-media .guide-step-text ion-card-content {
-    max-height: calc(67vh - 15rem);
-  }
-
-  .has-assets .has-media  .guide-step-text ion-card-content {
-    max-height: calc(67vh - 18rem);
-  }
-}
-
-.guide-step ion-grid {
-  height: calc(100vh - 5rem);
-}
-
-.guide-step.has-assets ion-grid {
-  height: calc(100vh - 8rem);
-}
-
-.guide-step ion-row, .guide-step ion-col {
+ion-slides,
+ion-slide,
+.guide-step,
+.grid {
   height: 100%;
 }
 
-@media screen and (orientation:portrait) {
-  .guide-step ion-row, .portrait .guide-step ion-col {
-    height: 33vh;
+.guide-step {
+  height: 100%;
+  display: flex;
+}
+
+:host {
+  display: flex;
+  height: 100%;
+}
+
+ion-slide {
+  padding-bottom: 0px;
+}
+
+.grid {
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+
+  .col-img {
+    background: #e9eaed;
+  }
+}
+
+ion-card {
+  display: flex;
+  flex-direction: column;
+  background: white;
+
+  ion-toolbar {
+    --background: #e2e3e463;
+  }
+}
+
+.description {
+  flex: 1 1 10%;
+}
+
+@media (orientation: landscape) {
+  .grid {
+    padding-top: 10px;
+    padding-right: 15px;
+    padding-left: 10px;
+    display: flex;
+    max-height: calc(100vh - 75px);
+  }
+
+  .col {
+    flex: 1 1;
+    background: transparent;
+    max-height: initial;
+
+    &.description {
+      padding: 0;
+      margin: 0 0 4px 14px;
+    }
+
+    img {
+      height: 100%;
+    }
+  }
+
+  .col-img {
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .video-div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+}
+
+@media (orientation: portrait) {
+  .col {
+    max-height: calc(100vh - 79px);
+    background: transparent;
+    flex-direction: column;
+  }
+
+  .col-img {
+    padding: 10px 10px 10px 10px;
+    min-height: 50%;
+  }
+
+  .guide-step-img img {
+    max-height: calc(70vh - 210px);
+  }
+
+  ion-card,
+  .grid,
+  .description {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .description {
+    min-height: 0;
+  }
+
+  .video-div {
+    height: 100%;
+    img {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 320px) {
+  .description {
+    min-height: initial;
   }
 }

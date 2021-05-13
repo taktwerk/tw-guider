@@ -4,14 +4,18 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "skipLibCheck": true,
     "declaration": false,
     "module": "esnext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": false,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es5",
-    "types": [ "node" ],
+    "target": "es6",
+    "preserveSymlinks": true,
+    "types": [
+      "node"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -19,10 +23,12 @@
       "es2018",
       "dom",
       "es6"
-    ]
+    ],
+     "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
+    "strictInjectionParameters": true,
+   
   }
 }

@@ -1,0 +1,21 @@
+
+.stretch_item {
+    --padding-start: 0px;
+    --inner-padding-end: 0px;
+}
+
+
+ion-card-content {
+    background: #fff;
+}
+
+.html_element {
+    max-height: 144px;
+    overflow-y: scroll;
+    * {
+        white-space: normal;
+        font-size: 13px;
+        font-weight: 400;
+    }
+}
+

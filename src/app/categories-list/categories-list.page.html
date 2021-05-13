@@ -1,109 +1,80 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
-    <ion-title>
-      {{ 'guides.header' | translate:params }}
-    </ion-title>
-    <sync-spinner-component slot="primary"></sync-spinner-component>
+
+    <ion-title> {{ 'guides.header' | translate:params }} </ion-title>
+
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="primary" class="ion-padding-horizontal">
-  <ion-segment color="light" [(ngModel)]="type" scrollable>
-    <ion-segment-button value="browse" checked>
+<ion-content class="ion-padding-horizontal grey-background">
+  <ion-segment color="light" [(ngModel)]="type" scrollable mode="md">
+    <ion-segment-button value="browse" checked mode="md">
       <ion-label>{{ 'guide-categories.categories' | translate:params }}</ion-label>
-      <ion-icon name="filing"></ion-icon>
+      <ion-icon name="file-tray-stacked-outline"></ion-icon>
     </ion-segment-button>
-    <ion-segment-button value="search">
+    <ion-segment-button value="search" mode="md">
       <ion-label>{{ 'Search' | translate:params }}</ion-label>
       <ion-icon name="search"></ion-icon>
     </ion-segment-button>
-    <ion-segment-button *ngIf="guidesWithoutCategories.length" value="no-category">
-      <ion-label>{{ 'guide-categories.no-category' | translate:params }}</ion-label>
-      <ion-icon name="filing"></ion-icon>
-    </ion-segment-button>
   </ion-segment>
   <div [ngSwitch]="type">
-    <div *ngSwitchCase="'browse'">
+    <div class="category-content" *ngSwitchCase="'browse'">
       <span *ngIf="isLoadedContent">
-        <ion-list class="guide-categories">
-          <div *ngFor="let guideCategory of guideCategories; trackBy: trackByFn">
-            <div *ngIf="guideCategory.guidesCount">
-                    <ion-item button detail [routerLink]="['/guides/' + guideCategory.idApi]"
-                                class="guide-category"
-                                lines="full"
-                                inset="true"
-                    >
-                      <ion-label slot="start">{{ guideCategory.name }}</ion-label>
-                      <ion-badge color="medium" slot="end">{{ guideCategory.guidesCount }}</ion-badge>
-                    </ion-item>
-            </div>
+
+        <div class="guide-category" *ngFor="let guideCategory of guideCategories; trackBy: trackByFn">
+          <div *ngIf="guideCategory.guidesCount">
+            <ion-item button detail [routerLink]="['/guides/' + guideCategory.idApi]" class="guide-category"
+              lines="full" inset="true">
+              <ion-label slot="start">{{ guideCategory.name }}</ion-label>
+              <ion-badge color="medium" slot="end">{{ guideCategory.guidesCount }}</ion-badge>
+            </ion-item>
           </div>
-        </ion-list>
+        </div>
+
+        <div class="guide-category" *ngIf="guidesWithoutCategories && guidesWithoutCategories.length">
+          <div>
+            <ion-item button detail [routerLink]="['/guides/0']" class="guide-category" lines="full" inset="true">
+              <ion-label slot="start">{{ 'guide-categories.no-category' | translate:params }}</ion-label>
+              <ion-badge color="medium" slot="end">{{ guidesWithoutCategories.length }}</ion-badge>
+            </ion-item>
+          </div>
+        </div>
+
       </span>
     </div>
+    
     <div *ngSwitchCase="'search'">
-      <ion-toolbar>
-        <ion-searchbar animated="true"
-                       autocomplete="on"
-                       debounce="250"
-                       [value]="searchValue"
-                       placeholder="{{ 'Search all guides' | translate:params }}"
-                       (ionChange)="searchGuides($event)"
-        >
-        </ion-searchbar>
-      </ion-toolbar>
-
+      <ion-searchbar animated="true" mode="md" class="search-categories" autocomplete="on" debounce="250"
+        [value]="searchValue" placeholder="{{ 'Search all guides' | translate:params }}"
+        (ionChange)="searchGuides($event)">
+      </ion-searchbar>
       <span *ngIf="isLoadedContent">
         <div *ngIf="guides && guides.length">
-            <div *ngIf="guides.length > guideItemsLimit"
-                 [ngStyle]="{'margin': '15px'}">
-                <div *ngIf="!searchValue">
-                    {{ 'guides.specifySearchMessage' | translate:{guidesCount:guides.length} }}
-                </div>
-                <div *ngIf="searchValue">
-                    {{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
-                </div>
+          <div *ngIf="guides.length > guideItemsLimit" [ngStyle]="{'margin': '15px'}">
+            <div *ngIf="!searchValue">{{ 'guides.specifySearchMessage' | translate:{guidesCount:guides.length} }}</div>
+            <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
             </div>
-            <guide-list-component *ngIf="guides.length <= guideItemsLimit"
-                                  [guides]="guides"
-            >
-            </guide-list-component>
+          </div>
+          <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides">
+          </guide-list-component>
         </div>
-        <div *ngIf="!guides.length"
-             [ngStyle]="{'margin': '15px'}"
-        >
-           {{ 'noResults' | translate:params }}
-        </div>
-      </span>
-    </div>
-
-    <div *ngSwitchCase="'no-category'">
-      <span *ngIf="isLoadedContent">
-        <div *ngIf="guidesWithoutCategories && guidesWithoutCategories.length">
-            <div *ngIf="guidesWithoutCategories.length > guideItemsLimit"
-                 [ngStyle]="{'margin': '15px'}">
-                <div *ngIf="!searchValue">
-                    {{ 'guides.specifySearchMessage' | translate:{guidesCount:guides.length} }}
-                </div>
-                <div *ngIf="searchValue">
-                    {{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
-                </div>
-            </div>
-            <guide-list-component *ngIf="guidesWithoutCategories.length <= guideItemsLimit"
-                                  [guides]="guidesWithoutCategories"
-            >
-            </guide-list-component>
-        </div>
-        <div *ngIf="!guidesWithoutCategories.length"
-             [ngStyle]="{'margin': '15px'}"
-        >
-           {{ 'noResults' | translate:params }}
-        </div>
+        <div *ngIf="!guides.length" [ngStyle]="{'margin': '15px'}">{{ 'noResults' | translate:params }}</div>
       </span>
     </div>
   </div>
 
+  <ion-card *ngIf="!onboardingSyncShown">
+    <ion-card-content>
+      <ion-label class="align__all_center">
+        <h2>{{'sync-modal.Start sync to get data' | translate}}</h2>
+        <ion-buttons class="ion-padding">
+          <ion-button (click)="syncData()" color="primary" fill="solid">{{'sync-modal.Synchronize Data' | translate}}
+          </ion-button>
+        </ion-buttons>
+      </ion-label>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

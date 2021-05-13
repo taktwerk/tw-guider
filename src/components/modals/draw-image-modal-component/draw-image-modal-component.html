@@ -1,0 +1,65 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">
+                <ion-icon name="close" style="color: #ffffff;"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content [forceOverscroll]="false">
+  <style>
+      canvas {
+          border: 1px solid rgb(187, 178, 178);
+        }
+         
+        .color-block {
+          height: 40px;
+        }
+  </style>  
+  <div class="ion-page">
+        <div>
+          <ion-row>
+            <ion-col *ngFor="let color of colors" [style.background]="color" class="color-block" tappable
+              (click)="selectColor(color)"></ion-col>
+          </ion-row>
+          <ion-radio-group [(ngModel)]="selectedColor">
+            <ion-row>
+              <ion-col *ngFor="let color of colors" class="ion-text-center">
+                <ion-radio [value]="color"></ion-radio>
+              </ion-col>
+            </ion-row>
+          </ion-radio-group>
+         
+          <ion-range min="2" max="20" color="primary" [(ngModel)]="lineWidth">
+            <ion-icon size="small" slot="start" name="brush"></ion-icon>
+            <ion-icon slot="end" name="brush"></ion-icon>
+          </ion-range>
+      </div>
+      <div #domObj style="width: 100%;height: 100%;text-align: center;overflow-y: auto;">
+        <canvas #imageCanvas
+              style="height: 100%;"
+              (mousedown)="startDrawing($event)"
+              (touchstart)="startDrawing($event)"
+              (touchmove)="moved($event)"
+              (mousemove)="moved($event)"
+              (mouseup)="endDrawing()"
+              (touchend)="endDrawing()"
+        >
+        </canvas>
+        <canvas #mainCanvas
+                style="visibility: hidden; position:absolute;"
+        >
+        </canvas>
+      </div>
+      <ion-button expand="full" (click)="exportCanvasImage()">
+        <ion-icon slot="start" name="save"></ion-icon>
+        {{ saveTranslatdWord }}
+      </ion-button>
+  </div>  
+</ion-content>
+<ion-footer class="ion-padding ion-text-center"
+            [ngStyle]="{color: 'white', backgroundColor: 'black'}"
+>
+    {{ fileTitle }}
+</ion-footer>

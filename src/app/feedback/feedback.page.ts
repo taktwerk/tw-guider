@@ -1,158 +1,184 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {Events, ModalController, NavController} from '@ionic/angular';
-import {FeedbackService} from '../../providers/api/feedback-service';
-import {FeedbackModel} from '../../models/db/api/feedback-model';
-import {AuthService} from '../../services/auth-service';
-import {DownloadService} from '../../services/download-service';
-import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
-import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
-import {VideoService} from '../../services/video-service';
-import {PictureService} from '../../services/picture-service';
-import {NativeAudio} from '@ionic-native/native-audio/ngx';
-import { Media, MediaObject } from '@ionic-native/media/ngx';
-import {AudioService} from '../../services/audio-service';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { NavController, Platform } from '@ionic/angular';
+import { FeedbackService } from '../../providers/api/feedback-service';
+import { FeedbackModel } from '../../models/db/api/feedback-model';
+import { AuthService } from '../../services/auth-service';
+import { DownloadService } from '../../services/download-service';
+import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { VideoService } from '../../services/video-service';
+import { PictureService } from '../../services/picture-service';
+import { Subscription } from 'rxjs';
+import { MiscService } from 'src/services/misc-service';
 
 @Component({
   selector: 'feedback-page',
   templateUrl: 'feedback.page.html',
-  styleUrls: ['feedback.page.scss']
+  styleUrls: ['feedback.page.scss'],
 })
-export class FeedbackPage implements OnInit {
-    public backDefaultHref: string;
-    public reference_id: number = null;
-    public reference_model: string = null;
-    public reference_model_alias: string = null;
-    public feedbackList: FeedbackModel[] = [];
-    public isComponentLikeModal = false;
-    public params;
+export class FeedbackPage implements OnInit, OnDestroy {
+  public backDefaultHref: string;
+  public guideId: string;
+  public reference_title: string = '';
+  public reference_id: number = null;
+  public reference_model: string = null;
+  public reference_model_alias: string = null;
+  public feedbackList: FeedbackModel[] = [];
+  public isComponentLikeModal = false;
+  public params;
+  possibleDatabaseNamespaces = [
+    'app',
+    'taktwerk\\yiiboilerplate'
+  ];
+  eventSubscription: Subscription;
 
-    constructor(private feedbackService: FeedbackService,
-                private modalController: ModalController,
-                public events: Events,
-                public authService: AuthService,
-                public changeDetectorRef: ChangeDetectorRef,
-                private downloadService: DownloadService,
-                private activatedRoute: ActivatedRoute,
-                private photoViewer: PhotoViewer,
-                private navCtrl: NavController,
-                private router: Router,
-                private videoService: VideoService,
-                private pictureService: PictureService,
-                private nativeAudio: NativeAudio,
-                private media: Media,
-                private audio: AudioService) {
-        this.authService.checkAccess('feedback');
+  constructor(
+    private feedbackService: FeedbackService,
+    public authService: AuthService,
+    public changeDetectorRef: ChangeDetectorRef,
+    private downloadService: DownloadService,
+    private activatedRoute: ActivatedRoute,
+    private photoViewer: PhotoViewer,
+    private navCtrl: NavController,
+    private router: Router,
+    private videoService: VideoService,
+    private pictureService: PictureService,
+    private miscService: MiscService,
+    private platform: Platform
+  ) {
+    this.authService.checkAccess('feedback');
+  }
+  ionViewDidLeave() {
+    this.reference_id = null
+    console.log(this.reference_id, "this.reference_id")
+  }
+
+  public async setModels() {
+    const user = await this.authService.getLastUser();
+    if (!user) {
+      return;
     }
+    const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
 
-    public async setModels()  {
-        const user = await this.authService.getLastUser();
-        if (!user) {
-            return;
+    if (this.reference_id && this.reference_model) {
+      let referenceModelQuery = '(';
+      for (let i = 0; i < this.possibleDatabaseNamespaces.length; i++) {
+        const referenceModelName = this.possibleDatabaseNamespaces[i] + this.reference_model;
+        referenceModelQuery = referenceModelQuery + this.feedbackService.dbModelApi.secure('reference_model') + '= \'' + referenceModelName + '\'';
+        if (this.possibleDatabaseNamespaces.length > 1 && i !== (this.possibleDatabaseNamespaces.length - 1)) {
+          referenceModelQuery = referenceModelQuery + ' OR ';
         }
-        // const feedbackSearchCondition: any[] = ['1=1', 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
-        const feedbackSearchCondition = [['user_id', user.userId], 'deleted_at IS NULL', 'local_deleted_at IS NULL'];
-        // if (!user.isAuthority) {
-        //     if (this.authService.isHaveUserRole('FeedbackAdmin') && user.client_id) {
-        //         feedbackSearchCondition.push(['client_id', user.client_id]);
-        //     } else if (this.authService.isHaveUserRole('FeedbackViewer') && user.userId) {
-        //         feedbackSearchCondition.push(['created_by', user.userId]);
-        //     } else {
-        //         return [];
-        //     }
-        // }
-        
-        if (this.reference_id && this.reference_model) {
-            feedbackSearchCondition.push(
-                '(' + this.feedbackService.dbModelApi.secure('reference_model') +
-                '= "' +
-                this.reference_model_alias +
-                '" OR ' +
-                this.feedbackService.dbModelApi.secure('reference_model') +
-                '="' +
-                this.reference_model + '")'
-            );
-            feedbackSearchCondition.push(['reference_id', this.reference_id]);
-        }
-        this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(
-            feedbackSearchCondition,
-            'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC'
-        );
+      }
+      referenceModelQuery = referenceModelQuery + ')';
+      feedbackSearchCondition.push(
+        '(' +
+        this.feedbackService.dbModelApi.secure('reference_model') +
+        '= "' +
+        this.reference_model_alias +
+        '" OR ' +
+        referenceModelQuery +
+        ')'
+      );
+      feedbackSearchCondition.push(['reference_id', this.reference_id]);
     }
+    this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(
+      feedbackSearchCondition,
+      'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC'
+    );
 
-    public openFile(basePath: string, modelName: string, title?: string) {
-        const filePath = basePath;
-        let fileTitle = 'Feedback';
-        if (title) {
-            fileTitle = title;
-        }
-        const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-        if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
-            this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
-            this.videoService.playVideo(fileUrl, fileTitle);
-        } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
-            this.photoViewer.show(fileUrl, fileTitle);
-        } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-            // this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
-            this.pictureService.openFile(fileUrl, fileTitle);
-        }
+    // console.log(this.feedbackList[0]);
+    // console.log(this.feedbackList[0].getFileImagePath());
+    // console.log(this.feedbackList[1]);
+    // console.log(this.feedbackList[1].getFileImagePath());
+
+    // 
+
+  }
+
+  public openFile(basePath: string, modelName: string, title?: string) {
+    const filePath = basePath;
+    let fileTitle = 'Feedback';
+    if (title) {
+      fileTitle = title;
     }
+    const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
 
-    dismiss() {
-        if (this.reference_model_alias && this.reference_id) {
-            this.navCtrl.navigateRoot(this.reference_model_alias + '/' + this.reference_id);
-        }
+    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
+      this.videoService.playVideo(fileUrl, fileTitle);
+    } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
+      this.photoViewer.show(fileUrl, fileTitle);
+    } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
+      this.pictureService.openFile(fileUrl, fileTitle);
     }
+  }
 
-    detectChanges() {
-        if (!this.changeDetectorRef['destroyed']) {
-            this.changeDetectorRef.detectChanges();
-        }
+  dismiss() {
+    if (this.reference_model_alias && this.reference_id) {
+      this.navCtrl.navigateRoot(this.reference_model_alias + '/' + this.reference_id);
     }
+  }
 
-    itemHeightFn(item, index) {
-        return 99;
+  detectChanges() {
+    if (!this.changeDetectorRef['destroyed']) {
+      this.changeDetectorRef.detectChanges();
     }
+  }
 
-    trackByFn(index, item) {
-        return item[item.COL_ID];
-    }
+  itemHeightFn() {
+    return 99;
+  }
 
-    openAddEditPage(feedbackId?: number) {
-        const feedbackNavigationExtras: NavigationExtras = {
-            queryParams: {
-                feedbackId,
-                referenceModelAlias: this.reference_model_alias,
-                referenceId: this.reference_id
-            }
-        };
-        this.router.navigate(['/feedback/save/' + feedbackId], feedbackNavigationExtras);
-    }
+  trackByFn(item) {
+    return item;
+  }
 
-    ngOnInit() {
-        this.activatedRoute.queryParams.subscribe(params => {
-            const feedbackData = params;
-            this.reference_id = +feedbackData.referenceId;
-            this.reference_model_alias = feedbackData.referenceModelAlias;
-            this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
-            if (this.reference_model) {
-                this.isComponentLikeModal = true;
-            }
-            this.backDefaultHref = feedbackData.backUrl;
-            this.setModels();
-            this.detectChanges();
-        });
+  openAddEditPage(feedbackId?: number) {
+    const feedbackNavigationExtras: NavigationExtras = {
+      queryParams: {
+        feedbackId,
+        referenceModelAlias: this.reference_model_alias,
+        referenceId: this.reference_id,
+        referenceTitle: this.reference_title,
+        guideId: this.guideId
+      },
+    };
+    this.router.navigate(['/feedback/save/' + feedbackId], feedbackNavigationExtras);
+  }
 
-        this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':create', (model) => {
-            this.setModels();
-            this.detectChanges();
-        });
-        this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':update', (model) => {
-            this.setModels();
-            this.detectChanges();
-        });
-        this.events.subscribe(this.feedbackService.dbModelApi.TAG + ':delete', (model) => {
-            this.setModels();
-            this.detectChanges();
-        });
-    }
+  ngOnInit() {
+    this.activatedRoute.queryParams.subscribe((params) => {
+      const feedbackData = params;
+      this.reference_id = +feedbackData.referenceId;
+      this.reference_title = feedbackData.referenceTitle;
+      this.reference_model_alias = feedbackData.referenceModelAlias;
+      this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
+      if (this.reference_model) {
+        this.isComponentLikeModal = true;
+      }
+      this.backDefaultHref = feedbackData.backUrl;
+      this.guideId = feedbackData.guideId;
+
+      console.log("this.guideId", this.guideId)
+
+      this.setModels();
+      this.detectChanges();
+    });
+
+    this.eventSubscription = this.miscService.events.subscribe((event) => {
+      console.log('What causing the thingy to flicker? ', event.TAG)
+      switch (event.TAG) {
+        case this.feedbackService.dbModelApi.TAG + ':create':
+        case this.feedbackService.dbModelApi.TAG + ':update':
+        case this.feedbackService.dbModelApi.TAG + ':delete':
+          this.setModels();
+          this.detectChanges();
+          break;
+        default:
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
+  }
 }

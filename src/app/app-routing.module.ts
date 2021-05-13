@@ -28,6 +28,10 @@ const routes: Routes = [
     loadChildren: () => import('./guide/guide.module').then(m => m.GuidePageModule)
   },
   {
+    path: 'guide/:guideId/:parentCollectionId',
+    loadChildren: () => import('./guide/guide.module').then(m => m.GuidePageModule)
+  },
+  {
     path: 'profile',
     loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
   },
@@ -39,7 +43,7 @@ const routes: Routes = [
     path: ':reference_model_alias/:reference_id/feedback',
     loadChildren: () => import('./feedback/feedback.page.module').then(m => m.FeedbackPageModule)
   },
-   /// add/edit feedback
+  /// add/edit feedback
   {
     path: 'feedback/save',
     loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
@@ -83,13 +87,38 @@ const routes: Routes = [
   {
     path: 'logout',
     loadChildren: () => import('./logout/logout.module').then(m => m.LogoutPageModule)
-  }
+  },
+  {
+    path: 'guidecapture',
+    loadChildren: () => import('./guidecapture/guidecapture.module').then(m => m.GuidecapturePageModule)
+  },
+  {
+    path: 'editguide',
+    loadChildren: () => import('./editguide/editguide.module').then(m => m.EditguidePageModule)
+  },
+  {
+    path: 'editguide',
+    children: [
+      {
+        path: ':id',
+        loadChildren: () => import('./editguide/editguide.module').then(m => m.EditguidePageModule)
+      }
+    ]
+  },
+  {
+    path: 'guidestep-add-edit',
+    loadChildren: () => import('./guidestep-add-edit/guidestep-add-edit.module').then(m => m.GuidestepAddEditPageModule)
+  },  {
+    path: 'logs',
+    loadChildren: () => import('./logs/logs.module').then( m => m.LogsPageModule)
+  },
+
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, relativeLinkResolution: 'legacy' })
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

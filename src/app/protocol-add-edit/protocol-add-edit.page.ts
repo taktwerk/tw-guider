@@ -1,36 +1,38 @@
-import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { File } from '@ionic-native/file/ngx';
 import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import {Events, NavController, Platform} from '@ionic/angular';
-import {AuthService} from '../../services/auth-service';
-import {DownloadService} from '../../services/download-service';
-import {Network} from '@ionic-native/network/ngx';
-import {HttpClient} from '../../services/http-client';
-import {FilePath} from '@ionic-native/file-path/ngx';
-import {TranslateConfigService} from '../../services/translate-config.service';
-import {ProtocolModel} from '../../models/db/api/protocol-model';
-import {ProtocolService} from '../../providers/api/protocol-service';
-import {Md5} from 'ts-md5';
-import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model';
-import {ProtocolTemplateService} from '../../providers/api/protocol-template-service';
-import {WorkflowStepService} from '../../providers/api/workflow-step-service';
-import {WorkflowTransitionModel} from '../../models/db/api/workflow-transition-model';
-import {ProtocolCommentService} from '../../providers/api/protocol-comment-service';
-import {ProtocolDefaultService} from '../../providers/api/protocol-default-service';
-import {WorkflowService} from '../../providers/api/workflow-service';
-import {WorkflowTransitionService} from '../../providers/api/workflow-transition-service';
+import { NavController, Platform } from '@ionic/angular';
+import { AuthService } from '../../services/auth-service';
+import { DownloadService } from '../../services/download-service';
+import { Network } from '@ionic-native/network/ngx';
+import { HttpClient } from '../../services/http-client';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { TranslateConfigService } from '../../services/translate-config.service';
+import { ProtocolModel } from '../../models/db/api/protocol-model';
+import { ProtocolService } from '../../providers/api/protocol-service';
+import { Md5 } from 'ts-md5';
+import { ProtocolTemplateModel } from '../../models/db/api/protocol-template-model';
+import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
+import { WorkflowStepService } from '../../providers/api/workflow-step-service';
+import { WorkflowTransitionModel } from '../../models/db/api/workflow-transition-model';
+import { ProtocolCommentService } from '../../providers/api/protocol-comment-service';
+import { ProtocolDefaultService } from '../../providers/api/protocol-default-service';
+import { WorkflowService } from '../../providers/api/workflow-service';
+import { WorkflowTransitionService } from '../../providers/api/workflow-transition-service';
 
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { MiscService } from 'src/services/misc-service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'protocol-add-edit',
   templateUrl: 'protocol-add-edit.page.html',
   styleUrls: ['protocol-add-edit.page.scss']
 })
-export class ProtocolAddEditPage implements OnInit {
+export class ProtocolAddEditPage implements OnInit, OnDestroy {
   public model: ProtocolModel;
   public protocolId: number = null;
   public reference_id: number = null;
@@ -45,30 +47,33 @@ export class ProtocolAddEditPage implements OnInit {
   faClock = faClock;
   faUser = faUser;
 
+  eventSubscription: Subscription;
+
   constructor(
-      private activatedRoute: ActivatedRoute,
-      private file: File,
-      private streamingMedia: StreamingMedia,
-      private photoViewer: PhotoViewer,
-      public events: Events,
-      public http: HttpClient,
-      public authService: AuthService,
-      public changeDetectorRef: ChangeDetectorRef,
-      public downloadService: DownloadService,
-      private protocolService: ProtocolService,
-      private protocolTemplateService: ProtocolTemplateService,
-      private protocolCommentService: ProtocolCommentService,
-      private protocolDefaultService: ProtocolDefaultService,
-      private workflowStepService: WorkflowStepService,
-      private workflowTransitionService: WorkflowTransitionService,
-      private workflowService: WorkflowService,
-      private navCtrl: NavController,
-      private network: Network,
-      private platform: Platform,
-      private filePath: FilePath,
-      private ngZone: NgZone,
-      private translateConfigService: TranslateConfigService,
-      private router: Router
+    private activatedRoute: ActivatedRoute,
+    private file: File,
+    private streamingMedia: StreamingMedia,
+    private photoViewer: PhotoViewer,
+    public http: HttpClient,
+    public authService: AuthService,
+    public changeDetectorRef: ChangeDetectorRef,
+    public downloadService: DownloadService,
+    private protocolService: ProtocolService,
+    private protocolTemplateService: ProtocolTemplateService,
+    private protocolCommentService: ProtocolCommentService,
+    private protocolDefaultService: ProtocolDefaultService,
+    private workflowStepService: WorkflowStepService,
+    private workflowTransitionService: WorkflowTransitionService,
+    private workflowService: WorkflowService,
+    private navCtrl: NavController,
+    private network: Network,
+    private platform: Platform,
+    private filePath: FilePath,
+    private ngZone: NgZone,
+    private translateConfigService: TranslateConfigService,
+    private router: Router,
+    private miscService: MiscService,
+
   ) {
     this.authService.checkAccess('protocol');
     this.comment = null;
@@ -115,7 +120,7 @@ export class ProtocolAddEditPage implements OnInit {
       this.model.workflow_step_id = workflowFirstStep.idApi;
       this.model.protocol_form_number = 0;
       this.model.protocol_form_table = this.protocol_form.TABLE_NAME;
-      this.model.reference_model = this.reference_model;
+      this.model.reference_model = 'taktwerk\\yiiboilerplate' + this.reference_model;
       this.model.reference_id = this.reference_id;
       this.model.name = protocolName;
       this.model.creator = this.getCreatorName();
@@ -124,10 +129,10 @@ export class ProtocolAddEditPage implements OnInit {
       this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
       this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
       this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
-      if (!this.protocol_form.local_protocol_file) {
-        this.protocol_form.local_protocol_file = await this.downloadService.copy(
-            protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PROTOCOL_FILE],
-            this.protocol_form.TABLE_NAME
+      if (!this.protocol_form.local_pdf_image) {
+        this.protocol_form.local_pdf_image = await this.downloadService.copy(
+          protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE],
+          this.protocol_form.TABLE_NAME
         );
       }
     }
@@ -146,7 +151,6 @@ export class ProtocolAddEditPage implements OnInit {
         if (this.model.idApi) {
           protocolCommentModel.protocol_id = this.model.idApi;
         }
-        console.log('after saving comment commnet protocol_id');
         protocolCommentModel.local_protocol_id = this.model[this.model.COL_ID];
         protocolCommentModel.comment = this.comment;
         protocolCommentModel.event = 'comment';
@@ -156,8 +160,9 @@ export class ProtocolAddEditPage implements OnInit {
         this.comment = null;
       }
       this.detectChanges();
-      this.events.publish('setIsPushAvailableData');
-      const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', {model: 'Protocol'});
+      // this.events.publish('setIsPushAvailableData');
+      this.miscService.events.next({ TAG: 'setIsPushAvailableData' });
+      const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
       this.http.showToast(alertMessage);
     }
   }
@@ -199,8 +204,8 @@ export class ProtocolAddEditPage implements OnInit {
     this.model.workflow_step_id = nextWorkflowTransition.next_workflow_step_id;
     await this.model.save();
     let previousProtocolFormFile = null;
-    if (this.protocol_form.local_protocol_file) {
-      previousProtocolFormFile = this.protocol_form.local_protocol_file;
+    if (this.protocol_form.local_pdf_image) {
+      previousProtocolFormFile = this.protocol_form.local_pdf_image;
     }
     const protocolFormService = this.protocolService.getProtocolFormService(this.model.protocol_form_table);
     this.protocol_form = protocolFormService.newModel();
@@ -225,15 +230,16 @@ export class ProtocolAddEditPage implements OnInit {
     this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
     this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
     this.detectChanges();
-    this.events.publish('setIsPushAvailableData');
-    const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', {model: 'Protocol'});
+    // this.events.publish('setIsPushAvailableData');
+    this.miscService.events.next({ TAG: 'setIsPushAvailableData' });
+    const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
     this.http.showToast(alertMessage);
   }
 
   public getProtocolTemplate(templateId: number): Promise<ProtocolTemplateModel> {
     return new Promise((resolve) => {
       this.protocolTemplateService.dbModelApi.findFirst(
-          [this.protocolTemplateService.dbModelApi.COL_ID_API, templateId]
+        [this.protocolTemplateService.dbModelApi.COL_ID_API, templateId]
       ).then((res) => {
         if (res && res[0]) {
           resolve(res[0]);
@@ -253,7 +259,7 @@ export class ProtocolAddEditPage implements OnInit {
       return protocolFormService.newModel();
     }
     const protocolFormModel = await protocolFormService['dbModelApi'].findFirst(
-        [protocolFormService['dbModelApi'].COL_ID, this.model.local_protocol_form_number]
+      [protocolFormService['dbModelApi'].COL_ID, this.model.local_protocol_form_number]
     );
     if (!protocolFormModel || !protocolFormModel[0]) {
       return protocolFormService.newModel();
@@ -288,7 +294,6 @@ export class ProtocolAddEditPage implements OnInit {
       if (this.protocolId) {
         await this.setExistModel();
       } else {
-        console.log('no protocol id');
         this.model = this.protocolService.newModel();
         this.model.client_id = this.clientId;
         this.model.protocol_template_id = this.templateId;
@@ -296,100 +301,123 @@ export class ProtocolAddEditPage implements OnInit {
         this.model.reference_model = this.reference_model;
         this.model.protocol_form_table = 'protocol_default';
         this.protocol_form = await this.getProtcolFormModel();
-        console.log('this.protocol_form after getProtocolFormModel', this.protocol_form);
         this.model.canEditProtocol = await this.protocolTemplateService.canCreateProtocol(this.templateId);
       }
       if (!this.protocol_form) {
         this.http.showToast('Can\'t open this protocol', '', 'danger', false);
         this.dismiss();
       }
-      this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', (model) => {
-        if (model.id === this.model.protocol_template_id) {
+      // this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':update', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.protocolTemplateService.dbModelApi.TAG + ':delete', (model) => {
+      //   if (model.id === this.model.protocol_template_id) {
+      //     this.setExistModel();
+      //     this.detectChanges();
+      //   }
+      // });
+      // this.events.subscribe(this.protocolService.dbModelApi.TAG + ':update', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.protocolService.dbModelApi.TAG + ':delete', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.protocolDefaultService.dbModelApi.TAG + ':update', (model) => {
+      //   console.log('protocolDefault update')
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.protocolDefaultService.dbModelApi.TAG + ':delete', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.workflowService.dbModelApi.TAG + ':create', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.workflowService.dbModelApi.TAG + ':update', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.workflowService.dbModelApi.TAG + ':delete', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':create', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':update', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':delete', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+
+      // this.events.subscribe(this.workflowTransitionService.dbModelApi.TAG + ':create', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.workflowTransitionService.dbModelApi.TAG + ':update', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.workflowTransitionService.dbModelApi.TAG + ':delete', (model) => {
+      //   this.setExistModel();
+      //   this.detectChanges();
+      // });
+
+      // this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':create', async (model) => {
+      //   this.model.comments = await this.protocolService.getComments(this.model);
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':update', async (model) => {
+      //   this.model.comments = await this.protocolService.getComments(this.model);
+      //   this.detectChanges();
+      // });
+      // this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':delete', async (model) => {
+      //   this.model.comments = await this.protocolService.getComments(this.model);
+      //   this.detectChanges();
+      // });
+    });
+
+    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+      switch (event.TAG) {
+        case this.protocolTemplateService.dbModelApi.TAG + ':update':
+        case this.protocolTemplateService.dbModelApi.TAG + ':delete':
+        case this.protocolService.dbModelApi.TAG + ':update':
+        case this.protocolService.dbModelApi.TAG + ':delete':
+        case this.protocolDefaultService.dbModelApi.TAG + ':update':
+        case this.protocolDefaultService.dbModelApi.TAG + ':delete':
+        case this.workflowService.dbModelApi.TAG + ':create':
+        case this.workflowService.dbModelApi.TAG + ':update':
+        case this.workflowService.dbModelApi.TAG + ':delete':
+        case this.workflowStepService.dbModelApi.TAG + ':create':
+        case this.workflowStepService.dbModelApi.TAG + ':update':
+        case this.workflowStepService.dbModelApi.TAG + ':delete':
+        case this.workflowTransitionService.dbModelApi.TAG + ':create':
+        case this.workflowTransitionService.dbModelApi.TAG + ':update':
+        case this.workflowTransitionService.dbModelApi.TAG + ':delete':
           this.setExistModel();
           this.detectChanges();
-        }
-      });
-      this.events.subscribe(this.protocolService.dbModelApi.TAG + ':update', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.protocolService.dbModelApi.TAG + ':delete', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.protocolDefaultService.dbModelApi.TAG + ':update', (model) => {
-        console.log('protocolDefault update')
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.protocolDefaultService.dbModelApi.TAG + ':delete', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowService.dbModelApi.TAG + ':create', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowService.dbModelApi.TAG + ':update', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowService.dbModelApi.TAG + ':delete', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':create', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':update', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':delete', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':create', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':update', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowStepService.dbModelApi.TAG + ':delete', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowTransitionService.dbModelApi.TAG + ':create', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowTransitionService.dbModelApi.TAG + ':update', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.workflowTransitionService.dbModelApi.TAG + ':delete', (model) => {
-        this.setExistModel();
-        this.detectChanges();
-      });
-      this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':create', async (model) => {
-        this.model.comments = await this.protocolService.getComments(this.model);
-        this.detectChanges();
-      });
-      this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':update', async (model) => {
-        this.model.comments = await this.protocolService.getComments(this.model);
-        this.detectChanges();
-      });
-      this.events.subscribe(this.protocolCommentService.dbModelApi.TAG + ':delete', async (model) => {
-        this.model.comments = await this.protocolService.getComments(this.model);
-        this.detectChanges();
-      });
+          break;
+        case this.protocolCommentService.dbModelApi.TAG + ':create':
+        case this.protocolCommentService.dbModelApi.TAG + ':update':
+        case this.protocolCommentService.dbModelApi.TAG + ':delete':
+          this.model.comments = await this.protocolService.getComments(this.model);
+          this.detectChanges();
+          break;
+        default:
+      }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
   }
 }

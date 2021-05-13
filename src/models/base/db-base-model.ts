@@ -1,7 +1,10 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbProvider} from '../../providers/db-provider';
-import {AppSetting} from '../../services/app-setting';
-import {DownloadService} from '../../services/download-service';
+import { Self } from '@angular/core';
+import { Platform } from '@ionic/angular';
+// import { AppSetting } from 'src/services/app-setting';
+import { LoggerService } from 'src/services/logger-service';
+import { MiscService } from 'src/services/misc-service';
+import { DbProvider } from '../../providers/db-provider';
+import { DownloadService } from '../../services/download-service';
 
 /**
  * Extend this abstract Helper class for every DB-Model.
@@ -80,23 +83,23 @@ export abstract class DbBaseModel {
             const columnName = column[3] ? column[3] : column[0];
             const value: any = item[column[0]];
             switch (column[2]) {
-                case DbBaseModel.TYPE_NUMBER :
-                    (<any> this)[columnName] = this.getNumberValue(value);
+                case DbBaseModel.TYPE_NUMBER:
+                    (<any>this)[columnName] = this.getNumberValue(value);
                     break;
-                case DbBaseModel.TYPE_DECIMAL :
-                    (<any> this)[columnName] = this.getDecimalValue(value);
+                case DbBaseModel.TYPE_DECIMAL:
+                    (<any>this)[columnName] = this.getDecimalValue(value);
                     break;
-                case DbBaseModel.TYPE_STRING :
-                    (<any> this)[columnName] = this.getStringValue(value);
+                case DbBaseModel.TYPE_STRING:
+                    (<any>this)[columnName] = this.getStringValue(value);
                     break;
-                case DbBaseModel.TYPE_DATE :
-                    (<any> this)[columnName] = this.getDateValue(value);
+                case DbBaseModel.TYPE_DATE:
+                    (<any>this)[columnName] = this.getDateValue(value);
                     break;
-                case DbBaseModel.TYPE_BOOLEAN :
-                    (<any> this)[columnName] = this.getBooleanValue(value);
+                case DbBaseModel.TYPE_BOOLEAN:
+                    (<any>this)[columnName] = this.getBooleanValue(value);
                     break;
-                case DbBaseModel.TYPE_OBJECT :
-                    (<any> this)[columnName] = this.getObjectValue(value);
+                case DbBaseModel.TYPE_OBJECT:
+                    (<any>this)[columnName] = this.getObjectValue(value);
                     break;
             }
         }
@@ -114,10 +117,10 @@ export abstract class DbBaseModel {
     constructor(
         public platform: Platform,
         public db: DbProvider,
-        public events: Events,
         public downloadService: DownloadService,
-    ) {
-    }
+        public loggerService: LoggerService,
+        public miscService: MiscService
+    ) { }
 
     /**
      * Initializes the database incl. the create table statement
@@ -130,7 +133,10 @@ export abstract class DbBaseModel {
                 this.db.init().then(() => {
                     this.dbCreateTable().then((res) => {
                         if (!res) {
-                            console.log(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME);
+                            // console.log(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME);
+                            if (this.loggerService) {
+                                this.loggerService.getLogger().error(this.TAG, 'Could not initialize db ', new Error().stack) // TODO: Loggerservice & MiscService seems unreachable here
+                            }
                         }
                         resolve(res);
                     });
@@ -185,6 +191,91 @@ export abstract class DbBaseModel {
         return query;
     }
 
+    public isExitColInTable(tableName, colName) {
+        return new Promise((resolve) => {
+            if (this.dbIsBusy) {
+                resolve(false);
+            } else {
+                this.dbIsBusy = true;
+                this.platform.ready().then(() => {
+                    this.db.query(`SELECT ${colName} FROM ${tableName}`)
+                        .then((res) => {
+                            this.dbIsReady = true;
+                            this.dbIsBusy = false;
+                            resolve(true);
+                        }).catch((err) => {
+                            this.dbIsBusy = false;
+                            resolve(false);
+                            console.log(err)
+                        });
+                });
+            }
+        });
+    }
+
+    public checkTableExit(TABLE_NAME) {
+        return new Promise((resolve) => {
+            if (this.dbIsBusy) {
+                resolve(false);
+            } else {
+                this.dbIsBusy = true;
+                this.platform.ready().then(() => {
+                    this.db.query("SELECT COUNT(*) FROM " + this.secure(TABLE_NAME))
+                        .then((res) => {
+                            this.dbIsReady = true;
+                            this.dbIsBusy = false;
+                            resolve(true);
+                        }).catch((err) => {
+                            this.dbIsBusy = false;
+                            resolve(false);
+                        });
+                });
+            }
+        });
+    }
+
+    public isExistTable() {
+        return new Promise((resolve) => {
+            if (this.dbIsBusy) {
+                resolve(false);
+            } else {
+                this.dbIsBusy = true;
+                this.platform.ready().then(() => {
+                    this.db.query("SELECT COUNT(*) FROM " + this.secure(this.TABLE_NAME))
+                        .then((res) => {
+                            this.dbIsReady = true;
+                            this.dbIsBusy = false;
+                            resolve(true);
+                        }).catch((err) => {
+                            this.dbIsBusy = false;
+                            resolve(false);
+                        });
+                });
+            }
+        });
+    }
+
+    public query(query) {
+        return new Promise((resolve) => {
+            if (this.dbIsBusy) {
+                resolve(false);
+            } else {
+                this.dbIsBusy = true;
+                this.platform.ready().then(() => {
+                    this.db.query(query)
+                        .then((res) => {
+                            this.dbIsReady = true;
+                            this.dbIsBusy = false;
+                            resolve(true);
+                        }).catch((err) => {
+                            this.dbIsBusy = false;
+                            resolve(false);
+                        });
+                });
+            }
+        });
+    }
+
     /**
      * Creates the db table for the extended db class.
      * @returns {Promise<T>}
@@ -222,15 +313,12 @@ export abstract class DbBaseModel {
                     resolve(false);
                 }
                 const query = 'SELECT * FROM ' + this.secure(this.TABLE_NAME) + ' WHERE ' + this.secure(this.COL_ID) + ' = ' + id;
-                console.log('query', query);
                 db.query(query).then((res) => {
-                    console.log('res', res);
                     if (res.rows.length === 1) {
                         if (newObject) {
                             let obj: DbBaseModel = new (<any>this.constructor);
                             obj.platform = this.platform;
                             obj.db = this.db;
-                            obj.events = this.events;
                             obj.downloadService = this.downloadService;
                             obj.loadFromAttributes(res.rows.item(0));
                             resolve(obj);
@@ -275,6 +363,7 @@ export abstract class DbBaseModel {
                 if (db == null) {
                     resolve(entries);
                 } else {
+                    //  console.log('query', query);
                     db.query(query).then((res) => {
                         if (res.rows.length > 0) {
                             resolve(res);
@@ -285,34 +374,41 @@ export abstract class DbBaseModel {
                         resolve(entries);
                     });
                 }
-
             });
         });
     }
 
     public searchAll(where?: any, orderBy?: string, limit?: number, join?: string, selectFrom?: string): Promise<any> {
+
         const query = this.searchAllQuery(where, orderBy, limit, join, selectFrom);
         const entries: any[] = [];
 
+        // console.log('query', query);
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
                     resolve(entries);
-                } else {
+                }
+                else {
                     db.query(query).then((res) => {
+                        // console.log('search all res', res);
                         if (res.rows.length > 0) {
                             for (let i = 0; i < res.rows.length; i++) {
                                 const obj = new (this.constructor as any);
                                 obj.platform = this.platform;
                                 obj.db = this.db;
-                                obj.events = this.events;
+
                                 obj.downloadService = this.downloadService;
                                 obj.loadFromAttributes(res.rows.item(i));
                                 entries.push(obj);
                             }
                         }
+                        //  console.log("entries", entries);
                         resolve(entries);
+
                     }).catch((err) => {
+                        console.log('searchAll error ', err);
+                        this.loggerService.getLogger().error("error at db-base-model 362", err, new Error().stack)
                         resolve(entries);
                     });
                 }
@@ -335,7 +431,7 @@ export abstract class DbBaseModel {
                                 const obj: DbBaseModel = new (<any>this.constructor);
                                 obj.platform = this.platform;
                                 obj.db = this.db;
-                                obj.events = this.events;
+
                                 obj.downloadService = this.downloadService;
                                 obj.loadFromAttributes(res.rows.item(i));
                                 // console.debug(this.TAG, 'new instance', obj);
@@ -408,7 +504,7 @@ export abstract class DbBaseModel {
         return this.searchAll(conditionString, orderBy, limit);
     }
 
-    public findFirst(condition, orderBy  = 'id ASC'): Promise<any> {
+    public findFirst(condition, orderBy = 'id ASC'): Promise<any> {
         return this.findAllWhere(condition, orderBy, 1);
     }
 
@@ -495,10 +591,10 @@ export abstract class DbBaseModel {
                 }
             }
         } else {
-            console.debug(this.TAG, 'findAllWhere condition error', condition);
+            // console.debug(this.TAG, 'findAllWhere condition error', condition);
         }
 
-        console.log('CONDITIONS', conditions.join(' AND '));
+        //  console.log('CONDITIONS', conditions.join(' AND '));
         return conditions.join(' AND ');
     }
 
@@ -617,17 +713,17 @@ export abstract class DbBaseModel {
      */
     protected getObjectByType(value: string, type: number): any {
         switch (type) {
-            case DbBaseModel.TYPE_NUMBER :
+            case DbBaseModel.TYPE_NUMBER:
                 return this.getNumberValue(value);
-            case DbBaseModel.TYPE_STRING :
+            case DbBaseModel.TYPE_STRING:
                 return this.getStringValue(value);
-            case DbBaseModel.TYPE_BOOLEAN :
+            case DbBaseModel.TYPE_BOOLEAN:
                 return this.getBooleanValue(parseInt(value));
-            case DbBaseModel.TYPE_DATE :
+            case DbBaseModel.TYPE_DATE:
                 return this.getDateFromString(value);
-            case DbBaseModel.TYPE_OBJECT :
+            case DbBaseModel.TYPE_OBJECT:
                 return this.getObjectValue(value);
-            case DbBaseModel.TYPE_DECIMAL :
+            case DbBaseModel.TYPE_DECIMAL:
                 return this.getDecimalValue(value);
         }
     }
@@ -640,15 +736,15 @@ export abstract class DbBaseModel {
      */
     protected getValueByType(value: any, type: number): string {
         switch (type) {
-            case DbBaseModel.TYPE_NUMBER :
+            case DbBaseModel.TYPE_NUMBER:
                 return this.getValueNumber(value);
-            case DbBaseModel.TYPE_STRING :
+            case DbBaseModel.TYPE_STRING:
                 return this.getValueString(value);
-            case DbBaseModel.TYPE_BOOLEAN :
+            case DbBaseModel.TYPE_BOOLEAN:
                 return this.getValueBoolean(value);
-            case DbBaseModel.TYPE_DATE :
+            case DbBaseModel.TYPE_DATE:
                 return this.getValueDate(value);
-            case DbBaseModel.TYPE_OBJECT :
+            case DbBaseModel.TYPE_OBJECT:
                 return this.getValueObject(value);
             case DbBaseModel.TYPE_DECIMAL:
                 return this.getValueDecimal(value);
@@ -689,11 +785,13 @@ export abstract class DbBaseModel {
                         console.log('after execute query');
                         this[this.COL_ID] = res.insertId;
                         this.updateCondition = [this.COL_ID, this[this.COL_ID]];
-                        this.events.publish(this.TAG + ':create', this);
+                        // this.events.publish(this.TAG + ':create', this);
+                        this.miscService.events.next({ TAG: this.TAG + ':create', data: this });
                         resolve(res);
 
                     }).catch((err) => {
-                        console.log('errrr', err);
+                        console.log('Db Create errrr', err);
+                        this.loggerService.getLogger().error("error at db-base-model 746", err, new Error().stack)
                         resolve(false);
                     });
                 }
@@ -705,24 +803,38 @@ export abstract class DbBaseModel {
      * Updates this base model instance in the local SQLite db.
      * Make sure to modify the `updateCondition` first if necessary.
      */
-    protected update(): Promise<any> {
+    public update(condition?: any): Promise<any> {
         return new Promise((resolve) => {
             this.dbReady().then((db) => {
                 if (db == null) {
                     resolve(false);
                 } else {
+                    if (!condition) {
+                        condition = this.updateCondition;
+                    }
                     let query = 'UPDATE ' + this.secure(this.TABLE_NAME) + ' ' +
-                        'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(this.updateCondition);
+                        'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(condition);
                     db.query(query).then((res) => {
-                        this.events.publish(this.TAG + ':update', this);
+                        // this.events.publish(this.TAG + ':update', this);
+                        console.log("this.miscService", this.miscService)
+                        if (this.miscService) {
+                            this.miscService.events.next({ TAG: this.TAG + ':update', data: this });
+                        }
                         resolve(res);
                     }).catch((err) => {
-                        console.log('errrr', err);
+                        console.log('Db Update errrr', err);
+                        console.log(this.loggerService)
+                        if (this.loggerService) {
+                            this.loggerService.getLogger().error("error at db-base-model 780", err, new Error().stack)
+                        }
                         resolve(false);
                     });
                 }
             }).catch((err) => {
                 console.log('dbReady errrr', err);
+                if (this.loggerService) {
+                    this.loggerService.getLogger().error("error at db-base-model 777", err, new Error().stack)
+                }
                 resolve(false);
             });
         });
@@ -737,10 +849,12 @@ export abstract class DbBaseModel {
                     let query = 'DELETE FROM ' + this.secure(this.TABLE_NAME) + ' ' +
                         'WHERE ' + this.parseWhere(this.updateCondition);
                     db.query(query).then((res) => {
-                        this.events.publish(this.TAG + ':delete', this);
+                        // this.events.publish(this.TAG + ':delete', this);
+                        this.miscService.events.next({ TAG: this.TAG + ':create', data: this })
                         resolve(res);
                     }).catch((err) => {
                         console.log('delete error', err);
+                        this.loggerService.getLogger().error("error at db-base-model 798", err, new Error().stack)
                         resolve(false);
                     });
                 }
@@ -808,7 +922,6 @@ export abstract class DbBaseModel {
             /// if date is integer that it is seconds
             date = +date * 1000;
         }
-
         return date ? new Date(date) : null;
     }
 

@@ -51,22 +51,42 @@ you need to increase the value of the property dbMigrationVersion in the file `s
             - property "url" - column name of the thumbnail name;
             - property "localPath" - column name of the file local path;
     - add setUpdateCondition() method (optional) - to set the standard update condition for the model.
+    - add beforePushDataToServer(isInsert?: boolean) method (optional) - execute some code before pushing data to server (example in protocol-default model);
+    - add afterPushDataToServer(isInsert?: boolean) method (optional) - execute some code after pushing data to server (example in protocol-default model). Should return promise with additional models for pushing data to server;
+    - each record in tables has a column _is_synced. If the column is 0, then this data is queued for uploading data to the server;
+    - push occurs in turn for each model that is in the list allServicesBodiesForPush;
+    - pushing is available after every saving or deleting model in device. _is_synced column is 0;
+    - in model property 'idApi' is the equivalent of a column in a database on the server. ID column for id column in the server database. _id - local id in the application. Some models that have relationships have a link column with a local id (_id).
 
-2. Create service src/providers/api/feedback-service.ts. Must inherit from class ApiService.
+2. Create service src/providers/api/feedback-service.ts with name FeedbackService. Must inherit from class ApiService.
     - add property loadUrl - the part of the URL that will be used when sending model data to the server. (example of the push url: {base_url} + service.loadUrl + '/batch')
     - add property dbModelApi - must be type of model that uses the service;
-    - add method newModel() to create a new model.
+    - add method newModel() to create a new model;
+    - add to ApiSync construct feedbackService: FeedbackService.
+    - add this service in apiServices list in ApiSync object (list of the model services for pulling data);
+    - before pulling code check every service - is need to sync table rows or not;
+    - sync API get all models with data for pulling;
+    - code parse sync API response and write data in local database. Local and backend model property name should be the same;
+    - if model data have file, this file is calling from server and upload to the device. Progress bar wait this file;
+    - sync status and progress data is saving in auth table in additional_info column;
+    - pulling is available after checking server data version via API `api/v1/sync/check-available-data`.
+    - add this service in apiPushServices list in ApiSync object (list of the model services for pushing data to the server);
+    - before pushing code check every service - is need to sync table rows or not.
 
-3. File src/providers/api-sync.ts
-    - add to constructor service (in this case `feedbackService: FeedbackService`);
-    - add to apiServices object `feedback: this.feedbackService`;
 
-4. File src/providers/api-push.ts
-    - add to constructor service (in this case `feedbackService: FeedbackService`);
-    - add to apiServices object `feedback: this.feedbackService`;
-
-5. File src/app/app.module.ts
+3. File src/app/app.module.ts
     - add to providers `FeedbackService`
+
+How to work with 3D models:
+- model can be shown with `viewer-3d-model-component`;
+- 3D model file should be gltf file.
+
+How to implement model migration:
+- create migration file in src/migrations directory with method execute() (should return promise);
+- in src/migrations/base/migration-list export this migration file;
+- add migration to the `migrations` array of the needed model;
+- if model table is not exists, then this table will create via model properties and migrations realted to this model will not execute;
+- all migrations will save in `migration` table. If migration is executed then `is_active` column is 1.
 
 ### Set up Sentry:
 1) set sentryDsn in src/environments/environment.ts
@@ -115,3 +135,10 @@ public void onBackPressed() {
     this.appView.loadUrl("javascript:if (document.webkitIsFullScreen === true) {document.webkitExitFullscreen();}");
 }
 ```
+
+## Migrations
+
+- Add migration file to src/migrations directory;
+- Add export of the migration to src/migrations/base/migration-list.ts file
+- Add migration class name to related model property 'migrations';
+- The migration class must contain an async "execute" method.

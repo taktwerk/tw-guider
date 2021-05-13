@@ -1,0 +1,100 @@
+<ion-content [scrollEvents]="true" (ionScrollStart)="logScrollStart()" (ionScroll)="logScrolling($event)"
+  (ionScrollEnd)="logScrollEnd()">
+  <ion-list>
+    <ion-reorder-group [disabled]="disableReorder" (ionItemReorder)="Reorder($event)">
+      <ion-item-sliding *ngFor="let step of guideSteps; trackBy: tracklist">
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="showDeleteAlert(step)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+
+        <ion-item detail="true" button (click)="onEdit(step)">
+          <ion-reorder slot="start" *ngIf="disableReorder == false"></ion-reorder>
+
+          <!-- HAS PREVIEW -->
+          <!-- audio -->
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() != null && step.isAudioFile()">
+            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <!-- video -->
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() != null &&step.isVideoFile()">
+            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <!-- image -->
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() != null &&step.isImageFile()">
+            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <!-- pdf -->
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() != null && step.isPdf()">
+            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <!-- 3d -->
+          <ion-thumbnail slot="start" *ngIf="step.is3dFile()" class="no__preview">
+            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <!-- NO PREVIEW | SHOW ICON WITH BACKGROUND -->
+          <!-- audio -->
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null && step.isAudioFile()" class="no__preview">
+            <model-assetcomponent [preventDefaultClickFunction]=" true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false">
+            </model-assetcomponent>
+          </ion-thumbnail>
+
+          <!-- video -->
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null &&step.isVideoFile()" class="no__preview">
+            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <!-- image -->
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null &&step.isImageFile()" class="no__preview">
+            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <!-- pdf -->
+          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null && step.isPdf()" class="no__preview">
+            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <!-- text  -->
+          <ion-thumbnail slot="start" *ngIf="!step.isExistFormatFile()" class="no__preview">
+            <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
+              [floatingIcon]="false"></model-assetcomponent>
+          </ion-thumbnail>
+
+          <ion-label>
+            <h2> <strong>#{{step.order_number}} {{step.title}}</strong></h2>
+            <div *ngIf="step.description_html" class="ion-text-left" class="html_element">
+              <p class="elipsed"> {{getExtractText(step.description_html)}} </p>
+            </div>
+          </ion-label>
+        </ion-item>
+      </ion-item-sliding>
+    </ion-reorder-group>
+  </ion-list>
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>
+
+<ion-buttons class="floating_cta" *ngIf="canReorder && !isScrolling">
+  <ion-button (click)="onReorder()" *ngIf="disableReorder && guideSteps?.length > 0" fill="solid">{{ 'Order' |
+    translate:params }}</ion-button>
+  <ion-button (click)="save()" *ngIf="!disableReorder" fill="solid">Save</ion-button>
+</ion-buttons>

@@ -1,0 +1,29 @@
+.floating_cta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 16px;
+
+    ion-button {
+        --background: #173262;
+    }
+}
+
+// .grayoutimage {
+//     filter: invert(80%) sepia(0%) saturate(3594%) hue-rotate(97deg) brightness(90%) contrast(100%);
+// }
+
+.html_element {
+    max-height: 32px;
+}
+
+ion-thumbnail {
+    border-radius: 6px;
+    overflow: hidden;
+    img {
+        object-fit: cover;
+        height: 100%;
+    }
+}
+
+

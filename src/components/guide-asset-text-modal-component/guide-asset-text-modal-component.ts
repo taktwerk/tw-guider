@@ -1,7 +1,10 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {GuideAssetModel} from '../../models/db/api/guide-asset-model';
-import {Events, ModalController} from '@ionic/angular';
-import {GuideAssetService} from '../../providers/api/guide-asset-service';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
+import { ModalController } from '@ionic/angular';
+import { GuideAssetService } from '../../providers/api/guide-asset-service';
+import { Subscription } from 'rxjs';
+import { MiscService } from 'src/services/misc-service';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the TodoPage page.
@@ -14,35 +17,57 @@ import {GuideAssetService} from '../../providers/api/guide-asset-service';
   selector: 'guide-asset-text-modal-component',
   templateUrl: 'guide-asset-text-modal-component.html',
 })
-export class GuideAssetTextModalComponent implements OnInit{
+export class GuideAssetTextModalComponent implements OnInit, OnDestroy {
+  public asset: GuideAssetModel;
+  eventSubscription: Subscription;
 
-    public asset: GuideAssetModel;
+  constructor(
+    private modalController: ModalController,
+    private guideAssetService: GuideAssetService,
+    public changeDetectorRef: ChangeDetectorRef,
+    private miscService: MiscService,
+    private storage: Storage,
+    //    public miscService: MiscService,
+  ) { }
 
-    constructor(private modalController: ModalController,
-                private events: Events,
-                private guideAssetService: GuideAssetService,
-                public changeDetectorRef: ChangeDetectorRef) {
-        ///
+  dismiss() {
+    this.modalController.dismiss();
+    this.storage.set('GuideAssetTextModalComponentOpen', false)
+  }
+
+  detectChanges() {
+    if (!this.changeDetectorRef['destroyed']) {
+      this.changeDetectorRef.detectChanges();
     }
+  }
 
-    dismiss() {
-        this.modalController.dismiss();
-    }
+  ionViewDidEnter() {
+    this.storage.set('GuideAssetTextModalComponentOpen', true)
+  }
 
-    detectChanges() {
-        if (!this.changeDetectorRef['destroyed']) {
-            this.changeDetectorRef.detectChanges();
-        }
-    }
+  ngOnInit() {
+    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', (model) => {
+    //   this.asset = model;
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', (model) => {
+    //   this.asset = model;
+    //   this.detectChanges();
+    // });
 
-    ngOnInit() {
-        this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':create', (model) => {
-            this.asset = model;
-            this.detectChanges();
-        });
-        this.events.subscribe(this.guideAssetService.dbModelApi.TAG + ':update', (model) => {
-            this.asset = model;
-            this.detectChanges();
-        });
-    }
+    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+      switch (event.TAG) {
+        case this.guideAssetService.dbModelApi.TAG + ':create':
+        case this.guideAssetService.dbModelApi.TAG + ':update':
+          this.asset = event.data;
+          this.detectChanges();
+          break;
+        default:
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
+  }
 }

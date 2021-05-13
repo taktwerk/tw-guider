@@ -1,9 +1,11 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
-import {ProtocolModel} from './protocol-model';
+import { Platform } from '@ionic/angular';
+import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { ProtocolModel } from './protocol-model';
+import { LoggerService } from 'src/services/logger-service';
+import { MiscService } from 'src/services/misc-service';
 
 /**
  * API Db Model for 'Protocol Default Model'.
@@ -27,6 +29,9 @@ export class ProtocolDefaultModel extends DbApiModel {
     static COL_THUMB_PROTOCOL_FILE = 'thumb_protocol_file';
     static COL_API_THUMB_PROTOCOL_FILE_PATH = 'thumb_protocol_file_path';
     static COL_LOCAL_THUMB_PROTOCOL_FILE = 'local_thumb_protocol_file';
+    static COL_PDF_IMAGE = 'pdf_image';
+    static COL_API_PDF_IMAGE_PATH = 'pdf_image_path';
+    static COL_LOCAL_PDF_IMAGE = 'local_pdf_image';
 
     /** @inheritDoc */
     TABLE_NAME: string = 'protocol_default';
@@ -43,6 +48,9 @@ export class ProtocolDefaultModel extends DbApiModel {
         [ProtocolDefaultModel.COL_THUMB_PROTOCOL_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
         [ProtocolDefaultModel.COL_API_THUMB_PROTOCOL_FILE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
         [ProtocolDefaultModel.COL_LOCAL_THUMB_PROTOCOL_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
+        [ProtocolDefaultModel.COL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [ProtocolDefaultModel.COL_API_PDF_IMAGE_PATH, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
+        [ProtocolDefaultModel.COL_LOCAL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
     ];
 
     public downloadMapping: FileMapInModel[] = [
@@ -54,9 +62,16 @@ export class ProtocolDefaultModel extends DbApiModel {
                 name: ProtocolDefaultModel.COL_THUMB_PROTOCOL_FILE,
                 url: ProtocolDefaultModel.COL_API_THUMB_PROTOCOL_FILE_PATH,
                 localPath: ProtocolDefaultModel.COL_LOCAL_THUMB_PROTOCOL_FILE
-            }
+            },
+        },
+        {
+            name: ProtocolDefaultModel.COL_PDF_IMAGE,
+            url: ProtocolDefaultModel.COL_API_PDF_IMAGE_PATH,
+            localPath: ProtocolDefaultModel.COL_LOCAL_PDF_IMAGE
         }
     ];
+
+    public migrations = ['AddPdfImageColumnsToProtocolDefaultTableMigration'];
 
     async updateLocalRelations() {
         if (!this[this.COL_ID] || !this.idApi) {
@@ -65,7 +80,7 @@ export class ProtocolDefaultModel extends DbApiModel {
         console.log('after check');
 
         if (this.protocol_id) {
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService);
+            const protocolModel = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
             const protocolModels = await protocolModel.findFirst(
                 [protocolModel.COL_ID_API, this.protocol_id]
             );
@@ -83,19 +98,16 @@ export class ProtocolDefaultModel extends DbApiModel {
     }
 
     async beforePushDataToServer(isInsert?: boolean) {
-        console.log('beforePushDataToServer isInsert', isInsert);
         if (isInsert) {
             if (!this[this.COL_ID]) {
                 return;
             }
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService);
+            const protocolModel = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
             const protocolModels = await protocolModel.findFirst([protocolModel.COL_ID, this.local_protocol_id]);
-            console.log('protocolModels', protocolModels);
             if (protocolModels && protocolModels.length) {
                 const protocol = protocolModels[0];
                 if (protocol) {
                     this.protocol_id = protocol.idApi;
-                    console.log('this.protocol_id', this.protocol_id);
                     await this.save(false, false);
                 }
             }
@@ -109,7 +121,7 @@ export class ProtocolDefaultModel extends DbApiModel {
             if (!this[this.COL_ID] || !this.idApi) {
                 return;
             }
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.events, this.downloadService);
+            const protocolModel = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
             const protocolModels = await protocolModel.findFirst([protocolModel.COL_ID_API, this.protocol_id]);
             if (protocolModels && protocolModels.length) {
                 const protocol = protocolModels[0];
@@ -127,7 +139,10 @@ export class ProtocolDefaultModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
-        super(platform, db, events, downloadService);
+    constructor(public platform: Platform, public db: DbProvider,
+        public downloadService: DownloadService, public loggerService: LoggerService,
+        public miscService: MiscService
+    ) {
+        super(platform, db, downloadService, loggerService, miscService);
     }
 }

@@ -4,7 +4,6 @@ $big-fab-list-width: calc(#{$big-fab-width} - 2 * #{$big-fab-list-left-padding})
 $big-fab-list-margin-bottom: calc(#{$big-fab-width} + 10px);
 $videocam-font-size: 50px;
 
-
 .video-icon {
   height: 70vh;
   width: auto;
@@ -55,6 +54,7 @@ $videocam-font-size: 50px;
       position: relative;
       overflow-y: auto;
       object-fit: scale-down;
+      padding-top: 10px;
     }
     .video-with-thumbnail {
       .videocam-icon {
@@ -70,3 +70,23 @@ $videocam-font-size: 50px;
   }
 }
 
+.feedback-title {
+  ion-label {
+    height: 25px;
+  }
+}
+
+.buttons {
+  margin-top: 30px;
+}
+
+@media (orientation: landscape) {
+  form {
+    height: 100%;
+
+    .top-file {
+      height: 100%;
+      display: block;
+    }
+  }
+}

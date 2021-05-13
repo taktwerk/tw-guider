@@ -1,25 +1,28 @@
+import { LoggerService } from './../../services/logger-service';
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/map';
-import {Platform, Events, AlertController} from '@ionic/angular';
-import {ApiService} from './base/api-service';
-import {DbProvider} from '../db-provider';
-import {AuthService} from '../../services/auth-service';
-import {HttpClient} from '../../services/http-client';
-import {DownloadService} from '../../services/download-service';
-import {AppSetting} from '../../services/app-setting';
-import {ProtocolDefaultModel} from '../../models/db/api/protocol-default-model';
-import {ProtocolModel} from '../../models/db/api/protocol-model';
-import {PictureService} from '../../services/picture-service';
-import {ProtocolTemplateService} from './protocol-template-service';
-import {ProtocolTemplateModel} from '../../models/db/api/protocol-template-model';
-import {TranslateConfigService} from '../../services/translate-config.service';
-import {Md5} from 'ts-md5/dist/md5';
+
+import { Platform, AlertController } from '@ionic/angular';
+import { ApiService } from './base/api-service';
+import { DbProvider } from '../db-provider';
+import { AuthService } from '../../services/auth-service';
+import { HttpClient } from '../../services/http-client';
+import { DownloadService } from '../../services/download-service';
+import { AppSetting } from '../../services/app-setting';
+import { ProtocolDefaultModel } from '../../models/db/api/protocol-default-model';
+import { ProtocolModel } from '../../models/db/api/protocol-model';
+import { PictureService } from '../../services/picture-service';
+import { DrawImageService } from '../../services/draw-image-service';
+import { ProtocolTemplateService } from './protocol-template-service';
+import { ProtocolTemplateModel } from '../../models/db/api/protocol-template-model';
+import { TranslateConfigService } from '../../services/translate-config.service';
+import { Md5 } from 'ts-md5/dist/md5';
+import { MiscService } from 'src/services/misc-service';
 
 @Injectable()
 export class ProtocolDefaultService extends ApiService {
     data: ProtocolDefaultModel[] = [];
     loadUrl: string = '/protocol-default';
-    dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService);
+    dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
     saveInformation: {
         clientId: number,
         protocol: ProtocolModel,
@@ -46,17 +49,21 @@ export class ProtocolDefaultService extends ApiService {
      * @param protocolTemplateService
      */
     constructor(http: HttpClient,
-                private platform: Platform,
-                private db: DbProvider,
-                public alertController: AlertController,
-                private translateConfigService: TranslateConfigService,
-                public authService: AuthService,
-                public events: Events,
-                public downloadService: DownloadService,
-                public appSetting: AppSetting,
-                private pictureService: PictureService,
-                private protocolTemplateService: ProtocolTemplateService) {
-        super(http, events, appSetting);
+        private platform: Platform,
+        private db: DbProvider,
+        public alertController: AlertController,
+        private translateConfigService: TranslateConfigService,
+        public authService: AuthService,
+
+        public downloadService: DownloadService,
+        public loggerService: LoggerService,
+        public appSetting: AppSetting,
+        private pictureService: PictureService,
+        private drawImageService: DrawImageService,
+        private protocolTemplateService: ProtocolTemplateService,
+        public miscService: MiscService,
+    ) {
+        super(http, appSetting);
     }
 
     async saveProtocol(saveInformation) {
@@ -71,7 +78,7 @@ export class ProtocolDefaultService extends ApiService {
             if (!workflowFirstStep) {
                 return;
             }
-            protocol = new ProtocolModel(this.platform, this.db, this.events, this.downloadService);
+            protocol = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
             const md5 = new Md5();
             const protocolName = ('' + md5.appendStr('' + (new Date()).getTime()).end()).substr(0, 5).toUpperCase();
             protocol.client_id = saveInformation.clientId;
@@ -102,7 +109,8 @@ export class ProtocolDefaultService extends ApiService {
                     protocol.local_protocol_form_number = protocolDefault[protocol.COL_ID];
                 }
                 await protocol.save();
-                this.events.publish('setIsPushAvailableData');
+                // this.events.publish('setIsPushAvailableData');
+                this.miscService.events.next({ TAG: 'setIsPushAvailableData' });
             }
         });
     }
@@ -138,9 +146,9 @@ export class ProtocolDefaultService extends ApiService {
     }
 
     public async openEditPage(protocolDefault, protocol: ProtocolModel) {
-        console.log('protocolDefault[ProtocolDefaultModel.COL_PROTOCOL_FILE]', protocolDefault.local_protocol_file);
+        console.log('protocolDefault[ProtocolDefaultModel.COL_PROTOCOL_FILE]', protocolDefault.local_pdf_image);
         const protocolTemplate = await this.getProtocolTemplate(protocol.protocol_template_id);
-        if (!protocolDefault.local_protocol_file) {
+        if (!protocolDefault.local_pdf_image) {
             return;
         }
         this.saveInformation = {
@@ -150,24 +158,36 @@ export class ProtocolDefaultService extends ApiService {
             protocolTemplate,
             referenceModel: protocol.reference_model,
             referenceId: protocol.reference_id,
-            fileMapIndex: 0
+            fileMapIndex: 1
         };
-        const editFilePath = await this.getEditFilePath(protocolDefault.local_protocol_file);
+        const originalFilePath = protocolDefault.local_pdf_image;
+        const editFilePath = await this.getEditFilePath(originalFilePath);
         if (!editFilePath) {
             return false;
         }
+        const convertFileSrc = this.downloadService.getWebviewFileSrc(editFilePath);
+        const editFilePathNew = this.downloadService.getSafeUrl(convertFileSrc, 'trustStyle');
+        var n = editFilePath.lastIndexOf('/');
+        var saveFileName = editFilePath.substring(n + 1);
+        this.drawImageService.open(editFilePathNew, protocolTemplate.name, this.dbModelApi.TABLE_NAME, saveFileName);
+
         this.saveInformation.protocol_file = editFilePath;
-        this.pictureService.editFile(editFilePath, protocol.name);
     }
 
     public async openCreatePage(templateId: number, clientId?, referenceModel?, referenceId?) {
+
         const protocolTemplate = await this.getProtocolTemplate(templateId);
-        if (!protocolTemplate || !protocolTemplate[ProtocolTemplateModel.COL_PROTOCOL_FILE]) {
+        // const editFilePath = 'http://localhost/_app_file_/data/user/0/com.taktwerk.twguider2/files/guide_step/1592303527_7B5B4B0E-B92B-497C-8305-5CD629D6A223.jpeg';
+
+        if (!protocolTemplate || !protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE]) {
             return;
         }
-        this.saveInformation = {clientId, protocol: null, protocolFormModel: null, protocolTemplate, referenceModel, referenceId, fileMapIndex: 0};
+        this.saveInformation = { clientId, protocol: null, protocolFormModel: null, protocolTemplate, referenceModel, referenceId, fileMapIndex: 1 };
+        // const editFilePath = '';
+        // this.drawImageService.open(editFilePath, protocolTemplate.name);
+        // this.pictureService.editFile(editFilePath, protocolTemplate.name);
         this.downloadService.copy(
-            protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PROTOCOL_FILE],
+            protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE],
             this.dbModelApi.TABLE_NAME
         ).then(async (savedFilePath) => {
             const editFilePath = await this.getEditFilePath(savedFilePath);
@@ -175,7 +195,12 @@ export class ProtocolDefaultService extends ApiService {
                 return false;
             }
             this.saveInformation.protocol_file = editFilePath;
-            this.pictureService.editFile(editFilePath, protocolTemplate.name);
+            const convertFileSrc = this.downloadService.getWebviewFileSrc(editFilePath);
+            const editFilePathNew = this.downloadService.getSafeUrl(convertFileSrc, 'trustStyle');
+            var n = editFilePath.lastIndexOf('/');
+            var saveFileName = editFilePath.substring(n + 1);
+            this.drawImageService.open(editFilePathNew, protocolTemplate.name, this.dbModelApi.TABLE_NAME, saveFileName);
+            // this.pictureService.editFile(editFilePath, protocolTemplate.name);
         });
     }
 
@@ -188,6 +213,6 @@ export class ProtocolDefaultService extends ApiService {
      * @returns {ProtocolDefaultModel}
      */
     public newModel() {
-        return new ProtocolDefaultModel(this.platform, this.db, this.events, this.downloadService);
+        return new ProtocolDefaultModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
     }
 }
