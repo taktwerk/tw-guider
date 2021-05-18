@@ -114,6 +114,7 @@ import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.pag
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { LoggerService } from 'src/services/logger-service';
 import { AuthDb } from 'src/models/db/auth-db';
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -195,6 +196,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     GuideAssetService,
     GuideAssetPivotService,
     FeedbackService,
+    SyncIndexService,
     ProtocolTemplateService,
     ProtocolService,
     ProtocolDefaultService,
