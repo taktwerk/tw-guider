@@ -41,9 +41,9 @@ export class SyncIndexService extends ApiService {
     }
 
     /**
-     * Create a new instance of the service model
-     * @returns {SyncIndexModel}
-     */
+ * Create a new instance of the service model
+ * @returns {SyncIndexModel}
+ */
     public newModel() {
         return new SyncIndexModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
     }
@@ -64,5 +64,32 @@ export class SyncIndexService extends ApiService {
                 resolve(result);
             });
         });
+    }
+
+    // return new list of models found in the sync index
+    public async getSyncIndexModel(modelList: any[], modelName): Promise<any> {
+        return new Promise(async (resolve) => {
+            if (modelName) {
+                const user = await this.authService.getLastUser();
+                if (!user) {
+                    return;
+                }
+                const entries: any[] = [];
+                this.dbModelApi.dbReady().then(db => {
+                    db.query('SELECT * FROM sync_index').then(res => {
+                        for (let i = 0; i < res.rows.length; i++) {
+                            entries.push(res.rows.item(i));
+                        }
+                    }).then(() => {
+                        const qResult = entries;
+                        if (qResult.length > 0) {
+                            const filteredForModelName = [...qResult].filter(m => m.model === modelName); // filter by modelName
+                            const filterList = [...modelList].filter(m => [...filteredForModelName].find(({ model_id }) => JSON.parse(model_id) === m.idApi) !== undefined); // find model by id
+                            resolve(filterList);
+                        }
+                    });
+                })
+            }
+        })
     }
 }

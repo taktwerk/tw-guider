@@ -1,3 +1,4 @@
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
@@ -36,6 +37,7 @@ export class GuidecapturePage implements OnInit, OnDestroy {
     public changeDetectorRef: ChangeDetectorRef,
     private loader: LoadingController,
     private miscService: MiscService,
+    private syncIndexService: SyncIndexService,
   ) {
     this.authService.checkAccess('guide');
     this.showAllGuides();
@@ -50,7 +52,9 @@ export class GuidecapturePage implements OnInit, OnDestroy {
   }
 
   async setGuides() {
-    this.guides = await this.guideCategoryService.getGuides();
+    const _guides = await this.guideCategoryService.getGuides();
+    const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
+    this.guides = syncedList;
   }
 
   async searchGuides($event) {
@@ -65,34 +69,6 @@ export class GuidecapturePage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', () => {
-    //   this.setGuides();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', () => {
-    //   this.setGuides();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', () => {
-    //   this.setGuides();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', () => {
-    //   this.setGuides();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', () => {
-    //   this.setGuides();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', () => {
-    //   this.setGuides();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe('network:online', () => {
-    //   this.authService.checkAccess('guide');
-    // });
-
     this.eventSubscription = this.miscService.events.subscribe(async (event) => {
       switch (event.TAG) {
         case this.guiderService.dbModelApi.TAG + ':update':

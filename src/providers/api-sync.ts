@@ -1,3 +1,4 @@
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { GuiderModel } from './../models/db/api/guider-model';
 import { Injectable, OnDestroy } from '@angular/core';
@@ -66,7 +67,9 @@ export class ApiSync implements OnDestroy {
         workflow_transition: this.workflowTransitionService,
         protocol_comment: this.protocolCommentService,
         feedback: this.feedbackService,
-        guide_view_history: this.guideViewHistoryService
+        guide_view_history: this.guideViewHistoryService,
+        sync_index: this.syncIndexService,
+
     };
 
     isStartSyncBehaviorSubject: BehaviorSubject<boolean>;
@@ -130,6 +133,7 @@ export class ApiSync implements OnDestroy {
         private workflowTransitionService: WorkflowTransitionService,
         private guideChildService: GuideChildService,
         private guideViewHistoryService: GuideViewHistoryService,
+        private syncIndexService: SyncIndexService,
         public syncService: SyncService,
         public miscService: MiscService,
 
@@ -163,7 +167,7 @@ export class ApiSync implements OnDestroy {
     }
 
     initializeEvents() {
-       
+
         this.eventSubscription = this.miscService.events.subscribe((event) => {
             switch (event.TAG) {
                 case 'UserDb:create':

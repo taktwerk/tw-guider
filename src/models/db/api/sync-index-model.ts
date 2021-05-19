@@ -16,7 +16,7 @@ export class SyncIndexModel extends DbApiModel {
 
     // members
     public model: string; //
-    public model_id: string; //
+    public model_id: number; //
     public user_id: number = null; //
 
     // db columns
@@ -30,7 +30,7 @@ export class SyncIndexModel extends DbApiModel {
     /** @inheritDoc */
     TABLE: any = [
         [SyncIndexModel.COL_MODEL, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'model'],
-        [SyncIndexModel.COL_MODEL_ID, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, 'model_id'],
+        [SyncIndexModel.COL_MODEL_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'model_id'],
         [SyncIndexModel.COL_USER_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'user_id'],
     ];
 

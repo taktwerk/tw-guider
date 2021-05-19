@@ -10,10 +10,10 @@ export class AddModelColumnsToSyncIndexTableMigration {
 		return new Promise(async (resolve) => {
 			const queries = [
 				"ALTER TABLE sync_index ADD COLUMN model VARCHAR(255)",
-				"ALTER TABLE sync_index ADD COLUMN model_id VARCHAR(255)",
-				"ALTER TABLE sync_index ADD COLUMN user_id VARCHAR(255)",
+				"ALTER TABLE sync_index ADD COLUMN model_id INT(11)",
+				"ALTER TABLE sync_index ADD COLUMN user_id INT(11)",
 			];
-			
+
 			let successExecution = true;
 			for (let i = 0; i < queries.length; i++) {
 				successExecution = await this.executeQuery(queries[i]);

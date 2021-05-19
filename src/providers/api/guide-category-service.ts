@@ -188,6 +188,7 @@ export class GuideCategoryService extends ApiService {
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
                 this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
             ];
+
             if (guideCategoryId) {
                 whereCondition.push(
                     this.dbModelApi.secure('guide_category') + '.' + this.dbModelApi.secure('id') +
@@ -195,11 +196,13 @@ export class GuideCategoryService extends ApiService {
                     guideCategoryId
                 );
             }
+
             if (!user.isAuthority) {
                 whereCondition.push(
                     this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
                 );
             }
+
             if (searchValue) {
                 whereCondition.push(
                     '(' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
@@ -207,6 +210,7 @@ export class GuideCategoryService extends ApiService {
                     this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%")'
                 );
             }
+            
             let joinCondition = '';
             if (withoutCategories) {
                 joinCondition =
