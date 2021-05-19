@@ -1,3 +1,4 @@
+import { UserService } from './../../services/user-service';
 
 import { MiscService } from './../../services/misc-service';
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
@@ -17,6 +18,7 @@ import { SyncService } from 'src/services/sync-service';
 import { SyncModalComponent } from 'src/components/sync-modal-component/sync-modal-component';
 import { debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 
 @Component({
   selector: 'app-list',
@@ -60,7 +62,9 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     public appSetting: AppSetting,
     private syncService: SyncService,
     private modalController: ModalController,
-    private miscService: MiscService
+    private miscService: MiscService,
+    private userService: UserService,
+    private syncIndexService: SyncIndexService,
 
   ) {
     this.authService.checkAccess('guide');
@@ -89,13 +93,22 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   async setGuides() {
-    this.guides = await this.guideCategoryService.getGuides(null, this.searchValue);
-    this.guidesWithoutCategories = await this.guideCategoryService.getGuides(null, '', true);
+    // syncIndexify guides
+    const _guides = await this.guideCategoryService.getGuides(null, this.searchValue);
+    const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
+    this.guides = syncedList;
+
+    // syncIndexify guidesWithoutCategories
+    const _guidesWithoutCategories = await this.guideCategoryService.getGuides(null, this.searchValue);
+    const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(_guidesWithoutCategories, _guidesWithoutCategories[0].TABLE_NAME);
+    this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
   }
 
   async findAllGuideCategories() {
-    this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
-
+    // syncIndexify guideCategories
+    const _guideCategories = await this.guideCategoryService.findAll(this.searchValue);
+    const syncedList = await this.syncIndexService.getSyncIndexModel(_guideCategories, _guideCategories[0].TABLE_NAME);
+    this.guideCategories = syncedList;
     this.setCategoryGuides();
   }
 
