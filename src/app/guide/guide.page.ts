@@ -40,6 +40,7 @@ import { TranslateConfigService } from 'src/services/translate-config.service';
 import { HttpClient } from 'src/services/http-client';
 import { UserDb } from 'src/models/db/user-db';
 import { Subject, Subscription } from 'rxjs';
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 
 @Component({
   selector: 'app-guide',
@@ -108,7 +109,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   constructor(
     public http: HttpClient,
     private translateConfigService: TranslateConfigService,
-    private elementRef: ElementRef,
     private apiSync: ApiSync,
     private popoverController: PopoverController,
     private guideCategoryService: GuideCategoryService,
@@ -131,12 +131,13 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     private pictureService: PictureService,
     private loader: LoadingController,
     private componentResolver: ComponentFactoryResolver,
-    private toast: ToastController,
     private miscService: MiscService,
     private guideViewHistoryService: GuideViewHistoryService,
     private syncService: SyncService,
     private userService: UserService,
-    public platform: Platform
+    public platform: Platform,
+    private syncIndexService: SyncIndexService,
+
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -293,11 +294,12 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   public setGuideSteps(id) {
     // console.log("id", id)
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(async results => {
-    // console.log("results", results)
-      this.guideSteps = results.filter(model => {
+      // console.log("results", results)
+      const _guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
-      //  console.log("guideSteps", this.guideSteps);
+      const syncedList = await this.syncIndexService.getSyncIndexModel(_guideSteps, _guideSteps[0].TABLE_NAME);
+      this.guideSteps = syncedList;
     });
   }
 
@@ -308,7 +310,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       //  console.log(" in COllection")
       // this.guideViewHistory = this.guideHistories.filter(h => h.parent_guide_id != undefined).sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate())[0];
       this.guideViewHistory = this.guideHistories.filter(h => h.parent_guide_id === this.parentCollectionId)[0];
-     // console.log(this.guideHistories.filter(h => h.parent_guide_id === this.parentCollectionId));
+      // console.log(this.guideHistories.filter(h => h.parent_guide_id === this.parentCollectionId));
       if (!this.guideViewHistory) {
         this.guideViewHistory = this.guideViewHistoryService.newModel();
       }
@@ -354,16 +356,18 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.guideViewHistory.guide_id = this.guide.idApi;
     this.guideViewHistory.step = await this.guideStepSlides.getActiveIndex();
 
-    this.guideViewHistoryService.save(this.guideViewHistory).then(async (res) => {
+    this.guideViewHistoryService.save(this.guideViewHistory).then(async () => {
       if (this.resumeMode) { this.apiSync.setIsPushAvailableData(true) }
     })
   }
 
   public setAssets(id) {
-    return this.guiderService.dbModelApi.setAssets(id).then(results => {
-      this.guideAssets = results.filter(model => {
+    return this.guiderService.dbModelApi.setAssets(id).then(async results => {
+      const _guideAssets = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
+      const syncedList = await this.syncIndexService.getSyncIndexModel(_guideAssets, 'guide_asset');
+      this.guideAssets = syncedList;
     });
   }
 
@@ -383,7 +387,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
     // console.log("guideId", this.guideId)
     this.parentCollectionId = +this.activatedRoute.snapshot.paramMap.get('parentCollectionId');
-   // console.log("parentCollectionId", this.parentCollectionId);
+    // console.log("parentCollectionId", this.parentCollectionId);
     if (this.guideId) {
       const guiderById = await this.guiderService.getById(this.guideId);
       // console.log("guiderById", guiderById)
@@ -402,7 +406,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
     this.presentGuideInfo(this.guideId);
     this.guiderSubscription = this.guiderSubject.subscribe(async (guideId) => {
-     // console.log("this.guiderResetSubject.subscribe((guideId)", guideId);
+      // console.log("this.guiderResetSubject.subscribe((guideId)", guideId);
       const loader = await this.loader.create();
       loader.present();
       this.guideId = guideId;
@@ -534,11 +538,14 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   async setGuides() {
     this.guideCategoryService.getGuides().then((res) => {
-     // console.log("guideCategoryService.getGuides().then((res)", res);
+      // console.log("guideCategoryService.getGuides().then((res)", res);
 
       setTimeout(async () => {
-        this.guides = res;
-       // console.log("this.parentCollectionId in guide slider", this.parentCollectionId);
+        const _guides = res;
+        const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
+        this.guides = syncedList;
+
+        // console.log("this.parentCollectionId in guide slider", this.parentCollectionId);
 
         if (this.parentCollectionId) {
           this.collections = this.guides.filter(g => g.guide_collection.length > 0);
@@ -548,7 +555,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           this.guideIndex = this.guideCollection.guide_collection.findIndex(({ guide_id }) => this.guide.idApi == guide_id);
 
           this.guideStepSlides.isBeginning().then((res) => {
-           // console.log("isBeginning on Loaded", res)
+            // console.log("isBeginning on Loaded", res)
             if (this.guideCollection.guide_collection[this.guideIndex - 1] != undefined && res) {
               this.hasPrevious = true;
             }
@@ -558,7 +565,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           })
 
           this.guideStepSlides.isEnd().then((res) => {
-           // console.log("isEnd on Loaded", res)
+            // console.log("isEnd on Loaded", res)
             if (this.guideCollection.guide_collection[this.guideIndex + 1] != undefined && res) {
               this.hasNext = true;
             }
@@ -597,7 +604,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     });
 
     // save last seen step
-    this.guideStepSlides.getActiveIndex().then(index => {
+    this.guideStepSlides.getActiveIndex().then(() => {
       this.saveStep();
     })
   }

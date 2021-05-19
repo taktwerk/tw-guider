@@ -13,6 +13,7 @@ import { WorkflowService } from '../../providers/api/workflow-service';
 import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
 import { MiscService } from 'src/services/misc-service';
 import { Subscription } from 'rxjs';
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 
 @Component({
     selector: 'protocol-page',
@@ -45,12 +46,16 @@ export class ProtocolPage implements OnInit, OnDestroy {
         private protocolTemplateService: ProtocolTemplateService,
         private ngZone: NgZone,
         private miscService: MiscService,
+        private syncIndexService: SyncIndexService,
+
     ) {
         this.authService.checkAccess('protocol');
     }
 
     public async setModels() {
         this.protocolList = await this.protocolService.getAllProtocols(this.templateId, this.reference_model, this.reference_id);
+        const syncedList = await this.syncIndexService.getSyncIndexModel(this.protocolList, this.protocolList[0].TABLE_NAME);
+        this.protocolList = syncedList;
         this.detectChanges();
     }
 
