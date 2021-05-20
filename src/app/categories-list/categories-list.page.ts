@@ -95,21 +95,27 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   async setGuides() {
     // syncIndexify guides
     const _guides = await this.guideCategoryService.getGuides(null, this.searchValue);
-    const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
-    this.guides = syncedList;
+    if (_guides.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
+      this.guides = syncedList;
+    }
 
     // syncIndexify guidesWithoutCategories
     const _guidesWithoutCategories = await this.guideCategoryService.getGuides(null, this.searchValue);
-    const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(_guidesWithoutCategories, _guidesWithoutCategories[0].TABLE_NAME);
-    this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
+    if (_guidesWithoutCategories.length > 0) {
+      const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(_guidesWithoutCategories, _guidesWithoutCategories[0].TABLE_NAME);
+      this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
+    }
   }
 
   async findAllGuideCategories() {
     // syncIndexify guideCategories
     const _guideCategories = await this.guideCategoryService.findAll(this.searchValue);
-    const syncedList = await this.syncIndexService.getSyncIndexModel(_guideCategories, _guideCategories[0].TABLE_NAME);
-    this.guideCategories = syncedList;
-    this.setCategoryGuides();
+    if (_guideCategories.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(_guideCategories, _guideCategories[0].TABLE_NAME);
+      this.guideCategories = syncedList;
+      this.setCategoryGuides();
+    }
   }
 
   async setCategoryGuides() {
