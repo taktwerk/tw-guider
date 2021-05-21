@@ -53,8 +53,10 @@ export class GuidecapturePage implements OnInit, OnDestroy {
 
   async setGuides() {
     const _guides = await this.guideCategoryService.getGuides();
-    const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
-    this.guides = syncedList;
+    if (_guides.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
+      this.guides = syncedList;
+    }
   }
 
   async searchGuides($event) {

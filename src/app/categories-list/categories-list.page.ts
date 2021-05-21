@@ -101,10 +101,11 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     }
 
     // syncIndexify guidesWithoutCategories
-    const _guidesWithoutCategories = await this.guideCategoryService.getGuides(null, this.searchValue);
+    const _guidesWithoutCategories = await this.guideCategoryService.getGuides(null, '', true);
     if (_guidesWithoutCategories.length > 0) {
       const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(_guidesWithoutCategories, _guidesWithoutCategories[0].TABLE_NAME);
       this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
+      console.log("guidesWithoutCategorie", this.guidesWithoutCategories);
     }
   }
 
@@ -120,8 +121,21 @@ export class CategoriesListPage implements OnInit, OnDestroy {
 
   async setCategoryGuides() {
     this.guideCategories.map(guideCategory => {
-      guideCategory.setGuides();
+      guideCategory.setGuides().then(async res => {
+        // // console.log("guideCategory.guides", guideCategory.guides)
+        // if (guideCategory.guides.length > 0) {
+        //   const syncedList = await this.syncIndexService.getSyncIndexModel(guideCategory.guides, guideCategory.guides[0].TABLE_NAME);
+        //   guideCategory.guides = syncedList;
+        //   guideCategory.guidesCount = syncedList.length;
+        //   console.log("guideCategory.guidesCount", guideCategory.guidesCount);
+        // }
+        // else {
+        //   guideCategory.guidesCount = 0;
+        // }
+      })
     });
+
+
   }
 
   detectChanges() {
@@ -256,58 +270,6 @@ export class CategoriesListPage implements OnInit, OnDestroy {
         default:
       }
     })
-
-    // this.events.subscribe('user:login', () => {
-    //   this.findAllGuideCategories();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':create', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-
-    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-
-    // this.events.subscribe('network:online', (isNetwork) => {
-    //   this.authService.checkAccess('guide');
-    // });
 
     this.type = 'browse';
   }

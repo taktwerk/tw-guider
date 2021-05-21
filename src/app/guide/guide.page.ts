@@ -298,8 +298,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       const _guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
-      const syncedList = await this.syncIndexService.getSyncIndexModel(_guideSteps, _guideSteps[0].TABLE_NAME);
-      this.guideSteps = syncedList;
+      if (_guideSteps.length > 0) {
+        const syncedList = await this.syncIndexService.getSyncIndexModel(_guideSteps, _guideSteps[0].TABLE_NAME);
+        this.guideSteps = syncedList;
+      }
     });
   }
 
@@ -366,8 +368,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       const _guideAssets = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
-      const syncedList = await this.syncIndexService.getSyncIndexModel(_guideAssets, 'guide_asset');
-      this.guideAssets = syncedList;
+      if (_guideAssets.length > 0) {
+        const syncedList = await this.syncIndexService.getSyncIndexModel(_guideAssets, 'guide_asset');
+        this.guideAssets = syncedList;
+      }
     });
   }
 

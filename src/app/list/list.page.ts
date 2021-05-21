@@ -98,8 +98,10 @@ export class ListPage implements OnInit, OnDestroy {
   setGuideInfo() {
     const guideCategoryId = this.guideCategory ? this.guideCategory.idApi : null;
     this.guideCategoryService.getGuides(guideCategoryId, this.searchValue, !guideCategoryId).then(async (guides) => {
-      const syncedList = await this.syncIndexService.getSyncIndexModel(guides, guides[0].TABLE_NAME);
-      this.guideCategory.guides = syncedList;
+      if (guides.length > 0) {
+        const syncedList = await this.syncIndexService.getSyncIndexModel(guides, guides[0].TABLE_NAME);
+        this.guideCategory.guides = syncedList;
+      }
     });
   }
 

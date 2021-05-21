@@ -86,8 +86,10 @@ export class FeedbackPage implements OnInit, OnDestroy {
     }
 
     this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(feedbackSearchCondition, 'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC');
-    const syncedList = await this.syncIndexService.getSyncIndexModel(this.feedbackList, this.feedbackList[0].TABLE_NAME);
-    this.feedbackList = syncedList;
+    if (this.feedbackList) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(this.feedbackList, this.feedbackList[0].TABLE_NAME);
+      this.feedbackList = syncedList;
+    }
   }
 
   public openFile(basePath: string, modelName: string, title?: string) {
@@ -96,7 +98,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
     if (title) {
       fileTitle = title;
     }
-    
+
     const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
 
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
