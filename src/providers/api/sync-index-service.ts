@@ -84,7 +84,7 @@ export class SyncIndexService extends ApiService {
                         const qResult = entries;
                         if (qResult.length > 0) {
                             const filteredForModelName = [...qResult].filter(m => m.model === modelName); // filter by modelName
-                            const filterList = [...modelList].filter(m => [...filteredForModelName].find(({ model_id }) => JSON.parse(model_id) === m.idApi) !== undefined); // find model by id
+                            const filterList = [...modelList].filter(m => [...filteredForModelName].find(({ model_id }) => JSON.parse(model_id) === m.idApi) !== undefined && m.deleted_at === null); // find model by id
                             resolve(filterList);
                         }
                     });
