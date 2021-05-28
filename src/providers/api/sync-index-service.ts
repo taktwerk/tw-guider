@@ -83,9 +83,15 @@ export class SyncIndexService extends ApiService {
                     }).then(() => {
                         const qResult = entries;
                         if (qResult.length > 0) {
-                            const filteredForModelName = [...qResult].filter(m => m.model === modelName); // filter by modelName
-                            const filterList = [...modelList].filter(m => [...filteredForModelName].find(({ model_id }) => JSON.parse(model_id) === m.idApi) !== undefined && m.deleted_at === null); // find model by id
-                            resolve(filterList);
+                            const filteredForModelName = [...qResult].filter(m => (m.model === modelName) && (user.userId === m.user_id) && (m.deleted_at === null)); // filter by modelName 
+                            const filteredList = [...modelList].filter(m => filteredForModelName.find(({ model_id }) => JSON.parse(model_id) === m.idApi) !== undefined); // find model by id
+
+                            console.log("filteredForModelName ", filteredForModelName);
+                            console.log("filterList ", filteredList);
+                            console.log("modelList ", modelList);
+                            console.log("user id ", user);
+
+                            resolve(filteredList);
                         }
                     });
                 })
