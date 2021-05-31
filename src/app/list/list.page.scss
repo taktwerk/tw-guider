@@ -1,7 +1,11 @@
 .search-toolbar {
-  --ion-background-color: #E9EAED;
+  --ion-background-color: #e9eaed;
 
   ion-searchbar {
     --background: white;
   }
+}
+.text-nofound {
+  padding: 20px 10px;
+  text-align: center;
 }
