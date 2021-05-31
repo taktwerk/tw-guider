@@ -158,11 +158,38 @@ export class ApiSync implements OnDestroy {
         this.init();
         this.initializeEvents();
 
-
         this.syncService.resumeMode.subscribe((mode) => {
             console.log("Resume Mode", mode)
             if (mode) this.apiPushServices.guide_view_history = this.guideViewHistoryService;
             else delete this.apiPushServices.guide_view_history
+        });
+
+        // reset application data
+        this.miscService.refreshAppData.subscribe((res) => {
+            console.log('Will delete application data ', res)
+            if (res) {
+                // this.userService.getUser().then(result => {
+                //     this.userService.userDb.userSetting.lastSyncedDiff = 0;
+                //     this.userService.userDb.userSetting.syncStatus = 'success';
+                //     this.userService.userDb.userSetting.syncLastElementNumber = 0;
+                //     this.userService.userDb.userSetting.syncAllItemsCount = 0;
+                //     this.userService.userDb.userSetting.syncPercent = 0;
+                //     this.userService.userDb.userSetting.lastSyncedAt = null;
+                //     this.userService.userDb.userSetting.lastModelUpdatedAt = null;
+                //     this.userService.userDb.userSetting.lastSyncProcessId = null;
+                //     this.userService.userDb.userSetting.appDataVersion = null;
+                //     this.isAvailableForSyncData.next(true);
+                //     this.userService.userDb.userSetting.isSyncAvailableData = true;
+                //     this.isAvailableForPushData.next(false);
+                //     this.userService.userDb.userSetting.isPushAvailableData = false;
+                //     this.userService.userDb.save().then(() => {
+                //         this.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
+                //         this.syncProgressStatus.next('success');
+                //         this.isStartSyncBehaviorSubject.next(false);
+                //         this.http.showToast('synchronization-component.The database is cleared.');
+                //     });
+                // })
+            }
         })
     }
 
@@ -580,7 +607,7 @@ export class ApiSync implements OnDestroy {
     public makeSyncProcess(syncStatus = 'progress') {
         return new Promise(async resolve => {
             this.syncProgressStatus.next(syncStatus);
-            
+
             const data = await this.init();
 
             console.log("Init Status ", data)

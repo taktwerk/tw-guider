@@ -136,7 +136,7 @@ export class DownloadService {
 
     const headers = new Headers(headerObject);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve) => { 
       this.http
         .get(url, { headers: headers, observe: 'response', responseType: 'blob' })
         .toPromise()

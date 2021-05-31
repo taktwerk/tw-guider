@@ -151,6 +151,7 @@ export class GuideCategoryService extends ApiService {
                         entries.push(obj);
                     }
                 }
+                console.log("findAll entries", entries)
                 resolve(entries);
             }).catch((err) => {
                 resolve(entries);
@@ -210,7 +211,7 @@ export class GuideCategoryService extends ApiService {
                     this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%")'
                 );
             }
-            
+
             let joinCondition = '';
             if (withoutCategories) {
                 joinCondition =
@@ -233,7 +234,8 @@ export class GuideCategoryService extends ApiService {
                     this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') + ' IS NULL',
                     this.dbModelApi.secure('guide_child') + '.' + this.dbModelApi.secure('guide_id') + ' IS NULL'
                 );
-            } else {
+            }
+            else {
                 joinCondition =
                     'JOIN ' + this.dbModelApi.secure('guide_category_binding') +
                     ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') +
@@ -256,7 +258,7 @@ export class GuideCategoryService extends ApiService {
             const selectFrom = 'SELECT ' + this.dbModelApi.secure('guide') + '.*' + ' from ' + this.dbModelApi.secure('guide');
             const groupby = this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
 
-            const entries: any[] = [];
+            const entries: GuiderModel[] = [];
             this.dbModelApi.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom, groupby).then((res) => {
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
@@ -270,6 +272,7 @@ export class GuideCategoryService extends ApiService {
                         entries.push(obj);
                     }
                 }
+                console.log(entries)
                 resolve(entries);
             }).catch((err) => {
                 resolve(entries);
