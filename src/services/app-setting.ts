@@ -49,7 +49,7 @@ export class AppSetting {
         public alertController: AlertController,
         private translateConfigService: TranslateConfigService,
         private loggerService: LoggerService
-        ,private miscService: MiscService
+        , private miscService: MiscService
     ) {
         this.isWasQrCodeSetupSubscribtion = new BehaviorSubject<boolean>(false);
         this.appSetting = new AppSettingsDb(platform, db, downloadService, loggerService, miscService);

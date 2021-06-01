@@ -22,7 +22,7 @@
   </ion-segment>
   
   <div [ngSwitch]="type">
-    <div class="category-content" *ngSwitchCase="'browse'">
+    <div class="category-content" *ngSwitchDefault="'browse'">
       <span *ngIf="isLoadedContent">
 
         <div class="guide-category" *ngFor="let guideCategory of guideCategories; trackBy: trackByFn">
@@ -46,7 +46,7 @@
 
       </span>
     </div>
-    
+
     <div *ngSwitchCase="'search'">
       <ion-searchbar animated="true" mode="md" class="search-categories" autocomplete="on" debounce="250"
         [value]="searchValue" placeholder="{{ 'Search all guides' | translate:params }}"

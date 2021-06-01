@@ -99,7 +99,6 @@ import { MigrationService } from '../providers/api/migration-service';
 import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewer-component';
 import { PdfViewerComponentModule } from '../components/pdf-viewer-component/pdf-viewer-component.module';
 
-
 import { ProgressBarModule } from '../components/progress-bar/progress-bar.module';
 import { ListviewComponentModule } from 'src/components/listview/listview.module';
 import { SQLite } from '@ionic-native/sqlite/ngx';
@@ -132,7 +131,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     VideoModalComponent,
     DrawImageModalComponent,
     Viewer3dModalComponent,
-    PdftronModalComponent
+    PdftronModalComponent,
   ],
   entryComponents: [
     GuideAssetTextModalComponent,
@@ -143,14 +142,14 @@ Sentry.init({ dsn: environment.sentryDsn });
     DrawImageModalComponent,
     Viewer3dModalComponent,
     PdftronModalComponent,
-    PdfViewerComponent
+    PdfViewerComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     IonicModule.forRoot({ backButtonText: '' }),
     IonicStorageModule.forRoot({
-      driverOrder: ['indexeddb', 'websql', 'sqlite']
+      driverOrder: ['indexeddb', 'websql', 'sqlite'],
     }),
     AppRoutingModule,
     HttpClientModule,
@@ -159,9 +158,9 @@ Sentry.init({ dsn: environment.sentryDsn });
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (LanguageLoader),
-        deps: [Http]
-      }
+        useFactory: LanguageLoader,
+        deps: [Http],
+      },
     }),
     // MiscService,
     // LoggerService,
@@ -181,7 +180,6 @@ Sentry.init({ dsn: environment.sentryDsn });
     LoggerModule.forRoot({
       level: NgxLoggerLevel.DEBUG,
     }),
-
   ],
   providers: [
     AuthDb,
@@ -254,9 +252,7 @@ Sentry.init({ dsn: environment.sentryDsn });
     MiscService,
     LoggerService,
   ],
-  exports: [
-    ProtocolDefaultComponent
-  ],
-  bootstrap: [AppComponent]
+  exports: [ProtocolDefaultComponent],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -7,10 +7,10 @@
       {{ 'guides.header' | translate:params }}
     </ion-title>
 
-   
-<ion-buttons slot="primary">
-  <ion-back-button text="" style="color: #ffffff;"></ion-back-button>
-</ion-buttons>
+
+    <ion-buttons slot="primary">
+      <ion-back-button text="" style="color: #ffffff;"></ion-back-button>
+    </ion-buttons>
 
   </ion-toolbar>
   <ion-toolbar class="search-toolbar">
@@ -22,11 +22,15 @@
 
 <ion-content class="grey-background">
   <span *ngIf="isLoadedContent">
-    <div *ngIf="guideCategory && guideCategory.guides && guideCategory.guides.length">
+    <div *ngIf="guideCategory && guideCategory.guides && guideCategory.guides.length > 0">
       <h4 class="ion-margin-horizontal">{{ 'guide-categories.category' | translate:params }}: {{ guideCategory.name }}
       </h4>
       <guide-list-component [guides]="guideCategory.guides" [guideCategoryId]="guideCategory.idApi">
       </guide-list-component>
+    </div>
+
+    <div *ngIf="guideCategory && guideCategory.guides && guideCategory.guides.length <= 0" class="text-nofound">
+      No Result Found
     </div>
   </span>
 </ion-content>

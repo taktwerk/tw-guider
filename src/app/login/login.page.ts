@@ -18,16 +18,15 @@ import { AppSetting } from '../../services/app-setting';
     templateUrl: 'login.page.html',
     styleUrls: ['login.page.scss']
 })
-
 export class LoginPage {
-    username: string;
-    password: string;
+  username: string;
+  password: string;
+  currDate: Date = new Date();
+  public center;
 
-    public center;
-
-    public params;
-    /** flag that indicates if the login was failed or not */
-    isLoginFailed: boolean = false;
+  public params;
+  /** flag that indicates if the login was failed or not */
+  isLoginFailed: boolean = false;
 
     /**
      * @param navCtrl
@@ -124,10 +123,10 @@ export class LoginPage {
             }
         });
     }
-
-    delete() {
-        this.username = '';
-        this.password = '';
+    if (this.network.type === 'none' && !this.appSetting.isEnabledUsb) {
+      this.loginOffine(form);
+    } else {
+      this.loginOnline(form);
     }
 
     async showLoader() {
