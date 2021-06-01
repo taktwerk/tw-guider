@@ -667,7 +667,7 @@ export class ApiSync implements OnDestroy {
 
                     const pullData = await this.http.get(this.getSyncUrl()).toPromise();
 
-                    console.log('pullData', pullData);
+                    // console.log('pullData', pullData);
 
                     if (!pullData.syncProcessId) {
                         this.failSync('There was no property syncProcessId in the response');
@@ -677,7 +677,7 @@ export class ApiSync implements OnDestroy {
                     }
 
                     this.syncData = pullData.models;
-                    console.log("Sync Data ", this.syncData);
+                    // console.log("Sync Data ", this.syncData);
                     this.loggerService.getLogger().info("Sync Data", this.syncData);
 
                     for (const key of Object.keys(this.syncData)) {
@@ -691,9 +691,48 @@ export class ApiSync implements OnDestroy {
 
                     await this.userService.userDb.save();
 
+                    // if stuck check completed metrics
+
+                    console.log('this.userService.userDb.userSetting.syncAllItemsCount', this.userService.userDb.userSetting.syncAllItemsCount)
+                    console.log('this.syncedItemsCount', this.syncedItemsCount.getValue())
+                    console.log('this.syncAllItemsCount', this.syncAllItemsCount.getValue())
+
+                    console.log("is all items synced ", this.isAllItemsSynced())
+                    // if (!this.isAllItemsSynced()) {
+                    //     this.unsetSyncProgressData().then(async () => {
+                    //         this.isBusy = false;
+                    //         this.makeSyncProcess();
+                    //     })
+                    // }
+
+                    if (countOfSyncedData === 0) {
+                        this.http.get(this.getSyncUrl(true)).subscribe(async (response) => {
+                            const isAvailableData = !!response.result;
+                            this.isAvailableForSyncData.next(isAvailableData);
+                            this.loggerService.getLogger().info("isAvailableForSyncData", isAvailableData)
+
+                            this.userService.userDb.userSetting.isSyncAvailableData = isAvailableData;
+                            this.userService.userDb.save();
+                            console.log('isAvailableData', isAvailableData)
+                            resolve(isAvailableData);
+                            return;
+
+                        }, (err) => {
+                            this.isAvailableForSyncData.next(false);
+                            this.loggerService.getLogger().info("isAvailableForSyncData", false)
+
+                            resolve(false);
+                            return;
+                        });
+                    }
+
                     if (!countOfSyncedData) {
                         // console.log("count Of Synced Data with !countOfSyncedData", countOfSyncedData)
                         this.loggerService.getLogger().info("count Of Synced Data with !countOfSyncedData", countOfSyncedData);
+
+                        // resolve unfinished sync
+                        // check isAvailableForSyncData
+                        console.log('isAvailableForSyncData', this.isAvailableForSyncData.getValue());
 
                         this.isStartSyncBehaviorSubject.next(false);
                         this.syncProgressStatus.next('success');
@@ -724,8 +763,6 @@ export class ApiSync implements OnDestroy {
 
                     console.log('isSavedSyncData', isSavedSyncData);
                     this.loggerService.getLogger().info("isSavedSyncData", isSavedSyncData)
-
-
 
                     if (isSavedSyncData) {
                         this.userService.userDb.userSetting.lastModelUpdatedAt = pullData.lastModelUpdatedAt;

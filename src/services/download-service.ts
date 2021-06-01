@@ -80,7 +80,8 @@ export class DownloadService {
         if (isExist) {
           resolve(finalPath);
           return;
-        } else {
+        }
+        else {
           this.download(url, authToken).then(
             (response) => {
               if (!response || !response.body) {
@@ -95,6 +96,7 @@ export class DownloadService {
                     return;
                   })
                   .catch((writeFileErr) => {
+                    console.log("Error at getDownloadDirectoryPath download-service 91", writeFileErr);
                     resolve(false);
                     return;
                   });
@@ -106,7 +108,7 @@ export class DownloadService {
             // }
           )
             .catch((e) => {
-              console.log("Error at this.download(url, authToken).then(")
+              console.log("Error at downloadAndSaveFile download-service 73");
               console.log(e)
               resolve(false);
               // Download failed
@@ -136,7 +138,7 @@ export class DownloadService {
 
     const headers = new Headers(headerObject);
 
-    return new Promise((resolve) => { 
+    return new Promise((resolve) => {
       this.http
         .get(url, { headers: headers, observe: 'response', responseType: 'blob' })
         .toPromise()
@@ -175,58 +177,62 @@ export class DownloadService {
 
   startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<any> {
     return new Promise(async (resolve) => {
-      fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
+      try {
+        fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
 
-      // const fileUriObject = await Filesystem.getUri({
-      //   directory: FilesystemDirectory.Data,
-      //   path: directoryName + '/' + fileName
-      // });
+        // const fileUriObject = await Filesystem.getUri({
+        //   directory: FilesystemDirectory.Data,
+        //   path: directoryName + '/' + fileName
+        // });
 
-      // const fileUri = Capacitor.convertFileSrc(fileUriObject.uri);
+        // const fileUri = Capacitor.convertFileSrc(fileUriObject.uri);
 
-      // const downloadedImage = await this.download(fileUri);
-      // const imgBlob = downloadedImage.body;
+        // const downloadedImage = await this.download(fileUri);
+        // const imgBlob = downloadedImage.body;
 
-      const filebBase64 = await Filesystem.readFile({
-        directory: FilesystemDirectory.Data,
-        path: this.platform.is('android') ? directoryName + '/' + fileName : this.platform.is('ios') ? path : directoryName + '/' + fileName
-      });
+        const filebBase64 = await Filesystem.readFile({
+          directory: FilesystemDirectory.Data,
+          path: this.platform.is('android') ? directoryName + '/' + fileName : this.platform.is('ios') ? path : directoryName + '/' + fileName
+        });
 
-      // console.log(" directoryName + '/' + fileName ", directoryName + '/' + fileName) 
-      // console.log("path", path)
+        // console.log(" directoryName + '/' + fileName ", directoryName + '/' + fileName) 
+        // console.log("path", path)
 
-      // Filesystem.readFile({
-      //   directory: FilesystemDirectory.Data,
-      //   path: this.platform.is('ios') ? path : this.platform.is('android') ? directoryName + '/' + fileName : directoryName + '/' + fileName
-      // }).then(async (res) => {
-      //   console.log(res)
-      //   const customBlob = this.base64ToBlob(res.data)
-      //   const formData = new FormData();
-      //   formData.append(fileKey, customBlob, fileName);
-      //   const isUploadedFile = await this.uploadFile(formData, url, headers);
-      //   resolve(isUploadedFile);
+        // Filesystem.readFile({
+        //   directory: FilesystemDirectory.Data,
+        //   path: this.platform.is('ios') ? path : this.platform.is('android') ? directoryName + '/' + fileName : directoryName + '/' + fileName
+        // }).then(async (res) => {
+        //   console.log(res)
+        //   const customBlob = this.base64ToBlob(res.data)
+        //   const formData = new FormData();
+        //   formData.append(fileKey, customBlob, fileName);
+        //   const isUploadedFile = await this.uploadFile(formData, url, headers);
+        //   resolve(isUploadedFile);
 
-      // }).catch((e) => {
-      //   console.log("erro at startUpload when readFile")
-      //   console.log(e)
-      // })
+        // }).catch((e) => {
+        //   console.log("erro at startUpload when readFile")
+        //   console.log(e)
+        // })
 
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-      console.log("filebBase64", filebBase64)
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+        // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+        // console.log("filebBase64", filebBase64)
+        // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
 
-      const customBlob = this.base64ToBlob(filebBase64.data)
+        const customBlob = this.base64ToBlob(filebBase64.data)
 
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-      console.log("customBlob", customBlob)
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+        // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+        // console.log("customBlob", customBlob)
+        // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
 
-      const formData = new FormData();
-      formData.append(fileKey, customBlob, fileName);
+        const formData = new FormData();
+        formData.append(fileKey, customBlob, fileName);
 
-      const isUploadedFile = await this.uploadFile(formData, url, headers);
-      resolve(isUploadedFile);
-      return;
+        const isUploadedFile = await this.uploadFile(formData, url, headers);
+        resolve(isUploadedFile);
+        return;
+      } catch (error) {
+        console.log('Error at startUpload download-service 178')
+      }
     });
   }
 
@@ -371,14 +377,14 @@ export class DownloadService {
           resolve(newFilePath + '/' + newFileName);
         })
           .catch((e) => {
-            console.log('copyToLocalDir error', e);
+            console.log('copyToLocalDir error download-service 369', e);
             this.loggerService.getLogger().error('copyToLocalDir error at download-service', e, new Error().stack)
             resolve('');
           })
       })
-        .catch((err) => {
-          console.log('checkDir error', err);
-          this.loggerService.getLogger().error('checkDir error at download-service', err, new Error().stack);
+        .catch((e) => {
+          console.log('checkDir error download-service 369', e);
+          this.loggerService.getLogger().error('checkDir error at download-service 369', e, new Error().stack);
           resolve('');
         })
     });
@@ -483,10 +489,12 @@ export class DownloadService {
                   return;
                 })
                 .catch((err) => {
+                  console.log('removeAllAppFiles removeFile error at download-service 475', err);
                   resolve(false);
                   return;
                 });
-            } else {
+            }
+            else {
               this.file
                 .removeRecursively(this.file.dataDirectory, fileSystemEntry.name)
                 .then((_) => {
@@ -494,6 +502,7 @@ export class DownloadService {
                   return;
                 })
                 .catch((err) => {
+                  console.log('removeAllAppFiles removeRecursively error at download-service 475', err);
                   resolve(false);
                   return;
                 });
