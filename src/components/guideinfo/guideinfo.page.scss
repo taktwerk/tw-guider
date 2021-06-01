@@ -9,4 +9,25 @@ ion-card-content {
 
 p {
     white-space: normal;
+    line-height: 20px;
+    font-size: 18px !important;
+}
+
+h1 {
+    font-size: 20px;
+}
+
+h1,
+p {
+    margin-bottom: inherit;
+}
+
+@media (orientation: landscape) {
+    ion-card {
+        height: 50%;
+    }
+
+    img {
+        max-height: 50vh !important;
+    }
 }

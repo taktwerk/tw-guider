@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar [style.padding-top]="platform.is('ipad')? '20px': ''">
+    <ion-buttons slot="start">
+      <ion-back-button style="display: contents!important;color: #fff;" (click)="onDone()"></ion-back-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+
+      <ion-button (click)="onUndo()" color="light" *ngIf="willUndo">
+        <ion-icon name="arrow-undo"></ion-icon>
+      </ion-button>
+
+      <ion-button (click)="onRedo()" color="light" *ngIf="willRedo">
+        <ion-icon name="arrow-redo"></ion-icon>
+      </ion-button>
+
+      <ion-button (click)="onDone()" color="light"> Done </ion-button>
+
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div id="tui-image-editor"></div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar *ngIf="currentControl.name !=null">
+    <ion-buttons>
+      <span *ngFor="let subControl of currentControl.subControls" class="subControlWrapper">
+        <ion-button shape="round" (click)="onSubControl(subControl)"
+          [ngClass]="{'currentControl' :currentSubControl.name == subControl.name}">
+          <ion-icon [name]="subControl.icon" style="color: #ffffff;"> </ion-icon>
+        </ion-button>
+        <ion-text [ngClass]="{'currentControl' :currentSubControl.name == subControl.name}">{{subControl.name}}
+        </ion-text>
+      </span>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button class="parentControl" shape="round" (click)="onControl(control)" *ngFor="let control of controls"
+        [ngClass]="{'currentControl' :currentControl?.name ==control.name}">
+        <ion-icon [name]="control.icon" style="color: #ffffff;"> </ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end" *ngIf="selectedAnnotation !=null">
+      <ion-button (click)="deleteSelected()" color="light">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+
+</ion-footer>

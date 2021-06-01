@@ -27,7 +27,7 @@
   .three-model {
     &.not-full-screen {
       max-height: 33vh;
-      height: 33vh;
+      height: 100%;
     }
   }
 }

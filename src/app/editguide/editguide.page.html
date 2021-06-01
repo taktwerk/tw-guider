@@ -1,21 +1,23 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
     <ion-title> {{ 'editguide.header' | translate }} </ion-title>
-    <sync-spinner-component slot="primary"></sync-spinner-component>
-    <ion-back-button text=""></ion-back-button>
+           
+    <ion-buttons slot="primary"> 
+        <ion-back-button text=""style="color: #ffffff;"></ion-back-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <listview-component [guideSteps]="guideSteps" canReorder="true" guideId="guideId"></listview-component>
+  <listview-component canReorder="true" [guideId]="guideId"></listview-component>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" [routerLink]="['/','addstep',guideId]">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="addStep(guideId,'add')">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-

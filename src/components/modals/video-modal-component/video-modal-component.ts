@@ -1,8 +1,9 @@
-import {Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ModalController, Platform} from '@ionic/angular';
-import {ToastService} from '../../../services/toast-service';
-import {StreamingMedia, StreamingVideoOptions} from '@ionic-native/streaming-media/ngx';
-import {DownloadService} from '../../../services/download-service';
+import { Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ModalController, Platform } from '@ionic/angular';
+import { ToastService } from '../../../services/toast-service';
+import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media/ngx';
+import { DownloadService } from '../../../services/download-service';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the TodoPage page.
@@ -13,29 +14,34 @@ import {DownloadService} from '../../../services/download-service';
 
 
 @Component({
-  selector: 'video-modal-component',
-  templateUrl: 'video-modal-component.html',
-  styleUrls: ['video-modal-component.scss']
+    selector: 'video-modal-component',
+    templateUrl: 'video-modal-component.html',
+    styleUrls: ['video-modal-component.scss']
 })
 
 export class VideoModalComponent implements OnInit, OnDestroy {
-    @ViewChild('video', {static: false}) video: ElementRef; // binds to #video in video.html
+    @ViewChild('video') video: ElementRef; // binds to #video in video.html
     videoElement: HTMLVideoElement;
     @Input() fileUrl: string;
     @Input() fileTitle: string;
-    backButtonSubscribe;
+    // backButtonSubscribe;
 
     constructor(private modalController: ModalController,
-                private platform: Platform,
-                private toastService: ToastService,
-                private streamingMedia: StreamingMedia,
-                private downloadService: DownloadService,
-                private ngZone: NgZone) {
-        document['ionicComponentRef'] = {name: 'video-modal-component', component: this, zone: ngZone};
+        private storage: Storage,
+
+        private platform: Platform,
+        private toastService: ToastService,
+        private streamingMedia: StreamingMedia,
+        private downloadService: DownloadService,
+        private ngZone: NgZone) {
+        //  document['ionicComponentRef'] = { name: 'video-modal-component', component: this, zone: ngZone };
     }
 
     dismiss() {
         this.modalController.dismiss();
+        this.storage.set('VideoModalComponentOpen', false)
+        console.log("dismiss", "VideoModalComponentOpen")
+
     }
 
     async playVideo() {
@@ -60,6 +66,7 @@ export class VideoModalComponent implements OnInit, OnDestroy {
     }
 
     ionViewDidEnter() {
+        this.storage.set('VideoModalComponentOpen', true)
         if (!this.videoElement || this.videoElement.paused) {
             this.playVideo();
         }
@@ -77,21 +84,21 @@ export class VideoModalComponent implements OnInit, OnDestroy {
         this.streamingMedia.playVideo(fileUrl, options);
     }
 
-    backbuttonAction() {
-        this.dismiss();
-    }
+    // backbuttonAction() {
+    //     this.dismiss();
+    // }
 
     ngOnInit() {
         this.platform.ready().then(async () => {
-            this.backButtonSubscribe = this.platform.backButton.subscribeWithPriority(9999, () => {
-                document.addEventListener('backbutton', () => this.backbuttonAction());
-            });
+            // this.backButtonSubscribe = this.platform.backButton.subscribeWithPriority(9999, () => {
+            //     document.addEventListener('backbutton', () => this.backbuttonAction());
+            // });
         });
     }
 
     ngOnDestroy() {
-        document['ionicComponentRef'] = null;
-        this.backButtonSubscribe.unsubscribe();
-        document.removeEventListener('backbutton', () => {});
+        // document['ionicComponentRef'] = null;
+        // this.backButtonSubscribe.unsubscribe();
+        // document.removeEventListener('backbutton', () => { });
     }
 }

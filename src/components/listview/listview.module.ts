@@ -1,3 +1,4 @@
+import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +22,7 @@ import { Viewer3dModelComponentModule } from '../viewer-3d-model-component/viewe
     FontAwesomeModule,
     Viewer3dModelComponentModule,
     HtmlDescriptionComponentModule,
+    AssetviewComponentModule
   ],
   exports: [
     ListViewComponent

@@ -2,7 +2,7 @@
   "close": "Schliessen",
   "Search": "Suche",
   "Search all guides": "Suche nach allen Anleitungen",
-  "Search guides by category": "Suche nach Anleitungen in dieser Kategorie",
+  "Search guides by current category": "Suche nach Anleitungen in dieser Kategorie",
   "send": "Senden",
   "Logout": "Abmelden",
   "back": "Zurück",
@@ -17,15 +17,24 @@
   "Status": "Status",
   "Open": "Offen",
   "Done": "Erledigt",
+  "dismiss": "Schliessen",
   "save_before_close_warning": "Daten vor dem Schliessen speichern?",
   "dont_save": "Nicht speichern",
   "cancel": "Abbrechen",
   "noResults": "Kein Resultat",
+  "Order": "Reihenfolge",
+  "created_by": "Erstellt von",
+  "updated_by": "Aktualisiert von",
+  "to guide": "Zur Anleitung",
+  "exitApp": "Soll die App geschlossen werden?",
   "about": {
     "header": "Über",
     "App Version": "App Version",
     "API Version": "API Version",
     "Copyright": "Copyright"
+  },
+  "log": {
+    "header": "Logs"
   },
   "start": {
     "header": "Start"
@@ -44,29 +53,33 @@
     "Paused": "Pausiert",
     "Failed": "Fehlgeschlagen",
     "Success": "Erfolgreich",
-    "No data for sync.": "Keine Daten zur Synchronisierung.",
+    "No data for sync": "Keine Daten zur Synchronisierung.",
     "No data for pull": "Keine Daten zum herunterladen",
     "There is data available for pushing to the server.": "Lokale Daten müssen zum Server hochgeladen werden.",
     "No network connection.": "Keine Netzwerkverbindung.",
     "Data synchronization is not yet possible.": "Synchronisierung ist noch nicht möglich.",
+    "Data is sent to the server": "Daten werden zum Server gesendet.",
     "Data has been sent to the server": "Daten wurden zum Server gesendet.",
-    "Sending data to the server failed.": "Daten zum Server senden ist fehlgeschlagen."
+    "Sending data to the server failed.": "Daten zum Server senden ist fehlgeschlagen.",
+    "Start sync to get data": "Starten Sie die Synchronisierung, um Daten abzurufen"
   },
   "guide-categories": {
     "category": "Kategorie",
-    "categories": "Kategorien"
+    "categories": "Kategorien",
+    "no-category": "Ohne Kategorie"
   },
   "guides": {
     "header": "Anleitungen",
     "duration": "Dauer",
     "revision": "Revision",
-    "created_by": "erstellt von",
-    "updated_by": "aktualisiert von",
+    "Description": "Beschreibung",
     "Show Guide": "Zeige Anleitung",
     "New Protocol": "Neues Protokoll",
     "Protocol": "Protokoll",
     "specifySearchMessage": "{{ guidesCount }} Anleitungen gefunden. Spezifizieren Sie die Suche",
-    "specifyMoreSearchMessage": "{{ guidesCount }} Anleitungen gefunden. Spezifizieren Sie die Suche weiter"
+    "specifyMoreSearchMessage": "{{ guidesCount }} Anleitungen gefunden. Spezifizieren Sie die Suche weiter",
+    "Show Collection": "Zeige Sammlung",
+    "Information": "Information"
   },
   "feedback": {
     "header": "Feedback",
@@ -93,7 +106,9 @@
   "guide": {
     "header": "Guide",
     "No information here yet.": "Noch keine Informationen verfügbar.",
-    "Assets": "Zusatzinformationen"
+    "Assets": "Zusatzinformationen",
+    "Information": "Information",
+    "Restart": "Anleitung neu starten"
   },
   "profile": {
     "header": "Profil",
@@ -103,11 +118,13 @@
     "Full name": "Name",
     "Email": "Email",
     "Last Login At": "Letzte Anmeldung am",
+    "Groups": "Gruppen",
     "Roles": "Rollen",
     "Company": "Firma"
   },
   "synchronization-component": {
     "Sync Modes": "Synchronisierungsmodi",
+    "Enable Resume Synchronisation": "Arbeitsfortschritt synchronisieren",
     "Manually": "Manuell",
     "Online": "Online",
     "Periodic": "Periodisch",
@@ -151,6 +168,7 @@
     "Application was successfully configured": "Die App wurde erfolgreich konfiguriert",
     "The Guider app enables the display of digital instructions (assembly, training, etc.)": "Die Guider App ermöglicht die Anzeige von digitalen Anleitungen (Montage, Schulungen, etc.)",
     "The app only works with a customer account. Please contact taktwerk GmbH for this": "Die App funktioniert nur mit einem Kundenkonto. Bitte kontaktieren Sie dafür die taktwerk GmbH",
+    "Or try the demo": "Oder testen Sie die Demo",
     "Scan the received": "Scannen Sie den erhaltenen",
     "QR-Code": "QR-Code",
     "Setup": "Setup",
@@ -184,31 +202,39 @@
   "alert": {
     "model_was_saved": "{{ model }} wurde gespeichert",
     "model_was_deleted": "{{ model }} wurde gelöscht",
-    "are_you_sure_delete_model": "Soll dieses {{ model }} wirklich gelöscht werden?",
-    "are_you_sure_go_back": "Bist du sicher, dass du zurück willst? Nicht gespeicherte Änderungen gehen verloren."
+    "are_you_sure_delete_model": "Sind Sie sicher, diesen Eintrag zu löschen?",
+    "are_you_sure_go_back": "Es gibt Änderungen",
+    "resumed": "Wieder aufgenommen",
+    "saved": "Gerettet"
   },
   "guider": {
-    "header": "Leitfadenerfassung",
-    "No information here yet.": "No information here yet.",
-    "Assets": "Assets"
+    "header": "Anleitung erfassen",
+    "No information here yet.": "No information here yet."
   },
   "editguide": {
-    "header": "Handbuch bearbeiten",
-    "No information here yet.": "No information here yet.",
-    "Assets": "Assets"
+    "header": "Anleitung bearbeiten",
+    "No information here yet.": "No information here yet."
   },
   "editguidestep": {
     "header": "Schritt bearbeiten",
     "No information here yet.": "No information here yet.",
-    "Assets": "Assets",
     "Description": "Beschreibung",
     "Note description": "Beschreibung beachten"
   },
   "addstep": {
     "header": "Schritt hinzufügen",
     "No information here yet.": "No information here yet.",
-    "Assets": "Assets",
     "Description": "Beschreibung",
-    "Note description": "Beschreibung beachten"
+    "Note description": "Beschreibung beachten",
+    "Open in editor": "Im Editor öffnen"
+  },
+  "CKEditor": {
+    "header": "Texteditor"
+  },
+  "guidestep": {
+    "add": "Schritt hinzufügen",
+    "edit": "Bearbeitungsschritt",
+    "Open in editor": "Im Editor öffnen",
+    "Description": "Beschreibung"
   }
 }

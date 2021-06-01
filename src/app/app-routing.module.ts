@@ -28,6 +28,10 @@ const routes: Routes = [
     loadChildren: () => import('./guide/guide.module').then(m => m.GuidePageModule)
   },
   {
+    path: 'guide/:guideId/:parentCollectionId',
+    loadChildren: () => import('./guide/guide.module').then(m => m.GuidePageModule)
+  },
+  {
     path: 'profile',
     loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
   },
@@ -102,23 +106,18 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'editguidestep',
-    loadChildren: () => import('./editguidestep/editguidestep.module').then(m => m.EditguidestepPageModule)
+    path: 'guidestep-add-edit',
+    loadChildren: () => import('./guidestep-add-edit/guidestep-add-edit.module').then(m => m.GuidestepAddEditPageModule)
+  },  {
+    path: 'logs',
+    loadChildren: () => import('./logs/logs.module').then( m => m.LogsPageModule)
   },
-  {
-    path: 'addstep',
-    children: [
-      {
-        path: ":id",
-        loadChildren: () => import('./addstep/addstep.module').then(m => m.AddstepPageModule)
-      }
-    ]
-  },
+
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, relativeLinkResolution: 'legacy' })
   ],
   exports: [RouterModule]
 })

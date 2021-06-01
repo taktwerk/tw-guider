@@ -1,30 +1,33 @@
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/map';
-import {Platform, Events} from '@ionic/angular';
-import {ApiService} from './base/api-service';
-import {DbProvider} from '../db-provider';
-import {AuthService} from '../../services/auth-service';
-import {HttpClient} from '../../services/http-client';
-import {DownloadService} from '../../services/download-service';
-import {AppSetting} from '../../services/app-setting';
-import {ProtocolModel} from '../../models/db/api/protocol-model';
-import {WorkflowStepService} from './workflow-step-service';
-import {ProtocolDefaultService} from './protocol-default-service';
-import {AuthDb} from '../../models/db/auth-db';
-import {ProtocolCommentService} from './protocol-comment-service';
+
+import { Platform } from '@ionic/angular';
+import { ApiService } from './base/api-service';
+import { DbProvider } from '../db-provider';
+import { AuthService } from '../../services/auth-service';
+import { HttpClient } from '../../services/http-client';
+import { DownloadService } from '../../services/download-service';
+import { AppSetting } from '../../services/app-setting';
+import { ProtocolModel } from '../../models/db/api/protocol-model';
+import { WorkflowStepService } from './workflow-step-service';
+import { ProtocolDefaultService } from './protocol-default-service';
+import { AuthDb } from '../../models/db/auth-db';
+import { ProtocolCommentService } from './protocol-comment-service';
+import { LoggerService } from 'src/services/logger-service';
+import { MiscService } from 'src/services/misc-service';
+import { Subscription } from 'rxjs';
 
 @Injectable()
 export class ProtocolService extends ApiService {
     data: ProtocolModel[] = [];
     loadUrl: string = '/protocol';
-    dbModelApi: ProtocolModel = new ProtocolModel(this.p, this.db, this.events, this.downloadService);
+    dbModelApi: ProtocolModel = new ProtocolModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
     user: AuthDb;
 
     possibleDatabaseNamespaces = [
         'app',
         'taktwerk\\yiiboilerplate'
     ];
-
+    eventSubscription: Subscription;
     /**
      * Constructor
      * @param http
@@ -39,22 +42,38 @@ export class ProtocolService extends ApiService {
      * @param protocolCommentService
      */
     constructor(http: HttpClient,
-                private p: Platform, private db: DbProvider,
-                public authService: AuthService,
-                public events: Events,
-                public downloadService: DownloadService,
-                public appSetting: AppSetting,
-                public workflowStepService: WorkflowStepService,
-                public protocolDefaultService: ProtocolDefaultService,
-                public protocolCommentService: ProtocolCommentService) {
-        super(http, events, appSetting);
-        this.events.subscribe('user:login', async (userId) => {
-            this.user = null;
-            await this.getCurrentUser();
-        });
+        private p: Platform, private db: DbProvider,
+        public authService: AuthService,
+
+        public downloadService: DownloadService,
+        public loggerService: LoggerService,
+
+        public appSetting: AppSetting,
+        public workflowStepService: WorkflowStepService,
+        public protocolDefaultService: ProtocolDefaultService,
+        public protocolCommentService: ProtocolCommentService,
+        public miscService: MiscService
+
+    ) {
+        super(http, appSetting);
+        // this.events.subscribe('user:login', async (userId) => {
+        //     this.user = null;
+        //     await this.getCurrentUser();
+        // });
+
+
+        this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+            switch (event.TAG) {
+                case 'user:login':
+                    this.user = null;
+                    await this.getCurrentUser();
+                    break;
+                default:
+            }
+        })
     }
 
-    getAllProtocols(templateId: number, referenceModel?, referenceId?): Promise <any[]> {
+    getAllProtocols(templateId: number, referenceModel?, referenceId?): Promise<any[]> {
         return new Promise(async (resolve) => {
             const user = await this.authService.getLastUser();
             if (!user) {
@@ -129,7 +148,6 @@ export class ProtocolService extends ApiService {
                         const obj: ProtocolModel = this.newModel();
                         obj.platform = this.dbModelApi.platform;
                         obj.db = this.db;
-                        obj.events = this.events;
                         obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
                         obj.workflowStep = await this.workflowStepService.getById(obj.workflow_step_id);
@@ -237,6 +255,6 @@ export class ProtocolService extends ApiService {
      * @returns {ProtocolModel}
      */
     public newModel() {
-        return new ProtocolModel(this.p, this.db, this.events, this.downloadService);
+        return new ProtocolModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
     }
 }

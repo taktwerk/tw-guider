@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { GuideinfoPage } from './guideinfo.page';
 import { HtmlDescriptionComponentModule } from '../html-description/html-description-component.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { AssetviewComponentModule } from '../assetview/assetview.module';
 
 @NgModule({
   imports: [
@@ -13,6 +14,10 @@ import { TranslateModule } from '@ngx-translate/core';
     IonicModule,
     HtmlDescriptionComponentModule,
     TranslateModule,
+    AssetviewComponentModule
+  ],
+  exports: [
+    GuideinfoPage
   ],
   declarations: [GuideinfoPage],
   entryComponents: [GuideinfoPage]

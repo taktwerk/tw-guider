@@ -1,8 +1,10 @@
-import {Platform, Events} from '@ionic/angular';
-import {DbApiModel, FileMapInModel} from '../../base/db-api-model';
-import {DbProvider} from '../../../providers/db-provider';
-import {DbBaseModel} from '../../base/db-base-model';
-import {DownloadService} from '../../../services/download-service';
+import { LoggerService } from './../../../services/logger-service';
+import { Platform } from '@ionic/angular';
+import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
+import { DbProvider } from '../../../providers/db-provider';
+import { DbBaseModel } from '../../base/db-base-model';
+import { DownloadService } from '../../../services/download-service';
+import { MiscService } from 'src/services/misc-service';
 
 export enum FeedbackModelDownloadMapEnum {
     ATTACHED_FILE
@@ -72,6 +74,7 @@ export class FeedbackModel extends DbApiModel {
             name: FeedbackModel.COL_ATTACHED_FILE,
             url: FeedbackModel.COL_ATTACHED_FILE_PATH,
             localPath: FeedbackModel.COL_LOCAL_ATTACHED_FILE,
+
             thumbnail: {
                 name: FeedbackModel.COL_THUMB_ATTACHED_FILE,
                 url: FeedbackModel.COL_API_THUMB_ATTACHED_FILE_PATH,
@@ -83,8 +86,12 @@ export class FeedbackModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public events: Events, public downloadService: DownloadService) {
-        super(platform, db, events, downloadService);
+    constructor(public platform: Platform, public db: DbProvider,
+        public downloadService: DownloadService,
+        public loggerService: LoggerService,
+        public miscService: MiscService,
+    ) {
+        super(platform, db, downloadService, loggerService, miscService);
     }
 
     public isOpenStatus() {

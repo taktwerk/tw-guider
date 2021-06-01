@@ -1,5 +1,5 @@
-<div class="progress-outer">
-  <div class="progress-inner" [style.width]="progress + '%'" [style.backgroundColor]="color">
-      {{progress}}%
+<div class="progress-outer" [style.background-color]="progress === 0 && 'none' ">
+  <div class="progress-inner" [style.width]="progress + '%'" [style.background-color]="progress === 0 ? 'none': color">
+    {{progress === 0 ? '' : progress + '%' }} 
   </div>
 </div>

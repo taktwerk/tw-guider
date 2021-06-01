@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Events, ModalController, Platform } from '@ionic/angular';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { ModalController, Platform } from '@ionic/angular';
 import { UserDb } from '../../models/db/user-db';
 import { ApiSync } from '../../providers/api-sync';
 import { DownloadService } from '../../services/download-service';
@@ -8,13 +8,17 @@ import { AuthService } from '../../services/auth-service';
 import { DbProvider } from '../../providers/db-provider';
 import { SyncService } from '../../services/sync-service';
 import { Network } from '@ionic-native/network/ngx';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, take } from 'rxjs/operators';
 import { DatePipe } from '../../pipes/date-pipe/date-pipe';
 import { UserService } from '../../services/user-service';
 import { SyncMode } from '../synchronization-component/synchronization-component';
 import { AppSetting } from '../../services/app-setting';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { TranslateConfigService } from '../../services/translate-config.service';
+import { LoggerService } from 'src/services/logger-service';
+import { Subscription} from 'rxjs';
+import { MiscService } from 'src/services/misc-service';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the TodoPage page.
@@ -28,7 +32,7 @@ import { TranslateConfigService } from '../../services/translate-config.service'
   templateUrl: 'sync-modal-component.html',
   styleUrls: ['sync-modal-component.scss'],
 })
-export class SyncModalComponent implements OnInit {
+export class SyncModalComponent implements OnInit, OnDestroy {
   public isStartSync = false;
   public noDataForSync = false;
   public syncedItemsCount = 0;
@@ -49,29 +53,36 @@ export class SyncModalComponent implements OnInit {
   public pushProgressStatus: string;
   public isAvailableForPushData: boolean;
   public params;
+  eventSubscription: Subscription;
 
   constructor(
+    private storage: Storage,
     private modalController: ModalController,
     public apiSync: ApiSync,
-    private downloadService: DownloadService,
     public changeDetectorRef: ChangeDetectorRef,
     public http: HttpClient,
     public authService: AuthService,
-    private platform: Platform,
-    private db: DbProvider,
     private translateConfigService: TranslateConfigService,
-    private events: Events,
     private syncService: SyncService,
     public network: Network,
     public datepipe: DatePipe,
     private userService: UserService,
     public appSetting: AppSetting,
-    private insomnia: Insomnia
+    private insomnia: Insomnia,
+    private loggerService: LoggerService,
+    private miscService: MiscService,
+    public platform: Platform
+
   ) {
+
     this.isNetwork = this.network.type !== 'none';
     this.initUser().then(() => {
       this.syncProgressStatus = this.userService.userDb.userSetting.syncStatus;
     });
+  }
+
+  ionViewDidEnter() {
+    this.storage.set('SyncModalComponentOpen', true)
   }
 
   dismiss() {
@@ -81,15 +92,27 @@ export class SyncModalComponent implements OnInit {
         () => console.log('insomnia.allowSleepAgain error')
       );
     });
+
+    this.storage.set('SyncModalComponentOpen', false)
   }
 
   syncData() {
     if (!this.appSetting.isMigratedDatabase()) {
       this.appSetting.showIsNotMigratedDbPopup();
-
       return;
     }
-    this.apiSync.makeSyncProcess();
+    console.log('this.isAvailableForPushData', this.isAvailableForPushData)
+    // make sync if local changes
+    if (this.isAvailableForPushData) {
+      this.apiSync.makeSyncProcess();
+    }
+    // force sync when data changes on server
+    this.apiSync.checkAvailableChanges().then((res) => {
+      // make sync if changes from server
+      if (res) {
+        this.apiSync.makeSyncProcess();
+      }
+    })
   }
 
   stopSyncData() {
@@ -146,7 +169,7 @@ export class SyncModalComponent implements OnInit {
       this.isStartSync = isSync;
       this.detectChanges();
     });
-    this.apiSync.syncProgressStatus.pipe(debounceTime(200)).subscribe((syncProgressStatus) => {
+    this.apiSync.syncProgressStatus.subscribe((syncProgressStatus) => {
       if (syncProgressStatus) {
         this.syncProgressStatus = syncProgressStatus;
       }
@@ -168,7 +191,7 @@ export class SyncModalComponent implements OnInit {
       this.syncedItemsPercent = syncedItemsPercent ? syncedItemsPercent : 0;
       this.detectChanges();
     });
-    this.apiSync.noDataForSync.subscribe((noDataForSync) => {
+    this.apiSync.noDataForSync.pipe(take(1)).subscribe((noDataForSync) => {
       this.noDataForSync = noDataForSync;
       if (noDataForSync) {
         setTimeout(() => {
@@ -183,37 +206,72 @@ export class SyncModalComponent implements OnInit {
     this.apiSync.isAvailableForPushData.subscribe((isAvailableForPushData) => {
       this.isAvailableForPushData = isAvailableForPushData;
     });
-    this.apiSync.pushProgressStatus.subscribe((pushProgressStatus) => {
-      console.log('pushProgressStatus subscribe', pushProgressStatus);
+    this.apiSync.pushProgressStatus.pipe(take(1)).subscribe((pushProgressStatus) => {
       this.pushProgressStatus = pushProgressStatus;
     });
-    this.events.subscribe('UserDb:update', (userDb) => {
-      this.userService.userDb = userDb;
-    });
-    this.events.subscribe('network:offline', (isNetwork) => {
-      this.isNetwork = false;
-      this.detectChanges();
-    });
-    this.events.subscribe('network:online', (isNetwork) => {
-      this.isNetwork = true;
-      this.detectChanges();
-    });
-    this.events.subscribe('user:logout', () => {
-      this.dismiss();
+    // this.events.subscribe('UserDb:update', (userDb) => {
+    //   this.userService.userDb = userDb;
+    //   this.loggerService.getLogger().info("userDb", userDb)
+
+    // });
+    // this.events.subscribe('network:offline', (isNetwork) => {
+    //   this.isNetwork = false;
+    //   this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe('network:online', (isNetwork) => {
+    //   this.isNetwork = true;
+    //   this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+
+    //   this.detectChanges();
+    // });
+    // this.events.subscribe('user:logout', () => {
+    //   this.loggerService.getLogger().info("user:logout")
+    //   this.dismiss();
+    // });
+
+
+    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+      switch (event.TAG) {
+        case 'UserDb:update':
+          this.userService.userDb = event.data;
+          this.loggerService.getLogger().info("userDb", event.data)
+          break;
+        case 'network:offline':
+          this.isNetwork = false;
+          this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+          break;
+        case 'network:online':
+          this.isNetwork = true;
+          this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+          break;
+        case 'user:logout':
+          this.loggerService.getLogger().info("user:logout")
+          this.dismiss();
+          break;
+        default:
+      }
     });
   }
 
   getProgressText() {
     switch (this.syncProgressStatus) {
       case 'pause':
+        //    this.loggerService.getLogger().info("Sync", 'pause')
         return '(' + this.translateConfigService.translateWord('sync-modal.Paused') + ')';
       case 'failed':
+        //    this.loggerService.getLogger().debug("Sync", 'failed', new Error().stack)
         return '(' + this.translateConfigService.translateWord('sync-modal.Failed') + ')';
       case 'success':
+        //    this.loggerService.getLogger().info("Sync", 'success')
         return '(' + this.translateConfigService.translateWord('sync-modal.Success') + ')';
-
       default:
         return '';
     }
+  }
+
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
   }
 }

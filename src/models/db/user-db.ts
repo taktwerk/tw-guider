@@ -1,9 +1,11 @@
-import {DbBaseModel} from '../base/db-base-model';
-import {Platform, Events} from '@ionic/angular';
-import {DbProvider} from '../../providers/db-provider';
-import {UserSetting} from '../user-setting';
-import {AuthDb} from './auth-db';
-import {DownloadService} from '../../services/download-service';
+import { LoggerService } from './../../services/logger-service';
+import { DbBaseModel } from '../base/db-base-model';
+import { Platform } from '@ionic/angular';
+import { DbProvider } from '../../providers/db-provider';
+import { UserSetting } from '../user-setting';
+import { AuthDb } from './auth-db';
+import { DownloadService } from '../../services/download-service';
+import { MiscService } from 'src/services/misc-service';
 
 export class UserDb extends DbBaseModel {
     /** @inheritDoc */
@@ -34,10 +36,11 @@ export class UserDb extends DbBaseModel {
     constructor(
         public platform: Platform,
         public db: DbProvider,
-        public events: Events,
-        public downloadService: DownloadService
+        public downloadService: DownloadService,
+        public loggerService: LoggerService,
+        public miscService: MiscService
     ) {
-        super(platform, db, events, downloadService);
+        super(platform, db, downloadService, loggerService, miscService);
     }
 
     /**
@@ -46,7 +49,7 @@ export class UserDb extends DbBaseModel {
      */
     public getCurrent(): Promise<any | boolean> {
         return new Promise((resolve) => {
-            new AuthDb(this.platform, this.db, this.events, this.downloadService).loadLast().then((authDb) => {
+            new AuthDb(this.platform, this.db, this.downloadService, this.loggerService, this.miscService).loadLast().then((authDb) => {
                 if (!authDb) {
                     resolve(null);
                 } else {

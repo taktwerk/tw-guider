@@ -13,6 +13,7 @@ import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
 import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
+import { LoggerService } from './logger-service';
 
 export class RecordedFile {
   uri: string;
@@ -56,7 +57,8 @@ export class DownloadService {
     private mediaCapture: MediaCapture,
     private camera: Camera,
     private videoEditor: VideoEditor,
-    protected sanitizerImpl: ɵDomSanitizerImpl
+    protected sanitizerImpl: ɵDomSanitizerImpl,
+    private loggerService: LoggerService
   ) { }
 
   /**
@@ -71,6 +73,8 @@ export class DownloadService {
   async downloadAndSaveFile(url: string, name: string, modelFolder: string, authToken = ''): Promise<any> {
     const promise = new Promise((resolve) => {
       const finalPath = this.file.dataDirectory + modelFolder + '/' + name;
+      console.log("Will downloadAndSaveFile")
+      console.log(finalPath)
 
       this.isExistFile(this.file.dataDirectory + modelFolder + '/', name).then((isExist) => {
         if (isExist) {
@@ -96,11 +100,17 @@ export class DownloadService {
                   });
               });
             },
-            (downloadErr) => {
+            // (downloadErr) => {
+            //   resolve(false);
+            //   // Download failed
+            // }
+          )
+            .catch((e) => {
+              console.log("Error at this.download(url, authToken).then(")
+              console.log(e)
               resolve(false);
               // Download failed
-            }
-          );
+            })
         }
       });
     });
@@ -109,6 +119,11 @@ export class DownloadService {
   }
 
   download(url, authToken?: string): Promise<any> {
+    console.log("url to download from", url)
+    if (url.includes('/api/api/')) {
+      url = url.replace('/api/api/', '/api/');
+    }
+
     const headerObject: any = {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*'
@@ -125,18 +140,19 @@ export class DownloadService {
       this.http
         .get(url, { headers: headers, observe: 'response', responseType: 'blob' })
         .toPromise()
-        .then(
-          (response) => {
-            console.log('SYNC4');
-            resolve(response);
-            return;
-          },
-          (downloadErr) => {
-            console.log('downloadErr', downloadErr);
-            resolve(false);
-            return;
-          }
-        );
+        .then((response) => {
+          console.log('SYNC4');
+          console.log("download response ", response)
+          this.loggerService.getLogger().info("SYNC4")
+          resolve(response);
+          return;
+        })
+        .catch((downloadErr) => {
+          console.log('downloadErr', downloadErr);
+          this.loggerService.getLogger().error("Download Error at download-service 139", downloadErr, new Error().stack)
+          resolve(false);
+          return;
+        })
     });
   }
 
@@ -160,20 +176,79 @@ export class DownloadService {
   startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<any> {
     return new Promise(async (resolve) => {
       fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
-      const fileUriObject = await Filesystem.getUri({
+
+      // const fileUriObject = await Filesystem.getUri({
+      //   directory: FilesystemDirectory.Data,
+      //   path: directoryName + '/' + fileName
+      // });
+
+      // const fileUri = Capacitor.convertFileSrc(fileUriObject.uri);
+
+      // const downloadedImage = await this.download(fileUri);
+      // const imgBlob = downloadedImage.body;
+
+      const filebBase64 = await Filesystem.readFile({
         directory: FilesystemDirectory.Data,
-        path: directoryName + '/' + fileName
+        path: this.platform.is('android') ? directoryName + '/' + fileName : this.platform.is('ios') ? path : directoryName + '/' + fileName
       });
-      const fileUri = Capacitor.convertFileSrc(fileUriObject.uri);
-      const downloadedImage = await this.download(fileUri);
-      const imgBlob = downloadedImage.body;
+
+      // console.log(" directoryName + '/' + fileName ", directoryName + '/' + fileName) 
+      // console.log("path", path)
+
+      // Filesystem.readFile({
+      //   directory: FilesystemDirectory.Data,
+      //   path: this.platform.is('ios') ? path : this.platform.is('android') ? directoryName + '/' + fileName : directoryName + '/' + fileName
+      // }).then(async (res) => {
+      //   console.log(res)
+      //   const customBlob = this.base64ToBlob(res.data)
+      //   const formData = new FormData();
+      //   formData.append(fileKey, customBlob, fileName);
+      //   const isUploadedFile = await this.uploadFile(formData, url, headers);
+      //   resolve(isUploadedFile);
+
+      // }).catch((e) => {
+      //   console.log("erro at startUpload when readFile")
+      //   console.log(e)
+      // })
+
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      console.log("filebBase64", filebBase64)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+
+      const customBlob = this.base64ToBlob(filebBase64.data)
+
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+      console.log("customBlob", customBlob)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+
       const formData = new FormData();
-      formData.append(fileKey, imgBlob, fileName);
+      formData.append(fileKey, customBlob, fileName);
 
       const isUploadedFile = await this.uploadFile(formData, url, headers);
       resolve(isUploadedFile);
       return;
     });
+  }
+
+  base64ToBlob(data) {
+    var rImageType = /data:(image\/.+);base64,/;
+    var mimeString = '';
+    var raw, uInt8Array, i, rawLength;
+
+    raw = data.replace(rImageType, (header, imageType) => {
+      mimeString = imageType;
+      return '';
+    });
+
+    raw = atob(raw);
+    rawLength = raw.length;
+    uInt8Array = new Uint8Array(rawLength);
+
+    for (i = 0; i < rawLength; i += 1) {
+      uInt8Array[i] = raw.charCodeAt(i);
+    }
+
+    return new Blob([uInt8Array], { type: mimeString });
   }
 
   readFile(fileKey: string, file: any, url: string, headers?: Headers): Promise<Blob> {
@@ -190,6 +265,8 @@ export class DownloadService {
   uploadFile(formData: FormData, url: string, headers?: Headers): Promise<any> {
     formData.forEach((value, key) => {
       console.log('formData', key, value);
+      this.loggerService.getLogger().info("formData", key, value)
+
     });
     return new Promise((resolve) => {
       this.http
@@ -197,10 +274,14 @@ export class DownloadService {
         .toPromise()
         .then((res) => {
           console.log('subscribe file uploading', res);
+          this.loggerService.getLogger().info("subscribe file uploading", res)
+
           resolve(res);
         })
         .catch((err) => {
           console.log('subscribe file uploading', err);
+          this.loggerService.getLogger().error("File Upload Error at download-service 212", err, new Error().stack)
+
           resolve(false);
         });
     });
@@ -235,7 +316,7 @@ export class DownloadService {
    */
   public copy(fullPath: string, modelName: string, isDuplicate = false): Promise<string> {
     return new Promise((resolve) => {
-      console.log('fullPath', fullPath);
+      // console.log('fullPath', fullPath);
       const date = new Date();
       const correctPath = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
       const currentName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
@@ -248,32 +329,58 @@ export class DownloadService {
         newFileName = date.getTime() + '.' + currentExt;
       }
 
-      this.checkDir(modelName).then(
-        (suc) => {
-          console.log(suc)
-          if (suc) {
-            console.log(correctPath, currentName, newFilePath, newFileName)
-            this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then((success) => {
-              if (success) {
-                console.log('is sucessss copieng');
-                resolve(newFilePath + '/' + newFileName);
-              } else {
-                console.log('is not success copy dir');
-                resolve('');
-              }
-            },
-              (error) => {
-                console.log('copyToLocalDir error', error);
-                resolve('');
-              }
-            );
-          }
-        },
-        (err) => {
+      // this.checkDir(modelName).then(
+      //   (suc) => {
+      //     console.log(suc)
+      //     if (suc) {
+      //       console.log(correctPath, currentName, newFilePath, newFileName)
+      //       this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then((success) => {
+      //         if (success) {
+      //           console.log('is sucessss copieng');
+      //           this.loggerService.getLogger().info("File Copy Successful")
+      //           resolve(newFilePath + '/' + newFileName);
+      //         } else {
+      //           console.log('is not success copy dir');
+      //           this.loggerService.getLogger().error("File Copy unsuccessful", new Error().stack)
+      //           resolve('');
+      //         }
+      //       },
+      //         (error) => {
+      //           console.log('copyToLocalDir error', error);
+      //           this.loggerService.getLogger().error('copyToLocalDir error at download-service 279', error, new Error().stack)
+      //           resolve('');
+      //         }
+      //       );
+      //     }
+      //   },
+      //   (err) => {
+      //     console.log('checkDir error', err);
+      //     this.loggerService.getLogger().error('checkDir error at download-service 287', err, new Error().stack)
+      //     resolve('');
+      //   }
+      // );
+
+      this.checkDir(modelName).then((res) => {
+        console.log(res)
+        console.log(correctPath, currentName, newFilePath, newFileName)
+
+        this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then((success) => {
+          console.log(success)
+          console.log('is sucessss copieng');
+          this.loggerService.getLogger().info("File Copy Successful")
+          resolve(newFilePath + '/' + newFileName);
+        })
+          .catch((e) => {
+            console.log('copyToLocalDir error', e);
+            this.loggerService.getLogger().error('copyToLocalDir error at download-service', e, new Error().stack)
+            resolve('');
+          })
+      })
+        .catch((err) => {
           console.log('checkDir error', err);
+          this.loggerService.getLogger().error('checkDir error at download-service', err, new Error().stack);
           resolve('');
-        }
-      );
+        })
     });
   }
 
@@ -287,19 +394,33 @@ export class DownloadService {
    */
   public copyToLocalDir(namePath: string, currentName: string, newFilePath: string, newFileName: string): Promise<boolean> {
     return new Promise((resolve) => {
-      console.log('START HEREEEE');
+      console.log("on copyToLocalDir");
+
       console.log(namePath);
       console.log(currentName);
       console.log(newFilePath);
       console.log(newFileName);
-      this.file.copyFile(namePath, currentName, newFilePath, newFileName).then((success) => {
-        resolve(true);
-      },
-        (error) => {
+
+      this.loggerService.getLogger().info("Will start copyToLocalDir")
+      this.loggerService.getLogger().info("namePath", namePath)
+      this.loggerService.getLogger().info("currentName", currentName)
+      this.loggerService.getLogger().info("newFilePath", newFilePath)
+      this.loggerService.getLogger().info("newFileName", newFileName)
+
+      // TODO: Replace with Capacitor https://capacitorjs.com/docs/v3/apis/filesystem#copyoptions
+      this.file.copyFile(namePath, currentName, newFilePath, newFileName)
+        .then(() => resolve(true))
+        .catch((error) => {
           console.log('copyFile error', error);
+          this.loggerService.getLogger().error('copyFile error at download-service 417', error, new Error().stack);
           resolve(false);
-        }
-      );
+        })
+
+      // const _copyToLocalDir = await Filesystem.copy({
+      //   from: namePath,
+      //   to: newFileName,
+
+      // })
     });
   }
 
@@ -318,6 +439,21 @@ export class DownloadService {
         })
         .catch((err) => {
           this.file.createDir(this.file.dataDirectory, modelName, false).then((_) => {
+            resolve(true);
+          });
+        });
+    });
+  }
+
+  checkTempDir(dir): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.file
+        .checkDir(this.file.dataDirectory, dir)
+        .then((_) => {
+          resolve(true);
+        })
+        .catch((err) => {
+          this.file.createDir(this.file.dataDirectory, dir, false).then((_) => {
             resolve(true);
           });
         });
@@ -381,9 +517,11 @@ export class DownloadService {
       this.file.removeFile(path, fileName).then(
         (success) => {
           console.log('is removed file', success);
+          this.loggerService.getLogger().info("File removed", success)
         },
         (error) => {
           console.error('DownloadService', 'deleteFile', path, fileName, error);
+          this.loggerService.getLogger().error("error deleting file at download-service 419", error, new Error().stack)
         }
       );
     }
@@ -419,17 +557,28 @@ export class DownloadService {
     let uri = '';
     if (this.platform.is('ios')) {
       if (!this.filePicker) {
+        this.loggerService.getLogger().error("IOSFilePicker plugin is not defined", new Error("IOSFilePicker plugin is not defined").stack)
         throw new Error('IOSFilePicker plugin is not defined');
       }
       uri = await this.filePicker.pickFile();
-    } else {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+      console.log('uri', uri)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+    }
+    else {
       if (!this.fileChooser) {
+        this.loggerService.getLogger().error("FileChooser plugin is not defined", new Error("FileChooser plugin is not defined").stack)
+
         throw new Error('FileChooser plugin is not defined');
       }
       uri = await this.fileChooser.open();
     }
     if (uri) {
       recordedFile.uri = await this.getResolvedNativeFilePath(uri);
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+      console.log('recordedFile.uri', recordedFile.uri)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+
       if (withThumbnailForVideo && this.checkFileTypeByExtension(recordedFile.uri, 'video')) {
         recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
       }
@@ -517,15 +666,23 @@ export class DownloadService {
 
   public async recordVideo(withThumbnail = false): Promise<RecordedFile> {
     if (!this.mediaCapture) {
+      this.loggerService.getLogger().error("MediaCapture plugin is not defined", new Error("MediaCapture plugin is not defined").stack)
       throw new Error('MediaCapture plugin is not defined');
     }
+
     const videoFile = await this.mediaCapture.captureVideo({ limit: 1 });
+
     if (!videoFile || !videoFile[0]) {
+      this.loggerService.getLogger().error("Video was not uploaded.", new Error("Video was not uploaded.").stack)
       throw new Error('Video was not uploaded.');
     }
+
     const fullPath = videoFile[0].fullPath;
+    console.log("const fullPath = videoFile[0].fullPath;", videoFile[0]);
+
     const recordedFile = new RecordedFile();
     recordedFile.uri = await this.getResolvedNativeFilePath(fullPath);
+
     if (recordedFile.uri && withThumbnail) {
       recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
     }
@@ -535,29 +692,23 @@ export class DownloadService {
 
   public async makePhoto(targetWidth = 1000, targetHeight = 1000): Promise<RecordedFile> {
     if (!this.camera) {
+      this.loggerService.getLogger().error("MediaCapture plugin is not defined", new Error("MediaCapture plugin is not defined").stack)
       throw new Error('MediaCapture plugin is not defined');
     }
+
     const cameraOptions = {
-      targetWidth: targetWidth,
-      targetHeight: targetHeight,
+      // targetWidth: targetWidth,
+      // targetHeight: targetHeight,
       sourceType: this.camera.PictureSourceType.CAMERA,
       destinationType: this.camera.DestinationType.FILE_URI,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
+      // encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.ALLMEDIA,
     };
+
     const photoFullPath = await this.camera.getPicture(cameraOptions);
-
-    console.log(">>>>>>>>>>>>>> photoFullPath >>>>>>>>>>>>>>>>>>>>>>>")
-    console.log(photoFullPath)
-    console.log(">>>>>>>>>>>>>> photoFullPath >>>>>>>>>>>>>>>>>>>>>>>")
-
     const recordedFile = new RecordedFile();
-
     recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath);
-    console.log(">>>>>>>>>>>>>> recordedFile >>>>>>>>>>>>>>>>>>>>>>>");
-    console.log(recordedFile.uri)
-    console.log(">>>>>>>>>>>>>> recordedFile >>>>>>>>>>>>>>>>>>>>>>>");
-
+    recordedFile.thumbnailUri = recordedFile.uri;
     return recordedFile;
   }
 
@@ -578,13 +729,16 @@ export class DownloadService {
   }
 
   public getResolvedNativeFilePath(uri): Promise<string> {
-    console.log('URIII', uri);
+    // console.log('URIII', uri);
     if (!this.filePath) {
+      this.loggerService.getLogger().error("FilePath plugin is not defined", new Error("FilePath plugin is not defined").stack)
       throw new Error('FilePath plugin is not defined');
     }
+
     if (this.platform.is('ios') && uri.indexOf('file://') < 0) {
       uri = 'file://' + uri;
     }
+
     if (this.platform.is('android')) {
       return this.filePath.resolveNativePath(uri);
     }

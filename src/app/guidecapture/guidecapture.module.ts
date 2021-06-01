@@ -10,6 +10,7 @@ import { GuidecapturePage } from './guidecapture.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { GuideListComponentModule } from 'src/components/guide-list-component/guide-list-component.module';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   imports: [
@@ -17,6 +18,8 @@ import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-componen
     FormsModule,
     IonicModule,
     GuidecapturePageRoutingModule,
+    ionMenuWithSyncIndicatorComponentModule,
+
     TranslateModule,
     GuideListComponentModule,
     SyncSpinnerComponentModule

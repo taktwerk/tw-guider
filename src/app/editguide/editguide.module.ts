@@ -13,6 +13,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { HtmlDescriptionComponentModule } from 'src/components/html-description/html-description-component.module';
 import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-component/viewer-3d-model-component.module';
 import { ListviewComponentModule } from 'src/components/listview/listview.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { ListviewComponentModule } from 'src/components/listview/listview.module
     EditguidePageRoutingModule,
     TranslateModule,
     SyncSpinnerComponentModule,
+    ionMenuWithSyncIndicatorComponentModule,
     FontAwesomeModule,
     Viewer3dModelComponentModule,
     HtmlDescriptionComponentModule,

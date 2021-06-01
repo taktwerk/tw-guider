@@ -1,8 +1,9 @@
-import { ErrorHandler, NgModule } from '@angular/core';
+import { MiscService } from './../services/misc-service';
+import { ErrorHandler, NgModule, ViewContainerRef } from '@angular/core';
 import { BrowserModule, ɵDomSanitizerImpl } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicModule, IonicRouteStrategy, IonRouterOutlet } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
@@ -58,7 +59,6 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { AppSetting } from '../services/app-setting';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
-import { IonicImageLoader } from 'ionic-image-loader';
 import { Camera } from '@ionic-native/camera/ngx';
 import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { VideoEditor } from '@ionic-native/video-editor/ngx';
@@ -79,6 +79,7 @@ import { ProtocolDefaultService } from '../providers/api/protocol-default-servic
 import { WorkflowService } from '../providers/api/workflow-service';
 import { WorkflowStepService } from '../providers/api/workflow-step-service';
 import { ProtocolDefaultComponent } from '../components/protocol-form-components/protocol-default-component/protocol-default-component';
+// tslint:disable-next-line:max-line-length
 import { ProtocolDefaultComponentModule } from '../components/protocol-form-components/protocol-default-component/protocol-default-component.module';
 import { WorkflowTransitionService } from '../providers/api/workflow-transition-service';
 import { ProtocolCommentService } from '../providers/api/protocol-comment-service';
@@ -87,19 +88,32 @@ import { DateAgoPipe } from '../pipes/date-ago.pipe';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Media } from '@ionic-native/media/ngx';
 import { AudioService } from '../services/audio-service';
-import { GuideListComponentModule } from "../components/guide-list-component/guide-list-component.module";
-import { Viewer3dService } from "../services/viewer-3d-service";
-import { Viewer3dModalComponent } from "../components/modals/viewer-3d-modal-component/viewer-3d-modal-component";
-import { Viewer3dModelComponentModule } from "../components/viewer-3d-model-component/viewer-3d-model-component.module";
+import { GuideListComponentModule } from '../components/guide-list-component/guide-list-component.module';
+import { Viewer3dService } from '../services/viewer-3d-service';
+import { Viewer3dModalComponent } from '../components/modals/viewer-3d-modal-component/viewer-3d-modal-component';
+import { Viewer3dModelComponentModule } from '../components/viewer-3d-model-component/viewer-3d-model-component.module';
 import { IonicStorageModule } from '@ionic/storage';
+
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { MigrationService } from '../providers/api/migration-service';
 import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewer-component';
 import { PdfViewerComponentModule } from '../components/pdf-viewer-component/pdf-viewer-component.module';
 
-import { Base64ToGallery } from '@ionic-native/base64-to-gallery/ngx';
+
 import { ProgressBarModule } from '../components/progress-bar/progress-bar.module';
 import { ListviewComponentModule } from 'src/components/listview/listview.module';
+import { SQLite } from '@ionic-native/sqlite/ngx';
+
+import { CKEditorComponent } from 'src/components/ckeditor/ckeditor.page';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
+import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+
+import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.page';
+
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { LoggerService } from 'src/services/logger-service';
+import { AuthDb } from 'src/models/db/auth-db';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -111,6 +125,8 @@ Sentry.init({ dsn: environment.sentryDsn });
   declarations: [
     AppComponent,
     GuideAssetTextModalComponent,
+    CKEditorComponent,
+    ImageEditorComponent,
     SyncModalComponent,
     VideoModalComponent,
     DrawImageModalComponent,
@@ -119,6 +135,8 @@ Sentry.init({ dsn: environment.sentryDsn });
   ],
   entryComponents: [
     GuideAssetTextModalComponent,
+    CKEditorComponent,
+    ImageEditorComponent,
     SyncModalComponent,
     VideoModalComponent,
     DrawImageModalComponent,
@@ -129,7 +147,7 @@ Sentry.init({ dsn: environment.sentryDsn });
   imports: [
     BrowserModule,
     FormsModule,
-    IonicModule.forRoot(),
+    IonicModule.forRoot({ backButtonText: '' }),
     IonicStorageModule.forRoot({
       driverOrder: ['indexeddb', 'websql', 'sqlite']
     }),
@@ -144,7 +162,10 @@ Sentry.init({ dsn: environment.sentryDsn });
         deps: [Http]
       }
     }),
+    // MiscService,
+    // LoggerService,
     SyncSpinnerComponentModule,
+    ionMenuWithSyncIndicatorComponentModule,
     GuideListComponentModule,
     ListviewComponentModule,
     PdfViewerComponentModule,
@@ -153,15 +174,20 @@ Sentry.init({ dsn: environment.sentryDsn });
     MainPipe,
     HtmlDescriptionComponentModule,
     VirtualScrollerModule,
-    IonicImageLoader.forRoot(),
     Viewer3dModelComponentModule,
     PdfJsViewerModule,
+    CKEditorModule,
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.DEBUG,
+    }),
+
   ],
   providers: [
+    AuthDb,
     StatusBar,
     SplashScreen,
     GuiderService,
-    GuiderService,
+    GuideViewHistoryService,
     GuideCategoryService,
     GuideCategoryBindingService,
     GuideStepService,
@@ -219,10 +245,12 @@ Sentry.init({ dsn: environment.sentryDsn });
     Insomnia,
     NativeAudio,
     Media,
+    SQLite,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     MigrationService,
-    Base64ToGallery
+    MiscService,
+    LoggerService,
   ],
   exports: [
     ProtocolDefaultComponent

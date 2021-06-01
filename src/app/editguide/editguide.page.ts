@@ -1,16 +1,13 @@
-import { Subscription } from 'rxjs/Subscription';
+import { Location } from '@angular/common';
+import { Platform } from '@ionic/angular';
+
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { GuiderService } from 'src/providers/api/guider-service';
-import { GuiderModel } from 'src/models/db/api/guider-model';
-import { GuideAssetModel } from 'src/models/db/api/guide-asset-model';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { GuideStepModel } from 'src/models/db/api/guide-step-model';
-import { GuideAssetService } from 'src/providers/api/guide-asset-service';
 import { GuideStepService } from 'src/providers/api/guide-step-service';
 
-import { Events, ToastController } from '@ionic/angular';
-import { ApiSync } from 'src/providers/api-sync';
-
+import { AuthService } from '../../services/auth-service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-editguide',
   templateUrl: './editguide.page.html',
@@ -18,13 +15,12 @@ import { ApiSync } from 'src/providers/api-sync';
 })
 export class EditguidePage implements OnInit, OnDestroy {
   constructor(private activatedRoute: ActivatedRoute,
-    private guiderService: GuiderService,
     private guideStepService: GuideStepService,
-    private guideAssetService: GuideAssetService,
     private router: Router,
-    private toastController: ToastController,
-    private apiSync: ApiSync,
-    public events: Events,
+    public authService: AuthService,
+    public changeDetectorRef: ChangeDetectorRef,
+    public platform: Platform,
+    public location: Location
   ) { }
 
   guideId: string;
@@ -38,20 +34,10 @@ export class EditguidePage implements OnInit, OnDestroy {
         this.setGuideSteps(this.guideId);
       }
     })
-
-    this.events.subscribe('user:login', () => {
-      this.setGuideSteps(this.guideId);
-    });
-    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':update', async (model) => {
-      this.setGuideSteps(this.guideId);
-    });
-    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':create', async (model) => {
-      this.setGuideSteps(this.guideId);
-    });
-    this.events.subscribe(this.guideStepService.dbModelApi.TAG + ':delete', async (model) => {
-      this.setGuideSteps(this.guideId);
-    });
   }
+
+  ionViewWillEnter() {}
+
 
   public setGuideSteps(id) {
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
@@ -61,5 +47,21 @@ export class EditguidePage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {}
+  addStep(guide, action) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        guideId: guide,
+        action: action
+      }
+    }
+    this.router.navigate(["/", "guidestep-add-edit"], navigationExtras);
+  }
+
+  ngOnDestroy(): void { }
+
+  detectChanges() {
+    if (!this.changeDetectorRef['destroyed']) {
+      this.changeDetectorRef.detectChanges();
+    }
+  }
 }

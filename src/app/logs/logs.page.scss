@@ -1,0 +1,71 @@
+ion-segment {
+    ion-label {
+        font-size: 12px;
+        ion-badge {
+            font-size: 10px;
+        }
+    }
+}
+
+.Debug {
+    h3 {
+        color: #118888;
+        padding: 4px;
+        border: solid #f3f3f3;
+        border-right-color: transparent;
+        border-left-color: transparent;
+    }
+    p {
+        color: #2f2f2f;
+    }
+}
+
+.Info {
+    h3 {
+        color: #929292;
+        padding: 4px;
+        border: solid #f3f3f3;
+        border-right-color: transparent;
+        border-left-color: transparent;
+    }
+    p {
+        color: #2f2f2f;
+    }
+}
+
+.Warn {
+    h3 {
+        background-color: #fffbe5;
+        color: #ff1d1a;
+        padding: 4px;
+        border: solid #fff9dc;
+        border-right-color: transparent;
+        border-left-color: transparent;
+    }
+    p {
+        color: #2f2f2f;
+    }
+}
+
+.Error {
+    h3 {
+        background-color: #fff0f0;
+        color: #ff0000;
+        padding: 4px;
+        border: solid #ffd9d9;
+        border-right-color: transparent;
+        border-left-color: transparent;
+    }
+    p {
+        color: #2f2f2f;
+    }
+}
+
+p {
+    white-space: normal;
+}
+
+h3 {
+    font-weight: 500;
+    padding-left: 0px;
+}

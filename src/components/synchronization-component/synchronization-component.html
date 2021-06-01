@@ -5,14 +5,18 @@
   }
 </style>
 
+<section *ngIf="this.authService.isHaveUserRole('Betatest')">
+  <ion-item>
+    <ion-toggle [checked]="resumeMode" (ionChange)="changeResumeMode()"></ion-toggle>
+    <ion-label>{{ 'synchronization-component.Enable Resume Synchronisation' | translate:params }}</ion-label>
+  </ion-item>
+</section>
+
 <section>
   <h4>
     {{ 'synchronization-component.Sync Modes' | translate:params }}
   </h4>
-  <ion-segment (ionChange)="changeSyncMode($event.detail.value)"
-               color="secondary"
-               value="{{ modeSync }}"
-  >
+  <ion-segment (ionChange)="changeSyncMode($event.detail.value)" color="secondary" value="{{ modeSync }}">
     <ion-segment-button value="0">
       <ion-label>
         {{ 'synchronization-component.Manually' | translate:params }}
@@ -32,7 +36,8 @@
 </section>
 
 <section>
-  <ion-button color="danger" style="max-width: 100%; height: 100%; white-space: normal;" (click)="showRefreshDataAlert()">
+  <ion-button color="danger" style="max-width: 100%; height: 100%; white-space: normal;"
+    (click)="showRefreshDataAlert()">
     <span style="padding: 5px;">
       {{ 'synchronization-component.Re-sync data' | translate:params }}
     </span>

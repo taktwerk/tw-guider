@@ -1,10 +1,11 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="header_bg" [style.padding-top]="platform.is('ipad')? '20px': ''">
     <ion-title> {{ 'sync-modal.header' | translate:params }} </ion-title>
     <sync-spinner-component [shouldOpenPopup]="false" slot="primary"> </sync-spinner-component>
-    <ion-buttons slot="end">
+
+    <ion-buttons slot="primary">
       <ion-button (click)="dismiss()">
-        <ion-icon name="close"></ion-icon>
+        <ion-icon name="close" style="color: #ffffff; font-size: 24px;"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -19,36 +20,55 @@
           {{ this.getLastSyncDate() }}
         </section>
         <div *ngIf="isNetwork || appSetting.isEnabledUsb">
-          <section>
 
-            <app-progress-bar [progress]="syncedItemsPercent" [color]="syncProgressStatus === 'failed' ? '#989aa2' : '#babcbf'"></app-progress-bar>
-            <div style="font-size: 15px">{{ syncedItemsCount }}/{{ syncAllItemsCount }}
-              {{getProgressText()}}
-              <span style="font-size: 15px" *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'">
-                {{ 'sync-modal.In progress' | translate:params }}<span class="dot1">.</span><span class="dot2">.</span><span class="dot3">.</span>
+          <section>
+            
+            <app-progress-bar 
+            [progress]="syncedItemsPercent"
+              [color]="syncProgressStatus === 'failed' ? '#989aa2' : '#babcbf'">
+            </app-progress-bar>
+
+            <div style="font-size: 15px">
+              {{ syncedItemsCount }}/{{ syncAllItemsCount }}{{getProgressText()}}
+              <span style="font-size: 15px"
+                *ngIf="syncProgressStatus === 'progress' || syncProgressStatus === 'resume'">
+                {{ 'sync-modal.In progress' | translate:params }}<span class="dot1">.</span><span
+                  class="dot2">.</span><span class="dot3">.</span>
               </span>
             </div>
+
           </section>
 
           <section *ngIf="modeSync === 0" class="modeSync0">
+
             <span *ngIf="!isStartSync" class="notStartSync">
-              <ion-button class="sync-btn" *ngIf="!['progress', 'resume', 'pause'].includes(syncProgressStatus)" (click)="syncData()" color="primary">
+              <ion-button class="sync-btn"
+                *ngIf="!['progress', 'resume','pause'].includes(syncProgressStatus) || isAvailableForSyncData"
+                (click)="syncData()" color="primary">
                 {{ 'sync-modal.Synchronize Data' | translate:params }}
               </ion-button>
+
               <ion-button *ngIf="syncProgressStatus === 'pause'" (click)="resumeSyncData()" color="primary">
                 {{ 'sync-modal.Resume' | translate:params }}
               </ion-button>
             </span>
+
             <span *ngIf="isStartSync">
-              <ion-button *ngIf="['progress', 'resume'].includes(syncProgressStatus)" (click)="stopSyncData()" color="primary">
+              <ion-button *ngIf="['progress', 'resume'].includes(syncProgressStatus)" (click)="stopSyncData()"
+                color="primary">
                 {{ 'sync-modal.Stop' | translate:params }}
               </ion-button>
             </span>
-            <ion-button style="margin-left: 8px" *ngIf="['progress', 'resume', 'pause'].includes(syncProgressStatus)" (click)="cancelSyncData()" color="primary">
+
+            <ion-button style="margin-left: 8px" *ngIf="['progress', 'resume', 'pause'].includes(syncProgressStatus)"
+              (click)="cancelSyncData()" color="primary">
               {{ 'sync-modal.Cancel' | translate:params }}
             </ion-button>
+
           </section>
+
         </div>
+        
         <div *ngIf="!isNetwork && !appSetting.isEnabledUsb">
           <div>{{ 'sync-modal.No network connection.' | translate:params }}</div>
           <div>{{ 'sync-modal.Data synchronization is not yet possible.' | translate:params }}</div>
@@ -56,12 +76,16 @@
         <section *ngIf="isAvailableForPushData" style="color: green">
           {{ 'sync-modal.There is data available for pushing to the server.' | translate:params }}
         </section>
-        <section *ngIf="!(isStartSync && ['progress', 'resume'].includes(syncProgressStatus)) && isAvailableForSyncData" style="color: green">
+        <section *ngIf="!(isStartSync && ['progress', 'resume'].includes(syncProgressStatus)) && isAvailableForSyncData"
+          style="color: green">
           {{ 'sync-modal.There is data available for synchronization from the server.' | translate:params }}
         </section>
-        <div *ngIf="pushProgressStatus === 'failed'">{{ 'sync-modal.Sending data to the server failed.' | translate:params }}</div>
-        <div *ngIf="pushProgressStatus === 'progress'">{{ 'sync-modal.Data is sent to the server' | translate:params }}</div>
-        <div *ngIf="pushProgressStatus === 'success'">{{ 'sync-modal.Data has been sent to the server' | translate:params }}</div>
+        <div *ngIf="pushProgressStatus === 'failed'">{{ 'sync-modal.Sending data to the server failed.' |
+          translate:params }}</div>
+        <div *ngIf="pushProgressStatus === 'progress'">{{ 'sync-modal.Data is sent to the server' | translate:params }}
+        </div>
+        <div *ngIf="pushProgressStatus === 'success'">{{ 'sync-modal.Data has been sent to the server' |
+          translate:params }}</div>
         <div *ngIf="noDataForSync">{{ 'sync-modal.No data for sync' | translate:params }}</div>
       </ion-col>
     </ion-row>

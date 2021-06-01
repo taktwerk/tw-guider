@@ -1,55 +1,39 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { Events, ModalController, Platform } from '@ionic/angular';
-
-import { ApiSync } from '../../providers/api-sync';
+import { Location } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
+import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
+import { Storage } from '@ionic/storage';
 import { AuthService } from '../../services/auth-service';
-import { HttpClient } from '../../services/http-client';
-import { Network } from '@ionic-native/network/ngx';
-import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
-import { debounceTime } from 'rxjs/operators';
-import { UserDb } from '../../models/db/user-db';
-import { DownloadService } from '../../services/download-service';
-import { DbProvider } from '../../providers/db-provider';
-import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
-import {TranslateConfigService} from '../../services/translate-config.service';
-
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
+import { ModalController, Platform } from '@ionic/angular';
+import { MiscService } from 'src/services/misc-service';
 
 @Component({
   selector: 'guide-list-component',
   templateUrl: 'guide-list-component.html',
   styleUrls: ['guide-list-component.scss'],
 })
-export class GuideListComponent {
+export class GuideListComponent implements OnInit {
   public haveProtocolPermissions = false;
   public params;
   @Input() guides: GuiderModel[];
+  @Input() isCapture = false;
+  @Input() parentCollectionId;
+  @Input() guideCategoryId;
 
-  testGuideStepSave = true;
+  guideList: GuiderModel[];
+  displayLimit = 10;
 
   constructor(
-    private platform: Platform,
-    private downloadService: DownloadService,
-    private db: DbProvider,
-    private apiSync: ApiSync,
+    private storage: Storage,
     private modalController: ModalController,
-    private changeDetectorRef: ChangeDetectorRef,
-    private http: HttpClient,
     private authService: AuthService,
-    private network: Network,
-    private events: Events,
-    private userService: UserService,
     private router: Router,
     public appSetting: AppSetting,
-    private translateConfigService: TranslateConfigService
+    public platform: Platform,
+    public location: Location,
+    private miscService: MiscService,
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -57,6 +41,27 @@ export class GuideListComponent {
         this.haveProtocolPermissions = true;
       }
     }
+  }
+
+  ionViewDidLeave() {
+    this.parentCollectionId = undefined;
+  }
+
+  ngOnInit(): void {
+    this.guideList = this.guides.slice(0, this.displayLimit);
+    console.log("parentCollectionId", this.parentCollectionId)
+  }
+
+  loadData(event) {
+    setTimeout(() => {
+      this.displayLimit += 10;
+      this.guideList = this.guides.slice(0, this.displayLimit);
+      event.target.complete();
+      event.target.disabled = true;
+      if (this.guideList.length == this.guides.length) {
+        event.target.disabled = true;
+      }
+    }, 500)
   }
 
   openProtocol(guide: GuiderModel) {
@@ -72,34 +77,11 @@ export class GuideListComponent {
     this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }
 
-  addGuideStep(guide: GuiderModel) {
-    const model = this.apiSync.apiPushServices.guide_step.newModel();
-    model.local_guide_id = guide[guide.COL_ID];
-    model.guide_id = guide.idApi;
-    model.order_number = 1;
-    model.title = this.makeid(10);
-    model.description_html = this.makeid(30);
-    this.apiSync.apiPushServices.guide_step.save(model).then(async (res) => {
-       this.apiSync.setIsPushAvailableData(true);
-       const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'GuideStep' });
-       this.http.showToast(alertMessage);
-    });
-  }
-
-  makeid(length) {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
-}
-
   openCollection(guide: GuiderModel) {
     const feedbackNavigationExtras: NavigationExtras = {
       queryParams: {
         guideId: guide.idApi,
+        guideCategoryId: this.guideCategoryId
       },
     };
     this.router.navigate(['/guide-collection/' + guide.idApi], feedbackNavigationExtras);
@@ -110,6 +92,35 @@ export class GuideListComponent {
       this.openCollection(guide);
       return;
     }
-    this.router.navigate(['/guide/' + guide.idApi]);
+    console.log("parentCollectionId", this.parentCollectionId)
+    if (this.parentCollectionId) {
+      this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
+    }
+    else {
+      this.router.navigate(['/guide/' + guide.idApi]);
+    }
+  }
+
+  openGuideSteps(guideId) {
+    this.router.navigate(['/', 'editguide', guideId]);
+  }
+
+  trackByFn(item: GuiderModel) {
+    return item.idApi;
+  }
+
+  async presentGuideInfo(guideId) {
+    const modal = await this.modalController.create({
+      component: GuideinfoPage,
+      componentProps: {
+        'guideId': guideId,
+        'from': 'guide-list-component',
+        'parentCollectionId': this.parentCollectionId
+      },
+      cssClass: "modal-fullscreen"
+    });
+    modal.present().then(re => {
+      this.miscService.set_guideShown(guideId);
+    });
   }
 }
