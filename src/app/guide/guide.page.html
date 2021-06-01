@@ -41,7 +41,7 @@
 <ion-content class="grey-background" [scrollEvents]="true">
   <span *ngIf="isLoadedContent">
     <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
-      <ion-slides #guideStepSlide #guideStepSlideElemRef pager="true" [options]="slideOpts"
+      <ion-slides #guideStepSlide #guideStepSlideElemRef pager="false" [options]="slideOpts"
         (ionSlideWillChange)="changeGuideStepCurrentSlide()">
         <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">
           <ng-template #guideStepContent></ng-template>
