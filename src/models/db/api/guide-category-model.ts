@@ -73,12 +73,14 @@ export class GuideCategoryModel extends DbApiModel {
                 this.secure('guide_category_binding') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL',
                 this.secure('guide_category_binding') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL'
             ];
+
             if (searchValue) {
                 whereCondition.push(
                     '(' + this.secure('guide') + '.' + this.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%"' +
                     ' OR ' + this.secure(GuiderModel.COL_DESCRIPTION) + ' LIKE "%' + searchValue + '%")'
                 );
             }
+
             const joinCondition =
                 'JOIN ' + this.secure('guide_category_binding') +
                 ' ON ' + this.secure('guide_category_binding') + '.' + this.secure('guide_id') +
@@ -89,9 +91,11 @@ export class GuideCategoryModel extends DbApiModel {
                 this.secure('guide_category_binding') + '.' + this.secure('guide_category_id') +
                 ' = ' +
                 this.secure('guide_category') + '.' + this.secure('id');
+
             const selectFrom = 'SELECT ' + this.secure('guide') + '.*' + ' from ' + this.secure('guide');
 
             const entries: any[] = [];
+
             this.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom).then((res) => {
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
@@ -105,6 +109,7 @@ export class GuideCategoryModel extends DbApiModel {
                     }
                 }
                 this.guidesCount = this.guides.length;
+                resolve(true);
             }).catch((err) => {
                 console.log('guide category error', err);
             });

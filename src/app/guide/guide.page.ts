@@ -58,6 +58,7 @@ import { TranslateConfigService } from 'src/services/translate-config.service';
 import { HttpClient } from 'src/services/http-client';
 import { UserDb } from 'src/models/db/user-db';
 import { Subject, Subscription } from 'rxjs';
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 
 @Component({
   selector: 'app-guide',
@@ -126,7 +127,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   constructor(
     public http: HttpClient,
     private translateConfigService: TranslateConfigService,
-    private elementRef: ElementRef,
     private apiSync: ApiSync,
     private popoverController: PopoverController,
     private guideCategoryService: GuideCategoryService,
@@ -149,12 +149,13 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     private pictureService: PictureService,
     private loader: LoadingController,
     private componentResolver: ComponentFactoryResolver,
-    private toast: ToastController,
     private miscService: MiscService,
     private guideViewHistoryService: GuideViewHistoryService,
     private syncService: SyncService,
     private userService: UserService,
-    public platform: Platform
+    public platform: Platform,
+    private syncIndexService: SyncIndexService,
+
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -306,12 +307,15 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   public setGuideSteps(id) {
     // console.log("id", id)
-    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(async (results) => {
-      this.guideSteps = results;
-      this.guideSteps = results.filter((model) => {
+    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(async results => {
+      // console.log("results", results)
+      const _guideSteps = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
-      console.log('guideSteps', this.guideSteps);
+      if (_guideSteps.length > 0) {
+        const syncedList = await this.syncIndexService.getSyncIndexModel(_guideSteps, _guideSteps[0].TABLE_NAME);
+        this.guideSteps = syncedList;
+      }
     });
   }
 
@@ -369,18 +373,20 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.guideViewHistory.guide_id = this.guide.idApi;
     this.guideViewHistory.step = await this.guideStepSlides.getActiveIndex();
 
-    this.guideViewHistoryService.save(this.guideViewHistory).then(async (res) => {
-      if (this.resumeMode) {
-        this.apiSync.setIsPushAvailableData(true);
-      }
-    });
+    this.guideViewHistoryService.save(this.guideViewHistory).then(async () => {
+      if (this.resumeMode) { this.apiSync.setIsPushAvailableData(true) }
+    })
   }
 
   public setAssets(id) {
-    return this.guiderService.dbModelApi.setAssets(id).then((results) => {
-      this.guideAssets = results.filter((model) => {
+    return this.guiderService.dbModelApi.setAssets(id).then(async results => {
+      const _guideAssets = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
+      if (_guideAssets.length > 0) {
+        const syncedList = await this.syncIndexService.getSyncIndexModel(_guideAssets, 'guide_asset');
+        this.guideAssets = syncedList;
+      }
     });
   }
 
@@ -553,7 +559,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       // console.log("guideCategoryService.getGuides().then((res)", res);
 
       setTimeout(async () => {
-        this.guides = res;
+        const _guides = res;
+        const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
+        this.guides = syncedList;
+
         // console.log("this.parentCollectionId in guide slider", this.parentCollectionId);
 
         if (this.parentCollectionId) {

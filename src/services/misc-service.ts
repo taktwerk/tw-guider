@@ -7,11 +7,16 @@ export class MiscService {
     constructor(private storage: Storage) { }
 
     public onSlideRestart = new Subject<boolean>();
+    public refreshAppData = new Subject<boolean>()
 
     public guideInfo_by_id = [];
 
     public set_guideShown(guideId) {
         this.storage.set(guideId, true);
+    }
+
+    public unset_guideShown(value) {
+        this.storage.set(value, false);
     }
 
     public get_guideShown(guideId) {

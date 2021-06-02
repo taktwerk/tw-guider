@@ -1,3 +1,4 @@
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { GuiderModel } from './../models/db/api/guider-model';
 import { Injectable, OnDestroy } from '@angular/core';
@@ -66,7 +67,9 @@ export class ApiSync implements OnDestroy {
         workflow_transition: this.workflowTransitionService,
         protocol_comment: this.protocolCommentService,
         feedback: this.feedbackService,
-        guide_view_history: this.guideViewHistoryService
+        guide_view_history: this.guideViewHistoryService,
+        sync_index: this.syncIndexService,
+
     };
 
     isStartSyncBehaviorSubject: BehaviorSubject<boolean>;
@@ -130,6 +133,7 @@ export class ApiSync implements OnDestroy {
         private workflowTransitionService: WorkflowTransitionService,
         private guideChildService: GuideChildService,
         private guideViewHistoryService: GuideViewHistoryService,
+        private syncIndexService: SyncIndexService,
         public syncService: SyncService,
         public miscService: MiscService,
 
@@ -154,16 +158,43 @@ export class ApiSync implements OnDestroy {
         this.init();
         this.initializeEvents();
 
-
         this.syncService.resumeMode.subscribe((mode) => {
             console.log("Resume Mode", mode)
             if (mode) this.apiPushServices.guide_view_history = this.guideViewHistoryService;
             else delete this.apiPushServices.guide_view_history
+        });
+
+        // reset application data
+        this.miscService.refreshAppData.subscribe((res) => {
+            console.log('Will delete application data ', res)
+            if (res) {
+                // this.userService.getUser().then(result => {
+                //     this.userService.userDb.userSetting.lastSyncedDiff = 0;
+                //     this.userService.userDb.userSetting.syncStatus = 'success';
+                //     this.userService.userDb.userSetting.syncLastElementNumber = 0;
+                //     this.userService.userDb.userSetting.syncAllItemsCount = 0;
+                //     this.userService.userDb.userSetting.syncPercent = 0;
+                //     this.userService.userDb.userSetting.lastSyncedAt = null;
+                //     this.userService.userDb.userSetting.lastModelUpdatedAt = null;
+                //     this.userService.userDb.userSetting.lastSyncProcessId = null;
+                //     this.userService.userDb.userSetting.appDataVersion = null;
+                //     this.isAvailableForSyncData.next(true);
+                //     this.userService.userDb.userSetting.isSyncAvailableData = true;
+                //     this.isAvailableForPushData.next(false);
+                //     this.userService.userDb.userSetting.isPushAvailableData = false;
+                //     this.userService.userDb.save().then(() => {
+                //         this.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
+                //         this.syncProgressStatus.next('success');
+                //         this.isStartSyncBehaviorSubject.next(false);
+                //         this.http.showToast('synchronization-component.The database is cleared.');
+                //     });
+                // })
+            }
         })
     }
 
     initializeEvents() {
-       
+
         this.eventSubscription = this.miscService.events.subscribe((event) => {
             switch (event.TAG) {
                 case 'UserDb:create':
@@ -575,6 +606,8 @@ export class ApiSync implements OnDestroy {
 
     public makeSyncProcess(syncStatus = 'progress') {
         return new Promise(async resolve => {
+            this.syncProgressStatus.next(syncStatus);
+
             const data = await this.init();
 
             console.log("Init Status ", data)
@@ -634,7 +667,7 @@ export class ApiSync implements OnDestroy {
 
                     const pullData = await this.http.get(this.getSyncUrl()).toPromise();
 
-                    console.log('pullData', pullData);
+                    // console.log('pullData', pullData);
 
                     if (!pullData.syncProcessId) {
                         this.failSync('There was no property syncProcessId in the response');
@@ -644,7 +677,7 @@ export class ApiSync implements OnDestroy {
                     }
 
                     this.syncData = pullData.models;
-                    console.log("Sync Data ", this.syncData);
+                    // console.log("Sync Data ", this.syncData);
                     this.loggerService.getLogger().info("Sync Data", this.syncData);
 
                     for (const key of Object.keys(this.syncData)) {
@@ -658,9 +691,48 @@ export class ApiSync implements OnDestroy {
 
                     await this.userService.userDb.save();
 
+                    // if stuck check completed metrics
+
+                    console.log('this.userService.userDb.userSetting.syncAllItemsCount', this.userService.userDb.userSetting.syncAllItemsCount)
+                    console.log('this.syncedItemsCount', this.syncedItemsCount.getValue())
+                    console.log('this.syncAllItemsCount', this.syncAllItemsCount.getValue())
+
+                    console.log("is all items synced ", this.isAllItemsSynced())
+                    // if (!this.isAllItemsSynced()) {
+                    //     this.unsetSyncProgressData().then(async () => {
+                    //         this.isBusy = false;
+                    //         this.makeSyncProcess();
+                    //     })
+                    // }
+
+                    if (countOfSyncedData === 0) {
+                        this.http.get(this.getSyncUrl(true)).subscribe(async (response) => {
+                            const isAvailableData = !!response.result;
+                            this.isAvailableForSyncData.next(isAvailableData);
+                            this.loggerService.getLogger().info("isAvailableForSyncData", isAvailableData)
+
+                            this.userService.userDb.userSetting.isSyncAvailableData = isAvailableData;
+                            this.userService.userDb.save();
+                            console.log('isAvailableData', isAvailableData)
+                            resolve(isAvailableData);
+                            return;
+
+                        }, (err) => {
+                            this.isAvailableForSyncData.next(false);
+                            this.loggerService.getLogger().info("isAvailableForSyncData", false)
+
+                            resolve(false);
+                            return;
+                        });
+                    }
+
                     if (!countOfSyncedData) {
                         // console.log("count Of Synced Data with !countOfSyncedData", countOfSyncedData)
                         this.loggerService.getLogger().info("count Of Synced Data with !countOfSyncedData", countOfSyncedData);
+
+                        // resolve unfinished sync
+                        // check isAvailableForSyncData
+                        console.log('isAvailableForSyncData', this.isAvailableForSyncData.getValue());
 
                         this.isStartSyncBehaviorSubject.next(false);
                         this.syncProgressStatus.next('success');
@@ -691,8 +763,6 @@ export class ApiSync implements OnDestroy {
 
                     console.log('isSavedSyncData', isSavedSyncData);
                     this.loggerService.getLogger().info("isSavedSyncData", isSavedSyncData)
-
-
 
                     if (isSavedSyncData) {
                         this.userService.userDb.userSetting.lastModelUpdatedAt = pullData.lastModelUpdatedAt;
@@ -1019,131 +1089,13 @@ export class ApiSync implements OnDestroy {
         await this.saveSyncProgress();
     }
 
-    public async monitorSyncProgress() {
-        console.log("isAllItemsSynced", this.isAllItemsSynced())
-        if (this.isAllItemsSynced()) {
-            // console.log("monitorSyncProgress isAvailableForSyncData", this.isAvailableForSyncData.getValue())
-            // console.log("monitorSyncProgress isAvailableForPushData", this.isAvailableForPushData.getValue())
-
-            console.log("monitorSyncProgress no_push_data this.userService.userDb.userSetting.pushStatus ", this.userService.userDb.userSetting.pushStatus)
-            this.makeSyncPause().then(async () => {
-                this.isBusy = false;
-                this.makeSyncProcess();
-                this.pushProgressStatus.next('success');
-                this.userService.userDb.userSetting.pushStatus = 'success';
-                await this.userService.userDb.save();
-            })
-        }
-        this.isStartPushBehaviorSubject.next(false);
-        this.pushProgressStatus.next('success');
-        this.loggerService.getLogger().info("pushProgressStatus", 'success');
-
-        this.userService.userDb.userSetting.pushStatus = 'success';
-        await this.userService.userDb.save();
-        this.isBusyPush = false;
-        this.setIsPushAvailableData(false);
-        this.isBusyPush = false;
-
-        // sync stops at 96%
-        // stop and resume
-        // this.syncProgressStatus.next('pause');
-        // this.makeSyncProcess();
-        // this.isAvailableForPushData.subscribe((status) => {
-        //     console.log("monitorSyncProgress isAvailableForPushData ", status)
-
-        // });
-
-        //this.pushProgressStatus.subscribe((status) => {
-        // console.log("monitorSyncProgress pushProgressStatus", status);
-        // this.loggerService.getLogger().info("monitorSyncProgress pushProgressStatus", status);
-        // console.log(this.userService.userDb.userSetting.syncLastElementNumber, this.userService.userDb.userSetting.syncAllItemsCount);
-        // console.log(this.userService.userDb.userSetting.syncLastElementNumber != this.userService.userDb.userSetting.syncAllItemsCount)
-        // if (status == 'no_push_data') {
-
-        // console.log("got here and will start checkAvailableChanges")
-        // // pause
-        // console.log("need to stop or resume and resync data");
-        // this.isStartSyncBehaviorSubject.next(false);
-        // this.makeSyncPause().then(() => {
-        //     this.isBusy = false;
-        //     // resume
-        //     this.makeSyncProcess("resume").then(() => {
-        //         // resync
-        //         this.makeSyncProcess();
-        //     })
-        // });
-        // this.checkAvailableChanges().then(res => {
-        //     console.log("monitorSyncProgress checkAvailableChanges", res)
-        //     if (res) {
-        //         this.makeSyncProcess();
-        //     }
-        //     if (this.isAvailableForPushData) {
-        //         this.makeSyncProcess();
-        //     }
-        //     if (!res && !this.isAvailableForPushData && !this.isAvailableForSyncData) {
-        //         this.syncProgressStatus.next('success');
-        //         this.loggerService.getLogger().info("syncProgressStatus", 'success')
-        //         this.userService.userDb.userSetting.syncStatus = 'success';
-        //         this.loggerService.getLogger().info("syncStatus", 'success')
-        //         this.userService.userDb.userSetting.lastSyncedAt = new Date();
-        //         this.userService.userDb.save();
-        //         this.isBusy = false;
-        //         this.loggerService.getLogger().info("isBusy", 'false');
-        //         this.noDataForSync.next(true);
-        //         this.loggerService.getLogger().info("noDataForSync", 'true');
-        //         // consider set the syncLastElementNumber to be equal to syncAllItemsCount then user.save to db
-        //     }
-        // })
-        //  }
-        //   else {
-        // TODO: Check if sync available if not set the values below
-        // this.checkAvailableChanges().then(res => {
-        //     console.log("monitorSyncProgress checkAvailableChanges", res)
-        //     if (res) {
-        //         this.makeSyncProcess();
-        //     }
-        //     if (this.isAvailableForPushData) {
-        //         this.makeSyncProcess();
-        //     }
-        //     else {
-        //         this.syncProgressStatus.next('success');
-        //         this.loggerService.getLogger().info("syncProgressStatus", 'success')
-        //         this.userService.userDb.userSetting.syncStatus = 'success';
-        //         this.loggerService.getLogger().info("syncStatus", 'success')
-        //         this.userService.userDb.userSetting.lastSyncedAt = new Date();
-        //         this.userService.userDb.save();
-        //         this.isBusy = false;
-        //         this.loggerService.getLogger().info("isBusy", 'false');
-        //         this.noDataForSync.next(true);
-        //         this.loggerService.getLogger().info("noDataForSync", 'true');
-        //     }
-        // })
-        // this.syncProgressStatus.next('success');
-        // this.loggerService.getLogger().info("syncProgressStatus", 'success')
-        // this.userService.userDb.userSetting.syncStatus = 'success';
-        // this.loggerService.getLogger().info("syncStatus", 'success')
-        // this.userService.userDb.userSetting.lastSyncedAt = new Date();
-
-        // if (this.lastModelUpdatedAt) {
-        //     this.userService.userDb.userSetting.lastModelUpdatedAt = this.lastModelUpdatedAt;
-        // }
-        // this.userService.userDb.save();
-        // this.isBusy = false;
-        // this.loggerService.getLogger().info("isBusy", 'false');
-        // this.noDataForSync.next(true);
-        //        // this.loggerService.getLogger().info("noDataForSync", 'true');
-        //   }
-
-        //  })
-    }
-
-    pullPayload() {
-        this.http.get(this.getSyncUrl()).subscribe((res) => {
-            console.log("pullPayload =>>>>>>>>>>>>>>>>>>>>>>")
-            console.log(res)
-            console.log("pullPayload <<<<<<<<<<<<<<<<<<<<<<=")
-        });
-    }
+    // pullPayload() {
+    //     this.http.get(this.getSyncUrl()).subscribe((res) => {
+    //         console.log("pullPayload =>>>>>>>>>>>>>>>>>>>>>>")
+    //         console.log(res)
+    //         console.log("pullPayload <<<<<<<<<<<<<<<<<<<<<<=")
+    //     });
+    // }
 
     ngOnDestroy(): void {
         this.eventSubscription.unsubscribe();

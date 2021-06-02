@@ -1,3 +1,4 @@
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 import { AuthService } from 'src/services/auth-service';
 import { Subject } from 'rxjs';
 import { AuthDb } from 'src/models/db/auth-db';
@@ -49,6 +50,7 @@ export class MigrationProvider {
     private workflowTransitionService: WorkflowTransitionService,
     private guideChildService: GuideChildService,
     private guideViewHistoryService: GuideViewHistoryService,
+    private syncIndexService: SyncIndexService,
     private authDb: AuthDb,
     private authService: AuthService,
     private network: Network,
@@ -72,6 +74,7 @@ export class MigrationProvider {
     protocol_comment: this.protocolCommentService,
     feedback: this.feedbackService,
     guide_view_history: this.guideViewHistoryService,
+    sync_index: this.syncIndexService,
   };
 
   async init() {

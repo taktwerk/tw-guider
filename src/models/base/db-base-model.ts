@@ -149,7 +149,7 @@ export abstract class DbBaseModel {
      * Promises that the db is ready for sql queries.
      * @returns {Promise<any>}
      */
-    dbReady(): Promise<any> {
+    dbReady(): Promise<DbProvider> {
         return new Promise((resolve) => {
             if (this.dbIsReady) {
                 resolve(this.db);
