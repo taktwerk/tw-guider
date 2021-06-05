@@ -75,7 +75,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
         this.haveProtocolPermissions = true;
       }
     }
-    this.showAllGuides();
+
   }
 
   async showAllGuides() {
@@ -114,7 +114,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   async findAllGuideCategories() {
     // syncIndexify guideCategories
     this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
-   // console.log("_guideCategories ", this.guideCategories)
+    // console.log("_guideCategories ", this.guideCategories)
     if (this.guideCategories.length > 0) {
       const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideCategories, this.guideCategories[0].TABLE_NAME);
       this.guideCategories = syncedList;
@@ -180,6 +180,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.showAllGuides();
+
     this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
       this.isStartSync = isSync;
       this.detectChanges();
