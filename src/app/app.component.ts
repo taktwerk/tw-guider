@@ -124,7 +124,11 @@ export class AppComponent implements OnInit, OnDestroy {
       else {
         this.routerOutlets.forEach(async (r) => {
           if (!r.canGoBack()) {
-            this.presentAlertConfirm();
+            if (this.router.url == '/guide-categories') {
+              this.presentAlertConfirm();
+            } else {
+              this.router.navigate(['/guide-categories']);
+            }
           }
           else {
             this.location.back()
