@@ -1,13 +1,13 @@
 
 import { MiscService } from './../../services/misc-service';
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
 import { GuideChildService } from '../../providers/api/guide-child-service';
 import { GuiderService } from '../../providers/api/guider-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { AuthService } from '../../services/auth-service';
 import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
-import { LoadingController, ModalController } from '@ionic/angular';
+import { LoadingController, ModalController, IonSlides } from '@ionic/angular';
 import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
 import { NavigationExtras, Router } from '@angular/router';
 import { ApiSync } from 'src/providers/api-sync';
@@ -41,7 +41,9 @@ export class CategoriesListPage implements OnInit, OnDestroy {
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
 
-  public type: string;
+  public type: number;
+
+  @ViewChild('slides', { static: true }) slider: IonSlides;
 
   onboardingSyncShown: boolean;
 
@@ -63,6 +65,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     private miscService: MiscService
 
   ) {
+    this.type = 0;
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
       if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') ||
@@ -314,5 +317,11 @@ export class CategoriesListPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.eventSubscription.unsubscribe();
+  }
+  async segmentChanged(ev: any) {
+    await this.slider.slideTo(this.type);
+  }
+  async slideChanged() {
+    this.type = await this.slider.getActiveIndex();
   }
 }
