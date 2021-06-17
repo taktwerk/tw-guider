@@ -292,8 +292,6 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     // this.events.subscribe('network:online', (isNetwork) => {
     //   this.authService.checkAccess('guide');
     // });
-
-    this.type = 'browse';
   }
 
   syncData() {
