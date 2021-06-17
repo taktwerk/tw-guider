@@ -86,6 +86,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
     }
 
     this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(feedbackSearchCondition, 'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC');
+    // console.log("this.feedbackList", this.feedbackList)
     if (this.feedbackList) {
       const syncedList = await this.syncIndexService.getSyncIndexModel(this.feedbackList, this.feedbackList[0].TABLE_NAME);
       this.feedbackList = syncedList;

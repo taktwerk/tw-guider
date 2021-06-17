@@ -20,7 +20,7 @@
       <ion-icon name="search"></ion-icon>
     </ion-segment-button>
   </ion-segment>
-  
+
   <div [ngSwitch]="type">
     <div class="category-content" *ngSwitchDefault="'browse'">
       <span *ngIf="isLoadedContent">
@@ -59,8 +59,7 @@
             <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
             </div>
           </div>
-          <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides">
-          </guide-list-component>
+          <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides"></guide-list-component>
         </div>
         <div *ngIf="!guides.length" [ngStyle]="{'margin': '15px'}">{{ 'noResults' | translate:params }}</div>
       </span>

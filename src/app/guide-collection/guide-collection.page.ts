@@ -152,8 +152,10 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
     if (!this.guide) {
       return;
     }
+
     const collectionGuideChildren = await this.guide.setChildren();
     const collectionGuidesTemporary = [];
+
     for (let i = 0; i < collectionGuideChildren.length; i++) {
       let guides = await this.guiderService.getById(collectionGuideChildren[i].guide_id);
       if (guides.length) {
@@ -163,6 +165,7 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
         collectionGuidesTemporary.push(guide);
       }
     }
+
     this.collectionGuides = collectionGuidesTemporary;
     this.detectChanges();
   }
@@ -189,7 +192,6 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
     };
     this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }
-
 
   ngOnDestroy(): void {
     this.eventSubscription.unsubscribe();

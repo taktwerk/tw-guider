@@ -68,6 +68,11 @@ export class SyncIndexService extends ApiService {
 
     // return new list of models found in the sync index
     public async getSyncIndexModel(modelList: any[], modelName): Promise<any> {
+        // extract models not yet synced with API
+        const unsyncedModels = modelList.filter(m => m.is_synced === 0);
+        // extract models synced with API
+        const syncedModels = modelList.filter(m => m.is_synced === 1);
+
         return new Promise(async (resolve) => {
             if (modelName) {
                 const user = await this.authService.getLastUser();
@@ -84,14 +89,16 @@ export class SyncIndexService extends ApiService {
                         const qResult = entries;
                         if (qResult.length > 0) {
                             const filteredForModelName = qResult.filter(m => (m.model === modelName) && (user.userId === m.user_id) && (m.deleted_at === null)); // filter by modelName 
-                            const filteredList = modelList.filter(m => filteredForModelName.find(({ model_id }) => JSON.parse(model_id) === m.idApi) !== undefined); // find model by id
+                            const filteredList = syncedModels.filter(m => filteredForModelName.find(({ model_id }) => JSON.parse(model_id) === m.idApi) !== undefined); // find model by id
 
-                            console.log("filteredForModelName ", filteredForModelName);
-                            console.log("filterList ", filteredList);
-                            console.log("modelList ", modelList);
-                            console.log("user id ", user);
+                            // console.log("filteredForModelName ", filteredForModelName);
+                            // console.log("filterList ", filteredList);
+                            // console.log("modelList ", modelList);
+                            // console.log("user id ", user);
 
-                            resolve(filteredList);
+                            // return models contained within syncIndex and models not synced with API
+                            const syncIndexModelsAndUnsyncedModels = unsyncedModels.concat(filteredList)
+                            resolve(syncIndexModelsAndUnsyncedModels);
                         }
                     });
                 })

@@ -104,9 +104,7 @@ export abstract class DbApiModel extends DbBaseModel {
         obj.db = this.db;
         // obj.events = this.events;
         obj.downloadService = this.downloadService;
-
         obj.loadFromApiToCurrentObject(apiObj, oldModel);
-
         return obj;
     }
 
@@ -145,6 +143,7 @@ export abstract class DbApiModel extends DbBaseModel {
                 }
             }
         }
+
         // default boilerplate fields
         this.idApi = this.getNumberValue(apiObj[this.apiPk]);
         this.created_at = this.getDateFromString(apiObj.created_at);
@@ -177,6 +176,7 @@ export abstract class DbApiModel extends DbBaseModel {
         this.TABLE.push([this.COL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_LOCAL_DELETED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_DELETED_BY, 'INT', DbBaseModel.TYPE_NUMBER]);
+
         if (!this.hasOwnProperty('user_id')) {
             this.TABLE.push([this.COL_ID_API, 'INT UNIQUE', DbBaseModel.TYPE_NUMBER, 'idApi']);
         } else {
