@@ -547,9 +547,11 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       cssClass: 'modal-fullscreen',
     });
 
-    const willShow_GuideInfo = await this.miscService.get_guideShown(this.guideId);
-    if (willShow_GuideInfo == null) {
-      this.miscService.set_guideShown(this.guideId);
+    console.log("show_info", this.guideViewHistory.show_info);
+
+    if (this.guideViewHistory.show_info === 0) {
+      this.guideViewHistory.show_info = 1;
+      this.saveStep();
       return await modal.present();
     }
   }
@@ -660,7 +662,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     return await popover.present();
   }
 
-  ionViewWillLeave() {}
+  ionViewWillLeave() { }
 
   backToCollection() {
     const feedbackNavigationExtras: NavigationExtras = {

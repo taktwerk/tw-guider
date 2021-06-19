@@ -68,7 +68,6 @@ export class GuideinfoPage implements OnInit {
     else {
       this.router.navigate(['/guide/' + guide.idApi]);
     }
-
     this.dismiss();
   }
 
