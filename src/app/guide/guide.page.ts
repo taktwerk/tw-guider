@@ -205,7 +205,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   async changeGuideStepCurrentSlide() {
-    console.log('changeGuideStepCurrentSlide', this.guideStepSlides.getActiveIndex());
+    // console.log('changeGuideStepCurrentSlide', this.guideStepSlides.getActiveIndex());
     await this.guideStepSlides
       .getActiveIndex()
       .then((index) => {
@@ -321,24 +321,32 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   public async resumeStep(id) {
     this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]);
+    console.log("this.guideHistories ", this.guideHistories)
     // in collection
     if (this.parentCollectionId) {
-      //  console.log(" in COllection")
-      // this.guideViewHistory = this.guideHistories.filter(h => h.parent_guide_id != undefined).sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate())[0];
-      this.guideViewHistory = this.guideHistories.filter((h) => h.parent_guide_id === this.parentCollectionId)[0];
-      // console.log(this.guideHistories.filter(h => h.parent_guide_id === this.parentCollectionId));
-      if (!this.guideViewHistory) {
-        this.guideViewHistory = this.guideViewHistoryService.newModel();
-      }
-    } else {
-      // console.log("Not in COllection")
-      // console.log(this.guideHistories);
-      // this.guideViewHistory = this.guideHistories.sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate()).filter((h: GuideViewHistoryModel) => !h.parent_guide_id)[0];
-      this.guideViewHistory = this.guideHistories.filter((h) => h.guide_id === this.guide.idApi)[0];
+      this.guideViewHistory = this.guideHistories.filter((h) => (h.parent_guide_id === this.parentCollectionId) && h.user_id === this.userDb.userId)[0];
       if (!this.guideViewHistory) {
         this.guideViewHistory = this.guideViewHistoryService.newModel();
       }
     }
+    else {
+      // console.log("Not in COllection")
+      // console.log(this.guideHistories);
+      // this.guideViewHistory = this.guideHistories.sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate()).filter((h: GuideViewHistoryModel) => !h.parent_guide_id)[0];
+      this.guideViewHistory = this.guideHistories.filter((h) => (h.guide_id === this.guide.idApi) && h.user_id === this.userDb.userId)[0];
+      if (!this.guideViewHistory) {
+        this.guideViewHistory = this.guideViewHistoryService.newModel();
+      }
+    }
+
+    // show guide info if not already shown
+    console.log(this.guideViewHistory)
+    console.log("this.guideViewHistory.show_info ", this.guideViewHistory.show_info)
+    if (this.guideViewHistory.show_info === 0 || !this.guideViewHistory.show_info) {
+      this.presentGuideInfo(this.guideId)
+    }
+
+    // resume step from saved step
     if (this.guideStepSlides && this.guideViewHistory) {
       let stepValue = this.guideViewHistory.step;
 
@@ -346,6 +354,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         stepValue = 0;
       }
 
+      // slide to step
       this.guideStepSlides.slideTo(stepValue).then(async () => {
         if (stepValue !== 0) {
           const alertMessage = await this.translateConfigService.translate('alert.resumed');
@@ -353,27 +362,33 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         }
       });
     }
-
-    // console.log("guideViewHistory ===============");
-    // console.log(this.parentCollectionId);
-    // console.log(this.guideHistories);
-    // console.log(this.guideViewHistory);
-    // console.log("guideViewHistory ===============");
   }
 
-  public async saveStep() {
+  public async saveStep(saveGuideInfo = false) {
     const user = await this.authService.getLastUser();
     if (!user) {
       return;
     }
     // update
+    if (saveGuideInfo) {
+      this.guideViewHistory.show_info = 1;
+    }
     this.guideViewHistory.parent_guide_id = this.parentCollectionId;
     this.guideViewHistory.client_id = this.guide.client_id;
     this.guideViewHistory.user_id = user.userId;
     this.guideViewHistory.guide_id = this.guide.idApi;
-    this.guideViewHistory.step = await this.guideStepSlides.getActiveIndex();
 
-    this.guideViewHistoryService.save(this.guideViewHistory).then(async () => {
+    try {
+      const _activeIndex = await this.guideStepSlides.getActiveIndex();
+      this.guideViewHistory.step = _activeIndex;
+    } catch (error) {
+      console.log(error)
+      this.guideViewHistory.step = 0;
+    }
+
+    console.log("this.guideViewHistory", this.guideViewHistory)
+    this.guideViewHistoryService.save(this.guideViewHistory).then(async (res) => {
+      console.log("save response ", res)
       if (this.resumeMode) { this.apiSync.setIsPushAvailableData(true) }
     })
   }
@@ -404,6 +419,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     loader.present();
     // console.log("snapshot", this.activatedRoute.snapshot)
     this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
+    // this.presentGuideInfo(this.guideId);
     // console.log("guideId", this.guideId)
     this.parentCollectionId = +this.activatedRoute.snapshot.paramMap.get('parentCollectionId');
     // console.log("parentCollectionId", this.parentCollectionId);
@@ -423,12 +439,12 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.isLoadedContent = true;
     this.resumeStep(this.guide.idApi);
 
-    this.presentGuideInfo(this.guideId);
     this.guiderSubscription = this.guiderSubject.subscribe(async (guideId) => {
       // console.log("this.guiderResetSubject.subscribe((guideId)", guideId);
       const loader = await this.loader.create();
       loader.present();
       this.guideId = guideId;
+      // this.presentGuideInfo(this.guideId);
       const guiderById = await this.guiderService.getById(this.guideId);
       if (guiderById.length) {
         this.guide = guiderById[0];
@@ -439,7 +455,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         loader.dismiss();
         this.isLoadedContent = true;
         this.resumeStep(this.guide.idApi);
-        this.presentGuideInfo(this.guideId);
         this.miscService.onSlideRestart.next(true);
         this.reinitializeGuideStepSlides();
       }
@@ -549,11 +564,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
     console.log("show_info", this.guideViewHistory.show_info);
 
-    if (this.guideViewHistory.show_info === 0) {
-      this.guideViewHistory.show_info = 1;
-      this.saveStep();
-      return await modal.present();
-    }
+    // if (this.guideViewHistory.show_info === 0 || !this.guideViewHistory.show_info) {
+    this.saveStep(true);
+    return await modal.present();
+    // }
   }
 
   async setGuides() {

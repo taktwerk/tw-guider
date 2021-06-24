@@ -172,7 +172,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
 
   async ionViewWillEnter() {
     this.onboardingSyncShown = await this.miscService.get_guideShown("onboardingSyncShown");
-    console.log("isStartSync", this.isStartSync)
+    // console.log("isStartSync", this.isStartSync)
     if (this.isStartSync) {
       console.log(this.isStartSync)
       this.miscService.set_guideShown("onboardingSyncShown");

@@ -43,7 +43,7 @@ export class HomePage {
     private ngZone: NgZone,
     private miscService: MiscService,
     private migrationProvider: MigrationProvider
-  ) {}
+  ) { }
 
   b: any;
 
@@ -80,7 +80,7 @@ export class HomePage {
               if (user) {
                 await this.authService.logout();
               }
-              console.log('Calll -123', this.appSetting, this.config);
+              // console.log('Calll -123', this.appSetting, this.config);
               const host = this.appSetting.isEnabledUsb ? this.appSetting.usbHost : this.config.host;
               this.appConfirmUrl = host + environment.apiUrlPath + '/login/';
               if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && this.config.clientIdentifier) {
@@ -91,7 +91,7 @@ export class HomePage {
                 await this.authService.loginByIdentifier(this.appConfirmUrl, 'user', this.config.userIdentifier);
               }
 
-              console.log('Calll -456', this.appSetting, this.config);
+              // console.log('Calll -456', this.appSetting, this.config);
               this.config.isWasQrCodeSetup = true;
               this.appSetting.save(this.config).then(() => {
                 this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
@@ -195,7 +195,7 @@ export class HomePage {
 
   changeUsbMode() {
     this.appSetting.appSetting.find().then(async (result) => {
-      console.log('app setting result', result);
+      // console.log('app setting result', result);
       if (result) {
         result.settings.isEnabledUsb = !this.appSetting.isEnabledUsb;
         await result.save();

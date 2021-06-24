@@ -53,7 +53,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
   }
   ionViewDidLeave() {
     this.reference_id = null
-    console.log(this.reference_id, "this.reference_id")
+    // console.log(this.reference_id, "this.reference_id")
   }
 
   public async setModels() {
@@ -157,14 +157,14 @@ export class FeedbackPage implements OnInit, OnDestroy {
       this.backDefaultHref = feedbackData.backUrl;
       this.guideId = feedbackData.guideId;
 
-      console.log("this.guideId", this.guideId)
+      // console.log("this.guideId", this.guideId)
 
       this.setModels();
       this.detectChanges();
     });
 
     this.eventSubscription = this.miscService.events.subscribe((event) => {
-      console.log('What causing the thingy to flicker? ', event.TAG)
+      // console.log('What causing the thingy to flicker? ', event.TAG)
       switch (event.TAG) {
         case this.feedbackService.dbModelApi.TAG + ':create':
         case this.feedbackService.dbModelApi.TAG + ':update':

@@ -59,8 +59,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    console.log(" ionViewDidEnter")
-    
     this.setGuideSteps(this.guideId);
     this.detectChanges();
 

@@ -61,12 +61,12 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
     this.activatedRoute.queryParams.subscribe(async params => {
       if (params.guideId) {
         this.guideCategoryId = params.guideCategoryId;
-        console.log(this.guideCategoryId, "this.guideCategoryId")
+        // console.log(this.guideCategoryId, "this.guideCategoryId")
         this.collectionGuides = [];
         const guiderById = await this.guiderService.getById(params.guideId);
         if (guiderById.length) {
           this.guide = guiderById[0];
-          console.log("this.guide.idApi", this.guide.idApi)
+          // console.log("this.guide.idApi", this.guide.idApi)
           await this.setGuideInfo();
           this.isLoadedContent = true;
           this.detectChanges();

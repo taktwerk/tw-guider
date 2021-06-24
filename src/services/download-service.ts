@@ -367,12 +367,12 @@ export class DownloadService {
       // );
 
       this.checkDir(modelName).then((res) => {
-        console.log(res)
-        console.log(correctPath, currentName, newFilePath, newFileName)
+        // console.log(res)
+        // console.log(correctPath, currentName, newFilePath, newFileName)
 
         this.copyToLocalDir(correctPath, currentName, newFilePath, newFileName).then((success) => {
-          console.log(success)
-          console.log('is sucessss copieng');
+          // console.log(success)
+          // console.log('is sucessss copieng');
           this.loggerService.getLogger().info("File Copy Successful")
           resolve(newFilePath + '/' + newFileName);
         })

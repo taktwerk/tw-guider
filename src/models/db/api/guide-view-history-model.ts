@@ -40,7 +40,6 @@ export class GuideViewHistoryModel extends DbApiModel {
         [GuideViewHistoryModel.COL_STEP, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuideViewHistoryModel.COL_PARENT_GUIDE_ID, 'INT', DbBaseModel.TYPE_NUMBER],
         [GuideViewHistoryModel.COL_SHOW_INFO, 'TINYINT(1) DEFAULT 0', DbBaseModel.TYPE_NUMBER],
-
     ];
 
     public migrations = ['AddShowInfoColumnToGuideViewHistory', 'AddModelColumnsToGuideViewHistoryTableMigration'];

@@ -284,7 +284,7 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(async params => {
       const protocolData = params;
-      console.log('protocol add edit page data', protocolData);
+      // console.log('protocol add edit page data', protocolData);
       this.templateId = +protocolData.templateId;
       this.clientId = +protocolData.clientId;
       this.reference_id = +protocolData.referenceId;

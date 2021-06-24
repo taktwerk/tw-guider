@@ -58,7 +58,7 @@ export class ListPage implements OnInit, OnDestroy {
     }
     this.showAllGuides();
 
-    console.log("Guides / Category guides", this.router.url)
+    // console.log("Guides / Category guides", this.router.url)
   }
 
   async showAllGuides() {
@@ -71,7 +71,7 @@ export class ListPage implements OnInit, OnDestroy {
 
       if (guiderCategoryById.length) {
         this.guideCategory = guiderCategoryById[0];
-        console.log("this.guideCategory.idApi", this.guideCategory.idApi)
+        // console.log("this.guideCategory.idApi", this.guideCategory.idApi)
         this.detectChanges();
       }
     }

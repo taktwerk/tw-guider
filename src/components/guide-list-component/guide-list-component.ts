@@ -55,7 +55,7 @@ export class GuideListComponent implements OnInit {
 
   ngOnInit(): void {
     this.guideList = this.guides.slice(0, this.displayLimit);
-    console.log("parentCollectionId", this.parentCollectionId)
+    // console.log("parentCollectionId", this.parentCollectionId)
   }
 
   loadData(event) {
@@ -98,7 +98,7 @@ export class GuideListComponent implements OnInit {
       this.openCollection(guide);
       return;
     }
-    console.log("parentCollectionId", this.parentCollectionId)
+    // console.log("parentCollectionId", this.parentCollectionId)
     if (this.parentCollectionId) {
       this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
     }
