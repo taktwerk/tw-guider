@@ -1,12 +1,15 @@
-## Set up project:
+## Setup
     
     npm install
-    cp src/environments/environment.example.ts src/environments/environment.ts
-    cp local.properties.example local.properties
     
-then one of the ionic cordova commands, eg:
+then one of the ionic capacitor commands, eg:
 
-    ionic cordova build android
+    ionic cap run android
+    
+or our shortcuts:
+
+    sh d/prod_cap.sh
+    sh d/ios/prod_cap.sh
 
 ## Configuration
 
