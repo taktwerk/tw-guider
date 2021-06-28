@@ -1,23 +1,23 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
-    </ion-buttons>
-    <ion-title>
-      {{ 'about.header' | translate:params }}
-    </ion-title>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
+        </ion-buttons>
+        <ion-title>
+            {{ 'about.header' | translate:params }}
+        </ion-title>
 
-  </ion-toolbar>
+    </ion-toolbar>
 </ion-header>
 
 <style>
-  ion-content {
-    text-align: center;
-  }
+    ion-content {
+        text-align: center;
+    }
 </style>
 
 <ion-content class="grey-background ion-padding">
-    <ion-item  *ngIf="versionNumber">
+    <ion-item *ngIf="versionNumber">
         <ion-label>
             <ion-icon slot="start" name="apps"></ion-icon>
             <span>
@@ -28,7 +28,7 @@
             {{ versionNumber }}
         </span>
     </ion-item>
-    <ion-item  *ngIf="apiVersionNumber">
+    <ion-item *ngIf="apiVersionNumber">
         <ion-label>
             <ion-icon slot="start" name="apps"></ion-icon>
             <span>
@@ -47,7 +47,7 @@
             </span>
         </ion-label>
         <span class="ion-align-items-end">
-            taktwerk GmbH, 2012-2020
+            taktwerk GmbH, 2012-{{currDate | date:'yyyy'}}
         </span>
     </ion-item>
 

@@ -188,6 +188,7 @@ export class AuthService {
 
                 user.password = this.cryptoProvider.hashPassword(formData.password);
                 user.loginDate = new Date();
+
                 user.save(true).then((authSaveResult) => {
                     if (authSaveResult) {
                         this.isLoggedin = true;
@@ -213,6 +214,21 @@ export class AuthService {
                 });
             });
         });
+    }
+
+    findExistingUser(formData) {
+        return new Promise((resolve) => {
+            this.auth.findFirst(['username', '"' + formData.username + '"'], 'user_id DESC').then((result) => {
+                if (!result || !result[0]) {
+                    resolve(false);
+                    return;
+                }
+                else {
+                    const user = result[0];
+                    resolve(user);
+                }
+            })
+        })
     }
 
     loginByIdentifier(appConfirmUrl, type: string, identifier: string) {
@@ -304,7 +320,7 @@ export class AuthService {
         return new Promise(resolve => {
             const findAuthModel = this.newAuthModel();
 
-            findAuthModel.findFirst(['user_id', user.user_id], 'login_at DESC').then((existUser) => {
+            findAuthModel.findFirst(['user_id', user.user_id], 'login_at DESC').then(async (existUser) => {
                 if (existUser.length) {
                     this.auth = existUser[0];
                     this.auth.authToken = user.access_token;
@@ -319,8 +335,15 @@ export class AuthService {
                     this.auth.loginDate = new Date();
                     this.auth.additionalInfo = user.additionalInfo;
                     this.auth.groups = user.groups;
+
+                    // show/hide sync button on guide category page
+                    const onboardingSyncShown = await this.miscService.get_guideShown("onboardingSyncShown");
+                    if (!onboardingSyncShown) this.miscService.unset_guideShown('onboardingSyncShown');
                 }
                 else {
+                     // show sync button on guide category page
+                    this.miscService.unset_guideShown('onboardingSyncShown');
+
                     if ((formData && !formData.username) || (!formData && !user.username)) {
                         resolve(false);
                         return false;

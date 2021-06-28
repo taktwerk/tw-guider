@@ -10,6 +10,7 @@ import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
 import { Subscription } from 'rxjs';
 import { MiscService } from 'src/services/misc-service';
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 
 @Component({
   selector: 'feedback-page',
@@ -44,13 +45,15 @@ export class FeedbackPage implements OnInit, OnDestroy {
     private videoService: VideoService,
     private pictureService: PictureService,
     private miscService: MiscService,
-    private platform: Platform
+    private platform: Platform,
+    private syncIndexService: SyncIndexService,
+
   ) {
     this.authService.checkAccess('feedback');
   }
   ionViewDidLeave() {
     this.reference_id = null
-    console.log(this.reference_id, "this.reference_id")
+    // console.log(this.reference_id, "this.reference_id")
   }
 
   public async setModels() {
@@ -81,18 +84,13 @@ export class FeedbackPage implements OnInit, OnDestroy {
       );
       feedbackSearchCondition.push(['reference_id', this.reference_id]);
     }
-    this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(
-      feedbackSearchCondition,
-      'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC'
-    );
 
-    // console.log(this.feedbackList[0]);
-    // console.log(this.feedbackList[0].getFileImagePath());
-    // console.log(this.feedbackList[1]);
-    // console.log(this.feedbackList[1].getFileImagePath());
-
-    // 
-
+    this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(feedbackSearchCondition, 'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC');
+    // console.log("this.feedbackList", this.feedbackList)
+    if (this.feedbackList) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(this.feedbackList, this.feedbackList[0].TABLE_NAME);
+      this.feedbackList = syncedList;
+    }
   }
 
   public openFile(basePath: string, modelName: string, title?: string) {
@@ -101,6 +99,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
     if (title) {
       fileTitle = title;
     }
+
     const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
 
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
@@ -158,14 +157,14 @@ export class FeedbackPage implements OnInit, OnDestroy {
       this.backDefaultHref = feedbackData.backUrl;
       this.guideId = feedbackData.guideId;
 
-      console.log("this.guideId", this.guideId)
+      // console.log("this.guideId", this.guideId)
 
       this.setModels();
       this.detectChanges();
     });
 
     this.eventSubscription = this.miscService.events.subscribe((event) => {
-      console.log('What causing the thingy to flicker? ', event.TAG)
+      // console.log('What causing the thingy to flicker? ', event.TAG)
       switch (event.TAG) {
         case this.feedbackService.dbModelApi.TAG + ':create':
         case this.feedbackService.dbModelApi.TAG + ':update':

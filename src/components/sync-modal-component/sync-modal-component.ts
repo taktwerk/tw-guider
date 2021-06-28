@@ -16,7 +16,7 @@ import { AppSetting } from '../../services/app-setting';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { LoggerService } from 'src/services/logger-service';
-import { Subscription} from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MiscService } from 'src/services/misc-service';
 import { Storage } from '@ionic/storage';
 
@@ -101,7 +101,6 @@ export class SyncModalComponent implements OnInit, OnDestroy {
       this.appSetting.showIsNotMigratedDbPopup();
       return;
     }
-    console.log('this.isAvailableForPushData', this.isAvailableForPushData)
     // make sync if local changes
     if (this.isAvailableForPushData) {
       this.apiSync.makeSyncProcess();
@@ -110,7 +109,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
     this.apiSync.checkAvailableChanges().then((res) => {
       // make sync if changes from server
       if (res) {
-        this.apiSync.makeSyncProcess();
+        this.apiSync.makeSyncProcess()
       }
     })
   }
@@ -170,9 +169,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
       this.detectChanges();
     });
     this.apiSync.syncProgressStatus.subscribe((syncProgressStatus) => {
-      if (syncProgressStatus) {
-        this.syncProgressStatus = syncProgressStatus;
-      }
+      this.syncProgressStatus = syncProgressStatus;
       this.detectChanges();
     });
     this.apiSync.isPrepareSynData.subscribe((isPrepareSynData) => {

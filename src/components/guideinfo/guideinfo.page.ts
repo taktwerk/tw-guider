@@ -61,14 +61,13 @@ export class GuideinfoPage implements OnInit {
       this.openCollection(guide);
       return;
     }
-    console.log("parentCollectionId", this.parentCollectionId)
+    // console.log("parentCollectionId", this.parentCollectionId)
     if (this.parentCollectionId) {
       this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
     }
     else {
       this.router.navigate(['/guide/' + guide.idApi]);
     }
-
     this.dismiss();
   }
 

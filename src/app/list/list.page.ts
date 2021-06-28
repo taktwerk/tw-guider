@@ -12,6 +12,7 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { MiscService } from 'src/services/misc-service';
 import { Subscription } from 'rxjs';
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 
 
 @Component({
@@ -44,6 +45,7 @@ export class ListPage implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private translateConfigService: TranslateConfigService,
     private miscService: MiscService,
+    private syncIndexService: SyncIndexService,
 
   ) {
     this.authService.checkAccess('guide');
@@ -56,25 +58,29 @@ export class ListPage implements OnInit, OnDestroy {
     }
     this.showAllGuides();
 
-    console.log("Guides / Category guides", this.router.url)
+    // console.log("Guides / Category guides", this.router.url)
   }
 
   async showAllGuides() {
     const loader = await this.loader.create();
     loader.present();
     this.guideCategoryId = +this.activatedRoute.snapshot.paramMap.get('guideCategoryId');
+
     if (this.guideCategoryId) {
-      const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
+      const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId);
+
       if (guiderCategoryById.length) {
         this.guideCategory = guiderCategoryById[0];
-        console.log("this.guideCategory.idApi", this.guideCategory.idApi)
+        // console.log("this.guideCategory.idApi", this.guideCategory.idApi)
         this.detectChanges();
       }
-    } else {
+    }
+    else {
       this.guideCategory = this.guideCategoryService.newModel();
       this.guideCategory.name = this.translateConfigService.translateWord('guide-categories.no-category');
       this.detectChanges();
     }
+
     await this.findAllGuideCategories();
     loader.dismiss();
     this.isLoadedContent = true;
@@ -91,8 +97,11 @@ export class ListPage implements OnInit, OnDestroy {
 
   setGuideInfo() {
     const guideCategoryId = this.guideCategory ? this.guideCategory.idApi : null;
-    this.guideCategoryService.getGuides(guideCategoryId, this.searchValue, !guideCategoryId).then((guides) => {
-      this.guideCategory.guides = guides;
+    this.guideCategoryService.getGuides(guideCategoryId, this.searchValue, !guideCategoryId).then(async (guides) => {
+      if (guides.length > 0) {
+        const syncedList = await this.syncIndexService.getSyncIndexModel(guides, guides[0].TABLE_NAME);
+        this.guideCategory.guides = syncedList;
+      }
     });
   }
 

@@ -132,7 +132,7 @@ export class AssetviewComponent implements OnInit {
     // if (this.model.isExistThumbOfFile()) {
     // console.log(e)
     const videoFileUri = this.downloadService.getNativeFilePath(this.model.getFileName(), this.model.TABLE_NAME);
-    console.log(videoFileUri)
+    // console.log(videoFileUri)
 
     // make temporarily thumbnail
     const option: CreateThumbnailOptions = {

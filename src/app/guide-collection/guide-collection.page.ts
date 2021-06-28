@@ -55,96 +55,18 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
         this.haveProtocolPermissions = true;
       }
     }
-
-    // this.platform.backButton.subscribe((res) => {
-    //   console.log(this.router.url)
-    //   console.log("Testing", '/guide-collection/' + this.guide.idApi + '?guideId=' + this.guide.idApi, this.guideCategoryId)
-    //   if (this.router.url.includes('/guide-collection/' + this.guide.idApi + '?guideId=' + this.guide.idApi) && this.guideCategoryId != null) {
-    //     this.router.navigate(['/guides/' + this.guideCategoryId])
-    //   }
-    // })
-  }
-
-  ionViewDidLeave() {
-    // this.guideCategoryId = null;
-  }
-
-  // async showAllGuides() {
-  //   const loader = await this.loader.create();
-  //   loader.present();
-  //   this.guideCategoryId = +this.activatedRoute.snapshot.paramMap.get('guideCategoryId');
-  //   if (this.guideCategoryId) {
-  //     const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId)
-  //     if (guiderCategoryById.length) {
-  //       this.guideCategory = guiderCategoryById[0];
-  //       this.detectChanges();
-  //     }
-  //   }
-  //   await this.findAllGuideCategories();
-  //   loader.dismiss();
-  // }
-
-  public searchGuides($event) {
-    this.searchValue = $event.detail.value;
-    this.setGuideInfo();
-  }
-
-  async findAllGuideCategories() {
-    this.setGuideInfo();
-  }
-
-  async setGuideInfo() {
-    if (!this.guide) {
-      return;
-    }
-    const collectionGuideChildren = await this.guide.setChildren();
-    const collectionGuidesTemporary = [];
-    for (let i = 0; i < collectionGuideChildren.length; i++) {
-      let guides = await this.guiderService.getById(collectionGuideChildren[i].guide_id);
-      if (guides.length) {
-        let guide = guides[0];
-        await guide.setChildren();
-        await guide.setProtocolTemplate();
-        collectionGuidesTemporary.push(guide);
-      }
-    }
-    this.collectionGuides = collectionGuidesTemporary;
-    this.detectChanges();
-  }
-
-  detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
-      this.changeDetectorRef.detectChanges();
-    }
-  }
-
-  trackByFn(item, index) {
-    return item[item.COL_ID];
-  }
-
-  openProtocol(guide: GuiderModel) {
-    const feedbackNavigationExtras: NavigationExtras = {
-      queryParams: {
-        templateId: guide.protocol_template_id,
-        referenceModelAlias: 'guide',
-        referenceId: guide.idApi,
-        clientId: guide.client_id,
-        backUrl: this.router.url
-      }
-    };
-    this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }
 
   async ngOnInit() {
     this.activatedRoute.queryParams.subscribe(async params => {
       if (params.guideId) {
         this.guideCategoryId = params.guideCategoryId;
-        console.log(this.guideCategoryId, "this.guideCategoryId")
+        // console.log(this.guideCategoryId, "this.guideCategoryId")
         this.collectionGuides = [];
         const guiderById = await this.guiderService.getById(params.guideId);
         if (guiderById.length) {
           this.guide = guiderById[0];
-          console.log("this.guide.idApi", this.guide.idApi)
+          // console.log("this.guide.idApi", this.guide.idApi)
           await this.setGuideInfo();
           this.isLoadedContent = true;
           this.detectChanges();
@@ -215,6 +137,60 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
         default:
       }
     })
+  }
+
+  public searchGuides($event) {
+    this.searchValue = $event.detail.value;
+    this.setGuideInfo();
+  }
+
+  async findAllGuideCategories() {
+    this.setGuideInfo();
+  }
+
+  async setGuideInfo() {
+    if (!this.guide) {
+      return;
+    }
+
+    const collectionGuideChildren = await this.guide.setChildren();
+    const collectionGuidesTemporary = [];
+
+    for (let i = 0; i < collectionGuideChildren.length; i++) {
+      let guides = await this.guiderService.getById(collectionGuideChildren[i].guide_id);
+      if (guides.length) {
+        let guide = guides[0];
+        await guide.setChildren();
+        await guide.setProtocolTemplate();
+        collectionGuidesTemporary.push(guide);
+      }
+    }
+
+    this.collectionGuides = collectionGuidesTemporary;
+    this.detectChanges();
+  }
+
+  detectChanges() {
+    if (!this.changeDetectorRef['destroyed']) {
+      this.changeDetectorRef.detectChanges();
+    }
+  }
+
+  trackByFn(item, index) {
+    return item[item.COL_ID];
+  }
+
+  openProtocol(guide: GuiderModel) {
+    const feedbackNavigationExtras: NavigationExtras = {
+      queryParams: {
+        templateId: guide.protocol_template_id,
+        referenceModelAlias: 'guide',
+        referenceId: guide.idApi,
+        clientId: guide.client_id,
+        backUrl: this.router.url
+      }
+    };
+    this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }
 
   ngOnDestroy(): void {

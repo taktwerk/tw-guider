@@ -5,4 +5,5 @@ export * from '../add-model-columns-to-guide-view-history-table-migration';
 export * from '../add-design_canvas_meta';
 export * from '../add-design_canvas_file';
 export * from '../add-group-column-to-user-table-migration';
-
+export * from '../add-columns-to-sync-index-model';
+export * from '../add-show-info-column-to-guide-view-history-table-migration';

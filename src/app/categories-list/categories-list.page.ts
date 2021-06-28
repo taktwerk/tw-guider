@@ -1,3 +1,4 @@
+import { UserService } from './../../services/user-service';
 
 import { MiscService } from './../../services/misc-service';
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
@@ -17,6 +18,7 @@ import { SyncService } from 'src/services/sync-service';
 import { SyncModalComponent } from 'src/components/sync-modal-component/sync-modal-component';
 import { debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
 
 @Component({
   selector: 'app-list',
@@ -60,7 +62,9 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     public appSetting: AppSetting,
     private syncService: SyncService,
     private modalController: ModalController,
-    private miscService: MiscService
+    private miscService: MiscService,
+    private userService: UserService,
+    private syncIndexService: SyncIndexService,
 
   ) {
     this.authService.checkAccess('guide');
@@ -71,7 +75,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
         this.haveProtocolPermissions = true;
       }
     }
-    this.showAllGuides();
+
   }
 
   async showAllGuides() {
@@ -89,20 +93,52 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   async setGuides() {
-    this.guides = await this.guideCategoryService.getGuides(null, this.searchValue);
-    this.guidesWithoutCategories = await this.guideCategoryService.getGuides(null, '', true);
+    // syncIndexify guides
+    const _guides = await this.guideCategoryService.getGuides(null, this.searchValue);
+    // console.log("_guides", _guides)
+
+    if (_guides.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
+      this.guides = syncedList;
+    }
+
+    // syncIndexify guidesWithoutCategories
+    const _guidesWithoutCategories = await this.guideCategoryService.getGuides(null, '', true);
+    if (_guidesWithoutCategories.length > 0) {
+      const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(_guidesWithoutCategories, _guidesWithoutCategories[0].TABLE_NAME);
+      this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
+      // console.log("guidesWithoutCategorie", this.guidesWithoutCategories);
+    }
   }
 
   async findAllGuideCategories() {
+    // syncIndexify guideCategories
     this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
-
-    this.setCategoryGuides();
+    // console.log("_guideCategories ", this.guideCategories)
+    if (this.guideCategories.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideCategories, this.guideCategories[0].TABLE_NAME);
+      this.guideCategories = syncedList;
+      this.setCategoryGuides();
+    }
   }
 
   async setCategoryGuides() {
     this.guideCategories.map(guideCategory => {
-      guideCategory.setGuides();
+      guideCategory.setGuides().then(async res => {
+        // // console.log("guideCategory.guides", guideCategory.guides)
+        // if (guideCategory.guides.length > 0) {
+        //   const syncedList = await this.syncIndexService.getSyncIndexModel(guideCategory.guides, guideCategory.guides[0].TABLE_NAME);
+        //   guideCategory.guides = syncedList;
+        //   guideCategory.guidesCount = syncedList.length;
+        //   console.log("guideCategory.guidesCount", guideCategory.guidesCount);
+        // }
+        // else {
+        //   guideCategory.guidesCount = 0;
+        // }
+      })
     });
+
+
   }
 
   detectChanges() {
@@ -136,7 +172,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
 
   async ionViewWillEnter() {
     this.onboardingSyncShown = await this.miscService.get_guideShown("onboardingSyncShown");
-    console.log("isStartSync", this.isStartSync)
+    // console.log("isStartSync", this.isStartSync)
     if (this.isStartSync) {
       console.log(this.isStartSync)
       this.miscService.set_guideShown("onboardingSyncShown");
@@ -144,6 +180,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.showAllGuides();
+
     this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
       this.isStartSync = isSync;
       this.detectChanges();
@@ -237,58 +275,6 @@ export class CategoriesListPage implements OnInit, OnDestroy {
         default:
       }
     })
-
-    // this.events.subscribe('user:login', () => {
-    //   this.findAllGuideCategories();
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':update', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guideCategoryBindingService.dbModelApi.TAG + ':create', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':update', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':create', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-
-    // this.events.subscribe(this.guideCategoryService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.findAllGuideCategories();
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':update', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':create', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-    // this.events.subscribe(this.guiderService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':update', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':delete', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-    // this.events.subscribe(this.guideChildService.dbModelApi.TAG + ':create', (model) => {
-    //   this.setGuides();
-    //   this.setCategoryGuides();
-    // });
-
-    // this.events.subscribe('network:online', (isNetwork) => {
-    //   this.authService.checkAccess('guide');
-    // });
 
     this.type = 'browse';
   }

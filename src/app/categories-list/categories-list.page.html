@@ -20,8 +20,9 @@
       <ion-icon name="search"></ion-icon>
     </ion-segment-button>
   </ion-segment>
+
   <div [ngSwitch]="type">
-    <div class="category-content" *ngSwitchCase="'browse'">
+    <div class="category-content" *ngSwitchDefault="'browse'">
       <span *ngIf="isLoadedContent">
 
         <div class="guide-category" *ngFor="let guideCategory of guideCategories; trackBy: trackByFn">
@@ -45,7 +46,7 @@
 
       </span>
     </div>
-    
+
     <div *ngSwitchCase="'search'">
       <ion-searchbar animated="true" mode="md" class="search-categories" autocomplete="on" debounce="250"
         [value]="searchValue" placeholder="{{ 'Search all guides' | translate:params }}"
@@ -58,8 +59,7 @@
             <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
             </div>
           </div>
-          <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides">
-          </guide-list-component>
+          <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides"></guide-list-component>
         </div>
         <div *ngIf="!guides.length" [ngStyle]="{'margin': '15px'}">{{ 'noResults' | translate:params }}</div>
       </span>

@@ -52,7 +52,8 @@ export class HomePage {
       this.closeScanner();
       return false;
     }
-    this.qrScanner.prepare()
+    this.qrScanner
+      .prepare()
       .then((status: QRScannerStatus) => {
         if (status.denied) {
           return false;
@@ -61,7 +62,7 @@ export class HomePage {
           return false;
         }
         this.isScanning = true;
-        this.qrScanner.show().then(res => {
+        this.qrScanner.show().then((res) => {
           this.detectChanges();
         });
 
@@ -73,29 +74,28 @@ export class HomePage {
             this.http.showToast('validation.QR-code has wrong information', '', 'danger');
             this.closeScanner();
             return;
-          }
-          else {
+          } else {
             try {
               const user = await this.userService.getUser();
               if (user) {
                 await this.authService.logout();
               }
+              // console.log('Calll -123', this.appSetting, this.config);
               const host = this.appSetting.isEnabledUsb ? this.appSetting.usbHost : this.config.host;
               this.appConfirmUrl = host + environment.apiUrlPath + '/login/';
               if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && this.config.clientIdentifier) {
                 await this.authService.loginByIdentifier(this.appConfirmUrl, 'client', this.config.clientIdentifier);
-              }
-              else if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT && this.config.client) {
+              } else if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT && this.config.client) {
                 await this.authService.loginByIdentifier(this.appConfirmUrl, 'client-default-user', this.config.client);
-              }
-              else if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && this.config.userIdentifier) {
+              } else if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && this.config.userIdentifier) {
                 await this.authService.loginByIdentifier(this.appConfirmUrl, 'user', this.config.userIdentifier);
               }
 
+              // console.log('Calll -456', this.appSetting, this.config);
               this.config.isWasQrCodeSetup = true;
               this.appSetting.save(this.config).then(() => {
                 this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
-                this.userService.getUser().then(loggedUser => {
+                this.userService.getUser().then((loggedUser) => {
                   const isUserLoggedIn = !!loggedUser;
                   if (!isUserLoggedIn) {
                     this.ngZone.run(() => {
@@ -123,13 +123,8 @@ export class HomePage {
       .catch((err: any) => {
         // ---- iOS Simulator
         if ((<any>window).device.isVirtual) {
-          this.presentAlert(
-            'Config Error',
-            null,
-            'Running on Simulator',
-            ['OK']
-          );
-          const text = '{"mode":2,"taktwerk":"guider","host":"http:\/\/tw-app-dev.devhost.taktwerk.ch"}';
+          this.presentAlert('Config Error', null, 'Running on Simulator', ['OK']);
+          const text = '{"mode":2,"taktwerk":"guider","host":"http://tw-app-dev.devhost.taktwerk.ch"}';
           const config = JSON.parse(text);
           const appConfirmUrl = config.host + environment.apiUrlPath + '/login/';
           if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
@@ -140,7 +135,7 @@ export class HomePage {
           config.isWasQrCodeSetup = true;
           this.appSetting.save(config).then(() => {
             this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
-            this.userService.getUser().then(loggedUser => {
+            this.userService.getUser().then((loggedUser) => {
               const isUserLoggedIn = !!loggedUser;
               if (!isUserLoggedIn) {
                 this.ngZone.run(() => {
@@ -148,7 +143,7 @@ export class HomePage {
                 });
               } else {
                 // this.events.publish('qr-code:setup');
-                this.miscService.events.next({ TAG: 'qr-code:setup' })
+                this.miscService.events.next({ TAG: 'qr-code:setup' });
                 this.ngZone.run(() => {
                   this.navCtrl.navigateRoot('/guide-categories');
                 });
@@ -161,12 +156,7 @@ export class HomePage {
         }
         // ----
         else {
-          this.presentAlert(
-            'Config Error',
-            null,
-            'There was an error using the camera. Please try again.',
-            ['OK']
-          );
+          this.presentAlert('Config Error', null, 'There was an error using the camera. Please try again.', ['OK']);
           this.closeScanner();
         }
       });
@@ -175,7 +165,7 @@ export class HomePage {
   closeScanner() {
     if (this.isScanning) {
       this.isScanning = false;
-      this.qrScanner.hide().then(res => {
+      this.qrScanner.hide().then((res) => {
         this.qrScanner.destroy();
       });
       this.scanSub.unsubscribe();
@@ -198,14 +188,14 @@ export class HomePage {
       header,
       subHeader,
       message,
-      buttons
+      buttons,
     });
     await alert.present();
   }
 
   changeUsbMode() {
     this.appSetting.appSetting.find().then(async (result) => {
-      console.log('app setting result', result);
+      // console.log('app setting result', result);
       if (result) {
         result.settings.isEnabledUsb = !this.appSetting.isEnabledUsb;
         await result.save();

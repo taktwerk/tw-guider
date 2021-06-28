@@ -19,12 +19,10 @@
           <h6>{{ 'sync-modal.Last successful sync date:' | translate:params }}</h6>
           {{ this.getLastSyncDate() }}
         </section>
-        <div *ngIf="isNetwork || appSetting.isEnabledUsb">
 
+        <div *ngIf="isNetwork || appSetting.isEnabledUsb">
           <section>
-            
-            <app-progress-bar 
-            [progress]="syncedItemsPercent"
+            <app-progress-bar [progress]="syncedItemsPercent"
               [color]="syncProgressStatus === 'failed' ? '#989aa2' : '#babcbf'">
             </app-progress-bar>
 
@@ -39,11 +37,22 @@
 
           </section>
 
-          <section *ngIf="modeSync === 0" class="modeSync0">
+          <!-- {{syncProgressStatus}}
+          {{!['progress', 'resume', 'pause'].includes(syncProgressStatus)}}
+          {{isAvailableForSyncData}} -->
 
+          <!-- Show if Sync Mode is Manual -->
+          <section *ngIf="modeSync === 0" class="modeSync0">
+            <ion-button class="sync-btn"
+              *ngIf="!['pause', 'progress'].includes(syncProgressStatus) && !isAvailableForSyncData && !isStartSync" (click)="syncData()"
+              color="primary">
+              {{ 'sync-modal.Synchronize Data' | translate:params }}
+            </ion-button>
+
+            <!-- Show if sync not started -->
             <span *ngIf="!isStartSync" class="notStartSync">
               <ion-button class="sync-btn"
-                *ngIf="!['progress', 'resume','pause'].includes(syncProgressStatus) || isAvailableForSyncData"
+                *ngIf="!['pause', 'progress'].includes(syncProgressStatus) && isAvailableForSyncData"
                 (click)="syncData()" color="primary">
                 {{ 'sync-modal.Synchronize Data' | translate:params }}
               </ion-button>
@@ -53,6 +62,7 @@
               </ion-button>
             </span>
 
+            <!-- Show when sync starts -->
             <span *ngIf="isStartSync">
               <ion-button *ngIf="['progress', 'resume'].includes(syncProgressStatus)" (click)="stopSyncData()"
                 color="primary">
@@ -64,11 +74,9 @@
               (click)="cancelSyncData()" color="primary">
               {{ 'sync-modal.Cancel' | translate:params }}
             </ion-button>
-
           </section>
-
         </div>
-        
+
         <div *ngIf="!isNetwork && !appSetting.isEnabledUsb">
           <div>{{ 'sync-modal.No network connection.' | translate:params }}</div>
           <div>{{ 'sync-modal.Data synchronization is not yet possible.' | translate:params }}</div>

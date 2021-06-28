@@ -8,6 +8,8 @@ import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
 import { MiscService } from 'src/services/misc-service';
+import { GuideViewHistoryModel } from 'src/models/db/api/guide-view-history-model';
+import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 
 @Component({
   selector: 'guide-list-component',
@@ -24,6 +26,8 @@ export class GuideListComponent implements OnInit {
 
   guideList: GuiderModel[];
   displayLimit = 10;
+  public guideViewHistory: GuideViewHistoryModel = this.guideViewHistoryService.newModel();
+  public guideHistories: GuideViewHistoryModel[] = [];
 
   constructor(
     private storage: Storage,
@@ -34,6 +38,8 @@ export class GuideListComponent implements OnInit {
     public platform: Platform,
     public location: Location,
     private miscService: MiscService,
+    private guideViewHistoryService: GuideViewHistoryService,
+
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -49,7 +55,7 @@ export class GuideListComponent implements OnInit {
 
   ngOnInit(): void {
     this.guideList = this.guides.slice(0, this.displayLimit);
-    console.log("parentCollectionId", this.parentCollectionId)
+    // console.log("parentCollectionId", this.parentCollectionId)
   }
 
   loadData(event) {
@@ -92,7 +98,7 @@ export class GuideListComponent implements OnInit {
       this.openCollection(guide);
       return;
     }
-    console.log("parentCollectionId", this.parentCollectionId)
+    // console.log("parentCollectionId", this.parentCollectionId)
     if (this.parentCollectionId) {
       this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
     }
@@ -109,18 +115,46 @@ export class GuideListComponent implements OnInit {
     return item.idApi;
   }
 
-  async presentGuideInfo(guideId) {
+  async presentGuideInfo(guide) {
+    this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', guide.idApi]);
+    // in collection
+    if (this.parentCollectionId) {
+      this.guideViewHistory = this.guideHistories.filter((h) => h.parent_guide_id === this.parentCollectionId)[0];
+      if (!this.guideViewHistory) {
+        this.guideViewHistory = this.guideViewHistoryService.newModel();
+      }
+    } else {
+      this.guideViewHistory = this.guideHistories.filter((h) => h.guide_id === guide.idApi)[0];
+      if (!this.guideViewHistory) {
+        this.guideViewHistory = this.guideViewHistoryService.newModel();
+      }
+    }
+
     const modal = await this.modalController.create({
       component: GuideinfoPage,
       componentProps: {
-        'guideId': guideId,
+        'guideId': guide.idApi,
         'from': 'guide-list-component',
         'parentCollectionId': this.parentCollectionId
       },
       cssClass: "modal-fullscreen"
     });
     modal.present().then(re => {
-      this.miscService.set_guideShown(guideId);
+      this.guideViewHistory.show_info = 1;
+      this.saveStep(guide)
     });
+  }
+
+  public async saveStep(guide) {
+    const user = await this.authService.getLastUser();
+    if (!user) {
+      return;
+    }
+    // update
+    this.guideViewHistory.parent_guide_id = this.parentCollectionId;
+    this.guideViewHistory.client_id = guide.client_id;
+    this.guideViewHistory.user_id = user.userId;
+    this.guideViewHistory.guide_id = guide.idApi;
+    this.guideViewHistoryService.save(this.guideViewHistory).then(async () => { })
   }
 }

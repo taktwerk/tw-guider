@@ -61,7 +61,7 @@ export class SynchronizationComponent implements OnInit {
         this.modeSync = SyncMode.Manual;
       }
       this.resumeMode = this.userService.userDb.userSetting.resumeMode;
-      console.log(this.resumeMode)
+      // console.log(this.resumeMode)
       this.syncProgressStatus = this.userService.userDb.userSetting.syncStatus;
     });
   }

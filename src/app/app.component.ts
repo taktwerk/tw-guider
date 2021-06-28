@@ -92,15 +92,15 @@ export class AppComponent implements OnInit, OnDestroy {
       const SyncModalComponentOpen = await this.storage.get('SyncModalComponentOpen');
       const ImageEditorComponentOpen = await this.storage.get('ImageEditorComponentOpen');
 
-      console.log("modal dismiss", guideInfoModalOpen
-        || VideoModalComponentOpen
-        || pdfViewerComponentOpen
-        || Viewer3dModalComponentOpen
-        || GuideAssetTextModalComponentOpen
-        || CKEditorComponentOpen
-        || SyncModalComponentOpen
-        || ImageEditorComponentOpen
-      )
+      // console.log("modal dismiss", guideInfoModalOpen
+      //   || VideoModalComponentOpen
+      //   || pdfViewerComponentOpen
+      //   || Viewer3dModalComponentOpen
+      //   || GuideAssetTextModalComponentOpen
+      //   || CKEditorComponentOpen
+      //   || SyncModalComponentOpen
+      //   || ImageEditorComponentOpen
+      // )
       if (
         guideInfoModalOpen
         || VideoModalComponentOpen
@@ -211,7 +211,7 @@ export class AppComponent implements OnInit, OnDestroy {
             }
           }
           if (this.userService.userDb.userSetting.language) {
-            console.log(this.userService.userDb.userSetting.language, "this.userService.userDb.userSetting.language") // always device lang
+            // console.log(this.userService.userDb.userSetting.language, "this.userService.userDb.userSetting.language") // always device lang
             // first time opening app?
             // const storedLang = await this.storage.get("storedLang");
             // console.log(storedLang, "storedLang")

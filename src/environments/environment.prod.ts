@@ -7,7 +7,7 @@ export const environment = {
   apiUrlPath: '/api/v1',
   taktwerk: 'taktwerk',
   dbName: 'guider',
-  dbMigrationVersion: '6',
+  dbMigrationVersion: '8',
   usbHost: 'https://192.168.42.42:4430',
   sentryDsn: 'https://06e0276028a24c4eacf3f1018809916c@o32189.ingest.sentry.io/1398173',
   // tslint:disable-next-line:max-line-length

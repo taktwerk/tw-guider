@@ -25,7 +25,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
     changeUsbMode() {
         this.appSetting.appSetting.find().then(async (result) => {
-            console.log('app setting result', result);
+            // console.log('app setting result', result);
             if (result) {
                 result.settings.isEnabledUsb = !this.appSetting.isEnabledUsb;
                 await result.save();
