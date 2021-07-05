@@ -19,6 +19,7 @@ import { SyncModalComponent } from 'src/components/sync-modal-component/sync-mod
 import { debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { SyncIndexService } from 'src/providers/api/sync-index-service';
+import { StateService } from '../state.service';
 
 @Component({
   selector: 'app-list',
@@ -49,7 +50,10 @@ export class CategoriesListPage implements OnInit, OnDestroy {
 
   eventSubscription: Subscription;
 
+  isPreStateLoad = false;
+
   constructor(
+    private state: StateService,
     private guideCategoryBindingService: GuideCategoryBindingService,
     private guideCategoryService: GuideCategoryService,
     private guiderService: GuiderService,
@@ -76,14 +80,27 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       }
     }
 
+   
   }
 
   async showAllGuides() {
-    const loader = await this.loader.create();
-    loader.present();
+
+    let guideCategories: any = this.state.getState('CategoriesListPage_guideCategories');
+    if(guideCategories != null) {
+      this.guideCategories = await guideCategories;
+      this.isPreStateLoad = true;
+    }
+
+    let loader;
+    if(this.isPreStateLoad === false) {
+      loader = await this.loader.create();
+      loader.present();
+    }
+   
     await this.findAllGuideCategories();
     await this.setGuides();
-    loader.dismiss();
+
+    if(typeof loader != 'undefined')  loader.dismiss();
     this.isLoadedContent = true;
   }
 
@@ -93,6 +110,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   async setGuides() {
+    console.log('setGuides');
     // syncIndexify guides
     const _guides = await this.guideCategoryService.getGuides(null, this.searchValue);
     // console.log("_guides", _guides)
@@ -112,6 +130,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   async findAllGuideCategories() {
+    console.log('findAllGuideCategories');
     // syncIndexify guideCategories
     this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
     // console.log("_guideCategories ", this.guideCategories)
@@ -119,6 +138,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideCategories, this.guideCategories[0].TABLE_NAME);
       this.guideCategories = syncedList;
       this.setCategoryGuides();
+
+      this.state.setState('CategoriesListPage_guideCategories', this.guideCategories);
     }
   }
 
