@@ -1,4 +1,4 @@
-Execute follow commands from example:  
+Execute follow commands from example:   
 
     cp config.example.xml config.xml
 (Add app id, author email, etc.)
