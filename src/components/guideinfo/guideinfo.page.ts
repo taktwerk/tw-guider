@@ -17,7 +17,7 @@ export class GuideinfoPage implements OnInit {
   @Input() parentCollectionId: any;
   @Input() guideCategoryId;
 
-  guide: GuiderModel
+  guide: GuiderModel;
   public params;
 
   constructor(
@@ -27,19 +27,19 @@ export class GuideinfoPage implements OnInit {
     public modalController: ModalController, private guiderService: GuiderService, private router: Router, private apiSync: ApiSync) { }
 
   async ngOnInit() {
-    const guiderById = await this.guiderService.getById(this.guideId)
+    const guiderById = await this.guiderService.getById(this.guideId);
     if (guiderById.length) {
       this.guide = guiderById[0];
     }
   }
 
   ionViewDidEnter() {
-    this.storage.set('guideInfoModalOpen', true)
+    this.storage.set('guideInfoModalOpen', true);
   }
 
   dismiss() {
     this.modalController.dismiss();
-    this.storage.set('guideInfoModalOpen', false)
+    this.storage.set('guideInfoModalOpen', false);
   }
 
   onDismiss() {
@@ -64,8 +64,7 @@ export class GuideinfoPage implements OnInit {
     // console.log("parentCollectionId", this.parentCollectionId)
     if (this.parentCollectionId) {
       this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
-    }
-    else {
+    } else {
       this.router.navigate(['/guide/' + guide.idApi]);
     }
     this.dismiss();

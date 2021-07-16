@@ -32,7 +32,8 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
     public params;
     eventSubscription: Subscription;
 
-    constructor(private protocolService: ProtocolService,
+    constructor(
+        private protocolService: ProtocolService,
         private protocolDefaultService: ProtocolDefaultService,
         private downloadService: DownloadService,
 

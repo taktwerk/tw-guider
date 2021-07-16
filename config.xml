@@ -5,6 +5,7 @@
     <author email="support@taktwerk.ch" href="https://www.taktwerk.ch/guider">taktwerk GmbH</author>
     <content src="index.html" />
     <access origin="*" />
+    <preferance name="android:usesCleartextTraffic" value="true" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-navigation href="http://*/*" />
     <allow-navigation href="ionic://*" />

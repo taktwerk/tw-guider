@@ -35,7 +35,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   public guideCategories: GuideCategoryModel[] = [];
   public searchValue: string;
   public haveProtocolPermissions = false;
-  public isLoadedContent = false;
+  public isLoadedContent = true;
   public guides: GuiderModel[] = [];
   public guideItemsLimit = 20;
   public guidesWithoutCategories: GuiderModel[] = [];
@@ -79,12 +79,12 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   async showAllGuides() {
-    const loader = await this.loader.create();
-    loader.present();
+   // const loader = await this.loader.create();
+   // loader.present();
     await this.findAllGuideCategories();
     await this.setGuides();
-    loader.dismiss();
-    this.isLoadedContent = true;
+   // loader.dismiss();
+   // this.isLoadedContent = true;
   }
 
   async searchGuides($event) {

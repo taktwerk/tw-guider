@@ -8,22 +8,22 @@ import {
     OnInit,
     ViewChild
 } from '@angular/core';
-import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
-import * as skeletonUtils from "three/examples/jsm/utils/SkeletonUtils";
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
+import * as skeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
 import { File } from '@ionic-native/file/ngx';
 import { AfterViewInit } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { createGesture, Gesture, GestureDetail } from '@ionic/core';
 import { Storage } from '@ionic/storage';
-import { Viewer3dService } from "../../services/viewer-3d-service";
+import { Viewer3dService } from '../../services/viewer-3d-service';
 
-const { Filesystem } = Plugins;
+import { Filesystem } from '@capacitor/filesystem';
 
 @Component({
     selector: 'viewer-3d-model-component',
@@ -83,10 +83,10 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         }
         this.isInit = true;
 
-        ///new
+        /// new
         this.ctx = document.createElement('canvas').getContext('2d');
         this.modelElement.appendChild(this.ctx.canvas);
-        ///new
+        /// new
         await this.renderModels();
     }
 
@@ -120,8 +120,8 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         const path = this.fileName.slice(0, (fileName.length) * -1);
         let bufferData = null;
         try {
-            const path__fileName = path + fileName;
-            if (path__fileName.split('.').pop() == "gltf") {
+            const pathFileName = path + fileName;
+            if (pathFileName.split('.').pop() == 'gltf') {
                 console.log('pathfileName', (path + fileName));
                 // read model from path
                 const convertFileSrc = Capacitor.convertFileSrc(path + fileName);
@@ -137,11 +137,11 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             dracoLoader.setDecoderPath('/assets/threeJs/loaders/gltf/draco/');
             dracoLoader.setDecoderConfig({ type: 'js' });
             loader.setDRACOLoader(dracoLoader);
-            console.log(bufferData)
+            console.log(bufferData);
             loader.parse(bufferData, '',
                 (gltf) => {
                     this.gltfScene = gltf.scene;
-                    console.log(this.gltfScene)
+                    console.log(this.gltfScene);
                     THREE.Cache.enabled = true;
                     THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(gltf.scene));
                     THREE.Cache.enabled = false;
@@ -202,11 +202,11 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         /// new
         this.ctx.globalCompositeOperation = 'copy';
         this.ctx.drawImage(
-            rendererCanvas, //img
+            rendererCanvas, // img
             0, // dx
-            0, //dy
-            width, //dWidth
-            height //dHeight
+            0, // dy
+            width, // dWidth
+            height // dHeight
         );                              // dst rect
         /// new
         this.requestAnimationFrameId = requestAnimationFrame(() => {
@@ -243,7 +243,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         const size = box.getSize(new THREE.Vector3()).length();
 
         console.log('width', width);
-        console.log('height', height)
+        console.log('height', height);
 
         this.camera = new THREE.PerspectiveCamera(
             50,
@@ -284,7 +284,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
                 ) {
                     this.resizeCanvas = true;
                 }
-            })
+            });
         };
         const gesture = createGesture({
             // el: this.renderer.domElement,

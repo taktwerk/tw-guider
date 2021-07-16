@@ -10,11 +10,11 @@ import { ModalController } from '@ionic/angular';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.page';
 import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
-import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core';
 import { ApiSync } from 'src/providers/api-sync';
 import { File } from '@ionic-native/file/ngx';
 
-const { Filesystem } = Plugins;
+import { Filesystem } from '@capacitor/filesystem';
 
 @Component({
   selector: 'model-assetcomponent',
@@ -29,7 +29,7 @@ export class AssetviewComponent implements OnInit {
   @Input() largeIcon: boolean;
 
   @Input() floatingIcon: boolean = false;
-  /**Set to true to make image small */
+  /** Set to true to make image small */
   @Input() mini: boolean = false;
 
   /** set to true to prevent default open function */
@@ -39,7 +39,7 @@ export class AssetviewComponent implements OnInit {
   @Input() mayEditImage: boolean = false;
   @Input() imageby50: boolean = false;
 
-  filePath3d
+  filePath3d;
 
   faExpand = faExpand;
   faQuestion = faQuestion;
@@ -53,7 +53,8 @@ export class AssetviewComponent implements OnInit {
   videoPreview;
   defaultVideoPreview;
 
-  constructor(private downloadService: DownloadService,
+  constructor(
+    private downloadService: DownloadService,
     private videoService: VideoService,
     private pictureService: PictureService,
     private photoViewer: PhotoViewer,
@@ -70,7 +71,7 @@ export class AssetviewComponent implements OnInit {
       // this.videoPreview = this.model.getFileImagePath().changingThisBreaksApplicationSecurity;
       // console.log(this.videoPreview)
       // console.log(this.model)
-      // 
+      //
       // if (this.model.TABLE_NAME !== 'guide_asset') {
       //   this.defaultVideoPreview = this.model.getFileImagePath();
 
@@ -144,30 +145,29 @@ export class AssetviewComponent implements OnInit {
     };
 
     this.videoEditor.createThumbnail(option).then(async (videoThumbnailPath) => {
-      console.log(this.model.title, 'videoEditor createThumbnail', videoThumbnailPath)
+      console.log(this.model.title, 'videoEditor createThumbnail', videoThumbnailPath);
       if (videoThumbnailPath) {
         videoThumbnailPath = 'file://' + videoThumbnailPath;
       }
 
       const resolvedPath = await this.downloadService.getResolvedNativeFilePath(videoThumbnailPath);
-      console.log(resolvedPath)
+      console.log(resolvedPath);
 
       // generate base64 data
       Filesystem.readFile({ path: resolvedPath }).then((filebBase64) => {
         this.videoPreview = 'data:image/jpeg;base64,' + filebBase64.data;
-        console.log(this.videoPreview)
-      })
+        console.log(this.videoPreview);
+      });
 
     })
       .catch((error) => {
         const _error = JSON.stringify(error);
         if (_error.includes('java.io.FileNotFoundException')) {
           this.videoPreview = '/assets/videooverlay.png';
+        } else {
+          console.log(error);
         }
-        else {
-          console.log(error)
-        }
-      })
+      });
     // }
     // else {
     //   console.log("model does have preview", this.model.isExistThumbOfFile())
@@ -191,14 +191,11 @@ export class AssetviewComponent implements OnInit {
           return false;
         }
         this.videoService.playVideo(fileUrl, fileTitle);
-      }
-      else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
+      } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
         this.photoViewer.show(fileUrl, fileTitle);
-      }
-      else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
+      } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
         this.pictureService.openFile(fileUrl, fileTitle);
-      }
-      else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
+      } else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
         this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
       }
     }
@@ -211,7 +208,7 @@ export class AssetviewComponent implements OnInit {
         componentProps: {
           asset: this.model
         },
-        cssClass: "modal-fullscreen"
+        cssClass: 'modal-fullscreen'
       });
       return await modal.present();
     }
@@ -223,30 +220,30 @@ export class AssetviewComponent implements OnInit {
       componentProps: {
         model: this.model
       },
-      cssClass: "modal-fullscreen",
+      cssClass: 'modal-fullscreen',
     });
     // modal.onDidDismiss()
     //   .then((res: any) => {
     //     if (res != null) {
     //       this.model.description_html = res.data.data
     //     }
-    //});
+    // });
     return await modal.present();
   }
 
   async onImageError(event) {
-    console.log("Image has error")
-    console.log(event.target.src)
-    console.log(this.model)
+    console.log('Image has error');
+    console.log(event.target.src);
+    console.log(this.model);
 
-    console.log(this.model.local_thumb_attached_file)
+    console.log(this.model.local_thumb_attached_file);
     // resolve path
     const resolvedPath = await this.downloadService.getResolvedNativeFilePath(this.model.local_thumb_attached_file);
-    console.log(resolvedPath)
+    console.log(resolvedPath);
 
     // check directory
     const checkDirExist = await Filesystem.readdir({ path: this.file.dataDirectory + this.model.TABLE_NAME });
-    console.log("Is checking directory with Capacitor");
-    console.log("checkDirExist", checkDirExist);
+    console.log('Is checking directory with Capacitor');
+    console.log('checkDirExist', checkDirExist);
   }
 }

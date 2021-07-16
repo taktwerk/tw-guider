@@ -1,4 +1,13 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output } from '@angular/core';
 import { LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
 
 import { AuthService } from '../../services/auth-service';
@@ -24,10 +33,6 @@ import { MiscService } from 'src/services/misc-service';
   styleUrls: ['guide-step-content-component.scss'],
 })
 export class GuideStepContentComponent implements OnInit, OnDestroy {
-  
-  ngOnDestroy(): void {
-    console.log('destroy GuideStepContentComponent');
-  }
 
   public faFilePdf = faFilePdf;
   @Input() step: GuideStepModel = null;
@@ -72,6 +77,10 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     public miscService: MiscService
   ) { }
 
+  ngOnDestroy(): void {
+    console.log('destroy GuideStepContentComponent');
+  }
+
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     const filePath = basePath;
     let fileTitle = 'Guide';
@@ -88,7 +97,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
       }
 
       this.videoService.playVideo(fileUrl, fileTitle);
-      
+
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
@@ -102,9 +111,9 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     const feedbackNavigationExtras: NavigationExtras = {
       queryParams: {
         backUrl: this.router.url,
-        referenceModelAlias: referenceModelAlias,
-        referenceId: referenceId,
-        referenceTitle: referenceTitle,
+        referenceModelAlias,
+        referenceId,
+        referenceTitle,
         guideId: this.guide.idApi
       },
     };
@@ -127,7 +136,12 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   }
 
   async openAssetTextModal() {
-    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+    const guideAsset: GuideAssetModel = new GuideAssetModel(
+                                        this.platform,
+                                        this.db,
+                                        this.downloadService,
+                                        this.loggerService,
+                                        this.miscService);
     guideAsset.asset_html = this.step.description_html;
     guideAsset.name = this.step.title;
 
@@ -136,7 +150,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
       componentProps: {
         asset: guideAsset
       },
-      cssClass: "modal-fullscreen"
+      cssClass: 'modal-fullscreen'
     });
 
     return await modal.present();

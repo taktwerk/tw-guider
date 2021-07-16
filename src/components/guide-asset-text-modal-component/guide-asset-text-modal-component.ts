@@ -32,7 +32,7 @@ export class GuideAssetTextModalComponent implements OnInit, OnDestroy {
 
   dismiss() {
     this.modalController.dismiss();
-    this.storage.set('GuideAssetTextModalComponentOpen', false)
+    this.storage.set('GuideAssetTextModalComponentOpen', false);
   }
 
   detectChanges() {
@@ -42,7 +42,7 @@ export class GuideAssetTextModalComponent implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
-    this.storage.set('GuideAssetTextModalComponentOpen', true)
+    this.storage.set('GuideAssetTextModalComponentOpen', true);
   }
 
   ngOnInit() {

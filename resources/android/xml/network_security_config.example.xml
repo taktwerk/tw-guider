@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+	<base-config cleartextTrafficPermitted="true">
+		<trust-anchors>
+			<certificates src="system" />
+		</trust-anchors>
+	</base-config>
+	
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">http://192.168.0.180</domain>
@@ -8,6 +14,7 @@
         <domain includeSubdomains="true">http://192.168.0.180:8015</domain>
         <domain includeSubdomains="true">tw-app-dev.devhost.taktwerk.ch</domain>
         <domain includeSubdomains="true">http://tw-app-dev.devhost.taktwerk.ch</domain>
+        <domain includeSubdomains="true">http://tw-app-dev.devhost.taktwerk.ch/</domain>
         <domain includeSubdomains="true">185.12.7.238</domain>
         <domain includeSubdomains="true">http://185.12.7.238</domain>
     </domain-config>

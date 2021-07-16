@@ -40,7 +40,8 @@ export class SynchronizationComponent implements OnInit {
   public params;
   eventSubscription: Subscription;
 
-  constructor(public apiSync: ApiSync,
+  constructor(
+    public apiSync: ApiSync,
     private downloadService: DownloadService,
     public changeDetectorRef: ChangeDetectorRef,
     public http: HttpClient,
@@ -103,7 +104,7 @@ export class SynchronizationComponent implements OnInit {
 
   changeResumeMode() {
     this.resumeMode == false ? this.resumeMode = true : this.resumeMode = false;
-    console.log(this.resumeMode)
+    console.log(this.resumeMode);
     this.initUser().then(() => {
       this.userService.userDb.userSetting.resumeMode = this.resumeMode;
       this.userService.userDb.save().then(() => {

@@ -12,9 +12,9 @@ import { GuideStepModel } from 'src/models/db/api/guide-step-model';
 import { AuthService } from 'src/services/auth-service';
 
 interface CustomControls {
-  name: string
-  icon: string
-  subControls?: CustomControls[]
+  name: string;
+  icon: string;
+  subControls?: CustomControls[];
 }
 
 @Component({
@@ -27,9 +27,9 @@ export class ImageEditorComponent implements OnInit {
   @Input() model;
 
   ImageEditor;
-  iCanvas
+  iCanvas;
   loading = (message?) => this.loadingController.create({ duration: 2000, message: message || 'Please wait' });
-  canvasFile
+  canvasFile;
 
   currentControl: CustomControls = { name: null, icon: null };
   currentSubControl: CustomControls = { name: null, icon: null };
@@ -53,8 +53,9 @@ export class ImageEditorComponent implements OnInit {
         }
       ]
     }
-  ]
-  constructor(private storage: Storage,
+  ];
+  constructor(
+    private storage: Storage,
     private guideStepService: GuideStepService,
     private modalController: ModalController,
     private downloadService: DownloadService,
@@ -82,37 +83,36 @@ export class ImageEditorComponent implements OnInit {
     try {
       this.canvasFile = JSON.parse(this.model.design_canvas_file)
     } catch (error) {
-      console.log(error)
-      console.log("this.model.design_canvas_file", this.model.design_canvas_file)
-      console.log("design_canvas_file is probably not an object", this.model.design_canvas_file)
+      console.log(error);
+      console.log('this.model.design_canvas_file', this.model.design_canvas_file);
+      console.log('design_canvas_file is probably not an object', this.model.design_canvas_file);
       this.canvasFile = null;
     }
 
     this.iCanvas = this.ImageEditor._graphics.getCanvas();
-    var selectionStyle = this.ImageEditor._graphics.cropSelectionStyle;
+    const selectionStyle = this.ImageEditor._graphics.cropSelectionStyle;
 
-    console.log("this.model.local_attached_file", this.model.local_attached_file)
-    console.log("this.model.getFileImagePath(1)", this.model.getFileImagePath(1))
-    console.log("this.model.getFileImagePath()", this.model.getFileImagePath())
+    console.log('this.model.local_attached_file', this.model.local_attached_file);
+    console.log('this.model.getFileImagePath(1)', this.model.getFileImagePath(1));
+    console.log('this.model.getFileImagePath()', this.model.getFileImagePath());
 
     var originalImageFile = encodeURI(this.model.local_attached_file);
     const convertFileSrc = this.downloadService.getWebviewFileSrc(originalImageFile);
     const SafeImageUrl = this.downloadService.getSafeUrl(convertFileSrc);
 
-    console.log("SafeUrl", SafeImageUrl);
-    console.log("this.canvasFile", this.canvasFile);
+    console.log('SafeUrl', SafeImageUrl);
+    console.log('this.canvasFile', this.canvasFile);
 
     setTimeout(async () => {
       this.iCanvas.lowerCanvasEl.style.border = "double #2d2d2b";
       if (this.canvasFile != null) {
         this.ImageEditor.loadImageFromURL(this.canvasFile.backgroundImage.src, 'Editor Test');
-      }
-      else {
+      } else {
         this.ImageEditor.loadImageFromURL(this.model.getFileImagePath().changingThisBreaksApplicationSecurity, 'Editor Test');
       }
       this.iCanvas.loadFromJSON(this.canvasFile, async () => {
-        var list = this.iCanvas.getObjects();
-        list.forEach(function (obj) {
+        const list = this.iCanvas.getObjects();
+        list.forEach((obj) => {
           obj.set(selectionStyle);
         });
 
@@ -137,7 +137,7 @@ export class ImageEditorComponent implements OnInit {
     });
 
     this.ImageEditor.on('redoStackChanged', (length) => {
-      console.log("redoStackChanged", length);
+      console.log('redoStackChanged', length);
       if (this.ImageEditor.isEmptyRedoStack()) {
         this.willRedo = false;
       } else {
@@ -146,7 +146,7 @@ export class ImageEditorComponent implements OnInit {
     });
 
     this.ImageEditor.on('undoStackChanged', (length) => {
-      console.log("undoStackChanged", length);
+      console.log('undoStackChanged', length);
       if (this.ImageEditor._invoker._undoStack.length === 1 || length === 1) {
         this.willUndo = false;
       } else {
@@ -165,7 +165,7 @@ export class ImageEditorComponent implements OnInit {
   onSubControl(control: CustomControls) {
     // stop all modes
     this.ImageEditor.stopDrawingMode();
-    // 
+    //
     this.currentSubControl.name != control.name ? this.currentSubControl = control : this.currentSubControl = { name: null, icon: null };
     if (this.currentSubControl.name != null) {
       switch (control.name) {
@@ -187,7 +187,7 @@ export class ImageEditorComponent implements OnInit {
       if (this.ImageEditor.isEmptyRedoStack()) {
         this.willRedo = false;
       }
-    })
+    });
   }
 
   onUndo() {
@@ -203,9 +203,9 @@ export class ImageEditorComponent implements OnInit {
   deleteSelected() {
     this.ImageEditor.removeObject(this.selectedAnnotation.id)
       .then(() => {
-        this.selectedAnnotation = null
+        this.selectedAnnotation = null;
       })
-      .catch((e) => console.log("delete error", e))
+      .catch((e) => console.log('delete error', e));
   }
 
   closeControl() {
@@ -245,7 +245,7 @@ export class ImageEditorComponent implements OnInit {
       reader.onloadend = () => {
         originalImageDataUrl = reader.result;
         originalImageDataUrlBlob = this.base64ToBlob(originalImageDataUrl);
-      }
+      };
       reader.readAsDataURL(xhr.response);
     };
 
@@ -271,14 +271,14 @@ export class ImageEditorComponent implements OnInit {
 
               this.storage.set('ImageEditorComponentOpen', false);
               (await this.loading()).dismiss({ canvasSaved: true });
-              this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
+              this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' });
 
               await this.modalController.dismiss();
-            }).catch((e) => console.log(e))
-          }, 300)
-        }).catch((e) => console.log(e))
-      }).catch((e) => console.log(e))
-    })
+            }).catch((e) => console.log(e));
+          }, 300);
+        }).catch((e) => console.log(e));
+      }).catch((e) => console.log(e));
+    });
   }
 
   base64ToBlob(data) {

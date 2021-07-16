@@ -18,12 +18,10 @@ import { UserService } from '../services/user-service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
-
-import { Plugins } from '@capacitor/core';
 import { AuthDb } from 'src/models/db/auth-db';
 import { interval, Subscription } from 'rxjs';
-
-const { SplashScreen, App } = Plugins;
+import { App } from '@capacitor/app';
+import { SplashScreen } from '@capacitor/splash-screen';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -120,16 +118,14 @@ export class AppComponent implements OnInit, OnDestroy {
         this.storage.set('SyncModalComponentOpen', false);
         this.storage.set('ImageEditorComponentOpen', false);
         this.modalCtrl.dismiss();
-      }
-      else {
+      } else {
         this.routerOutlets.forEach(async (r) => {
           if (!r.canGoBack()) {
             this.presentAlertConfirm();
+          } else {
+            this.location.back();
           }
-          else {
-            this.location.back()
-          }
-        })
+        });
       }
     });
 
@@ -177,11 +173,11 @@ export class AppComponent implements OnInit, OnDestroy {
         SplashScreen.hide({
           fadeOutDuration: 1000
         });
-      }, 2000)
+      }, 2000);
 
       await this.migrationProvider.init();
       this.migrationProvider.checkAuthMigration();
-      
+
       this.translateConfigService.setLanguage(this.translateConfigService.getDeviceLanguage());
 
       const result = await this.login();
@@ -211,7 +207,8 @@ export class AppComponent implements OnInit, OnDestroy {
             }
           }
           if (this.userService.userDb.userSetting.language) {
-            // console.log(this.userService.userDb.userSetting.language, "this.userService.userDb.userSetting.language") // always device lang
+            // console.log(this.userService.userDb.userSetting.language, "this.userService.userDb.userSetting.language");
+            // always device lang
             // first time opening app?
             // const storedLang = await this.storage.get("storedLang");
             // console.log(storedLang, "storedLang")
@@ -253,7 +250,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.initNetwork();
       this.registerEvents();
       this.backButtonEvent();
-    })
+    });
 
     this.loggerService.createLogFile();
   }
@@ -348,7 +345,8 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.authService.isHaveUserRole('ProtocolViewer') || this.authService.auth.isAuthority) {
       appPages.push({ title: this.translateConfigService.translateWord('protocol.Protocols'), url: '/protocol', icon: 'list' });
     }
-    if ((this.authService.isHaveUserRole('GuiderAdmin') && this.authService.isHaveUserRole('Betatest')) || this.authService.auth.isAuthority) {
+    if ((this.authService.isHaveUserRole('GuiderAdmin') && this.authService.isHaveUserRole('Betatest'))
+      || this.authService.auth.isAuthority) {
       appPages.push({ title: this.translateConfigService.translateWord('guider.header'), url: '/guidecapture', icon: 'camera' });
     }
     appPages.push({ title: this.translateConfigService.translateWord('profile.Profile'), url: '/profile', icon: 'person' });
@@ -360,7 +358,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.authService.getLastUser().then((res) => {
         resolve(res);
         let lastUser: AuthDb = null;
-        console.log("lastUser", res);
+        console.log('lastUser', res);
         if (res) {
           lastUser = res;
         }
@@ -468,7 +466,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         default:
       }
-    })
+    });
 
     // this.events.subscribe('user:logout', () => {
     //   this.logoutAction();

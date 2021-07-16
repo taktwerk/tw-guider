@@ -5,7 +5,6 @@ import { IonSegment } from '@ionic/angular';
 import { NGXLogInterface } from 'ngx-logger';
 import { delay } from 'rxjs/operators';
 import { File } from '@ionic-native/file/ngx';
-import { Plugins } from '@capacitor/core';
 import { ActionSheetController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 
@@ -19,7 +18,7 @@ import { Subscription } from 'rxjs';
 export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
   constructor(private loggerService: LoggerService, public file: File, public actionSheetController: ActionSheetController) { }
 
-  currentSegment = 'All'
+  currentSegment = 'All';
 
   allLogs: NGXLogInterface[] = [];
   debugLogs: NGXLogInterface[] = [];
@@ -61,21 +60,21 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
   getDebugLevel(level: number) {
     switch (level) {
       case 0:
-        return 'TRACE'
+        return 'TRACE';
       case 1:
-        return 'DEBUG'
+        return 'DEBUG';
       case 2:
-        return 'INFO'
+        return 'INFO';
       case 3:
-        return 'LOG'
+        return 'LOG';
       case 4:
-        return 'WARN'
+        return 'WARN';
       case 5:
-        return 'ERROR'
+        return 'ERROR';
       case 6:
-        return 'FATAL'
+        return 'FATAL';
       case 7:
-        return 'OFF'
+        return 'OFF';
     }
   }
 

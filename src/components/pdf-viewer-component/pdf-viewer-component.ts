@@ -2,7 +2,6 @@ import { Component, ViewChild, OnInit, Input } from '@angular/core';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { DownloadService } from '../../services/download-service';
-import { Plugins } from '@capacitor/core';
 import { Storage } from '@ionic/storage';
 
 /**
@@ -12,7 +11,7 @@ import { Storage } from '@ionic/storage';
  * on Ionic pages and navigation.
  */
 
-const { Filesystem } = Plugins;
+import { Filesystem } from '@capacitor/filesystem';
 
 @Component({
   selector: 'pdf-viewer-component',
@@ -34,12 +33,12 @@ export class PdfViewerComponent implements OnInit {
 
   dismiss() {
     this.modalController.dismiss();
-    this.storage.set('pdfViewerComponentOpen', false)
+    this.storage.set('pdfViewerComponentOpen', false);
 
   }
 
   ionViewDidEnter() {
-    this.storage.set('pdfViewerComponentOpen', true)
+    this.storage.set('pdfViewerComponentOpen', true);
   }
 
   async ngOnInit() {

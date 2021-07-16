@@ -68,7 +68,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
         case this.guideStepService.dbModelApi.TAG + ':delete':
         case this.guideStepService.dbModelApi.TAG + ':update':
         case this.guideAssetPivotService.dbModelApi.TAG + ':create':
-          console.log("Changes Detected")
+          console.log('Changes Detected');
           this.setGuideSteps(this.guideId);
           this.detectChanges();
           break;
@@ -85,19 +85,19 @@ export class ListViewComponent implements OnInit, OnDestroy {
       this.guideStepsData = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
-      this.guideSteps = this.guideStepsData.slice(0, this.displayLimit)
+      this.guideSteps = this.guideStepsData.slice(0, this.displayLimit);
     });
   }
 
   onEdit(step: GuideStepModel) {
-    let navigationExtras: NavigationExtras = {
+    const navigationExtras: NavigationExtras = {
       queryParams: {
         guideId: step.guide_id,
         stepId: step.idApi,
         action: 'edit'
       }
-    }
-    this.router.navigate(["/", "guidestep-add-edit"], navigationExtras);
+    };
+    this.router.navigate(['/', 'guidestep-add-edit'], navigationExtras);
   }
 
   Reorder(ev: CustomEvent<ItemReorderEventDetail>) {
@@ -108,7 +108,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
   reOrderStep() {
     this.guideSteps.map((step, index) => {
       step.order_number = index + 1;
-    })
+    });
   }
 
   onReorder() {
@@ -122,12 +122,12 @@ export class ListViewComponent implements OnInit, OnDestroy {
         const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
         this.http.showToast(alertMessage);
       }).catch((e) => console.log(e));
-    })
+    });
     this.disableReorder = true;
   }
 
   async showToast(message) {
-    const toast = await this.toastController.create({ message: message, duration: 800 });
+    const toast = await this.toastController.create({ message, duration: 800 });
     toast.present();
   }
 
@@ -150,7 +150,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
       if (this.guideSteps.length == this.guideStepsData.length) {
         event.target.disabled = true;
       }
-    }, 500)
+    }, 500);
   }
 
   delete(step: GuideStepModel) {
@@ -164,9 +164,9 @@ export class ListViewComponent implements OnInit, OnDestroy {
         step.order_number = index + 1;
         this.guideStepService.save(step).then(() => {
           this.apiSync.setIsPushAvailableData(true);
-        })
+        });
         // })
-      })
+      });
     });
   }
 
@@ -193,7 +193,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
   }
 
   getExtractText(html: string) {
-    return html.replace(/(<([^>]+)>)/ig, '').replace('&nbsp;', '')
+    return html.replace(/(<([^>]+)>)/ig, '').replace('&nbsp;', '');
   }
 
 

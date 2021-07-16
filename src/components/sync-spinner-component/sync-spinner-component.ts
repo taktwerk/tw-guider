@@ -32,7 +32,8 @@ export class SyncSpinnerComponent implements OnInit {
     public isLoggedUser: boolean = false;
     eventSubscription: Subscription;
 
-    constructor(private platform: Platform,
+    constructor(
+        private platform: Platform,
         private downloadService: DownloadService,
         private loggerService: LoggerService,
         private db: DbProvider,
@@ -63,7 +64,7 @@ export class SyncSpinnerComponent implements OnInit {
         }
         const modal = await this.modalController.create({
             component: SyncModalComponent,
-            cssClass: "modal-fullscreen"
+            cssClass: 'modal-fullscreen'
         });
         return await modal.present();
     }

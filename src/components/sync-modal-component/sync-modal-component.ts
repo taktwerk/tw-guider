@@ -82,7 +82,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
-    this.storage.set('SyncModalComponentOpen', true)
+    this.storage.set('SyncModalComponentOpen', true);
   }
 
   dismiss() {
@@ -93,7 +93,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
       );
     });
 
-    this.storage.set('SyncModalComponentOpen', false)
+    this.storage.set('SyncModalComponentOpen', false);
   }
 
   syncData() {
@@ -109,9 +109,9 @@ export class SyncModalComponent implements OnInit, OnDestroy {
     this.apiSync.checkAvailableChanges().then((res) => {
       // make sync if changes from server
       if (res) {
-        this.apiSync.makeSyncProcess()
+        this.apiSync.makeSyncProcess();
       }
-    })
+    });
   }
 
   stopSyncData() {
@@ -233,18 +233,18 @@ export class SyncModalComponent implements OnInit, OnDestroy {
       switch (event.TAG) {
         case 'UserDb:update':
           this.userService.userDb = event.data;
-          this.loggerService.getLogger().info("userDb", event.data)
+          this.loggerService.getLogger().info('userDb', event.data);
           break;
         case 'network:offline':
           this.isNetwork = false;
-          this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+          this.loggerService.getLogger().info('isNetwork', this.isNetwork);
           break;
         case 'network:online':
           this.isNetwork = true;
-          this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+          this.loggerService.getLogger().info('isNetwork', this.isNetwork);
           break;
         case 'user:logout':
-          this.loggerService.getLogger().info("user:logout")
+          this.loggerService.getLogger().info('user:logout');
           this.dismiss();
           break;
         default:

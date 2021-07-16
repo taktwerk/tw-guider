@@ -67,7 +67,7 @@ export class GuideListComponent implements OnInit {
       if (this.guideList.length == this.guides.length) {
         event.target.disabled = true;
       }
-    }, 500)
+    }, 500);
   }
 
   openProtocol(guide: GuiderModel) {
@@ -101,8 +101,7 @@ export class GuideListComponent implements OnInit {
     // console.log("parentCollectionId", this.parentCollectionId)
     if (this.parentCollectionId) {
       this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
-    }
-    else {
+    } else {
       this.router.navigate(['/guide/' + guide.idApi]);
     }
   }
@@ -133,15 +132,15 @@ export class GuideListComponent implements OnInit {
     const modal = await this.modalController.create({
       component: GuideinfoPage,
       componentProps: {
-        'guideId': guide.idApi,
-        'from': 'guide-list-component',
-        'parentCollectionId': this.parentCollectionId
+        guideId: guide.idApi,
+        from: 'guide-list-component',
+        parentCollectionId: this.parentCollectionId
       },
-      cssClass: "modal-fullscreen"
+      cssClass: 'modal-fullscreen'
     });
     modal.present().then(re => {
       this.guideViewHistory.show_info = 1;
-      this.saveStep(guide)
+      this.saveStep(guide);
     });
   }
 
@@ -155,6 +154,6 @@ export class GuideListComponent implements OnInit {
     this.guideViewHistory.client_id = guide.client_id;
     this.guideViewHistory.user_id = user.userId;
     this.guideViewHistory.guide_id = guide.idApi;
-    this.guideViewHistoryService.save(this.guideViewHistory).then(async () => { })
+    this.guideViewHistoryService.save(this.guideViewHistory).then(async () => { });
   }
 }

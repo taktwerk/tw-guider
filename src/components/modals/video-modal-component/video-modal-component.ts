@@ -26,7 +26,8 @@ export class VideoModalComponent implements OnInit, OnDestroy {
     @Input() fileTitle: string;
     // backButtonSubscribe;
 
-    constructor(private modalController: ModalController,
+    constructor(
+        private modalController: ModalController,
         private storage: Storage,
 
         private platform: Platform,
@@ -39,8 +40,8 @@ export class VideoModalComponent implements OnInit, OnDestroy {
 
     dismiss() {
         this.modalController.dismiss();
-        this.storage.set('VideoModalComponentOpen', false)
-        console.log("dismiss", "VideoModalComponentOpen")
+        this.storage.set('VideoModalComponentOpen', false);
+        console.log('dismiss', 'VideoModalComponentOpen');
 
     }
 
@@ -66,7 +67,7 @@ export class VideoModalComponent implements OnInit, OnDestroy {
     }
 
     ionViewDidEnter() {
-        this.storage.set('VideoModalComponentOpen', true)
+        this.storage.set('VideoModalComponentOpen', true);
         if (!this.videoElement || this.videoElement.paused) {
             this.playVideo();
         }

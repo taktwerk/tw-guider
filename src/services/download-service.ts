@@ -12,16 +12,15 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
-import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
+import { Capacitor  } from '@capacitor/core';
+import { CameraResultType } from '@capacitor/camera';
 import { LoggerService } from './logger-service';
-
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 export class RecordedFile {
   uri: string;
   thumbnailUri?: string;
   type?: string;
 }
-
-const { Filesystem } = Plugins;
 
 /**
  * Download file class
@@ -73,8 +72,8 @@ export class DownloadService {
   async downloadAndSaveFile(url: string, name: string, modelFolder: string, authToken = ''): Promise<any> {
     const promise = new Promise((resolve) => {
       const finalPath = this.file.dataDirectory + modelFolder + '/' + name;
-      console.log("Will downloadAndSaveFile")
-      console.log(finalPath)
+      console.log('Will downloadAndSaveFile');
+      console.log(finalPath);
 
       this.isExistFile(this.file.dataDirectory + modelFolder + '/', name).then((isExist) => {
         if (isExist) {
@@ -96,7 +95,7 @@ export class DownloadService {
                     return;
                   })
                   .catch((writeFileErr) => {
-                    console.log("Error at getDownloadDirectoryPath download-service 91", writeFileErr);
+                    console.log('Error at getDownloadDirectoryPath download-service 91', writeFileErr);
                     resolve(false);
                     return;
                   });
@@ -108,11 +107,11 @@ export class DownloadService {
             // }
           )
             .catch((e) => {
-              console.log("Error at downloadAndSaveFile download-service 73");
-              console.log(e)
+              console.log('Error at downloadAndSaveFile download-service 73');
+              console.log(e);
               resolve(false);
               // Download failed
-            })
+            });
         }
       });
     });
@@ -144,17 +143,17 @@ export class DownloadService {
         .toPromise()
         .then((response) => {
           console.log('SYNC4');
-          console.log("download response ", response)
-          this.loggerService.getLogger().info("SYNC4")
+          console.log('download response ', response);
+          this.loggerService.getLogger().info('SYNC4');
           resolve(response);
           return;
         })
         .catch((downloadErr) => {
           console.log('downloadErr', downloadErr);
-          this.loggerService.getLogger().error("Download Error at download-service 139", downloadErr, new Error().stack)
+          this.loggerService.getLogger().error('Download Error at download-service 139', downloadErr, new Error().stack)
           resolve(false);
           return;
-        })
+        });
     });
   }
 
@@ -181,7 +180,7 @@ export class DownloadService {
         fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
 
         // const fileUriObject = await Filesystem.getUri({
-        //   directory: FilesystemDirectory.Data,
+        //   directory: Directory.Data,
         //   path: directoryName + '/' + fileName
         // });
 
@@ -191,7 +190,7 @@ export class DownloadService {
         // const imgBlob = downloadedImage.body;
 
         const filebBase64 = await Filesystem.readFile({
-          directory: FilesystemDirectory.Data,
+          directory: Directory.Data,
           path: this.platform.is('android') ? directoryName + '/' + fileName : this.platform.is('ios') ? path : directoryName + '/' + fileName
         });
 
@@ -199,7 +198,7 @@ export class DownloadService {
         // console.log("path", path)
 
         // Filesystem.readFile({
-        //   directory: FilesystemDirectory.Data,
+        //   directory: Directory.Data,
         //   path: this.platform.is('ios') ? path : this.platform.is('android') ? directoryName + '/' + fileName : directoryName + '/' + fileName
         // }).then(async (res) => {
         //   console.log(res)
