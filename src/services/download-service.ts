@@ -525,11 +525,11 @@ export class DownloadService {
       this.file.removeFile(path, fileName).then(
         (success) => {
           console.log('is removed file', success);
-          this.loggerService.getLogger().info("File removed", success)
+          this.loggerService.getLogger().info('File removed', success)
         },
         (error) => {
           console.error('DownloadService', 'deleteFile', path, fileName, error);
-          this.loggerService.getLogger().error("error deleting file at download-service 419", error, new Error().stack)
+          this.loggerService.getLogger().error('error deleting file at download-service 419', error, new Error().stack)
         }
       );
     }
@@ -565,17 +565,16 @@ export class DownloadService {
     let uri = '';
     if (this.platform.is('ios')) {
       if (!this.filePicker) {
-        this.loggerService.getLogger().error("IOSFilePicker plugin is not defined", new Error("IOSFilePicker plugin is not defined").stack)
+        this.loggerService.getLogger().error('IOSFilePicker plugin is not defined', new Error('IOSFilePicker plugin is not defined').stack);
         throw new Error('IOSFilePicker plugin is not defined');
       }
       uri = await this.filePicker.pickFile();
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-      console.log('uri', uri)
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-    }
-    else {
+      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>');
+      console.log('uri', uri);
+      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>');
+    } else {
       if (!this.fileChooser) {
-        this.loggerService.getLogger().error("FileChooser plugin is not defined", new Error("FileChooser plugin is not defined").stack)
+        this.loggerService.getLogger().error('FileChooser plugin is not defined', new Error('FileChooser plugin is not defined').stack)
 
         throw new Error('FileChooser plugin is not defined');
       }
