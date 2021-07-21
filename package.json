@@ -136,6 +136,7 @@
     "@capacitor/cli": "^3.1.1",
     "@types/node": "^8.10.59",
     "codelyzer": "^5.0.0",
+    "cordova-res": "^0.15.3",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "jetifier": "^1.6.6",
@@ -199,7 +200,6 @@
       "com.moust.cordova.videoplayer": {}
     },
     "platforms": [
-      "android",
       "ios"
     ]
   },
