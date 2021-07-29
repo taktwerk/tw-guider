@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { RouteReuseStrategy } from '@angular/router';
+import { CustomReuseStrategy } from './shared/routing';
 
 const routes: Routes = [
   {
@@ -108,7 +110,8 @@ const routes: Routes = [
   {
     path: 'guidestep-add-edit',
     loadChildren: () => import('./guidestep-add-edit/guidestep-add-edit.module').then(m => m.GuidestepAddEditPageModule)
-  },  {
+  },
+  {
     path: 'logs',
     loadChildren: () => import('./logs/logs.module').then( m => m.LogsPageModule)
   },
@@ -119,6 +122,9 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, relativeLinkResolution: 'legacy' })
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
+  ]
 })
 export class AppRoutingModule { }
