@@ -11,7 +11,11 @@
 
 <ion-content class="ion-padding-horizontal grey-background">
   <ion-segment color="light" [(ngModel)]="type" scrollable mode="md">
-    <ion-segment-button value="browse" checked mode="md">
+    <ion-segment-button value="activity" checked mode="md">
+      <ion-label>{{ 'activity.activity' | translate:params }}</ion-label>
+      <ion-icon name="accessibility-outline"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button value="browse" mode="md">
       <ion-label>{{ 'guide-categories.categories' | translate:params }}</ion-label>
       <ion-icon name="file-tray-stacked-outline"></ion-icon>
     </ion-segment-button>
@@ -22,7 +26,23 @@
   </ion-segment>
 
   <div [ngSwitch]="type">
-    <div class="category-content" *ngSwitchDefault="'browse'">
+    <div *ngSwitchDefault="'activity'">
+      <span *ngIf="isLoadedContent">
+
+          <div class="guide-category" *ngFor="let guideActivity of guideArr;">
+            <div>
+              <ion-item button [routerLink]="['/guides/' + guideActivity.idApi]" class="guide-category"
+                lines="full" inset="true">
+                <ion-label slot="start">{{ guideActivity.title }}</ion-label>
+                <ion-badge color="medium" slot="end">{{ guideActivity.steps }}</ion-badge>
+                <ion-progress-bar color="primary" value="0.5"></ion-progress-bar>
+              </ion-item>
+            </div>
+          </div>
+        
+      </span>
+    </div>
+    <div class="category-content" *ngSwitchCase="'browse'">
       <span *ngIf="isLoadedContent">
 
         <div class="guide-category" *ngFor="let guideCategory of guideCategories; trackBy: trackByFn">

@@ -3,11 +3,13 @@ import { UserService } from './../../services/user-service';
 import { MiscService } from './../../services/misc-service';
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
+import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
 import { GuideChildService } from '../../providers/api/guide-child-service';
 import { GuiderService } from '../../providers/api/guider-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { AuthService } from '../../services/auth-service';
 import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
+import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
 import { NavigationExtras, Router } from '@angular/router';
@@ -20,6 +22,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { SyncIndexService } from 'src/providers/api/sync-index-service';
 import { StateService } from '../state.service';
+import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-list',
@@ -34,6 +37,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   public syncProgressStatus = 'not_sync';
 
   public guideCategories: GuideCategoryModel[] = [];
+  public guideActivity: GuideViewHistoryModel[] = [];
+  public guideArr: any = [];
   public searchValue: string;
   public haveProtocolPermissions = false;
   public isLoadedContent = false;
@@ -56,6 +61,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     private state: StateService,
     private guideCategoryBindingService: GuideCategoryBindingService,
     private guideCategoryService: GuideCategoryService,
+    private guideViewHistoryService: GuideViewHistoryService,
     private guiderService: GuiderService,
     private guideChildService: GuideChildService,
     public authService: AuthService,
@@ -81,6 +87,25 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     }
 
    
+  }
+  async showAllActivity(){
+    let guideActivity: any = this.state.getState('CategoriesListPage_guideActivity');
+    if(guideActivity != null) {
+      this.guideActivity = await guideActivity;
+      this.isPreStateLoad = true;
+    }
+
+    let loader;
+    if(this.isPreStateLoad === false) {
+      loader = await this.loader.create();
+      loader.present();
+    }
+   console.log('step1');
+   await this.findAllGuideActivity();
+   await this.setActivity();
+
+    if(typeof loader != 'undefined')  loader.dismiss();
+    this.isLoadedContent = true;
   }
 
   async showAllGuides() {
@@ -128,12 +153,48 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       // console.log("guidesWithoutCategorie", this.guidesWithoutCategories);
     }
   }
+  async setActivity() {
+    console.log('setActivity');
+    // syncIndexify guides
+    const _guidesActivity = await this.guideViewHistoryService.getActivity(null, this.searchValue);
+    console.log("guidesCatActivity", _guidesActivity)
+
+    if (_guidesActivity.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(_guidesActivity, _guidesActivity[0].TABLE_NAME);
+      this.guides = syncedList;
+      this.guideArr = this.guides;
+      
+    }
+
+    // syncIndexify guidesWithoutCategories
+    const _guidesWithoutCategories = await this.guideViewHistoryService.getActivity(null, '', true);
+    if (_guidesWithoutCategories.length > 0) {
+      const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(_guidesWithoutCategories, _guidesWithoutCategories[0].TABLE_NAME);
+      this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
+    
+      this.guideArr = this.guidesWithoutCategories;
+      console.log("guidesWithoutCatActivity", this.guidesWithoutCategories);
+    }
+  }
+  async findAllGuideActivity() {
+    console.log('step2');
+    // syncIndexify guides
+  this.guideActivity = await this.guideViewHistoryService.findAll(this.searchValue);
+  console.log("guideActivitystep3 ", this.guideActivity)
+  if (this.guideActivity.length > 0) {
+    const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideActivity, this.guideActivity[0].TABLE_NAME);
+    this.guideActivity = syncedList;
+    // this.setCategoryGuides();
+    console.log(this.guideActivity, 'syncedList-->Activity')
+    this.state.setState('CategoriesListPage_guideActivity', this.guideActivity);
+  }
+  }
 
   async findAllGuideCategories() {
     console.log('findAllGuideCategories');
     // syncIndexify guideCategories
     this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
-    // console.log("_guideCategories ", this.guideCategories)
+    console.log("_guideCategoriesstep1 ", this.guideCategories)
     if (this.guideCategories.length > 0) {
       const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideCategories, this.guideCategories[0].TABLE_NAME);
       this.guideCategories = syncedList;
@@ -201,6 +262,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.showAllActivity();
     this.showAllGuides();
 
     this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
@@ -297,7 +359,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       }
     })
 
-    this.type = 'browse';
+    this.type = 'activity';
   }
 
   syncData() {

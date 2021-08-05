@@ -238,5 +238,8 @@
     "edit": "Edit Step",
     "Open in editor": "Open in editor",
     "Description": "Description"
+  },
+  "activity":{
+    "activity":"Activity"
   }
 }
