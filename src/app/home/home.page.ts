@@ -47,11 +47,40 @@ export class HomePage {
 
   b: any;
 
-  public async scanQrcode() {
-              let text = '{"mode":2,"taktwerk":"guider","host":"http:\/\/tw-app-dev.devhost.taktwerk.ch","userIdentifier":"jkO4xbfHv1uw_rTu"}';
-              this.config = JSON.parse(text);
-              const scanErrors = this.appSetting.validateData(this.config);
+  public scanQrcode() {
+    if (this.isScanning) {
+      this.closeScanner();
+      return false;
+    }
+    this.qrScanner
+      .prepare()
+      .then((status: QRScannerStatus) => {
+        if (status.denied) {
+          return false;
+        }
+        if (!status.authorized) {
+          return false;
+        }
+        this.isScanning = true;
+        this.qrScanner.show().then((res) => {
+          this.detectChanges();
+        });
 
+        // start scanning
+        this.scanSub = this.qrScanner.scan().subscribe(async (text: string) => {
+          this.config = JSON.parse(text);
+          const scanErrors = this.appSetting.validateData(this.config);
+          if (scanErrors.length) {
+            this.http.showToast('validation.QR-code has wrong information', '', 'danger');
+            this.closeScanner();
+            return;
+          } else {
+            try {
+              const user = await this.userService.getUser();
+              if (user) {
+                await this.authService.logout();
+              }
+              // console.log('Calll -123', this.appSetting, this.config);
               const host = this.appSetting.isEnabledUsb ? this.appSetting.usbHost : this.config.host;
               this.appConfirmUrl = host + environment.apiUrlPath + '/login/';
               if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && this.config.clientIdentifier) {
@@ -83,118 +112,54 @@ export class HomePage {
 
                 this.http.showToast('qr.Application was successfully configured');
               });
-              //   if (this.isScanning) {
-              //     this.closeScanner();
-              //     return false;
-              //   }
-              //   this.qrScanner
-              //     .prepare()
-              //     .then((status: QRScannerStatus) => {
-              //       if (status.denied) {
-              //         return false;
-              //       }
-              //       if (!status.authorized) {
-              //         return false;
-              //       }
-              //       this.isScanning = true;
-              //       this.qrScanner.show().then((res) => {
-              //         this.detectChanges();
-              //       });
+              this.closeScanner();
+            } catch (e) {
+              console.log('This is error', e);
+              this.closeScanner();
+            }
+          }
+        });
+      })
+      .catch((err: any) => {
+        // ---- iOS Simulator
+        if ((<any>window).device.isVirtual) {
+          this.presentAlert('Config Error', null, 'Running on Simulator', ['OK']);
+          const text = '{"mode":2,"taktwerk":"guider","host":"http://tw-app-dev.devhost.taktwerk.ch"}';
+          const config = JSON.parse(text);
+          const appConfirmUrl = config.host + environment.apiUrlPath + '/login/';
+          if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
+            this.authService.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
+          } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
+            this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
+          }
+          config.isWasQrCodeSetup = true;
+          this.appSetting.save(config).then(() => {
+            this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
+            this.userService.getUser().then((loggedUser) => {
+              const isUserLoggedIn = !!loggedUser;
+              if (!isUserLoggedIn) {
+                this.ngZone.run(() => {
+                  this.navCtrl.navigateRoot('/login');
+                });
+              } else {
+                // this.events.publish('qr-code:setup');
+                this.miscService.events.next({ TAG: 'qr-code:setup' });
+                this.ngZone.run(() => {
+                  this.navCtrl.navigateRoot('/guide-categories');
+                });
+              }
+            });
 
-              //       // start scanning
-              //       this.scanSub = this.qrScanner.scan().subscribe(async (text: string) => {
-              //         this.config = JSON.parse(text);
-              //         const scanErrors = this.appSetting.validateData(this.config);
-              //         if (scanErrors.length) {
-              //           this.http.showToast('validation.QR-code has wrong information', '', 'danger');
-              //           this.closeScanner();
-              //           return;
-              //         } else {
-              //           try {
-              //             const user = await this.userService.getUser();
-              //             if (user) {
-              //               await this.authService.logout();
-              //             }
-              //             // console.log('Calll -123', this.appSetting, this.config);
-              //             const host = this.appSetting.isEnabledUsb ? this.appSetting.usbHost : this.config.host;
-              //             this.appConfirmUrl = host + environment.apiUrlPath + '/login/';
-              //             if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && this.config.clientIdentifier) {
-              //               await this.authService.loginByIdentifier(this.appConfirmUrl, 'client', this.config.clientIdentifier);
-              //             } else if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT && this.config.client) {
-              //               await this.authService.loginByIdentifier(this.appConfirmUrl, 'client-default-user', this.config.client);
-              //             } else if (this.config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && this.config.userIdentifier) {
-              //               await this.authService.loginByIdentifier(this.appConfirmUrl, 'user', this.config.userIdentifier);
-              //             }
-
-              //             // console.log('Calll -456', this.appSetting, this.config);
-              //             this.config.isWasQrCodeSetup = true;
-              //             this.appSetting.save(this.config).then(() => {
-              //               this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
-              //               this.userService.getUser().then((loggedUser) => {
-              //                 const isUserLoggedIn = !!loggedUser;
-              //                 if (!isUserLoggedIn) {
-              //                   this.ngZone.run(() => {
-              //                     this.navCtrl.navigateRoot('/login');
-              //                   });
-              //                 } else {
-              //                   // this.events.publish('qr-code:setup');
-              //                   this.miscService.events.next({ TAG: 'qr-code:setup' });
-              //                   this.ngZone.run(() => {
-              //                     this.navCtrl.navigateRoot('/guide-categories');
-              //                   });
-              //                 }
-              //               });
-
-              //               this.http.showToast('qr.Application was successfully configured');
-              //             });
-              //             this.closeScanner();
-              //           } catch (e) {
-              //             console.log('This is error', e);
-              //             this.closeScanner();
-              //           }
-              //         }
-              //       });
-              //     })
-              //     .catch((err: any) => {
-              //       // ---- iOS Simulator
-              //       if ((<any>window).device.isVirtual) {
-              //         this.presentAlert('Config Error', null, 'Running on Simulator', ['OK']);
-              //         const text = '{"mode":2,"taktwerk":"guider","host":"http://tw-app-dev.devhost.taktwerk.ch"}';
-              //         const config = JSON.parse(text);
-              //         const appConfirmUrl = config.host + environment.apiUrlPath + '/login/';
-              //         if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_DEVICE_LOGIN && config.clientIdentifier) {
-              //           this.authService.loginByIdentifier(appConfirmUrl, 'client', config.clientIdentifier);
-              //         } else if (config.mode === AppConfigurationModeEnum.CONFIGURE_AND_USER_LOGIN && config.userIdentifier) {
-              //           this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
-              //         }
-              //         config.isWasQrCodeSetup = true;
-              //         this.appSetting.save(config).then(() => {
-              //           this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
-              //           this.userService.getUser().then((loggedUser) => {
-              //             const isUserLoggedIn = !!loggedUser;
-              //             if (!isUserLoggedIn) {
-              //               this.ngZone.run(() => {
-              //                 this.navCtrl.navigateRoot('/login');
-              //               });
-              //             } else {
-              //               // this.events.publish('qr-code:setup');
-              //               this.miscService.events.next({ TAG: 'qr-code:setup' });
-              //               this.ngZone.run(() => {
-              //                 this.navCtrl.navigateRoot('/guide-categories');
-              //               });
-              //             }
-              //           });
-
-              //           this.http.showToast('qr.Application was successfully configured');
-              //           this.closeScanner();
-              //         });
-              //       }
-              //       // ----
-              //       else {
-              //         this.presentAlert('Config Error', null, 'There was an error using the camera. Please try again.', ['OK']);
-              //         this.closeScanner();
-              //       }
-              //     });
+            this.http.showToast('qr.Application was successfully configured');
+            this.closeScanner();
+          });
+        }
+        // ----
+        else {
+          this.presentAlert('Config Error', null, 'There was an error using the camera. Please try again.', ['OK']);
+          this.closeScanner();
+        }
+      });
   }
 
   closeScanner() {
