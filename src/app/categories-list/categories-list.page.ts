@@ -1,7 +1,7 @@
 import { UserService } from './../../services/user-service';
 
 import { MiscService } from './../../services/misc-service';
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
 import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
 import { GuideChildService } from '../../providers/api/guide-child-service';
@@ -56,7 +56,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   eventSubscription: Subscription;
 
   isPreStateLoad = false;
-
+  @Input() guideStepsLength: number = 0;
+  @Input() stepNumber: number = 0;
   constructor(
     private state: StateService,
     private guideCategoryBindingService: GuideCategoryBindingService,
