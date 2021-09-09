@@ -1,20 +1,20 @@
 import { Component, Input, OnInit, ElementRef, ViewChildren, QueryList, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { GuideStepModel } from 'src/models/db/api/guide-step-model';
+import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AlertController, IonItem, ToastController } from '@ionic/angular';
-import { ApiSync } from 'src/providers/api-sync';
-import { GuideAssetService } from 'src/providers/api/guide-asset-service';
-import { GuideStepService } from 'src/providers/api/guide-step-service';
-import { GuiderService } from 'src/providers/api/guider-service';
-import { TranslateConfigService } from 'src/services/translate-config.service';
+import { ApiSync } from '../../providers/api-sync';
+import { GuideAssetService } from '../../providers/api/guide-asset-service';
+import { GuideStepService } from '../../providers/api/guide-step-service';
+import { GuiderService } from '../../providers/api/guider-service';
+import { TranslateConfigService } from '../../services/translate-config.service';
 import { HttpClient } from '../../services/http-client';
-import { GuideChildService } from 'src/providers/api/guide-child-service';
-import { GuideAssetModelFileMapIndexEnum } from 'src/models/db/api/guide-asset-model';
+import { GuideChildService } from '../../providers/api/guide-child-service';
+import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
 import { AuthService } from '../../services/auth-service';
-import { GuideAssetPivotService } from 'src/providers/api/guide-asset-pivot-service';
-import { MiscService } from 'src/services/misc-service';
+import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
+import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
 
 @Component({

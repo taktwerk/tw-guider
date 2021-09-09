@@ -1,8 +1,8 @@
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
-import { AuthService } from 'src/services/auth-service';
+import { SyncIndexService } from './api/sync-index-service';
+import { AuthService } from '../services/auth-service';
 import { Subject } from 'rxjs';
-import { AuthDb } from 'src/models/db/auth-db';
-import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
+import { AuthDb } from '../models/db/auth-db';
+import { GuideViewHistoryService } from '../providers/api/guide-view-history-service';
 import { Injectable } from '@angular/core';
 import { AppSetting } from '../services/app-setting';
 import { ApiService } from '../providers/api/base/api-service';

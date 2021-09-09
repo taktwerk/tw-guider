@@ -13,14 +13,14 @@ import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-mo
 import { LoadingController, ModalController } from '@ionic/angular';
 import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
 import { NavigationExtras, Router } from '@angular/router';
-import { ApiSync } from 'src/providers/api-sync';
-import { AppSetting } from 'src/services/app-setting';
-import { SyncMode } from 'src/components/synchronization-component/synchronization-component';
-import { SyncService } from 'src/services/sync-service';
-import { SyncModalComponent } from 'src/components/sync-modal-component/sync-modal-component';
+import { ApiSync } from '../../providers/api-sync';
+import { AppSetting } from '../../services/app-setting';
+import { SyncMode } from '../../components/synchronization-component/synchronization-component';
+import { SyncService } from '../../services/sync-service';
+import { SyncModalComponent } from '../../components/sync-modal-component/sync-modal-component';
 import { debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
+import { SyncIndexService } from '../../providers/api/sync-index-service';
 import { StateService } from '../state.service';
 import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 

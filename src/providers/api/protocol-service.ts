@@ -12,8 +12,8 @@ import { WorkflowStepService } from './workflow-step-service';
 import { ProtocolDefaultService } from './protocol-default-service';
 import { AuthDb } from '../../models/db/auth-db';
 import { ProtocolCommentService } from './protocol-comment-service';
-import { LoggerService } from 'src/services/logger-service';
-import { MiscService } from 'src/services/misc-service';
+import { LoggerService } from '../../services/logger-service';
+import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
 
 @Injectable()

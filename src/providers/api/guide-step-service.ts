@@ -10,8 +10,8 @@ import { DownloadService } from '../../services/download-service';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AppSetting } from '../../services/app-setting';
-import { LoggerService } from 'src/services/logger-service';
-import { MiscService } from 'src/services/misc-service';
+import { LoggerService } from '../../services/logger-service';
+import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class GuideStepService extends ApiService {

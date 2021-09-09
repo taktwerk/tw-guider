@@ -8,7 +8,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { AppConfigurationModeEnum, AppSetting } from '../../services/app-setting';
 import { UserService } from '../../services/user-service';
 import { environment } from '../../environments/environment';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
 
 /**
@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
  */
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
+  templateUrl: 'home.page.html', 
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {

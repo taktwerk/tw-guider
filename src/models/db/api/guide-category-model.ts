@@ -5,7 +5,7 @@ import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
 import { DownloadService } from '../../../services/download-service';
 import { GuiderModel } from './guider-model';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../../services/misc-service';
 
 /**
  * API Db Model for 'Guider Model'.

@@ -8,7 +8,7 @@ import { GuideStepModel } from './guide-step-model';
 import { GuideAssetModel } from './guide-asset-model';
 import { ProtocolTemplateModel } from './protocol-template-model';
 import { GuideChildModel } from './guide-child-model';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../../services/misc-service';
 
 /**
  * API Db Model for 'Guider Model'.

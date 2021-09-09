@@ -7,7 +7,7 @@ import { DownloadService } from '../../../services/download-service';
 import { ProtocolDefaultModel } from './protocol-default-model';
 import { WorkflowStepModel } from './workflow-step-model';
 import { ProtocolCommentModel } from './protocol-comment-model';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from './../../../services/misc-service';
 
 /**
  * API Db Model for 'Protocol Model'.

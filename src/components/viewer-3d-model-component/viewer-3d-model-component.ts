@@ -8,7 +8,8 @@ import {
     OnInit,
     ViewChild
 } from '@angular/core';
-import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
+import { Camera, CameraResultType } from '@capacitor/camera';
+import { Capacitor, Plugins } from '@capacitor/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';

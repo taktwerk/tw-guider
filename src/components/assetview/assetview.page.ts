@@ -1,17 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DownloadService, RecordedFile } from 'src/services/download-service';
-import { PictureService } from 'src/services/picture-service';
-import { VideoService } from 'src/services/video-service';
+import { DownloadService, RecordedFile } from '../../services/download-service';
+import { PictureService } from '../../services/picture-service';
+import { VideoService } from '../../services/video-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { Viewer3dService } from 'src/services/viewer-3d-service';
+import { Viewer3dService } from '../../services/viewer-3d-service';
 import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
 import { faExpand, faQuestion, faCubes, faFilePdf, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { ModalController } from '@ionic/angular';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
-import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.page';
+import { ImageEditorComponent } from '../../components/imageeditor/imageeditor.page';
 import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
-import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
-import { ApiSync } from 'src/providers/api-sync';
+import { Capacitor, Plugins } from '@capacitor/core';
+import { Camera, CameraResultType } from '@capacitor/camera';
+import { ApiSync } from '../../providers/api-sync';
 import { File } from '@ionic-native/file/ngx';
 
 const { Filesystem } = Plugins;

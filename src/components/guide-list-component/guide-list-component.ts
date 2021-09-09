@@ -1,15 +1,15 @@
 import { Location } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
+import { GuideinfoPage } from '../../components/guideinfo/guideinfo.page';
 import { Storage } from '@ionic/storage';
 import { AuthService } from '../../services/auth-service';
 import { AppSetting } from '../../services/app-setting';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
-import { MiscService } from 'src/services/misc-service';
-import { GuideViewHistoryModel } from 'src/models/db/api/guide-view-history-model';
-import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
+import { MiscService } from '../../services/misc-service';
+import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
+import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
 
 @Component({
   selector: 'guide-list-component',

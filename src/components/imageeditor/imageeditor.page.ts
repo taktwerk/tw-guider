@@ -2,14 +2,14 @@ import { MiscService } from './../../services/misc-service';
 import { LoadingController, ModalController, Platform } from '@ionic/angular';
 import { Component, Input, OnInit } from '@angular/core';
 import ImageEditor from 'tui-image-editor';
-import { RecordedFile, DownloadService } from 'src/services/download-service';
+import { RecordedFile, DownloadService } from '../../services/download-service';
 import { File as nFile } from '@ionic-native/file/ngx';
-import { ApiSync } from 'src/providers/api-sync';
-import { GuideStepService } from 'src/providers/api/guide-step-service';
+import { ApiSync } from '../../providers/api-sync';
+import { GuideStepService } from '../../providers/api/guide-step-service';
 import { Location } from '@angular/common';
 import { Storage } from '@ionic/storage';
-import { GuideStepModel } from 'src/models/db/api/guide-step-model';
-import { AuthService } from 'src/services/auth-service';
+import { GuideStepModel } from '../../models/db/api/guide-step-model';
+import { AuthService } from '../../services/auth-service';
 
 interface CustomControls {
   name: string

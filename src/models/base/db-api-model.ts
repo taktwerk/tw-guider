@@ -3,7 +3,7 @@ import { Platform } from '@ionic/angular';
 import { DbBaseModel } from './db-base-model';
 import { DbProvider } from '../../providers/db-provider';
 import { DownloadService, RecordedFile } from '../../services/download-service';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 export class BaseFileMapInModel {
     public name: string;

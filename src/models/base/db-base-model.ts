@@ -1,8 +1,8 @@
 import { Self } from '@angular/core';
 import { Platform } from '@ionic/angular';
-// import { AppSetting } from 'src/services/app-setting';
-import { LoggerService } from 'src/services/logger-service';
-import { MiscService } from 'src/services/misc-service';
+// import { AppSetting } from '../../services/app-setting';
+import { LoggerService } from '../../services/logger-service';
+import { MiscService } from '../../services/misc-service';
 import { DbProvider } from '../../providers/db-provider';
 import { DownloadService } from '../../services/download-service';
 

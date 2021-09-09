@@ -8,8 +8,8 @@ import { WorkflowStepModel } from './workflow-step-model';
 import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { LoggerService } from 'src/services/logger-service';
-import { MiscService } from 'src/services/misc-service';
+import { LoggerService } from '../../../services/logger-service';
+import { MiscService } from '../../../services/misc-service';
 
 /**
  * API Db Model for 'Workflow Transition Model'.

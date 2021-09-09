@@ -11,9 +11,9 @@ import { WorkflowStepService } from '../../providers/api/workflow-step-service';
 import { ProtocolDefaultService } from '../../providers/api/protocol-default-service';
 import { WorkflowService } from '../../providers/api/workflow-service';
 import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
+import { SyncIndexService } from '../../providers/api/sync-index-service';
 
 @Component({
     selector: 'protocol-page',

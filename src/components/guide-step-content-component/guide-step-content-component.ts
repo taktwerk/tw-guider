@@ -15,8 +15,8 @@ import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
 import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { DbProvider } from '../../providers/db-provider';
 import { SafeResourceUrl } from '@angular/platform-browser';
-import { LoggerService } from 'src/services/logger-service';
-import { MiscService } from 'src/services/misc-service';
+import { LoggerService } from '../../services/logger-service';
+import { MiscService } from '../../services/misc-service';
 
 @Component({
   selector: 'guide-step-content-component',

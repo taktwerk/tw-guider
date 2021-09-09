@@ -11,7 +11,7 @@ import { AppSetting } from '../../services/app-setting';
 import { WorkflowStepModel } from '../../models/db/api/workflow-step-model';
 import { WorkflowTransitionModel } from '../../models/db/api/workflow-transition-model';
 import { WorkflowTransitionService } from './workflow-transition-service';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class WorkflowStepService extends ApiService {

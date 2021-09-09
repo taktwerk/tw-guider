@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
+import { GuideViewHistoryService } from 'providers/api/guide-view-history-service';
 
 @Injectable()
 export class AddModelColumnsToGuideViewHistoryTableMigration {

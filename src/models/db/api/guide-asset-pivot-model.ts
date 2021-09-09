@@ -3,8 +3,8 @@ import { DbApiModel } from '../../base/db-api-model';
 import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
 import { DownloadService } from '../../../services/download-service';
-import { LoggerService } from 'src/services/logger-service';
-import { MiscService } from 'src/services/misc-service';
+import { LoggerService } from '../../../services/logger-service';
+import { MiscService } from '../../../services/misc-service';
 
 /**
  * API Db Model for 'Guider Model'.

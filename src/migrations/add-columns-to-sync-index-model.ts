@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
+import { SyncIndexService } from '../providers/api/sync-index-service';
 
 @Injectable()
 export class AddModelColumnsToSyncIndexTableMigration {

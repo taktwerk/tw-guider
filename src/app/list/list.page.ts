@@ -10,9 +10,9 @@ import { GuideCategoryBindingService } from '../../providers/api/guide-category-
 import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { TranslateConfigService } from '../../services/translate-config.service';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
+import { SyncIndexService } from '../../providers/api/sync-index-service';
 
 
 @Component({

@@ -1,10 +1,10 @@
 import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { NGXLoggerMonitor, NGXLogInterface, NGXLogger } from 'ngx-logger';
-import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
+import { NGXLoggerMonitor, NGXLogInterface, NGXLogger } from 'ngx-logger';;
 import { File } from '@ionic-native/file/ngx';
 
-const { Filesystem } = Plugins;
+
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 export declare enum LoggerLevel {
     TRACE = 0,
@@ -60,8 +60,8 @@ export class LoggerService {
         const contents = await Filesystem.appendFile({
             path: '/TaktwerkLogs/log.txt',
             data: JSON.stringify(log),
-            directory: FilesystemDirectory.External,
-            encoding: FilesystemEncoding.UTF8,
+            directory: Directory.External,
+            encoding: Encoding.UTF8,
         }).catch(e => {
             console.error('Unable to write log file', e);
         })
@@ -75,7 +75,7 @@ export class LoggerService {
         return new Promise(async (resolve) => {
             const dir = await Filesystem.readdir({
                 path: '/TaktwerkLogs/log.txt',
-                directory: FilesystemDirectory.External,
+                directory: Directory.External,
             }).then(e => {
                 resolve(true)
             }).catch(async e => {
@@ -84,8 +84,8 @@ export class LoggerService {
                 const contents = await Filesystem.writeFile({
                     path: '/TaktwerkLogs/log.txt',
                     data: "",
-                    directory: FilesystemDirectory.External,
-                    encoding: FilesystemEncoding.UTF8,
+                    directory: Directory.External,
+                    encoding: Encoding.UTF8,
                     recursive: true
                 }).then(e => {
                     resolve(true)
@@ -99,8 +99,8 @@ export class LoggerService {
             const contents = await Filesystem.writeFile({
                 path: '/TaktwerkLogs/log.txt',
                 data: "",
-                directory: FilesystemDirectory.External,
-                encoding: FilesystemEncoding.UTF8,
+                directory: Directory.External,
+                encoding: Encoding.UTF8,
                 recursive: true
             });
         } catch (e) {
@@ -112,7 +112,7 @@ export class LoggerService {
     public async deleteLogFile() {
         await Filesystem.deleteFile({
             path: '/TaktwerkLogs/log.txt',
-            directory: FilesystemDirectory.External
+            directory: Directory.External
         });
     }
 }

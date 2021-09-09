@@ -1,5 +1,5 @@
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
-import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
+import { SyncIndexService } from 'providers/api/sync-index-service';
+import { GuideViewHistoryService } from 'providers/api/guide-view-history-service';
 import { GuiderModel } from './../models/db/api/guider-model';
 import { Injectable, OnDestroy } from '@angular/core';
 
@@ -30,9 +30,9 @@ import { WorkflowService } from './api/workflow-service';
 import { WorkflowStepService } from './api/workflow-step-service';
 import { ProtocolCommentService } from './api/protocol-comment-service';
 import { WorkflowTransitionService } from './api/workflow-transition-service';
-import { LoggerService } from 'src/services/logger-service';
-import { SyncService } from 'src/services/sync-service';
-import { MiscService } from 'src/services/misc-service';
+import { LoggerService } from '../services/logger-service';
+import { SyncService } from '../services/sync-service';
+import { MiscService } from '../services/misc-service';
 
 @Injectable()
 /**

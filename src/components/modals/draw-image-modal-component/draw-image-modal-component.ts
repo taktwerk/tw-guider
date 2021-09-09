@@ -6,7 +6,7 @@ import { DownloadService } from '../../../services/download-service';
 
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateConfigService } from '../../../services/translate-config.service';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../../services/misc-service';
 
 import { Storage } from '@ionic/storage';
 /**

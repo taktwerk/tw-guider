@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthDb } from 'src/models/db/auth-db';
+import { AuthDb } from 'models/db/auth-db';
 
 @Injectable()
 export class AddGroupColumnToUserTableMigration {

@@ -11,7 +11,7 @@ import { AppSetting } from '../../services/app-setting';
 import { ProtocolCommentModel } from '../../models/db/api/protocol-comment-model';
 import { WorkflowStepModel } from '../../models/db/api/workflow-step-model';
 import { TranslateConfigService } from '../../services/translate-config.service';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class ProtocolCommentService extends ApiService {

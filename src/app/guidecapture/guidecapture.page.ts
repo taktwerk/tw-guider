@@ -1,14 +1,14 @@
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
+import { SyncIndexService } from '../../providers/api/sync-index-service';
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
 import { LoadingController } from '@ionic/angular';
-import { GuiderService } from 'src/providers/api/guider-service';
-import { GuideCategoryModel } from 'src/models/db/api/guide-category-model';
-import { GuideChildService } from 'src/providers/api/guide-child-service';
+import { GuiderService } from '../../providers/api/guider-service';
+import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
+import { GuideChildService } from '../../providers/api/guide-child-service';
 import { Subscription } from 'rxjs';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 @Component({
   selector: 'app-guidecapture',

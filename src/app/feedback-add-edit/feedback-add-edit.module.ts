@@ -1,4 +1,4 @@
-import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
+import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ import { MainPipe } from '../../pipes/main-pipe.module';
 import { HtmlDescriptionComponentModule } from '../../components/html-description/html-description-component.module';
 import { LanguageSelectorComponentModule } from '../../components/language-selector-component/language-selector-component.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
     declarations: [

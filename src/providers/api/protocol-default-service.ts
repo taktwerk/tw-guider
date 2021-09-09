@@ -16,7 +16,7 @@ import { ProtocolTemplateService } from './protocol-template-service';
 import { ProtocolTemplateModel } from '../../models/db/api/protocol-template-model';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { Md5 } from 'ts-md5/dist/md5';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class ProtocolDefaultService extends ApiService {

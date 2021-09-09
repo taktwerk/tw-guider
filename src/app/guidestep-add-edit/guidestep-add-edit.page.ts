@@ -1,22 +1,22 @@
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 import { GuiderModel } from './../../models/db/api/guider-model';
 import { GuiderService } from './../../providers/api/guider-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GuideStepModel } from './../../models/db/api/guide-step-model';
 import { Component, OnInit } from '@angular/core';
-import { GuideStepService } from 'src/providers/api/guide-step-service';
+import { GuideStepService } from '../../providers/api/guide-step-service';
 import { DownloadService } from '../../services/download-service';
-import { VideoService } from 'src/services/video-service';
-import { PictureService } from 'src/services/picture-service';
+import { VideoService } from '../../services/video-service';
+import { PictureService } from '../../services/picture-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { AuthService } from 'src/services/auth-service';
-import { TranslateConfigService } from 'src/services/translate-config.service';
+import { AuthService } from '../../services/auth-service';
+import { TranslateConfigService } from '../../services/translate-config.service';
 import { AlertController, ModalController, ToastController, Platform } from '@ionic/angular';
-import { ApiSync } from 'src/providers/api-sync';
+import { ApiSync } from '../../providers/api-sync';
 import { HttpClient } from '../../services/http-client';
 import { CKEditorComponent } from './../../components/ckeditor/ckeditor.page';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { UserService } from 'src/services/user-service';
+import { UserService } from '../../services/user-service';
 
 @Component({
   selector: 'app-guidestep-add-edit',

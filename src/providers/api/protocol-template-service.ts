@@ -12,8 +12,8 @@ import { WorkflowStepService } from './workflow-step-service';
 import { UserService } from '../../services/user-service';
 import { AuthDb } from '../../models/db/auth-db';
 import { WorkflowService } from './workflow-service';
-import { LoggerService } from 'src/services/logger-service';
-import { MiscService } from 'src/services/misc-service';
+import { LoggerService } from '../../services/logger-service';
+import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class ProtocolTemplateService extends ApiService {

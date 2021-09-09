@@ -2,8 +2,8 @@ import { DbBaseModel } from '../base/db-base-model';
 import { Platform } from '@ionic/angular';
 import { DbProvider } from '../../providers/db-provider';
 import { DownloadService } from '../../services/download-service';
-import { LoggerService } from 'src/services/logger-service';
-import { MiscService } from 'src/services/misc-service';
+import { LoggerService } from '../../services/logger-service';
+import { MiscService } from '../../services/misc-service';
 import { Injectable } from '@angular/core';
 
 /**

@@ -5,7 +5,7 @@ import { DbProvider } from '../../providers/db-provider';
 import { UserSetting } from '../user-setting';
 import { AuthDb } from './auth-db';
 import { DownloadService } from '../../services/download-service';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 export class AppSettingsDb extends DbBaseModel {
     /** @inheritDoc */

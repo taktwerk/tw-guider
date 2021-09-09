@@ -100,20 +100,20 @@ import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewe
 import { PdfViewerComponentModule } from '../components/pdf-viewer-component/pdf-viewer-component.module';
 
 import { ProgressBarModule } from '../components/progress-bar/progress-bar.module';
-import { ListviewComponentModule } from 'src/components/listview/listview.module';
+import { ListviewComponentModule } from '../components/listview/listview.module';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 
-import { CKEditorComponent } from 'src/components/ckeditor/ckeditor.page';
+import { CKEditorComponent } from '../components/ckeditor/ckeditor.page';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { GuideViewHistoryService } from '../providers/api/guide-view-history-service';
+import { ionMenuWithSyncIndicatorComponentModule } from '../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
-import { ImageEditorComponent } from 'src/components/imageeditor/imageeditor.page';
+import { ImageEditorComponent } from '../components/imageeditor/imageeditor.page';
 
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
-import { LoggerService } from 'src/services/logger-service';
-import { AuthDb } from 'src/models/db/auth-db';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
+import { LoggerService } from '../services/logger-service';
+import { AuthDb } from '../models/db/auth-db';
+import { SyncIndexService } from '../providers/api/sync-index-service';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');

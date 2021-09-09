@@ -11,7 +11,7 @@ import { DownloadService } from '../../services/download-service';
 import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
 import { DbBaseModel } from '../../models/base/db-base-model';
 import { AppSetting } from '../../services/app-setting';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class GuideCategoryService extends ApiService {

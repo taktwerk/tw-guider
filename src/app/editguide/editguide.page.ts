@@ -3,8 +3,8 @@ import { Platform } from '@ionic/angular';
 
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { GuideStepModel } from 'src/models/db/api/guide-step-model';
-import { GuideStepService } from 'src/providers/api/guide-step-service';
+import { GuideStepModel } from '../../models/db/api/guide-step-model';
+import { GuideStepService } from '../../providers/api/guide-step-service';
 
 import { AuthService } from '../../services/auth-service';
 import { Subscription } from 'rxjs';

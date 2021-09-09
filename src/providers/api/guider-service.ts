@@ -9,7 +9,7 @@ import { HttpClient } from '../../services/http-client';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { DownloadService } from '../../services/download-service';
 import { AppSetting } from '../../services/app-setting';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class GuiderService extends ApiService {

@@ -1,4 +1,4 @@
-import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
+import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';

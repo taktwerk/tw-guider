@@ -8,9 +8,9 @@ import { GuidecapturePageRoutingModule } from './guidecapture-routing.module';
 
 import { GuidecapturePage } from './guidecapture.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { GuideListComponentModule } from 'src/components/guide-list-component/guide-list-component.module';
-import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { GuideListComponentModule } from '../../components/guide-list-component/guide-list-component.module';
+import { SyncSpinnerComponentModule } from '../../components/sync-spinner-component/sync-spinner-component.module';
+import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   imports: [

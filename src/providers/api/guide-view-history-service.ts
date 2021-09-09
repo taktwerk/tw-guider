@@ -9,10 +9,10 @@ import { HttpClient } from '../../services/http-client';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { DownloadService } from '../../services/download-service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GuideViewHistoryModel } from 'src/models/db/api/guide-view-history-model';
+import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
 import { DbBaseModel } from '../../models/base/db-base-model';
 import { AppSetting } from '../../services/app-setting';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class GuideViewHistoryService extends ApiService {

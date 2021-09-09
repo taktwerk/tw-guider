@@ -1,4 +1,4 @@
-import { MenupopoverPageModule } from 'src/components/menupopover/menupopover.module';
+import { MenupopoverPageModule } from '../../components/menupopover/menupopover.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,9 +14,9 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { Viewer3dModelComponentModule } from "../../components/viewer-3d-model-component/viewer-3d-model-component.module";
 import { GuideStepContentComponentModule } from "../../components/guide-step-content-component/guide-step-content-component.module";
 import { GuideStepContentComponent } from "../../components/guide-step-content-component/guide-step-content-component";
-import { GuideinfoPageModule } from 'src/components/guideinfo/guideinfo.module';
-import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { GuideinfoPageModule } from '../../components/guideinfo/guideinfo.module';
+import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
+import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
     declarations: [

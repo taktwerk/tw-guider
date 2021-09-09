@@ -1,11 +1,11 @@
-import { UserService } from 'src/services/user-service';
-import { SyncService } from 'src/services/sync-service';
-import { GuideViewHistoryModel } from 'src/models/db/api/guide-view-history-model';
-import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
+import { UserService } from '../../services/user-service';
+import { SyncService } from '../../services/sync-service';
+import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
+import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
 
 import { MiscService } from './../../services/misc-service';
-import { ApiSync } from 'src/providers/api-sync';
-import { MenuPopoverComponent } from 'src/components/menupopover/menupopover.page';
+import { ApiSync } from '../../providers/api-sync';
+import { MenuPopoverComponent } from '../../components/menupopover/menupopover.page';
 import { GuideinfoPage } from './../../components/guideinfo/guideinfo.page';
 import {
   AfterContentChecked,
@@ -54,11 +54,11 @@ import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { Viewer3dService } from '../../services/viewer-3d-service';
 import { GuideStepContentComponent } from '../../components/guide-step-content-component/guide-step-content-component';
 import { PopoverController } from '@ionic/angular';
-import { TranslateConfigService } from 'src/services/translate-config.service';
-import { HttpClient } from 'src/services/http-client';
-import { UserDb } from 'src/models/db/user-db';
+import { TranslateConfigService } from '../../services/translate-config.service';
+import { HttpClient } from '../../services/http-client';
+import { UserDb } from '../../models/db/user-db';
 import { Subject, Subscription } from 'rxjs';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
+import { SyncIndexService } from '../../providers/api/sync-index-service';
 
 @Component({
   selector: 'app-guide',

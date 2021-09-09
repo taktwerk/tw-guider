@@ -11,7 +11,7 @@ import { GuideCategoryBindingService } from '../../providers/api/guide-category-
 import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 @Component({
   selector: 'guide-collection-page',

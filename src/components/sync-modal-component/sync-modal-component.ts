@@ -15,9 +15,9 @@ import { SyncMode } from '../synchronization-component/synchronization-component
 import { AppSetting } from '../../services/app-setting';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { TranslateConfigService } from '../../services/translate-config.service';
-import { LoggerService } from 'src/services/logger-service';
+import { LoggerService } from '../../services/logger-service';
 import { Subscription } from 'rxjs';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 import { Storage } from '@ionic/storage';
 
 /**

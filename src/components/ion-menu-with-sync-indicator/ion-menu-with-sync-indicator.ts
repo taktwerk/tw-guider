@@ -14,7 +14,7 @@ import { DbProvider } from '../../providers/db-provider';
 import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
 import { Subscription } from 'rxjs';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 
 @Component({
     selector: 'ion-menu-with-sync-indicator',

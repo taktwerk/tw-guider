@@ -9,8 +9,8 @@ import { GuiderModel } from '../../models/db/api/guider-model';
 import { DownloadService } from '../../services/download-service';
 import { GuideCategoryBindingModel } from '../../models/db/api/guide-category-binding-model';
 import { AppSetting } from '../../services/app-setting';
-import { LoggerService } from 'src/services/logger-service';
-import { MiscService } from 'src/services/misc-service';
+import { LoggerService } from '../../services/logger-service';
+import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class GuideCategoryBindingService extends ApiService {

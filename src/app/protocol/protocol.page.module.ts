@@ -9,7 +9,7 @@ import { LanguageSelectorComponentModule } from '../../components/language-selec
 import { TranslateModule } from '@ngx-translate/core';
 import { MainPipe } from '../../pipes/main-pipe.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   declarations: [

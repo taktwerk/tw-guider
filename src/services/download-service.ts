@@ -12,7 +12,7 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
-import { Capacitor, Plugins, CameraResultType, FilesystemDirectory } from '@capacitor/core';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { LoggerService } from './logger-service';
 
 export class RecordedFile {
@@ -20,8 +20,6 @@ export class RecordedFile {
   thumbnailUri?: string;
   type?: string;
 }
-
-const { Filesystem } = Plugins;
 
 /**
  * Download file class
@@ -191,7 +189,7 @@ export class DownloadService {
         // const imgBlob = downloadedImage.body;
 
         const filebBase64 = await Filesystem.readFile({
-          directory: FilesystemDirectory.Data,
+          directory: Directory.Data,
           path: this.platform.is('android') ? directoryName + '/' + fileName : this.platform.is('ios') ? path : directoryName + '/' + fileName
         });
 

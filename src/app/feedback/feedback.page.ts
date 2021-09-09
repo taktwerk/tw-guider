@@ -9,8 +9,8 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
 import { Subscription } from 'rxjs';
-import { MiscService } from 'src/services/misc-service';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
+import { MiscService } from '../../services/misc-service';
+import { SyncIndexService } from '../../providers/api/sync-index-service';
 
 @Component({
   selector: 'feedback-page',

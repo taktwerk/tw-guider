@@ -7,8 +7,8 @@ import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
 import { DownloadService } from '../../services/download-service';
 import { AppSetting } from '../../services/app-setting';
-import { LoggerService } from 'src/services/logger-service';
-import { MiscService } from 'src/services/misc-service';
+import { LoggerService } from '../../services/logger-service';
+import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class SyncIndexService extends ApiService {

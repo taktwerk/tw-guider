@@ -2,8 +2,8 @@ import { ApiSync } from './../../providers/api-sync';
 import { Component, Input, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
-import { GuiderModel } from 'src/models/db/api/guider-model';
-import { GuiderService } from 'src/providers/api/guider-service';
+import { GuiderModel } from '../../models/db/api/guider-model';
+import { GuiderService } from '../../providers/api/guider-service';
 import { Storage } from '@ionic/storage';
 
 @Component({

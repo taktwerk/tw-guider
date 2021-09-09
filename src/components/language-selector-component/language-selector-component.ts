@@ -11,7 +11,7 @@ import { DownloadService } from '../../services/download-service';
 import { DbProvider } from '../../providers/db-provider';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { UserService } from '../../services/user-service';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
 import { Storage } from '@ionic/storage';
 /**

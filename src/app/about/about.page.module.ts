@@ -9,7 +9,7 @@ import {LanguageSelectorComponentModule} from '../../components/language-selecto
 import {TranslateModule} from '@ngx-translate/core';
 import {MainPipe} from '../../pipes/main-pipe.module';
 import {AboutPage} from './about.page';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   declarations: [

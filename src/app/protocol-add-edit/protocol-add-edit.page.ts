@@ -24,7 +24,7 @@ import { WorkflowTransitionService } from '../../providers/api/workflow-transiti
 
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
 
 @Component({

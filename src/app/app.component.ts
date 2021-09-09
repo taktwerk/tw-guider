@@ -1,7 +1,7 @@
 import { Storage } from '@ionic/storage';
 import { MiscService } from './../services/misc-service';
 
-import { LoggerService } from 'src/services/logger-service';
+import { LoggerService } from '../services/logger-service';
 import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy, QueryList, ViewChildren, Renderer2 } from '@angular/core';
 import { AlertController, IonRouterOutlet, NavController, Platform, ModalController } from '@ionic/angular';
 import { ApiSync } from '../providers/api-sync';
@@ -20,7 +20,7 @@ import { Location } from '@angular/common';
 
 
 import { Plugins } from '@capacitor/core';
-import { AuthDb } from 'src/models/db/auth-db';
+import { AuthDb } from '../models/db/auth-db';
 import { interval, Subscription } from 'rxjs';
 
 const { SplashScreen, App } = Plugins;

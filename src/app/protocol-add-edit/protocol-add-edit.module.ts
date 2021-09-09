@@ -12,7 +12,7 @@ import { ProtocolAddEditPage } from './protocol-add-edit.page';
 import { ProtocolDefaultComponentModule } from '../../components/protocol-form-components/protocol-default-component/protocol-default-component.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DateAgoPipe } from '../../pipes/date-ago.pipe';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
     declarations: [

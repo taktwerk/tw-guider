@@ -3,7 +3,7 @@ import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
 import { ModalController } from '@ionic/angular';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
 import { Subscription } from 'rxjs';
-import { MiscService } from 'src/services/misc-service';
+import { MiscService } from '../../services/misc-service';
 import { Storage } from '@ionic/storage';
 
 /**

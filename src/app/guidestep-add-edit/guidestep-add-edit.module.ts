@@ -9,13 +9,13 @@ import { GuidestepAddEditPageRoutingModule } from './guidestep-add-edit-routing.
 import { GuidestepAddEditPage } from './guidestep-add-edit.page';
 
 import { TranslateModule } from '@ngx-translate/core';
-import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
+import { SyncSpinnerComponentModule } from '../../components/sync-spinner-component/sync-spinner-component.module';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { HtmlDescriptionComponentModule } from 'src/components/html-description/html-description-component.module';
-import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-component/viewer-3d-model-component.module';
+import { HtmlDescriptionComponentModule } from '../../components/html-description/html-description-component.module';
+import { Viewer3dModelComponentModule } from '../../components/viewer-3d-model-component/viewer-3d-model-component.module';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
+import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   imports: [
