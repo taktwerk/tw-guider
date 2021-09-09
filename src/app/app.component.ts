@@ -173,11 +173,14 @@ export class AppComponent implements OnInit, OnDestroy {
   async initializeApp() {
     this.platform.ready().then(async () => {
 
-      setTimeout(() => {
-        SplashScreen.hide({
-          fadeOutDuration: 1000
-        });
-      }, 2000)
+      if(this.platform.is('capacitor')) {
+        setTimeout(() => {
+          SplashScreen.hide({
+            fadeOutDuration: 1000
+          });
+        }, 2000)
+      }
+ 
 
       await this.migrationProvider.init();
       this.migrationProvider.checkAuthMigration();

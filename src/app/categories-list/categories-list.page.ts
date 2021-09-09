@@ -141,11 +141,13 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     const _guides = await this.guideCategoryService.getGuides(null, this.searchValue);
     // console.log("_guides", _guides)
 
+    console.log("a1");
     if (_guides.length > 0) {
       const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
       this.guides = syncedList;
     }
 
+    console.log("a2");
     // syncIndexify guidesWithoutCategories
     const _guidesWithoutCategories = await this.guideCategoryService.getGuides(null, '', true);
     if (_guidesWithoutCategories.length > 0) {

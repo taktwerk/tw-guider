@@ -25,7 +25,7 @@
   </ion-segment>
 
   <div [ngSwitch]="type">
-    <div *ngSwitchDefault="'activity'">
+    <div *ngSwitchDefault>
       <span *ngIf="isLoadedContent">
         <div class="guide-category" *ngFor="let guideActivity of guideArr;">
           <div>
