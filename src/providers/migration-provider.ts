@@ -92,14 +92,13 @@ export class MigrationProvider {
     // check auth table exist == safety check
     this.migration.dbModelApi.checkTableExit('auth').then(async tableRes => {
       // check all auth TABLE attributes exist
-      console.log('is auth table exist ? ', tableRes);
       // get migrations list
       const migrations = this.authDb.migrations;
       migrations.map(async (m, i) => {
         const migrationInstance = new migrationList[m](this.authDb);
         // execute migration
         const isExecutedMigration = await migrationInstance.execute();
-        console.log('Auth isExecutedMigration ', isExecutedMigration);
+        // console.log('Auth isExecutedMigration ', isExecutedMigration);
       });
 
       // re-authenticate user previous with authentication data

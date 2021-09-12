@@ -213,7 +213,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         this.updateGuideStepSlides();
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
 
     this.ionSlideDidChange();
@@ -244,7 +244,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         try {
           //  console.log('componentRef.instance', componentRef.instance);
         } catch (e) {
-          console.log('componentRef.instance is errrrrorrrr');
+          console.error('componentRef.instance is errrrrorrrr');
         }
 
         componentRef.instance.step = this.guideSteps[i];
@@ -321,7 +321,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   public async resumeStep(id) {
     this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]);
-    console.log("this.guideHistories ", this.guideHistories)
     // in collection
     if (this.parentCollectionId) {
       this.guideViewHistory = this.guideHistories.filter((h) => (h.parent_guide_id === this.parentCollectionId) && h.user_id === this.userDb.userId)[0];
@@ -340,8 +339,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     }
 
     // show guide info if not already shown
-    console.log(this.guideViewHistory)
-    console.log("this.guideViewHistory.show_info ", this.guideViewHistory.show_info)
     if (this.guideViewHistory.show_info === 0 || !this.guideViewHistory.show_info) {
       this.presentGuideInfo(this.guideId)
     }
@@ -382,13 +379,11 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       const _activeIndex = await this.guideStepSlides.getActiveIndex();
       this.guideViewHistory.step = _activeIndex;
     } catch (error) {
-      console.log(error)
+      console.error(error)
       this.guideViewHistory.step = 0;
     }
 
-    console.log("this.guideViewHistory", this.guideViewHistory)
     this.guideViewHistoryService.save(this.guideViewHistory).then(async (res) => {
-      console.log("save response ", res)
       if (this.resumeMode) { this.apiSync.setIsPushAvailableData(true) }
     })
   }
@@ -561,9 +556,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       },
       cssClass: 'modal-fullscreen',
     });
-
-    console.log("show_info", this.guideViewHistory.show_info);
-
     // if (this.guideViewHistory.show_info === 0 || !this.guideViewHistory.show_info) {
     this.saveStep(true);
     return await modal.present();

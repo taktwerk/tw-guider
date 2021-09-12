@@ -19,7 +19,6 @@ export class TranslateConfigService {
         private translator: TranslateService
     ) {
         TranslateConfigService.DEFAULT_LANGUAGE = this.getDeviceLanguage();
-        console.log(TranslateConfigService.DEFAULT_LANGUAGE, "TranslateConfigService.DEFAULT_LANGUAGE")
     }
 
     getDefaultLanguage() {
@@ -36,7 +35,6 @@ export class TranslateConfigService {
     }
 
     setLanguage(setLang?: string) {
-        console.log("setLang", setLang)
         if (!setLang || !this.isLanguageAvailable(setLang)) {
             setLang = TranslateConfigService.DEFAULT_LANGUAGE;
         }

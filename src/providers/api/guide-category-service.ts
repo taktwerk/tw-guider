@@ -151,7 +151,7 @@ export class GuideCategoryService extends ApiService {
                         entries.push(obj);
                     }
                 }
-                console.log("findAll entries", entries)
+                // console.log("findAll entries", entries)
                 resolve(entries);
             }).catch((err) => {
                 resolve(entries);
@@ -272,7 +272,6 @@ export class GuideCategoryService extends ApiService {
                         entries.push(obj);
                     }
                 }
-                console.log(entries)
                 resolve(entries);
             }).catch((err) => {
                 resolve(entries);

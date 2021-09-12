@@ -4,7 +4,9 @@ import { Storage } from '@ionic/storage';
 
 @Injectable({ providedIn: 'root' })
 export class MiscService {
-    constructor(private storage: Storage) { }
+    constructor(private storage: Storage) { 
+        console.log("Misc Service is Ready");
+    }
 
     public onSlideRestart = new Subject<boolean>();
     public refreshAppData = new Subject<boolean>()

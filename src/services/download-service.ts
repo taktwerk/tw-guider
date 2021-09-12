@@ -539,6 +539,7 @@ export class DownloadService {
   }
 
   public getWebviewFileSrc(path) {
+    console.log(this.webview);
     return this.webview.convertFileSrc(path);
   }
 

@@ -83,7 +83,7 @@ export class GuideViewHistoryService extends ApiService {
                         entries.push(obj);
                     }
                 }
-                console.log("findAll entries Activity", entries)
+                // console.log("findAll entries Activity", entries)
                 resolve(entries);
             }).catch((err) => {
                 resolve(entries);
@@ -106,7 +106,6 @@ export class GuideViewHistoryService extends ApiService {
             ];
 
             if (guideCategoryId) {
-                console.log('2');
                 whereCondition.push(
                     this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('id') +
                     '=' +
@@ -115,14 +114,12 @@ export class GuideViewHistoryService extends ApiService {
             }
 
             if (!user.isAuthority) {
-                console.log('3');
                 whereCondition.push(
                     this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
                 );
             }
 
             if (searchValue) {
-                console.log('4');
                 whereCondition.push(
                     '(' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
                     + ' OR ' +
@@ -132,7 +129,6 @@ export class GuideViewHistoryService extends ApiService {
 
             let joinCondition = '';
             if (withoutCategories) {
-                console.log('5');
                 joinCondition =
                     'LEFT JOIN ' + this.dbModelApi.secure('guide_category_binding') +
                     ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') +
@@ -155,7 +151,6 @@ export class GuideViewHistoryService extends ApiService {
                 );
             }
             else {
-                console.log('6');
                 joinCondition =
                     'JOIN ' + this.dbModelApi.secure('guide_category_binding') +
                     ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') +
@@ -177,7 +172,6 @@ export class GuideViewHistoryService extends ApiService {
 
             const selectFrom = 'SELECT ' + this.dbModelApi.secure('guide') + '.*' + ' from ' + this.dbModelApi.secure('guide');
             const groupby = this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
-            console.log('7');
             const entries: GuiderModel[] = [];
             this.dbModelApi.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom, groupby).then((res) => {
                 if (res && res.rows && res.rows.length > 0) {
@@ -192,7 +186,6 @@ export class GuideViewHistoryService extends ApiService {
                         entries.push(obj);
                     }
                 }
-                console.log(entries, '8')
                 resolve(entries);
             }).catch((err) => {
                 resolve(entries);

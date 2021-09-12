@@ -159,7 +159,6 @@ export class ApiSync implements OnDestroy {
         this.initializeEvents();
 
         this.syncService.resumeMode.subscribe((mode) => {
-            console.log("Resume Mode", mode)
             if (mode) this.apiPushServices.guide_view_history = this.guideViewHistoryService;
             else delete this.apiPushServices.guide_view_history
         });

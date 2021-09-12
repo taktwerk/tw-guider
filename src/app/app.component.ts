@@ -181,7 +181,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }, 2000)
       }
  
-
+      //debugger;
       await this.migrationProvider.init();
       this.migrationProvider.checkAuthMigration();
       
@@ -363,7 +363,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.authService.getLastUser().then((res) => {
         resolve(res);
         let lastUser: AuthDb = null;
-        console.log("lastUser", res);
         if (res) {
           lastUser = res;
         }

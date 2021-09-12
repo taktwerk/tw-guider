@@ -28,10 +28,10 @@ export class AddGroupColumnToUserTableMigration {
 			this.auth
 				.query(query)
 				.then((res) => {
-					console.log('success when execute code');
+					// console.log('success when execute code');
 					resolve(true);
 				}).catch((err) => {
-					console.log('error when execute code', err);
+					console.error('error when execute code', err);
 					resolve(false);
 				});
 		});

@@ -119,7 +119,7 @@ export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
-Sentry.init({ dsn: environment.sentryDsn });
+// Sentry.init({ dsn: environment.sentryDsn });
 
 @NgModule({
   declarations: [

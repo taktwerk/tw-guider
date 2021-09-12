@@ -134,7 +134,7 @@ export class GuidestepAddEditPage implements OnInit {
         this.model.setFile(recordedFile)
         this.shouldUpdate = true;
       })
-      .catch((e) => console.log('model', 'addVideoUsingCamera', e));
+      .catch((e) => console.error('model', 'addVideoUsingCamera', e));
   }
 
   addPhotoUsingCamera() {
@@ -145,7 +145,7 @@ export class GuidestepAddEditPage implements OnInit {
         this.model.design_canvas_file = null;
         this.shouldUpdate = true;
       })
-      .catch((e) => console.log('model', 'addPhotoUsingCamera', e));
+      .catch((e) => console.error('model', 'addPhotoUsingCamera', e));
   }
 
   public setGuideSteps(id) {
@@ -218,7 +218,7 @@ export class GuidestepAddEditPage implements OnInit {
           this.shouldSave = false;
           // this.router.navigate(["/", "editguide", this.guideId]);
           this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
-        }).catch((e) => console.log(e))
+        }).catch((e) => console.error(e))
       }
       // save all
       else {
@@ -232,7 +232,7 @@ export class GuidestepAddEditPage implements OnInit {
               this.http.showToast(alertMessage);
               // this.router.navigate(["/", "editguide", this.guideId]);
               this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
-            }).catch((e) => console.log(e))
+            }).catch((e) => console.error(e))
           })
         })
       }
@@ -249,7 +249,7 @@ export class GuidestepAddEditPage implements OnInit {
         this.shouldSave = false;
         this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
         // this.router.navigate(["/", "editguide", this.guideId]);
-      }).catch((e) => console.log(e))
+      }).catch((e) => console.error(e))
     }
   }
 
