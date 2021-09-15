@@ -45,7 +45,7 @@ export class DownloadService {
 
 
   webfile: WebFile;
-  
+
   constructor(
     public http: HttpClient,
     public platform: Platform,
@@ -60,9 +60,9 @@ export class DownloadService {
     private videoEditor: VideoEditor,
     protected sanitizerImpl: ɵDomSanitizerImpl,
     private loggerService: LoggerService
-  ) { 
+  ) {
 
-    if(!this.platform.is('capacitor')) {
+    if (!this.platform.is('capacitor')) {
       this.webfile = new WebFile();
     }
 
@@ -80,8 +80,11 @@ export class DownloadService {
   async downloadAndSaveFile(url: string, name: string, modelFolder: string, authToken = ''): Promise<any> {
     const promise = new Promise((resolve) => {
       const finalPath = this.file.dataDirectory + modelFolder + '/' + name;
-      console.log("Will downloadAndSaveFile")
-      console.log(finalPath)
+console.log(url,'-------------->')
+      if (!this.platform.is('capacitor')) {
+        resolve(url)
+        return;
+      }
 
       this.isExistFile(this.file.dataDirectory + modelFolder + '/', name).then((isExist) => {
         if (isExist) {
@@ -168,10 +171,14 @@ export class DownloadService {
   protected isExistFile(directory, name): Promise<boolean> {
     return new Promise((resolve) => {
       console.log("isExistFile", directory, name);
-      this.file
-        .checkFile(directory, name)
-        .then((existFile) => resolve(existFile))
-        .catch((err) => resolve(false));
+      if (this.platform.is('capacitor')) {
+        this.file
+          .checkFile(directory, name)
+          .then((existFile) => resolve(existFile))
+          .catch((err) => resolve(false));
+      } else {
+        this.webfile.checkFile(directory, name).then((existFile: any) => resolve(existFile)).catch((err) => resolve(false))
+      }
     });
   }
 
@@ -446,16 +453,22 @@ export class DownloadService {
    */
   private checkDir(modelName: string): Promise<boolean> {
     return new Promise((resolve) => {
-      this.file
-        .checkDir(this.file.dataDirectory, modelName)
-        .then((_) => {
+      if (this.platform.is('capacitor')) {
+        this.file
+          .checkDir(this.file.dataDirectory, modelName)
+          .then((_) => {
+            resolve(true);
+          })
+          .catch((err) => {
+            this.file.createDir(this.file.dataDirectory, modelName, false).then((_) => {
+              resolve(true);
+            });
+          });
+      } else {
+        this.webfile.checkDir().then((_) => {
           resolve(true);
         })
-        .catch((err) => {
-          this.file.createDir(this.file.dataDirectory, modelName, false).then((_) => {
-            resolve(true);
-          });
-        });
+      }
     });
   }
 
@@ -549,7 +562,7 @@ export class DownloadService {
   }
 
   public getWebviewFileSrc(path) {
-    if(this.platform.is('capacitor')) return this.webview.convertFileSrc(path);
+    if (this.platform.is('capacitor')) return this.webview.convertFileSrc(path);
     return path;
   }
 
