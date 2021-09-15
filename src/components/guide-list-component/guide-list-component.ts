@@ -30,14 +30,12 @@ export class GuideListComponent implements OnInit {
   public guideHistories: GuideViewHistoryModel[] = [];
 
   constructor(
-    private storage: Storage,
     private modalController: ModalController,
     private authService: AuthService,
     private router: Router,
     public appSetting: AppSetting,
     public platform: Platform,
     public location: Location,
-    private miscService: MiscService,
     private guideViewHistoryService: GuideViewHistoryService,
 
   ) {

@@ -195,6 +195,7 @@ export class ProtocolDefaultService extends ApiService {
                 return false;
             }
             this.saveInformation.protocol_file = editFilePath;
+            console.log("openCreatePage");
             const convertFileSrc = this.downloadService.getWebviewFileSrc(editFilePath);
             const editFilePathNew = this.downloadService.getSafeUrl(convertFileSrc, 'trustStyle');
             var n = editFilePath.lastIndexOf('/');

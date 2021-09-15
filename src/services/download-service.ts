@@ -1,10 +1,8 @@
 import { Injectable, SecurityContext } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
-import { Toast } from '@ionic-native/toast/ngx';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { finalize } from 'rxjs/operators';
 import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
@@ -14,7 +12,7 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { LoggerService } from './logger-service';
-
+import WebFile from 'web-plugins/WebFile';
 export class RecordedFile {
   uri: string;
   thumbnailUri?: string;
@@ -41,13 +39,18 @@ export class DownloadService {
    * @param camera
    * @param videoEditor
    * @param sanitizerImpl
+   * 
+   * @param webfile
    */
+
+
+  webfile: WebFile;
+  
   constructor(
     public http: HttpClient,
     public platform: Platform,
     public file: File,
     public webview: WebView,
-    private toast: Toast,
     private domSanitizer: DomSanitizer,
     private fileChooser: FileChooser,
     private filePicker: IOSFilePicker,
@@ -57,7 +60,13 @@ export class DownloadService {
     private videoEditor: VideoEditor,
     protected sanitizerImpl: ɵDomSanitizerImpl,
     private loggerService: LoggerService
-  ) { }
+  ) { 
+
+    if(!this.platform.is('capacitor')) {
+      this.webfile = new WebFile();
+    }
+
+  }
 
   /**
    * Download a file locally
@@ -158,6 +167,7 @@ export class DownloadService {
 
   protected isExistFile(directory, name): Promise<boolean> {
     return new Promise((resolve) => {
+      console.log("isExistFile", directory, name);
       this.file
         .checkFile(directory, name)
         .then((existFile) => resolve(existFile))
@@ -539,8 +549,8 @@ export class DownloadService {
   }
 
   public getWebviewFileSrc(path) {
-    console.log(this.webview);
-    return this.webview.convertFileSrc(path);
+    if(this.platform.is('capacitor')) return this.webview.convertFileSrc(path);
+    return path;
   }
 
   public getSanitizedFileUrl(path, modelName, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {

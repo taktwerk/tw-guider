@@ -58,7 +58,6 @@ export class PdfViewerComponent implements OnInit {
     console.log('headerObject', headerObject);
 
     const headers = new Headers(headerObject);
-
     this.url = this.download.getWebviewFileSrc(this.url);
     this.embeddedPdfViewer.pdfSrc = this.url;
     this.embeddedPdfViewer.refresh();
