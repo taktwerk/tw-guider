@@ -27,7 +27,7 @@ import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 @Component({
   selector: 'app-list',
   templateUrl: 'categories-list.page.html',
-  styleUrls: ['categories-list.page.scss']
+  styleUrls: ['categories-list.page.scss'],
 })
 export class CategoriesListPage implements OnInit, OnDestroy {
   public isStartSync = false;
@@ -75,57 +75,51 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private miscService: MiscService,
     private userService: UserService,
-    private syncIndexService: SyncIndexService,
-
+    private syncIndexService: SyncIndexService
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
-      if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') ||
-        this.authService.auth.isAuthority
-      ) {
+      if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') || this.authService.auth.isAuthority) {
         this.haveProtocolPermissions = true;
       }
     }
-
-   
   }
-  async showAllActivity(){
+  async showAllActivity() {
     let guideActivity: any = this.state.getState('CategoriesListPage_guideActivity');
-    if(guideActivity != null) {
+    if (guideActivity != null) {
       this.guideActivity = await guideActivity;
       this.isPreStateLoad = true;
     }
 
     let loader;
-    if(this.isPreStateLoad === false) {
+    if (this.isPreStateLoad === false) {
       loader = await this.loader.create();
       loader.present();
     }
-   await this.findAllGuideActivity();
-   await this.setActivity();
+    await this.findAllGuideActivity();
+    await this.setActivity();
 
-    if(typeof loader != 'undefined')  loader.dismiss();
+    if (typeof loader != 'undefined') loader.dismiss();
     this.isLoadedContent = true;
   }
 
   async showAllGuides() {
-
     let guideCategories: any = this.state.getState('CategoriesListPage_guideCategories');
-    if(guideCategories != null) {
+    if (guideCategories != null) {
       this.guideCategories = await guideCategories;
       this.isPreStateLoad = true;
     }
 
     let loader;
-    if(this.isPreStateLoad === false) {
+    if (this.isPreStateLoad === false) {
       loader = await this.loader.create();
       loader.present();
     }
-   
+
     await this.findAllGuideCategories();
     await this.setGuides();
 
-    if(typeof loader != 'undefined')  loader.dismiss();
+    if (typeof loader != 'undefined') loader.dismiss();
     this.isLoadedContent = true;
   }
 
@@ -144,7 +138,10 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     // syncIndexify guidesWithoutCategories
     const _guidesWithoutCategories = await this.guideCategoryService.getGuides(null, '', true);
     if (_guidesWithoutCategories.length > 0) {
-      const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(_guidesWithoutCategories, _guidesWithoutCategories[0].TABLE_NAME);
+      const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(
+        _guidesWithoutCategories,
+        _guidesWithoutCategories[0].TABLE_NAME
+      );
       this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
     }
   }
@@ -155,27 +152,30 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       const syncedList = await this.syncIndexService.getSyncIndexModel(_guidesActivity, _guidesActivity[0].TABLE_NAME);
       this.guides = syncedList;
       this.guideArr = this.guides;
-      
     }
 
     // syncIndexify guidesWithoutCategories
     const _guidesWithoutCategories = await this.guideViewHistoryService.getActivity(null, '', true);
     if (_guidesWithoutCategories.length > 0) {
-      const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(_guidesWithoutCategories, _guidesWithoutCategories[0].TABLE_NAME);
+      const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(
+        _guidesWithoutCategories,
+        _guidesWithoutCategories[0].TABLE_NAME
+      );
       this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
-    
+
       this.guideArr = this.guidesWithoutCategories;
+      console.log(this.guideArr, 'guideArr');
     }
   }
   async findAllGuideActivity() {
     // syncIndexify guides
-  this.guideActivity = await this.guideViewHistoryService.findAll(this.searchValue);
-  if (this.guideActivity.length > 0) {
-    const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideActivity, this.guideActivity[0].TABLE_NAME);
-    this.guideActivity = syncedList;
-    // this.setCategoryGuides();
-    this.state.setState('CategoriesListPage_guideActivity', this.guideActivity);
-  }
+    this.guideActivity = await this.guideViewHistoryService.findAll(this.searchValue);
+    if (this.guideActivity.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideActivity, this.guideActivity[0].TABLE_NAME);
+      this.guideActivity = syncedList;
+      // this.setCategoryGuides();
+      this.state.setState('CategoriesListPage_guideActivity', this.guideActivity);
+    }
   }
 
   async findAllGuideCategories() {
@@ -191,8 +191,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   async setCategoryGuides() {
-    this.guideCategories.map(guideCategory => {
-      guideCategory.setGuides().then(async res => {
+    this.guideCategories.map((guideCategory) => {
+      guideCategory.setGuides().then(async (res) => {
         // // console.log("guideCategory.guides", guideCategory.guides)
         // if (guideCategory.guides.length > 0) {
         //   const syncedList = await this.syncIndexService.getSyncIndexModel(guideCategory.guides, guideCategory.guides[0].TABLE_NAME);
@@ -203,10 +203,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
         // else {
         //   guideCategory.guidesCount = 0;
         // }
-      })
+      });
     });
-
-
   }
 
   detectChanges() {
@@ -226,22 +224,22 @@ export class CategoriesListPage implements OnInit, OnDestroy {
         referenceModelAlias: 'guide',
         referenceId: guide.idApi,
         clientId: guide.client_id,
-        backUrl: this.router.url
-      }
+        backUrl: this.router.url,
+      },
     };
     this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }
 
   getGuidesWithoutCategories() {
-    return this.guides.filter(guide => {
+    return this.guides.filter((guide) => {
       return !guide.guide_collection.length;
     });
   }
 
   async ionViewWillEnter() {
-    this.onboardingSyncShown = await this.miscService.get_guideShown("onboardingSyncShown");
+    this.onboardingSyncShown = await this.miscService.get_guideShown('onboardingSyncShown');
     if (this.isStartSync) {
-      this.miscService.set_guideShown("onboardingSyncShown");
+      this.miscService.set_guideShown('onboardingSyncShown');
     }
   }
 
@@ -254,31 +252,29 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       this.detectChanges();
     });
 
-    this.apiSync.syncProgressStatus
-      .pipe(debounceTime(500))
-      .subscribe(syncProgressStatus => {
-        switch (syncProgressStatus) {
-          case ('initial'):
-            this.iconStatus = 'unsynced';
-            break;
-          case ('success'):
-            this.iconStatus = 'synced';
-            break;
-          case ('resume'):
-          case ('progress'):
-            this.iconStatus = 'progress';
-            break;
-          case ('pause'):
-            this.iconStatus = 'pause';
-            break;
-          case ('failed'):
-            this.iconStatus = 'failed';
-            break;
-          default:
-            this.iconStatus = null;
-        }
-        this.detectChanges();
-      });
+    this.apiSync.syncProgressStatus.pipe(debounceTime(500)).subscribe((syncProgressStatus) => {
+      switch (syncProgressStatus) {
+        case 'initial':
+          this.iconStatus = 'unsynced';
+          break;
+        case 'success':
+          this.iconStatus = 'synced';
+          break;
+        case 'resume':
+        case 'progress':
+          this.iconStatus = 'progress';
+          break;
+        case 'pause':
+          this.iconStatus = 'pause';
+          break;
+        case 'failed':
+          this.iconStatus = 'failed';
+          break;
+        default:
+          this.iconStatus = null;
+      }
+      this.detectChanges();
+    });
 
     this.syncService.syncMode.subscribe((result) => {
       if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
@@ -341,7 +337,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
           break;
         default:
       }
-    })
+    });
 
     this.type = 'activity';
   }
@@ -351,7 +347,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       this.appSetting.showIsNotMigratedDbPopup();
       return;
     }
-    this.miscService.set_guideShown("onboardingSyncShown");
+    this.miscService.set_guideShown('onboardingSyncShown');
     this.onboardingSyncShown = true;
     this.apiSync.makeSyncProcess();
     this.openSyncModal();
@@ -360,7 +356,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   async openSyncModal() {
     const modal = await this.modalController.create({
       component: SyncModalComponent,
-      cssClass: "modal-fullscreen"
+      cssClass: 'modal-fullscreen',
     });
     return await modal.present();
   }

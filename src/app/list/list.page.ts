@@ -14,11 +14,10 @@ import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
 import { SyncIndexService } from '../../providers/api/sync-index-service';
 
-
 @Component({
   selector: 'app-list',
   templateUrl: 'list.page.html',
-  styleUrls: ['list.page.scss']
+  styleUrls: ['list.page.scss'],
 })
 export class ListPage implements OnInit, OnDestroy {
   public guideCategory: GuideCategoryModel;
@@ -45,14 +44,11 @@ export class ListPage implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private translateConfigService: TranslateConfigService,
     private miscService: MiscService,
-    private syncIndexService: SyncIndexService,
-
+    private syncIndexService: SyncIndexService
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
-      if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') ||
-        this.authService.auth.isAuthority
-      ) {
+      if (this.authService.auth.additionalInfo.roles.includes('ProtocolViewer') || this.authService.auth.isAuthority) {
         this.haveProtocolPermissions = true;
       }
     }
@@ -74,8 +70,7 @@ export class ListPage implements OnInit, OnDestroy {
         // console.log("this.guideCategory.idApi", this.guideCategory.idApi)
         this.detectChanges();
       }
-    }
-    else {
+    } else {
       this.guideCategory = this.guideCategoryService.newModel();
       this.guideCategory.name = this.translateConfigService.translateWord('guide-categories.no-category');
       this.detectChanges();
@@ -122,8 +117,8 @@ export class ListPage implements OnInit, OnDestroy {
         referenceModelAlias: 'guide',
         referenceId: guide.idApi,
         clientId: guide.client_id,
-        backUrl: this.router.url
-      }
+        backUrl: this.router.url,
+      },
     };
     this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
   }

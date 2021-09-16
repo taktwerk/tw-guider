@@ -154,8 +154,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     private syncService: SyncService,
     private userService: UserService,
     public platform: Platform,
-    private syncIndexService: SyncIndexService,
-
+    private syncIndexService: SyncIndexService
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -307,9 +306,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   public setGuideSteps(id) {
     // console.log("id", id)
-    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(async results => {
+    return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(async (results) => {
       // console.log("results", results)
-      const _guideSteps = results.filter(model => {
+      const _guideSteps = results.filter((model) => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
       if (_guideSteps.length > 0) {
@@ -323,16 +322,15 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]);
     // in collection
     if (this.parentCollectionId) {
-      this.guideViewHistory = this.guideHistories.filter((h) => (h.parent_guide_id === this.parentCollectionId) && h.user_id === this.userDb.userId)[0];
+      this.guideViewHistory = this.guideHistories.filter((h) => h.parent_guide_id === this.parentCollectionId && h.user_id === this.userDb.userId)[0];
       if (!this.guideViewHistory) {
         this.guideViewHistory = this.guideViewHistoryService.newModel();
       }
-    }
-    else {
+    } else {
       // console.log("Not in COllection")
       // console.log(this.guideHistories);
       // this.guideViewHistory = this.guideHistories.sort((a: GuideViewHistoryModel, b: GuideViewHistoryModel) => b.created_at.getDate() - a.created_at.getDate()).filter((h: GuideViewHistoryModel) => !h.parent_guide_id)[0];
-      this.guideViewHistory = this.guideHistories.filter((h) => (h.guide_id === this.guide.idApi) && h.user_id === this.userDb.userId)[0];
+      this.guideViewHistory = this.guideHistories.filter((h) => h.guide_id === this.guide.idApi && h.user_id === this.userDb.userId)[0];
       if (!this.guideViewHistory) {
         this.guideViewHistory = this.guideViewHistoryService.newModel();
       }
@@ -340,7 +338,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
     // show guide info if not already shown
     if (this.guideViewHistory.show_info === 0 || !this.guideViewHistory.show_info) {
-      this.presentGuideInfo(this.guideId)
+      this.presentGuideInfo(this.guideId);
     }
 
     // resume step from saved step
@@ -379,18 +377,20 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       const _activeIndex = await this.guideStepSlides.getActiveIndex();
       this.guideViewHistory.step = _activeIndex;
     } catch (error) {
-      console.error(error)
+      console.error(error);
       this.guideViewHistory.step = 0;
     }
 
     this.guideViewHistoryService.save(this.guideViewHistory).then(async (res) => {
-      if (this.resumeMode) { this.apiSync.setIsPushAvailableData(true) }
-    })
+      if (this.resumeMode) {
+        this.apiSync.setIsPushAvailableData(true);
+      }
+    });
   }
 
   public setAssets(id) {
-    return this.guiderService.dbModelApi.setAssets(id).then(async results => {
-      const _guideAssets = results.filter(model => {
+    return this.guiderService.dbModelApi.setAssets(id).then(async (results) => {
+      const _guideAssets = results.filter((model) => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
       });
       if (_guideAssets.length > 0) {
@@ -668,7 +668,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     return await popover.present();
   }
 
-  ionViewWillLeave() { }
+  ionViewWillLeave() {}
 
   backToCollection() {
     const feedbackNavigationExtras: NavigationExtras = {
