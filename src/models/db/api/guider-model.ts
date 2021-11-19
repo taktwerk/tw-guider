@@ -135,16 +135,6 @@ export class GuiderModel extends DbApiModel {
         }
     }
 
-    public setSteps() {
-        const guideStepModel = new GuideStepModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
-        guideStepModel.findAllWhere(['guide_id', this.idApi], 'order_number ASC').then(results => {
-            results.map(model => {
-                if (!model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]) {
-                    this.addRelativeData(model, 'steps');
-                }
-            });
-        });
-    }
 
     public setAssets(id): Promise<GuideAssetModel[]> {
         return new Promise((resolve) => {

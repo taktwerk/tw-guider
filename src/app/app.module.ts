@@ -114,6 +114,7 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { LoggerService } from '../services/logger-service';
 import { AuthDb } from '../models/db/auth-db';
 import { SyncIndexService } from '../providers/api/sync-index-service';
+import { AppSettingsDb } from 'models/db/app-settings-db';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -203,6 +204,7 @@ export function LanguageLoader(http: Http) {
     WorkflowStepService,
     WorkflowTransitionService,
     DbProvider,
+    AppSettingsDb,
     MigrationProvider,
     AuthService,
     HttpClient,

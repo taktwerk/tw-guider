@@ -6,7 +6,9 @@ import { UserSetting } from '../user-setting';
 import { AuthDb } from './auth-db';
 import { DownloadService } from '../../services/download-service';
 import { MiscService } from '../../services/misc-service';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class AppSettingsDb extends DbBaseModel {
     /** @inheritDoc */
     TAG: string = 'AppSettingsDb';

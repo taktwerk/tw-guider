@@ -1,10 +1,8 @@
 import { LoggerService } from './logger-service';
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
-import { UserService } from './user-service';
 import { AppSettingsDb } from '../models/db/app-settings-db';
 import { AlertController, Platform } from '@ionic/angular';
-import { DbProvider } from '../providers/db-provider';
 import { DownloadService } from './download-service';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateConfigService } from './translate-config.service';
@@ -20,7 +18,6 @@ export enum AppConfigurationModeEnum {
 
 @Injectable()
 export class AppSetting {
-    static DB_NAME: string = environment.dbName;
 
     public mode = AppConfigurationModeEnum.ONLY_CONFIGURE;
     public taktwerk = environment.taktwerk;
@@ -40,11 +37,12 @@ export class AppSetting {
         isEnabledUsb: false
     };
 
-    appSetting: AppSettingsDb;
+    // appSetting: AppSettingsDb;
 
-    constructor(private userService: UserService,
+    constructor(
         public platform: Platform,
-        public db: DbProvider,
+        // public db: DbProvider,
+        public appSetting: AppSettingsDb,
         public downloadService: DownloadService,
         public alertController: AlertController,
         private translateConfigService: TranslateConfigService,
@@ -52,7 +50,7 @@ export class AppSetting {
         , private miscService: MiscService
     ) {
         this.isWasQrCodeSetupSubscribtion = new BehaviorSubject<boolean>(false);
-        this.appSetting = new AppSettingsDb(platform, db, downloadService, loggerService, miscService);
+        // this.appSetting = new AppSettingsDb(platform, db, downloadService, loggerService, miscService);
         this.appSetting.find().then(async (result) => {
             if (result) {
                 Object.keys(result.settings).map((key) => {
@@ -104,7 +102,7 @@ export class AppSetting {
         return this.host + environment.apiUrlPath;
     }
 
-    async save(data) {
+    async save(data, user) {
         let userSettingsObject = {};
         Object.keys(data).map((key) => {
             if (this[key] === undefined) {
@@ -128,7 +126,7 @@ export class AppSetting {
         userSettingsObject['dbMigrationVersion'] = databaseVersion;
         this.dbMigrationVersion = '' + databaseVersion;
 
-        const user = await this.userService.getUser();
+        //  const user = await this.userService.getUser();
         this.appSetting.settings = userSettingsObject;
         this.appSetting.find().then(async (result) => {
             // console.log('app setting result', result);

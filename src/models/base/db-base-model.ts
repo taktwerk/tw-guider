@@ -37,7 +37,7 @@ export abstract class DbBaseModel {
      * TAG used for Logging.
      * @type {string}
      */
-    abstract TAG: string = 'DbBaseModel';
+    public TAG: string = 'DbBaseModel';
     /** this instance's table name for SQLite db */
     abstract TABLE_NAME: string;
 
@@ -133,7 +133,7 @@ export abstract class DbBaseModel {
                 this.db.init().then(() => {
                     this.dbCreateTable().then((res) => {
                         if (!res) {
-                            // console.log(this.TAG, 'Could not initialize db ' + AppSetting.DB_NAME);
+                            // console.log(this.TAG, 'Could not initialize db ');
                             if (this.loggerService) {
                                 this.loggerService.getLogger().error(this.TAG, 'Could not initialize db ', new Error().stack) // TODO: Loggerservice & MiscService seems unreachable here
                             }

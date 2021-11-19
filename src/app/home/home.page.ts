@@ -63,10 +63,13 @@ export class HomePage {
 
               // console.log('Calll -456', this.appSetting, this.config);
               this.config.isWasQrCodeSetup = true;
-              this.appSetting.save(this.config).then(() => {
+
+              const user = await this.userService.getUser();
+
+              this.appSetting.save(this.config, user).then(() => {
                 this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
-                this.userService.getUser().then((loggedUser) => {
-                  const isUserLoggedIn = !!loggedUser;
+                
+                  const isUserLoggedIn = !!user;
                   if (!isUserLoggedIn) {
                     this.ngZone.run(() => {
                       this.navCtrl.navigateRoot('/login');
@@ -78,7 +81,6 @@ export class HomePage {
                       this.navCtrl.navigateRoot('/guide-categories');
                     });
                   }
-                });
 
                 this.http.showToast('qr.Application was successfully configured');
               });
@@ -135,10 +137,10 @@ export class HomePage {
 
               // console.log('Calll -456', this.appSetting, this.config);
               this.config.isWasQrCodeSetup = true;
-              this.appSetting.save(this.config).then(() => {
+              this.appSetting.save(this.config, user).then(() => {
                 this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
-                this.userService.getUser().then((loggedUser) => {
-                  const isUserLoggedIn = !!loggedUser;
+                
+                  const isUserLoggedIn = !!user;
                   if (!isUserLoggedIn) {
                     this.ngZone.run(() => {
                       this.navCtrl.navigateRoot('/login');
@@ -150,7 +152,6 @@ export class HomePage {
                       this.navCtrl.navigateRoot('/guide-categories');
                     });
                   }
-                });
 
                 this.http.showToast('qr.Application was successfully configured');
               });
@@ -162,7 +163,7 @@ export class HomePage {
           }
         });
       })
-      .catch((err: any) => {
+      .catch( async (err: any) => {
         // ---- iOS Simulator
         if ((<any>window).device.isVirtual) {
           this.presentAlert('Config Error', null, 'Running on Simulator', ['OK']);
@@ -175,10 +176,13 @@ export class HomePage {
             this.authService.loginByIdentifier(appConfirmUrl, 'user', config.userIdentifier);
           }
           config.isWasQrCodeSetup = true;
-          this.appSetting.save(config).then(() => {
+
+          const user = await this.userService.getUser();
+          
+          this.appSetting.save(config, user).then(() => {
             this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
-            this.userService.getUser().then((loggedUser) => {
-              const isUserLoggedIn = !!loggedUser;
+ 
+              const isUserLoggedIn = !!user;
               if (!isUserLoggedIn) {
                 this.ngZone.run(() => {
                   this.navCtrl.navigateRoot('/login');
@@ -190,8 +194,7 @@ export class HomePage {
                   this.navCtrl.navigateRoot('/guide-categories');
                 });
               }
-            });
-
+     
             this.http.showToast('qr.Application was successfully configured');
             this.closeScanner();
           });

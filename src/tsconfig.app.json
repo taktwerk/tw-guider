@@ -26,11 +26,13 @@
       "es6"
     ]
   },
-  "include": [
-    "src/dummy.ts" // empty ts file as placeholder
-  ],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
-  }
+  },
+  "files": [
+    "main.ts",
+    "polyfills.ts",
+    "src/zone-flags.ts"
+  ]
 }
