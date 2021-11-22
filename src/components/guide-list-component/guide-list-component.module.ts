@@ -4,6 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { GuideListComponent } from "./guide-list-component";
 import { TranslateModule } from "@ngx-translate/core";
 import { GuideinfoPageModule } from '../guideinfo/guideinfo.module';
+import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { GuideinfoPageModule } from '../guideinfo/guideinfo.module';
     IonicModule,
     TranslateModule,
     GuideinfoPageModule,
+    SharedModule
   ],
   exports: [
     GuideListComponent

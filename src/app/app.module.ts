@@ -115,6 +115,7 @@ import { LoggerService } from '../services/logger-service';
 import { AuthDb } from '../models/db/auth-db';
 import { SyncIndexService } from '../providers/api/sync-index-service';
 import { AppSettingsDb } from 'models/db/app-settings-db';
+import { SharedModule } from './shared/shared.module';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -132,7 +133,7 @@ export function LanguageLoader(http: Http) {
     VideoModalComponent,
     DrawImageModalComponent,
     Viewer3dModalComponent,
-    PdftronModalComponent,
+    PdftronModalComponent
   ],
   entryComponents: [
     GuideAssetTextModalComponent,
@@ -146,6 +147,7 @@ export function LanguageLoader(http: Http) {
     PdfViewerComponent,
   ],
   imports: [
+    SharedModule,
     BrowserModule,
     FormsModule,
     IonicModule.forRoot({ backButtonText: '' }),

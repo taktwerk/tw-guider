@@ -69,8 +69,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChild(IonBackButtonDelegate) backButtonDelegate: IonBackButtonDelegate;
 
   @ViewChildren('guideStepContent', { read: ViewContainerRef }) slideComponents: QueryList<any>;
-  @ViewChild('guideStepSlide', { static: true }) guideStepSlides: IonSlides;
-  // @ViewChild('guideStepSlideElemRef') guideStepSlideElemRef: ElementRef;
+  @ViewChild('guideStepSlides') guideStepSlides: IonSlides;
 
   @ViewChild('guideStepContentTemplate', { read: ViewContainerRef }) guideStepContentTemplate;
 
@@ -154,7 +153,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     private syncService: SyncService,
     private userService: UserService,
     public platform: Platform,
-    private syncIndexService: SyncIndexService
+    private syncIndexService: SyncIndexService,
+    private element: ElementRef,
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -181,18 +181,18 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         containerElement: slideComponents[i],
         component: null,
       };
-      if (i < 2) {
-        const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
-        const componentRef = slideComponents[i].createComponent(factory);
-        componentRef.instance.step = this.guideSteps[i];
-        componentRef.instance.guide = this.guide;
-        componentRef.instance.portraitOriginal = window.innerHeight > window.innerWidth;
-        componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
-        componentRef.instance.haveAssets = this.haveAssets;
-        componentRef.instance.guideStepsLength = this.guideSteps.length;
-        componentRef.instance.stepNumber = i;
-        virtualGuideStepSlide.component = componentRef;
-      }
+      
+      const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
+      const componentRef = slideComponents[i].createComponent(factory);
+      componentRef.instance.step = this.guideSteps[i];
+      componentRef.instance.guide = this.guide;
+      componentRef.instance.portraitOriginal = window.innerHeight > window.innerWidth;
+      componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
+      componentRef.instance.haveAssets = this.haveAssets;
+      componentRef.instance.guideStepsLength = this.guideSteps.length;
+      componentRef.instance.stepNumber = i;
+      virtualGuideStepSlide.component = componentRef;
+  
       this.virtualGuideStepSlides.push(virtualGuideStepSlide);
     }
     // console.log('this.virtualGuideStepSlides', this.virtualGuideStepSlides);
@@ -204,12 +204,13 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   async changeGuideStepCurrentSlide() {
-    // console.log('changeGuideStepCurrentSlide', this.guideStepSlides.getActiveIndex());
-    await this.guideStepSlides
-      .getActiveIndex()
+    
+    this.guideStepSlides = this.element.nativeElement.querySelector('#guideStepSlides');
+    await this.guideStepSlides.getActiveIndex()
       .then((index) => {
+        console.log(index);
         this.activeGuideStepSlideIndex = index;
-        this.updateGuideStepSlides();
+        // this.updateGuideStepSlides();
       })
       .catch((error) => {
         console.error(error);
@@ -314,6 +315,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       if (_guideSteps.length > 0) {
         const syncedList = await this.syncIndexService.getSyncIndexModel(_guideSteps, _guideSteps[0].TABLE_NAME);
         this.guideSteps = syncedList;
+        console.log(this.guideSteps);
       }
     });
   }
@@ -409,6 +411,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   async ngOnInit() {
+
+    this.guideStepSlides = this.element.nativeElement.querySelector('#guideStepSlides');
+
     this.slideOpts = { initialSlide: 0, speed: 400, spaceBetween: 100 };
     const loader = await this.loader.create();
     loader.present();

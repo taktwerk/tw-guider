@@ -3,10 +3,9 @@
     <ion-col fixed size-xs="12" size-sm="6" size-md="6" size-lg="4" *ngFor="let item of guides; trackBy: trackByFn">
       <ion-card color="light" class="ion-no-margin" *ngIf="!isCapture">
         <div class="guide-preview" (click)="openGuide(item)">
-          <div class="img" *ngIf="item.getFileImagePath()"
-            [ngStyle]="{'background-image': 'url(' + item.getFileImagePath(0,'trustStyle') + ')'}"></div>
-          <div class="img" *ngIf="!item.getFileImagePath()"
-            [ngStyle]="{'background-image': 'url(' + 'assets/placeholder.jpg' + ')'}"></div>
+          <div class="img" appBgload [url]="item.getFileImagePath()"></div>
+          <!-- <div class="img" *ngIf="!item.getFileImagePath()"
+            [ngStyle]="{'background-image': 'url(' + 'assets/placeholder.jpg' + ')'}"></div> -->
           <div class="shortname-label badge badge-secondary">{{ item.short_name }}</div>
         </div>
 

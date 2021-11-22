@@ -702,6 +702,10 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     public getFileImagePath(fileMapIndex = 0, sanitizeType = 'trustResourceUrl') {
+        
+        if(!this.platform.is('capacitor')) {
+            return this.downloadService.previewSecuredImage(this['preview_file_path'])
+        }
         if (!this.isExistFileByIndex(fileMapIndex)) {
             return this.defaultImage;
         }

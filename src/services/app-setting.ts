@@ -6,7 +6,7 @@ import { AlertController, Platform } from '@ionic/angular';
 import { DownloadService } from './download-service';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateConfigService } from './translate-config.service';
-import config from '../environments/config.json';
+import { config } from '../environments/config';
 import { MiscService } from './misc-service';
 
 export enum AppConfigurationModeEnum {

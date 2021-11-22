@@ -77,9 +77,7 @@ export class DownloadService {
   async downloadAndSaveFile(url: string, name: string, modelFolder: string, authToken = ''): Promise<any> {
     const promise = new Promise((resolve) => {
       const finalPath = this.file.dataDirectory + modelFolder + '/' + name;
-      console.log(url, '-------------->');
       if (!this.platform.is('capacitor')) {
-        console.log(url);
         resolve(url);
         return;
       }
@@ -126,6 +124,10 @@ export class DownloadService {
     });
 
     return await promise;
+  }
+
+  previewSecuredImage(url) {
+    return url;
   }
 
   download(url, authToken?: string): Promise<any> {

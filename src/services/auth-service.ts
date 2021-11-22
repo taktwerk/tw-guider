@@ -320,6 +320,8 @@ export class AuthService {
         return new Promise(resolve => {
             const findAuthModel = this.newAuthModel();
 
+            localStorage.setItem('authToken', user.access_token);
+
             findAuthModel.findFirst(['user_id', user.user_id], 'login_at DESC').then(async (existUser) => {
                 if (existUser.length) {
                     this.auth = existUser[0];

@@ -8,7 +8,7 @@ import { TranslateConfigService } from './translate-config.service';
 import { Device } from '@ionic-native/device/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { ToastService } from './toast-service';
-import config from '../environments/config.json';
+import {  config } from '../environments/config';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 

@@ -17,6 +17,7 @@ import { GuideStepContentComponent } from "../../components/guide-step-content-c
 import { GuideinfoPageModule } from '../../components/guideinfo/guideinfo.module';
 import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
     declarations: [
@@ -40,7 +41,7 @@ import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-me
         GuideinfoPageModule,
         MenupopoverPageModule,
         AssetviewComponentModule,
-
+        SharedModule
     ],
     entryComponents: [
         GuideStepContentComponent

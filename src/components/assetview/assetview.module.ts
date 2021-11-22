@@ -8,6 +8,7 @@ import { AssetviewComponent } from './assetview.page';
 import { Viewer3dModelComponentModule } from '../viewer-3d-model-component/viewer-3d-model-component.module';
 
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
     IonicModule,
     Viewer3dModelComponentModule,
     FontAwesomeModule,
+    SharedModule
   ],
   exports: [
     AssetviewComponent
