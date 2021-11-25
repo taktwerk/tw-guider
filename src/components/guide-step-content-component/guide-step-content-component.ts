@@ -112,7 +112,6 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log(this.step);
     this.loaded.emit();
     this.fileName = this.step.getFileName();
     this.fileUrl = this.step.getFileUrl();

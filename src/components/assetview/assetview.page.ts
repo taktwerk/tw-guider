@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SecurityContext } from '@angular/core';
 import { DownloadService, RecordedFile } from '../../services/download-service';
 import { PictureService } from '../../services/picture-service';
 import { VideoService } from '../../services/video-service';
@@ -6,7 +6,7 @@ import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Viewer3dService } from '../../services/viewer-3d-service';
 import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
 import { faExpand, faQuestion, faCubes, faFilePdf, faVideo } from '@fortawesome/free-solid-svg-icons';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { ImageEditorComponent } from '../../components/imageeditor/imageeditor.page';
 import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
@@ -14,6 +14,10 @@ import { Capacitor, Plugins } from '@capacitor/core';
 import { Camera, CameraResultType } from '@capacitor/camera';
 import { ApiSync } from '../../providers/api-sync';
 import { File } from '@ionic-native/file/ngx';
+import { HttpClient as CustomHttpClient } from 'services/http-client';
+import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
+import { ViewerService } from 'services/viewer.service';
+import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
 
 const { Filesystem } = Plugins;
 
@@ -63,6 +67,12 @@ export class AssetviewComponent implements OnInit {
     private videoEditor: VideoEditor,
     private apiSync: ApiSync,
     public file: File,
+    private platform: Platform,
+    private httpCustom: CustomHttpClient, 
+    private http: HttpClient,
+    public viewer: ViewerService,
+    private domSanitizer: DomSanitizer,
+    protected sanitizerImpl: ɵDomSanitizerImpl,
   ) { }
 
   async ngOnInit() {
@@ -177,14 +187,41 @@ export class AssetviewComponent implements OnInit {
 
   }
 
-  public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
+  public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string, fileType = 'image') {
     if (!this.preventDefaultClickFunction) {
       const filePath = basePath;
       let fileTitle = this.model.title; // change later
       if (title) {
         fileTitle = title;
       }
-      const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+
+      let fileUrl = '';
+
+      if(this.platform.is('capacitor')) {
+        fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+      } else {
+        this.getSecureFile(fileApiUrl, fileType === 'video').then( (url: any) => {
+          
+          if(url === false) {
+            return;
+          }
+
+          if(fileType === 'image') {
+            this.viewer.photoframe = {
+              url: url,
+              title: title,
+              show: true
+            };
+          } else if(fileType === 'video') {   
+            this.viewer.videoframe = {
+              url: url,
+              title: title,
+              show: true
+            };
+          }
+        })
+        return;
+      }
 
       if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
         this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
@@ -249,5 +286,55 @@ export class AssetviewComponent implements OnInit {
     const checkDirExist = await Filesystem.readdir({ path: this.file.dataDirectory + this.model.TABLE_NAME });
     console.log("Is checking directory with Capacitor");
     console.log("checkDirExist", checkDirExist);
+  }
+
+  getSecureFile(url, blob = false) {
+    return new Promise((resolve, reject) => {
+      if(typeof url != 'string' ) {
+        resolve(false);
+      }
+  
+      if (url.includes('/api/api/')) {
+        url = url.replace('/api/api/', '/api/');
+      }
+  
+      const headerObject: any = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      };
+      if (this.httpCustom.getAuthorizationToken()) {
+        headerObject['X-Auth-Token'] = this.httpCustom.getAuthorizationToken();
+      }
+  
+      console.log('headerObject', headerObject);
+  
+      const headers = new Headers(headerObject);
+  
+      this.http.get(url, { headers: headers, observe: 'response', responseType: 'blob' }).toPromise()
+        .then((response) => {
+          console.log(response);
+
+          if(blob === false) {
+             resolve(response.url);
+          } else {
+            var urlCreator = window.URL || window.webkitURL; 
+            resolve(this.getSafeUrl(urlCreator.createObjectURL(response.body))); 
+          }
+        })
+        .catch((downloadErr) => {
+          console.log('downloadErr', downloadErr);
+          resolve(false);
+        });
+    });
+  }
+
+  public getSafeUrl(convertFileSrc, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
+    const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
+
+    if (sanitizeType === 'trustStyle') {
+      return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
+    }
+
+    return safeUrl;
   }
 }

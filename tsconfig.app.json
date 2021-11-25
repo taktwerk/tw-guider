@@ -3,6 +3,7 @@
   "compilerOptions": {
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
     "outDir": "./out-tsc/app",
     "types": [
       "node"
@@ -11,11 +12,13 @@
       "node_modules/@types"
     ]
   },
-  "include": [
-    "src/**/*.ts",
-  ],
   "exclude": [
     "src/test.ts",
     "src/**/*.spec.ts"
+  ],
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts",
+    "src/zone-flags.ts"
   ]
 }

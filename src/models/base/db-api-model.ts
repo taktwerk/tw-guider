@@ -704,7 +704,17 @@ export abstract class DbApiModel extends DbBaseModel {
     public getFileImagePath(fileMapIndex = 0, sanitizeType = 'trustResourceUrl') {
         
         if(!this.platform.is('capacitor')) {
-            return this.downloadService.previewSecuredImage(this['preview_file_path'])
+
+            let url = this['preview_file_path'];
+
+            if(url == undefined) {
+                url = this['thumb_attached_file_path'];
+            }
+            
+            if(url == undefined) {
+                url = this['attached_file_path'];
+            }
+            return this.downloadService.previewSecuredImage(url);
         }
         if (!this.isExistFileByIndex(fileMapIndex)) {
             return this.defaultImage;
@@ -724,7 +734,6 @@ export abstract class DbApiModel extends DbBaseModel {
         } catch (error) {
             console.log(error)
         }
-
         return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
     }
 

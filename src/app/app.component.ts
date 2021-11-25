@@ -23,6 +23,8 @@ import { Plugins } from '@capacitor/core';
 import { AuthDb } from '../models/db/auth-db';
 import { interval, Subscription } from 'rxjs';
 
+import { ViewerService } from '../services/viewer.service';
+
 const { SplashScreen, App } = Plugins;
 
 export enum ConnectionStatusEnum {
@@ -62,7 +64,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private loggerService: LoggerService,
     private miscService: MiscService,
     private modalCtrl: ModalController,
-    private storage: Storage
+    private storage: Storage,
+    public viewer: ViewerService
   ) {
     (async () => {
       await this.platform.ready();

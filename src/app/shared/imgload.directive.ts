@@ -1,6 +1,7 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { HttpClient as CustomHttpClient } from 'services/http-client';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
+import { Platform } from '@ionic/angular';
 
 @Directive({
   selector: '[appImgload]'
@@ -9,11 +10,17 @@ export class ImgloadDirective implements OnInit {
 
   @Input() url: any;
 
-  constructor(private ele: ElementRef, private httpCustom: CustomHttpClient, private http: HttpClient) {
+  constructor(private platform: Platform, private ele: ElementRef, private httpCustom: CustomHttpClient, private http: HttpClient) {
     this.ele.nativeElement.src = "assets/placeholder.jpg";
   }
 
   ngOnInit() {
+
+    if(this.platform.is('capacitor')) {
+      this.ele.nativeElement.src= this.url.changingThisBreaksApplicationSecurity;
+      return;
+    }
+    
     if(typeof this.url != 'string' ) {
       return;
     }
