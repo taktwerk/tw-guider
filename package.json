@@ -119,6 +119,7 @@
     "end-of-stream": "^1.4.4",
     "fs": "^0.0.1-security",
     "ionic-native": "^2.9.0",
+    "ng2-pdf-viewer": "^7.0.2",
     "ng2-pdfjs-viewer": "^5.0.7",
     "ngx-logger": "^4.1.9",
     "ngx-virtual-scroller": "^3.0.3",

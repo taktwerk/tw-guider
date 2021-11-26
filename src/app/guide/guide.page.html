@@ -59,8 +59,7 @@
               <ion-row>
                 <ion-col *ngFor="let asset of guideAssets; trackBy: trackGuideAsset" size="6" size-md="3">
 
-                  <ion-item *ngIf="asset.isExistFileByIndex() && asset.isPdf()" lines="none"
-                    (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                  <ion-item *ngIf="asset.isExistFileByIndex() && asset.isPdf()" lines="none" (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name, 'pdf')"
                     [ngClass]="{'no__preview':asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null}">
                     <ion-label>
                       <ion-thumbnail>
@@ -72,8 +71,7 @@
                     </ion-label>
                   </ion-item>
 
-                  <ion-item *ngIf="asset.isExistFileByIndex() && !asset.isPdf() && !asset.isVideoFile()" lines="none"
-                    (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
+                  <ion-item *ngIf="asset.isExistFileByIndex() && !asset.isPdf() && !asset.isVideoFile()" lines="none" (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
                     [ngClass]="{'no__preview': asset.getFileImagePath() == null}">
                     <ion-label>
                       <ion-thumbnail>
@@ -85,8 +83,7 @@
                     </ion-label>
                   </ion-item>
 
-                  <ion-item *ngIf="asset.isExistFileByIndex() && asset.isVideoFile()" lines="none"
-                    (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)">
+                  <ion-item *ngIf="asset.isExistFileByIndex() && asset.isVideoFile()" lines="none" (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name, 'video')">
                     <ion-label>
                       <ion-thumbnail>
                         <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"
@@ -97,8 +94,7 @@
                     </ion-label>
                   </ion-item>
 
-                  <ion-item *ngIf="!asset.isExistFileByIndex()" lines="none" (click)="openAssetTextModal(asset)"
-                    class="no__preview">
+                  <ion-item *ngIf="!asset.isExistFileByIndex()" lines="none" (click)="openAssetTextModal(asset)" class="no__preview">
                     <ion-label>
                       <ion-thumbnail>
                         <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"

@@ -59,6 +59,8 @@ import { HttpClient } from '../../services/http-client';
 import { UserDb } from '../../models/db/user-db';
 import { Subject, Subscription } from 'rxjs';
 import { SyncIndexService } from '../../providers/api/sync-index-service';
+import { HelpingService } from 'controller/helping.service';
+import { ViewerService } from 'services/viewer.service';
 
 @Component({
   selector: 'app-guide',
@@ -155,6 +157,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     public platform: Platform,
     private syncIndexService: SyncIndexService,
     private element: ElementRef,
+    public helper: HelpingService,
+    public viewer: ViewerService,
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -261,14 +265,47 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     }
   }
 
-  public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
+  public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string, fileType = 'image') {
     const filePath = basePath;
     let fileTitle = 'Guide';
     if (title) {
       fileTitle = title;
     }
+
+    let fileUrl = '';
     //  console.log('basePath', basePath);
-    const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+    if(this.platform.is('capacitor')) {
+      fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+    } else {
+      this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then( (url: any) => {
+        
+        if(url === false) {
+          return;
+        }
+
+        if(fileType === 'image') {
+          this.viewer.photoframe = {
+            url: url,
+            title: title,
+            show: true
+          };
+        } else if(fileType === 'video') {   
+          this.viewer.videoframe = {
+            url: url,
+            title: title,
+            show: true
+          };
+        } else if(fileType === 'pdf') {
+          console.log(url)
+          this.viewer.pdfframe = {
+            url: url,
+            title: title,
+            show: true
+          };
+        }
+      })
+      return;
+    }
     //  console.log('fileUrl', fileUrl);
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
       if (!fileApiUrl) {

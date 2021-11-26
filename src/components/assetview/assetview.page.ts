@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, SecurityContext } from '@angular/core';
-import { DownloadService, RecordedFile } from '../../services/download-service';
+import { Component, Input, OnInit } from '@angular/core';
+import { DownloadService } from '../../services/download-service';
 import { PictureService } from '../../services/picture-service';
 import { VideoService } from '../../services/video-service';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
@@ -11,16 +11,12 @@ import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-
 import { ImageEditorComponent } from '../../components/imageeditor/imageeditor.page';
 import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
 import { Capacitor, Plugins } from '@capacitor/core';
-import { Camera, CameraResultType } from '@capacitor/camera';
 import { ApiSync } from '../../providers/api-sync';
 import { File } from '@ionic-native/file/ngx';
-import { HttpClient as CustomHttpClient } from 'services/http-client';
-import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { ViewerService } from 'services/viewer.service';
-import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
+import { HelpingService } from '../../controller/helping.service';
 
 const { Filesystem } = Plugins;
-
 @Component({
   selector: 'model-assetcomponent',
   templateUrl: './assetview.page.html',
@@ -68,11 +64,8 @@ export class AssetviewComponent implements OnInit {
     private apiSync: ApiSync,
     public file: File,
     private platform: Platform,
-    private httpCustom: CustomHttpClient, 
-    private http: HttpClient,
     public viewer: ViewerService,
-    private domSanitizer: DomSanitizer,
-    protected sanitizerImpl: ɵDomSanitizerImpl,
+    public helper: HelpingService
   ) { }
 
   async ngOnInit() {
@@ -200,7 +193,7 @@ export class AssetviewComponent implements OnInit {
       if(this.platform.is('capacitor')) {
         fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
       } else {
-        this.getSecureFile(fileApiUrl, fileType === 'video').then( (url: any) => {
+        this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then( (url: any) => {
           
           if(url === false) {
             return;
@@ -214,6 +207,13 @@ export class AssetviewComponent implements OnInit {
             };
           } else if(fileType === 'video') {   
             this.viewer.videoframe = {
+              url: url,
+              title: title,
+              show: true
+            };
+          } else if(fileType === 'pdf') {
+            console.log(url)
+            this.viewer.pdfframe = {
               url: url,
               title: title,
               show: true
@@ -286,55 +286,5 @@ export class AssetviewComponent implements OnInit {
     const checkDirExist = await Filesystem.readdir({ path: this.file.dataDirectory + this.model.TABLE_NAME });
     console.log("Is checking directory with Capacitor");
     console.log("checkDirExist", checkDirExist);
-  }
-
-  getSecureFile(url, blob = false) {
-    return new Promise((resolve, reject) => {
-      if(typeof url != 'string' ) {
-        resolve(false);
-      }
-  
-      if (url.includes('/api/api/')) {
-        url = url.replace('/api/api/', '/api/');
-      }
-  
-      const headerObject: any = {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      };
-      if (this.httpCustom.getAuthorizationToken()) {
-        headerObject['X-Auth-Token'] = this.httpCustom.getAuthorizationToken();
-      }
-  
-      console.log('headerObject', headerObject);
-  
-      const headers = new Headers(headerObject);
-  
-      this.http.get(url, { headers: headers, observe: 'response', responseType: 'blob' }).toPromise()
-        .then((response) => {
-          console.log(response);
-
-          if(blob === false) {
-             resolve(response.url);
-          } else {
-            var urlCreator = window.URL || window.webkitURL; 
-            resolve(this.getSafeUrl(urlCreator.createObjectURL(response.body))); 
-          }
-        })
-        .catch((downloadErr) => {
-          console.log('downloadErr', downloadErr);
-          resolve(false);
-        });
-    });
-  }
-
-  public getSafeUrl(convertFileSrc, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
-    const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
-
-    if (sanitizeType === 'trustStyle') {
-      return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
-    }
-
-    return safeUrl;
   }
 }

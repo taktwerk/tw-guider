@@ -17,5 +17,11 @@ export class ViewerService {
     title: ''
   };
 
+  pdfframe = {
+    show: false,
+    url: null,
+    title: ''
+  };
+  
   constructor() { }
 }

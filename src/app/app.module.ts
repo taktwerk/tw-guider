@@ -116,6 +116,7 @@ import { AuthDb } from '../models/db/auth-db';
 import { SyncIndexService } from '../providers/api/sync-index-service';
 import { AppSettingsDb } from 'models/db/app-settings-db';
 import { SharedModule } from './shared/shared.module';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -158,6 +159,7 @@ export function LanguageLoader(http: Http) {
     HttpClientModule,
     ProgressBarModule,
     FontAwesomeModule,
+    PdfViewerModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

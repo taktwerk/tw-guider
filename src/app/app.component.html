@@ -38,6 +38,28 @@
     </div>
   </div>
 
+  <div class="photoframe" *ngIf="viewer.pdfframe.show">
+    <div class="frame-outer">
+      <div class="content">
+          <!-- <iframe [src]="viewer.pdfframe.url" type="application/pdf" frameBorder="0" scrolling="auto" height="100%" width="100%"></iframe> -->
+          <pdf-viewer [src]="viewer.pdfframe.url" [render-text]="true" [original-size]="false"></pdf-viewer>
+      </div>
+      <div class="header">
+          <div class="close" (click)="viewer.pdfframe.show = false">
+              <ion-icon name="close-outline" color="#fff" size="large" style="color: #fff !important;"></ion-icon>
+          </div>
+          <div class="title">
+              <!-- <div>{{viewer?.pdfframe?.title}}</div> -->
+          </div>
+          <div class="close">
+              
+          </div>
+      </div>
+    </div>
+  </div>
+
+  
+
   <ion-split-pane when="(min-width: 100%)" contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
       <ion-header>
