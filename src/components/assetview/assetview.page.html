@@ -63,7 +63,7 @@
     </ion-buttons>
 
     <div *ngIf="model.isImageFile()" class="inner_wrapper"  (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title, 'image')">
-        <img class="custom" *ngIf="model.getFileImagePath() !== null" appImgload [url]="model.getFileImagePath()"/>
+        <img class="custom harjot" appImgload [url]="model.getFileUrl()"/>
         <ion-icon name="image" *ngIf="model.getFileImagePath() == null && !isthumbnail"> </ion-icon>
         <!-- <ion-icon name="image" *ngIf="isthumbnail" class="thumbnail__icon"></ion-icon> -->
     </div>

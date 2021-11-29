@@ -38,11 +38,24 @@ export class HelpingService {
       this.http.get(url, { headers: headers, observe: 'response', responseType: 'blob' }).toPromise()
         .then((response) => {
           console.log(response);
+
+          const blobToBase64 = (blob) => {
+            return new Promise((resolve, _) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.readAsDataURL(blob);
+            });
+          }
+
           if(blob === false) {
              resolve(response.url);
           } else {
-            var urlCreator = window.URL || window.webkitURL; 
-            resolve(this.getSafeUrl(urlCreator.createObjectURL(response.body))); 
+            // var urlCreator = window.URL || window.webkitURL; 
+            // resolve(this.getSafeUrl(urlCreator.createObjectURL(response.body))); 
+            blobToBase64(response.body).then(base64 => {
+              resolve(base64);
+            });
+            
           }
         })
         .catch((downloadErr) => {

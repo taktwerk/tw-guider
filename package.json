@@ -95,6 +95,7 @@
     "@ngx-translate/http-loader": "^4.0.0",
     "@types/bcryptjs": "^2.4.2",
     "bcryptjs": "^2.4.3",
+    "blob-util": "^2.0.2",
     "com-sarriaroman-photoviewer": "^1.2.5",
     "cordova-android-support-gradle-release": "^3.0.1",
     "cordova-plugin-aes256-encryption": "^2.0.1",

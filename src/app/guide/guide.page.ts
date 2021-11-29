@@ -296,7 +296,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
             show: true
           };
         } else if(fileType === 'pdf') {
-          console.log(url)
           this.viewer.pdfframe = {
             url: url,
             title: title,
