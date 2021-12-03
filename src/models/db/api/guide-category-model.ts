@@ -41,15 +41,8 @@ export class GuideCategoryModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(
-        public platform: Platform,
-        public db: DbProvider,
-
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-        public miscService: MiscService,
-    ) {
-        super(platform, db, downloadService, loggerService, miscService);
+    constructor() {
+        super();
     }
 
     public addGuide(newData) {
@@ -99,7 +92,7 @@ export class GuideCategoryModel extends DbApiModel {
             this.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom).then((res) => {
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuiderModel = new GuiderModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+                        const obj: GuiderModel = new GuiderModel();
                         obj.platform = this.platform;
                         obj.db = this.db;
 

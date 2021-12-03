@@ -1,10 +1,6 @@
-import { MiscService } from '../../../services/misc-service';
-import { Platform } from '@ionic/angular';
 import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
-import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
-import { DownloadService } from '../../../services/download-service';
-import { LoggerService } from '../../../services/logger-service';
+
 
 export enum GuideAssetModelFileMapIndexEnum {
     ASSET_FILE,
@@ -75,11 +71,8 @@ export class GuideAssetModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider,
-        public downloadService: DownloadService, public loggerService: LoggerService,
-        public miscService: MiscService
-    ) {
-        super(platform, db, downloadService, loggerService, miscService);
+    constructor() {
+        super();
     }
 
     setUpdateCondition() {

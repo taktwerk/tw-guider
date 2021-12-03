@@ -1,17 +1,11 @@
-import { LoggerService } from './../../services/logger-service';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { ModalController, Platform } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 
 import { ApiSync } from '../../providers/api-sync';
-import { AuthService } from '../../services/auth-service';
-import { HttpClient } from '../../services/http-client';
 import { Network } from '@ionic-native/network/ngx';
 import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
 import { debounceTime } from 'rxjs/operators';
 import { UserDb } from '../../models/db/user-db';
-import { DownloadService } from '../../services/download-service';
-import { DbProvider } from '../../providers/db-provider';
-import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
 import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
@@ -32,18 +26,11 @@ export class SyncSpinnerComponent implements OnInit {
     public isLoggedUser: boolean = false;
     eventSubscription: Subscription;
 
-    constructor(private platform: Platform,
-        private downloadService: DownloadService,
-        private loggerService: LoggerService,
-        private db: DbProvider,
+    constructor(
         private apiSync: ApiSync,
         private modalController: ModalController,
         private changeDetectorRef: ChangeDetectorRef,
-        private http: HttpClient,
-        private authService: AuthService,
         private network: Network,
-
-        private userService: UserService,
         public appSetting: AppSetting,
         private miscService: MiscService,
 
@@ -76,7 +63,7 @@ export class SyncSpinnerComponent implements OnInit {
         }
 
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.downloadService, this.loggerService, this.miscService).getCurrent().then((userDb) => {
+            new UserDb().getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
 

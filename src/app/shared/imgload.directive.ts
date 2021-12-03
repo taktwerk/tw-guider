@@ -39,7 +39,6 @@ export class ImgloadDirective implements OnInit {
       headerObject['X-Auth-Token'] = this.httpCustom.getAuthorizationToken();
     }
 
-    console.log(this.url);
     const headers = new Headers(headerObject);
 
     this.http.get(this.url, { headers: headers, observe: 'response', responseType: 'blob' }).toPromise()

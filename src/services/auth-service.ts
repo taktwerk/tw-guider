@@ -1,17 +1,14 @@
 import { MiscService } from '../services/misc-service';
-import { LoggerService } from './logger-service';
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient, HttpHeaders as Headers, HttpHeaders } from '@angular/common/http';
 import { AppSetting } from './app-setting';
-import { Platform, LoadingController, ToastController, AlertController } from '@ionic/angular';
-import { DbProvider } from '../providers/db-provider';
+import { LoadingController, ToastController, AlertController } from '@ionic/angular';
 import { AuthDb } from '../models/db/auth-db';
 import { UserDb } from '../models/db/user-db';
 import { UserSetting } from '../models/user-setting';
 import { NavController } from '@ionic/angular';
 import { DownloadService } from './download-service';
 import { CryptoProvider } from '../providers/crypto-provider';
-import { Network } from '@ionic-native/network/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { UserService } from './user-service';
@@ -22,8 +19,6 @@ export class AuthService {
     /**
      * Auth Service
      * @param http
-     * @param platform
-     * @param dbProvider
      * @param loadingController
      * @param events
      * @param downloadService
@@ -40,15 +35,11 @@ export class AuthService {
      * @param translateConfigService
      */
     constructor(private http: HttpClient,
-        public platform: Platform,
-        public dbProvider: DbProvider,
         public loadingController: LoadingController,
         public downloadService: DownloadService,
         public navCtrl: NavController,
         public cryptoProvider: CryptoProvider,
-        private loggerService: LoggerService,
         public toastCtrl: ToastController,
-        private network: Network,
         private ngZone: NgZone,
         private appSetting: AppSetting,
         private device: Device,
@@ -564,7 +555,7 @@ export class AuthService {
      * @returns {AuthDb}
      */
     public newAuthModel(): AuthDb {
-        return new AuthDb(this.platform, this.dbProvider, this.downloadService, this.loggerService, this.miscService);
+        return new AuthDb();
     }
 
     /**
@@ -572,6 +563,6 @@ export class AuthService {
      * @returns {UserDb}
      */
     public newUserModel(): UserDb {
-        return new UserDb(this.platform, this.dbProvider, this.downloadService, this.loggerService, this.miscService);
+        return new UserDb();
     }
 }

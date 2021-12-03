@@ -1,25 +1,17 @@
 import { Injectable } from '@angular/core';
-
-import { Platform } from '@ionic/angular';
 import { ApiService } from './base/api-service';
-import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
-import { DownloadService } from '../../services/download-service';
 import { AppSetting } from '../../services/app-setting';
 import { ProtocolTemplateModel } from '../../models/db/api/protocol-template-model';
 import { WorkflowStepService } from './workflow-step-service';
-import { UserService } from '../../services/user-service';
 import { AuthDb } from '../../models/db/auth-db';
-import { WorkflowService } from './workflow-service';
-import { LoggerService } from '../../services/logger-service';
-import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class ProtocolTemplateService extends ApiService {
     data: ProtocolTemplateModel[] = [];
     loadUrl: string = '/protocol-template';
-    dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel();
     user: AuthDb;
 
     /**
@@ -35,19 +27,11 @@ export class ProtocolTemplateService extends ApiService {
      * @param workflowService
      * @param userService
      */
-    constructor(http: HttpClient,
-        private p: Platform,
-        private db: DbProvider,
+    constructor(
+        http: HttpClient,
         public authService: AuthService,
-
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-
         public appSetting: AppSetting,
         private workflowStepService: WorkflowStepService,
-        private workflowService: WorkflowService,
-        private userService: UserService
-        , private miscService: MiscService
     ) {
         super(http, appSetting);
     }
@@ -111,6 +95,6 @@ export class ProtocolTemplateService extends ApiService {
      * @returns {ProtocolTemplateModel}
      */
     public newModel() {
-        return new ProtocolTemplateModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new ProtocolTemplateModel();
     }
 }

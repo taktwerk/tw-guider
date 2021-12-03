@@ -1,14 +1,9 @@
-import { LoggerService } from './../../../services/logger-service';
-import { Platform, } from '@ionic/angular';
 import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
-import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
-import { DownloadService } from '../../../services/download-service';
 import { GuideStepModel } from './guide-step-model';
 import { GuideAssetModel } from './guide-asset-model';
 import { ProtocolTemplateModel } from './protocol-template-model';
 import { GuideChildModel } from './guide-child-model';
-import { MiscService } from '../../../services/misc-service';
 
 /**
  * API Db Model for 'Guider Model'.
@@ -88,8 +83,8 @@ export class GuiderModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public downloadService: DownloadService, public loggerService: LoggerService, public miscService: MiscService,) {
-        super(platform, db, downloadService, loggerService, miscService);
+    constructor() {
+        super();
     }
 
     /**
@@ -154,7 +149,7 @@ export class GuiderModel extends DbApiModel {
                 this.assets = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+                        const obj: GuideAssetModel = new GuideAssetModel();
                         obj.platform = this.platform;
                         obj.db = this.db;
                         obj.downloadService = this.downloadService;
@@ -184,7 +179,7 @@ export class GuiderModel extends DbApiModel {
                 this.guide_collection = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideChildModel = new GuideChildModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+                        const obj: GuideChildModel = new GuideChildModel();
                         obj.platform = this.platform;
                         obj.db = this.db;
                         obj.downloadService = this.downloadService;
@@ -214,7 +209,7 @@ export class GuiderModel extends DbApiModel {
             this.db.query(query).then((res) => {
                 this.protocol_template = null;
                 if (res.rows.length > 0) {
-                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+                    const obj: ProtocolTemplateModel = new ProtocolTemplateModel();
                     obj.platform = this.platform;
                     obj.db = this.db;
                     obj.downloadService = this.downloadService;

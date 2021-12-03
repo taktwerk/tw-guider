@@ -16,7 +16,7 @@ import { MiscService } from '../../services/misc-service';
 export class WorkflowTransitionService extends ApiService {
     data: WorkflowTransitionModel[] = [];
     loadUrl: string = '/workflow-transition';
-    dbModelApi: WorkflowTransitionModel = new WorkflowTransitionModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: WorkflowTransitionModel = new WorkflowTransitionModel();
 
     /**
      * Constructor
@@ -46,6 +46,6 @@ export class WorkflowTransitionService extends ApiService {
      * @returns {WorkflowStepModel}
      */
     public newModel() {
-        return new WorkflowTransitionModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new WorkflowTransitionModel();
     }
 }

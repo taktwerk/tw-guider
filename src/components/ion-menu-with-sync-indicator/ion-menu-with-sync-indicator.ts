@@ -3,15 +3,12 @@ import { ChangeDetectorRef, Component, Input, OnInit, OnDestroy } from '@angular
 import { ModalController, Platform } from '@ionic/angular';
 
 import { ApiSync } from '../../providers/api-sync';
-import { AuthService } from '../../services/auth-service';
-import { HttpClient } from '../../services/http-client';
 import { Network } from '@ionic-native/network/ngx';
 import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
 import { debounceTime } from 'rxjs/operators';
 import { UserDb } from '../../models/db/user-db';
 import { DownloadService } from '../../services/download-service';
 import { DbProvider } from '../../providers/db-provider';
-import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
 import { Subscription } from 'rxjs';
 import { MiscService } from '../../services/misc-service';
@@ -73,7 +70,7 @@ export class ionMenuWithSyncIndicator implements OnInit, OnDestroy {
         }
 
         return new Promise(resolve => {
-            new UserDb(this.platform, this.db, this.downloadService, this.loggerService, this.miscService).getCurrent().then((userDb) => {
+            new UserDb().getCurrent().then((userDb) => {
                 if (userDb) {
                     this.userDb = userDb;
                     resolve(true);

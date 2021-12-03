@@ -22,7 +22,7 @@ import { MiscService } from '../../services/misc-service';
 export class ProtocolDefaultService extends ApiService {
     data: ProtocolDefaultModel[] = [];
     loadUrl: string = '/protocol-default';
-    dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel();
     saveInformation: {
         clientId: number,
         protocol: ProtocolModel,
@@ -49,8 +49,7 @@ export class ProtocolDefaultService extends ApiService {
      * @param protocolTemplateService
      */
     constructor(http: HttpClient,
-        private platform: Platform,
-        private db: DbProvider,
+    
         public alertController: AlertController,
         private translateConfigService: TranslateConfigService,
         public authService: AuthService,
@@ -58,7 +57,6 @@ export class ProtocolDefaultService extends ApiService {
         public downloadService: DownloadService,
         public loggerService: LoggerService,
         public appSetting: AppSetting,
-        private pictureService: PictureService,
         private drawImageService: DrawImageService,
         private protocolTemplateService: ProtocolTemplateService,
         public miscService: MiscService,
@@ -78,7 +76,7 @@ export class ProtocolDefaultService extends ApiService {
             if (!workflowFirstStep) {
                 return;
             }
-            protocol = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+            protocol = new ProtocolModel();
             const md5 = new Md5();
             const protocolName = ('' + md5.appendStr('' + (new Date()).getTime()).end()).substr(0, 5).toUpperCase();
             protocol.client_id = saveInformation.clientId;
@@ -214,6 +212,6 @@ export class ProtocolDefaultService extends ApiService {
      * @returns {ProtocolDefaultModel}
      */
     public newModel() {
-        return new ProtocolDefaultModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new ProtocolDefaultModel();
     }
 }

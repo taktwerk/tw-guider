@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-
-import { Platform } from '@ionic/angular';
 import { ApiService } from './base/api-service';
 import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
@@ -12,7 +10,6 @@ import { WorkflowStepService } from './workflow-step-service';
 import { ProtocolDefaultService } from './protocol-default-service';
 import { AuthDb } from '../../models/db/auth-db';
 import { ProtocolCommentService } from './protocol-comment-service';
-import { LoggerService } from '../../services/logger-service';
 import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
 
@@ -20,7 +17,7 @@ import { Subscription } from 'rxjs';
 export class ProtocolService extends ApiService {
     data: ProtocolModel[] = [];
     loadUrl: string = '/protocol';
-    dbModelApi: ProtocolModel = new ProtocolModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: ProtocolModel = new ProtocolModel();
     user: AuthDb;
 
     possibleDatabaseNamespaces = [
@@ -42,18 +39,14 @@ export class ProtocolService extends ApiService {
      * @param protocolCommentService
      */
     constructor(http: HttpClient,
-        private p: Platform, private db: DbProvider,
+        private db: DbProvider,
         public authService: AuthService,
-
         public downloadService: DownloadService,
-        public loggerService: LoggerService,
-
         public appSetting: AppSetting,
         public workflowStepService: WorkflowStepService,
         public protocolDefaultService: ProtocolDefaultService,
         public protocolCommentService: ProtocolCommentService,
         public miscService: MiscService
-
     ) {
         super(http, appSetting);
         // this.events.subscribe('user:login', async (userId) => {
@@ -255,6 +248,6 @@ export class ProtocolService extends ApiService {
      * @returns {ProtocolModel}
      */
     public newModel() {
-        return new ProtocolModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new ProtocolModel();
     }
 }

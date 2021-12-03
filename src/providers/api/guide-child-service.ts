@@ -16,31 +16,16 @@ import { MiscService } from '../../services/misc-service';
 export class GuideChildService extends ApiService {
     data: GuideChildModel[] = [];
     loadUrl = '/guide-child';
-    dbModelApi: GuideChildModel = new GuideChildModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: GuideChildModel = new GuideChildModel();
 
 
     /**
      * Constructor
      * @param http
-     * @param p
-     * @param db
-     * @param authService
-     * @param events
-     * @param downloadService
-     * @param sanitized
      * @param appSetting
      */
     constructor(http: HttpClient,
-        private p: Platform,
-        private db: DbProvider,
-        public authService: AuthService,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-
-        private sanitized: DomSanitizer,
         public appSetting: AppSetting,
-
-        public miscService: MiscService,
     ) {
         super(http, appSetting);
         console.debug('GuideChildService', 'initialized');
@@ -51,6 +36,6 @@ export class GuideChildService extends ApiService {
      * @returns {GuideChildModel}
      */
     public newModel() {
-        return new GuideChildModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new GuideChildModel();
     }
 }

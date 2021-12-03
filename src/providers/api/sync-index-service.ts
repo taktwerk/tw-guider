@@ -14,7 +14,7 @@ import { MiscService } from '../../services/misc-service';
 export class SyncIndexService extends ApiService {
   data: SyncIndexModel[] = [];
   loadUrl: string = '/sync-index';
-  dbModelApi: SyncIndexModel = new SyncIndexModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+  dbModelApi: SyncIndexModel = new SyncIndexModel();
 
   /**
    * Constructor
@@ -28,15 +28,8 @@ export class SyncIndexService extends ApiService {
    */
   constructor(
     http: HttpClient,
-    private p: Platform,
-    private db: DbProvider,
     public authService: AuthService,
-
-    public downloadService: DownloadService,
-    public loggerService: LoggerService,
-
     public appSetting: AppSetting,
-    public miscService: MiscService
   ) {
     super(http, appSetting);
     console.debug('SyncIndexService', 'initialized');
@@ -47,7 +40,7 @@ export class SyncIndexService extends ApiService {
    * @returns {SyncIndexModel}
    */
   public newModel() {
-    return new SyncIndexModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    return new SyncIndexModel();
   }
 
   // find model by

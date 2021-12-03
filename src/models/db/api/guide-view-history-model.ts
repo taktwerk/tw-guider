@@ -47,12 +47,7 @@ export class GuideViewHistoryModel extends DbApiModel {
     /**
   * @inheritDoc
   */
-    constructor(public platform: Platform, public db: DbProvider,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-        public miscService: MiscService,
-
-    ) {
-        super(platform, db, downloadService, loggerService, miscService);
+    constructor() {
+        super();
     }
 }

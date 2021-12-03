@@ -1,12 +1,6 @@
-import { Platform } from '@ionic/angular';
 import { DbApiModel } from '../../base/db-api-model';
-import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
-import { DownloadService } from '../../../services/download-service';
-import { GuiderModel } from './guider-model';
 import { WorkflowTransitionModel } from './workflow-transition-model';
-import { LoggerService } from '../../../services/logger-service';
-import { MiscService } from '../../../services/misc-service';
 
 /**
  * API Db Model for 'Workflow Step Model'.
@@ -62,15 +56,8 @@ export class WorkflowStepModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(
-        public platform: Platform,
-        public db: DbProvider,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-        public miscService: MiscService
-
-    ) {
-        super(platform, db, downloadService, loggerService, miscService);
+    constructor() {
+        super();
     }
 
     setUpdateCondition() {

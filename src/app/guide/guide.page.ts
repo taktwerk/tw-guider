@@ -212,7 +212,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.guideStepSlides = this.element.nativeElement.querySelector('#guideStepSlides');
     await this.guideStepSlides.getActiveIndex()
       .then((index) => {
-        console.log(index);
         this.activeGuideStepSlideIndex = index;
         // this.updateGuideStepSlides();
       })
@@ -351,7 +350,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       if (_guideSteps.length > 0) {
         const syncedList = await this.syncIndexService.getSyncIndexModel(_guideSteps, _guideSteps[0].TABLE_NAME);
         this.guideSteps = syncedList;
-        console.log(this.guideSteps);
       }
     });
   }

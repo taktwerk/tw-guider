@@ -86,11 +86,8 @@ export class GuideStepModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider, public downloadService: DownloadService,
-        public loggerService: LoggerService,
-        public miscService: MiscService,
-    ) {
-        super(platform, db, downloadService, loggerService, miscService);
+    constructor() {
+        super();
     }
 
     async updateLocalRelations() {
@@ -98,7 +95,7 @@ export class GuideStepModel extends DbApiModel {
             return;
         }
 
-        const guiderModel = new GuiderModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+        const guiderModel = new GuiderModel();
         if (guiderModel) {
             const guiderModels = await guiderModel.findFirst(
                 [guiderModel.COL_ID_API, this.guide_id]
@@ -120,7 +117,7 @@ export class GuideStepModel extends DbApiModel {
             if (!this[this.COL_ID]) {
                 return;
             }
-            const guiderModel = new GuiderModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+            const guiderModel = new GuiderModel();
             const guiderModels = await guiderModel.findFirst([guiderModel.COL_ID, this.local_guide_id]);
             if (guiderModels && guiderModels.length) {
                 console.log('guiderModels is not 0000');
@@ -134,11 +131,11 @@ export class GuideStepModel extends DbApiModel {
     }
 
     public setSteps() {
-        const guideStepModel = new GuideStepModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+        const guideStepModel = new GuideStepModel();
         guideStepModel.findAllWhere(['guide_id', this.idApi], 'order_number ASC').then(results => {
             results.map(model => {
                 if (!model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]) {
-                    const guiderModel = new GuiderModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+                    const guiderModel = new GuiderModel();
                     guiderModel.addRelativeData(model, 'steps');
                 }
             });

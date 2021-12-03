@@ -107,6 +107,11 @@ export abstract class DbBaseModel {
         return this;
     }
 
+    public platform;
+    public db;
+    public downloadService;
+    public loggerService;
+    public miscService;
     /**
      * Base Model Constructor (never directly called since we are an abstract class)
      * @param platform
@@ -115,12 +120,13 @@ export abstract class DbBaseModel {
      * @param downloadService
      */
     constructor(
-        public platform: Platform,
-        public db: DbProvider,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-        public miscService: MiscService
-    ) { }
+    ) { 
+        this.platform        = window['DbService'].platform;
+        this.db              = window['DbService'].db;
+        this.downloadService = window['DbService'].downloadService;
+        this.loggerService   = window['DbService'].loggerService;
+        this.miscService     = window['DbService'].miscService;
+    }
 
     /**
      * Initializes the database incl. the create table statement
@@ -782,7 +788,7 @@ export abstract class DbBaseModel {
                     }
                     db.query(query).then((res) => {
                         //  Save ID in the model
-                        console.log('after execute query');
+                        // console.log('after execute query');
                         this[this.COL_ID] = res.insertId;
                         this.updateCondition = [this.COL_ID, this[this.COL_ID]];
                         // this.events.publish(this.TAG + ':create', this);
@@ -816,7 +822,7 @@ export abstract class DbBaseModel {
                         'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(condition);
                     db.query(query).then((res) => {
                         // this.events.publish(this.TAG + ':update', this);
-                        console.log("this.miscService", this.miscService)
+                        // console.log("this.miscService", this.miscService)
                         if (this.miscService) {
                             this.miscService.events.next({ TAG: this.TAG + ':update', data: this });
                         }

@@ -15,7 +15,7 @@ import { MiscService } from '../../services/misc-service';
 export class FeedbackService extends ApiService {
     data: FeedbackModel[] = [];
     loadUrl: string = '/feedback';
-    dbModelApi: FeedbackModel = new FeedbackModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: FeedbackModel = new FeedbackModel();
 
     /**
      * Constructor
@@ -28,14 +28,7 @@ export class FeedbackService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-        private p: Platform, private db: DbProvider,
-        public authService: AuthService,
-
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-
-        public appSetting: AppSetting,
-        public miscService: MiscService,
+        public appSetting: AppSetting
     ) {
         super(http, appSetting);
         console.debug('FeedbackService', 'initialized');
@@ -46,6 +39,6 @@ export class FeedbackService extends ApiService {
      * @returns {FeedbackModel}
      */
     public newModel() {
-        return new FeedbackModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new FeedbackModel();
     }
 }
