@@ -144,13 +144,17 @@ export class SynchronizationComponent implements OnInit {
       if (this.apiSync.isStartSyncBehaviorSubject.getValue()) {
         await this.cancelSyncData();
       }
-      const isRemovedAllApiFiles = await this.downloadService.removeAllAppFiles();
-      if (!isRemovedAllApiFiles) {
-        this.http.showToast('synchronization-component.Failed to remove data');
-        resolve(false);
-        return;
+
+      if(this.platform.is('capacitor')) {
+        const isRemovedAllApiFiles = await this.downloadService.removeAllAppFiles();
+        if (!isRemovedAllApiFiles) {
+          this.http.showToast('synchronization-component.Failed to remove data');
+          resolve(false);
+          return;
+        }
+        this.http.showToast('synchronization-component.All files was deleted');
       }
-      this.http.showToast('synchronization-component.All files was deleted');
+
 
       await this.apiSync.resetSyncedData();
       this.initUser().then(() => {
