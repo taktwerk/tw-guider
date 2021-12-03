@@ -148,7 +148,6 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
 
       this.guideArr = this.guidesWithoutCategories;
-      console.log(this.guideArr, 'guideArr');
     }
   }
   async findAllGuideActivity() {

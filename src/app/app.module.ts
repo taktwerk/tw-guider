@@ -118,6 +118,8 @@ import { AppSettingsDb } from 'models/db/app-settings-db';
 import { SharedModule } from './shared/shared.module';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
+import { DbService } from '../models/db.service';
+
 export function LanguageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -257,6 +259,7 @@ export function LanguageLoader(http: Http) {
     MigrationService,
     MiscService,
     LoggerService,
+    DbService
   ],
   exports: [ProtocolDefaultComponent],
   bootstrap: [AppComponent],

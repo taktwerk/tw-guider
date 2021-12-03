@@ -1,24 +1,21 @@
 import { LoggerService } from './../../services/logger-service';
 import { Injectable } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
 import { ApiService } from './base/api-service';
 import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { DownloadService } from '../../services/download-service';
-import { DomSanitizer } from '@angular/platform-browser';
 import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
 import { DbBaseModel } from '../../models/base/db-base-model';
 import { AppSetting } from '../../services/app-setting';
-import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class GuideViewHistoryService extends ApiService {
     data: GuideViewHistoryModel[] = [];
     loadUrl = '/guide-view-history';
-    dbModelApi: GuideViewHistoryModel = new GuideViewHistoryModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: GuideViewHistoryModel = new GuideViewHistoryModel();
 
     /**
      * Constructor
@@ -32,15 +29,12 @@ export class GuideViewHistoryService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-        private p: Platform,
         private db: DbProvider,
         public authService: AuthService,
 
         public downloadService: DownloadService,
         public loggerService: LoggerService,
-        private sanitized: DomSanitizer,
         public appSetting: AppSetting,
-        private miscService: MiscService,
     ) {
         super(http, appSetting);
         console.debug('GuideViewHistoryService', 'initialized');
@@ -51,7 +45,7 @@ export class GuideViewHistoryService extends ApiService {
      * @returns {GuideViewHistoryModel}
      */
     public newModel() {
-        return new GuideViewHistoryModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new GuideViewHistoryModel();
     }
     async findAll(searchValue?: string): Promise<any> {
         return new Promise(async (resolve) => {
@@ -176,7 +170,7 @@ export class GuideViewHistoryService extends ApiService {
             this.dbModelApi.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom, groupby).then((res) => {
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuiderModel = new GuiderModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+                        const obj: GuiderModel = new GuiderModel();
                         obj.platform = this.dbModelApi.platform;
                         obj.db = this.db;
                         obj.downloadService = this.downloadService;

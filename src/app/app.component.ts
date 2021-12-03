@@ -24,6 +24,7 @@ import { AuthDb } from '../models/db/auth-db';
 import { interval, Subscription } from 'rxjs';
 
 import { ViewerService } from '../services/viewer.service';
+import { DbService } from 'models/db.service';
 
 const { SplashScreen, App } = Plugins;
 
@@ -46,6 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
   eventSubscription: Subscription;
 
   constructor(
+    public dbService: DbService,
     private platform: Platform,
     private apiSync: ApiSync,
     private authService: AuthService,
@@ -65,7 +67,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private miscService: MiscService,
     private modalCtrl: ModalController,
     private storage: Storage,
-    public viewer: ViewerService
+    public viewer: ViewerService,
+    
   ) {
     (async () => {
       await this.platform.ready();

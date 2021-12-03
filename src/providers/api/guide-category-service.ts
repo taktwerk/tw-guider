@@ -17,7 +17,7 @@ import { MiscService } from '../../services/misc-service';
 export class GuideCategoryService extends ApiService {
     data: GuideCategoryModel[] = [];
     loadUrl: string = '/guide-category';
-    dbModelApi: GuideCategoryModel = new GuideCategoryModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: GuideCategoryModel = new GuideCategoryModel();
 
     /**
      * Constructor
@@ -49,7 +49,7 @@ export class GuideCategoryService extends ApiService {
      * @returns {GuideCategoryModel}
      */
     public newModel() {
-        return new GuideCategoryModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new GuideCategoryModel();
     }
 
     public findByGuides(searchValue): Promise<any> {
@@ -262,7 +262,7 @@ export class GuideCategoryService extends ApiService {
             this.dbModelApi.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom, groupby).then((res) => {
                 if (res && res.rows && res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuiderModel = new GuiderModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+                        const obj: GuiderModel = new GuiderModel();
                         obj.platform = this.dbModelApi.platform;
                         obj.db = this.db;
                         obj.downloadService = this.downloadService;

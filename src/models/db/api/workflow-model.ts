@@ -37,22 +37,15 @@ export class WorkflowModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(
-        public platform: Platform,
-        public db: DbProvider,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService
-        , public miscService: MiscService
-
-    ) {
-        super(platform, db, downloadService, loggerService, miscService);
+    constructor() {
+        super();
     }
 
     async getSteps() {
         if (this.steps && this.steps.length && this.steps[0][WorkflowStepModel.COL_WORKFLOW_ID] === this.idApi) {
             return this.steps;
         }
-        const stepModel = new WorkflowStepModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+        const stepModel = new WorkflowStepModel();
         const steps = await stepModel.searchAll([WorkflowStepModel.COL_WORKFLOW_ID, this.idApi]);
 
         this.steps = steps;

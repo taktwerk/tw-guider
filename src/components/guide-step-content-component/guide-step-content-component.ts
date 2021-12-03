@@ -55,8 +55,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   public params;
 
   constructor(
-    public platform: Platform,
-    public db: DbProvider,
+  
     private photoViewer: PhotoViewer,
     public authService: AuthService,
     public changeDetectorRef: ChangeDetectorRef,
@@ -127,7 +126,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   }
 
   async openAssetTextModal() {
-    const guideAsset: GuideAssetModel = new GuideAssetModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+    const guideAsset: GuideAssetModel = new GuideAssetModel();
     guideAsset.asset_html = this.step.description_html;
     guideAsset.name = this.step.title;
 

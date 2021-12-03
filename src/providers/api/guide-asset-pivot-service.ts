@@ -15,7 +15,7 @@ import { MiscService } from '../../services/misc-service';
 export class GuideAssetPivotService extends ApiService {
     data: GuideAssetPivotModel[] = [];
     loadUrl: string = '/guide-asset-pivot';
-    dbModelApi: GuideAssetPivotModel = new GuideAssetPivotModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: GuideAssetPivotModel = new GuideAssetPivotModel();
 
     /**
      * Constructor
@@ -28,15 +28,8 @@ export class GuideAssetPivotService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-        private p: Platform,
-        private db: DbProvider,
         public authService: AuthService,
-
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-
         public appSetting: AppSetting,
-        public miscService: MiscService,
     ) {
         super(http, appSetting);
         console.debug('GuideAssetPivotService', 'initialized');
@@ -47,6 +40,6 @@ export class GuideAssetPivotService extends ApiService {
      * @returns {GuideAssetPivotModel}
      */
     public newModel() {
-        return new GuideAssetPivotModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new GuideAssetPivotModel();
     }
 }
