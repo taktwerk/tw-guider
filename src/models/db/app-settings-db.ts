@@ -2,8 +2,6 @@ import { LoggerService } from './../../services/logger-service';
 import { DbBaseModel } from '../base/db-base-model';
 import { Platform } from '@ionic/angular';
 import { DbProvider } from '../../providers/db-provider';
-import { UserSetting } from '../user-setting';
-import { AuthDb } from './auth-db';
 import { DownloadService } from '../../services/download-service';
 import { MiscService } from '../../services/misc-service';
 import { Injectable } from '@angular/core';
@@ -32,12 +30,7 @@ export class AppSettingsDb extends DbBaseModel {
      * @param {DownloadService} downloadService
      */
     constructor(
-        public platform: Platform,
-        public db: DbProvider,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-        public miscService: MiscService
     ) {
-        super(platform, db, downloadService, loggerService, miscService);
+        super();
     }
 }

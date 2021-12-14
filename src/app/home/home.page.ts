@@ -88,7 +88,7 @@ export class HomePage {
 
   public scanQrcode() {
 
-    if(environment.production === false && environment.setupConfig != undefined  && environment.setupConfig != null) {
+    if(environment.production === false) {
       return this.scanQrcodeDev();
     }
 

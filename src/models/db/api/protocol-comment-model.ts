@@ -1,15 +1,11 @@
-import { Platform } from '@ionic/angular';
 import { DbApiModel } from '../../base/db-api-model';
-import { DbProvider } from '../../../providers/db-provider';
 import { DbBaseModel } from '../../base/db-base-model';
-import { DownloadService } from '../../../services/download-service';
 import { ProtocolModel } from './protocol-model';
 import { WorkflowStepModel } from './workflow-step-model';
 import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { LoggerService } from '../../../services/logger-service';
-import { MiscService } from '../../../services/misc-service';
+
 
 /**
  * API Db Model for 'Workflow Transition Model'.
@@ -63,14 +59,8 @@ export class ProtocolCommentModel extends DbApiModel {
      * @inheritDoc
      */
     constructor(
-        public platform: Platform,
-        public db: DbProvider,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-        public miscService: MiscService,
-
     ) {
-        super(platform, db, downloadService, loggerService, miscService);
+        super();
     }
 
     async getIcon() {
@@ -78,8 +68,7 @@ export class ProtocolCommentModel extends DbApiModel {
             return faComment;
         }
         if (this.new_workflow_step_id) {
-            const newWorkflowStepModel = new WorkflowStepModel(this.platform, this.db,
-                this.downloadService, this.loggerService, this.miscService);
+            const newWorkflowStepModel = new WorkflowStepModel();
             const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
                 [newWorkflowStepModel.COL_ID_API, this.new_workflow_step_id]
             );
@@ -96,7 +85,7 @@ export class ProtocolCommentModel extends DbApiModel {
 
     async getColour() {
         if (this.new_workflow_step_id) {
-            const newWorkflowStepModel = new WorkflowStepModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+            const newWorkflowStepModel = new WorkflowStepModel();
             const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
                 [newWorkflowStepModel.COL_ID_API, this.new_workflow_step_id]
             );
@@ -120,7 +109,7 @@ export class ProtocolCommentModel extends DbApiModel {
             return;
         }
 
-        const protocolModel = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+        const protocolModel = new ProtocolModel();
         if (protocolModel) {
             const protocolModels = await protocolModel.findFirst(
                 [protocolModel.COL_ID_API, this.protocol_id]
@@ -141,7 +130,7 @@ export class ProtocolCommentModel extends DbApiModel {
             if (!this[this.COL_ID]) {
                 return;
             }
-            const protocolModel = new ProtocolModel(this.platform, this.db, this.downloadService, this.loggerService, this.miscService);
+            const protocolModel = new ProtocolModel();
             const protocolModels = await protocolModel.findFirst([protocolModel.COL_ID, this.local_protocol_id]);
             if (protocolModels && protocolModels.length) {
                 const protocol = protocolModels[0];

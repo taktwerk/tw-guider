@@ -15,7 +15,7 @@ import { MiscService } from '../../services/misc-service';
 export class GuiderService extends ApiService {
     data: GuiderModel[] = [];
     loadUrl: string = '/guider';
-    dbModelApi: GuiderModel = new GuiderModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: GuiderModel = new GuiderModel();
 
     /**
      * Constructor
@@ -27,14 +27,10 @@ export class GuiderService extends ApiService {
      * @param downloadService
      * @param appSetting
      */
-    constructor(http: HttpClient,
-        private p: Platform,
-        private db: DbProvider,
+    constructor(
+        http: HttpClient,
         public authService: AuthService,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
         public appSetting: AppSetting,
-        private miscService: MiscService,
     ) {
         super(http, appSetting);
         console.debug('GuiderService', 'initialized');
@@ -45,7 +41,7 @@ export class GuiderService extends ApiService {
      * @returns {GuiderModel}
      */
     public newModel() {
-        return new GuiderModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new GuiderModel();
     }
 
     public getById(id): Promise<any> {

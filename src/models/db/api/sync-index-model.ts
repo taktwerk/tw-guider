@@ -39,11 +39,8 @@ export class SyncIndexModel extends DbApiModel {
     /**
      * @inheritDoc
      */
-    constructor(public platform: Platform, public db: DbProvider,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-        public miscService: MiscService,
+    constructor(
     ) {
-        super(platform, db, downloadService, loggerService, miscService);
+        super();
     }
 }

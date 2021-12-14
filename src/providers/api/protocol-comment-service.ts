@@ -1,23 +1,17 @@
-import { LoggerService } from './../../services/logger-service';
 import { Injectable } from '@angular/core';
-
-import { Platform } from '@ionic/angular';
 import { ApiService } from './base/api-service';
-import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
-import { DownloadService } from '../../services/download-service';
 import { AppSetting } from '../../services/app-setting';
 import { ProtocolCommentModel } from '../../models/db/api/protocol-comment-model';
 import { WorkflowStepModel } from '../../models/db/api/workflow-step-model';
 import { TranslateConfigService } from '../../services/translate-config.service';
-import { MiscService } from '../../services/misc-service';
 
 @Injectable()
 export class ProtocolCommentService extends ApiService {
     data: ProtocolCommentModel[] = [];
     loadUrl: string = '/protocol-comment';
-    dbModelApi: ProtocolCommentModel = new ProtocolCommentModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: ProtocolCommentModel = new ProtocolCommentModel();
 
     /**
      * Constructor
@@ -30,15 +24,11 @@ export class ProtocolCommentService extends ApiService {
      * @param appSetting
      * @param translateConfigService
      */
-    constructor(http: HttpClient,
-        private p: Platform, private db: DbProvider,
+    constructor(
+        http: HttpClient,
         public authService: AuthService,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
         public appSetting: AppSetting,
         private translateConfigService: TranslateConfigService,
-        private miscService: MiscService,
-
     ) {
         super(http, appSetting);
     }
@@ -70,7 +60,7 @@ export class ProtocolCommentService extends ApiService {
         if (!protocolComment.new_workflow_step_id || !protocolComment.old_workflow_step_id) {
             return null;
         }
-        const newWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        const newWorkflowStepModel = new WorkflowStepModel();
         const newWorkflowStepSearchResult = await newWorkflowStepModel.findFirst(
             [newWorkflowStepModel.COL_ID_API, protocolComment.new_workflow_step_id]
         );
@@ -82,7 +72,7 @@ export class ProtocolCommentService extends ApiService {
             return await this.translateConfigService.translate('Final');
         }
 
-        const oldWorkflowStepModel = new WorkflowStepModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        const oldWorkflowStepModel = new WorkflowStepModel();
         const oldWorkflowStepSearchResult = await oldWorkflowStepModel.findFirst(
             [newWorkflowStepModel.COL_ID_API, protocolComment.old_workflow_step_id]
         );
@@ -105,6 +95,6 @@ export class ProtocolCommentService extends ApiService {
      * @returns {ProtocolCommentModel}
      */
     public newModel() {
-        return new ProtocolCommentModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new ProtocolCommentModel();
     }
 }

@@ -5,7 +5,6 @@ import { ApiService } from './base/api-service';
 import { DbProvider } from '../db-provider';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
-import { GuiderModel } from '../../models/db/api/guider-model';
 import { DownloadService } from '../../services/download-service';
 import { GuideCategoryBindingModel } from '../../models/db/api/guide-category-binding-model';
 import { AppSetting } from '../../services/app-setting';
@@ -16,7 +15,7 @@ import { MiscService } from '../../services/misc-service';
 export class GuideCategoryBindingService extends ApiService {
     data: GuideCategoryBindingModel[] = [];
     loadUrl: string = '/guide-category-binding';
-    dbModelApi: GuideCategoryBindingModel = new GuideCategoryBindingModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: GuideCategoryBindingModel = new GuideCategoryBindingModel();
 
     /**
      * Constructor
@@ -29,14 +28,7 @@ export class GuideCategoryBindingService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-        private p: Platform,
-        private db: DbProvider,
-        public authService: AuthService,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-
-        public appSetting: AppSetting,
-        public miscService: MiscService,) {
+        public appSetting: AppSetting) {
         super(http, appSetting);
         console.debug('GuideCategoryBindingService', 'initialized');
     }
@@ -46,6 +38,6 @@ export class GuideCategoryBindingService extends ApiService {
      * @returns {GuideCategoryBindingModel}
      */
     public newModel() {
-        return new GuideCategoryBindingModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new GuideCategoryBindingModel();
     }
 }

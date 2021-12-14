@@ -17,7 +17,7 @@ import { MiscService } from '../../services/misc-service';
 export class GuideStepService extends ApiService {
     data: GuideStepModel[] = [];
     loadUrl = '/guide-step';
-    dbModelApi: GuideStepModel = new GuideStepModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+    dbModelApi: GuideStepModel = new GuideStepModel();
 
     /**
      * Constructor
@@ -49,7 +49,7 @@ export class GuideStepService extends ApiService {
      * @returns {GuideStepModel}
      */
     public newModel() {
-        return new GuideStepModel(this.p, this.db, this.downloadService, this.loggerService, this.miscService);
+        return new GuideStepModel();
     }
 
     public getDescriptionHtml(descriptionHtml) {

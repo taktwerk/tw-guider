@@ -91,16 +91,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       this.isPreStateLoad = true;
     }
 
-    let loader;
-    if (this.isPreStateLoad === false) {
-      loader = await this.loader.create();
-      loader.present();
-    }
     await this.findAllGuideActivity();
     await this.setActivity();
-
-    if (typeof loader != 'undefined') loader.dismiss();
-    this.isLoadedContent = true;
   }
 
   async showAllGuides() {
@@ -110,17 +102,9 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       this.isPreStateLoad = true;
     }
 
-    let loader;
-    if (this.isPreStateLoad === false) {
-      loader = await this.loader.create();
-      loader.present();
-    }
-
+ 
     await this.findAllGuideCategories();
     await this.setGuides();
-
-    if (typeof loader != 'undefined') loader.dismiss();
-    this.isLoadedContent = true;
   }
 
   async searchGuides($event) {
@@ -164,7 +148,6 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
 
       this.guideArr = this.guidesWithoutCategories;
-      console.log(this.guideArr, 'guideArr');
     }
   }
   async findAllGuideActivity() {
@@ -186,7 +169,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       this.guideCategories = syncedList;
       this.setCategoryGuides();
 
-      this.state.setState('CategoriesListPage_guideCategories', this.guideCategories);
+      // this.state.setState('CategoriesListPage_guideCategories', this.guideCategories);
     }
   }
 
@@ -243,9 +226,19 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
-    this.showAllActivity();
-    this.showAllGuides();
+  async ngOnInit() {
+
+    let loader;
+    if (this.isPreStateLoad === false) {
+      loader = await this.loader.create();
+      loader.present();
+    }
+
+    await this.showAllActivity();
+    await this.showAllGuides();
+
+    if (typeof loader != 'undefined') loader.dismiss();
+    this.isLoadedContent = true;
 
     this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
       this.isStartSync = isSync;

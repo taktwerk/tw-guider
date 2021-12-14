@@ -34,13 +34,8 @@ export class UserDb extends DbBaseModel {
      * @param {DownloadService} downloadService
      */
     constructor(
-        public platform: Platform,
-        public db: DbProvider,
-        public downloadService: DownloadService,
-        public loggerService: LoggerService,
-        public miscService: MiscService
     ) {
-        super(platform, db, downloadService, loggerService, miscService);
+        super();
     }
 
     /**
@@ -49,7 +44,7 @@ export class UserDb extends DbBaseModel {
      */
     public getCurrent(): Promise<any | boolean> {
         return new Promise((resolve) => {
-            new AuthDb(this.platform, this.db, this.downloadService, this.loggerService, this.miscService).loadLast().then((authDb) => {
+            new AuthDb().loadLast().then((authDb) => {
                 if (!authDb) {
                     resolve(null);
                 } else {

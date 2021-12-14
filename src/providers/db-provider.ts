@@ -44,6 +44,7 @@ export class DbProvider {
         tx.executeSql(q, params, (tx, res) => {
           resolve(res);
         }, (tx, err) => {
+          console.log("query execution error", err, q)
           reject(err);
         });
       });
