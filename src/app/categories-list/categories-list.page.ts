@@ -157,7 +157,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideActivity, this.guideActivity[0].TABLE_NAME);
       this.guideActivity = syncedList;
       // this.setCategoryGuides();
-      this.state.setState('CategoriesListPage_guideActivity', this.guideActivity);
+      // this.state.setState('CategoriesListPage_guideActivity', this.guideActivity);
     }
   }
 
