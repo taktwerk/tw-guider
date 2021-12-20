@@ -64,6 +64,7 @@ export class TranslateConfigService {
     }
 
     getDeviceLanguage() {
+        console.log("check device language =>")
         const deviceLang = navigator.language.split("-")[0]
         const osLang = this.isLanguageAvailable(deviceLang);
         if (osLang) {

@@ -4,14 +4,12 @@ import { TranslateConfigService } from '../../services/translate-config.service'
 import dateFormats from '../../assets/i18n/dateFormat.json';
 
 @Pipe({ name: 'datePipe' })
-export class DatePipe extends BaseDatePipe implements PipeTransform {
+export class DatePipe implements PipeTransform {
 
-    constructor(private translateConfigService: TranslateConfigService) {
-        super('en-US');
+    constructor(private translateConfigService: TranslateConfigService, private baseDatePipe: BaseDatePipe) {
+
     }
 
-    transform(value: any, format?: string, timezone?: string, locale?: string): string
-    transform(value: any, format?: string, timezone?: string, locale?: string): null
     transform(value: any, format?: string, timezone?: string, locale?: string): string | null {
         const language = this.translateConfigService.getDefaultLanguage();
         const dateFormatsByLanguage = dateFormats[language];
@@ -22,8 +20,8 @@ export class DatePipe extends BaseDatePipe implements PipeTransform {
             }
         }
 
-        return super.transform(value, format, timezone, locale); 
+        return this.baseDatePipe.transform(value, format, timezone, locale);
     }
 
-   
+
 }

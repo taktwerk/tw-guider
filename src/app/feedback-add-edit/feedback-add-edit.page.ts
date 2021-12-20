@@ -146,7 +146,7 @@ export class FeedbackAddEditPage implements OnInit {
     this.model.user_id = user.userId;
     this.model.created_by = user.userId;
     this.model.client_id = user.client_id;
-    
+
     if (this.reference_id) {
       this.model.reference_id = this.reference_id;
     }
@@ -236,21 +236,20 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addFileCapacitor() {
+    console.log("check file...");
     this.downloadService.chooseFile(true).then((recordedFile) => {
       this.model.setFile(recordedFile);
-    })
+    }).catch((e) => console.log(e));
   }
 
   async addVideoUsingCamera() {
-    this.downloadService
-      .recordVideo(true)
+    this.downloadService.recordVideo(true)
       .then((recordedFile) => this.model.setFile(recordedFile))
       .catch((e) => console.log('FeedbackModal', 'addVideoUsingCamera', e));
   }
 
   addPhotoUsingCamera() {
-    this.downloadService
-      .makePhoto(1000, 1000)
+    this.downloadService.makePhoto(1000, 1000)
       .then((recordedFile) => this.model.setFile(recordedFile))
       .catch((e) => console.log('FeedbackModal', 'addPhotoUsingCamera', e));
   }

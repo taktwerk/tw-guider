@@ -1,9 +1,6 @@
-import { LoggerService } from './../../services/logger-service';
-import { Platform } from '@ionic/angular';
+
 import { DbBaseModel } from './db-base-model';
-import { DbProvider } from '../../providers/db-provider';
-import { DownloadService, RecordedFile } from '../../services/download-service';
-import { MiscService } from '../../services/misc-service';
+import { RecordedFile } from '../../services/download-service';
 
 export class BaseFileMapInModel {
     public name: string;
@@ -505,16 +502,21 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     async setFile(recordedFile: RecordedFile, fileMapIndex = 0) {
-        recordedFile.uri = await this.downloadService.copy(recordedFile.uri, this.TABLE_NAME);
-        if (recordedFile.thumbnailUri) {
-            recordedFile.thumbnailUri = await this.downloadService.copy(recordedFile.thumbnailUri, this.TABLE_NAME);
-        }
-        if (recordedFile.uri) {
+        if (!this.platform.is('capacitor')) {
             this.setFileProperty(recordedFile, fileMapIndex);
+        } else {
+            recordedFile.uri = await this.downloadService.copy(recordedFile.uri, this.TABLE_NAME);
+            if (recordedFile.thumbnailUri) {
+                recordedFile.thumbnailUri = await this.downloadService.copy(recordedFile.thumbnailUri, this.TABLE_NAME);
+            }
+            if (recordedFile.uri) {
+                this.setFilePropertyForBrowser(recordedFile, fileMapIndex);
+            }
         }
     }
 
-    setFileProperty(recordedFile: RecordedFile, columnNameIndex = 0, willDeleteFile = true) {
+    setFilePropertyForBrowser(recordedFile: RecordedFile, columnNameIndex = 0, willDeleteFile = true) {
+        console.log("check recorded file from setFileProperty method =>", recordedFile);
         if (!this.isExistFileIndex(columnNameIndex)) {
             return;
         }
@@ -531,7 +533,58 @@ export abstract class DbApiModel extends DbBaseModel {
                 this.downloadMapping[columnNameIndex].attachedFilesForDelete.push(attachedFileForDelete);
             }
         }
-        this[modelFileMap.name] = recordedFile.uri.substr(recordedFile.uri.lastIndexOf('/') + 1);
+        this[modelFileMap.name] = recordedFile.uri.substring(recordedFile.uri.lastIndexOf('/') + 1);
+        this[modelFileMap.url] = '';
+        this[modelFileMap.localPath] = recordedFile.uri;
+        this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = recordedFile.uri;
+
+        console.log(" this[modelFileMap.name]", this[modelFileMap.name])
+        console.log(" this[modelFileMap.localPath]", this[modelFileMap.localPath])
+
+        /// If exist thumbnail for file
+        if (modelFileMap.thumbnail) {
+            if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile) {
+                this.downloadMapping[columnNameIndex].thumbnail.originalFile = this[modelFileMap.thumbnail.name];
+            }
+            if (willDeleteFile) {
+                if (this[modelFileMap.thumbnail.name]) {
+                    const thumbnailAttachedFileForDelete = this[modelFileMap.thumbnail.name] ? this.downloadService.getNativeFilePath(this[modelFileMap.thumbnail.name], this.TABLE_NAME) : '';
+                    if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile && thumbnailAttachedFileForDelete) {
+                        this.downloadMapping[columnNameIndex].thumbnail.originalFile = thumbnailAttachedFileForDelete;
+                    }
+                    if (!this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete) {
+                        this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete = [];
+                    }
+                    this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete.push(thumbnailAttachedFileForDelete);
+                }
+            }
+            this[modelFileMap.thumbnail.name] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri.substr(recordedFile.thumbnailUri.lastIndexOf('/') + 1) : '';
+            this[modelFileMap.thumbnail.url] = '';
+            this[modelFileMap.thumbnail.localPath] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
+            this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
+        }
+    }
+
+
+    setFileProperty(recordedFile: RecordedFile, columnNameIndex = 0, willDeleteFile = true) {
+        console.log("check recorded file from setFileProperty method =>", recordedFile);
+        if (!this.isExistFileIndex(columnNameIndex)) {
+            return;
+        }
+        const modelFileMap = this.downloadMapping[columnNameIndex];
+        if (willDeleteFile) {
+            if (this[modelFileMap.name]) {
+                const attachedFileForDelete = this[modelFileMap.name] ? this.downloadService.getNativeFilePath(this[modelFileMap.name], this.TABLE_NAME) : '';
+                if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].originalFile && attachedFileForDelete) {
+                    this.downloadMapping[columnNameIndex].originalFile = attachedFileForDelete;
+                }
+                if (!this.downloadMapping[columnNameIndex].attachedFilesForDelete) {
+                    this.downloadMapping[columnNameIndex].attachedFilesForDelete = [];
+                }
+                this.downloadMapping[columnNameIndex].attachedFilesForDelete.push(attachedFileForDelete);
+            }
+        }
+        this[modelFileMap.name] = recordedFile.uri.substring(recordedFile.uri.lastIndexOf('/') + 1);
         this[modelFileMap.url] = '';
         this[modelFileMap.localPath] = recordedFile.uri;
         this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = recordedFile.uri;
@@ -697,16 +750,16 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     public getFileImagePath(fileMapIndex = 0, sanitizeType = 'trustResourceUrl') {
-        
-        if(!this.platform.is('capacitor')) {
+
+        if (!this.platform.is('capacitor')) {
 
             let url = this['preview_file_path'];
 
-            if(url == undefined) {
+            if (url == undefined) {
                 url = this['thumb_attached_file_path'];
             }
-            
-            if(url == undefined) {
+
+            if (url == undefined) {
                 url = this['attached_file_path'];
             }
             return this.downloadService.previewSecuredImage(url);

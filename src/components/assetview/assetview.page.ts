@@ -10,13 +10,15 @@ import { ModalController, Platform } from '@ionic/angular';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { ImageEditorComponent } from '../../components/imageeditor/imageeditor.page';
 import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
-import { Capacitor, Plugins } from '@capacitor/core';
+// import { Capacitor, Plugins } from '@capacitor/core';
+import { Filesystem } from '@capacitor/filesystem';
 import { ApiSync } from '../../providers/api-sync';
 import { File } from '@ionic-native/file/ngx';
 import { ViewerService } from 'services/viewer.service';
 import { HelpingService } from '../../controller/helping.service';
+// import { Camera } from '@capacitor/camera';
 
-const { Filesystem } = Plugins;
+// const { Filesystem } = Plugins;
 @Component({
   selector: 'model-assetcomponent',
   templateUrl: './assetview.page.html',
@@ -190,28 +192,28 @@ export class AssetviewComponent implements OnInit {
 
       let fileUrl = '';
 
-      if(this.platform.is('capacitor')) {
+      if (this.platform.is('capacitor')) {
         fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
       } else {
-        this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then( (url: any) => {
-          
-          if(url === false) {
+        this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then((url: any) => {
+
+          if (url === false) {
             return;
           }
 
-          if(fileType === 'image') {
+          if (fileType === 'image') {
             this.viewer.photoframe = {
               url: url,
               title: title,
               show: true
             };
-          } else if(fileType === 'video') {   
+          } else if (fileType === 'video') {
             this.viewer.videoframe = {
               url: url,
               title: title,
               show: true
             };
-          } else if(fileType === 'pdf') {
+          } else if (fileType === 'pdf') {
             console.log(url)
             this.viewer.pdfframe = {
               url: url,

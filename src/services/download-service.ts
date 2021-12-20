@@ -1,4 +1,4 @@
-import { Injectable, SecurityContext } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, SecurityContext } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
@@ -13,10 +13,13 @@ import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { LoggerService } from './logger-service';
 import WebFile from 'web-plugins/WebFile';
+import { isPlatformBrowser } from '@angular/common';
+
 export class RecordedFile {
   uri: string;
   thumbnailUri?: string;
   type?: string;
+  // public imagePath;
 }
 
 /**
@@ -44,6 +47,8 @@ export class DownloadService {
    */
 
   webfile: WebFile;
+  testBrowser: boolean;
+  imgURL: any;
 
   constructor(
     public http: HttpClient,
@@ -58,11 +63,16 @@ export class DownloadService {
     private camera: Camera,
     private videoEditor: VideoEditor,
     protected sanitizerImpl: ɵDomSanitizerImpl,
-    private loggerService: LoggerService
+    private loggerService: LoggerService,
+    @Inject(PLATFORM_ID) platformId: string
+
   ) {
+
     if (!this.platform.is('capacitor')) {
       this.webfile = new WebFile();
     }
+
+    this.testBrowser = isPlatformBrowser(platformId);
   }
 
   /**
@@ -341,7 +351,7 @@ export class DownloadService {
     return new Promise((resolve) => {
       // console.log('fullPath', fullPath);
       const date = new Date();
-      const correctPath = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
+      const correctPath = fullPath.substring(0, fullPath.lastIndexOf('/') + 1);
       const currentName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
       const currentExt = fullPath.substring(fullPath.lastIndexOf('.') + 1, fullPath.length);
       const newFilePath = this.file.dataDirectory + modelName;
@@ -587,19 +597,65 @@ export class DownloadService {
     return safeUrl;
   }
 
+  public async chooseFileFromLocalPC(accept: any = '*/*'): Promise<string> {
+    console.log("testing browser specification...");
+    return new Promise((resolve) => {
+      let input = document.createElement('input');
+      input.type = 'file';
+      input.accept = accept;
+      input.onchange = (e: any) => {
+        // console.log(e.target.files[0].name);
+        let reader = new FileReader();
+        // this.imagePath = files;
+        reader.readAsDataURL(e.target.files[0]);
+        reader.onload = (_event) => {
+          this.imgURL = reader.result;
+          resolve(this.imgURL);
+          console.log("check image =>", this.imgURL);
+        }
+      }
+      input.click();
+    });
+  }
+
+
   public async chooseFile(withThumbnailForVideo = false): Promise<RecordedFile> {
+
     const recordedFile = new RecordedFile();
+
     let uri = '';
+
     if (this.platform.is('ios')) {
       if (!this.filePicker) {
         this.loggerService.getLogger().error('IOSFilePicker plugin is not defined', new Error('IOSFilePicker plugin is not defined').stack);
         throw new Error('IOSFilePicker plugin is not defined');
       }
       uri = await this.filePicker.pickFile();
-      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>');
-      console.log('uri', uri);
-      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    } else {
+    }
+
+    else if (this.testBrowser) {
+      recordedFile.uri = await this.chooseFileFromLocalPC();
+      return recordedFile;
+    }
+    // else if (this.testBrowser) {
+    //   console.log("testing browser specification...");
+    //   let input = document.createElement('input');
+    //   input.type = 'file';
+    //   input.accept = 'image/*';
+    //   input.onchange = (e: any) => {
+    //     // console.log(e.target.files[0].name);
+    //     let reader = new FileReader();
+    //     // this.imagePath = files;
+    //     reader.readAsDataURL(e.target.files[0]);
+    //     reader.onload = (_event) => {
+    //       this.imgURL = reader.result;
+    //       console.log("check image =>", this.imgURL);
+    //     }
+    //   }
+    //   input.click();
+    //   //this is only executed on the browser
+    // }
+    else {
       if (!this.fileChooser) {
         this.loggerService.getLogger().error('FileChooser plugin is not defined', new Error('FileChooser plugin is not defined').stack);
 
@@ -607,12 +663,9 @@ export class DownloadService {
       }
       uri = await this.fileChooser.open();
     }
+
     if (uri) {
       recordedFile.uri = await this.getResolvedNativeFilePath(uri);
-      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>');
-      console.log('recordedFile.uri', recordedFile.uri);
-      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>');
-
       if (withThumbnailForVideo && this.checkFileTypeByExtension(recordedFile.uri, 'video')) {
         recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
       }
@@ -699,10 +752,36 @@ export class DownloadService {
   }
 
   public async recordVideo(withThumbnail = false): Promise<RecordedFile> {
+    const recordedFile = new RecordedFile();
+
     if (!this.mediaCapture) {
       this.loggerService.getLogger().error('MediaCapture plugin is not defined', new Error('MediaCapture plugin is not defined').stack);
       throw new Error('MediaCapture plugin is not defined');
     }
+
+
+    if (this.testBrowser) {
+      recordedFile.uri = await this.chooseFileFromLocalPC('video/*');
+      return recordedFile;
+    }
+
+    // if (this.testBrowser) {
+    //   console.log("testing browser specification...");
+    //   let input = document.createElement('input');
+    //   input.type = 'file';
+    //   input.accept = 'video/*';
+    //   input.onchange = (e: any) => {
+    //     // console.log(e.target.files[0].name);
+    //     let reader = new FileReader();
+    //     // this.imagePath = files;
+    //     reader.readAsDataURL(e.target.files[0]);
+    //     reader.onload = (_event) => {
+    //       this.imgURL = reader.result;
+    //       console.log("check image =>", this.imgURL);
+    //     }
+    //   }
+    //   input.click();
+    // }
 
     const videoFile = await this.mediaCapture.captureVideo({ limit: 1 });
 
@@ -714,21 +793,49 @@ export class DownloadService {
     const fullPath = videoFile[0].fullPath;
     console.log('const fullPath = videoFile[0].fullPath;', videoFile[0]);
 
-    const recordedFile = new RecordedFile();
-    recordedFile.uri = await this.getResolvedNativeFilePath(fullPath);
+    // const recordedFile = new RecordedFile();
+    if (this.platform.is('ios')) {
+      recordedFile.uri = await this.getResolvedNativeFilePath(fullPath);
 
-    if (recordedFile.uri && withThumbnail) {
-      recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
+      if (recordedFile.uri && withThumbnail) {
+        recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
+      }
     }
 
+    console.log("check recorded file 2 =>", recordedFile);
     return recordedFile;
   }
 
   public async makePhoto(targetWidth = 1000, targetHeight = 1000): Promise<RecordedFile> {
+    const recordedFile = new RecordedFile();
+
     if (!this.camera) {
       this.loggerService.getLogger().error('MediaCapture plugin is not defined', new Error('MediaCapture plugin is not defined').stack);
       throw new Error('MediaCapture plugin is not defined');
     }
+
+    if (this.testBrowser) {
+      recordedFile.uri = await this.chooseFileFromLocalPC('image/*');
+      return recordedFile;
+    }
+
+    // if (this.testBrowser) {
+    //   console.log("testing browser specification...");
+    //   let input = document.createElement('input');
+    //   input.type = 'file';
+    //   input.accept = 'camera/*';
+    //   input.onchange = (e: any) => {
+    //     // console.log(e.target.files[0].name);
+    //     let reader = new FileReader();
+    //     // this.imagePath = files;
+    //     reader.readAsDataURL(e.target.files[0]);
+    //     reader.onload = (_event) => {
+    //       this.imgURL = reader.result;
+    //       console.log("check image =>", this.imgURL);
+    //     }
+    //   }
+    //   input.click();
+    // }
 
     const cameraOptions = {
       // targetWidth: targetWidth,
@@ -740,9 +847,15 @@ export class DownloadService {
     };
 
     const photoFullPath = await this.camera.getPicture(cameraOptions);
-    const recordedFile = new RecordedFile();
-    recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath);
-    recordedFile.thumbnailUri = recordedFile.uri;
+    // const recordedFile = new RecordedFile();
+
+    if (this.platform.is('ios')) {
+      recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath);
+      recordedFile.thumbnailUri = recordedFile.uri;
+
+    }
+
+    console.log("check recorded file 3 =>", recordedFile);
     return recordedFile;
   }
 
@@ -775,6 +888,24 @@ export class DownloadService {
 
     if (this.platform.is('android')) {
       return this.filePath.resolveNativePath(uri);
+    }
+
+    if (this.testBrowser) {
+      console.log("testing browser specification...");
+      let input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (e: any) => {
+        // console.log(e.target.files[0].name);
+        let reader = new FileReader();
+        // this.imagePath = files;
+        reader.readAsDataURL(e.target.files[0]);
+        reader.onload = (_event) => {
+          this.imgURL = reader.result;
+          console.log("check image =>", this.imgURL);
+        }
+      }
+      input.click();
     }
 
     return new Promise((resolve) => resolve(uri));
