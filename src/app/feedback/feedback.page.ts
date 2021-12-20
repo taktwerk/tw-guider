@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
 import { NavController, Platform } from '@ionic/angular';
 import { FeedbackService } from '../../providers/api/feedback-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
@@ -11,6 +11,7 @@ import { PictureService } from '../../services/picture-service';
 import { Subscription } from 'rxjs';
 import { MiscService } from '../../services/misc-service';
 import { SyncIndexService } from '../../providers/api/sync-index-service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'feedback-page',
@@ -27,6 +28,9 @@ export class FeedbackPage implements OnInit, OnDestroy {
   public feedbackList: FeedbackModel[] = [];
   public isComponentLikeModal = false;
   public params;
+  public imgURL;
+  testBrowser: boolean;
+
   possibleDatabaseNamespaces = [
     'app',
     'taktwerk\\yiiboilerplate'
@@ -47,9 +51,12 @@ export class FeedbackPage implements OnInit, OnDestroy {
     private miscService: MiscService,
     private platform: Platform,
     private syncIndexService: SyncIndexService,
+    @Inject(PLATFORM_ID) platformId: string
 
   ) {
     this.authService.checkAccess('feedback');
+
+    this.testBrowser = isPlatformBrowser(platformId);
   }
   ionViewDidLeave() {
     this.reference_id = null

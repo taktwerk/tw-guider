@@ -11,6 +11,7 @@ import { MainPipe } from '../../pipes/main-pipe.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-me
     TranslateModule,
     MainPipe,
     VirtualScrollerModule,
-    AssetviewComponentModule
+    AssetviewComponentModule,
+    SharedModule
   ],
   exports: [
   ],

@@ -20,6 +20,14 @@
   <ion-item *ngFor="let feedback of feedbackList; trackBy: trackByFn">
 
     <ion-thumbnail slot="start">
+
+      <!-- <div *ngIf="testBrowser">
+        <img [src]="feedback.url" alt="">
+      </div> -->
+      <div *ngIf="testBrowser && feedback.attached_file_path">
+        <img appImgload [localurl]="feedback.attached_file_path" alt="">
+      </div>
+
       <div *ngIf="feedback.attached_file">
         <model-assetcomponent [model]="feedback" [isthumbnail]="true" style="height: 100%; width: 100%;">
         </model-assetcomponent>

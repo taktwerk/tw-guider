@@ -503,61 +503,29 @@ export abstract class DbApiModel extends DbBaseModel {
 
     async setFile(recordedFile: RecordedFile, fileMapIndex = 0) {
         if (!this.platform.is('capacitor')) {
-            this.setFileProperty(recordedFile, fileMapIndex);
+            this.setFilePropertyForBrowser(recordedFile, fileMapIndex);
         } else {
             recordedFile.uri = await this.downloadService.copy(recordedFile.uri, this.TABLE_NAME);
             if (recordedFile.thumbnailUri) {
                 recordedFile.thumbnailUri = await this.downloadService.copy(recordedFile.thumbnailUri, this.TABLE_NAME);
             }
             if (recordedFile.uri) {
-                this.setFilePropertyForBrowser(recordedFile, fileMapIndex);
+                this.setFileProperty(recordedFile, fileMapIndex);
             }
         }
     }
 
     setFilePropertyForBrowser(recordedFile: RecordedFile, columnNameIndex = 0, willDeleteFile = true) {
         console.log("check recorded file from setFileProperty method =>", recordedFile);
-        if (!this.isExistFileIndex(columnNameIndex)) {
-            return;
-        }
+
         const modelFileMap = this.downloadMapping[columnNameIndex];
-        if (willDeleteFile) {
-            if (this[modelFileMap.name]) {
-                const attachedFileForDelete = this[modelFileMap.name] ? this.downloadService.getNativeFilePath(this[modelFileMap.name], this.TABLE_NAME) : '';
-                if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].originalFile && attachedFileForDelete) {
-                    this.downloadMapping[columnNameIndex].originalFile = attachedFileForDelete;
-                }
-                if (!this.downloadMapping[columnNameIndex].attachedFilesForDelete) {
-                    this.downloadMapping[columnNameIndex].attachedFilesForDelete = [];
-                }
-                this.downloadMapping[columnNameIndex].attachedFilesForDelete.push(attachedFileForDelete);
-            }
-        }
         this[modelFileMap.name] = recordedFile.uri.substring(recordedFile.uri.lastIndexOf('/') + 1);
-        this[modelFileMap.url] = '';
-        this[modelFileMap.localPath] = recordedFile.uri;
+        this[modelFileMap.url] = recordedFile.uri;
+        this[modelFileMap.localPath] = '';
         this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = recordedFile.uri;
-
-        console.log(" this[modelFileMap.name]", this[modelFileMap.name])
-        console.log(" this[modelFileMap.localPath]", this[modelFileMap.localPath])
-
         /// If exist thumbnail for file
         if (modelFileMap.thumbnail) {
-            if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile) {
-                this.downloadMapping[columnNameIndex].thumbnail.originalFile = this[modelFileMap.thumbnail.name];
-            }
-            if (willDeleteFile) {
-                if (this[modelFileMap.thumbnail.name]) {
-                    const thumbnailAttachedFileForDelete = this[modelFileMap.thumbnail.name] ? this.downloadService.getNativeFilePath(this[modelFileMap.thumbnail.name], this.TABLE_NAME) : '';
-                    if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile && thumbnailAttachedFileForDelete) {
-                        this.downloadMapping[columnNameIndex].thumbnail.originalFile = thumbnailAttachedFileForDelete;
-                    }
-                    if (!this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete) {
-                        this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete = [];
-                    }
-                    this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete.push(thumbnailAttachedFileForDelete);
-                }
-            }
+
             this[modelFileMap.thumbnail.name] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri.substr(recordedFile.thumbnailUri.lastIndexOf('/') + 1) : '';
             this[modelFileMap.thumbnail.url] = '';
             this[modelFileMap.thumbnail.localPath] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';

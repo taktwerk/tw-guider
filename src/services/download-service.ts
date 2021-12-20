@@ -48,7 +48,6 @@ export class DownloadService {
 
   webfile: WebFile;
   testBrowser: boolean;
-  imgURL: any;
 
   constructor(
     public http: HttpClient,
@@ -554,8 +553,12 @@ export class DownloadService {
    * @param {string} fullPath
    */
   public deleteFile(fullPath: string) {
+    if (!this.platform.is('capacitor')) {
+      return;
+    }
+
     if (fullPath) {
-      const path = fullPath.substr(0, fullPath.lastIndexOf('/') + 1);
+      const path = fullPath.substring(0, fullPath.lastIndexOf('/') + 1);
       const fileName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
 
       this.file.removeFile(path, fileName).then(
@@ -598,21 +601,37 @@ export class DownloadService {
   }
 
   public async chooseFileFromLocalPC(accept: any = '*/*'): Promise<string> {
-    console.log("testing browser specification...");
     return new Promise((resolve) => {
       let input = document.createElement('input');
       input.type = 'file';
       input.accept = accept;
       input.onchange = (e: any) => {
-        // console.log(e.target.files[0].name);
         let reader = new FileReader();
-        // this.imagePath = files;
+        // const url = URL.createObjectURL(e.target.files[0]);
         reader.readAsDataURL(e.target.files[0]);
         reader.onload = (_event) => {
-          this.imgURL = reader.result;
-          resolve(this.imgURL);
-          console.log("check image =>", this.imgURL);
+          const url: any = reader.result;
+          resolve(url);
         }
+
+        // let reader: any = new FileReader();
+        // reader.readAsArrayBuffer(e.target.files[0]);
+        // reader.onload = (_event) => {
+        //   console.log(_event.target.result);
+        //   const url = window.URL.createObjectURL(_event.target.result);
+        //   console.log(url);
+        //   resolve(url);
+        // }
+
+        //   input.onchange = (e: any) => {
+        //     // console.log(e.target.files[0].name);
+        //     let reader = new FileReader();
+        //     // this.imagePath = files;
+        //     reader.readAsDataURL(e.target.files[0]);
+        //     reader.onload = (_event) => {
+        //       this.imgURL = reader.result;
+        //       console.log("check image =>", this.imgURL);
+        //     }
       }
       input.click();
     });
@@ -635,26 +654,9 @@ export class DownloadService {
 
     else if (this.testBrowser) {
       recordedFile.uri = await this.chooseFileFromLocalPC();
+      recordedFile.thumbnailUri = recordedFile.uri;
       return recordedFile;
     }
-    // else if (this.testBrowser) {
-    //   console.log("testing browser specification...");
-    //   let input = document.createElement('input');
-    //   input.type = 'file';
-    //   input.accept = 'image/*';
-    //   input.onchange = (e: any) => {
-    //     // console.log(e.target.files[0].name);
-    //     let reader = new FileReader();
-    //     // this.imagePath = files;
-    //     reader.readAsDataURL(e.target.files[0]);
-    //     reader.onload = (_event) => {
-    //       this.imgURL = reader.result;
-    //       console.log("check image =>", this.imgURL);
-    //     }
-    //   }
-    //   input.click();
-    //   //this is only executed on the browser
-    // }
     else {
       if (!this.fileChooser) {
         this.loggerService.getLogger().error('FileChooser plugin is not defined', new Error('FileChooser plugin is not defined').stack);
@@ -876,6 +878,8 @@ export class DownloadService {
   }
 
   public getResolvedNativeFilePath(uri): Promise<string> {
+    const recordedFile = new RecordedFile();
+
     // console.log('URIII', uri);
     if (!this.filePath) {
       this.loggerService.getLogger().error('FilePath plugin is not defined', new Error('FilePath plugin is not defined').stack);
@@ -890,23 +894,27 @@ export class DownloadService {
       return this.filePath.resolveNativePath(uri);
     }
 
-    if (this.testBrowser) {
-      console.log("testing browser specification...");
-      let input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = (e: any) => {
-        // console.log(e.target.files[0].name);
-        let reader = new FileReader();
-        // this.imagePath = files;
-        reader.readAsDataURL(e.target.files[0]);
-        reader.onload = (_event) => {
-          this.imgURL = reader.result;
-          console.log("check image =>", this.imgURL);
-        }
-      }
-      input.click();
-    }
+    // if (this.testBrowser) {
+    //   recordedFile.uri = await this.chooseFileFromLocalPC('image/*');
+    //   return recordedFile;
+    // }
+    // if (this.testBrowser) {
+    //   console.log("testing browser specification...");
+    //   let input = document.createElement('input');
+    //   input.type = 'file';
+    //   input.accept = 'image/*';
+    //   input.onchange = (e: any) => {
+    //     // console.log(e.target.files[0].name);
+    //     let reader = new FileReader();
+    //     // this.imagePath = files;
+    //     reader.readAsDataURL(e.target.files[0]);
+    //     reader.onload = (_event) => {
+    //       this.imgURL = reader.result;
+    //       console.log("check image =>", this.imgURL);
+    //     }
+    //   }
+    //   input.click();
+    // }
 
     return new Promise((resolve) => resolve(uri));
   }

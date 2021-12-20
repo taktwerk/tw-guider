@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild, ElementRef, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { AlertController, IonBackButtonDelegate, Platform, NavController } from '@ionic/angular';
@@ -11,6 +11,7 @@ import { TranslateConfigService } from '../../services/translate-config.service'
 import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
 import { ApiSync } from '../../providers/api-sync';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'feedback-add-edit-page',
@@ -34,8 +35,10 @@ export class FeedbackAddEditPage implements OnInit {
   public defaultTitle = 'Feedback';
 
   public guideId: string;
+  public imgURL;
 
   public params;
+  testBrowser: boolean;
 
   @ViewChild(IonBackButtonDelegate) backButton: IonBackButtonDelegate;
 
@@ -55,13 +58,18 @@ export class FeedbackAddEditPage implements OnInit {
     private pictureService: PictureService,
     private apiSync: ApiSync,
     private platform: Platform,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    @Inject(PLATFORM_ID) platformId: string
   ) {
     this.authService.checkAccess('feedback');
     if (!this.model) {
       this.model = feedbackService.newModel();
       this.originalModel = this.model;
     }
+
+    this.testBrowser = isPlatformBrowser(platformId);
+
+    // this.imgURL = sessionStorage.getItem('base64');
 
     // this.platform.backButton.subscribe((res) => {
     //   console.log(this.router.url)
@@ -236,7 +244,6 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addFileCapacitor() {
-    console.log("check file...");
     this.downloadService.chooseFile(true).then((recordedFile) => {
       this.model.setFile(recordedFile);
     }).catch((e) => console.log(e));

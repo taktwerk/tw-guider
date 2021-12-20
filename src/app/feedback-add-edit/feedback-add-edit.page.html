@@ -61,7 +61,11 @@
       </ion-item>
     </ion-list>
 
-    <div *ngIf="model.attached_file" class="top-file">
+    <div *ngIf="testBrowser && model.attached_file_path">
+      <img appImgload [localurl]="model.attached_file_path" alt="">
+    </div>
+
+    <div *ngIf="model.attached_file && !testBrowser" class="top-file">
       <model-assetcomponent [model]="model" mini="true"></model-assetcomponent>
     </div>
 
