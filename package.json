@@ -137,7 +137,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.803.28",
-    "@angular/cli": "11.2.14",
+    "@angular/cli": "^12.2.14",
     "@angular/compiler": "~11.2.6",
     "@angular/compiler-cli": "~11.2.6",
     "@capacitor/cli": "^3.3.2",
