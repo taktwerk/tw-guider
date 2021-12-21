@@ -8,18 +8,17 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AssetviewComponentModule } from '../assetview/assetview.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    HtmlDescriptionComponentModule,
-    TranslateModule,
-    AssetviewComponentModule
-  ],
-  exports: [
-    GuideinfoPage
-  ],
-  declarations: [GuideinfoPage],
-  entryComponents: [GuideinfoPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        HtmlDescriptionComponentModule,
+        TranslateModule,
+        AssetviewComponentModule
+    ],
+    exports: [
+        GuideinfoPage
+    ],
+    declarations: [GuideinfoPage]
 })
 export class GuideinfoPageModule { }

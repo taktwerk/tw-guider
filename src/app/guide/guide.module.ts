@@ -31,7 +31,6 @@ import { SharedModule } from 'app/shared/shared.module';
         FontAwesomeModule,
         SyncSpinnerComponentModule,
         ionMenuWithSyncIndicatorComponentModule,
-
         HtmlDescriptionComponentModule,
         MainPipe,
         LanguageSelectorComponentModule,
@@ -42,9 +41,6 @@ import { SharedModule } from 'app/shared/shared.module';
         MenupopoverPageModule,
         AssetviewComponentModule,
         SharedModule
-    ],
-    entryComponents: [
-        GuideStepContentComponent
     ]
 })
 

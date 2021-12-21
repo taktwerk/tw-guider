@@ -9,13 +9,12 @@ import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    TranslateModule,
-  ],
-  declarations: [MenuPopoverComponent],
-  entryComponents: [MenuPopoverComponent]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        TranslateModule,
+    ],
+    declarations: [MenuPopoverComponent]
 })
 export class MenupopoverPageModule { }
