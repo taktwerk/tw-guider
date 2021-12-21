@@ -48,7 +48,7 @@ export class LoggerService {
 
     public setLogs(log: NGXLogInterface) {
         this.Logs.push(log);
-        this.LogsSub.next([...this.Logs]);
+        this.LogsSub.next(this.Logs);
         this.writeToFile(log)
     }
 
