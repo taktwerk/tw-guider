@@ -28,7 +28,7 @@
         <img appImgload [localurl]="feedback.attached_file_path" alt="">
       </div>
 
-      <div *ngIf="feedback.attached_file">
+      <div *ngIf="feedback.attached_file && !testBrowser">
         <model-assetcomponent [model]="feedback" [isthumbnail]="true" style="height: 100%; width: 100%;">
         </model-assetcomponent>
       </div>
