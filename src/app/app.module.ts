@@ -42,7 +42,6 @@ import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { MainPipe } from '../pipes/main-pipe.module';
 import { HtmlDescriptionComponentModule } from '../components/html-description/html-description-component.module';
-import { SyncModalComponent } from '../components/sync-modal-component/sync-modal-component';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -98,6 +97,7 @@ import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { MigrationService } from '../providers/api/migration-service';
 import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewer-component';
 import { PdfViewerComponentModule } from '../components/pdf-viewer-component/pdf-viewer-component.module';
+import { SyncModalComponentModule } from '../components/sync-modal-component/sync-modal-component.module';
 
 import { ProgressBarModule } from '../components/progress-bar/progress-bar.module';
 import { ListviewComponentModule } from '../components/listview/listview.module';
@@ -121,7 +121,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { DbService } from '../models/db.service';
 
 export function LanguageLoader(http: Http) {
-  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 // Sentry.init({ dsn: environment.sentryDsn });
@@ -132,7 +132,6 @@ export function LanguageLoader(http: Http) {
         GuideAssetTextModalComponent,
         CKEditorComponent,
         ImageEditorComponent,
-        SyncModalComponent,
         VideoModalComponent,
         DrawImageModalComponent,
         Viewer3dModalComponent,
@@ -173,6 +172,7 @@ export function LanguageLoader(http: Http) {
         Viewer3dModelComponentModule,
         PdfJsViewerModule,
         CKEditorModule,
+        SyncModalComponentModule,
         LoggerModule.forRoot({
             level: NgxLoggerLevel.DEBUG,
         }),
@@ -253,4 +253,4 @@ export function LanguageLoader(http: Http) {
     exports: [ProtocolDefaultComponent],
     bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

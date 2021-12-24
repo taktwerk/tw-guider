@@ -44,8 +44,8 @@
           <!-- Show if Sync Mode is Manual -->
           <section *ngIf="modeSync === 0" class="modeSync0">
             <ion-button class="sync-btn"
-              *ngIf="!['pause', 'progress'].includes(syncProgressStatus) && !isAvailableForSyncData && !isStartSync" (click)="syncData()"
-              color="primary">
+              *ngIf="!['pause', 'progress'].includes(syncProgressStatus) && !isAvailableForSyncData && !isStartSync"
+              (click)="syncData()" color="primary">
               {{ 'sync-modal.Synchronize Data' | translate:params }}
             </ion-button>
 

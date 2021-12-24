@@ -21,20 +21,22 @@ export class AboutPage implements OnInit {
   public params;
   currDate: Date = new Date();
 
-  constructor(private platform: Platform, public authService: AuthService, private appVersion: AppVersion) {}
+  constructor(private platform: Platform, public authService: AuthService, private appVersion: AppVersion) { }
 
   ngOnInit(): void {
-    this.platform.ready().then(() => {
-      if (this.appVersion) {
-        this.appVersion.getVersionNumber().then((versionNumber) => {
-          this.versionNumber = versionNumber;
-        });
-      }
-      if (config) {
-        if (config.apiVersion) {
-          this.apiVersionNumber = config.apiVersion;
+    if (this.platform.is('cordova')) {
+      this.platform.ready().then(() => {
+        if (this.appVersion) {
+          this.appVersion.getVersionNumber().then((versionNumber) => {
+            this.versionNumber = versionNumber;
+          });
         }
-      }
-    });
+        if (config) {
+          if (config.apiVersion) {
+            this.apiVersionNumber = config.apiVersion;
+          }
+        }
+      });
+    }
   }
 }
