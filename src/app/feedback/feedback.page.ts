@@ -63,6 +63,16 @@ export class FeedbackPage implements OnInit, OnDestroy {
     // console.log(this.reference_id, "this.reference_id")
   }
 
+  isValidHttpUrl(string) {
+    let url;
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;
+    }
+    return url.protocol === "http:" || url.protocol === "https:";
+  };
+
   public async setModels() {
     const user = await this.authService.getLastUser();
     if (!user) {

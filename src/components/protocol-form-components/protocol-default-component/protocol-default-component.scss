@@ -1,4 +1,4 @@
-::ng-deep >>> .sc-ion-modal-md-h {
+::ng-deep .sc-ion-modal-md-h {
   --height: 80%;
   --width: 80%;
   --border-radius: 20px;
@@ -10,7 +10,10 @@
   //overflow: auto;
   margin: auto;
   position: absolute;
-  top: 0; left: 0; bottom: 0; right: 0;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
 ion-content {

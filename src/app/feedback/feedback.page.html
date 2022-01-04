@@ -24,11 +24,11 @@
       <!-- <div *ngIf="testBrowser">
         <img [src]="feedback.url" alt="">
       </div> -->
-      <div *ngIf="testBrowser && feedback.attached_file_path">
+      <div *ngIf="feedback.attached_file_path && isValidHttpUrl(feedback.attached_file_path) === false">
         <img appImgload [localurl]="feedback.attached_file_path" alt="">
       </div>
 
-      <div *ngIf="feedback.attached_file && !testBrowser">
+      <div *ngIf="feedback.attached_file && isValidHttpUrl(feedback.attached_file_path)">
         <model-assetcomponent [model]="feedback" [isthumbnail]="true" style="height: 100%; width: 100%;">
         </model-assetcomponent>
       </div>

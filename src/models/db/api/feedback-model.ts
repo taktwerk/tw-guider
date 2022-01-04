@@ -21,6 +21,7 @@ export class FeedbackModel extends DbApiModel {
     public status = 'Open';
     public reference_id: number = null;
     public attached_file: string;
+    public attached_file_path: string;
     public local_attached_file: string;
     public local_thumb_attached_file: string;
     public client_id: number;

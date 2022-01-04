@@ -87,10 +87,13 @@ export class SyncModalComponent implements OnInit, OnDestroy {
 
   dismiss() {
     this.modalController.dismiss().then(() => {
-      this.insomnia.allowSleepAgain().then(
-        () => console.log('insomnia.allowSleepAgain success'),
-        () => console.log('insomnia.allowSleepAgain error')
-      );
+      if (this.platform.is('capacitor')) {
+        this.insomnia.allowSleepAgain().then(
+          () => console.log('insomnia.allowSleepAgain success'),
+          () => console.log('insomnia.allowSleepAgain error')
+        );
+      }
+
     });
 
     this.storage.set('SyncModalComponentOpen', false)
@@ -131,11 +134,11 @@ export class SyncModalComponent implements OnInit, OnDestroy {
     });
   }
 
-  detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
-      this.changeDetectorRef.detectChanges();
-    }
-  }
+  // detectChanges() {
+  //   if (!this.changeDetectorRef['destroyed']) {
+  //     this.changeDetectorRef.detectChanges();
+  //   }
+  // }
 
   protected initUser() {
     return this.userService.getUser().then((result) => {
@@ -153,40 +156,42 @@ export class SyncModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.insomnia.keepAwake().then(
-      () => console.log('insomnia.keepAwake success'),
-      () => console.log('insomnia.keepAwake error')
-    );
+    if (this.platform.is('capacitor')) {
+      this.insomnia.keepAwake().then(
+        () => console.log('insomnia.keepAwake success'),
+        () => console.log('insomnia.keepAwake error')
+      );
+    }
     this.syncService.syncMode.subscribe((result) => {
       if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
         return;
       }
       this.modeSync = result;
-      this.detectChanges();
+      // this.detectChanges();
     });
     this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
       this.isStartSync = isSync;
-      this.detectChanges();
+      // this.detectChanges();
     });
     this.apiSync.syncProgressStatus.subscribe((syncProgressStatus) => {
       this.syncProgressStatus = syncProgressStatus;
-      this.detectChanges();
+      // this.detectChanges();
     });
     this.apiSync.isPrepareSynData.subscribe((isPrepareSynData) => {
       this.isPrepareSynData = isPrepareSynData;
-      this.detectChanges();
+      // this.detectChanges();
     });
     this.apiSync.syncedItemsCount.subscribe((syncedItemsCount) => {
       this.syncedItemsCount = syncedItemsCount ? syncedItemsCount : 0;
-      this.detectChanges();
+      // this.detectChanges();
     });
     this.apiSync.syncAllItemsCount.subscribe((syncAllItemsCount) => {
       this.syncAllItemsCount = syncAllItemsCount ? syncAllItemsCount : 0;
-      this.detectChanges();
+      // this.detectChanges();
     });
     this.apiSync.syncedItemsPercent.subscribe((syncedItemsPercent) => {
       this.syncedItemsPercent = syncedItemsPercent ? syncedItemsPercent : 0;
-      this.detectChanges();
+      // this.detectChanges();
     });
     this.apiSync.noDataForSync.pipe(take(1)).subscribe((noDataForSync) => {
       this.noDataForSync = noDataForSync;
@@ -195,7 +200,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
           this.noDataForSync = false;
         }, 3000);
       }
-      this.detectChanges();
+      // this.detectChanges();
     });
     this.apiSync.isAvailableForSyncData.subscribe((isAvailableForSyncData) => {
       this.isAvailableForSyncData = isAvailableForSyncData;

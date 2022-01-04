@@ -21,6 +21,7 @@ export class ImgloadDirective implements OnInit, OnChanges {
   }
 
   onLoadData() {
+
     if (this.platform.is('capacitor')) {
       this.ele.nativeElement.src = this.url.changingThisBreaksApplicationSecurity;
       return;
@@ -33,6 +34,7 @@ export class ImgloadDirective implements OnInit, OnChanges {
         reader.readAsDataURL(blob);
       });
     }
+
 
     if (this.localurl != null) {
       fetch(this.localurl).then(r => {
@@ -67,7 +69,7 @@ export class ImgloadDirective implements OnInit, OnChanges {
     }
 
     const headers = new Headers(headerObject);
-
+    console.log(this.url);
     this.http.get(this.url, { headers: headers, observe: 'response', responseType: 'blob' }).toPromise()
       .then((response) => {
         blobToBase64(response.body).then(base64 => {
