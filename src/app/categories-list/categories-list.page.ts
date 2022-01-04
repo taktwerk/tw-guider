@@ -131,23 +131,11 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
   async setActivity() {
     // syncIndexify guides
-    const _guidesActivity = await this.guideViewHistoryService.getActivity(null, this.searchValue);
+    const _guidesActivity = await this.guideViewHistoryService.getActivity();
+    console.log('_guidesActivity', _guidesActivity);
     if (_guidesActivity.length > 0) {
       const syncedList = await this.syncIndexService.getSyncIndexModel(_guidesActivity, _guidesActivity[0].TABLE_NAME);
-      this.guides = syncedList;
-      this.guideArr = this.guides;
-    }
-
-    // syncIndexify guidesWithoutCategories
-    const _guidesWithoutCategories = await this.guideViewHistoryService.getActivity(null, '', true);
-    if (_guidesWithoutCategories.length > 0) {
-      const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(
-        _guidesWithoutCategories,
-        _guidesWithoutCategories[0].TABLE_NAME
-      );
-      this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
-
-      this.guideArr = this.guidesWithoutCategories;
+      this.guideArr = syncedList;
     }
   }
   async findAllGuideActivity() {
@@ -355,6 +343,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.eventSubscription.unsubscribe();
+    if(typeof this.eventSubscription != 'undefined') {
+      this.eventSubscription.unsubscribe();
+    }  
   }
 }

@@ -92,84 +92,24 @@ export class GuideViewHistoryService extends ApiService {
                 resolve([]);
                 return;
             }
-            const whereCondition: any[] = [
-                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
-                this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
-                this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
-                this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
-            ];
 
-            if (guideCategoryId) {
-                whereCondition.push(
-                    this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('id') +
-                    '=' +
-                    guideCategoryId
-                );
-            }
 
-            if (!user.isAuthority) {
-                whereCondition.push(
-                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
-                );
-            }
+            const join = 'LEFT JOIN ' + this.dbModelApi.secure('guide') +
+                ' ON ' + this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('guide_id') +
+                ' = ' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
 
-            if (searchValue) {
-                whereCondition.push(
-                    '(' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
-                    + ' OR ' +
-                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%")'
-                );
-            }
+            const orderBy = 'updated_at DESC';
 
-            let joinCondition = '';
-            if (withoutCategories) {
-                joinCondition =
-                    'LEFT JOIN ' + this.dbModelApi.secure('guide_category_binding') +
-                    ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') +
-                    ' = ' +
-                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id') +
-                    ' LEFT JOIN ' + this.dbModelApi.secure('guide_view_history') +
-                    ' ON ' +
-                    this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_category_id') +
-                    ' = ' +
-                    this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('id') +
-                    ' LEFT JOIN ' + this.dbModelApi.secure('guide_child') +
-                    ' ON ' +
-                    this.dbModelApi.secure('guide_child') + '.' + this.dbModelApi.secure('guide_id') +
-                    '=' +
-                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
-
-                whereCondition.push(
-                    this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') + ' IS NULL',
-                    this.dbModelApi.secure('guide_child') + '.' + this.dbModelApi.secure('guide_id') + ' IS NULL'
-                );
-            }
-            else {
-                joinCondition =
-                    'JOIN ' + this.dbModelApi.secure('guide_category_binding') +
-                    ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') +
-                    ' = ' +
-                    this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id') +
-                    ' JOIN ' + this.dbModelApi.secure('guide_view_history') +
-                    ' ON ' +
-                    this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_category_id') +
-                    ' = ' +
-                    this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('id');
-                if (!user.isAuthority) {
-                    whereCondition.push(
-                        this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id,
-                        this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
-                        this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
-                    );
-                }
-            }
-
-            const selectFrom = 'SELECT ' + this.dbModelApi.secure('guide') + '.*' + ' from ' + this.dbModelApi.secure('guide');
-            const groupby = this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
-            const entries: GuiderModel[] = [];
-            this.dbModelApi.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom, groupby).then((res) => {
+            const from = 'SELECT ' + '*' + ' from ' + this.dbModelApi.secure('guide_view_history');
+            
+            const entries = [];
+            
+            this.dbModelApi.searchAllAndGetRowsResult(null, orderBy, null, join, from).then(res => {
+                console.log('new query', res);
                 if (res && res.rows && res.rows.length > 0) {
+                    console.log(res);
                     for (let i = 0; i < res.rows.length; i++) {
+                        console.log(res.rows.item(i));
                         const obj: GuiderModel = new GuiderModel();
                         obj.platform = this.dbModelApi.platform;
                         obj.db = this.db;
@@ -181,9 +121,104 @@ export class GuideViewHistoryService extends ApiService {
                     }
                 }
                 resolve(entries);
-            }).catch((err) => {
+            }).catch(e => {
                 resolve(entries);
             });
+
+
+
+            // const whereCondition: any[] = [
+            //     this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+            //     this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL',
+            //     this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+            //     this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
+            // ];
+
+            // if (guideCategoryId) {
+            //     whereCondition.push(
+            //         this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('id') +
+            //         '=' +
+            //         guideCategoryId
+            //     );
+            // }
+
+            // if (!user.isAuthority) {
+            //     whereCondition.push(
+            //         this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id
+            //     );
+            // }
+
+            // if (searchValue) {
+            //     whereCondition.push(
+            //         '(' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_SHORT_NAME) + ' LIKE "%' + searchValue + '%"'
+            //         + ' OR ' +
+            //         this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure(GuiderModel.COL_TITLE) + ' LIKE "%' + searchValue + '%")'
+            //     );
+            // }
+
+            // let joinCondition = '';
+            // if (withoutCategories) {
+            //     joinCondition =
+            //         'LEFT JOIN ' + this.dbModelApi.secure('guide_category_binding') +
+            //         ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') +
+            //         ' = ' +
+            //         this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id') +
+            //         ' LEFT JOIN ' + this.dbModelApi.secure('guide_view_history') +
+            //         ' ON ' +
+            //         this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_category_id') +
+            //         ' = ' +
+            //         this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('id') +
+            //         ' LEFT JOIN ' + this.dbModelApi.secure('guide_child') +
+            //         ' ON ' +
+            //         this.dbModelApi.secure('guide_child') + '.' + this.dbModelApi.secure('guide_id') +
+            //         '=' +
+            //         this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
+
+            //     whereCondition.push(
+            //         this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') + ' IS NULL',
+            //         this.dbModelApi.secure('guide_child') + '.' + this.dbModelApi.secure('guide_id') + ' IS NULL'
+            //     );
+            // }
+            // else {
+            //     joinCondition =
+            //         'JOIN ' + this.dbModelApi.secure('guide_category_binding') +
+            //         ' ON ' + this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_id') +
+            //         ' = ' +
+            //         this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id') +
+            //         ' JOIN ' + this.dbModelApi.secure('guide_view_history') +
+            //         ' ON ' +
+            //         this.dbModelApi.secure('guide_category_binding') + '.' + this.dbModelApi.secure('guide_category_id') +
+            //         ' = ' +
+            //         this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('id');
+            //     if (!user.isAuthority) {
+            //         whereCondition.push(
+            //             this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('client_id') + '=' + user.client_id,
+            //             this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_DELETED_AT) + ' IS NULL',
+            //             this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure(this.dbModelApi.COL_LOCAL_DELETED_AT) + ' IS NULL'
+            //         );
+            //     }
+            // }
+
+            // const selectFrom = 'SELECT ' + this.dbModelApi.secure('guide') + '.*' + ' from ' + this.dbModelApi.secure('guide');
+            // const groupby = this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
+            // const entries: GuiderModel[] = [];
+            // this.dbModelApi.searchAllAndGetRowsResult(whereCondition, '', 0, joinCondition, selectFrom, groupby).then((res) => {
+            //     if (res && res.rows && res.rows.length > 0) {
+            //         for (let i = 0; i < res.rows.length; i++) {
+            //             const obj: GuiderModel = new GuiderModel();
+            //             obj.platform = this.dbModelApi.platform;
+            //             obj.db = this.db;
+            //             obj.downloadService = this.downloadService;
+            //             obj.loadFromAttributes(res.rows.item(i));
+            //             obj.setChildren();
+            //             obj.setProtocolTemplate();
+            //             entries.push(obj);
+            //         }
+            //     }
+            //     resolve(entries);
+            // }).catch((err) => {
+            //     resolve(entries);
+            // });
         });
     }
 }
