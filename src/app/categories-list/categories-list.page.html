@@ -24,15 +24,18 @@
     </ion-segment-button>
   </ion-segment>
 
+
   <div [ngSwitch]="type">
     <div *ngSwitchDefault>
       <span *ngIf="isLoadedContent">
         <div class="guide-category" *ngFor="let guideActivity of guideArr;">
           <div>
-            <ion-item button [routerLink]="['/guides/' + guideActivity.id]" class="guide-category" lines="full" inset="true">
+            <ion-item button [routerLink]="['/guide/' + guideActivity.idApi]" class="guide-category" lines="full"
+              inset="true">
               <ion-label slot="start">{{ guideActivity.title }}</ion-label>
-              <ion-badge color="medium" slot="end">{{ guideActivity.steps.length }}</ion-badge>
-              <ion-progress-bar color="primary" value="{{guideActivity.steps.length}}"></ion-progress-bar>
+              <ion-badge color="medium" slot="end">{{ guideActivity.step }}/{{guideActivity.count}}
+              </ion-badge>
+              <ion-progress-bar color="primary" [value]="guideActivity.step/guideActivity.count"></ion-progress-bar>
             </ion-item>
           </div>
         </div>
@@ -42,7 +45,8 @@
       <span *ngIf="isLoadedContent">
         <div class="guide-category" *ngFor="let guideCategory of guideCategories; trackBy: trackByFn">
           <div *ngIf="guideCategory.guidesCount">
-            <ion-item button detail [routerLink]="['/guides/' + guideCategory.idApi]" class="guide-category" lines="full" inset="true">
+            <ion-item button detail [routerLink]="['/guides/' + guideCategory.idApi]" class="guide-category"
+              lines="full" inset="true">
               <ion-label slot="start">{{ guideCategory.name }}</ion-label>
               <ion-badge color="medium" slot="end">{{ guideCategory.guidesCount }}</ion-badge>
             </ion-item>
@@ -61,22 +65,16 @@
     </div>
 
     <div *ngSwitchCase="'search'">
-      <ion-searchbar
-        animated="true"
-        mode="md"
-        class="search-categories"
-        autocomplete="on"
-        debounce="250"
-        [value]="searchValue"
-        placeholder="{{ 'Search all guides' | translate:params }}"
-        (ionChange)="searchGuides($event)"
-      >
+      <ion-searchbar animated="true" mode="md" class="search-categories" autocomplete="on" debounce="250"
+        [value]="searchValue" placeholder="{{ 'Search all guides' | translate:params }}"
+        (ionChange)="searchGuides($event)">
       </ion-searchbar>
       <span *ngIf="isLoadedContent">
         <div *ngIf="guides && guides.length">
           <div *ngIf="guides.length > guideItemsLimit" [ngStyle]="{'margin': '15px'}">
             <div *ngIf="!searchValue">{{ 'guides.specifySearchMessage' | translate:{guidesCount:guides.length} }}</div>
-            <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}</div>
+            <div *ngIf="searchValue">{{ 'guides.specifyMoreSearchMessage' | translate:{guidesCount:guides.length} }}
+            </div>
           </div>
           <guide-list-component *ngIf="guides.length <= guideItemsLimit" [guides]="guides"></guide-list-component>
         </div>
@@ -90,7 +88,8 @@
       <ion-label class="align__all_center">
         <h2>{{'sync-modal.Start sync to get data' | translate}}</h2>
         <ion-buttons class="ion-padding">
-          <ion-button (click)="syncData()" color="primary" fill="solid">{{'sync-modal.Synchronize Data' | translate}} </ion-button>
+          <ion-button (click)="syncData()" color="primary" fill="solid">{{'sync-modal.Synchronize Data' | translate}}
+          </ion-button>
         </ion-buttons>
       </ion-label>
     </ion-card-content>

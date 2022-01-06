@@ -84,7 +84,7 @@ export class GuideViewHistoryService extends ApiService {
             });
         });
     }
-    public getActivity(guideCategoryId?: number, searchValue?: string, withoutCategories = false): Promise<GuiderModel[]> {
+    public getActivity(guideCategoryId?: number, searchValue?: string, withoutCategories = false): Promise<any> {
         return new Promise(async (resolve) => {
             const user = await this.authService.getLastUser();
             if (!user) {
@@ -98,28 +98,33 @@ export class GuideViewHistoryService extends ApiService {
                 ' ON ' + this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('guide_id') +
                 ' = ' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
 
-            const orderBy = 'updated_at DESC';
+            const orderBy = 'local_updated_at DESC';
 
-            const from = 'SELECT ' + '*' + ' from ' + this.dbModelApi.secure('guide_view_history');
-            
+            const from = 'SELECT ' + '*, (SELECT count(*) AS COUNT from guide_step WHERE `guide_step`.`guide_id` = `guide_view_history`.`guide_id`) AS count' + ' from ' + this.dbModelApi.secure('guide_view_history');
+
             const entries = [];
-            
+
             this.dbModelApi.searchAllAndGetRowsResult(null, orderBy, null, join, from).then(res => {
                 console.log('new query', res);
                 if (res && res.rows && res.rows.length > 0) {
                     console.log(res);
                     for (let i = 0; i < res.rows.length; i++) {
-                        console.log(res.rows.item(i));
-                        const obj: GuiderModel = new GuiderModel();
+
+                        const item = res.rows.item(i);
+                        console.log("res.rows", item);
+                        const obj: any = new GuiderModel();
                         obj.platform = this.dbModelApi.platform;
                         obj.db = this.db;
                         obj.downloadService = this.downloadService;
-                        obj.loadFromAttributes(res.rows.item(i));
+                        obj.loadFromAttributes(item);
                         obj.setChildren();
                         obj.setProtocolTemplate();
+                        obj.step = item.step;
+                        obj.count = item.count;
                         entries.push(obj);
                     }
                 }
+                console.log("entries", entries);
                 resolve(entries);
             }).catch(e => {
                 resolve(entries);

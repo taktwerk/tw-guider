@@ -102,7 +102,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       this.isPreStateLoad = true;
     }
 
- 
+
     await this.findAllGuideCategories();
     await this.setGuides();
   }
@@ -136,6 +136,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     if (_guidesActivity.length > 0) {
       const syncedList = await this.syncIndexService.getSyncIndexModel(_guidesActivity, _guidesActivity[0].TABLE_NAME);
       this.guideArr = syncedList;
+      console.log("checking guide Array", this.guideArr)
     }
   }
   async findAllGuideActivity() {
@@ -343,8 +344,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(typeof this.eventSubscription != 'undefined') {
+    if (typeof this.eventSubscription != 'undefined') {
       this.eventSubscription.unsubscribe();
-    }  
+    }
   }
 }
