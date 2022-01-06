@@ -14,6 +14,7 @@ import { HtmlDescriptionComponentModule } from '../../components/html-descriptio
 import { Viewer3dModelComponentModule } from '../../components/viewer-3d-model-component/viewer-3d-model-component.module';
 import { ListviewComponentModule } from '../../components/listview/listview.module';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { AssetviewComponentModule } from 'components/assetview/assetview.module';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-me
     FontAwesomeModule,
     Viewer3dModelComponentModule,
     HtmlDescriptionComponentModule,
+    AssetviewComponentModule,
     ListviewComponentModule
   ],
   declarations: [EditguidePage]

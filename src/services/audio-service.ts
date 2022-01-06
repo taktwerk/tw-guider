@@ -1,16 +1,12 @@
-import {Injectable} from '@angular/core';
-import {StreamingMedia, StreamingVideoOptions} from '@ionic-native/streaming-media/ngx';
-import {ModalController} from '@ionic/angular';
-import {VideoModalComponent} from '../components/modals/video-modal-component/video-modal-component';
-import {DownloadService} from './download-service';
-import {Media, MediaObject} from '@ionic-native/media/ngx';
+import { Injectable } from '@angular/core';
+import { Media, MediaObject } from '@ionic-native/media/ngx';
 
 /**
  * Download file class
  */
 @Injectable()
 export class AudioService {
-    constructor(private media: Media) {}
+    constructor(private media: Media) { }
 
     public file: MediaObject;
 

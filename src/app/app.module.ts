@@ -95,7 +95,6 @@ import { IonicStorageModule } from '@ionic/storage';
 
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { MigrationService } from '../providers/api/migration-service';
-import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewer-component';
 import { PdfViewerComponentModule } from '../components/pdf-viewer-component/pdf-viewer-component.module';
 import { SyncModalComponentModule } from '../components/sync-modal-component/sync-modal-component.module';
 
@@ -119,6 +118,7 @@ import { SharedModule } from './shared/shared.module';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { DbService } from '../models/db.service';
+import { AssetviewComponentModule } from 'components/assetview/assetview.module';
 
 export function LanguageLoader(http: Http) {
     return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -162,7 +162,6 @@ export function LanguageLoader(http: Http) {
         SyncSpinnerComponentModule,
         ionMenuWithSyncIndicatorComponentModule,
         GuideListComponentModule,
-        ListviewComponentModule,
         PdfViewerComponentModule,
         ProtocolDefaultComponentModule,
         LanguageSelectorComponentModule,
@@ -176,6 +175,8 @@ export function LanguageLoader(http: Http) {
         LoggerModule.forRoot({
             level: NgxLoggerLevel.DEBUG,
         }),
+        AssetviewComponentModule,
+        ListviewComponentModule,
     ],
     providers: [
         AuthDb,
