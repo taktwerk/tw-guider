@@ -8,21 +8,19 @@ import {
     OnInit,
     ViewChild
 } from '@angular/core';
-import { Camera, CameraResultType } from '@capacitor/camera';
 import { Capacitor, Plugins } from '@capacitor/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
-import * as skeletonUtils from "three/examples/jsm/utils/SkeletonUtils";
+
 import { File } from '@ionic-native/file/ngx';
-import { AfterViewInit } from '@angular/core';
 import { NgZone } from '@angular/core';
-import { createGesture, Gesture, GestureDetail } from '@ionic/core';
+import { createGesture, GestureDetail } from '@ionic/core';
 import { Storage } from '@ionic/storage';
 import { Viewer3dService } from "../../services/viewer-3d-service";
+
+import { SkeletonUtils } from "./SkeletonUtils";
 
 const { Filesystem } = Plugins;
 
@@ -60,12 +58,11 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     /// new
 
     constructor(
-        private file: File,
         private ngZone: NgZone,
-        private elementRef: ElementRef,
         private changeDetectorRef: ChangeDetectorRef,
         private storage: Storage,
-        private viewer3d: Viewer3dService
+        private viewer3d: Viewer3dService,
+        private skeletonUtils: SkeletonUtils
     ) { }
 
     async init() {
@@ -98,7 +95,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
         cachedSceneObject = await THREE.Cache.get(this.fileName);
         THREE.Cache.enabled = false;
         if (cachedSceneObject) {
-            this.gltfScene = skeletonUtils.SkeletonUtils.clone(cachedSceneObject);
+            this.gltfScene = this.skeletonUtils.clone(cachedSceneObject);
             this.renderModel();
             return;
         }
@@ -110,7 +107,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             const scene: any = loaderSecond.parse(cachedSceneObject);
             this.gltfScene = scene;
             THREE.Cache.enabled = true;
-            THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(scene));
+            THREE.Cache.add(this.fileName, this.skeletonUtils.clone(scene));
             THREE.Cache.enabled = false;
             this.renderModel();
             return;
@@ -144,9 +141,9 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
                     this.gltfScene = gltf.scene;
                     console.log(this.gltfScene)
                     THREE.Cache.enabled = true;
-                    THREE.Cache.add(this.fileName, skeletonUtils.SkeletonUtils.clone(gltf.scene));
+                    THREE.Cache.add(this.fileName, this.skeletonUtils.clone(gltf.scene));
                     THREE.Cache.enabled = false;
-                    const sceneSkeleton: any = skeletonUtils.SkeletonUtils.clone(gltf.scene);
+                    const sceneSkeleton: any = this.skeletonUtils.clone(gltf.scene);
                     this.storage.set(this.fileName, sceneSkeleton.toJSON());
                     this.renderModel();
                 },

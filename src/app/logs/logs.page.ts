@@ -2,7 +2,8 @@
 import { LoggerService } from './../../services/logger-service';
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { IonSegment } from '@ionic/angular';
-import { NGXLogInterface } from 'ngx-logger';
+// import { NGXLogInterface } from 'ngx-logger';
+import { NGXLogger } from 'ngx-logger';
 import { delay } from 'rxjs/operators';
 import { File } from '@ionic-native/file/ngx';
 import { Plugins } from '@capacitor/core';
@@ -21,18 +22,24 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
 
   currentSegment = 'All'
 
-  allLogs: NGXLogInterface[] = [];
-  debugLogs: NGXLogInterface[] = [];
-  infoLogs: NGXLogInterface[] = [];
-  warnLogs: NGXLogInterface[] = [];
-  errorLogs: NGXLogInterface[] = [];
+  allLogs: NGXLogger[] = [];
+  debugLogs: NGXLogger[] = [];
+  infoLogs: NGXLogger[] = [];
+  warnLogs: NGXLogger[] = [];
+  errorLogs: NGXLogger[] = [];
+
+  // allLogs: NGXLogInterface[] = [];
+  // debugLogs: NGXLogInterface[] = [];
+  // infoLogs: NGXLogInterface[] = [];
+  // warnLogs: NGXLogInterface[] = [];
+  // errorLogs: NGXLogInterface[] = [];
 
   logSubscription: Subscription;
 
   ngOnInit(): void { }
 
   ngAfterViewInit(): void {
-    this.logSubscription =    this.loggerService.LogsSub.pipe(delay(0)).subscribe((logs) => {
+    this.logSubscription = this.loggerService.LogsSub.pipe(delay(0)).subscribe((logs) => {
       if (logs !== null) {
         this.allLogs = logs;
         this.debugLogs = this.allLogs.filter(l => l.level == 1);
@@ -79,7 +86,8 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  trackLog(log: NGXLogInterface) {
+  // trackLog(log: NGXLogInterface) {
+  trackLog(log: NGXLogger) {
     return log;
   }
 
@@ -92,7 +100,7 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
           icon: 'trash',
           role: 'destructive',
           handler: () => {
-               this.loggerService.clearLogFile();
+            this.loggerService.clearLogFile();
           }
         },
       ]

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export default class WebFile {
-   public dataDirectory = 'assets/locallist/';
+    public dataDirectory = 'assets/locallist/';
 
     checkFile = (directory, name) => {
         return new Promise((resolve, reject) => {

@@ -91,7 +91,7 @@ import { GuideListComponentModule } from '../components/guide-list-component/gui
 import { Viewer3dService } from '../services/viewer-3d-service';
 import { Viewer3dModalComponent } from '../components/modals/viewer-3d-modal-component/viewer-3d-modal-component';
 import { Viewer3dModelComponentModule } from '../components/viewer-3d-model-component/viewer-3d-model-component.module';
-import { IonicStorageModule } from '@ionic/storage';
+// import { IonicStorageModule } from '@ionic/storage';
 
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { MigrationService } from '../providers/api/migration-service';
@@ -142,9 +142,9 @@ export function LanguageLoader(http: Http) {
         BrowserModule,
         FormsModule,
         IonicModule.forRoot({ backButtonText: '' }),
-        IonicStorageModule.forRoot({
-            driverOrder: ['indexeddb', 'websql', 'sqlite'],
-        }),
+        // IonicStorageModule.forRoot({
+        //     driverOrder: ['indexeddb', 'websql', 'sqlite'],
+        // }),
         AppRoutingModule,
         HttpClientModule,
         ProgressBarModule,

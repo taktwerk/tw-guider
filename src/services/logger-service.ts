@@ -1,6 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { NGXLoggerMonitor, NGXLogInterface, NGXLogger } from 'ngx-logger';;
+// import { NGXLoggerMonitor, NGXLogInterface, NGXLogger } from 'ngx-logger';
+import { NGXLoggerMonitor, NGXLogger } from 'ngx-logger';
 import { File } from '@ionic-native/file/ngx';
 
 
@@ -30,13 +31,17 @@ export interface Log {
 export class CustomLoggerMonitor implements NGXLoggerMonitor {
     constructor(private loggerService: LoggerService) { }
 
-    onLog(log: NGXLogInterface) { this.loggerService.setLogs(log) }
+    onLog(log: NGXLogger) { this.loggerService.setLogs(log) }
+
+    // onLog(log: NGXLogInterface) { this.loggerService.setLogs(log) }
 }
 
 @Injectable({ providedIn: 'root' })
 export class LoggerService {
-    public Logs: NGXLogInterface[] = [];
-    public LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
+    public Logs: NGXLogger[] = [];
+    public LogsSub = new BehaviorSubject<NGXLogger[]>(null);
+    // public Logs: NGXLogInterface[] = [];
+    // public LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
 
     constructor(private logger: NGXLogger, public file: File) {
         this.logger.registerMonitor(new CustomLoggerMonitor(this))
@@ -46,7 +51,8 @@ export class LoggerService {
         return this.logger;
     }
 
-    public setLogs(log: NGXLogInterface) {
+    // public setLogs(log: NGXLogInterface) {
+    public setLogs(log: NGXLogger) {
         this.Logs.push(log);
         this.LogsSub.next(this.Logs);
         this.writeToFile(log)
