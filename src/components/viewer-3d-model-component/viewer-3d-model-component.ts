@@ -14,15 +14,13 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
-import { File } from '@ionic-native/file/ngx';
 import { NgZone } from '@angular/core';
 import { createGesture, GestureDetail } from '@ionic/core';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import { Viewer3dService } from "../../services/viewer-3d-service";
 
 import { SkeletonUtils } from "./SkeletonUtils";
 
-const { Filesystem } = Plugins;
 
 @Component({
     selector: 'viewer-3d-model-component',

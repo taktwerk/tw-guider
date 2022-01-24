@@ -1,10 +1,7 @@
-import { Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModalController, Platform } from '@ionic/angular';
-import { ToastService } from '../../../services/toast-service';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media/ngx';
-import { DownloadService } from '../../../services/download-service';
 import { Viewer3dModelComponent } from "../../viewer-3d-model-component/viewer-3d-model-component";
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 
 /**
  * Generated class for the TodoPage page.

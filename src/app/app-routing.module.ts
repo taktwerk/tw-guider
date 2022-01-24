@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { RouteReuseStrategy } from '@angular/router';
-import { CustomReuseStrategy } from './shared/routing';
+import { TranslateModule } from '@ngx-translate/core';
+import { SyncModalComponent } from 'src/components/sync-modal-component/sync-modal-component';
 
 const routes: Routes = [
   {
@@ -20,6 +20,11 @@ const routes: Routes = [
   {
     path: 'guide-categories',
     loadChildren: () => import('./categories-list/categories-list.module').then(m => m.CategoriesListModule)
+  },
+  {
+    path: 'sync-model',
+    component: SyncModalComponent
+    // loadChildren: () => import('../components/sync-modal-component/sync-modal-component.module').then(m => m.SyncModalComponentModule)
   },
   {
     path: 'guides/:guideCategoryId',
@@ -113,18 +118,17 @@ const routes: Routes = [
   },
   {
     path: 'logs',
-    loadChildren: () => import('./logs/logs.module').then( m => m.LogsPageModule)
+    loadChildren: () => import('./logs/logs.module').then(m => m.LogsPageModule)
   },
 
 ];
 
+
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, relativeLinkResolution: 'legacy' })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+    TranslateModule
   ],
-  exports: [RouterModule],
-  providers: [
-    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
-  ]
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }

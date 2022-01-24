@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe as BaseDatePipe } from '@angular/common';
 import { TranslateConfigService } from '../../services/translate-config.service';
-import dateFormats from '../../assets/i18n/dateFormat.json';
+import * as dateFormats from '../../assets/i18n/dateFormat.json';
 
 @Pipe({ name: 'datePipe' })
 export class DatePipe implements PipeTransform {

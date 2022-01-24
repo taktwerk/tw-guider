@@ -1,257 +1,169 @@
-import { MiscService } from './../services/misc-service';
-import { ErrorHandler, NgModule, ViewContainerRef } from '@angular/core';
-import { BrowserModule, ɵDomSanitizerImpl } from '@angular/platform-browser';
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
+import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
-import { IonicModule, IonicRouteStrategy, IonRouterOutlet } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { ApiSync } from '../providers/api-sync';
-import { GuiderService } from '../providers/api/guider-service';
-import { DbProvider } from '../providers/db-provider';
-import { MigrationProvider } from '../providers/migration-provider';
-import { AuthService } from '../services/auth-service';
-import { HttpClient } from '../services/http-client';
-import { DownloadService } from '../services/download-service';
-import { File } from '@ionic-native/file/ngx';
-import { Network } from '@ionic-native/network/ngx';
-import { Toast } from '@ionic-native/toast/ngx';
-import { FormsModule } from '@angular/forms';
-import { HttpClient as Http, HttpClientModule } from '@angular/common/http';
-import { GuideCategoryService } from '../providers/api/guide-category-service';
-import { GuideCategoryBindingService } from '../providers/api/guide-category-binding-service';
-import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { GuideChildService } from '../providers/api/guide-child-service';
-import { GuideStepService } from '../providers/api/guide-step-service';
-import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
-import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { VideoPlayer } from '@ionic-native/video-player/ngx';
-import { SyncService } from '../services/sync-service';
-import { UserService } from '../services/user-service';
-import { DatePipe as BaseDatePipe } from '@angular/common';
-import { GuideAssetService } from '../providers/api/guide-asset-service';
-import { GuideAssetPivotService } from '../providers/api/guide-asset-pivot-service';
-import { GuideAssetTextModalComponent } from '../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
-import { CryptoProvider } from '../providers/crypto-provider';
-import { FeedbackService } from '../providers/api/feedback-service';
-import { SyncSpinnerComponentModule } from '../components/sync-spinner-component/sync-spinner-component.module';
+
+import { IonicStorageModule, } from '@ionic/storage-angular';
+import { DbProvider } from 'src/providers/db-provider';
+import { DownloadService } from 'src/services/download-service';
+import { HttpClientModule, HttpClient as Http } from '@angular/common/http';
+import { File } from '@awesome-cordova-plugins/file/ngx';
+import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
-import { FilePath } from '@ionic-native/file-path/ngx';
-import { MainPipe } from '../pipes/main-pipe.module';
-import { HtmlDescriptionComponentModule } from '../components/html-description/html-description-component.module';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
+import { Camera } from '@awesome-cordova-plugins/camera/ngx';
+import { VideoEditor } from '@awesome-cordova-plugins/video-editor/ngx';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { ApiSync } from 'src/providers/api-sync';
+import { HttpClient } from 'src/services/http-client';
+import { AuthService } from 'src/services/auth-service';
+import { CryptoProvider } from 'src/providers/crypto-provider';
+import { AppSetting } from 'src/services/app-setting';
+import { AppSettingsDb } from 'src/models/db/app-settings-db';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { TranslateConfigService } from '../services/translate-config.service';
-
-import { LanguageSelectorComponentModule } from '../components/language-selector-component/language-selector-component.module';
 import { Device } from '@ionic-native/device/ngx';
-import * as Sentry from 'sentry-cordova';
-
-import { DatePipe } from '../pipes/date-pipe/date-pipe';
-import { QRScanner } from '@ionic-native/qr-scanner/ngx';
-
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { AppSetting } from '../services/app-setting';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { VirtualScrollerModule } from 'ngx-virtual-scroller';
-import { Camera } from '@ionic-native/camera/ngx';
-import { MediaCapture } from '@ionic-native/media-capture/ngx';
-import { VideoEditor } from '@ionic-native/video-editor/ngx';
-import { VideoService } from '../services/video-service';
-import { DrawImageService } from '../services/draw-image-service';
-import { VideoModalComponent } from '../components/modals/video-modal-component/video-modal-component';
-import { DrawImageModalComponent } from '../components/modals/draw-image-modal-component/draw-image-modal-component';
-import { ToastService } from '../services/toast-service';
-import { FileOpener } from '@ionic-native/file-opener/ngx';
-import { PdftronModalComponent } from '../components/modals/pdftron-modal-component/pdftron-modal-component';
-import { PictureService } from '../services/picture-service';
-import { ProtocolTemplateService } from '../providers/api/protocol-template-service';
+import { UserService } from 'src/services/user-service';
+import { ToastService } from 'src/services/toast-service';
+import { Network } from '@ionic-native/network/ngx';
+import { GuiderService } from 'src/providers/api/guider-service';
+import { GuideCategoryService } from 'src/providers/api/guide-category-service';
+import { GuideCategoryBindingService } from 'src/providers/api/guide-category-binding-service';
+import { GuideStepService } from 'src/providers/api/guide-step-service';
+import { GuideAssetService } from 'src/providers/api/guide-asset-service';
+import { GuideAssetPivotService } from 'src/providers/api/guide-asset-pivot-service';
+import { FeedbackService } from 'src/providers/api/feedback-service';
+import { WorkflowService } from 'src/providers/api/workflow-service';
+import { WorkflowStepService } from 'src/providers/api/workflow-step-service';
+import { WorkflowTransitionService } from 'src/providers/api/workflow-transition-service';
+import { ProtocolDefaultService } from 'src/providers/api/protocol-default-service';
+import { ProtocolTemplateService } from 'src/providers/api/protocol-template-service';
+import { ProtocolService } from 'src/providers/api/protocol-service';
+import { DrawImageService } from 'src/services/draw-image-service';
+import { ProtocolCommentService } from 'src/providers/api/protocol-comment-service';
+import { GuideChildService } from 'src/providers/api/guide-child-service';
+import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
+import { SyncIndexService } from 'src/providers/api/sync-index-service';
+import { SyncService } from 'src/services/sync-service';
+import { MigrationService } from 'src/providers/api/migration-service';
+import { MigrationProvider } from 'src/providers/migration-provider';
+import { AuthDb } from 'src/models/db/auth-db';
+import { QRScanner } from '@ionic-native/qr-scanner/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
+// import { DatePipe } from '@angular/common';
+import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
-import { environment } from '../environments/environment';
-import { SentryIonicErrorHandler } from '../providers/sentry-ionic-error-handler';
-import { ProtocolService } from '../providers/api/protocol-service';
-import { ProtocolDefaultService } from '../providers/api/protocol-default-service';
-import { WorkflowService } from '../providers/api/workflow-service';
-import { WorkflowStepService } from '../providers/api/workflow-step-service';
-import { ProtocolDefaultComponent } from '../components/protocol-form-components/protocol-default-component/protocol-default-component';
-// tslint:disable-next-line:max-line-length
-import { ProtocolDefaultComponentModule } from '../components/protocol-form-components/protocol-default-component/protocol-default-component.module';
-import { WorkflowTransitionService } from '../providers/api/workflow-transition-service';
-import { ProtocolCommentService } from '../providers/api/protocol-comment-service';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { DateAgoPipe } from '../pipes/date-ago.pipe';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
-import { Media } from '@ionic-native/media/ngx';
-import { AudioService } from '../services/audio-service';
-import { GuideListComponentModule } from '../components/guide-list-component/guide-list-component.module';
-import { Viewer3dService } from '../services/viewer-3d-service';
-import { Viewer3dModalComponent } from '../components/modals/viewer-3d-modal-component/viewer-3d-modal-component';
-import { Viewer3dModelComponentModule } from '../components/viewer-3d-model-component/viewer-3d-model-component.module';
-// import { IonicStorageModule } from '@ionic/storage';
-
-import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
-import { MigrationService } from '../providers/api/migration-service';
-import { PdfViewerComponentModule } from '../components/pdf-viewer-component/pdf-viewer-component.module';
-import { SyncModalComponentModule } from '../components/sync-modal-component/sync-modal-component.module';
-
-import { ProgressBarModule } from '../components/progress-bar/progress-bar.module';
-import { ListviewComponentModule } from '../components/listview/listview.module';
-import { SQLite } from '@ionic-native/sqlite/ngx';
-
-import { CKEditorComponent } from '../components/ckeditor/ckeditor.page';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { GuideViewHistoryService } from '../providers/api/guide-view-history-service';
-import { ionMenuWithSyncIndicatorComponentModule } from '../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-
-import { ImageEditorComponent } from '../components/imageeditor/imageeditor.page';
-
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
-import { LoggerService } from '../services/logger-service';
-import { AuthDb } from '../models/db/auth-db';
-import { SyncIndexService } from '../providers/api/sync-index-service';
-import { AppSettingsDb } from 'models/db/app-settings-db';
-import { SharedModule } from './shared/shared.module';
+import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+import { VideoService } from 'src/services/video-service';
+import { Viewer3dService } from 'src/services/viewer-3d-service';
+import { PictureService } from 'src/services/picture-service';
+import { PdfViewerComponentModule } from 'src/components/pdf-viewer-component/pdf-viewer-component.module';
+// import { DatePipe } from './date-pipe/date-pipe';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { CKEditorPageModule } from 'src/components/ckeditor/ckeditor.module';
+import { SharedModule } from './shared/shared.module';
+import { LoggerService } from 'src/services/logger-service';
 
-import { DbService } from '../models/db.service';
-import { AssetviewComponentModule } from 'components/assetview/assetview.module';
-
-export function LanguageLoader(http: Http) {
-    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+export function languageLoader(http: Http) {
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
-// Sentry.init({ dsn: environment.sentryDsn });
+export function initializeApp(logService: LoggerService) {
+  return () => logService.getLogger();
+}
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        GuideAssetTextModalComponent,
-        CKEditorComponent,
-        ImageEditorComponent,
-        VideoModalComponent,
-        DrawImageModalComponent,
-        Viewer3dModalComponent,
-        PdftronModalComponent
-    ],
-    imports: [
-        SharedModule,
-        BrowserModule,
-        FormsModule,
-        IonicModule.forRoot({ backButtonText: '' }),
-        // IonicStorageModule.forRoot({
-        //     driverOrder: ['indexeddb', 'websql', 'sqlite'],
-        // }),
-        AppRoutingModule,
-        HttpClientModule,
-        ProgressBarModule,
-        FontAwesomeModule,
-        PdfViewerModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: LanguageLoader,
-                deps: [Http],
-            },
-        }),
-        // MiscService,
-        // LoggerService,
-        SyncSpinnerComponentModule,
-        ionMenuWithSyncIndicatorComponentModule,
-        GuideListComponentModule,
-        PdfViewerComponentModule,
-        ProtocolDefaultComponentModule,
-        LanguageSelectorComponentModule,
-        MainPipe,
-        HtmlDescriptionComponentModule,
-        VirtualScrollerModule,
-        Viewer3dModelComponentModule,
-        PdfJsViewerModule,
-        CKEditorModule,
-        SyncModalComponentModule,
-        LoggerModule.forRoot({
-            level: NgxLoggerLevel.DEBUG,
-        }),
-        AssetviewComponentModule,
-        ListviewComponentModule,
-    ],
-    providers: [
-        AuthDb,
-        StatusBar,
-        SplashScreen,
-        GuiderService,
-        GuideViewHistoryService,
-        GuideCategoryService,
-        GuideCategoryBindingService,
-        GuideStepService,
-        GuideChildService,
-        GuideAssetService,
-        GuideAssetPivotService,
-        FeedbackService,
-        SyncIndexService,
-        ProtocolTemplateService,
-        ProtocolService,
-        ProtocolDefaultService,
-        ProtocolCommentService,
-        WorkflowService,
-        WorkflowStepService,
-        WorkflowTransitionService,
-        DbProvider,
-        AppSettingsDb,
-        MigrationProvider,
-        AuthService,
-        HttpClient,
-        DownloadService,
-        VideoService,
-        DrawImageService,
-        AudioService,
-        Viewer3dService,
-        PictureService,
-        ToastService,
-        ApiSync,
-        File,
-        Toast,
-        WebView,
-        Network,
-        StreamingMedia,
-        PhotoViewer,
-        VideoPlayer,
-        SyncService,
-        UserService,
-        BaseDatePipe,
-        DateAgoPipe,
-        CryptoProvider,
-        FilePath,
-        FileChooser,
-        IOSFilePicker,
-        TranslateConfigService,
-        Device,
-        DatePipe,
-        QRScanner,
-        BarcodeScanner,
-        AppSetting,
-        AppVersion,
-        Camera,
-        MediaCapture,
-        VideoEditor,
-        ɵDomSanitizerImpl,
-        AppVersion,
-        FileOpener,
-        Insomnia,
-        NativeAudio,
-        Media,
-        SQLite,
-        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-        { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
-        MigrationService,
-        MiscService,
-        LoggerService,
-        DbService
-    ],
-    exports: [ProtocolDefaultComponent],
-    bootstrap: [AppComponent]
+  declarations: [AppComponent],
+  entryComponents: [],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
+    IonicStorageModule.forRoot(),
+    HttpClientModule,
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.DEBUG,
+      serverLogLevel: NgxLoggerLevel.INFO
+    }),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: languageLoader,
+        deps: [Http],
+      },
+    }),
+    SyncSpinnerComponentModule,
+    PdfViewerComponentModule,
+    PdfViewerModule,
+    CKEditorPageModule,
+    SharedModule
+  ],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    MigrationService,
+    AuthDb,
+    MigrationProvider,
+    SyncService,
+    SyncIndexService,
+    GuideViewHistoryService,
+    GuideChildService,
+    ProtocolCommentService,
+    DrawImageService,
+    ProtocolService,
+    ProtocolTemplateService,
+    ProtocolDefaultService,
+    WorkflowTransitionService,
+    WorkflowStepService,
+    WorkflowService,
+    FeedbackService,
+    GuideAssetPivotService,
+    GuideAssetService,
+    GuideStepService,
+    GuideCategoryBindingService,
+    GuideCategoryService,
+    GuiderService,
+    Network,
+    ToastService,
+    UserService,
+    AppVersion,
+    Device,
+    AppSettingsDb,
+    AppSetting,
+    CryptoProvider,
+    AuthService,
+    HttpClient,
+    ApiSync,
+    VideoEditor,
+    Camera,
+    MediaCapture,
+    FilePath,
+    IOSFilePicker,
+    FileChooser,
+    WebView,
+    File,
+    DownloadService,
+    DbProvider,
+    QRScanner,
+    BarcodeScanner,
+    DatePipe,
+    Insomnia,
+    PhotoViewer,
+    VideoService,
+    Viewer3dService,
+    PictureService,
+    LoggerService,
+  {
+    provide: APP_INITIALIZER,
+    useFactory: initializeApp,
+    deps: [LoggerService],
+    multi: true,
+  }
+  ],
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

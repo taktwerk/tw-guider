@@ -1,24 +1,15 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
     "outDir": "./out-tsc/app",
-    "types": [
-      "node"
-    ],
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "types": []
   },
-  "exclude": [
-    "src/test.ts",
-    "src/**/*.spec.ts"
-  ],
   "files": [
     "src/main.ts",
-    "src/polyfills.ts",
-    "src/zone-flags.ts"
+    "src/polyfills.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
   ]
 }

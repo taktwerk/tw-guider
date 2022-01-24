@@ -13,11 +13,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { Viewer3dModelComponentModule } from "../../components/viewer-3d-model-component/viewer-3d-model-component.module";
 import { GuideStepContentComponentModule } from "../../components/guide-step-content-component/guide-step-content-component.module";
-import { GuideStepContentComponent } from "../../components/guide-step-content-component/guide-step-content-component";
 import { GuideinfoPageModule } from '../../components/guideinfo/guideinfo.module';
 import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { SharedModule } from 'app/shared/shared.module';
+import { SharedModule } from '../../app/shared/shared.module';
+import { File } from '@ionic-native/file/ngx';
+// import { FileChooser } from '@ionic-native/file-chooser/ngx';
+// import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
+// import { FilePath } from '@ionic-native/file-path/ngx';
 
 @NgModule({
     declarations: [
@@ -41,6 +44,12 @@ import { SharedModule } from 'app/shared/shared.module';
         MenupopoverPageModule,
         AssetviewComponentModule,
         SharedModule
+        // FileChooser,
+        // IOSFilePicker,
+        // FilePath
+    ],
+    providers: [
+        File
     ]
 })
 

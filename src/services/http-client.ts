@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
 import { HttpClient as Http, HttpHeaders as Headers, HttpResponse as Response } from '@angular/common/http';
 
@@ -5,8 +6,8 @@ import { AuthService } from './auth-service';
 
 import { NavController, Platform } from '@ionic/angular';
 import { TranslateConfigService } from './translate-config.service';
-import { Device } from '@ionic-native/device/ngx';
-import { Network } from '@ionic-native/network/ngx';
+import { Device } from '@capacitor/device';
+import { Network } from '@capacitor/network';
 import { ToastService } from './toast-service';
 import {  config } from '../environments/config';
 import { catchError } from 'rxjs/operators';
@@ -20,14 +21,14 @@ export class HttpClient {
 
     showAppVersionPopup = true;
 
-    deviceInfo: any = {
-        model: this.device.model,
-        platform: this.device.platform,
-        uuid: this.device.uuid,
-        version: this.device.version,
-        manufacturer: this.device.manufacturer,
-        isVirtual: this.device.isVirtual,
-        serial: this.device.serial
+    deviceInfo: {
+        model: any;
+        platform: any;
+        uuid: any;
+        version: any;
+        manufacturer: any;
+        isVirtual: any;
+        serial: any;
     };
 
     constructor(
@@ -36,20 +37,22 @@ export class HttpClient {
         private authService: AuthService,
         public navCtrl: NavController,
         private translateConfigService: TranslateConfigService,
-        private device: Device,
-        private network: Network,
         private toastService: ToastService
     ) {
-        this.platform.ready().then(() => {
+        this.platform.ready().then(async () => {
+
+            const info = await Device.getInfo();
+            const uuid = await Device.getId();
             this.deviceInfo = {
-                model: this.device.model,
-                platform: this.device.platform,
-                uuid: this.device.uuid,
-                version: this.device.version,
-                manufacturer: this.device.manufacturer,
-                isVirtual: this.device.isVirtual,
-                serial: this.device.serial
+                model: info.model,
+                platform: info.platform,
+                uuid,
+                version: info.osVersion,
+                manufacturer: info.manufacturer,
+                isVirtual: info.isVirtual,
+                serial: info.manufacturer
             };
+
             if (config) {
                 if (config.apiVersion) {
                     this.versionNumber = config.apiVersion;
@@ -66,7 +69,7 @@ export class HttpClient {
      * Init the headers
      */
     public initHeaders() {
-        let headers = {
+        const headers = {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'X-CURRENT-DATETIME': new Date().toISOString()
@@ -88,7 +91,6 @@ export class HttpClient {
 
     /**
      *
-     * @returns {string}
      */
     public getAuthorizationToken() {
         return this.authService.auth.authToken;
@@ -98,19 +100,20 @@ export class HttpClient {
         this.initHeaders();
         return this.http.get(url, {
             headers: this.headers
-        }).pipe(catchError(error => this.handleError(error)))
+        }).pipe(catchError(error => this.handleError(error)));
     }
 
     post(url, data): Observable<any> {
         this.initHeaders();
         return this.http.post(url, data, {
             headers: this.headers
-        }).pipe(catchError(error => this.handleError(error)))
+        }).pipe(catchError(error => this.handleError(error)));
     }
 
-    private handleError(error: any) {
+    async handleError(error: any) {
         let errMsg: string;
-        if (this.network.type === 'none') {
+        const network = await Network.getStatus();
+        if (network.connected === false) {
             console.log('no network');
         } else if (error instanceof Response) {
             console.log('errrorrr', error);

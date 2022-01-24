@@ -17,14 +17,15 @@
             </ion-label>
 
             <ion-buttons>
-              <ion-button (click)="presentGuideInfo(item)">
+              <!-- <ion-button (click)="presentGuideInfo(item)"> -->
+              <ion-button (click)="openGuide(item)">
                 <ion-icon name="information-circle-outline" slot="start" style="margin:0; font-size: 30px;"></ion-icon>
               </ion-button>
             </ion-buttons>
           </ion-card-title>
 
         </ion-card-header>
-        
+
         <ion-card-content>
           <div class="guide-info" margin-bottom>
             <p class="guide-description">{{item.description}}</p>

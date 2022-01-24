@@ -1,12 +1,7 @@
 {
-  "name": "guide",
+  "name": "tw-guider-app",
   "integrations": {
-    "cordova": {},
     "capacitor": {}
   },
-  "type": "angular",
-  "hooks": {
-    "build:before": "./scripts/build-before.js",
-    "serve:before": "./scripts/build-before.js"
-  }
+  "type": "angular"
 }

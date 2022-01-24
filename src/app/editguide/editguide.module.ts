@@ -14,7 +14,11 @@ import { HtmlDescriptionComponentModule } from '../../components/html-descriptio
 import { Viewer3dModelComponentModule } from '../../components/viewer-3d-model-component/viewer-3d-model-component.module';
 import { ListviewComponentModule } from '../../components/listview/listview.module';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { AssetviewComponentModule } from 'components/assetview/assetview.module';
+import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
+import { File } from '@ionic-native/file/ngx';
+// import { FileChooser } from '@ionic-native/file-chooser/ngx';
+// import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
+// import { FilePath } from '@ionic-native/file-path/ngx';
 
 @NgModule({
   imports: [
@@ -29,8 +33,12 @@ import { AssetviewComponentModule } from 'components/assetview/assetview.module'
     Viewer3dModelComponentModule,
     HtmlDescriptionComponentModule,
     AssetviewComponentModule,
-    ListviewComponentModule
+    ListviewComponentModule,
+    // FileChooser,
+    // IOSFilePicker,
+    // FilePath
   ],
-  declarations: [EditguidePage]
+  declarations: [EditguidePage],
+  providers: [File]
 })
 export class EditguidePageModule { }

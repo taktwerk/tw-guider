@@ -1,39 +1,27 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
-    "skipLibCheck": true,
     "declaration": false,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "emitDecoratorMetadata": false,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
+    "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es5",
-    "preserveSymlinks": true,
-    "types": [
-      "node"
-    ],
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "target": "es2015",
+    "module": "es2020",
     "lib": [
       "es2018",
-      "dom",
-      "es6"
+      "dom"
     ],
-    "allowSyntheticDefaultImports": true
+    "resolveJsonModule": true
   },
   "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
+    "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-  },
-  "files": [
-    "src/main.ts",
-    "src/polyfills.ts",
-    "src/zone-flags.ts"
-  ]
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
 }

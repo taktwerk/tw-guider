@@ -4,7 +4,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { GuiderService } from '../../providers/api/guider-service';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-guideinfo',

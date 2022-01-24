@@ -1,14 +1,14 @@
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @angular-eslint/component-selector */
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalController, Platform } from '@ionic/angular';
 import { UserDb } from '../../models/db/user-db';
 import { ApiSync } from '../../providers/api-sync';
-import { DownloadService } from '../../services/download-service';
 import { HttpClient } from '../../services/http-client';
 import { AuthService } from '../../services/auth-service';
-import { DbProvider } from '../../providers/db-provider';
 import { SyncService } from '../../services/sync-service';
 import { Network } from '@ionic-native/network/ngx';
-import { debounceTime, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { DatePipe } from '../../pipes/date-pipe/date-pipe';
 import { UserService } from '../../services/user-service';
 import { SyncMode } from '../synchronization-component/synchronization-component';
@@ -18,7 +18,8 @@ import { TranslateConfigService } from '../../services/translate-config.service'
 import { LoggerService } from '../../services/logger-service';
 import { Subscription } from 'rxjs';
 import { MiscService } from '../../services/misc-service';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
+import { Router } from '@angular/router';
 
 /**
  * Generated class for the TodoPage page.
@@ -49,7 +50,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
   public modeSync = SyncMode.Manual;
   public userDb: UserDb;
   public isNetwork = false;
-  public isAvailableForSyncData: boolean = false;
+  public isAvailableForSyncData = false;
   public pushProgressStatus: string;
   public isAvailableForPushData: boolean;
   public params;
@@ -71,7 +72,8 @@ export class SyncModalComponent implements OnInit, OnDestroy {
     private insomnia: Insomnia,
     private loggerService: LoggerService,
     private miscService: MiscService,
-    public platform: Platform
+    public platform: Platform,
+    private router: Router
 
   ) {
 
@@ -82,39 +84,43 @@ export class SyncModalComponent implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
-    this.storage.set('SyncModalComponentOpen', true)
+    this.storage.set('SyncModalComponentOpen', true);
   }
 
   dismiss() {
-    this.modalController.dismiss().then(() => {
-      if (this.platform.is('capacitor')) {
-        this.insomnia.allowSleepAgain().then(
-          () => console.log('insomnia.allowSleepAgain success'),
-          () => console.log('insomnia.allowSleepAgain error')
-        );
-      }
+    this.router.navigate(['/guide-categories']);
+    // this.modalController.dismiss().then(() => {
+    //   if (this.platform.is('capacitor')) {
+    //     this.insomnia.allowSleepAgain().then(
+    //       () => console.log('insomnia.allowSleepAgain success'),
+    //       () => console.log('insomnia.allowSleepAgain error')
+    //     );
+    //   }
 
-    });
+    // });
 
-    this.storage.set('SyncModalComponentOpen', false)
+    this.storage.set('SyncModalComponentOpen', false);
   }
 
   syncData() {
-    if (!this.appSetting.isMigratedDatabase()) {
-      this.appSetting.showIsNotMigratedDbPopup();
-      return;
-    }
-    // make sync if local changes
-    if (this.isAvailableForPushData) {
-      this.apiSync.makeSyncProcess();
-    }
-    // force sync when data changes on server
-    this.apiSync.checkAvailableChanges().then((res) => {
-      // make sync if changes from server
-      if (res) {
-        this.apiSync.makeSyncProcess()
-      }
-    })
+    this.apiSync.makeSyncProcess();
+    // this.modalController.dismiss();
+    this.router.navigate(['/guide-categories']);
+    // if (!this.appSetting.isMigratedDatabase()) {
+    //   this.appSetting.showIsNotMigratedDbPopup();
+    //   return;
+    // }
+    // // make sync if local changes
+    // if (this.isAvailableForPushData) {
+    //   this.apiSync.makeSyncProcess();
+    // }
+    // // force sync when data changes on server
+    // this.apiSync.checkAvailableChanges().then((res) => {
+    //   // make sync if changes from server
+    //   if (res) {
+    //     this.apiSync.makeSyncProcess();
+    //   }
+    // });
   }
 
   stopSyncData() {
@@ -238,18 +244,18 @@ export class SyncModalComponent implements OnInit, OnDestroy {
       switch (event.TAG) {
         case 'UserDb:update':
           this.userService.userDb = event.data;
-          this.loggerService.getLogger().info("userDb", event.data)
+          this.loggerService.getLogger().info('userDb', event.data);
           break;
         case 'network:offline':
           this.isNetwork = false;
-          this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+          this.loggerService.getLogger().info('isNetwork', this.isNetwork);
           break;
         case 'network:online':
           this.isNetwork = true;
-          this.loggerService.getLogger().info("isNetwork", this.isNetwork)
+          this.loggerService.getLogger().info('isNetwork', this.isNetwork);
           break;
         case 'user:logout':
-          this.loggerService.getLogger().info("user:logout")
+          this.loggerService.getLogger().info('user:logout');
           this.dismiss();
           break;
         default:

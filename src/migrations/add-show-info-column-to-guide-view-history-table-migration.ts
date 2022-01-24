@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
 import { Injectable } from '@angular/core';
-import { GuideViewHistoryService } from 'providers/api/guide-view-history-service';
+import { GuideViewHistoryService } from '../providers/api/guide-view-history-service';
 
 
 @Injectable()
@@ -10,7 +11,7 @@ export class AddShowInfoColumnToGuideViewHistory {
 	execute() {
 		return new Promise(async (resolve) => {
 			const queries = [
-				"ALTER TABLE guide_view_history ADD COLUMN show_info INT(1)",
+				'ALTER TABLE guide_view_history ADD COLUMN show_info INT(1)',
 			];
 			let successExecution = true;
 			for (let i = 0; i < queries.length; i++) {

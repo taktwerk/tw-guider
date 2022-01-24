@@ -4,7 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { SyncModalComponent } from './sync-modal-component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SyncSpinnerComponentModule } from '../sync-spinner-component/sync-spinner-component.module';
-import { ProgressBarModule } from 'components/progress-bar/progress-bar.module';
+import { ProgressBarModule } from '../../components/progress-bar/progress-bar.module';
 
 @NgModule({
   declarations: [SyncModalComponent],

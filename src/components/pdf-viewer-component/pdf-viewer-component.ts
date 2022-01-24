@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { DownloadService } from '../../services/download-service';
 import { Plugins } from '@capacitor/core';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 
 /**
  * Generated class for the TodoPage page.

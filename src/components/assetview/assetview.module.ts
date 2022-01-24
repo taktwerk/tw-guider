@@ -7,8 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { AssetviewComponent } from './assetview.page';
 import { Viewer3dModelComponentModule } from '../viewer-3d-model-component/viewer-3d-model-component.module';
 
-import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
-import { SharedModule } from 'app/shared/shared.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SharedModule } from '../../app/shared/shared.module';
 
 @NgModule({
   imports: [

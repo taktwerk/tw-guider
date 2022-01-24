@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable max-len */
 import { Directive, ElementRef, Input, NgZone, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { HttpClient as CustomHttpClient } from 'services/http-client';
+import { HttpClient as CustomHttpClient } from '../../services/http-client';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
 
@@ -27,13 +29,11 @@ export class ImgloadDirective implements OnInit, OnChanges {
       return;
     }
 
-    const blobToBase64 = (blob) => {
-      return new Promise((resolve, _) => {
+    const blobToBase64 = (blob) => new Promise((resolve, _) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);
         reader.readAsDataURL(blob);
       });
-    }
 
 
     if (this.localurl != null) {
@@ -51,8 +51,7 @@ export class ImgloadDirective implements OnInit, OnChanges {
     }
 
     if (typeof this.url != 'string') {
-      console.log("Vfvf", this.url);
-      this.ele.nativeElement.src = "assets/placeholder.jpg";
+      this.ele.nativeElement.src = 'assets/placeholder.jpg';
       return;
     }
 
@@ -70,7 +69,7 @@ export class ImgloadDirective implements OnInit, OnChanges {
 
     const headers = new Headers(headerObject);
     console.log(this.url);
-    this.http.get(this.url, { headers: headers, observe: 'response', responseType: 'blob' }).toPromise()
+    this.http.get(this.url, { headers, observe: 'response', responseType: 'blob' }).toPromise()
       .then((response) => {
         blobToBase64(response.body).then(base64 => {
           this.zone.run(() => {
@@ -80,7 +79,7 @@ export class ImgloadDirective implements OnInit, OnChanges {
 
       })
       .catch((downloadErr) => {
-        this.ele.nativeElement.src = "assets/placeholder.jpg";
+        this.ele.nativeElement.src = 'assets/placeholder.jpg';
         console.log('downloadErr', downloadErr);
       });
   }

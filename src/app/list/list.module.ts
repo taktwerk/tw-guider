@@ -12,6 +12,7 @@ import { LanguageSelectorComponentModule } from '../../components/language-selec
 import { TranslateModule } from '@ngx-translate/core';
 import { GuideListComponentModule } from "../../components/guide-list-component/guide-list-component.module";
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { File } from '@ionic-native/file/ngx';
 
 @NgModule({
     imports: [
@@ -33,6 +34,7 @@ import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-me
         TranslateModule,
         GuideListComponentModule
     ],
-    declarations: [ListPage]
+    declarations: [ListPage],
+    providers: [File]
 })
 export class ListPageModule { }

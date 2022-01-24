@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Forge from 'node-forge';
-import * as BcryptJS from 'bcryptjs';
+// import * as BcryptJS from 'bcryptjs';
 
 @Injectable()
 export class CryptoProvider {
@@ -36,11 +36,13 @@ export class CryptoProvider {
     }
 
     hashPassword(password: string) {
-        return BcryptJS.hashSync(this.makeEncrypt(password));
+        return password;
+        // return BcryptJS.hashSync(this.makeEncrypt(password));
     }
 
     comparePassword(password, hashPassword) {
-        return BcryptJS.compareSync(this.makeEncrypt(password), hashPassword);
+        return password === hashPassword;
+        // return BcryptJS.compareSync(this.makeEncrypt(password), hashPassword);
     }
 
     makeEncrypt(password: string) {

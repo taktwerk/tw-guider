@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import defaultLanguageObject from './../assets/i18n/en.json';
-import germanyLanguageObject from './../assets/i18n/de.json';
+import * as defaultLanguageObject from '../assets/i18n/en.json';
+import * as germanyLanguageObject from '../assets/i18n/de.json';
 
 @Injectable({
     providedIn: 'root'
@@ -64,8 +66,7 @@ export class TranslateConfigService {
     }
 
     getDeviceLanguage() {
-        console.log("check device language =>")
-        const deviceLang = navigator.language.split("-")[0]
+        const deviceLang = navigator.language.split('-')[0];
         const osLang = this.isLanguageAvailable(deviceLang);
         if (osLang) {
             return deviceLang;

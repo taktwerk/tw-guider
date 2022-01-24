@@ -13,7 +13,7 @@ import { TranslateConfigService } from '../../services/translate-config.service'
 import { UserService } from '../../services/user-service';
 import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 /**
  * Generated class for the TodoPage page.
  *

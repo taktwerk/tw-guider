@@ -1,18 +1,27 @@
+/* eslint-disable prefer-const */
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Inject, Injectable, PLATFORM_ID, SecurityContext } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { File } from '@ionic-native/file/ngx';
+// import { File } from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
-import { WebView } from '@ionic-native/ionic-webview/ngx';
+// import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
-import { MediaCapture } from '@ionic-native/media-capture/ngx';
-import { Camera } from '@ionic-native/camera/ngx';
-import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+// import { MediaCapture } from '@ionic-native/media-capture/ngx';
+import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
+// import { Camera } from '@ionic-native/camera/ngx';
+import { Camera } from '@awesome-cordova-plugins/camera/ngx';
+// import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
+import { CreateThumbnailOptions, VideoEditor } from '@awesome-cordova-plugins/video-editor/ngx';
+import { Filesystem, Directory, } from '@capacitor/filesystem';
 import { LoggerService } from './logger-service';
-import WebFile from 'web-plugins/WebFile';
+// import WebFile from '../web-plugins/WebFile';
 import { isPlatformBrowser } from '@angular/common';
 
 export class RecordedFile {
@@ -42,11 +51,9 @@ export class DownloadService {
    * @param camera
    * @param videoEditor
    * @param sanitizerImpl
-   *
-   * @param webfile
    */
 
-  webfile: WebFile;
+  // webfile: WebFile;
   testBrowser: boolean;
 
   constructor(
@@ -67,9 +74,9 @@ export class DownloadService {
 
   ) {
 
-    if (!this.platform.is('capacitor')) {
-      this.webfile = new WebFile();
-    }
+    // if (!this.platform.is('capacitor')) {
+    //   this.webfile = new WebFile();
+    // }
 
     this.testBrowser = isPlatformBrowser(platformId);
   }
@@ -77,11 +84,7 @@ export class DownloadService {
   /**
    * Download a file locally
    *
-   * @param {string} url
-   * @param {string} name
-   * @param {string} modelFolder
    * @param authToken
-   * @returns {Promise<string | boolean>}
    */
   async downloadAndSaveFile(url: string, name: string, modelFolder: string, authToken = ''): Promise<any> {
     const promise = new Promise((resolve) => {
@@ -159,7 +162,7 @@ export class DownloadService {
 
     return new Promise((resolve) => {
       this.http
-        .get(url, { headers: headers, observe: 'response', responseType: 'blob' })
+        .get(url, { headers, observe: 'response', responseType: 'blob' })
         .toPromise()
         .then((response) => {
           console.log('SYNC4');
@@ -186,10 +189,11 @@ export class DownloadService {
           .then((existFile) => resolve(existFile))
           .catch((err) => resolve(false));
       } else {
-        this.webfile
-          .checkFile(directory, name)
-          .then((existFile: any) => resolve(existFile))
-          .catch((err) => resolve(false));
+        // this.webfile
+        //   .checkFile(directory, name)
+        //   .then((existFile: any) => resolve(existFile))
+        //   .catch((err) => resolve(false));
+        resolve(false);
       }
     });
   }
@@ -264,9 +268,9 @@ export class DownloadService {
   }
 
   base64ToBlob(data) {
-    var rImageType = /data:(image\/.+);base64,/;
-    var mimeString = '';
-    var raw, uInt8Array, i, rawLength;
+    let rImageType = /data:(image\/.+);base64,/;
+    let mimeString = '';
+    let raw; let uInt8Array; let i; let rawLength;
 
     raw = data.replace(rImageType, (header, imageType) => {
       mimeString = imageType;
@@ -302,7 +306,7 @@ export class DownloadService {
     });
     return new Promise((resolve) => {
       this.http
-        .post(url, formData, { headers: headers })
+        .post(url, formData, { headers })
         .toPromise()
         .then((res) => {
           console.log('subscribe file uploading', res);
@@ -323,7 +327,6 @@ export class DownloadService {
    *
    * @param apiPath API Url of the file
    * @param localPath Local fullpath
-   * @returns {any}
    */
   public path(apiPath, localPath) {
     if (!apiPath && !localPath) {
@@ -341,10 +344,7 @@ export class DownloadService {
   /**
    * Copy a file to the app storage
    *
-   * @param {string} fullPath
-   * @param {string} modelName
    * @param isDuplicate
-   * @returns {Promise<string | boolean>}
    */
   public copy(fullPath: string, modelName: string, isDuplicate = false): Promise<string> {
     return new Promise((resolve) => {
@@ -420,11 +420,6 @@ export class DownloadService {
 
   /**
    * Copy file to a local dir
-   * @param {string} namePath
-   * @param {string} currentName
-   * @param {string} newFilePath
-   * @param {string} newFileName
-   * @returns {Promise<boolean>}
    */
   public copyToLocalDir(namePath: string, currentName: string, newFilePath: string, newFileName: string): Promise<boolean> {
     return new Promise((resolve) => {
@@ -462,8 +457,6 @@ export class DownloadService {
   /**
    * Check if a dir exists and creats it if not.
    *
-   * @param {string} modelName
-   * @returns {Promise<boolean>}
    */
   private checkDir(modelName: string): Promise<boolean> {
     return new Promise((resolve) => {
@@ -479,9 +472,10 @@ export class DownloadService {
             });
           });
       } else {
-        this.webfile.checkDir().then((_) => {
-          resolve(true);
-        });
+        // this.webfile.checkDir().then((_) => {
+        //   resolve(true);
+        // });
+        resolve(false);
       }
     });
   }
@@ -504,8 +498,6 @@ export class DownloadService {
   /**
    * Check if a dir exists and delete it if exists.
    *
-   * @param {string} modelName
-   * @returns {Promise<boolean>}
    */
   removeAllAppFiles(): Promise<boolean> {
     return new Promise((resolve) => {
@@ -550,7 +542,6 @@ export class DownloadService {
   /**
    * Delete a file
    *
-   * @param {string} fullPath
    */
   public deleteFile(fullPath: string) {
     if (!this.platform.is('capacitor')) {
@@ -579,7 +570,9 @@ export class DownloadService {
   }
 
   public getWebviewFileSrc(path) {
-    if (this.platform.is('capacitor')) return this.webview.convertFileSrc(path);
+    if (this.platform.is('capacitor')) {
+      return this.webview.convertFileSrc(path);
+    }
     return path;
   }
 
@@ -602,17 +595,17 @@ export class DownloadService {
 
   public async chooseFileFromLocalPC(accept: any = '*/*'): Promise<string> {
     return new Promise((resolve) => {
-      let input = document.createElement('input');
+      const input = document.createElement('input');
       input.type = 'file';
       input.accept = accept;
       input.onchange = (e: any) => {
-        let reader = new FileReader();
+        const reader = new FileReader();
         // const url = URL.createObjectURL(e.target.files[0]);
         reader.readAsDataURL(e.target.files[0]);
         reader.onload = (_event) => {
           const url: any = reader.result;
           resolve(url);
-        }
+        };
 
         // let reader: any = new FileReader();
         // reader.readAsArrayBuffer(e.target.files[0]);
@@ -632,7 +625,7 @@ export class DownloadService {
         //       this.imgURL = reader.result;
         //       console.log("check image =>", this.imgURL);
         //     }
-      }
+      };
       input.click();
     });
   }
@@ -804,7 +797,6 @@ export class DownloadService {
       }
     }
 
-    console.log("check recorded file 2 =>", recordedFile);
     return recordedFile;
   }
 
@@ -857,7 +849,6 @@ export class DownloadService {
 
     }
 
-    console.log("check recorded file 3 =>", recordedFile);
     return recordedFile;
   }
 

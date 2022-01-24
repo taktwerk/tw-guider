@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
-// import { NGXLoggerMonitor, NGXLogInterface, NGXLogger } from 'ngx-logger';
-import { NGXLoggerMonitor, NGXLogger } from 'ngx-logger';
-import { File } from '@ionic-native/file/ngx';
+import { INGXLoggerMonitor, NGXLogger } from 'ngx-logger';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 
 
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
@@ -28,10 +28,10 @@ export interface Log {
 }
 
 @Injectable({ providedIn: 'root' })
-export class CustomLoggerMonitor implements NGXLoggerMonitor {
+export class CustomLoggerMonitor implements INGXLoggerMonitor {
     constructor(private loggerService: LoggerService) { }
 
-    onLog(log: NGXLogger) { this.loggerService.setLogs(log) }
+    onLog(log: NGXLogger) { this.loggerService.setLogs(log); }
 
     // onLog(log: NGXLogInterface) { this.loggerService.setLogs(log) }
 }
@@ -44,7 +44,7 @@ export class LoggerService {
     // public LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
 
     constructor(private logger: NGXLogger, public file: File) {
-        this.logger.registerMonitor(new CustomLoggerMonitor(this))
+        this.logger.registerMonitor(new CustomLoggerMonitor(this));
     }
 
     public getLogger(): NGXLogger {
@@ -55,26 +55,25 @@ export class LoggerService {
     public setLogs(log: NGXLogger) {
         this.Logs.push(log);
         this.LogsSub.next(this.Logs);
-        this.writeToFile(log)
+        this.writeToFile(log);
     }
 
     /**
      * appends log message to file
-     * @param log 
      */
     public async writeToFile(log) {
         const contents = await Filesystem.appendFile({
             path: '/TaktwerkLogs/log.txt',
-            data: JSON.stringify(log),
+            data: log,
             directory: Directory.External,
             encoding: Encoding.UTF8,
         }).catch(e => {
             console.error('Unable to write log file', e);
-        })
+        });
     }
 
     public createLogFile() {
-        this.logDir().then(async e => { })
+        this.logDir().then(async e => { });
     }
 
     public logDir() {
@@ -83,20 +82,19 @@ export class LoggerService {
                 path: '/TaktwerkLogs/log.txt',
                 directory: Directory.External,
             }).then(e => {
-                resolve(true)
+                resolve(true);
             }).catch(async e => {
-                console.log("Directory not created", e)
                 // create dir
                 const contents = await Filesystem.writeFile({
                     path: '/TaktwerkLogs/log.txt',
-                    data: "",
+                    data: '',
                     directory: Directory.External,
                     encoding: Encoding.UTF8,
                     recursive: true
-                }).then(e => {
-                    resolve(true)
-                })
-            })
+                }).then(() => {
+                    resolve(true);
+                });
+            });
         });
     }
 
@@ -104,7 +102,7 @@ export class LoggerService {
         try {
             const contents = await Filesystem.writeFile({
                 path: '/TaktwerkLogs/log.txt',
-                data: "",
+                data: '',
                 directory: Directory.External,
                 encoding: Encoding.UTF8,
                 recursive: true

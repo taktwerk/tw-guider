@@ -1,20 +1,27 @@
+/* eslint-disable prefer-const */
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @angular-eslint/component-selector */
 import { MiscService } from './../../services/misc-service';
 import { LoadingController, ModalController, Platform } from '@ionic/angular';
 import { Component, Input, OnInit } from '@angular/core';
-import ImageEditor from 'tui-image-editor';
 import { RecordedFile, DownloadService } from '../../services/download-service';
 import { File as nFile } from '@ionic-native/file/ngx';
 import { ApiSync } from '../../providers/api-sync';
 import { GuideStepService } from '../../providers/api/guide-step-service';
 import { Location } from '@angular/common';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { AuthService } from '../../services/auth-service';
+import 'tui-image-editor';
 
 interface CustomControls {
-  name: string
-  icon: string
-  subControls?: CustomControls[]
+  name: string;
+  icon: string;
+  subControls?: CustomControls[];
 }
 
 @Component({
@@ -26,10 +33,10 @@ export class ImageEditorComponent implements OnInit {
 
   @Input() model;
 
-  ImageEditor;
-  iCanvas
+  ImageEditor: any;
+  iCanvas;
   loading = (message?) => this.loadingController.create({ duration: 2000, message: message || 'Please wait' });
-  canvasFile
+  canvasFile;
 
   currentControl: CustomControls = { name: null, icon: null };
   currentSubControl: CustomControls = { name: null, icon: null };
@@ -53,7 +60,7 @@ export class ImageEditorComponent implements OnInit {
         }
       ]
     }
-  ]
+  ];
   constructor(private storage: Storage,
     private guideStepService: GuideStepService,
     private modalController: ModalController,
@@ -73,37 +80,38 @@ export class ImageEditorComponent implements OnInit {
 
   async ngOnInit() {
     (await this.loading('Loading Canvas')).present();
-    this.ImageEditor = new ImageEditor(document.querySelector('#tui-image-editor'), {
+    console.log("check tui image editor=>", tuiImageEditor);
+    this.ImageEditor = new tuiImageEditor.ImageEditor(document.querySelector('#tui-image-editor'), {
       cssMaxWidth: document.documentElement.clientWidth,
       cssMaxHeight: document.documentElement.clientHeight,
     });
 
     // load metadata
     try {
-      this.canvasFile = JSON.parse(this.model.design_canvas_file)
+      this.canvasFile = JSON.parse(this.model.design_canvas_file);
     } catch (error) {
-      console.log(error)
-      console.log("this.model.design_canvas_file", this.model.design_canvas_file)
-      console.log("design_canvas_file is probably not an object", this.model.design_canvas_file)
+      console.log(error);
+      console.log('this.model.design_canvas_file', this.model.design_canvas_file);
+      console.log('design_canvas_file is probably not an object', this.model.design_canvas_file);
       this.canvasFile = null;
     }
 
     this.iCanvas = this.ImageEditor._graphics.getCanvas();
-    var selectionStyle = this.ImageEditor._graphics.cropSelectionStyle;
+    const selectionStyle = this.ImageEditor._graphics.cropSelectionStyle;
 
-    console.log("this.model.local_attached_file", this.model.local_attached_file)
-    console.log("this.model.getFileImagePath(1)", this.model.getFileImagePath(1))
-    console.log("this.model.getFileImagePath()", this.model.getFileImagePath())
+    console.log('this.model.local_attached_file', this.model.local_attached_file);
+    console.log('this.model.getFileImagePath(1)', this.model.getFileImagePath(1));
+    console.log('this.model.getFileImagePath()', this.model.getFileImagePath());
 
-    var originalImageFile = encodeURI(this.model.local_attached_file);
+    const originalImageFile = encodeURI(this.model.local_attached_file);
     const convertFileSrc = this.downloadService.getWebviewFileSrc(originalImageFile);
     const SafeImageUrl = this.downloadService.getSafeUrl(convertFileSrc);
 
-    console.log("SafeUrl", SafeImageUrl);
-    console.log("this.canvasFile", this.canvasFile);
+    console.log('SafeUrl', SafeImageUrl);
+    console.log('this.canvasFile', this.canvasFile);
 
     setTimeout(async () => {
-      this.iCanvas.lowerCanvasEl.style.border = "double #2d2d2b";
+      this.iCanvas.lowerCanvasEl.style.border = 'double #2d2d2b';
       if (this.canvasFile != null) {
         this.ImageEditor.loadImageFromURL(this.canvasFile.backgroundImage.src, 'Editor Test');
       }
@@ -111,8 +119,8 @@ export class ImageEditorComponent implements OnInit {
         this.ImageEditor.loadImageFromURL(this.model.getFileImagePath().changingThisBreaksApplicationSecurity, 'Editor Test');
       }
       this.iCanvas.loadFromJSON(this.canvasFile, async () => {
-        var list = this.iCanvas.getObjects();
-        list.forEach(function (obj) {
+        const list = this.iCanvas.getObjects();
+        list.forEach((obj) => {
           obj.set(selectionStyle);
         });
 
@@ -137,7 +145,7 @@ export class ImageEditorComponent implements OnInit {
     });
 
     this.ImageEditor.on('redoStackChanged', (length) => {
-      console.log("redoStackChanged", length);
+      console.log('redoStackChanged', length);
       if (this.ImageEditor.isEmptyRedoStack()) {
         this.willRedo = false;
       } else {
@@ -146,7 +154,7 @@ export class ImageEditorComponent implements OnInit {
     });
 
     this.ImageEditor.on('undoStackChanged', (length) => {
-      console.log("undoStackChanged", length);
+      console.log('undoStackChanged', length);
       if (this.ImageEditor._invoker._undoStack.length === 1 || length === 1) {
         this.willUndo = false;
       } else {
@@ -159,14 +167,14 @@ export class ImageEditorComponent implements OnInit {
     // stop all modes
     this.ImageEditor.stopDrawingMode();
     //
-    this.currentControl.name != control.name ? this.currentControl = control : this.currentControl = { name: null, icon: null };
+    this.currentControl.name !== control.name ? this.currentControl = control : this.currentControl = { name: null, icon: null };
   }
 
   onSubControl(control: CustomControls) {
     // stop all modes
     this.ImageEditor.stopDrawingMode();
-    // 
-    this.currentSubControl.name != control.name ? this.currentSubControl = control : this.currentSubControl = { name: null, icon: null };
+    //
+    this.currentSubControl.name !== control.name ? this.currentSubControl = control : this.currentSubControl = { name: null, icon: null };
     if (this.currentSubControl.name != null) {
       switch (control.name) {
         case ('Free Hand'):
@@ -187,25 +195,25 @@ export class ImageEditorComponent implements OnInit {
       if (this.ImageEditor.isEmptyRedoStack()) {
         this.willRedo = false;
       }
-    })
+    });
   }
 
   onUndo() {
     if (this.ImageEditor._invoker._undoStack.length > 1) {
       this.ImageEditor.undo().then(() => {
-        if (this.ImageEditor._invoker._undoStack.length == 1) {
+        if (this.ImageEditor._invoker._undoStack.length === 1) {
           this.willUndo = false;
         }
-      })
+      });
     }
   }
 
   deleteSelected() {
     this.ImageEditor.removeObject(this.selectedAnnotation.id)
       .then(() => {
-        this.selectedAnnotation = null
+        this.selectedAnnotation = null;
       })
-      .catch((e) => console.log("delete error", e))
+      .catch((e) => console.log('delete error', e));
   }
 
   closeControl() {
@@ -231,21 +239,21 @@ export class ImageEditorComponent implements OnInit {
 
     this.model.design_canvas_file = JSON.stringify(this.iCanvas);
     (await this.loading('Saving Changes')).present();
-    var renderedImageUrl = this.ImageEditor.toDataURL({ format: 'png' });
-    var blob = this.base64ToBlob(renderedImageUrl);
+    const renderedImageUrl = this.ImageEditor.toDataURL({ format: 'png' });
+    const blob = this.base64ToBlob(renderedImageUrl);
 
     const fileName = new Date().getTime() + '.png';
     const recordedFile = new RecordedFile();
 
-    var xhr = new XMLHttpRequest();
-    var originalImageDataUrl;
-    var originalImageDataUrlBlob;
+    const xhr = new XMLHttpRequest();
+    let originalImageDataUrl;
+    let originalImageDataUrlBlob;
     xhr.onload = () => {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.onloadend = () => {
         originalImageDataUrl = reader.result;
         originalImageDataUrlBlob = this.base64ToBlob(originalImageDataUrl);
-      }
+      };
       reader.readAsDataURL(xhr.response);
     };
 
@@ -271,20 +279,20 @@ export class ImageEditorComponent implements OnInit {
 
               this.storage.set('ImageEditorComponentOpen', false);
               (await this.loading()).dismiss({ canvasSaved: true });
-              this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
+              this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' });
 
               await this.modalController.dismiss();
-            }).catch((e) => console.log(e))
-          }, 300)
-        }).catch((e) => console.log(e))
-      }).catch((e) => console.log(e))
-    })
+            }).catch((e) => console.log(e));
+          }, 300);
+        }).catch((e) => console.log(e));
+      }).catch((e) => console.log(e));
+    });
   }
 
   base64ToBlob(data) {
-    var rImageType = /data:(image\/.+);base64,/;
-    var mimeString = '';
-    var raw, uInt8Array, i, rawLength;
+    const rImageType = /data:(image\/.+);base64,/;
+    let mimeString = '';
+    let raw; let uInt8Array; let i; let rawLength;
 
     raw = data.replace(rImageType, (header, imageType) => {
       mimeString = imageType;

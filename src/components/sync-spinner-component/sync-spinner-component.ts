@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { MenuController, ModalController, NavController } from '@ionic/angular';
 
 import { ApiSync } from '../../providers/api-sync';
 import { Network } from '@ionic-native/network/ngx';
@@ -9,6 +9,7 @@ import { UserDb } from '../../models/db/user-db';
 import { AppSetting } from '../../services/app-setting';
 import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'sync-spinner-component',
@@ -33,6 +34,9 @@ export class SyncSpinnerComponent implements OnInit {
         private network: Network,
         public appSetting: AppSetting,
         private miscService: MiscService,
+        private router: Router,
+        private navCtrl: NavController,
+        private menu: MenuController
 
     ) {
         this.isNetwork = (this.network.type !== 'none');
@@ -45,14 +49,17 @@ export class SyncSpinnerComponent implements OnInit {
     }
 
     async openSyncModal() {
-        if (!this.shouldOpenPopup) {
-            return false;
-        }
-        const modal = await this.modalController.create({
-            component: SyncModalComponent,
-            cssClass: "modal-fullscreen"
-        });
-        return await modal.present();
+        this.navCtrl.navigateRoot('/sync-model')
+        this.menu.close();
+        // this.router.navigate(['/sync-model']);
+        // if (!this.shouldOpenPopup) {
+        //     return false;
+        // }
+        // const modal = await this.modalController.create({
+        //     component: SyncModalComponent,
+        //     cssClass: "modal-fullscreen"
+        // });
+        // return await modal.present();
     }
 
     protected initUserDB() {

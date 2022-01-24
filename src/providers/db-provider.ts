@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'environments/environment';
+import { environment } from '../environments/environment';
 
-declare var window: any;
+declare let window: any;
 
 @Injectable()
 export class DbProvider {
@@ -41,10 +41,10 @@ export class DbProvider {
     return new Promise((resolve, reject) => {
       params = params || [];
       this.db.transaction((tx) => {
-        tx.executeSql(q, params, (tx, res) => {
+        tx.executeSql(q, params, (_tx, res) => {
           resolve(res);
-        }, (tx, err) => {
-          console.log("query execution error", err, q)
+        }, (_tx, err) => {
+          console.log('query execution error', err, q);
           reject(err);
         });
       });

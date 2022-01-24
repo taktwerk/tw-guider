@@ -1,3 +1,6 @@
+/* eslint-disable @angular-eslint/component-selector */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Component, Input, OnInit } from '@angular/core';
 import { DownloadService } from '../../services/download-service';
 import { PictureService } from '../../services/picture-service';
@@ -9,12 +12,13 @@ import { faExpand, faQuestion, faCubes, faFilePdf, faVideo } from '@fortawesome/
 import { ModalController, Platform } from '@ionic/angular';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { ImageEditorComponent } from '../../components/imageeditor/imageeditor.page';
-import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
+// import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
+import { CreateThumbnailOptions, VideoEditor } from '@awesome-cordova-plugins/video-editor/ngx';
 // import { Capacitor, Plugins } from '@capacitor/core';
 import { Filesystem } from '@capacitor/filesystem';
 import { ApiSync } from '../../providers/api-sync';
 import { File } from '@ionic-native/file/ngx';
-import { ViewerService } from 'services/viewer.service';
+import { ViewerService } from '../../services/viewer.service';
 import { HelpingService } from '../../controller/helping.service';
 // import { Camera } from '@capacitor/camera';
 
@@ -27,22 +31,22 @@ import { HelpingService } from '../../controller/helping.service';
 
 export class AssetviewComponent implements OnInit {
   @Input() model: any;
-  @Input() isthumbnail: boolean = false;
-  @Input() showIcon: boolean = true;
+  @Input() isthumbnail = false;
+  @Input() showIcon = true;
   @Input() largeIcon: boolean;
 
-  @Input() floatingIcon: boolean = false;
+  @Input() floatingIcon = false;
   /**Set to true to make image small */
-  @Input() mini: boolean = false;
+  @Input() mini = false;
 
   /** set to true to prevent default open function */
-  @Input() preventDefaultClickFunction: boolean = false;
+  @Input() preventDefaultClickFunction = false;
   @Input() solid_icon_color: boolean;
 
-  @Input() mayEditImage: boolean = false;
-  @Input() imageby50: boolean = false;
+  @Input() mayEditImage = false;
+  @Input() imageby50 = false;
 
-  filePath3d
+  filePath3d;
 
   faExpand = faExpand;
   faQuestion = faQuestion;
@@ -76,7 +80,7 @@ export class AssetviewComponent implements OnInit {
       // this.videoPreview = this.model.getFileImagePath().changingThisBreaksApplicationSecurity;
       // console.log(this.videoPreview)
       // console.log(this.model)
-      // 
+      //
       // if (this.model.TABLE_NAME !== 'guide_asset') {
       //   this.defaultVideoPreview = this.model.getFileImagePath();
 
@@ -150,19 +154,19 @@ export class AssetviewComponent implements OnInit {
     };
 
     this.videoEditor.createThumbnail(option).then(async (videoThumbnailPath) => {
-      console.log(this.model.title, 'videoEditor createThumbnail', videoThumbnailPath)
+      console.log(this.model.title, 'videoEditor createThumbnail', videoThumbnailPath);
       if (videoThumbnailPath) {
         videoThumbnailPath = 'file://' + videoThumbnailPath;
       }
 
       const resolvedPath = await this.downloadService.getResolvedNativeFilePath(videoThumbnailPath);
-      console.log(resolvedPath)
+      console.log(resolvedPath);
 
       // generate base64 data
       Filesystem.readFile({ path: resolvedPath }).then((filebBase64) => {
         this.videoPreview = 'data:image/jpeg;base64,' + filebBase64.data;
-        console.log(this.videoPreview)
-      })
+        console.log(this.videoPreview);
+      });
 
     })
       .catch((error) => {
@@ -171,9 +175,9 @@ export class AssetviewComponent implements OnInit {
           this.videoPreview = '/assets/videooverlay.png';
         }
         else {
-          console.log(error)
+          console.log(error);
         }
-      })
+      });
     // }
     // else {
     //   console.log("model does have preview", this.model.isExistThumbOfFile())
@@ -203,25 +207,25 @@ export class AssetviewComponent implements OnInit {
 
           if (fileType === 'image') {
             this.viewer.photoframe = {
-              url: url,
-              title: title,
+              url,
+              title,
               show: true
             };
           } else if (fileType === 'video') {
             this.viewer.videoframe = {
-              url: url,
-              title: title,
+              url,
+              title,
               show: true
             };
           } else if (fileType === 'pdf') {
-            console.log(url)
+            console.log(url);
             this.viewer.pdfframe = {
-              url: url,
-              title: title,
+              url,
+              title,
               show: true
             };
           }
-        })
+        });
         return;
       }
 
@@ -251,7 +255,7 @@ export class AssetviewComponent implements OnInit {
         componentProps: {
           asset: this.model
         },
-        cssClass: "modal-fullscreen"
+        cssClass: 'modal-fullscreen'
       });
       return await modal.present();
     }
@@ -263,7 +267,7 @@ export class AssetviewComponent implements OnInit {
       componentProps: {
         model: this.model
       },
-      cssClass: "modal-fullscreen",
+      cssClass: 'modal-fullscreen',
     });
     // modal.onDidDismiss()
     //   .then((res: any) => {
@@ -275,18 +279,18 @@ export class AssetviewComponent implements OnInit {
   }
 
   async onImageError(event) {
-    console.log("Image has error")
-    console.log(event.target.src)
-    console.log(this.model)
+    console.log('Image has error');
+    console.log(event.target.src);
+    console.log(this.model);
 
-    console.log(this.model.local_thumb_attached_file)
+    console.log(this.model.local_thumb_attached_file);
     // resolve path
     const resolvedPath = await this.downloadService.getResolvedNativeFilePath(this.model.local_thumb_attached_file);
-    console.log(resolvedPath)
+    console.log(resolvedPath);
 
     // check directory
     const checkDirExist = await Filesystem.readdir({ path: this.file.dataDirectory + this.model.TABLE_NAME });
-    console.log("Is checking directory with Capacitor");
-    console.log("checkDirExist", checkDirExist);
+    console.log('Is checking directory with Capacitor');
+    console.log('checkDirExist', checkDirExist);
   }
 }

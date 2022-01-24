@@ -2,11 +2,9 @@
 import { LoggerService } from './../../services/logger-service';
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { IonSegment } from '@ionic/angular';
-// import { NGXLogInterface } from 'ngx-logger';
 import { NGXLogger } from 'ngx-logger';
 import { delay } from 'rxjs/operators';
 import { File } from '@ionic-native/file/ngx';
-import { Plugins } from '@capacitor/core';
 import { ActionSheetController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 
@@ -40,6 +38,7 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.logSubscription = this.loggerService.LogsSub.pipe(delay(0)).subscribe((logs) => {
+      console.log("check logs here =>", logs);
       if (logs !== null) {
         this.allLogs = logs;
         this.debugLogs = this.allLogs.filter(l => l.level == 1);

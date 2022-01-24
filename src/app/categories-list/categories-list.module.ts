@@ -10,8 +10,10 @@ import { MainPipe } from '../../pipes/main-pipe.module';
 import { HtmlDescriptionComponentModule } from '../../components/html-description/html-description-component.module';
 import { LanguageSelectorComponentModule } from '../../components/language-selector-component/language-selector-component.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { GuideListComponentModule } from "../../components/guide-list-component/guide-list-component.module";
+import { GuideListComponentModule } from '../../components/guide-list-component/guide-list-component.module';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { SyncModalComponentModule } from 'src/components/sync-modal-component/sync-modal-component.module';
+import { File } from '@ionic-native/file/ngx';
 
 @NgModule({
     imports: [
@@ -24,14 +26,16 @@ import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-me
                 component: CategoriesListPage
             }
         ]),
+        SyncModalComponentModule,
         SyncSpinnerComponentModule,
         ionMenuWithSyncIndicatorComponentModule,
         MainPipe,
         HtmlDescriptionComponentModule,
         LanguageSelectorComponentModule,
         TranslateModule,
-        GuideListComponentModule
+        GuideListComponentModule,
     ],
-    declarations: [CategoriesListPage]
+    declarations: [CategoriesListPage],
+    providers: [File]
 })
 export class CategoriesListModule { }

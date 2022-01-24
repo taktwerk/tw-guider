@@ -1,13 +1,13 @@
+/* eslint-disable @angular-eslint/component-selector */
+/* eslint-disable @typescript-eslint/member-ordering */
 import { Location } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { GuideinfoPage } from '../../components/guideinfo/guideinfo.page';
-import { Storage } from '@ionic/storage';
 import { AuthService } from '../../services/auth-service';
 import { AppSetting } from '../../services/app-setting';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
-import { MiscService } from '../../services/misc-service';
 import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
 import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
 

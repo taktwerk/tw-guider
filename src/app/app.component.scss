@@ -1,63 +1,63 @@
 .transparentBody {
-  background: none transparent !important;
-}
-
-$save-changes-alert-width: 400px;
-
-.save-changes-alert {
-  --background: red;
-  --min-width: $save-changes-alert-width;
-  min-width: $save-changes-alert-width;
-  background-color: red;
-}
-
-:host {
-  --ion-color-base: #fff;
-}
-
-:root {
-  --ion-color-base: #fff;
-}
-
-
-.photoframe {
-  position: fixed;
-  inset: 0;
-  background-color: #000;
-  z-index: 1;
-
-  .frame-outer {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    .content {
-      height: calc( 100% - 50px);
-      justify-content: center;
-      align-items: center;
+    background: none transparent !important;
+  }
+  
+  $save-changes-alert-width: 400px;
+  
+  .save-changes-alert {
+    --background: red;
+    --min-width: $save-changes-alert-width;
+    min-width: $save-changes-alert-width;
+    background-color: red;
+  }
+  
+  :host {
+    --ion-color-base: #fff;
+  }
+  
+  :root {
+    --ion-color-base: #fff;
+  }
+  
+  
+  .photoframe {
+    position: fixed;
+    inset: 0;
+    background-color: #000;
+    z-index: 1;
+  
+    .frame-outer {
       display: flex;
-    }
-
-    .header {
-      height: 50px;
-      display: flex;
+      flex-direction: column;
+      height: 100%;
       width: 100%;
-
-      .close {
-        width: 50px;
-        display: flex;
+      .content {
+        height: calc( 100% - 50px);
         justify-content: center;
         align-items: center;
+        display: flex;
       }
-
-      .title {
-        color: #fff;
-        flex: 1;
-        text-align: center;
+  
+      .header {
+        height: 50px;
         display: flex;
-        justify-content: center;
-        align-items: center;
+        width: 100%;
+  
+        .close {
+          width: 50px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+  
+        .title {
+          color: #fff;
+          flex: 1;
+          text-align: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
       }
     }
   }
-}

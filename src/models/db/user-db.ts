@@ -1,11 +1,9 @@
-import { LoggerService } from './../../services/logger-service';
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { DbBaseModel } from '../base/db-base-model';
-import { Platform } from '@ionic/angular';
-import { DbProvider } from '../../providers/db-provider';
 import { UserSetting } from '../user-setting';
 import { AuthDb } from './auth-db';
-import { DownloadService } from '../../services/download-service';
-import { MiscService } from '../../services/misc-service';
 
 export class UserDb extends DbBaseModel {
     /** @inheritDoc */
@@ -26,22 +24,11 @@ export class UserDb extends DbBaseModel {
         [UserDb.COL_USER_ID, 'INT UNIQUE', DbBaseModel.TYPE_NUMBER, 'userId'],
     ];
 
-    /**
-     * Constructor
-     * @param {Platform} platform
-     * @param {DbProvider} db
-     * @param {Events} events
-     * @param {DownloadService} downloadService
-     */
     constructor(
     ) {
         super();
     }
 
-    /**
-     * Returns the current logged in user.
-     * @returns {Promise<DbBaseModel | UserDb | boolean>}
-     */
     public getCurrent(): Promise<any | boolean> {
         return new Promise((resolve) => {
             new AuthDb().loadLast().then((authDb) => {

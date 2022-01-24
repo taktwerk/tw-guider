@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/member-ordering */
 import { UserService } from './../../services/user-service';
 
 import { MiscService } from './../../services/misc-service';
@@ -22,7 +25,6 @@ import { debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { SyncIndexService } from '../../providers/api/sync-index-service';
 import { StateService } from '../state.service';
-import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-list',
@@ -31,7 +33,7 @@ import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 })
 export class CategoriesListPage implements OnInit, OnDestroy {
   public isStartSync = false;
-  public iconStatus: string = 'unsynced';
+  public iconStatus = 'unsynced';
 
   public modeSync = SyncMode.Manual;
   public syncProgressStatus = 'not_sync';
@@ -56,8 +58,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   eventSubscription: Subscription;
 
   isPreStateLoad = false;
-  @Input() guideStepsLength: number = 0;
-  @Input() stepNumber: number = 0;
+  @Input() guideStepsLength = 0;
+  @Input() stepNumber = 0;
   constructor(
     private state: StateService,
     private guideCategoryBindingService: GuideCategoryBindingService,
@@ -85,7 +87,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     }
   }
   async showAllActivity() {
-    let guideActivity: any = this.state.getState('CategoriesListPage_guideActivity');
+    const guideActivity: any = this.state.getState('CategoriesListPage_guideActivity');
     if (guideActivity != null) {
       this.guideActivity = await guideActivity;
       this.isPreStateLoad = true;
@@ -96,7 +98,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   async showAllGuides() {
-    let guideCategories: any = this.state.getState('CategoriesListPage_guideCategories');
+    const guideCategories: any = this.state.getState('CategoriesListPage_guideCategories');
     if (guideCategories != null) {
       this.guideCategories = await guideCategories;
       this.isPreStateLoad = true;
@@ -136,7 +138,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     if (_guidesActivity.length > 0) {
       const syncedList = await this.syncIndexService.getSyncIndexModel(_guidesActivity, _guidesActivity[0].TABLE_NAME);
       this.guideArr = syncedList;
-      console.log("checking guide Array", this.guideArr)
+      console.log('checking guide Array', this.guideArr);
     }
   }
   async findAllGuideActivity() {
@@ -180,9 +182,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
-      this.changeDetectorRef.detectChanges();
-    }
+    this.changeDetectorRef.detectChanges();
   }
 
   trackByFn(item) {
@@ -203,9 +203,27 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   getGuidesWithoutCategories() {
-    return this.guides.filter((guide) => {
-      return !guide.guide_collection.length;
-    });
+    return this.guides.filter((guide) => !guide.guide_collection.length);
+  }
+
+  // async checkActivity() {
+  //   let loader;
+  //   if (this.isPreStateLoad === false) {
+  //     loader = await this.loader.create();
+  //     loader.present();
+  //   }
+
+  //   await this.showAllActivity();
+  // }
+
+  async segmentChanged(e: any) {
+    if (e.detail.value === 'activity') {
+      await this.showAllActivity();
+    } else if (e.detail.value === 'browse') {
+      await this.showAllGuides();
+    } else if (e.detail.value === 'search') {
+      await this.setGuides();
+    }
   }
 
   async ionViewWillEnter() {
@@ -226,7 +244,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     await this.showAllActivity();
     await this.showAllGuides();
 
-    if (typeof loader != 'undefined') loader.dismiss();
+    if (typeof loader != 'undefined') { loader.dismiss(); }
     this.isLoadedContent = true;
 
     this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
@@ -336,11 +354,12 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   async openSyncModal() {
-    const modal = await this.modalController.create({
-      component: SyncModalComponent,
-      cssClass: 'modal-fullscreen',
-    });
-    return await modal.present();
+    this.router.navigate(['/sync-model']);
+    // const modal = await this.modalController.create({
+    //   component: SyncModalComponent,
+    //   cssClass: 'modal-fullscreen',
+    // });
+    // return await modal.present();
   }
 
   ngOnDestroy(): void {

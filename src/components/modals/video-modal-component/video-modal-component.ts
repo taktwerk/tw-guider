@@ -3,7 +3,7 @@ import { ModalController, Platform } from '@ionic/angular';
 import { ToastService } from '../../../services/toast-service';
 import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media/ngx';
 import { DownloadService } from '../../../services/download-service';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 
 /**
  * Generated class for the TodoPage page.

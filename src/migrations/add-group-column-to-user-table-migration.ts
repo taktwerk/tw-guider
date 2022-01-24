@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
 import { Injectable } from '@angular/core';
-import { AuthDb } from 'models/db/auth-db';
+import { AuthDb } from '../models/db/auth-db';
 
 @Injectable()
 export class AddGroupColumnToUserTableMigration {
@@ -8,7 +9,7 @@ export class AddGroupColumnToUserTableMigration {
 	execute() {
 		return new Promise(async (resolve) => {
 			const queries = [
-				"ALTER TABLE auth ADD COLUMN groups TEXT"
+				'ALTER TABLE auth ADD COLUMN groups TEXT'
 			];
 			let successExecution = true;
 

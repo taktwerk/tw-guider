@@ -1,32 +1,31 @@
-import { Storage } from '@ionic/storage';
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/naming-convention */
+import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { App } from '@capacitor/app';
+import { Platform, NavController, AlertController, ModalController, IonRouterOutlet } from '@ionic/angular';
+import { Subscription, interval } from 'rxjs';
+import { Location } from '@angular/common';
+
+import { Network } from '@capacitor/network';
+import { SplashScreen } from '@capacitor/splash-screen';
+
 import { MiscService } from './../services/misc-service';
-
 import { LoggerService } from '../services/logger-service';
-import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy, QueryList, ViewChildren, Renderer2 } from '@angular/core';
-import { AlertController, IonRouterOutlet, NavController, Platform, ModalController } from '@ionic/angular';
-import { ApiSync } from '../providers/api-sync';
-import { MigrationProvider } from '../providers/migration-provider';
 import { AuthService } from '../services/auth-service';
-import { Network } from '@ionic-native/network/ngx';
 import { SyncService } from '../services/sync-service';
-
-import { UserDb } from '../models/db/user-db';
 import { TranslateConfigService } from '../services/translate-config.service';
 import { AppSetting } from '../services/app-setting';
 import { UserService } from '../services/user-service';
-
-import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-
-
-import { Plugins } from '@capacitor/core';
-import { AuthDb } from '../models/db/auth-db';
-import { interval, Subscription } from 'rxjs';
-
 import { ViewerService } from '../services/viewer.service';
-import { DbService } from 'models/db.service';
 
-const { SplashScreen, App } = Plugins;
+import { MigrationProvider } from '../providers/migration-provider';
+import { ApiSync } from '../providers/api-sync';
+
+import { DbService } from '../models/db.service';
+import { UserDb } from '../models/db/user-db';
+import { AuthDb } from '../models/db/auth-db';
+import { Storage } from '@ionic/storage-angular';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -37,38 +36,44 @@ export enum ConnectionStatusEnum {
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss']
+  styleUrls: ['app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
+
+  // hardware back button
+  @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
+
   public appPages = [];
   public versionNumber = '0.0.1';
   public showPageView = false;
-
+  public b: any;
   eventSubscription: Subscription;
 
+  public userDb: UserDb;
+  previousStatus;
+  periodicSync: any;
+  checkAvailableSyncChanges: any;
+
   constructor(
-    public dbService: DbService,
     private platform: Platform,
-    private apiSync: ApiSync,
-    private authService: AuthService,
-    private network: Network,
-    private syncService: SyncService,
-    private translateConfigService: TranslateConfigService,
     private changeDetectorRef: ChangeDetectorRef,
-    private appSetting: AppSetting,
-    private userService: UserService,
     public navCtrl: NavController,
     private ngZone: NgZone,
-    private migrationProvider: MigrationProvider,
-    private router: Router,
-    private alertController: AlertController,
     private location: Location,
-    private loggerService: LoggerService,
-    private miscService: MiscService,
+    private alertController: AlertController,
     private modalCtrl: ModalController,
     private storage: Storage,
+    public dbService: DbService,
+    private apiSync: ApiSync,
+    private authService: AuthService,
+    private syncService: SyncService,
+    private translateConfigService: TranslateConfigService,
+    private appSetting: AppSetting,
+    private userService: UserService,
+    private migrationProvider: MigrationProvider,
+    private loggerService: LoggerService,
+    private miscService: MiscService,
     public viewer: ViewerService,
-    
   ) {
     (async () => {
       await this.platform.ready();
@@ -76,16 +81,9 @@ export class AppComponent implements OnInit, OnDestroy {
     })();
   }
 
-  public userDb: UserDb;
 
-  b: any;
 
-  previousStatus = ConnectionStatusEnum.BeforeSet;
-  periodicSync: any;
-  checkAvailableSyncChanges: any;
 
-  // hardware back button
-  @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
 
   backButtonEvent() {
     this.platform.backButton.subscribe(async (processNextHandler) => {
@@ -133,9 +131,9 @@ export class AppComponent implements OnInit, OnDestroy {
             this.presentAlertConfirm();
           }
           else {
-            this.location.back()
+            this.location.back();
           }
-        })
+        });
       }
     });
 
@@ -179,18 +177,18 @@ export class AppComponent implements OnInit, OnDestroy {
   async initializeApp() {
     this.platform.ready().then(async () => {
 
-      if(this.platform.is('capacitor')) {
+      if (this.platform.is('capacitor')) {
         setTimeout(() => {
           SplashScreen.hide({
             fadeOutDuration: 1000
           });
-        }, 2000)
+        }, 2000);
       }
- 
+
       //debugger;
       await this.migrationProvider.init();
       this.migrationProvider.checkAuthMigration();
-      
+
       this.translateConfigService.setLanguage(this.translateConfigService.getDeviceLanguage());
 
       const result = await this.login();
@@ -262,7 +260,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.initNetwork();
       this.registerEvents();
       this.backButtonEvent();
-    })
+    });
 
     this.loggerService.createLogFile();
   }
@@ -290,40 +288,40 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   protected initNetwork() {
-    if (this.network.type === 'none') {
-      this.previousStatus = ConnectionStatusEnum.Offline;
-    } else {
-      this.previousStatus = ConnectionStatusEnum.Online;
-    }
+    Network.getStatus().then(status => {
+      this.previousStatus = status.connected;
+    });
 
     this.initializeNetworkEvents();
   }
 
   protected initializeNetworkEvents(): void {
-    this.network.onDisconnect().subscribe(() => {
-      if (this.previousStatus === ConnectionStatusEnum.Online) {
-        this.miscService.events.next({ TAG: 'network:offline' });
-        // this.events.publish('network:offline', true);
-        this.previousStatus = ConnectionStatusEnum.Offline;
-      }
-    });
-    this.network.onConnect().subscribe(() => {
-      if (this.previousStatus === ConnectionStatusEnum.Offline) {
-        // this.events.publish('network:online', true);
-        this.miscService.events.next({ TAG: 'network:online' });
-        this.previousStatus = ConnectionStatusEnum.Online;
-        if (this.authService.isLoggedin) {
-          // this.apiSync.pushOneAtTime();
-          if (this.syncService.syncMode.getValue() === 1) {
-            let syncProcessName = this.apiSync.syncProgressStatus.getValue();
-            if (syncProcessName === 'pause') {
-              syncProcessName = 'resume';
+    Network.addListener('networkStatusChange', (status)=> {
+      if(status.connected === false) {
+        if (this.previousStatus === true) {
+          this.miscService.events.next({ TAG: 'network:offline' });
+          // this.events.publish('network:offline', true);
+          this.previousStatus = ConnectionStatusEnum.Offline;
+        }
+      } else {
+        if (this.previousStatus === false) {
+          // this.events.publish('network:online', true);
+          this.miscService.events.next({ TAG: 'network:online' });
+          this.previousStatus = ConnectionStatusEnum.Online;
+          if (this.authService.isLoggedin) {
+            // this.apiSync.pushOneAtTime();
+            if (this.syncService.syncMode.getValue() === 1) {
+              let syncProcessName = this.apiSync.syncProgressStatus.getValue();
+              if (syncProcessName === 'pause') {
+                syncProcessName = 'resume';
+              }
+              this.apiSync.makeSyncProcess(syncProcessName);
             }
-            this.apiSync.makeSyncProcess(syncProcessName);
           }
         }
       }
     });
+
   }
 
   protected async setPages() {
@@ -442,9 +440,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 
   ngOnInit(): void {
@@ -476,7 +472,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         default:
       }
-    })
+    });
 
     // this.events.subscribe('user:logout', () => {
     //   this.logoutAction();

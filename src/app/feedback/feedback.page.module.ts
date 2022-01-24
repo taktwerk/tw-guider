@@ -11,7 +11,11 @@ import { MainPipe } from '../../pipes/main-pipe.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { SharedModule } from 'app/shared/shared.module';
+import { SharedModule } from '../../app/shared/shared.module';
+import { File } from '@ionic-native/file/ngx';
+// import { FileChooser } from '@ionic-native/file-chooser/ngx';
+// import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
+// import { FilePath } from '@ionic-native/file-path/ngx';
 
 @NgModule({
   declarations: [
@@ -31,8 +35,12 @@ import { SharedModule } from 'app/shared/shared.module';
     VirtualScrollerModule,
     AssetviewComponentModule,
     SharedModule
+    // FileChooser,
+    // IOSFilePicker,
+    // FilePath
   ],
   exports: [
   ],
+  providers: [File]
 })
 export class FeedbackPageModule { }

@@ -4,7 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { GuideAssetService } from '../../providers/api/guide-asset-service';
 import { Subscription } from 'rxjs';
 import { MiscService } from '../../services/misc-service';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 
 /**
  * Generated class for the TodoPage page.

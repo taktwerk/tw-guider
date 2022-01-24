@@ -1,5 +1,5 @@
 import { MiscService } from '../services/misc-service';
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders as Headers, HttpHeaders } from '@angular/common/http';
 import { AppSetting } from './app-setting';
 import { LoadingController, ToastController, AlertController } from '@ionic/angular';
@@ -13,9 +13,10 @@ import { Device } from '@ionic-native/device/ngx';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { UserService } from './user-service';
 import { TranslateConfigService } from './translate-config.service';
+import { Storage } from '@ionic/storage-angular';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnInit {
     /**
      * Auth Service
      * @param http
@@ -47,12 +48,17 @@ export class AuthService {
         private alertController: AlertController,
         private userService: UserService,
         private translateConfigService: TranslateConfigService,
-        private miscService: MiscService
+        private miscService: MiscService,
+        private storage: Storage
 
     ) {
         // Create a tmp user until everything has properly been loaded
         this.auth = this.newAuthModel();
         this.auth.userId = 0;
+    }
+
+    async ngOnInit() {
+        await this.storage.create();
     }
 
     static STATE_ERROR_INVALID_LOGIN = -1;
@@ -334,7 +340,7 @@ export class AuthService {
                     if (!onboardingSyncShown) this.miscService.unset_guideShown('onboardingSyncShown');
                 }
                 else {
-                     // show sync button on guide category page
+                    // show sync button on guide category page
                     this.miscService.unset_guideShown('onboardingSyncShown');
 
                     if ((formData && !formData.username) || (!formData && !user.username)) {
