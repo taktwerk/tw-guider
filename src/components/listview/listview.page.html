@@ -10,67 +10,92 @@
         </ion-item-options>
 
         <ion-item detail="true" button (click)="onEdit(step)">
+
           <ion-reorder slot="start" *ngIf="disableReorder == false"></ion-reorder>
+
+          <ion-thumbnail slot="start"
+            *ngIf="step.attached_file_path && appSetting.isValidHttpUrl(step.attached_file_path) === false">
+            <img appImgload [localurl]="step.attached_file_path" alt="" style="height: 100%; width: 100%;"
+              *ngIf="appSetting.isImage(step.attached_file_path)">
+            <video appImgload [localurl]="step.attached_file_path" style="height: 100%; width: 100%;"
+              *ngIf="appSetting.isVideo(step.attached_file_path)"></video>
+          </ion-thumbnail>
 
           <!-- HAS PREVIEW -->
           <!-- audio -->
-          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() != null && step.isAudioFile()">
+          <ion-thumbnail slot="start"
+            *ngIf="step.getFileImagePath() != null && step.isAudioFile() && step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path)">
             <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
           <!-- video -->
-          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() != null &&step.isVideoFile()">
+          <ion-thumbnail slot="start"
+            *ngIf="step.getFileImagePath() != null &&step.isVideoFile() && step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path)">
             <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
           <!-- image -->
-          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() != null &&step.isImageFile()">
+          <ion-thumbnail slot="start"
+            *ngIf="step.getFileImagePath() != null &&step.isImageFile() && step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path)">
             <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
           <!-- pdf -->
-          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() != null && step.isPdf()">
+          <ion-thumbnail slot="start"
+            *ngIf="step.getFileImagePath() != null && step.isPdf() && step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path)">
             <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
           <!-- 3d -->
-          <ion-thumbnail slot="start" *ngIf="step.is3dFile()" class="no__preview">
+          <ion-thumbnail slot="start"
+            *ngIf="step.is3dFile() && step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path)"
+            class="no__preview">
             <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
           <!-- NO PREVIEW | SHOW ICON WITH BACKGROUND -->
           <!-- audio -->
-          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null && step.isAudioFile()" class="no__preview">
+          <ion-thumbnail slot="start"
+            *ngIf="step.getFileImagePath() == null && step.isAudioFile() && step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path)"
+            class="no__preview">
             <model-assetcomponent [preventDefaultClickFunction]=" true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false">
             </model-assetcomponent>
           </ion-thumbnail>
 
           <!-- video -->
-          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null &&step.isVideoFile()" class="no__preview">
+          <ion-thumbnail slot="start"
+            *ngIf="step.getFileImagePath() == null &&step.isVideoFile() && step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path)"
+            class="no__preview">
             <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
           <!-- image -->
-          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null &&step.isImageFile()" class="no__preview">
+          <ion-thumbnail slot="start"
+            *ngIf="step.getFileImagePath() == null &&step.isImageFile() && step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path)"
+            class="no__preview">
             <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
           <!-- pdf -->
-          <ion-thumbnail slot="start" *ngIf="step.getFileImagePath() == null && step.isPdf()" class="no__preview">
+          <ion-thumbnail slot="start"
+            *ngIf="step.getFileImagePath() == null && step.isPdf() && step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path)"
+            class="no__preview">
             <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
 
           <!-- text  -->
-          <ion-thumbnail slot="start" *ngIf="!step.isExistFormatFile()" class="no__preview">
+          <ion-thumbnail slot="start"
+            *ngIf="!step.isExistFormatFile() && !((step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path)) || (step.attached_file && appSetting.isValidHttpUrl(step.attached_file_path) === false))"
+            class="no__preview">
             <model-assetcomponent [preventDefaultClickFunction]="true" [model]="step" [isthumbnail]="true"
               [floatingIcon]="false"></model-assetcomponent>
           </ion-thumbnail>
@@ -82,6 +107,7 @@
             </div>
           </ion-label>
         </ion-item>
+
       </ion-item-sliding>
     </ion-reorder-group>
   </ion-list>

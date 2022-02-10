@@ -12,6 +12,8 @@ import { LanguageSelectorComponentModule } from '../../components/language-selec
 import { TranslateModule } from '@ngx-translate/core';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { SharedModule } from '../../app/shared/shared.module';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
+import { File } from '@ionic-native/file/ngx';
 
 @NgModule({
     declarations: [
@@ -36,6 +38,7 @@ import { SharedModule } from '../../app/shared/shared.module';
         AssetviewComponentModule,
         SharedModule
     ],
+    providers: [PhotoViewer, File]
 })
 
 export class FeedbackAddEditModule { }

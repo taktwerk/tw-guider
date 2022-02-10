@@ -4,7 +4,7 @@
 import { UserService } from './../../services/user-service';
 
 import { MiscService } from './../../services/misc-service';
-import { ChangeDetectorRef, Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, Input, AfterViewInit } from '@angular/core';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
 import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
 import { GuideChildService } from '../../providers/api/guide-child-service';
@@ -88,6 +88,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
   async showAllActivity() {
     const guideActivity: any = this.state.getState('CategoriesListPage_guideActivity');
+    console.log("check guideactivity", guideActivity);
     if (guideActivity != null) {
       this.guideActivity = await guideActivity;
       this.isPreStateLoad = true;
@@ -226,7 +227,10 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     }
   }
 
+
+
   async ionViewWillEnter() {
+    await this.showAllActivity();
     this.onboardingSyncShown = await this.miscService.get_guideShown('onboardingSyncShown');
     if (this.isStartSync) {
       this.miscService.set_guideShown('onboardingSyncShown');

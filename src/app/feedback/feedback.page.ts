@@ -4,7 +4,7 @@ import { FeedbackService } from '../../providers/api/feedback-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
-import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 import { MiscService } from '../../services/misc-service';
 import { SyncIndexService } from '../../providers/api/sync-index-service';
 import { isPlatformBrowser } from '@angular/common';
+import { AppSetting } from 'src/services/app-setting';
 
 @Component({
   selector: 'feedback-page',
@@ -46,6 +47,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
     private photoViewer: PhotoViewer,
     private navCtrl: NavController,
     private router: Router,
+    private appSetting: AppSetting,
     private videoService: VideoService,
     private pictureService: PictureService,
     private miscService: MiscService,
@@ -63,15 +65,15 @@ export class FeedbackPage implements OnInit, OnDestroy {
     // console.log(this.reference_id, "this.reference_id")
   }
 
-  isValidHttpUrl(string) {
-    let url;
-    try {
-      url = new URL(string);
-    } catch (_) {
-      return false;
-    }
-    return url.protocol === "http:" || url.protocol === "https:";
-  };
+  // isValidHttpUrl(string) {
+  //   let url;
+  //   try {
+  //     url = new URL(string);
+  //   } catch (_) {
+  //     return false;
+  //   }
+  //   return url.protocol === "http:" || url.protocol === "https:";
+  // };
 
   public async setModels() {
     const user = await this.authService.getLastUser();
@@ -148,6 +150,22 @@ export class FeedbackPage implements OnInit, OnDestroy {
     return item;
   }
 
+  // isImage(base64Data) {
+  //   let mimeType = base64Data.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0].split('/')[0];
+  //   if (mimeType == 'image') {
+  //     return true
+  //   }
+  //   return false
+  // }
+
+  // isVideo(base64Data) {
+  //   let mimeType = base64Data.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0].split('/')[0];
+  //   if (mimeType == 'video') {
+  //     return true
+  //   }
+  //   return false
+  // }
+
   openAddEditPage(feedbackId?: number) {
     const feedbackNavigationExtras: NavigationExtras = {
       queryParams: {
@@ -158,6 +176,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
         guideId: this.guideId
       },
     };
+    console.log("check feedbackNavigationExtras", feedbackNavigationExtras);
     this.router.navigate(['/feedback/save/' + feedbackId], feedbackNavigationExtras);
   }
 

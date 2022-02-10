@@ -129,6 +129,6 @@ const routes: Routes = [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
     TranslateModule
   ],
-  exports: [RouterModule]
+  exports: [RouterModule, TranslateModule]
 })
 export class AppRoutingModule { }

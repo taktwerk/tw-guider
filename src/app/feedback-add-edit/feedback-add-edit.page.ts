@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild, ElementRef, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { AlertController, IonBackButtonDelegate, Platform, NavController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
-import { DownloadService } from '../../services/download-service';
+import { DownloadService, RecordedFile } from '../../services/download-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
 import { FeedbackService } from '../../providers/api/feedback-service';
 import { HttpClient } from '../../services/http-client';
@@ -12,6 +13,7 @@ import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
 import { ApiSync } from '../../providers/api-sync';
 import { isPlatformBrowser } from '@angular/common';
+import { AppSetting } from 'src/services/app-setting';
 
 @Component({
   selector: 'feedback-add-edit-page',
@@ -54,6 +56,7 @@ export class FeedbackAddEditPage implements OnInit {
     public alertController: AlertController,
     private translateConfigService: TranslateConfigService,
     private router: Router,
+    private appSetting: AppSetting,
     private videoService: VideoService,
     private pictureService: PictureService,
     private apiSync: ApiSync,
@@ -259,6 +262,7 @@ export class FeedbackAddEditPage implements OnInit {
     this.downloadService.makePhoto(1000, 1000)
       .then((recordedFile) => this.model.setFile(recordedFile))
       .catch((e) => console.log('FeedbackModal', 'addPhotoUsingCamera', e));
+    console.log("check recorded file in feedback add edit--->", RecordedFile);
   }
 
   async getDefaultTitle() {

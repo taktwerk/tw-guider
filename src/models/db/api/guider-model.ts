@@ -178,6 +178,7 @@ export class GuiderModel extends DbApiModel {
             this.db.query(query).then((res) => {
                 this.guide_collection = [];
                 if (res.rows.length > 0) {
+                    console.log('guide_collection response', res);
                     for (let i = 0; i < res.rows.length; i++) {
                         const obj: GuideChildModel = new GuideChildModel();
                         obj.platform = this.platform;
@@ -187,7 +188,7 @@ export class GuiderModel extends DbApiModel {
                         this.guide_collection.push(obj);
                     }
                 }
-                // console.log('this.guide_collection', this.guide_collection);
+                console.log('this.guide_collection', this.guide_collection);
                 resolve(this.guide_collection);
             }).catch((err) => {
                 resolve(this.guide_collection);

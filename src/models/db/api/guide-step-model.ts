@@ -16,6 +16,7 @@ export class GuideStepModel extends DbApiModel {
     public apiPk = 'id';
 
     //members
+    public _id: number;
     public guide_id: number;
     public order_number: number;
     public title: string;
@@ -47,7 +48,7 @@ export class GuideStepModel extends DbApiModel {
             name: GuideStepModel.COL_ATTACHED_FILE,
             url: GuideStepModel.COL_API_ATTACHED_FILE_PATH,
             localPath: GuideStepModel.COL_LOCAL_ATTACHED_FILE,
-            
+
             thumbnail: {
                 name: GuideStepModel.COL_THUMB_ATTACHED_FILE,
                 url: GuideStepModel.COL_API_THUMB_ATTACHED_FILE_PATH,

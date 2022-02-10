@@ -162,8 +162,8 @@ export class ApiSync implements OnDestroy {
         this.initializeEvents();
 
         this.syncService.resumeMode.subscribe((mode) => {
-            if (mode) {this.apiPushServices.guide_view_history = this.guideViewHistoryService;}
-            else {delete this.apiPushServices.guide_view_history;}
+            if (mode) { this.apiPushServices.guide_view_history = this.guideViewHistoryService; }
+            else { delete this.apiPushServices.guide_view_history; }
         });
 
         // reset application data
@@ -194,6 +194,19 @@ export class ApiSync implements OnDestroy {
             }
         });
     }
+
+    replacerFunc = () => {
+        const visited = new WeakSet();
+        return (key, value) => {
+            if (typeof value === "object" && value !== null) {
+                if (visited.has(value)) {
+                    return;
+                }
+                visited.add(value);
+            }
+            return value;
+        };
+    };
 
     initializeEvents() {
 
@@ -614,23 +627,28 @@ export class ApiSync implements OnDestroy {
             this.loggerService.getLogger().info('Init Status', data);
 
             if (!data) {
+                console.log("check data when sync1", data);
                 this.isStartSyncBehaviorSubject.next(false);
                 resolve(false);
                 return;
             }
             if (!this.appSetting.isMigratedDatabase()) {
+                console.log("check data when sync2", data);
                 resolve(false);
                 return;
             }
             if (this.isOffNetwork() || this.isBusy) {
+                console.log("check data when sync3", data);
                 resolve(false);
                 return;
             }
+            console.log("check data when sync final", data);
 
             this.userService.userDb.userSetting.syncStatus = syncStatus;
             await this.userService.userDb.save();
 
             this.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
+            // console.log("check sync progress status", JSON.stringify(this.syncProgressStatus, this.replacerFunc()));
             this.isPrepareSynData.next(true);
             let isCanPullData = false;
             let countOfSyncedData = 0;
@@ -644,8 +662,8 @@ export class ApiSync implements OnDestroy {
                 this.noDataForSync.next(true);
                 this.lastModelUpdatedAt;
                 isCanPullData = await this.prepareDataForSavingPullData(countOfSyncedData);
-                // console.log('isCanPullData', isCanPullData);
-                // console.log('this.countOfAllChangedItems', this.countOfAllChangedItems);
+                console.log('isCanPullData', isCanPullData);
+                console.log('countOfSyncedData', countOfSyncedData);
                 this.loggerService.getLogger().info('isCanPullData', isCanPullData);
                 this.loggerService.getLogger().info('countOfAllChangedItems', this.countOfAllChangedItems);
 
@@ -676,8 +694,8 @@ export class ApiSync implements OnDestroy {
                     }
 
                     this.syncData = pullData.models;
-                    // console.log("Sync Data ", this.syncData);
-                    this.loggerService.getLogger().info('Sync Data', this.syncData);
+                    console.log("Sync Data ", this.syncData);
+                    this.loggerService.getLogger().info('Sync Data', JSON.stringify(this.syncData));
 
                     for (const key of Object.keys(this.syncData)) {
                         countOfSyncedData += this.syncData[key].length;
@@ -1000,85 +1018,90 @@ export class ApiSync implements OnDestroy {
             const isInsert = !!!model.idApi;
             await model.beforePushDataToServer(isInsert);
 
-            const jsonBody = JSON.stringify(model.getBodyJson());
+            try {
+                const jsonBody = JSON.stringify(model.getBodyJson());
 
-            return this.http
-                .post(url, jsonBody)
-                .toPromise()
-                .then(async (data) => {
-                    if (this.pushProgressStatus.getValue() === 'failed') {
-                        this.isBusyPush = false;
-                        resolve(false);
-                        return;
-                    }
-                    // search error
-                    let isError = false;
-                    Object.keys(data).forEach((key) => {
-                        const recordResponse = data[key];
-                        if (recordResponse.errors) {
-                            isError = true;
-                        }
-                    });
-                    if (isError) {
-                        resolve(false);
-                        return;
-                    }
-                    const record = data[0];
-                    // get model by local id and update received primary key from api
-                    try {
-                        const dbModel = await service.dbModelApi.findById(record._id, true);
-                        if (!dbModel) {
+
+                return this.http
+                    .post(url, jsonBody)
+                    .toPromise()
+                    .then(async (data) => {
+                        if (this.pushProgressStatus.getValue() === 'failed') {
+                            this.isBusyPush = false;
                             resolve(false);
                             return;
                         }
-                        if (dbModel.deleted_at || dbModel.local_deleted_at) {
-                            dbModel.remove().then(async () => {
-                                this.userService.userDb.userSetting.appDataVersion++;
-                                await this.userService.userDb.save();
-                            });
-                            this.saveSuccessPushedDataStatistic();
-                            resolve(true);
+                        // search error
+                        let isError = false;
+                        Object.keys(data).forEach((key) => {
+                            const recordResponse = data[key];
+                            if (recordResponse.errors) {
+                                isError = true;
+                            }
+                        });
+                        if (isError) {
+                            resolve(false);
                             return;
                         }
-                        const dbModelApi = dbModel as DbApiModel;
-                        dbModelApi.idApi = record[dbModelApi.apiPk];
-                        dbModelApi.updateCondition = [[dbModelApi.COL_ID, record._id]];
-                        await dbModelApi.save(
-                            false,
-                            true,
-                            dbModelApi.COL_ID + '=' + record._id,
-                            false
-                        );
-                        this.userService.userDb.userSetting.appDataVersion++;
-                        await this.userService.userDb.save();
-                        await service.pushFiles(dbModel, this.userService.userDb);
-                        const additionalModelsForPushDataToServer = await dbModelApi.afterPushDataToServer(isInsert);
-                        for (let i = 0; i < additionalModelsForPushDataToServer.length; i++) {
-                            const additionalModel = additionalModelsForPushDataToServer[i];
-                            const urlForAddtinoalPush = this.appSetting.getApiUrl() + additionalModel.loadUrl + '/batch';
-                            const serviceForAdditionalModel = this.apiPushServices[additionalModel.TABLE_NAME];
-                            if (serviceForAdditionalModel) {
-                                const isPushedData = await this.pushDataToServer(
-                                    urlForAddtinoalPush,
-                                    additionalModelsForPushDataToServer[i],
-                                    serviceForAdditionalModel,
-                                    true
-                                );
-                                if (!isPushedData) {
-                                    resolve(false);
-                                    return;
+                        const record = data[0];
+                        // get model by local id and update received primary key from api
+                        try {
+                            const dbModel = await service.dbModelApi.findById(record._id, true);
+                            if (!dbModel) {
+                                resolve(false);
+                                return;
+                            }
+                            if (dbModel.deleted_at || dbModel.local_deleted_at) {
+                                dbModel.remove().then(async () => {
+                                    this.userService.userDb.userSetting.appDataVersion++;
+                                    await this.userService.userDb.save();
+                                });
+                                this.saveSuccessPushedDataStatistic();
+                                resolve(true);
+                                return;
+                            }
+                            const dbModelApi = dbModel as DbApiModel;
+                            dbModelApi.idApi = record[dbModelApi.apiPk];
+                            dbModelApi.updateCondition = [[dbModelApi.COL_ID, record._id]];
+                            await dbModelApi.save(
+                                false,
+                                true,
+                                dbModelApi.COL_ID + '=' + record._id,
+                                false
+                            );
+                            this.userService.userDb.userSetting.appDataVersion++;
+                            await this.userService.userDb.save();
+                            await service.pushFiles(dbModel, this.userService.userDb);
+                            const additionalModelsForPushDataToServer = await dbModelApi.afterPushDataToServer(isInsert);
+                            for (let i = 0; i < additionalModelsForPushDataToServer.length; i++) {
+                                const additionalModel = additionalModelsForPushDataToServer[i];
+                                const urlForAddtinoalPush = this.appSetting.getApiUrl() + additionalModel.loadUrl + '/batch';
+                                const serviceForAdditionalModel = this.apiPushServices[additionalModel.TABLE_NAME];
+                                if (serviceForAdditionalModel) {
+                                    const isPushedData = await this.pushDataToServer(
+                                        urlForAddtinoalPush,
+                                        additionalModelsForPushDataToServer[i],
+                                        serviceForAdditionalModel,
+                                        true
+                                    );
+                                    if (!isPushedData) {
+                                        resolve(false);
+                                        return;
+                                    }
                                 }
                             }
-                        }
 
-                        if (!isAdditionalData) {
-                            this.saveSuccessPushedDataStatistic();
+                            if (!isAdditionalData) {
+                                this.saveSuccessPushedDataStatistic();
+                            }
+                            resolve(true);
+                        } catch (e) {
+                            resolve(false);
                         }
-                        resolve(true);
-                    } catch (e) {
-                        resolve(false);
-                    }
-                });
+                    });
+            } catch (e) {
+                console.log("check error", e);
+            }
         });
     }
 

@@ -171,5 +171,31 @@ export class AppSetting {
 
         await alert.present();
     }
+
+    isImage(base64Data) {
+        let mimeType = base64Data.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0].split('/')[0];
+        if (mimeType == 'image') {
+            return true
+        }
+        return false
+    }
+
+    isVideo(base64Data) {
+        let mimeType = base64Data.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0].split('/')[0];
+        if (mimeType == 'video') {
+            return true
+        }
+        return false
+    }
+
+    isValidHttpUrl(string) {
+        let url;
+        try {
+            url = new URL(string);
+        } catch (_) {
+            return false;
+        }
+        return url.protocol === "http:" || url.protocol === "https:";
+    };
 }
 

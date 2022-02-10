@@ -61,6 +61,6 @@ export class PdfViewerComponent implements OnInit {
     console.log(this.url);
     this.url = this.download.getWebviewFileSrc(this.url);
     this.embeddedPdfViewer.pdfSrc = this.url;
-    this.embeddedPdfViewer.refresh();
+    // this.embeddedPdfViewer.refresh();
   }
 }

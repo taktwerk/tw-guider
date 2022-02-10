@@ -11,6 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 
 @NgModule({
     imports: [
@@ -30,6 +31,6 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
         TranslateModule.forChild()
     ],
     declarations: [HomePage],
-    providers: [QRScanner, BarcodeScanner]
+    providers: [QRScanner, BarcodeScanner, PhotoViewer]
 })
 export class HomePageModule { }

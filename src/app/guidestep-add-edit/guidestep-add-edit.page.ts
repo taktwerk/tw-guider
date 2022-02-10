@@ -3,12 +3,13 @@ import { GuiderModel } from './../../models/db/api/guider-model';
 import { GuiderService } from './../../providers/api/guider-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GuideStepModel } from './../../models/db/api/guide-step-model';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { GuideStepService } from '../../providers/api/guide-step-service';
 import { DownloadService } from '../../services/download-service';
 import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
-import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { AuthService } from '../../services/auth-service';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { AlertController, ModalController, ToastController, Platform } from '@ionic/angular';
@@ -17,6 +18,8 @@ import { HttpClient } from '../../services/http-client';
 import { CKEditorComponent } from './../../components/ckeditor/ckeditor.page';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { UserService } from '../../services/user-service';
+import { isPlatformBrowser } from '@angular/common';
+import { AppSetting } from 'src/services/app-setting';
 
 @Component({
   selector: 'app-guidestep-add-edit',
@@ -45,7 +48,8 @@ export class GuidestepAddEditPage implements OnInit {
 
   ckeConfig
 
-  title = ""
+  title = "";
+  testBrowser: boolean;
 
   constructor(
     private translateConfigService: TranslateConfigService,
@@ -60,13 +64,17 @@ export class GuidestepAddEditPage implements OnInit {
     public alertController: AlertController,
     private apiSync: ApiSync,
     private router: Router,
+    public appSetting: AppSetting,
     public http: HttpClient,
     private modalController: ModalController,
     private userService: UserService,
     private toastController: ToastController,
     public platform: Platform,
-    public miscService: MiscService
+    public miscService: MiscService,
+    @Inject(PLATFORM_ID) platformId: string
   ) {
+
+    this.testBrowser = isPlatformBrowser(platformId);
 
     this.activatedRoute.queryParams.subscribe((param) => {
       this.guideId = param.guideId;
@@ -76,6 +84,9 @@ export class GuidestepAddEditPage implements OnInit {
       if (this.action == 'edit') {
         this.guideStepService.dbModelApi.findAllWhere(['guide_id', this.guideId], 'order_number ASC').then(results => {
           this.model = results.filter(model => {
+            if (model.idApi == null) {
+              model.idApi = model._id;
+            }
             return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT] && model.idApi == this.stepId
           })[0];
           this.previousDescription = this.model.description_html;

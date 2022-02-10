@@ -16,6 +16,7 @@ import { ListviewComponentModule } from '../../components/listview/listview.modu
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
 import { File } from '@ionic-native/file/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 // import { FileChooser } from '@ionic-native/file-chooser/ngx';
 // import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 // import { FilePath } from '@ionic-native/file-path/ngx';
@@ -39,6 +40,6 @@ import { File } from '@ionic-native/file/ngx';
     // FilePath
   ],
   declarations: [EditguidePage],
-  providers: [File]
+  providers: [File, PhotoViewer]
 })
 export class EditguidePageModule { }

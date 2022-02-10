@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth-service';
 import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
 import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
+import { AppSetting } from 'src/services/app-setting';
 
 @Component({
   selector: 'listview-component',
@@ -46,7 +47,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     public alertController: AlertController,
     private translateConfigService: TranslateConfigService,
     public http: HttpClient,
-
+    private appSetting: AppSetting,
     public changeDetectorRef: ChangeDetectorRef,
     public authService: AuthService,
     private guideAssetService: GuideAssetService,
@@ -88,7 +89,10 @@ export class ListViewComponent implements OnInit, OnDestroy {
   }
 
   onEdit(step: GuideStepModel) {
-    let navigationExtras: NavigationExtras = {
+    if (step.idApi == null) {
+      step.idApi = step._id;
+    }
+    const navigationExtras: NavigationExtras = {
       queryParams: {
         guideId: step.guide_id,
         stepId: step.idApi,

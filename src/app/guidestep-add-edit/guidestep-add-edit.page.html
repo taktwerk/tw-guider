@@ -8,8 +8,10 @@
 
     <ion-buttons slot="end" class="header_cta">
       <ion-button (click)="showCancelAlert()">
-        <ion-icon name="chevron-back" style="color: #ffffff;" *ngIf="platform.is('ios')"></ion-icon>
-        <ion-icon name="arrow-back" style="color: #ffffff;" *ngIf="platform.is('android')"></ion-icon>
+        <ion-icon name="chevron-back" style="color: #ffffff;"
+          *ngIf="platform.is('ios') && (action == 'add' || action == 'edit')"></ion-icon>
+        <ion-icon name="arrow-back" style="color: #ffffff;"
+          *ngIf="platform.is('android') && (action == 'add' || action == 'edit')"></ion-icon>
       </ion-button>
     </ion-buttons>
 
@@ -60,7 +62,28 @@
       </ion-item>
     </ion-list>
 
-    <div *ngIf="model.attached_file" class="top-file" style="padding: 8px;">
+    <!-- <div *ngIf="testBrowser && model.attached_file_path">
+      <img appImgload [localurl]="model.attached_file_path" alt="">
+    </div>
+
+    <div *ngIf="testBrowser && model.attached_file_path">
+      <video appImgload [localurl]="model.attached_file_path"></video>
+    </div> -->
+
+    <!-- <div *ngIf="model.attached_file" class="top-file" style="padding: 8px;">
+      <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
+      </model-assetcomponent>
+    </div> -->
+
+    <div
+      *ngIf="(testBrowser && model.attached_file_path) && appSetting.isValidHttpUrl(model.attached_file_path) === false">
+      <img appImgload [localurl]="model.attached_file_path" alt="" style="height: 100%; width: 100%;"
+        *ngIf="appSetting.isImage(model.attached_file_path)">
+      <video appImgload [localurl]="model.attached_file_path" style="height: 100%; width: 100%;"
+        *ngIf="appSetting.isVideo(model.attached_file_path)"></video>
+    </div>
+
+    <div *ngIf="appSetting.isValidHttpUrl(model.attached_file_path)" class="top-file">
       <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
       </model-assetcomponent>
     </div>

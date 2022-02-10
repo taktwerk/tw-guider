@@ -9,6 +9,7 @@ import { Viewer3dModelComponentModule } from '../viewer-3d-model-component/viewe
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '../../app/shared/shared.module';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { SharedModule } from '../../app/shared/shared.module';
   exports: [
     AssetviewComponent
   ],
-  declarations: [AssetviewComponent]
+  declarations: [AssetviewComponent],
+  providers: [PhotoViewer]
 })
 export class AssetviewComponentModule { }

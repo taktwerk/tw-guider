@@ -61,12 +61,37 @@
       </ion-item>
     </ion-list>
 
-    <div *ngIf="testBrowser && model.attached_file_path">
+    <!-- <div *ngIf="testBrowser && model.attached_file_path">
       <img appImgload [localurl]="model.attached_file_path" alt="">
+    </div>
+
+    <div *ngIf="testBrowser && model.attached_file_path">
+      <video appImgload [localurl]="model.attached_file_path"></video>
     </div>
 
     <div *ngIf="model.attached_file && !testBrowser" class="top-file">
       <model-assetcomponent [model]="model" mini="true"></model-assetcomponent>
+    </div> -->
+
+    <!-- <div *ngIf="testBrowser && model.attached_file_path">
+          <img appImgload [localurl]="model.attached_file_path" alt="">
+        </div>
+    
+        <div *ngIf="testBrowser && model.attached_file_path">
+          <video appImgload [localurl]="model.attached_file_path"></video>
+        </div> -->
+
+    <div
+      *ngIf="(testBrowser && model.attached_file_path) && appSetting.isValidHttpUrl(model.attached_file_path) === false">
+      <img appImgload [localurl]="model.attached_file_path" alt="" style="height: 100%; width: 100%;"
+        *ngIf="appSetting.isImage(model.attached_file_path)">
+      <video appImgload [localurl]="model.attached_file_path" style="height: 100%; width: 100%;"
+        *ngIf="appSetting.isVideo(model.attached_file_path)"></video>
+    </div>
+
+    <div *ngIf="appSetting.isValidHttpUrl(model.attached_file_path)" class="top-file">
+      <model-assetcomponent [model]="model" style="height: 100%; width: 100%;" mini="true">
+      </model-assetcomponent>
     </div>
 
     <ion-row class="buttons">

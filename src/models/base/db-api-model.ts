@@ -465,6 +465,7 @@ export abstract class DbApiModel extends DbBaseModel {
             this.TABLE_NAME,
             authorizationToken
         );
+        console.log("check final path on DB----->", finalPath);
         if (!finalPath) {
             return false;
         }

@@ -21,7 +21,7 @@ export class CKEditorComponent implements OnInit {
   constructor(
     public platform: Platform,
     private storage: Storage,
-     private modalController: ModalController) { }
+    private modalController: ModalController) { }
 
   ngOnInit() {
     this.ckeditorContent = this.content || '';

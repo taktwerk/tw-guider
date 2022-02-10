@@ -14,6 +14,7 @@ import { GuideListComponentModule } from '../../components/guide-list-component/
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { SyncModalComponentModule } from 'src/components/sync-modal-component/sync-modal-component.module';
 import { File } from '@ionic-native/file/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 
 @NgModule({
     imports: [
@@ -36,6 +37,6 @@ import { File } from '@ionic-native/file/ngx';
         GuideListComponentModule,
     ],
     declarations: [CategoriesListPage],
-    providers: [File]
+    providers: [File, PhotoViewer]
 })
 export class CategoriesListModule { }

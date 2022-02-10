@@ -1,11 +1,12 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
 import { LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
 
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
-import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { VideoService } from '../../services/video-service';
 import { Viewer3dService } from '../../services/viewer-3d-service';
 import { PictureService } from '../../services/picture-service';
@@ -17,6 +18,8 @@ import { DbProvider } from '../../providers/db-provider';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { LoggerService } from '../../services/logger-service';
 import { MiscService } from '../../services/misc-service';
+import { AppSetting } from 'src/services/app-setting';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'guide-step-content-component',
@@ -24,7 +27,7 @@ import { MiscService } from '../../services/misc-service';
   styleUrls: ['guide-step-content-component.scss'],
 })
 export class GuideStepContentComponent implements OnInit, OnDestroy {
-  
+
   ngOnDestroy(): void {
     console.log('destroy GuideStepContentComponent');
   }
@@ -49,27 +52,31 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   isExistFormatFile: boolean;
   isAudioFile: boolean;
   isPdf: boolean;
+  testBrowser: boolean;
 
   @Output() loaded: EventEmitter<void> = new EventEmitter<void>();
 
   public params;
 
   constructor(
-  
+
     private photoViewer: PhotoViewer,
     public authService: AuthService,
     public changeDetectorRef: ChangeDetectorRef,
     public modalController: ModalController,
     public downloadService: DownloadService,
     public loggerService: LoggerService,
-
+    private appSetting: AppSetting,
     private router: Router,
     private videoService: VideoService,
     private viewer3dService: Viewer3dService,
     public navCtrl: NavController,
     private pictureService: PictureService,
-    public miscService: MiscService
-  ) { }
+    public miscService: MiscService,
+    @Inject(PLATFORM_ID) platformId: string
+  ) {
+    this.testBrowser = isPlatformBrowser(platformId);
+  }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
     const filePath = basePath;
@@ -87,7 +94,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
       }
 
       this.videoService.playVideo(fileUrl, fileTitle);
-      
+
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {

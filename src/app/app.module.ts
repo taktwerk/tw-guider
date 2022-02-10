@@ -62,7 +62,7 @@ import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-componen
 // import { DatePipe } from '@angular/common';
 import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
-import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { VideoService } from 'src/services/video-service';
 import { Viewer3dService } from 'src/services/viewer-3d-service';
 import { PictureService } from 'src/services/picture-service';
@@ -72,6 +72,11 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CKEditorPageModule } from 'src/components/ckeditor/ckeditor.module';
 import { SharedModule } from './shared/shared.module';
 import { LoggerService } from 'src/services/logger-service';
+import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { CommonModule } from '@angular/common';
+import { ImageEditorPageModule } from 'src/components/imageeditor/imageeditor.module';
 
 export function languageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -89,7 +94,7 @@ export function initializeApp(logService: LoggerService) {
     HttpClientModule,
     LoggerModule.forRoot({
       level: NgxLoggerLevel.DEBUG,
-      serverLogLevel: NgxLoggerLevel.INFO
+      serverLogLevel: NgxLoggerLevel.ERROR
     }),
     TranslateModule.forRoot({
       loader: {
@@ -102,7 +107,10 @@ export function initializeApp(logService: LoggerService) {
     PdfViewerComponentModule,
     PdfViewerModule,
     CKEditorPageModule,
-    SharedModule
+    CKEditorModule,
+    SharedModule,
+    CommonModule,
+    ImageEditorPageModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     MigrationService,
@@ -156,6 +164,7 @@ export function initializeApp(logService: LoggerService) {
     VideoService,
     Viewer3dService,
     PictureService,
+    StreamingMedia,
     LoggerService,
   {
     provide: APP_INITIALIZER,

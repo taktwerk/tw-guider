@@ -11,6 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HtmlDescriptionComponentModule } from '../html-description/html-description-component.module';
 import { SyncSpinnerComponentModule } from '../sync-spinner-component/sync-spinner-component.module';
 import { Viewer3dModelComponentModule } from '../viewer-3d-model-component/viewer-3d-model-component.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { Viewer3dModelComponentModule } from '../viewer-3d-model-component/viewe
     FontAwesomeModule,
     Viewer3dModelComponentModule,
     HtmlDescriptionComponentModule,
-    AssetviewComponentModule
+    AssetviewComponentModule,
+    SharedModule
   ],
   exports: [
     ListViewComponent

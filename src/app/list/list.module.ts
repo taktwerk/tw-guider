@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { GuideListComponentModule } from "../../components/guide-list-component/guide-list-component.module";
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { File } from '@ionic-native/file/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 
 @NgModule({
     imports: [
@@ -35,6 +36,6 @@ import { File } from '@ionic-native/file/ngx';
         GuideListComponentModule
     ],
     declarations: [ListPage],
-    providers: [File]
+    providers: [File, PhotoViewer]
 })
 export class ListPageModule { }
