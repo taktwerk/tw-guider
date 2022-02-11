@@ -145,6 +145,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   async findAllGuideActivity() {
     // syncIndexify guides
     this.guideActivity = await this.guideViewHistoryService.findAll(this.searchValue);
+    console.log("check guide activity by find all guide activity method", this.guideActivity);
     if (this.guideActivity.length > 0) {
       const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideActivity, this.guideActivity[0].TABLE_NAME);
       this.guideActivity = syncedList;

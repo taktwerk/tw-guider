@@ -107,7 +107,7 @@ export class GuideViewHistoryService extends ApiService {
             this.dbModelApi.searchAllAndGetRowsResult(null, orderBy, null, join, from).then(res => {
                 console.log('new query', res);
                 if (res && res.rows && res.rows.length > 0) {
-                    console.log(res);
+                    console.log("new query again", res);
                     for (let i = 0; i < res.rows.length; i++) {
 
                         const item = res.rows.item(i);
@@ -121,11 +121,15 @@ export class GuideViewHistoryService extends ApiService {
                         obj.setProtocolTemplate();
                         obj.step = item.step;
                         obj.count = item.count;
+                        obj.data = item;
+                        obj.guide_id = item.guide_id;
+                        obj.parent_guide_id = item.parent_guide_id;
                         entries.push(obj);
                     }
+                    console.log("entries", entries);
+                    resolve(entries);
                 }
-                console.log("entries", entries);
-                resolve(entries);
+
             }).catch(e => {
                 resolve(entries);
             });
