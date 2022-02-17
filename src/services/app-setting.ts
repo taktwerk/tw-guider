@@ -27,6 +27,7 @@ export class AppSetting {
     public isWasQrCodeSetup = false;
     public isWasQrCodeSetupSubscribtion: BehaviorSubject<boolean>;
     public dbMigrationVersion = '1';
+    public isActivity = false;
 
     private defaultData = {
         mode: AppConfigurationModeEnum.ONLY_CONFIGURE,

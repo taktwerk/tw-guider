@@ -127,8 +127,9 @@ export class GuideViewHistoryService extends ApiService {
                         entries.push(obj);
                     }
                     console.log("entries", entries);
-                    resolve(entries);
+
                 }
+                resolve(entries);
 
             }).catch(e => {
                 resolve(entries);

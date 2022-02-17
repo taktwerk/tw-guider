@@ -227,6 +227,15 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     }
   }
 
+  openGuide(guideStep) {
+    if (guideStep.parent_guide_id == 0) {
+      this.router.navigate(['/guide/' + guideStep.idApi]);
+    } else {
+      this.appSetting.isActivity = true;
+      this.router.navigate(['/guide/' + guideStep.idApi + '/' + guideStep.parent_guide_id]);
+    }
+  }
+
 
 
   async ionViewWillEnter() {

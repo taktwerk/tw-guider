@@ -68,6 +68,7 @@ import { Subject, Subscription } from 'rxjs';
 import { SyncIndexService } from '../../providers/api/sync-index-service';
 import { HelpingService } from '../../controller/helping.service';
 import { ViewerService } from '../../services/viewer.service';
+import { AppSetting } from 'src/services/app-setting';
 
 @Component({
   selector: 'app-guide',
@@ -166,6 +167,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     private element: ElementRef,
     public helper: HelpingService,
     public viewer: ViewerService,
+    public appSetting: AppSetting
   ) {
     this.authService.checkAccess('guide');
     if (this.authService.auth && this.authService.auth.additionalInfo && this.authService.auth.additionalInfo.roles) {
@@ -719,7 +721,14 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         guideId: this.parentCollectionId,
       },
     };
-    this.router.navigate(['/guide-collection/' + this.parentCollectionId], feedbackNavigationExtras);
+    console.log("check feedbackNavigationExtras in guide page", feedbackNavigationExtras);
+    if (this.appSetting.isActivity == false) {
+      this.router.navigate(['/guide-collection/' + this.parentCollectionId], feedbackNavigationExtras);
+    } else {
+      this.appSetting.isActivity = false;
+      this.router.navigate(['guide-categories']);
+    }
+
   }
 
   onScrollTop() {

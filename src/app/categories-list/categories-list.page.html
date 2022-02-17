@@ -30,8 +30,9 @@
       <span *ngIf="isLoadedContent">
         <div class="guide-category" *ngFor="let guideActivity of guideArr;">
           <div>
-            <ion-item button [routerLink]="['/guide/' + guideActivity.idApi]" class="guide-category" lines="full"
-              inset="true">
+            <!-- <ion-item button [routerLink]="['/guide/' + guideActivity.idApi + '/' + guideActivity.parent_guide_id]"
+              class="guide-category" lines="full" inset="true"> -->
+            <ion-item button (click)="openGuide(guideActivity)" class="guide-category" lines="full" inset="true">
               <ion-label slot="start">{{ guideActivity.title }}</ion-label>
               <ion-badge color="medium" slot="end">{{ guideActivity.step + 1 }}/{{guideActivity.count}}
               </ion-badge>
