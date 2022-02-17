@@ -82,14 +82,12 @@ export class GuideListComponent implements OnInit {
   }
 
   openCollection(guide: GuiderModel) {
-    console.log("check guide for collection", guide);
     const feedbackNavigationExtras: NavigationExtras = {
       queryParams: {
         guideId: guide.idApi,
         guideCategoryId: this.guideCategoryId
       },
     };
-    console.log("check feedbackNavigationExtras for collection", feedbackNavigationExtras);
     this.router.navigate(['/guide-collection/' + guide.idApi], feedbackNavigationExtras);
   }
 
@@ -100,7 +98,6 @@ export class GuideListComponent implements OnInit {
     }
     // console.log("parentCollectionId", this.parentCollectionId)
     if (this.parentCollectionId) {
-      console.log("parentCollectionId", this.parentCollectionId)
       this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
     }
     else {
