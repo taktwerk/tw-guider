@@ -295,8 +295,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
 
   openGuide(guideStep) {
     if (typeof guideStep.guides != 'undefined') {
-      if (guideStep.parent_guide_id == 0) {
-        this.router.navigate(['/guide/' + guideStep.idApi]);
+      if (guideStep.guides.parent_guide_id == 0) {
+        this.router.navigate(['/guide/' + guideStep.guides.idApi]);
       } else {
         this.appSetting.isActivity = true;
         console.log("guideStep", guideStep)
