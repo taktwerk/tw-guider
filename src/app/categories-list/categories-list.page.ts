@@ -48,6 +48,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   public guideItemsLimit = 20;
   public guidesWithoutCategories: GuiderModel[] = [];
   public params;
+  // public guideId: any = [];
+  // public guideCollection: any = {};
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
 
@@ -138,8 +140,70 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     console.log('_guidesActivity', _guidesActivity);
     if (_guidesActivity.length > 0) {
       const syncedList = await this.syncIndexService.getSyncIndexModel(_guidesActivity, _guidesActivity[0].TABLE_NAME);
-      this.guideArr = syncedList;
-      console.log('checking guide Array', this.guideArr);
+      this.guideArr = [];
+
+      const isCollectionExistInArray = (guide) => {
+        for (let element of this.guideArr) {
+          console.log(element.id, element.type, guide.parent_guide_id);
+
+          if (element.type === 'collection' && element.id == guide.parent_guide_id) {
+            return element;
+          }
+        }
+
+        return false;
+      };
+
+
+      syncedList.forEach((guide) => {
+
+        if (guide.parent_guide_id === 0) {
+          this.guideArr.push({
+            id: guide.guide_id,
+            guides: guide,
+            type: 'single'
+          });
+          return;
+        }
+
+        const collection = isCollectionExistInArray(guide);
+        console.log(collection);
+        if (collection === false) {
+          const tempcollection = {
+            id: guide.parent_guide_id,
+            type: 'collection',
+            guides: [guide]
+          }
+
+          this.guideArr.push(tempcollection);
+        } else {
+
+          const index = this.guideArr.indexOf(collection);
+
+          this.guideArr[index].guides.push(guide);
+        }
+      });
+
+      console.log("check guidearr", this.guideArr);
+
+      // this.guideArr = syncedList;
+      // console.log('checking guide Array', this.guideArr);
+
+      // this.guideArr.forEach(guide => {
+      //   if (!this.guideId.includes(guide.guide_id)) {
+      //     this.guideId.push(guide.guide_id);
+      //   }
+      //   if (guide.parent_guide_id) {
+      //     this.guideCollection = {
+      //       id: guide.parent_guide_id,
+      //       guidesId: this.guideId
+      //     }
+      //   }
+      // });
+
+      // console.log("check array", this.guideId)
+
+      // console.log("check object", this.guideCollection);
     }
   }
   async findAllGuideActivity() {
@@ -227,14 +291,69 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     }
   }
 
+  //MAIN CODE(NEW PART)
+
   openGuide(guideStep) {
-    if (guideStep.parent_guide_id == 0) {
-      this.router.navigate(['/guide/' + guideStep.idApi]);
+    if (typeof guideStep.guides != 'undefined') {
+      if (guideStep.parent_guide_id == 0) {
+        this.router.navigate(['/guide/' + guideStep.idApi]);
+      } else {
+        this.appSetting.isActivity = true;
+        console.log("guideStep", guideStep)
+        this.router.navigate(['/guide/' + guideStep.guides.idApi + '/' + guideStep.guides.parent_guide_id]);
+      }
     } else {
-      this.appSetting.isActivity = true;
-      this.router.navigate(['/guide/' + guideStep.idApi + '/' + guideStep.parent_guide_id]);
+      if (guideStep.parent_guide_id == 0) {
+        this.router.navigate(['/guide/' + guideStep.idApi]);
+      } else {
+        this.appSetting.isActivity = true;
+        console.log("guideStep", guideStep)
+        this.router.navigate(['/guide/' + guideStep.idApi + '/' + guideStep.parent_guide_id]);
+      }
     }
   }
+
+  //ELSE CODE(NEW PART)
+
+
+  // openGuide(guideStep) {
+  //   if (typeof guideStep.guides != 'undefined') {
+  //     if (guideStep.parent_guide_id == 0 && typeof guideStep.guides != 'undefined') {
+  //       this.router.navigate(['/guide/' + guideStep.idApi]);
+  //     } else {
+  //       this.appSetting.isActivity = true;
+  //       console.log("guideStep", guideStep)
+  //       const idApi = (typeof guideStep.guides != 'undefined') ? guideStep.guides.idApi : guideStep.idApi;
+  //       const parent_guide_id = (typeof guideStep.guides != 'undefined') ? guideStep.guides.parent_guide_id : guideStep.parent_guide_id;
+
+  //       this.router.navigate(['/guide/' + idApi + '/' + parent_guide_id]);
+  //     }
+
+  //     if (guideStep.parent_guide_id == 0 && typeof guideStep.guides != 'undefined') {
+  //       this.router.navigate(['/guide/' + guideStep.idApi]);
+  //     } else {
+  //       this.appSetting.isActivity = true;
+  //       console.log("guideStep", guideStep)
+  //       const idApi = (typeof guideStep.guides != 'undefined') ? guideStep.guides.idApi : guideStep.idApi;
+  //       const parent_guide_id = (typeof guideStep.guides != 'undefined') ? guideStep.guides.parent_guide_id : guideStep.parent_guide_id;
+
+  //       this.router.navigate(['/guide/' + idApi + '/' + parent_guide_id]);
+  //     }
+  //   }
+  // }
+
+
+  //===============================================//
+
+  // OLD CODE
+  // openGuide(guideStep) {
+  //   if (guideStep.parent_guide_id == 0) {
+  //     this.router.navigate(['/guide/' + guideStep.idApi]);
+  //   } else {
+  //     this.appSetting.isActivity = true;
+  //     this.router.navigate(['/guide/' + guideStep.idApi + '/' + guideStep.parent_guide_id]);
+  //   }
+  // }
 
 
 
