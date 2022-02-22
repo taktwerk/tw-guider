@@ -39,7 +39,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   public syncProgressStatus = 'not_sync';
 
   public guideCategories: GuideCategoryModel[] = [];
-  public guideActivity: GuideViewHistoryModel[] = [];
+  public guideActivity: Array<any> = [];
   public guideArr: any = [];
   public searchValue: string;
   public haveProtocolPermissions = false;
@@ -76,9 +76,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     public apiSync: ApiSync,
     public appSetting: AppSetting,
     private syncService: SyncService,
-    private modalController: ModalController,
     private miscService: MiscService,
-    private userService: UserService,
     private syncIndexService: SyncIndexService
   ) {
     this.authService.checkAccess('guide');
@@ -88,277 +86,8 @@ export class CategoriesListPage implements OnInit, OnDestroy {
       }
     }
   }
-  async showAllActivity() {
-    const guideActivity: any = this.state.getState('CategoriesListPage_guideActivity');
-    console.log("check guideactivity", guideActivity);
-    if (guideActivity != null) {
-      this.guideActivity = await guideActivity;
-      this.isPreStateLoad = true;
-    }
-
-    await this.findAllGuideActivity();
-    await this.setActivity();
-  }
-
-  async showAllGuides() {
-    const guideCategories: any = this.state.getState('CategoriesListPage_guideCategories');
-    if (guideCategories != null) {
-      this.guideCategories = await guideCategories;
-      this.isPreStateLoad = true;
-    }
-
-
-    await this.findAllGuideCategories();
-    await this.setGuides();
-  }
-
-  async searchGuides($event) {
-    this.searchValue = $event.detail.value;
-    this.setGuides();
-  }
-
-  async setGuides() {
-    // syncIndexify guides
-    const _guides = await this.guideCategoryService.getGuides(null, this.searchValue);
-    if (_guides.length > 0) {
-      const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
-      this.guides = syncedList;
-    }
-    // syncIndexify guidesWithoutCategories
-    const _guidesWithoutCategories = await this.guideCategoryService.getGuides(null, '', true);
-    if (_guidesWithoutCategories.length > 0) {
-      const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(
-        _guidesWithoutCategories,
-        _guidesWithoutCategories[0].TABLE_NAME
-      );
-      this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
-    }
-  }
-  async setActivity() {
-    // syncIndexify guides
-    const _guidesActivity = await this.guideViewHistoryService.getActivity();
-    console.log('_guidesActivity', _guidesActivity);
-    if (_guidesActivity.length > 0) {
-      const syncedList = await this.syncIndexService.getSyncIndexModel(_guidesActivity, _guidesActivity[0].TABLE_NAME);
-      this.guideArr = [];
-
-      const isCollectionExistInArray = (guide) => {
-        for (let element of this.guideArr) {
-          console.log(element.id, element.type, guide.parent_guide_id);
-
-          if (element.type === 'collection' && element.id == guide.parent_guide_id) {
-            return element;
-          }
-        }
-
-        return false;
-      };
-
-
-      syncedList.forEach((guide) => {
-
-        if (guide.parent_guide_id === 0) {
-          this.guideArr.push({
-            id: guide.guide_id,
-            guides: guide,
-            type: 'single'
-          });
-          return;
-        }
-
-        const collection = isCollectionExistInArray(guide);
-        console.log(collection);
-        if (collection === false) {
-          const tempcollection = {
-            id: guide.parent_guide_id,
-            type: 'collection',
-            guides: [guide]
-          }
-
-          this.guideArr.push(tempcollection);
-        } else {
-
-          const index = this.guideArr.indexOf(collection);
-
-          this.guideArr[index].guides.push(guide);
-        }
-      });
-
-      console.log("check guidearr", this.guideArr);
-
-      // this.guideArr = syncedList;
-      // console.log('checking guide Array', this.guideArr);
-
-      // this.guideArr.forEach(guide => {
-      //   if (!this.guideId.includes(guide.guide_id)) {
-      //     this.guideId.push(guide.guide_id);
-      //   }
-      //   if (guide.parent_guide_id) {
-      //     this.guideCollection = {
-      //       id: guide.parent_guide_id,
-      //       guidesId: this.guideId
-      //     }
-      //   }
-      // });
-
-      // console.log("check array", this.guideId)
-
-      // console.log("check object", this.guideCollection);
-    }
-  }
-  async findAllGuideActivity() {
-    // syncIndexify guides
-    this.guideActivity = await this.guideViewHistoryService.findAll(this.searchValue);
-    if (this.guideActivity.length > 0) {
-      const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideActivity, this.guideActivity[0].TABLE_NAME);
-      this.guideActivity = syncedList;
-      // this.setCategoryGuides();
-      // this.state.setState('CategoriesListPage_guideActivity', this.guideActivity);
-    }
-  }
-
-  async findAllGuideCategories() {
-    // syncIndexify guideCategories
-    this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
-    if (this.guideCategories.length > 0) {
-      const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideCategories, this.guideCategories[0].TABLE_NAME);
-      this.guideCategories = syncedList;
-      this.setCategoryGuides();
-
-      // this.state.setState('CategoriesListPage_guideCategories', this.guideCategories);
-    }
-  }
-
-  async setCategoryGuides() {
-    this.guideCategories.map((guideCategory) => {
-      guideCategory.setGuides().then(async (res) => {
-        // // console.log("guideCategory.guides", guideCategory.guides)
-        // if (guideCategory.guides.length > 0) {
-        //   const syncedList = await this.syncIndexService.getSyncIndexModel(guideCategory.guides, guideCategory.guides[0].TABLE_NAME);
-        //   guideCategory.guides = syncedList;
-        //   guideCategory.guidesCount = syncedList.length;
-        //   console.log("guideCategory.guidesCount", guideCategory.guidesCount);
-        // }
-        // else {
-        //   guideCategory.guidesCount = 0;
-        // }
-      });
-    });
-  }
-
-  detectChanges() {
-    this.changeDetectorRef.detectChanges();
-  }
-
-  trackByFn(item) {
-    return item[item.COL_ID];
-  }
-
-  openProtocol(guide: GuiderModel) {
-    const feedbackNavigationExtras: NavigationExtras = {
-      queryParams: {
-        templateId: guide.protocol_template_id,
-        referenceModelAlias: 'guide',
-        referenceId: guide.idApi,
-        clientId: guide.client_id,
-        backUrl: this.router.url,
-      },
-    };
-    this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
-  }
-
-  getGuidesWithoutCategories() {
-    return this.guides.filter((guide) => !guide.guide_collection.length);
-  }
-
-  // async checkActivity() {
-  //   let loader;
-  //   if (this.isPreStateLoad === false) {
-  //     loader = await this.loader.create();
-  //     loader.present();
-  //   }
-
-  //   await this.showAllActivity();
-  // }
-
-  async segmentChanged(e: any) {
-    if (e.detail.value === 'activity') {
-      await this.showAllActivity();
-    } else if (e.detail.value === 'browse') {
-      await this.showAllGuides();
-    } else if (e.detail.value === 'search') {
-      await this.setGuides();
-    }
-  }
-
-  //MAIN CODE(NEW PART)
-
-  openGuide(guideStep) {
-    if (typeof guideStep.guides != 'undefined') {
-      if (guideStep.guides.parent_guide_id == 0) {
-        this.router.navigate(['/guide/' + guideStep.guides.idApi]);
-      } else {
-        this.appSetting.isActivity = true;
-        console.log("guideStep", guideStep)
-        this.router.navigate(['/guide/' + guideStep.guides.idApi + '/' + guideStep.guides.parent_guide_id]);
-      }
-    } else {
-      if (guideStep.parent_guide_id == 0) {
-        this.router.navigate(['/guide/' + guideStep.idApi]);
-      } else {
-        this.appSetting.isActivity = true;
-        console.log("guideStep", guideStep)
-        this.router.navigate(['/guide/' + guideStep.idApi + '/' + guideStep.parent_guide_id]);
-      }
-    }
-  }
-
-  //ELSE CODE(NEW PART)
-
-
-  // openGuide(guideStep) {
-  //   if (typeof guideStep.guides != 'undefined') {
-  //     if (guideStep.parent_guide_id == 0 && typeof guideStep.guides != 'undefined') {
-  //       this.router.navigate(['/guide/' + guideStep.idApi]);
-  //     } else {
-  //       this.appSetting.isActivity = true;
-  //       console.log("guideStep", guideStep)
-  //       const idApi = (typeof guideStep.guides != 'undefined') ? guideStep.guides.idApi : guideStep.idApi;
-  //       const parent_guide_id = (typeof guideStep.guides != 'undefined') ? guideStep.guides.parent_guide_id : guideStep.parent_guide_id;
-
-  //       this.router.navigate(['/guide/' + idApi + '/' + parent_guide_id]);
-  //     }
-
-  //     if (guideStep.parent_guide_id == 0 && typeof guideStep.guides != 'undefined') {
-  //       this.router.navigate(['/guide/' + guideStep.idApi]);
-  //     } else {
-  //       this.appSetting.isActivity = true;
-  //       console.log("guideStep", guideStep)
-  //       const idApi = (typeof guideStep.guides != 'undefined') ? guideStep.guides.idApi : guideStep.idApi;
-  //       const parent_guide_id = (typeof guideStep.guides != 'undefined') ? guideStep.guides.parent_guide_id : guideStep.parent_guide_id;
-
-  //       this.router.navigate(['/guide/' + idApi + '/' + parent_guide_id]);
-  //     }
-  //   }
-  // }
-
-
-  //===============================================//
-
-  // OLD CODE
-  // openGuide(guideStep) {
-  //   if (guideStep.parent_guide_id == 0) {
-  //     this.router.navigate(['/guide/' + guideStep.idApi]);
-  //   } else {
-  //     this.appSetting.isActivity = true;
-  //     this.router.navigate(['/guide/' + guideStep.idApi + '/' + guideStep.parent_guide_id]);
-  //   }
-  // }
-
-
 
   async ionViewWillEnter() {
-    await this.showAllActivity();
     this.onboardingSyncShown = await this.miscService.get_guideShown('onboardingSyncShown');
     if (this.isStartSync) {
       this.miscService.set_guideShown('onboardingSyncShown');
@@ -366,18 +95,6 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-
-    let loader;
-    if (this.isPreStateLoad === false) {
-      loader = await this.loader.create();
-      loader.present();
-    }
-
-    await this.showAllActivity();
-    await this.showAllGuides();
-
-    if (typeof loader != 'undefined') { loader.dismiss(); }
-    this.isLoadedContent = true;
 
     this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
       this.isStartSync = isSync;
@@ -472,7 +189,324 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     });
 
     this.type = 'activity';
+    await this.showAllActivity();
   }
+
+
+  async segmentChanged(e: any) {
+
+    if (e.detail.value === 'activity') {
+      console.log(this.guideActivity.length);
+      await this.showAllActivity();
+    }
+    else if (e.detail.value === 'browse') {
+      let loader;
+      if (this.isPreStateLoad === false) {
+        loader = await this.loader.create();
+        loader.present();
+      }
+
+      await this.showAllGuides();
+
+      if (typeof loader != 'undefined') { loader.dismiss(); }
+      this.isLoadedContent = true;
+    }
+    else if (e.detail.value === 'search') {
+      await this.setGuides();
+    }
+  }
+
+
+  async showAllActivity() {
+    // const guideActivity: any = await this.state.getState('CategoriesListPage_guideActivity');
+    // console.log("check guideactivity", guideActivity);
+    // if (guideActivity != null) {
+    //   this.guideActivity = await guideActivity;
+    //   this.isPreStateLoad = true;
+    // }
+
+    await this.findAllGuideActivity();
+    // await this.setActivity();
+  }
+
+  async showAllGuides() {
+    const guideCategories: any = this.state.getState('CategoriesListPage_guideCategories');
+    if (guideCategories != null) {
+      this.guideCategories = await guideCategories;
+      this.isPreStateLoad = true;
+    }
+
+
+    await this.findAllGuideCategories();
+    await this.setGuides();
+  }
+
+  async searchGuides($event) {
+    this.searchValue = $event.detail.value;
+    this.setGuides();
+  }
+
+  async setGuides() {
+    // syncIndexify guides
+    const _guides = await this.guideCategoryService.getGuides(null, this.searchValue);
+    if (_guides.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
+      this.guides = syncedList;
+    }
+    // syncIndexify guidesWithoutCategories
+    const _guidesWithoutCategories = await this.guideCategoryService.getGuides(null, '', true);
+    if (_guidesWithoutCategories.length > 0) {
+      const syncedList_guidesWithoutCategories = await this.syncIndexService.getSyncIndexModel(
+        _guidesWithoutCategories,
+        _guidesWithoutCategories[0].TABLE_NAME
+      );
+      this.guidesWithoutCategories = syncedList_guidesWithoutCategories;
+    }
+  }
+
+  async setActivity() {
+    // syncIndexify guides
+    const _guidesActivity = await this.guideViewHistoryService.getActivity();
+    console.log('_guidesActivity', _guidesActivity);
+    if (_guidesActivity.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(_guidesActivity, _guidesActivity[0].TABLE_NAME);
+      this.guideArr = [];
+
+      const isCollectionExistInArray = (guide) => {
+        for (let element of this.guideArr) {
+          // console.log(element.id, element.type, guide.parent_guide_id);
+
+          if (element.type === 'collection' && element.id == guide.parent_guide_id) {
+            return element;
+          }
+        }
+
+        return false;
+      };
+
+
+      syncedList.forEach((guide) => {
+
+        if (guide.parent_guide_id === 0) {
+          this.guideArr.push({
+            id: guide.guide_id,
+            guides: guide,
+            type: 'single'
+          });
+          return;
+        }
+
+        const collection = isCollectionExistInArray(guide);
+        // console.log(collection);
+        if (collection === false) {
+
+          guide.setChildren().then(coll => {
+            console.log("check coll", coll);
+          });
+
+          const tempcollection = {
+            id: guide.parent_guide_id,
+            type: 'collection',
+            guides: [guide]
+          }
+
+          this.guideArr.push(tempcollection);
+        } else {
+
+          const index = this.guideArr.indexOf(collection);
+
+          this.guideArr[index].guides.push(guide);
+        }
+      });
+
+      // console.log("check guidearr", this.guideArr);
+
+      // this.guideArr = syncedList;
+      // console.log('checking guide Array', this.guideArr);
+
+      // this.guideArr.forEach(guide => {
+      //   if (!this.guideId.includes(guide.guide_id)) {
+      //     this.guideId.push(guide.guide_id);
+      //   }
+      //   if (guide.parent_guide_id) {
+      //     this.guideCollection = {
+      //       id: guide.parent_guide_id,
+      //       guidesId: this.guideId
+      //     }
+      //   }
+      // });
+
+      // console.log("check array", this.guideId)
+
+      // console.log("check object", this.guideCollection);
+    }
+  }
+  async findAllGuideActivity() {
+    // syncIndexify guides
+
+    this.guideActivity = await this.guideViewHistoryService.findAll(this.searchValue);
+    console.log("this.guideActivity", this.guideActivity);
+    if (this.guideActivity.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideActivity, this.guideActivity[0].TABLE_NAME);
+      console.log("syncedList", syncedList);
+      // this.guideActivity = syncedList;
+    }
+  }
+
+  async findAllGuideCategories() {
+    // syncIndexify guideCategories
+    this.guideCategories = await this.guideCategoryService.findAll(this.searchValue);
+    if (this.guideCategories.length > 0) {
+      const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideCategories, this.guideCategories[0].TABLE_NAME);
+      this.guideCategories = syncedList;
+      this.setCategoryGuides();
+
+      // this.state.setState('CategoriesListPage_guideCategories', this.guideCategories);
+    }
+  }
+
+  async setCategoryGuides() {
+    this.guideCategories.map((guideCategory) => {
+      guideCategory.setGuides().then(async (res) => {
+        // // console.log("guideCategory.guides", guideCategory.guides)
+        // if (guideCategory.guides.length > 0) {
+        //   const syncedList = await this.syncIndexService.getSyncIndexModel(guideCategory.guides, guideCategory.guides[0].TABLE_NAME);
+        //   guideCategory.guides = syncedList;
+        //   guideCategory.guidesCount = syncedList.length;
+        //   console.log("guideCategory.guidesCount", guideCategory.guidesCount);
+        // }
+        // else {
+        //   guideCategory.guidesCount = 0;
+        // }
+      });
+    });
+  }
+
+  detectChanges() {
+    this.changeDetectorRef.detectChanges();
+  }
+
+  trackByFn(item) {
+    return item[item.COL_ID];
+  }
+
+  openProtocol(guide: GuiderModel) {
+    const feedbackNavigationExtras: NavigationExtras = {
+      queryParams: {
+        templateId: guide.protocol_template_id,
+        referenceModelAlias: 'guide',
+        referenceId: guide.idApi,
+        clientId: guide.client_id,
+        backUrl: this.router.url,
+      },
+    };
+    this.router.navigate(['/guider_protocol_template/' + guide.protocol_template_id], feedbackNavigationExtras);
+  }
+
+  getGuidesWithoutCategories() {
+    return this.guides.filter((guide) => !guide.guide_collection.length);
+  }
+
+  // async checkActivity() {
+  //   let loader;
+  //   if (this.isPreStateLoad === false) {
+  //     loader = await this.loader.create();
+  //     loader.present();
+  //   }
+
+  //   await this.showAllActivity();
+  // }
+
+  //MAIN CODE(NEW PART)
+
+  openGuide(guideStep) {
+    // if (typeof guideStep.guides != 'undefined') {
+    //   if (guideStep.guides.parent_guide_id == 0) {
+    //     this.router.navigate(['/guide/' + guideStep.guides.guide_id]);
+    //   } else {
+    //     this.appSetting.isActivity = true;
+    //     // console.log("guideStep", guideStep)
+    //     this.router.navigate(['/guide/' + guideStep.guides.guide_id + '/' + guideStep.guides.parent_guide_id]);
+    //   }
+    // }
+    // else {
+    if (guideStep.guides.parent_guide_id == 0) {
+      this.router.navigate(['/guide/' + guideStep.guides.guide_id]);
+    } else {
+      this.appSetting.isActivity = true;
+      // console.log("guideStep", guideStep)
+      this.router.navigate(['/guide/' + guideStep.guides.guide_id + '/' + guideStep.guides.parent_guide_id]);
+    }
+    // }
+  }
+
+  //MAIN CODE(OLD PART)
+
+  // openGuide(guideStep) {
+  //   if (typeof guideStep.guides != 'undefined') {
+  //     if (guideStep.guides.parent_guide_id == 0) {
+  //       this.router.navigate(['/guide/' + guideStep.guides.idApi]);
+  //     } else {
+  //       this.appSetting.isActivity = true;
+  //       // console.log("guideStep", guideStep)
+  //       this.router.navigate(['/guide/' + guideStep.guides.idApi + '/' + guideStep.guides.parent_guide_id]);
+  //     }
+  //   } else {
+  //     if (guideStep.parent_guide_id == 0) {
+  //       this.router.navigate(['/guide/' + guideStep.idApi]);
+  //     } else {
+  //       this.appSetting.isActivity = true;
+  //       // console.log("guideStep", guideStep)
+  //       this.router.navigate(['/guide/' + guideStep.idApi + '/' + guideStep.parent_guide_id]);
+  //     }
+  //   }
+  // }
+
+  //ELSE CODE(NEW PART)
+
+
+  // openGuide(guideStep) {
+  //   if (typeof guideStep.guides != 'undefined') {
+  //     if (guideStep.parent_guide_id == 0 && typeof guideStep.guides != 'undefined') {
+  //       this.router.navigate(['/guide/' + guideStep.idApi]);
+  //     } else {
+  //       this.appSetting.isActivity = true;
+  //       console.log("guideStep", guideStep)
+  //       const idApi = (typeof guideStep.guides != 'undefined') ? guideStep.guides.idApi : guideStep.idApi;
+  //       const parent_guide_id = (typeof guideStep.guides != 'undefined') ? guideStep.guides.parent_guide_id : guideStep.parent_guide_id;
+
+  //       this.router.navigate(['/guide/' + idApi + '/' + parent_guide_id]);
+  //     }
+
+  //     if (guideStep.parent_guide_id == 0 && typeof guideStep.guides != 'undefined') {
+  //       this.router.navigate(['/guide/' + guideStep.idApi]);
+  //     } else {
+  //       this.appSetting.isActivity = true;
+  //       console.log("guideStep", guideStep)
+  //       const idApi = (typeof guideStep.guides != 'undefined') ? guideStep.guides.idApi : guideStep.idApi;
+  //       const parent_guide_id = (typeof guideStep.guides != 'undefined') ? guideStep.guides.parent_guide_id : guideStep.parent_guide_id;
+
+  //       this.router.navigate(['/guide/' + idApi + '/' + parent_guide_id]);
+  //     }
+  //   }
+  // }
+
+
+  //===============================================//
+
+  // OLD CODE
+  // openGuide(guideStep) {
+  //   if (guideStep.parent_guide_id == 0) {
+  //     this.router.navigate(['/guide/' + guideStep.idApi]);
+  //   } else {
+  //     this.appSetting.isActivity = true;
+  //     this.router.navigate(['/guide/' + guideStep.idApi + '/' + guideStep.parent_guide_id]);
+  //   }
+  // }
+
+
+
+
 
   syncData() {
     if (!this.appSetting.isMigratedDatabase()) {

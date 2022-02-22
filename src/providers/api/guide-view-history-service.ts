@@ -10,6 +10,7 @@ import { DownloadService } from '../../services/download-service';
 import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
 import { DbBaseModel } from '../../models/base/db-base-model';
 import { AppSetting } from '../../services/app-setting';
+import { GuiderService } from './guider-service';
 
 @Injectable()
 export class GuideViewHistoryService extends ApiService {
@@ -34,6 +35,7 @@ export class GuideViewHistoryService extends ApiService {
 
         public downloadService: DownloadService,
         public loggerService: LoggerService,
+        public guiderService: GuiderService,
         public appSetting: AppSetting,
     ) {
         super(http, appSetting);
@@ -59,25 +61,70 @@ export class GuideViewHistoryService extends ApiService {
             if (searchValue) {
                 // deletedAtRaw += ' AND ' + this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure(GuideViewHistoryModel) + ' LIKE "%' + searchValue + '%"';
             }
+
+            const from = 'SELECT ' + '*, (SELECT count(*) AS COUNT from guide_step WHERE `guide_step`.`guide_id` = `guide_view_history`.`guide_id`) AS count' + ' from ' + this.dbModelApi.secure('guide_view_history');
+
+            const join = 'LEFT JOIN ' + this.dbModelApi.secure('guide') +
+                ' ON ' + this.dbModelApi.secure('guide_view_history') + '.' + this.dbModelApi.secure('guide_id') +
+                ' = ' + this.dbModelApi.secure('guide') + '.' + this.dbModelApi.secure('id');
+
             const whereCondition: any[] = [deletedAtRaw];
+
             if (!user.isAuthority) {
                 whereCondition.push(['client_id', user.client_id]);
             }
-            const orderBy = 'updated_at DESC';
 
-            const entries: any[] = [];
-            return this.dbModelApi.searchAllAndGetRowsResult(whereCondition, orderBy).then((res) => {
+            // const orderBy = 'updated_at DESC';
+            const orderBy = 'local_updated_at DESC';
+
+            const entries: Array<any> = [];
+            return this.dbModelApi.searchAllAndGetRowsResult(whereCondition, orderBy, undefined, undefined, from).then(async (res) => {
                 if (res && res.rows && res.rows.length > 0) {
+
+                    const isCollectionExistInArray = (guide) => {
+                        for (let element of entries) {
+                            if (element.type === 'collection' && element.id == guide.parent_guide_id) {
+                                return element;
+                            }
+                        }
+                        return false;
+                    };
+
+
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: DbBaseModel = this.newModel();
-                        obj.platform = this.dbModelApi.platform;
-                        obj.db = this.db;
-                        obj.downloadService = this.downloadService;
-                        obj.loadFromAttributes(res.rows.item(i));
-                        entries.push(obj);
+                        const item = res.rows.item(i);
+                        const obj: any = new GuiderModel();
+                        obj.loadFromAttributes(item);
+                        obj.steps = item.step;
+                        obj.count = item.count;
+                        obj.data = item;
+                        obj.guide_id = item.guide_id;
+                        obj.parent_guide_id = item.parent_guide_id;
+                        obj.idApi = item.parent_guide_id;
+                        const guider = await this.guiderService.getById(obj.guide_id);
+                        // console.log("guider.title", guider[0].title, guider);
+                        obj.title = guider[0].title;
+
+                        if (obj.parent_guide_id != 0) {
+                            await obj.setChildren();
+
+                            if (isCollectionExistInArray(obj) === false) {
+                                entries.push({
+                                    id: obj.parent_guide_id,
+                                    guides: obj,
+                                    type: 'collection'
+                                });
+                            }
+
+                        } else {
+                            entries.push({
+                                id: obj.guide_id,
+                                guides: obj,
+                                type: 'single'
+                            });
+                        }
                     }
                 }
-                // console.log("findAll entries Activity", entries)
                 resolve(entries);
             }).catch((err) => {
                 resolve(entries);
@@ -104,32 +151,31 @@ export class GuideViewHistoryService extends ApiService {
 
             const entries = [];
 
-            this.dbModelApi.searchAllAndGetRowsResult(null, orderBy, null, join, from).then(res => {
-                console.log('new query', res);
+            this.dbModelApi.searchAllAndGetRowsResult(null, orderBy, null, join, from).then(async (res) => {
                 if (res && res.rows && res.rows.length > 0) {
-                    console.log("new query again", res);
+                    // console.log("new query again", res);
                     for (let i = 0; i < res.rows.length; i++) {
 
                         const item = res.rows.item(i);
-                        console.log("res.rows", item);
+                        // console.log("res.rows", item);
                         const obj: any = new GuiderModel();
-                        obj.platform = this.dbModelApi.platform;
-                        obj.db = this.db;
-                        obj.downloadService = this.downloadService;
-                        obj.loadFromAttributes(item);
-                        obj.setChildren();
-                        obj.setProtocolTemplate();
+                        // obj.platform = this.dbModelApi.platform;
+                        // obj.db = this.db;
+                        // obj.downloadService = this.downloadService;
+
                         obj.step = item.step;
                         obj.count = item.count;
                         obj.data = item;
                         obj.guide_id = item.guide_id;
                         obj.parent_guide_id = item.parent_guide_id;
+                        obj.loadFromAttributes(item);
+                        await obj.setProtocolTemplate();
                         entries.push(obj);
                     }
-                    console.log("entries", entries);
 
                 }
                 resolve(entries);
+                console.log("entries", entries);
 
             }).catch(e => {
                 resolve(entries);

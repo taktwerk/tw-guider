@@ -28,23 +28,56 @@
   <div [ngSwitch]="type">
     <div *ngSwitchDefault>
       <span *ngIf="isLoadedContent">
-        <div class="guide-category" *ngFor="let guideActivity of guideArr;">
-          <ng-container *ngIf="guideActivity.type == 'single'">
-            <!-- <ion-item button [routerLink]="['/guide/' + guideActivity.idApi + '/' + guideActivity.parent_guide_id]"
+
+        <div class="guide-category" *ngFor="let guide_Activity of guideActivity;">
+          <ng-container *ngIf="guide_Activity.type == 'single'">
+            <!-- <ion-item button [routerLink]="['/guide/' + guide_Activity.idApi + '/' + guide_Activity.parent_guide_id]"
+                              class="guide-category" lines="full" inset="true"> -->
+            <ion-item button (click)="openGuide(guide_Activity)" class="guide-category" lines="full" inset="true">
+              <ion-label slot="start">{{ guide_Activity.guides.title }}</ion-label>
+              <ion-badge color="medium" slot="end">{{ guide_Activity.guides.steps + 1 }}/{{guide_Activity.guides.count}}
+              </ion-badge>
+              <ion-progress-bar color="primary" [value]="(guide_Activity.guides.steps + 1)/guide_Activity.guides.count">
+              </ion-progress-bar>
+            </ion-item>
+          </ng-container>
+
+          <ng-container *ngIf="guide_Activity.type == 'collection'">
+            <!-- <ion-item button [routerLink]="['/guide/' + guide_Activity.idApi + '/' + guide_Activity.parent_guide_id]"
+                                                    class="guide-category" lines="full" inset="true"> -->
+            <!-- <div *ngFor="let activity of guide_Activity.guide_collection;"> -->
+            <ion-item button (click)="openGuide(guide_Activity)" class="guide-category" lines="full" inset="true">
+              <ion-label slot="start">{{ guide_Activity.guides.title }}</ion-label>
+              <ion-badge color="medium" slot="end">{{ guide_Activity.guides.steps + 1 }}/{{guide_Activity.guides.count}}
+              </ion-badge>
+              <ion-progress-bar color="primary" [value]="(guide_Activity.guides.steps + 1)/guide_Activity.guides.count">
+              </ion-progress-bar>
+            </ion-item>
+            <!-- </div> -->
+          </ng-container>
+        </div>
+
+        <!-- ===================================================== -->
+
+        <!-- OLD TWO -->
+
+        <!-- <div class="guide-category" *ngFor="let guideActivity of guideArr;">
+          <ng-container *ngIf="guideActivity.type == 'single'"> -->
+        <!-- <ion-item button [routerLink]="['/guide/' + guideActivity.idApi + '/' + guideActivity.parent_guide_id]"
                       class="guide-category" lines="full" inset="true"> -->
-            <ion-item button (click)="openGuide(guideActivity)" class="guide-category" lines="full" inset="true">
+        <!-- <ion-item button (click)="openGuide(guideActivity)" class="guide-category" lines="full" inset="true">
               <ion-label slot="start">{{ guideActivity.guides.title }}</ion-label>
               <ion-badge color="medium" slot="end">{{ guideActivity.guides.step + 1 }}/{{guideActivity.guides.count}}
               </ion-badge>
               <ion-progress-bar color="primary" [value]="(guideActivity.guides.step + 1)/guideActivity.guides.count">
               </ion-progress-bar>
-            </ion-item>
-          </ng-container>
+            </ion-item> -->
+        <!-- </ng-container> -->
 
-          <ng-container *ngIf="guideActivity.type == 'collection'">
-            <!-- <ion-item button [routerLink]="['/guide/' + guideActivity.idApi + '/' + guideActivity.parent_guide_id]"
+        <!-- <ng-container *ngIf="guideActivity.type == 'collection'"> -->
+        <!-- <ion-item button [routerLink]="['/guide/' + guideActivity.idApi + '/' + guideActivity.parent_guide_id]"
                                             class="guide-category" lines="full" inset="true"> -->
-            <div *ngFor="let activity of guideActivity.guides;">
+        <!-- <div *ngFor="let activity of guideActivity.guides;">
               <ion-item button (click)="openGuide(activity)" class="guide-category" lines="full" inset="true">
                 <ion-label slot="start">{{ activity.title }}</ion-label>
                 <ion-badge color="medium" slot="end">{{ activity.step + 1 }}/{{activity.count}}
@@ -52,9 +85,14 @@
                 <ion-progress-bar color="primary" [value]="(activity.step + 1)/activity.count">
                 </ion-progress-bar>
               </ion-item>
-            </div>
-          </ng-container>
-        </div>
+            </div> -->
+        <!-- </ng-container> -->
+        <!-- </div> -->
+
+        <!-- ===================================================== -->
+
+        <!-- OLD ONE -->
+
         <!-- <div class="guide-category" *ngFor="let guideActivity of guideArr;">
           <div> -->
         <!-- <ion-item button [routerLink]="['/guide/' + guideActivity.idApi + '/' + guideActivity.parent_guide_id]"
