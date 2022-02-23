@@ -166,7 +166,11 @@ export class GuiderModel extends DbApiModel {
 
     public setChildren(): Promise<GuideChildModel[]> {
         return new Promise((resolve) => {
-            const query = 'SELECT ' + this.secure('guide_child') + '.*' + ' from ' + this.secure('guide') +
+            const query = 'SELECT ' + this.secure('guide_child') + '.*' +
+                ', (SELECT count(*) AS COUNT from guide_step WHERE `guide_step`.`guide_id` = ' + this.secure('guide_child') + '.' + this.secure('guide_id') + ') AS count' +
+                ', (SELECT step from guide_view_history WHERE `guide_view_history`.`guide_id` = ' + this.secure('guide_child') + '.' + this.secure('guide_id') +
+                ' AND `guide_view_history`.`parent_guide_id` = ' + this.secure('guide') + '.' + this.secure('id') + ') AS step' +
+                ' from ' + this.secure('guide') +
                 ' JOIN ' + this.secure('guide_child') + ' ON ' + this.secure('guide_child') + '.' + this.secure('parent_guide_id') + '=' + this.secure('guide') + '.' + this.secure('id') +
                 ' WHERE ' + this.secure('guide') + '.' + this.secure('id') + ' = ' + this.idApi +
                 ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
@@ -179,11 +183,13 @@ export class GuiderModel extends DbApiModel {
                 this.guide_collection = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
-                        const obj: GuideChildModel = new GuideChildModel();
-                        obj.platform = this.platform;
-                        obj.db = this.db;
-                        obj.downloadService = this.downloadService;
+                        const obj: any = new GuideChildModel();
+                        // obj.platform = this.platform;
+                        // obj.db = this.db;
+                        // obj.downloadService = this.downloadService;
                         obj.loadFromAttributes(res.rows.item(i));
+                        obj.count = res.rows.item(i).count;
+                        obj.step = res.rows.item(i).step;
                         this.guide_collection.push(obj);
                     }
                 }

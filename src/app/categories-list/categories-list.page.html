@@ -48,9 +48,9 @@
             <!-- <div *ngFor="let activity of guide_Activity.guide_collection;"> -->
             <ion-item button (click)="openGuide(guide_Activity)" class="guide-category" lines="full" inset="true">
               <ion-label slot="start">{{ guide_Activity.guides.title }}</ion-label>
-              <ion-badge color="medium" slot="end">{{ guide_Activity.guides.steps + 1 }}/{{guide_Activity.guides.count}}
+              <ion-badge color="medium" slot="end">{{ guide_Activity.guides.steps }}/{{guide_Activity.guides.count}}
               </ion-badge>
-              <ion-progress-bar color="primary" [value]="(guide_Activity.guides.steps + 1)/guide_Activity.guides.count">
+              <ion-progress-bar color="primary" [value]="(guide_Activity.guides.steps)/guide_Activity.guides.count">
               </ion-progress-bar>
             </ion-item>
             <!-- </div> -->

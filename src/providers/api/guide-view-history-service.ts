@@ -91,12 +91,21 @@ export class GuideViewHistoryService extends ApiService {
                     };
 
 
+
                     for (let i = 0; i < res.rows.length; i++) {
                         const item = res.rows.item(i);
+
                         const obj: any = new GuiderModel();
                         obj.loadFromAttributes(item);
-                        obj.steps = item.step;
                         obj.count = item.count;
+
+                        obj.steps = item.step;
+                        // if (obj.type = 'collection') {
+                        //     console.log("obj.type", obj.type);
+                        //     obj.count = newCount;
+                        //     console.log("check obj.count", obj.count);
+                        // }
+                        // obj.count = item.count;
                         obj.data = item;
                         obj.guide_id = item.guide_id;
                         obj.parent_guide_id = item.parent_guide_id;
@@ -104,11 +113,37 @@ export class GuideViewHistoryService extends ApiService {
                         const guider = await this.guiderService.getById(obj.guide_id);
                         // console.log("guider.title", guider[0].title, guider);
                         obj.title = guider[0].title;
+                        obj.guider = guider;
+
 
                         if (obj.parent_guide_id != 0) {
-                            await obj.setChildren();
+
 
                             if (isCollectionExistInArray(obj) === false) {
+
+                                const collectionGuide = await this.guiderService.getById(obj.parent_guide_id);
+                                obj.title = collectionGuide[0].title;
+                                await obj.setChildren();
+                                let count = 0;
+                                let steps = 0;
+                                let breakStep = false;
+                                for (let guide of obj.guide_collection) {
+
+                                    count += Number(guide.count);
+                                    if (guide.count == guide.step + 1 && breakStep == false) {
+                                        steps += guide.step + 1;
+                                    } else {
+                                        if (breakStep == false) {
+                                            steps += guide.step + 1;
+                                        }
+                                        breakStep = true;
+                                    }
+
+                                }
+
+                                obj.count = count;
+                                obj.steps = steps;
+
                                 entries.push({
                                     id: obj.parent_guide_id,
                                     guides: obj,
@@ -124,6 +159,7 @@ export class GuideViewHistoryService extends ApiService {
                             });
                         }
                     }
+
                 }
                 resolve(entries);
             }).catch((err) => {
