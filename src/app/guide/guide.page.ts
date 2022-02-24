@@ -677,8 +677,11 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   previousGuide() {
     this.guideIndex = this.guides.findIndex(({ idApi }) => this.guide.idApi === idApi);
+    console.log("check guide index outer", this.guideIndex, this.guide.idApi);
     if (this.guideCollection.guide_collection[this.guideIndex - 1] !== undefined) {
+      console.log("check guide index inner", this.guideIndex);
       this.hasPrevious = true;
+      console.log("check guide index after true", this.guideIndex);
       const previousGuideIndex = this.guides[this.guideIndex - 1].idApi;
       // this.router.navigate(['/guide/' + previousGuideIndex + '/' + this.parentCollectionId]);
       // reset guide
@@ -691,8 +694,11 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   nextGuide() {
     this.guideIndex = this.guides.findIndex(({ idApi }) => this.guide.idApi === idApi);
+    console.log("check guide index outer(next guide)", this.guideIndex, this.guide.idApi);
     if (this.guideCollection.guide_collection[this.guideIndex + 1] !== undefined) {
+      console.log("check guide index inner(next guide)", this.guideIndex);
       this.hasNext = true;
+      console.log("check guide index after true(next guide)", this.guideIndex);
       const nextGuideIndex = this.guides[this.guideIndex + 1].idApi;
       // this.router.navigate(['/guide/' + nextGuideIndex + '/' + this.parentCollectionId]);
       // reset guide

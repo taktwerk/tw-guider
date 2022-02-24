@@ -4,7 +4,7 @@
 import { UserService } from './../../services/user-service';
 
 import { MiscService } from './../../services/misc-service';
-import { ChangeDetectorRef, Component, OnInit, OnDestroy, Input, AfterViewInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, Input, AfterViewInit, NgZone } from '@angular/core';
 import { GuideCategoryService } from '../../providers/api/guide-category-service';
 import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
 import { GuideChildService } from '../../providers/api/guide-child-service';
@@ -43,7 +43,7 @@ export class CategoriesListPage implements OnInit, OnDestroy {
   public guideArr: any = [];
   public searchValue: string;
   public haveProtocolPermissions = false;
-  public isLoadedContent = false;
+  public isLoadedContent = true;
   public guides: GuiderModel[] = [];
   public guideItemsLimit = 20;
   public guidesWithoutCategories: GuiderModel[] = [];
@@ -189,61 +189,33 @@ export class CategoriesListPage implements OnInit, OnDestroy {
     });
 
     this.type = 'activity';
+    // this.ngZone.run(() => {
+    //   this.showAllActivity();
+    // });
     await this.showAllActivity();
   }
 
 
   async segmentChanged(e: any) {
-
     if (e.detail.value === 'activity') {
-      // let loader;
-      // if (this.isPreStateLoad === false) {
-      //   loader = await this.loader.create();
-      //   loader.present();
-      // }
-
-      // await this.showAllActivity();
-
-      // if (typeof loader != 'undefined') { loader.dismiss(); }
-      // this.isLoadedContent = true;
-      // console.log(this.guideActivity.length);
       await this.showAllActivity();
     }
     else if (e.detail.value === 'browse') {
-      let loader;
-      if (this.isPreStateLoad === false) {
-        loader = await this.loader.create();
-        loader.present();
-      }
-
       await this.showAllGuides();
-
-      if (typeof loader != 'undefined') { loader.dismiss(); }
-      this.isLoadedContent = true;
     }
     else if (e.detail.value === 'search') {
-      let loader;
-      if (this.isPreStateLoad === false) {
-        loader = await this.loader.create();
-        loader.present();
-      }
-
       await this.setGuides();
-
-      if (typeof loader != 'undefined') { loader.dismiss(); }
-      this.isLoadedContent = true;
-      // await this.setGuides();
     }
   }
 
 
   async showAllActivity() {
-    const guideActivity: any = await this.state.getState('CategoriesListPage_guideActivity');
-    console.log("check guideactivity", guideActivity);
-    if (guideActivity != null) {
-      this.guideActivity = await guideActivity;
-      this.isPreStateLoad = true;
-    }
+    // const guideActivity: any = await this.state.getState('CategoriesListPage_guideActivity');
+    // console.log("check guideactivity", guideActivity);
+    // if (guideActivity != null) {
+    //   this.guideActivity = await guideActivity;
+    //   this.isPreStateLoad = true;
+    // }
 
     await this.findAllGuideActivity();
     // await this.setActivity();

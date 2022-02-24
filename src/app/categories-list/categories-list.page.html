@@ -28,7 +28,6 @@
   <div [ngSwitch]="type">
     <div *ngSwitchDefault>
       <span *ngIf="isLoadedContent">
-
         <div class="guide-category" *ngFor="let guide_Activity of guideActivity;">
           <ng-container *ngIf="guide_Activity.type == 'single'">
             <!-- <ion-item button [routerLink]="['/guide/' + guide_Activity.idApi + '/' + guide_Activity.parent_guide_id]"
