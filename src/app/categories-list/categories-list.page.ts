@@ -92,6 +92,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
     if (this.isStartSync) {
       this.miscService.set_guideShown('onboardingSyncShown');
     }
+    await this.showAllActivity();
   }
 
   async ngOnInit() {
