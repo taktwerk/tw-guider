@@ -60,6 +60,7 @@ export class GuideAssetTextModalComponent implements OnInit, OnDestroy {
         case this.guideAssetService.dbModelApi.TAG + ':create':
         case this.guideAssetService.dbModelApi.TAG + ':update':
           this.asset = event.data;
+          console.log("event.data for asset", this.asset);
           this.detectChanges();
           break;
         default:
