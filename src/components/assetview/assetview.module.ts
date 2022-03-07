@@ -18,7 +18,7 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
     IonicModule,
     Viewer3dModelComponentModule,
     FontAwesomeModule,
-    SharedModule
+    SharedModule,
   ],
   exports: [
     AssetviewComponent

@@ -186,36 +186,41 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     });
   }
 
-  protected initializeGuideStepSlide() {
-    const slideComponents = this.slideComponents.toArray();
-    console.log("check slide component without i =>", slideComponents);
-    for (let i = 0; i < this.guideSteps.length; i++) {
-      const virtualGuideStepSlide = {
-        guideStep: this.guideSteps[i],
-        containerElement: slideComponents[i],
-        component: null,
-      };
+  //=================================================================
 
-      const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
-      console.log("check slide component =>", slideComponents[i]);
-      const componentRef = slideComponents[i].createComponent(factory);
-      componentRef.instance.step = this.guideSteps[i];
-      componentRef.instance.guide = this.guide;
-      componentRef.instance.portraitOriginal = window.innerHeight > window.innerWidth;
-      componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
-      componentRef.instance.haveAssets = this.haveAssets;
-      componentRef.instance.guideStepsLength = this.guideSteps.length;
-      componentRef.instance.stepNumber = i;
-      virtualGuideStepSlide.component = componentRef;
+  // OLD CODE
 
-      this.virtualGuideStepSlides.push(virtualGuideStepSlide);
-    }
-    // console.log('this.virtualGuideStepSlides', this.virtualGuideStepSlides);
-  }
+  // protected initializeGuideStepSlide() {
+  //   const slideComponents = this.slideComponents.toArray();
+  //   console.log("check slide component without i =>", slideComponents);
+  //   for (let i = 0; i < this.guideSteps.length; i++) {
+  //     const virtualGuideStepSlide = {
+  //       guideStep: this.guideSteps[i],
+  //       containerElement: slideComponents[i],
+  //       component: null,
+  //     };
+
+  //     const factory = this.componentResolver.resolveComponentFactory(GuideStepContentComponent);
+  //     console.log("check slide component =>", slideComponents[i]);
+  //     const componentRef = slideComponents[i].createComponent(factory);
+  //     console.log("check componentRef", componentRef);
+  //     componentRef.instance.step = this.guideSteps[i];
+  //     componentRef.instance.guide = this.guide;
+  //     componentRef.instance.portraitOriginal = window.innerHeight > window.innerWidth;
+  //     componentRef.instance.haveFeedbackPermissions = this.haveFeedbackPermissions;
+  //     componentRef.instance.haveAssets = this.haveAssets;
+  //     componentRef.instance.guideStepsLength = this.guideSteps.length;
+  //     componentRef.instance.stepNumber = i;
+  //     virtualGuideStepSlide.component = componentRef;
+
+  //     this.virtualGuideStepSlides.push(virtualGuideStepSlide);
+  //   }
+  //   // console.log('this.virtualGuideStepSlides', this.virtualGuideStepSlides);
+  // }
 
   protected reinitializeGuideStepSlides() {
     this.virtualGuideStepSlides = [];
-    this.initializeGuideStepSlide();
+    // this.initializeGuideStepSlide();
   }
 
   async changeGuideStepCurrentSlide() {
@@ -454,7 +459,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     if (!this.isInitStepSlider && this.slideComponents && this.slideComponents.toArray().length > 0) {
       this.isInitStepSlider = true;
       this.haveAssets = this.guideAssets.length > 0;
-      this.initializeGuideStepSlide();
+      // this.initializeGuideStepSlide();
     }
   }
 

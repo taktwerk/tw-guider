@@ -3,7 +3,9 @@
   <div class="photoframe" *ngIf="viewer.photoframe.show">
     <div class="frame-outer">
       <div class="content">
-        <img [src]="viewer.photoframe.url" width="100%" height="auto" />
+        <div class="image-alignment">
+          <img [src]="viewer.photoframe.url" width="100%" height="auto" />
+        </div>
       </div>
       <div class="header">
         <div class="close" (click)="viewer.photoframe.show = false">
@@ -22,7 +24,9 @@
   <div class="photoframe" *ngIf="viewer.videoframe.show">
     <div class="frame-outer">
       <div class="content">
-        <video [src]="viewer.videoframe.url" width="100%" height="auto" controls></video>
+        <div class="image-alignment">
+          <video [src]="viewer.videoframe.url" width="100%" height="auto" controls></video>
+        </div>
       </div>
       <div class="header">
         <div class="close" (click)="viewer.videoframe.show = false">

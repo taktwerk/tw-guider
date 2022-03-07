@@ -199,6 +199,7 @@ export class AssetviewComponent implements OnInit {
 
       if (this.platform.is('capacitor')) {
         fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+        console.log("check fileUrl", fileUrl);
       } else {
         this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then((url: any) => {
 

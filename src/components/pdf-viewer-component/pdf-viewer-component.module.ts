@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-// import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { PdfViewerComponent } from './pdf-viewer-component';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -11,7 +11,7 @@ import { PdfViewerComponent } from './pdf-viewer-component';
   imports: [
     CommonModule,
     IonicModule,
-    // PdfJsViewerModule
+    PdfViewerModule
   ],
   exports: [
     PdfViewerComponent
