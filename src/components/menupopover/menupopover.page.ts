@@ -37,6 +37,7 @@ export class MenuPopoverComponent implements OnInit {
   }
 
   async restartSlide(ev: any) {
+    console.log("check eventt", ev);
     this.miscService.onSlideRestart.next(true);
     this.popoverController.dismiss();
   }

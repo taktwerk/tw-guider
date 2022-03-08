@@ -397,6 +397,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     // resume step from saved step
     if (this.guideStepSlides && this.guideViewHistory) {
       let stepValue = this.guideViewHistory.step;
+      console.log("check stepvalue", stepValue);
 
       if (this.guideViewHistory.step === this.guideSteps.length - 1) {
         stepValue = 0;
@@ -404,6 +405,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
       if (previous === true) {
         stepValue = this.guideViewHistory.step;
+        console.log("stepvalue", stepValue);
       }
 
       // slide to step
@@ -598,10 +600,14 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
     this.restartSub = this.miscService.onSlideRestart.subscribe((res) => {
       if (res) {
+        console.log("check response", res);
         if (this.guideStepSlides.slideTo(0)) {
           this.guideStepSlides.slideTo(0);
+          console.log("check this.guideStepSlides", this.guideStepSlides.slideTo(0));
         } else {
           this.guideStepSlides.slideTo(1);
+          console.log("check this.guideStepSlides", this.guideStepSlides.slideTo(1));
+
         }
       }
     });
@@ -772,6 +778,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       translucent: true,
       event: ev,
     });
+    console.log("check popover", popover.componentProps);
     return await popover.present();
   }
 
