@@ -69,6 +69,8 @@ import { SyncIndexService } from '../../providers/api/sync-index-service';
 import { HelpingService } from '../../controller/helping.service';
 import { ViewerService } from '../../services/viewer.service';
 import { AppSetting } from 'src/services/app-setting';
+import { GuideCategoryModel } from 'src/models/db/api/guide-category-model';
+
 
 @Component({
   selector: 'app-guide',
@@ -109,10 +111,11 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   public guideAssets: GuideAssetModel[] = [];
   public guideViewHistory: GuideViewHistoryModel = this.guideViewHistoryService.newModel();
   public guideHistories: GuideViewHistoryModel[] = [];
-
   public guideParent: GuiderModel;
   public guideCollection: GuiderModel;
   public parentCollectionId;
+
+  public guideCategory: GuideCategoryModel;
 
   public collections: GuiderModel[] = [];
 
@@ -229,6 +232,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     await this.guideStepSlides.getActiveIndex()
       .then((index) => {
         this.activeGuideStepSlideIndex = index;
+        console.log("this.activeGuideStepSlideIndex", this.activeGuideStepSlideIndex);
         // this.updateGuideStepSlides();
       })
       .catch((error) => {
@@ -506,8 +510,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       this.guideId = data.guideId;
       // this.presentGuideInfo(this.guideId);
       const guiderById = await this.guiderService.getById(this.guideId);
+      console.log(guiderById);
       if (guiderById.length) {
         this.guide = guiderById[0];
+        console.log(this.guide.idApi);
         await this.setGuideSteps(this.guide.idApi);
         await this.setAssets(this.guide.idApi);
         this.detectChanges();
@@ -515,7 +521,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         loader.dismiss();
         this.isLoadedContent = true;
         this.resumeStep(this.guide.idApi, data.previous);
-        this.miscService.onSlideRestart.next(true);
+        // this.miscService.onSlideRestart.next(true);
         this.reinitializeGuideStepSlides();
       }
     });
@@ -598,17 +604,28 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       }
     });
 
-    this.restartSub = this.miscService.onSlideRestart.subscribe((res) => {
+    this.restartSub = this.miscService.onSlideRestart.subscribe(async (res) => {
       if (res) {
-        console.log("check response", res);
-        if (this.guideStepSlides.slideTo(0)) {
-          this.guideStepSlides.slideTo(0);
-          console.log("check this.guideStepSlides", this.guideStepSlides.slideTo(0));
-        } else {
-          this.guideStepSlides.slideTo(1);
-          console.log("check this.guideStepSlides", this.guideStepSlides.slideTo(1));
 
+        if (typeof this.guideCollection == 'undefined') {
+          if (this.guideStepSlides.slideTo(0)) {
+            this.guideStepSlides.slideTo(0);
+          } else {
+            this.guideStepSlides.slideTo(1);
+          }
+        } else {
+          await this.setGuideSteps(this.guideCollection.guide_collection[0].guide_id);
+          await this.setAssets(this.guide.idApi);
+          this.detectChanges();
+          this.setGuides();
+          this.reinitializeGuideStepSlides();
+          if (this.guideStepSlides.slideTo(0)) {
+            this.guideStepSlides.slideTo(0);
+          } else {
+            this.guideStepSlides.slideTo(1);
+          }
         }
+
       }
     });
 
@@ -785,6 +802,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   ionViewWillLeave() { }
 
   backToCollection() {
+    // console.log("guideCategory", this.guideCategory.idApi);
     const feedbackNavigationExtras: NavigationExtras = {
       queryParams: {
         guideId: this.parentCollectionId,
@@ -792,7 +810,11 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     };
     console.log("check feedbackNavigationExtras in guide page", feedbackNavigationExtras);
     if (this.appSetting.isActivity == false) {
-      this.router.navigate(['/guide-collection/' + this.parentCollectionId], feedbackNavigationExtras);
+      // [routerLink] = "['/guides/' + guideCategory.idApi]"
+      // this.router.navigate(['/guides/' + 27]);
+      // this.router.navigate(['/guides/' + this.guideCategory.idApi]);
+      // this.router.navigate(['/guide-collection/' + this.parentCollectionId], feedbackNavigationExtras);
+      this.navCtrl.pop();
     } else {
       this.appSetting.isActivity = false;
       this.router.navigate(['guide-categories']);

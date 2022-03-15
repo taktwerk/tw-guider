@@ -190,11 +190,13 @@ export class GuiderModel extends DbApiModel {
                         obj.loadFromAttributes(res.rows.item(i));
                         obj.count = res.rows.item(i).count;
                         obj.step = res.rows.item(i).step;
+                        obj.guide_id = res.rows.item(i).guide_id;
+                        obj.parent_guide_id = res.rows.item(i).parent_guide_id;
                         this.guide_collection.push(obj);
                     }
                 }
                 resolve(this.guide_collection);
-
+                console.log("check this.guide_collection", this.guide_collection);
             }).catch((err) => {
                 // resolve(this.guide_collection);
                 console.log(err);

@@ -10,6 +10,7 @@ import { Viewer3dModelComponentModule } from '../viewer-3d-model-component/viewe
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '../../app/shared/shared.module';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
     Viewer3dModelComponentModule,
     FontAwesomeModule,
     SharedModule,
+    PdfViewerModule
   ],
   exports: [
     AssetviewComponent

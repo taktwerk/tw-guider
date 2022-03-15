@@ -10,6 +10,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
 import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
 import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
+import { GuiderService } from 'src/providers/api/guider-service';
 
 @Component({
   selector: 'guide-list-component',
@@ -26,6 +27,7 @@ export class GuideListComponent implements OnInit {
 
   guideList: GuiderModel[];
   displayLimit = 10;
+  public guideId: number = null;
   public guideViewHistory: GuideViewHistoryModel = this.guideViewHistoryService.newModel();
   public guideHistories: GuideViewHistoryModel[] = [];
 
@@ -37,6 +39,7 @@ export class GuideListComponent implements OnInit {
     public platform: Platform,
     public location: Location,
     private guideViewHistoryService: GuideViewHistoryService,
+    private guiderService: GuiderService
 
   ) {
     this.authService.checkAccess('guide');
@@ -91,14 +94,22 @@ export class GuideListComponent implements OnInit {
     this.router.navigate(['/guide-collection/' + guide.idApi], feedbackNavigationExtras);
   }
 
-  openGuide(guide: GuiderModel) {
-    if (guide.guide_collection.length) {
-      this.openCollection(guide);
-      return;
-    }
+  openGuide(guide) {
+
+
+    // if (guide.guide_collection.length) {
+    //   this.openCollection(guide);
+    //   return;
+    // }
     // console.log("parentCollectionId", this.parentCollectionId)
-    if (this.parentCollectionId) {
-      this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
+    if (guide.guide_collection.length) {
+      // console.log("check guide.guide_collection", guide);
+      // this.guiderService.getById(this.guideId).then(res => {
+      //   console.log("checkingg response", res);
+      // })
+      // console.log(guiderById);
+      // this.router.navigate(['/guide/' + guide.idApi + '/' + this.parentCollectionId]);
+      this.router.navigate(['/guide/' + guide.guide_collection[0].guide_id + '/' + guide.guide_collection[0].parent_guide_id]);
     }
     else {
       this.router.navigate(['/guide/' + guide.idApi]);

@@ -1,5 +1,6 @@
 <ion-grid class="guides">
   <ion-row>
+    <!-- <ion-col fixed size-xs="12" size-sm="6" size-md="6" size-lg="4" *ngFor="let item of guides; trackBy: trackByFn"> -->
     <ion-col fixed size-xs="12" size-sm="6" size-md="6" size-lg="4" *ngFor="let item of guides; trackBy: trackByFn">
       <ion-card color="light" class="ion-no-margin" *ngIf="!isCapture">
         <div class="guide-preview" (click)="openGuide(item)">
@@ -35,8 +36,8 @@
             </div>
           </div>
 
-          <!-- <ion-button *ngIf="item.guide_collection.length" class="show-guide-btn" (click)="openGuide(item)" -->
-          <ion-button *ngIf="item.guide_collection.length" class="show-guide-btn" (click)="openCollection(item)"
+          <!-- <ion-button *ngIf="item.guide_collection.length" class="show-guide-btn" (click)="openCollection(item)" -->
+          <ion-button *ngIf="item.guide_collection.length" class="show-guide-btn" (click)="openGuide(item)"
             vertical="bottom" style="text-transform: uppercase">
             <ion-icon slot="start" name="play"></ion-icon>
             {{ 'guides.Show Collection' | translate:params }}
