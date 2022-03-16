@@ -6,12 +6,12 @@
     <ion-title *ngIf="action == 'add'"> {{ 'guidestep.add' | translate }} </ion-title>
     <ion-title *ngIf="action == 'edit'">{{ 'guidestep.edit' | translate }} </ion-title>
 
-    <ion-buttons slot="end" class="header_cta">
+    <ion-buttons slot="end" >
       <ion-button (click)="showCancelAlert()">
         <ion-icon name="chevron-back" style="color: #ffffff;"
           *ngIf="platform.is('ios') && (action == 'add' || action == 'edit')"></ion-icon>
         <ion-icon name="arrow-back" style="color: #ffffff;"
-          *ngIf="platform.is('android') && (action == 'add' || action == 'edit')"></ion-icon>
+          *ngIf="!platform.is('ios') && (action == 'add' || action == 'edit')"></ion-icon>
       </ion-button>
     </ion-buttons>
 
