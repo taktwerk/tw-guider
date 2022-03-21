@@ -4,7 +4,9 @@
     <div class="frame-outer">
       <div class="content">
         <div class="image-alignment">
-          <img [src]="viewer.photoframe.url" width="100%" height="auto" />
+          <div class="image-profile">
+            <img [src]="viewer.photoframe.url" width="100%" height="auto" />
+          </div>
         </div>
       </div>
       <div class="header">
@@ -25,7 +27,9 @@
     <div class="frame-outer">
       <div class="content">
         <div class="image-alignment">
-          <video [src]="viewer.videoframe.url" width="100%" height="auto" controls></video>
+          <div class="image-profile">
+            <video [src]="viewer.videoframe.url" width="100%" height="auto" controls></video>
+          </div>
         </div>
       </div>
       <div class="header">

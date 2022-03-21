@@ -1,6 +1,6 @@
 <div style="width: 100%">
   <div class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
-    <div class="grid">
+    <div class="grid" style="position: relative;">
       <div class="col col-img" *ngIf="fileName">
 
         <div class="guide-step-img"
@@ -40,6 +40,9 @@
           </ion-toolbar>
         </ion-card>
       </div>
+    </div>
+    <div style="position: absolute; top: 20; width: 30px; height: 30px;">
+      <i class="fa-solid fa-angle-left"></i>
     </div>
   </div>
 </div>

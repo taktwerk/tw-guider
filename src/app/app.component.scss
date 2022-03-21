@@ -35,6 +35,7 @@ $save-changes-alert-width: 400px;
       justify-content: center;
       // align-items: center;
       display: flex;
+      width: 100%;
     }
 
     .header {
@@ -64,9 +65,40 @@ $save-changes-alert-width: 400px;
 .image-alignment {
   display: flex;
   justify-content: center;
-  // align-items: center;
-  max-width: 90%;
-  // padding: 2%;
   padding: 0.01%;
   height: 100%;
+  min-width: 250px;
+  max-width: 30%;
+  // display: flex;
+  // justify-content: center;
+  // // align-items: center;
+  // max-width: 90%;
+  // // padding: 2%;
+  // padding: 0.01%;
+  // height: 100%;
+
+  .image-profile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
 }
+
+// :host ::ng-deep ion-modal.md modal-default {
+//   --width: 900px !important;
+//   --height: 600px !important;
+//   //   --width: 600px;
+//   // --height: 500px;
+// }
+
+// @media only screen and (min-width: 768px) and (min-height: 600px) {
+//   :host {
+//     --width: 100% !important;
+//     --height: 100% !important;
+//     --ion-safe-area-top: 0px;
+//     --ion-safe-area-bottom: 0px;
+//     --ion-safe-area-right: 0px;
+//     --ion-safe-area-left: 0px;
+//   }
+// }
