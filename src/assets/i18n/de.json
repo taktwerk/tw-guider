@@ -236,5 +236,8 @@
     "edit": "Bearbeitungsschritt",
     "Open in editor": "Im Editor öffnen",
     "Description": "Beschreibung"
+  },
+  "activity":{
+    "activity":"Aktivität"
   }
 }
