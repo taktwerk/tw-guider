@@ -85,6 +85,15 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   @ViewChild('guideStepContentTemplate', { read: ViewContainerRef }) guideStepContentTemplate;
 
+
+
+  swipeNext(){
+    this.guideStepSlides.slideNext();
+  }
+  swipeBack(){
+    this.guideStepSlides.slidePrev();
+  }
+
   @Input() categoryId: number;
 
   @Input() guides: GuiderModel[] = [];
@@ -226,6 +235,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     // this.initializeGuideStepSlide();
   }
 
+disablePrevBtn = true;
+disableNextBtn = false;
+
   async changeGuideStepCurrentSlide() {
 
     this.guideStepSlides = this.element.nativeElement.querySelector('#guideStepSlides');
@@ -240,6 +252,14 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       });
 
     this.ionSlideDidChange();
+
+    const prom1 = this.guideStepSlides.isBeginning();
+    const prom2 = this.guideStepSlides.isEnd();
+  
+    Promise.all([prom1, prom2]).then((data) => {
+      data[0] ? this.disablePrevBtn = true : this.disablePrevBtn = false;
+      data[1] ? this.disableNextBtn = true : this.disableNextBtn = false;
+    });
   }
 
   protected updateGuideStepSlides() {

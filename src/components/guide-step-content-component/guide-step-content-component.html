@@ -1,6 +1,6 @@
 <div style="width: 100%">
-  <div class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
-    <div class="grid" style="position: relative;">
+  <div class="guide-step" [ngClass]="{'has-assets' : haveAssets}" style="position: relative;">
+    <div class="grid" >
       <div class="col col-img" *ngIf="fileName">
 
         <div class="guide-step-img"
@@ -41,8 +41,11 @@
         </ion-card>
       </div>
     </div>
-    <div style="position: absolute; top: 20; width: 30px; height: 30px;">
-      <i class="fa-solid fa-angle-left"></i>
+    <!-- <div style="position: absolute; top: 25%; left:10px ; width: 30px; height: 30px;">
+      <img src="../../assets/icon/left-arrow.png" alt="icon" height="30px" width="30px">
     </div>
+    <div style="position: absolute; top: 25% ; right:10px; width: 30px; height: 30px;">
+      <img src="../../assets/icon/right-arrow.png" alt="icon" height="30px" width="30px">
+    </div> -->
   </div>
 </div>

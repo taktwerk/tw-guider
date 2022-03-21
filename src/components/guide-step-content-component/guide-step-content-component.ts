@@ -1,5 +1,7 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
-import { LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
+/* eslint-disable @angular-eslint/component-selector */
+/* eslint-disable @typescript-eslint/member-ordering */
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { ModalController, NavController } from '@ionic/angular';
 
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
@@ -14,7 +16,6 @@ import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
 import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-component/guide-asset-text-modal-component';
-import { DbProvider } from '../../providers/db-provider';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { LoggerService } from '../../services/logger-service';
 import { MiscService } from '../../services/misc-service';
@@ -34,12 +35,12 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
 
   public faFilePdf = faFilePdf;
   @Input() step: GuideStepModel = null;
-  @Input() portraitOriginal: boolean = false;
+  @Input() portraitOriginal = false;
   @Input() guide: GuiderModel = null;
-  @Input() haveFeedbackPermissions: boolean = false;
-  @Input() haveAssets: boolean = false;
-  @Input() guideStepsLength: number = 0;
-  @Input() stepNumber: number = 0;
+  @Input() haveFeedbackPermissions = false;
+  @Input() haveAssets = false;
+  @Input() guideStepsLength = 0;
+  @Input() stepNumber = 0;
 
   fileName: string;
   fileImagePath: SafeResourceUrl;
@@ -108,9 +109,9 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     const feedbackNavigationExtras: NavigationExtras = {
       queryParams: {
         backUrl: this.router.url,
-        referenceModelAlias: referenceModelAlias,
-        referenceId: referenceId,
-        referenceTitle: referenceTitle,
+        referenceModelAlias,
+        referenceId,
+        referenceTitle,
         guideId: this.guide.idApi
       },
     };
@@ -142,7 +143,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
       componentProps: {
         asset: guideAsset
       },
-      cssClass: "modal-fullscreen"
+      cssClass: 'modal-fullscreen'
     });
 
     return await modal.present();
