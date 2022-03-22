@@ -1,9 +1,24 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar style="display: flex;">
     <ion-buttons slot="start">
       <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
-    <ion-title> {{ "guide.header" | translate: params }}</ion-title>
+    <ion-title style="width: 100%;">
+      <div style="display: flex; justify-content: space-between; width: 100%;">
+        <div style="display: flex;align-items: center;">
+          {{ "guide.header" | translate: params }}
+        </div>
+        <div style="display: flex;width: 60px; justify-content: space-between;">
+          <div (click)="swipeBack()" *ngIf="!disablePrevBtn">
+            <img src="../../assets/icon/left-arrow.png" style="filter: invert(1);" alt="icon" height="27px" width="27px">
+          </div>
+          <div (click)="swipeNext()" *ngIf="!disableNextBtn">
+            <img src="../../assets/icon/left-arrow.png" style="filter: invert(1); transform: rotate(180deg);" alt="icon" height="27px" width="27px">
+          </div>
+        </div>
+      </div>
+    </ion-title>
+
 
     <ion-buttons slot="primary" class="header_cta">
       <ion-back-button style="color: #ffffff;"></ion-back-button>
@@ -26,11 +41,17 @@
         </ion-icon>
       </ion-button>
 
+
+
+
     </ion-buttons>
+
+
   </ion-toolbar>
+
 </ion-header>
 
-<ion-content class="grey-background" [scrollEvents]="true" style="position: relative;">
+<ion-content class="grey-background" [scrollEvents]="true">
   <span *ngIf="isLoadedContent">
     <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
 
@@ -43,12 +64,7 @@
         </ion-slide>
       </ion-slides>
 
-      <div style="position: absolute; top: 25%; left:10px ; width: 30px; height: 30px; z-index: 999;" (click)="swipeBack()" *ngIf="!disablePrevBtn">
-        <img src="../../assets/icon/left-arrow.png" alt="icon" height="30px" width="30px">
-      </div>
-      <div style="position: absolute; top: 25% ; right:10px; width: 30px; height: 30px; z-index: 999;" (click)="swipeNext()" *ngIf="!disableNextBtn">
-        <img src="../../assets/icon/right-arrow.png" alt="icon" height="30px" width="30px">
-      </div>
+
 
       <div *ngIf="guideAssets.length" class="guide-assets" #assetSection>
         <ion-card class="ion-no-padding">

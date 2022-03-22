@@ -491,6 +491,18 @@ disableNextBtn = false;
 
   async ngOnInit() {
 
+    window.addEventListener('keydown', (e) => {
+      if(e.code === 'ArrowRight'){
+        this.swipeNext();
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if(e.code === 'ArrowLeft'){
+        this.swipeBack();
+      }
+    });
+
     this.guideStepSlides = this.element.nativeElement.querySelector('#guideStepSlides');
 
     this.slideOpts = { initialSlide: 0, speed: 400, spaceBetween: 100 };
