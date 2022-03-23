@@ -4,16 +4,18 @@
       <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
     <ion-title style="width: 100%;">
-      <div style="display: flex; justify-content: space-between; width: 100%;">
+      <div style="display: flex; justify-content: space-between; width: 100%;align-items: center">
         <div style="display: flex;align-items: center;">
           {{ "guide.header" | translate: params }}
         </div>
-        <div style="display: flex;width: 60px; justify-content: space-between;">
-          <div (click)="swipeBack()" *ngIf="!disablePrevBtn">
-            <img src="../../assets/icon/left-arrow.png" style="filter: invert(1);" alt="icon" height="27px" width="27px">
+        <div style="display: flex;align-items: center;width: 70px; font-size: 2.0rem; margin-right: 5%;margin-top: 5px;">
+          <div (click)="swipeBack()" *ngIf="!disablePrevBtn" style="width: 30px;">
+            <ion-icon name="arrow-back-circle-outline"></ion-icon>
           </div>
-          <div (click)="swipeNext()" *ngIf="!disableNextBtn">
-            <img src="../../assets/icon/left-arrow.png" style="filter: invert(1); transform: rotate(180deg);" alt="icon" height="27px" width="27px">
+          <div style="width: 40px;">
+          </div>
+          <div (click)="swipeNext()" *ngIf="!disableNextBtn" style="width: 30px;">
+            <ion-icon name="arrow-forward-circle-outline"></ion-icon>
           </div>
         </div>
       </div>

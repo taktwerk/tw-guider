@@ -25,58 +25,56 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-// .modal-fullscreen {
-//   width: 100% !important;
-//   height: 100% !important;
-//   .modal-wrapper.ion-overlay-wrapper {
-//     width: 100% !important;
-//     height: 100% !important;
-//   }
-// }
-
-.modal-fullscreen .modal-wrapper.ion-overlay-wrapper {
-  width: 100% !important;
-  height: 100% !important;
-}
-
 // .modal-wrapper {
 //   width: 100% !important;
 //   height: 100% !important;
+//   --width: 100% !important;
+//   --height: 100% !important;
 // }
 
-// ion-modal {
+// .modal-wrapper::shadow {
 //   width: 100% !important;
 //   height: 100% !important;
-//   //   --width: 600px;
-//   // --height: 500px;
+//   --width: 100% !important;
+//   --height: 100% !important;
+// }
 
-//   .modal-wrapper.ion-overlay-wrapper {
+// .modal-wrapper:host {
+//   width: 100% !important;
+//   height: 100% !important;
+//   --width: 100% !important;
+//   --height: 100% !important;
+// }
+
+
+// :host {
+//   .modal-wrapper {
 //     width: 100% !important;
 //     height: 100% !important;
+//     --width: 100% !important;
+//     --height: 100% !important;
 //   }
 // }
 
-// ion-modal {
-//   left: 0;
-//   right: 0;
-//   top: 0;
-//   bottom: 0;
-//   position: absolute;
-//   contain: strict;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
+// [override] ion-modal {
+//   width: 100% !important;
+//   height: 100% !important;
+//   --width: 100% !important;
+//   --height: 100% !important;
+// }
 
-//   .modal-wrapper {
-//     width: 100%;
-//     height: 100%;
-//   }
-//   @media only screen and (max-height: 600px) and (max-width: 768px) {
-//     .modal-wrapper {
-//       width: 600px;
-//       height: 500px;
-//     }
-//   }
+ion-modal {
+  width: 100% !important;
+  height: 100% !important;
+  --width: 100% !important;
+  --height: 100% !important;
+}
+
+// ion-modal:host {
+//   width: 100% !important;
+//   height: 100% !important;
+//   --width: 100% !important;
+//   --height: 100% !important;
 // }
 
 ckeditor {
@@ -199,29 +197,6 @@ ion-header {
 
   &::after {
     bottom: 50px !important;
-  }
-}
-
-/* sync-modal-component {
-    ion-header {
-      sync-spinner-component {
-        order: 1;
-      }
-      ion-title {
-        order: 2;
-      }
-    }
-  } */
-
-.modal-fullscreen {
-  .modal-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-    margin-right: 20px;
   }
 }
 

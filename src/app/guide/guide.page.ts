@@ -669,10 +669,11 @@ disableNextBtn = false;
   async presentGuideInfo(guideId) {
     const modal = await this.modalController.create({
       component: GuideinfoPage,
+      cssClass: 'fullscreen',
       componentProps: {
         guideId,
       },
-      cssClass: 'modal-fullscreen',
+
     });
     // if (this.guideViewHistory.show_info === 0 || !this.guideViewHistory.show_info) {
     this.saveStep(true);
