@@ -435,8 +435,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       // slide to step
       this.guideStepSlides.slideTo(stepValue).then(async () => {
         if (stepValue !== 0) {
-          const alertMessage = await this.translateConfigService.translate('alert.resumed');
-          this.http.showToast(alertMessage);
+          // const alertMessage = await this.translateConfigService.translate('alert.resumed');
+          // this.http.showToast(alertMessage);
         }
       });
     }
