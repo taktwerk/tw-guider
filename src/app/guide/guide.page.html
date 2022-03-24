@@ -13,29 +13,25 @@
         <div style="display: flex;align-items: center;width: 70px; font-size: 2.0rem; margin-right: 5%;margin-top: 5px;">
 
           <div (click)="swipeBack()" *ngIf="!disablePrevBtn" style="width: 30px;">
-            <ion-icon name="arrow-back-circle-outline"></ion-icon>
+            <ion-icon name="caret-back"></ion-icon>
           </div>
 
           <ion-buttons slot="primary" class="header_cta">
             <ion-button (click)="nextGuide()" *ngIf="hasNext">
-              <ion-icon style="color: #ffffff;margin-bottom: 10px;"
-                src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Play Skip Forward</title><path d='M400 64a16 16 0 00-16 16v136.43L151.23 77.11a35.13 35.13 0 00-35.77-.44C103.46 83.47 96 96.63 96 111v290c0 14.37 7.46 27.53 19.46 34.33a35.14 35.14 0 0035.77-.45L384 295.57V432a16 16 0 0032 0V80a16 16 0 00-16-16z'/></svg>">
-              </ion-icon>
+              <ion-icon name="play-skip-forward" style="color: #ffffff;margin-bottom: 10px;"></ion-icon>
             </ion-button>
   
             <!-- <div style="width: 40px;">
             </div> -->
   
             <ion-button (click)="previousGuide()" *ngIf="hasPrevious">
-              <ion-icon style="color: #ffffff;margin-bottom: 10px;"
-                src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Play Skip Back</title><path d='M112 64a16 16 0 0116 16v136.43L360.77 77.11a35.13 35.13 0 0135.77-.44c12 6.8 19.46 20 19.46 34.33v290c0 14.37-7.46 27.53-19.46 34.33a35.14 35.14 0 01-35.77-.45L128 295.57V432a16 16 0 01-32 0V80a16 16 0 0116-16z'/></svg>">
-              </ion-icon>
+              <ion-icon name="play-skip-back" style="color: #ffffff;margin-bottom: 10px;"></ion-icon>
             </ion-button>
           </ion-buttons>
           
 
           <div (click)="swipeNext()" *ngIf="!disableNextBtn" style="width: 30px;">
-            <ion-icon name="arrow-forward-circle-outline"></ion-icon>
+            <ion-icon name="caret-forward"></ion-icon>
           </div>
 
         </div>

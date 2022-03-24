@@ -393,7 +393,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     });
   }
 
-  public async resumeStep(id, previous = false) {
+  public async resumeStep(id, previous = false, isToast = true) {
     this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]);
 
     // in collection
@@ -435,8 +435,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       // slide to step
       this.guideStepSlides.slideTo(stepValue).then(async () => {
         if (stepValue !== 0) {
-          // const alertMessage = await this.translateConfigService.translate('alert.resumed');
-          // this.http.showToast(alertMessage);
+          if(isToast === true){
+            const alertMessage = await this.translateConfigService.translate('alert.resumed');
+            this.http.showToast(alertMessage);
+          }
         }
       });
     }
@@ -540,12 +542,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
     this.resumeStep(this.guide.idApi);
 
-    // else {
-    //   this.resumeStep(this.guide.idApi);
-    // }
-    // this.resumeStep(this.guide.idApi);
     this.guiderSubscription = this.guiderSubject.subscribe(async (data: any) => {
-      console.log("this.guiderResetSubject.subscribe((guideId)", data.guideId, this.guiderSubscription);
       const loader = await this.loader.create();
       loader.present();
       this.guideId = data.guideId;
@@ -561,7 +558,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         this.setGuides();
         loader.dismiss();
         this.isLoadedContent = true;
-        this.resumeStep(this.guide.idApi, data.previous);
+        this.resumeStep(this.guide.idApi, data.previous, false);
         // this.miscService.onSlideRestart.next(true);
         this.reinitializeGuideStepSlides();
       }
