@@ -5,7 +5,7 @@
       <div class="content">
         <div class="image-alignment">
           <div class="image-profile">
-            <img [src]="viewer.photoframe.url" width="auto" height="auto" />
+            <img class="contain" [src]="viewer.photoframe.url"   />
           </div>
         </div>
       </div>
@@ -28,7 +28,7 @@
       <div class="content">
         <div class="image-alignment">
           <div class="image-profile">
-            <video [src]="viewer.videoframe.url" width="100%" height="auto" controls></video>
+            <video class="contain" [src]="viewer.videoframe.url"  controls></video>
           </div>
         </div>
       </div>
