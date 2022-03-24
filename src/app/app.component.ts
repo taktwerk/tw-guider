@@ -486,6 +486,16 @@ export class AppComponent implements OnInit, OnDestroy {
     this.translateConfigService.onLangChange().subscribe(() => {
       this.setPages();
     });
+
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape') {
+        this.viewer.videoframe.show = false;
+        this.viewer.photoframe.show = false;
+        this.viewer.pdfframe.show = false;
+      }
+    });
+
   }
 
   ngOnDestroy(): void {
