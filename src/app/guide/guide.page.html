@@ -10,31 +10,26 @@
           {{ "guide.header" | translate: params }}
         </div>
 
-        <div style="display: flex;align-items: center;width: 70px; font-size: 2.0rem; margin-right: 5%;margin-top: 5px;">
-
-          <div (click)="swipeBack()" *ngIf="!disablePrevBtn" style="width: 30px;">
-            <ion-icon name="caret-back"></ion-icon>
-          </div>
-
           <ion-buttons slot="primary" class="header_cta">
+
+            <ion-button (click)="swipeNext()" *ngIf="!disableNextBtn" >
+              <ion-icon name="caret-forward"></ion-icon>
+            </ion-button>
+
             <ion-button (click)="nextGuide()" *ngIf="hasNext">
-              <ion-icon name="play-skip-forward" style="color: #ffffff;margin-bottom: 10px;"></ion-icon>
+              <ion-icon name="play-skip-forward"></ion-icon>
             </ion-button>
-  
-            <!-- <div style="width: 40px;">
-            </div> -->
-  
+
+            <ion-button (click)="swipeBack()" *ngIf="!disablePrevBtn" >
+              <ion-icon name="caret-back"></ion-icon>
+            </ion-button>
+
             <ion-button (click)="previousGuide()" *ngIf="hasPrevious">
-              <ion-icon name="play-skip-back" style="color: #ffffff;margin-bottom: 10px;"></ion-icon>
+              <ion-icon name="play-skip-back"></ion-icon>
             </ion-button>
+
           </ion-buttons>
-          
 
-          <div (click)="swipeNext()" *ngIf="!disableNextBtn" style="width: 30px;">
-            <ion-icon name="caret-forward"></ion-icon>
-          </div>
-
-        </div>
       </div>
     </ion-title>
 
