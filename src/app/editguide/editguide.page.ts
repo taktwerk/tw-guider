@@ -14,6 +14,11 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./editguide.page.scss'],
 })
 export class EditguidePage implements OnInit, OnDestroy {
+
+  guideId: string;
+  public guideSteps: GuideStepModel[] = [];
+  refreshSub: Subscription;
+
   constructor(private activatedRoute: ActivatedRoute,
     private guideStepService: GuideStepService,
     private router: Router,
@@ -23,17 +28,13 @@ export class EditguidePage implements OnInit, OnDestroy {
     public location: Location
   ) { }
 
-  guideId: string;
-  public guideSteps: GuideStepModel[] = [];
-  refreshSub: Subscription
-
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.has('id')) {
-        this.guideId = paramMap.get("id");
+        this.guideId = paramMap.get('id');
         this.setGuideSteps(this.guideId);
       }
-    })
+    });
   }
 
   ionViewWillEnter() {}
@@ -41,27 +42,23 @@ export class EditguidePage implements OnInit, OnDestroy {
 
   public setGuideSteps(id) {
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
-      this.guideSteps = results.filter(model => {
-        return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
-      });
+      this.guideSteps = results.filter(model => !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]);
     });
   }
 
   addStep(guide, action) {
-    let navigationExtras: NavigationExtras = {
+    const navigationExtras: NavigationExtras = {
       queryParams: {
         guideId: guide,
-        action: action
+        action
       }
-    }
-    this.router.navigate(["/", "guidestep-add-edit"], navigationExtras);
+    };
+    this.router.navigate(['/', 'guidestep-add-edit'], navigationExtras);
   }
 
   ngOnDestroy(): void { }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 }

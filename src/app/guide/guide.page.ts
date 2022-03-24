@@ -87,10 +87,10 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
 
 
-  swipeNext(){
+  swipeNext() {
     this.guideStepSlides.slideNext();
   }
-  swipeBack(){
+  swipeBack() {
     this.guideStepSlides.slidePrev();
   }
 
@@ -235,8 +235,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     // this.initializeGuideStepSlide();
   }
 
-disablePrevBtn = true;
-disableNextBtn = false;
+  disablePrevBtn = true;
+  disableNextBtn = false;
 
   async changeGuideStepCurrentSlide() {
 
@@ -255,7 +255,7 @@ disableNextBtn = false;
 
     const prom1 = this.guideStepSlides.isBeginning();
     const prom2 = this.guideStepSlides.isEnd();
-  
+
     Promise.all([prom1, prom2]).then((data) => {
       data[0] ? this.disablePrevBtn = true : this.disablePrevBtn = false;
       data[1] ? this.disableNextBtn = true : this.disableNextBtn = false;
@@ -491,15 +491,24 @@ disableNextBtn = false;
 
   async ngOnInit() {
 
-    window.addEventListener('keydown', (e) => {
-      if(e.code === 'ArrowRight'){
-        this.swipeNext();
+    window.addEventListener('keydown', async (e) => {
+      if (e.code === 'ArrowRight') {
+        if (this.hasNext) {
+          this.nextGuide();
+        } else {
+          this.swipeNext();
+        }
       }
     });
 
     window.addEventListener('keydown', (e) => {
-      if(e.code === 'ArrowLeft'){
-        this.swipeBack();
+      if (e.code === 'ArrowLeft') {
+        if (this.hasPrevious) {
+          this.previousGuide();
+        } else {
+          this.swipeBack();
+        }
+
       }
     });
 
