@@ -433,7 +433,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       }
 
       // slide to step
-      this.guideStepSlides.slideTo(stepValue).then(async () => {
+      this.guideStepSlides.slideTo(stepValue,0).then(async () => {
         if (stepValue !== 0) {
           if(isToast === true){
             const alertMessage = await this.translateConfigService.translate('alert.resumed');
