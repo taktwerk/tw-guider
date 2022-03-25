@@ -4,6 +4,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  syncMode: 0,
   production: false,
   apiUrlPath: '/api/v1',
   taktwerk: 'taktwerk',

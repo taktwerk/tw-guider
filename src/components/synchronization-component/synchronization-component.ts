@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @angular-eslint/component-selector */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { ChangeDetectorRef, Component, OnInit, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
 
@@ -14,6 +18,7 @@ import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
 import { Subscription } from 'rxjs';
 import { MiscService } from '../../services/misc-service';
+import { environment } from 'src/environments/environment';
 
 export enum SyncMode {
   Manual,
@@ -58,7 +63,7 @@ export class SynchronizationComponent implements OnInit {
       if ([0, 1, 2].includes(this.userService.userDb.userSetting.syncMode)) {
         this.modeSync = this.userService.userDb.userSetting.syncMode;
       } else {
-        this.modeSync = SyncMode.Manual;
+        this.modeSync = environment.syncMode;
       }
       this.resumeMode = this.userService.userDb.userSetting.resumeMode;
       // console.log(this.resumeMode)
@@ -75,9 +80,7 @@ export class SynchronizationComponent implements OnInit {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
-      this.changeDetectorRef.detectChanges();
-    }
+    this.changeDetectorRef.detectChanges();
   }
 
   changeSyncMode(mode) {
@@ -102,8 +105,8 @@ export class SynchronizationComponent implements OnInit {
   }
 
   changeResumeMode() {
-    this.resumeMode == false ? this.resumeMode = true : this.resumeMode = false;
-    console.log(this.resumeMode)
+    this.resumeMode === false ? this.resumeMode = true : this.resumeMode = false;
+    console.log(this.resumeMode);
     this.initUser().then(() => {
       this.userService.userDb.userSetting.resumeMode = this.resumeMode;
       this.userService.userDb.save().then(() => {

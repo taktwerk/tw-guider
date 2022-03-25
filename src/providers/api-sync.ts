@@ -198,7 +198,7 @@ export class ApiSync implements OnDestroy {
     replacerFunc = () => {
         const visited = new WeakSet();
         return (key, value) => {
-            if (typeof value === "object" && value !== null) {
+            if (typeof value === 'object' && value !== null) {
                 if (visited.has(value)) {
                     return;
                 }
@@ -627,22 +627,22 @@ export class ApiSync implements OnDestroy {
             this.loggerService.getLogger().info('Init Status', data);
 
             if (!data) {
-                console.log("check data when sync1", data);
+                console.log('check data when sync1', data);
                 this.isStartSyncBehaviorSubject.next(false);
                 resolve(false);
                 return;
             }
             if (!this.appSetting.isMigratedDatabase()) {
-                console.log("check data when sync2", data);
+                console.log('check data when sync2', data);
                 resolve(false);
                 return;
             }
             if (this.isOffNetwork() || this.isBusy) {
-                console.log("check data when sync3", data);
+                console.log('check data when sync3', data);
                 resolve(false);
                 return;
             }
-            console.log("check data when sync final", data);
+            console.log('check data when sync final', data);
 
             this.userService.userDb.userSetting.syncStatus = syncStatus;
             await this.userService.userDb.save();
@@ -694,7 +694,7 @@ export class ApiSync implements OnDestroy {
                     }
 
                     this.syncData = pullData.models;
-                    console.log("Sync Data ", this.syncData);
+                    console.log('Sync Data ', this.syncData);
                     this.loggerService.getLogger().info('Sync Data', JSON.stringify(this.syncData));
 
                     for (const key of Object.keys(this.syncData)) {
@@ -1100,7 +1100,7 @@ export class ApiSync implements OnDestroy {
                         }
                     });
             } catch (e) {
-                console.log("check error", e);
+                console.log('check error', e);
             }
         });
     }

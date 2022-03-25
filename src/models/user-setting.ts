@@ -27,7 +27,7 @@ export class UserSetting {
 
   public lastSyncProcessId: number = null;
 
-  public isSyncAvailableData: boolean = false;
+  public isSyncAvailableData = false;
 
   public pushStatus: string;
 
@@ -41,11 +41,11 @@ export class UserSetting {
 
   public lastPushedModelId: number;
 
-  public isPushAvailableData: boolean = false;
+  public isPushAvailableData = false;
 
   public syncMode: number;
 
-  public resumeMode: boolean = false;
+  public resumeMode = false;
 
   public language: string = TranslateConfigService.DEFAULT_LANGUAGE;
 

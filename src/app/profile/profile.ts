@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/component-selector */
 import { MiscService } from './../../services/misc-service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController } from '@ionic/angular';
@@ -40,10 +41,10 @@ export class ProfilePage implements OnInit, OnDestroy {
         // });
 
         this.eventSubscription = this.miscService.events.subscribe(async (event) => {
-            if (event.TAG == 'network:online') {
+            if (event.TAG === 'network:online') {
                 this.authService.checkAccess();
             }
-        })
+        });
     }
 
     ngOnDestroy(): void {

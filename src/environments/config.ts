@@ -1,4 +1,4 @@
 export const config = {
-  "apiVersion": "1.2",
-  "databaseVersion": "1.0"
-}
+  apiVersion: '1.2',
+  databaseVersion: '1.0'
+};

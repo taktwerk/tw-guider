@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-fallthrough */
 /* eslint-disable @typescript-eslint/no-shadow */
@@ -244,7 +245,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     await this.guideStepSlides.getActiveIndex()
       .then((index) => {
         this.activeGuideStepSlideIndex = index;
-        console.log("this.activeGuideStepSlideIndex", this.activeGuideStepSlideIndex);
+        console.log('this.activeGuideStepSlideIndex', this.activeGuideStepSlideIndex);
         // this.updateGuideStepSlides();
       })
       .catch((error) => {
@@ -421,7 +422,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     // resume step from saved step
     if (this.guideStepSlides && this.guideViewHistory) {
       let stepValue = this.guideViewHistory.step;
-      console.log("check stepvalue", stepValue);
+      console.log('check stepvalue', stepValue);
 
       if (this.guideViewHistory.step === this.guideSteps.length - 1) {
         stepValue = 0;
@@ -429,7 +430,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
       if (previous === true) {
         stepValue = this.guideViewHistory.step;
-        console.log("stepvalue", stepValue);
+        console.log('stepvalue', stepValue);
       }
 
       // slide to step
@@ -834,7 +835,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       translucent: true,
       event: ev,
     });
-    console.log("check popover", popover.componentProps);
+    console.log('check popover', popover.componentProps);
     return await popover.present();
   }
 
@@ -847,8 +848,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
         guideId: this.parentCollectionId,
       },
     };
-    console.log("check feedbackNavigationExtras in guide page", feedbackNavigationExtras);
-    if (this.appSetting.isActivity == false) {
+    console.log('check feedbackNavigationExtras in guide page', feedbackNavigationExtras);
+    if (this.appSetting.isActivity === false) {
       // [routerLink] = "['/guides/' + guideCategory.idApi]"
       // this.router.navigate(['/guides/' + 27]);
       // this.router.navigate(['/guides/' + this.guideCategory.idApi]);
