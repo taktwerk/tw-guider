@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/contextual-lifecycle */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';

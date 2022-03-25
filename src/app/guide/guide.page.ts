@@ -515,33 +515,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       }
     });
 
-    this.guideStepSlides = this.element.nativeElement.querySelector('#guideStepSlides');
-
-    this.slideOpts = { initialSlide: 0, speed: 400, spaceBetween: 100 };
-    const loader = await this.loader.create();
-    loader.present();
-    // console.log("snapshot", this.activatedRoute.snapshot)
-    this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
-    // this.presentGuideInfo(this.guideId);
-    // console.log("guideId", this.guideId)
-    this.parentCollectionId = +this.activatedRoute.snapshot.paramMap.get('parentCollectionId');
-    // console.log("parentCollectionId", this.parentCollectionId);
-    if (this.guideId) {
-      const guiderById = await this.guiderService.getById(this.guideId);
-      // console.log("guiderById", guiderById)
-      if (guiderById.length) {
-        this.guide = guiderById[0];
-        //  console.log("guide", this.guide)
-        await this.setGuideSteps(this.guide.idApi);
-        await this.setAssets(this.guide.idApi);
-        this.detectChanges();
-        this.setGuides();
-      }
-    }
-    loader.dismiss();
-    this.isLoadedContent = true;
-
-    this.resumeStep(this.guide.idApi);
+    this.start();
 
     this.guiderSubscription = this.guiderSubject.subscribe(async (data: any) => {
       const loader = await this.loader.create();
@@ -653,16 +627,18 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
             this.guideStepSlides.slideTo(1);
           }
         } else {
-          await this.setGuideSteps(this.guideCollection.guide_collection[0].guide_id);
-          await this.setAssets(this.guide.idApi);
-          this.detectChanges();
-          this.setGuides();
-          this.reinitializeGuideStepSlides();
           if (this.guideStepSlides.slideTo(0)) {
             this.guideStepSlides.slideTo(0);
           } else {
             this.guideStepSlides.slideTo(1);
           }
+          await this.setGuideSteps(this.guideCollection.guide_collection[0].guide_id);
+          await this.setAssets(this.guide.idApi);
+          this.setGuides();
+          this.detectChanges();
+          this.reinitializeGuideStepSlides();
+
+          this.start();
         }
 
       }
@@ -671,6 +647,37 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.resumeModeSub = this.syncService.resumeMode.subscribe((mode) => {
       this.resumeMode = mode;
     });
+  }
+
+  async start() {
+    this.guideStepSlides = this.element.nativeElement.querySelector('#guideStepSlides');
+
+    this.slideOpts = { initialSlide: 0, speed: 400, spaceBetween: 100 };
+    const loader = await this.loader.create();
+    loader.present();
+    // console.log("snapshot", this.activatedRoute.snapshot)
+    this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
+    // this.presentGuideInfo(this.guideId);
+    // console.log("guideId", this.guideId)
+    this.parentCollectionId = +this.activatedRoute.snapshot.paramMap.get('parentCollectionId');
+    // console.log("parentCollectionId", this.parentCollectionId);
+    if (this.guideId) {
+      const guiderById = await this.guiderService.getById(this.guideId);
+      // console.log("guiderById", guiderById)
+      if (guiderById.length) {
+        this.guide = guiderById[0];
+        //  console.log("guide", this.guide)
+        await this.setGuideSteps(this.guide.idApi);
+        await this.setAssets(this.guide.idApi);
+        this.detectChanges();
+        this.setGuides();
+      }
+    }
+    loader.dismiss();
+    this.isLoadedContent = true;
+
+    this.resumeStep(this.guide.idApi);
+
   }
 
   async presentGuideInfo(guideId) {

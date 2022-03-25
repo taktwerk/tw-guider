@@ -28,16 +28,16 @@ export class MenuPopoverComponent implements OnInit {
     const modal = await this.modalController.create({
       component: GuideinfoPage,
       componentProps: {
-        'guideId': this.guideId
+        guideId: this.guideId
       },
-      cssClass: "modal-fullscreen"
+      cssClass: 'modal-fullscreen'
     });
     this.popoverController.dismiss();
     return await modal.present();
   }
 
   async restartSlide(ev: any) {
-    console.log("check eventt", ev);
+    console.log('check eventt', ev);
     this.miscService.onSlideRestart.next(true);
     this.popoverController.dismiss();
   }
