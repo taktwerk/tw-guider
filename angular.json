@@ -42,6 +42,9 @@
             "namedChunks": true
           },
           "configurations": {
+            "web": {
+              "baseHref": "/"
+            },
             "production": {
               "fileReplacements": [
                 {
