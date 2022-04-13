@@ -89,10 +89,10 @@ export class DownloadService {
   async downloadAndSaveFile(url: string, name: string, modelFolder: string, authToken = ''): Promise<any> {
     const promise = new Promise((resolve) => {
       const finalPath = this.file.dataDirectory + modelFolder + '/' + name;
-      console.log("check finalPath---->", finalPath);
+      console.log('check finalPath---->', finalPath);
       if (!this.platform.is('capacitor')) {
         resolve(url);
-        console.log("checkkkkkinggg url", url);
+        console.log('checkkkkkinggg url', url);
         return;
       }
 
@@ -254,7 +254,7 @@ export class DownloadService {
         const customBlob = this.base64ToBlob(filebBase64.data);
 
         // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-        console.log("customBlob", customBlob)
+        console.log('customBlob', customBlob);
         // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
 
         const formData = new FormData();
@@ -607,7 +607,7 @@ export class DownloadService {
         reader.onload = (_event) => {
           const url: any = reader.result;
           resolve(url);
-          console.log("check url from choosefilefromlocalpc", url);
+          console.log('check url from choosefilefromlocalpc', url);
         };
 
         // let reader: any = new FileReader();
