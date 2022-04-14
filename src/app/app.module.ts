@@ -57,9 +57,7 @@ import { MigrationService } from 'src/providers/api/migration-service';
 import { MigrationProvider } from 'src/providers/migration-provider';
 import { AuthDb } from 'src/models/db/auth-db';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
-// import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
-
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
 // import { DatePipe } from '@angular/common';
 import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
