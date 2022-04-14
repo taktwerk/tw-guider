@@ -10,7 +10,7 @@ import { LanguageSelectorComponentModule } from '../../components/language-selec
 import { TranslateModule } from '@ngx-translate/core';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 
 @NgModule({
