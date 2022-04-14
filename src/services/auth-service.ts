@@ -9,7 +9,7 @@ import { UserSetting } from '../models/user-setting';
 import { NavController } from '@ionic/angular';
 import { DownloadService } from './download-service';
 import { CryptoProvider } from '../providers/crypto-provider';
-import { Device } from '@ionic-native/device/ngx';
+import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { UserService } from './user-service';
 import { TranslateConfigService } from './translate-config.service';
