@@ -10,7 +10,7 @@ import { LogsPage } from './logs.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { MainPipe } from '../../pipes/main-pipe.module';
-import { File } from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 // import { FileChooser } from '@ionic-native/file-chooser/ngx';
 // import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 // import { FilePath } from '@ionic-native/file-path/ngx';

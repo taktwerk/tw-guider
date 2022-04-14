@@ -13,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { SharedModule } from '../../app/shared/shared.module';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { File } from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 
 @NgModule({
     declarations: [

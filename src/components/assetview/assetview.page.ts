@@ -18,7 +18,7 @@ import { CreateThumbnailOptions, VideoEditor } from '@awesome-cordova-plugins/vi
 // import { Capacitor, Plugins } from '@capacitor/core';
 import { Filesystem } from '@capacitor/filesystem';
 import { ApiSync } from '../../providers/api-sync';
-import { File } from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { ViewerService } from '../../services/viewer.service';
 import { HelpingService } from '../../controller/helping.service';
 // import { Camera } from '@capacitor/camera';

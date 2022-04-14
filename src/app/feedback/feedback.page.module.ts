@@ -12,7 +12,7 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { SharedModule } from '../../app/shared/shared.module';
-import { File } from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 // import { FileChooser } from '@ionic-native/file-chooser/ngx';
 // import { IOSFilePicker } from '@ionic-native/file-picker/ngx';

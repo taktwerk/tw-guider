@@ -11,7 +11,7 @@ import { HtmlDescriptionComponentModule } from '../../components/html-descriptio
 import { LanguageSelectorComponentModule } from '../../components/language-selector-component/language-selector-component.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { File } from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 
 @NgModule({
