@@ -30,7 +30,7 @@ import { AppSettingsDb } from 'src/models/db/app-settings-db';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { Device } from '@ionic-native/device/ngx';
-import { AppVersion } from '@ionic-native/app-version/ngx';
+import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { UserService } from 'src/services/user-service';
 import { ToastService } from 'src/services/toast-service';
 import { Network } from '@ionic-native/network/ngx';

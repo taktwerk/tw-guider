@@ -9,7 +9,7 @@ import { TranslateConfigService } from './translate-config.service';
 import { Device } from '@capacitor/device';
 import { Network } from '@capacitor/network';
 import { ToastService } from './toast-service';
-import {  config } from '../environments/config';
+import { config } from '../environments/config';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 

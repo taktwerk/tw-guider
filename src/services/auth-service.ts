@@ -10,7 +10,7 @@ import { NavController } from '@ionic/angular';
 import { DownloadService } from './download-service';
 import { CryptoProvider } from '../providers/crypto-provider';
 import { Device } from '@ionic-native/device/ngx';
-import { AppVersion } from '@ionic-native/app-version/ngx';
+import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { UserService } from './user-service';
 import { TranslateConfigService } from './translate-config.service';
 import { Storage } from '@ionic/storage-angular';
