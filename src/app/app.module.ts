@@ -61,7 +61,7 @@ import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
 // import { DatePipe } from '@angular/common';
 import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
-import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 // import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { VideoService } from 'src/services/video-service';
 import { Viewer3dService } from 'src/services/viewer-3d-service';

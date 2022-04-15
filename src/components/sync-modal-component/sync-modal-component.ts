@@ -13,7 +13,7 @@ import { DatePipe } from '../../pipes/date-pipe/date-pipe';
 import { UserService } from '../../services/user-service';
 import { SyncMode } from '../synchronization-component/synchronization-component';
 import { AppSetting } from '../../services/app-setting';
-import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { LoggerService } from '../../services/logger-service';
 import { Subscription } from 'rxjs';
