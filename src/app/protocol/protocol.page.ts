@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy } from '@angula
 import { ModalController, NavController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
-import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { VideoService } from '../../services/video-service';
 import { ProtocolModel } from '../../models/db/api/protocol-model';
