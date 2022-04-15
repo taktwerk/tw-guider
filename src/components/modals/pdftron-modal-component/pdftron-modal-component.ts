@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ModalController, Platform} from '@ionic/angular';
-import {ToastService} from '../../../services/toast-service';
-import {StreamingMedia, StreamingVideoOptions} from '@ionic-native/streaming-media/ngx';
-import {DownloadService} from '../../../services/download-service';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ModalController, Platform } from '@ionic/angular';
+import { ToastService } from '../../../services/toast-service';
+import { StreamingMedia, StreamingVideoOptions } from '@awesome-cordova-plugins/streaming-media/ngx';
+import { DownloadService } from '../../../services/download-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -16,9 +16,9 @@ import {DownloadService} from '../../../services/download-service';
 declare const WebViewer: any;
 
 @Component({
-  selector: 'pdftron-modal-component',
-  templateUrl: 'pdftron-modal-component.html',
-  styleUrls: ['pdftron-modal-component.scss']
+    selector: 'pdftron-modal-component',
+    templateUrl: 'pdftron-modal-component.html',
+    styleUrls: ['pdftron-modal-component.scss']
 })
 
 export class PdftronModalComponent implements OnInit, OnDestroy {
@@ -28,7 +28,7 @@ export class PdftronModalComponent implements OnInit, OnDestroy {
     wvInstance: any;
 
     constructor(private modalController: ModalController,
-                private platform: Platform) {
+        private platform: Platform) {
     }
 
     dismiss() {

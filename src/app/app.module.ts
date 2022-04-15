@@ -72,7 +72,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CKEditorPageModule } from 'src/components/ckeditor/ckeditor.module';
 import { SharedModule } from './shared/shared.module';
 import { LoggerService } from 'src/services/logger-service';
-import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
+import { StreamingMedia, StreamingVideoOptions } from '@awesome-cordova-plugins/streaming-media/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CommonModule } from '@angular/common';

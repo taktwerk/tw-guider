@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { File } from '@awesome-cordova-plugins/file/ngx';
-import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
+import { StreamingMedia, StreamingVideoOptions } from '@awesome-cordova-plugins/streaming-media/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { NavController, Platform } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
