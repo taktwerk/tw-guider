@@ -12,7 +12,7 @@ import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
-import { FilePath } from '@ionic-native/file-path/ngx';
+import { FilePath } from '@awesome-cordova-plugins/file-path/ngx';
 // import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
 // import { Camera } from '@ionic-native/camera/ngx';

@@ -16,7 +16,7 @@ import { File } from '@awesome-cordova-plugins/file/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
-import { FilePath } from '@ionic-native/file-path/ngx';
+import { FilePath } from '@awesome-cordova-plugins/file-path/ngx';;
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
 import { Camera } from '@awesome-cordova-plugins/camera/ngx';
 import { VideoEditor } from '@awesome-cordova-plugins/video-editor/ngx';

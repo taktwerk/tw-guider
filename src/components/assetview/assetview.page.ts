@@ -21,6 +21,7 @@ import { ApiSync } from '../../providers/api-sync';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { ViewerService } from '../../services/viewer.service';
 import { HelpingService } from '../../controller/helping.service';
+import { FilePath } from '@awesome-cordova-plugins/file-path/ngx';
 // import { Camera } from '@capacitor/camera';
 
 // const { Filesystem } = Plugins;

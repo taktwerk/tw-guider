@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
 import { Network } from '@ionic-native/network/ngx';
 import { HttpClient } from '../../services/http-client';
-import { FilePath } from '@ionic-native/file-path/ngx';
+import { FilePath } from '@awesome-cordova-plugins/file-path/ngx';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { ProtocolModel } from '../../models/db/api/protocol-model';
 import { ProtocolService } from '../../providers/api/protocol-service';
