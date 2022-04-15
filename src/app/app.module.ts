@@ -33,7 +33,7 @@ import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { UserService } from 'src/services/user-service';
 import { ToastService } from 'src/services/toast-service';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { GuiderService } from 'src/providers/api/guider-service';
 import { GuideCategoryService } from 'src/providers/api/guide-category-service';
 import { GuideCategoryBindingService } from 'src/providers/api/guide-category-binding-service';

@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { MenuController, ModalController, NavController } from '@ionic/angular';
 
 import { ApiSync } from '../../providers/api-sync';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
 import { debounceTime } from 'rxjs/operators';
 import { UserDb } from '../../models/db/user-db';

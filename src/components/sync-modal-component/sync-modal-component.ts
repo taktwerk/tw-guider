@@ -7,7 +7,7 @@ import { ApiSync } from '../../providers/api-sync';
 import { HttpClient } from '../../services/http-client';
 import { AuthService } from '../../services/auth-service';
 import { SyncService } from '../../services/sync-service';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { take } from 'rxjs/operators';
 import { DatePipe } from '../../pipes/date-pipe/date-pipe';
 import { UserService } from '../../services/user-service';

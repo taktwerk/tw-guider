@@ -6,7 +6,7 @@ import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { NavController, Platform } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { HttpClient } from '../../services/http-client';
 import { FilePath } from '@awesome-cordova-plugins/file-path/ngx';
 import { TranslateConfigService } from '../../services/translate-config.service';

@@ -4,7 +4,7 @@ import { IonSelect, ModalController, Platform } from '@ionic/angular';
 import { ApiSync } from '../../providers/api-sync';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
 import { UserDb } from '../../models/db/user-db';
 import { DownloadService } from '../../services/download-service';
@@ -82,7 +82,7 @@ export class LanguageSelectorComponent implements OnInit {
             if (isExist) {
                 this.userService.userDb.userSetting.language = this.selectedLanguage;
                 this.userService.userDb.save();
-               // this.storage.set("storedLang", this.selectedLanguage);
+                // this.storage.set("storedLang", this.selectedLanguage);
             }
         });
     }

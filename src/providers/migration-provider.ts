@@ -14,7 +14,7 @@ import { GuideCategoryService } from './api/guide-category-service';
 import { GuideCategoryBindingService } from './api/guide-category-binding-service';
 import { GuideStepService } from './api/guide-step-service';
 import { GuideChildService } from './api/guide-child-service';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { GuideAssetService } from './api/guide-asset-service';
 import { GuideAssetPivotService } from './api/guide-asset-pivot-service';
 import { FeedbackService } from './api/feedback-service';
