@@ -60,6 +60,7 @@
     "@ngx-translate/http-loader": "^7.0.0",
     "com-sarriaroman-photoviewer": "^1.2.5",
     "cordova-plugin-documentpicker": "^1.0.0",
+    "cordova-plugin-file": "7.0.0",
     "cordova-plugin-ionic-webview": "^5.0.0",
     "cordova-plugin-media-capture": "^3.0.3",
     "cordova-plugin-video-editor": "^1.1.3",
