@@ -4,31 +4,24 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Inject, Injectable, PLATFORM_ID, SecurityContext } from '@angular/core';
 import { Platform } from '@ionic/angular';
-// import { File } from '@ionic-native/file/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
-// import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
-import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { MultipleDocumentsPicker } from '@awesome-cordova-plugins/multiple-document-picker/ngx';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 import { FilePath } from '@awesome-cordova-plugins/file-path/ngx';
-// import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
-// import { Camera } from '@ionic-native/camera/ngx';
 import { Camera } from '@awesome-cordova-plugins/camera/ngx';
-// import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
 import { CreateThumbnailOptions, VideoEditor } from '@awesome-cordova-plugins/video-editor/ngx';
 import { Filesystem, Directory, } from '@capacitor/filesystem';
 import { LoggerService } from './logger-service';
-// import WebFile from '../web-plugins/WebFile';
 import { isPlatformBrowser } from '@angular/common';
 
 export class RecordedFile {
   uri: string;
   thumbnailUri?: string;
   type?: string;
-  // public imagePath;
 }
 
 /**
@@ -62,7 +55,7 @@ export class DownloadService {
     public file: File,
     public webview: WebView,
     private domSanitizer: DomSanitizer,
-    private fileChooser: FileChooser,
+    private multipleDocumentsPicker: MultipleDocumentsPicker,
     private filePicker: IOSFilePicker,
     private filePath: FilePath,
     private mediaCapture: MediaCapture,
@@ -654,12 +647,12 @@ export class DownloadService {
       return recordedFile;
     }
     else {
-      if (!this.fileChooser) {
+      if (!this.multipleDocumentsPicker) {
         this.loggerService.getLogger().error('FileChooser plugin is not defined', new Error('FileChooser plugin is not defined').stack);
 
         throw new Error('FileChooser plugin is not defined');
       }
-      uri = await this.fileChooser.open();
+      uri = await this.multipleDocumentsPicker.pick(1);
     }
 
     if (uri) {

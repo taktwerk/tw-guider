@@ -14,7 +14,7 @@ import { DownloadService } from 'src/services/download-service';
 import { HttpClientModule, HttpClient as Http } from '@angular/common/http';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
-import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { MultipleDocumentsPicker } from '@awesome-cordova-plugins/multiple-document-picker/ngx';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 import { FilePath } from '@awesome-cordova-plugins/file-path/ngx';;
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
@@ -151,7 +151,7 @@ export function initializeApp(logService: LoggerService) {
     MediaCapture,
     FilePath,
     IOSFilePicker,
-    FileChooser,
+    MultipleDocumentsPicker,
     WebView,
     File,
     DownloadService,

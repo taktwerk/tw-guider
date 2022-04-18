@@ -17,6 +17,7 @@ import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-me
 import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
+import { MultipleDocumentsPicker } from '@awesome-cordova-plugins/multiple-document-picker/ngx';
 // import { FileChooser } from '@ionic-native/file-chooser/ngx';
 // import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 // import { FilePath } from '@ionic-native/file-path/ngx';
