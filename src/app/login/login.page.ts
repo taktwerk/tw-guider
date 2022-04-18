@@ -4,7 +4,7 @@ import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
 import { NgForm } from '@angular/forms';
 import { ApiSync } from '../../providers/api-sync';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { AppSetting } from '../../services/app-setting';
 
 /**

@@ -15,8 +15,9 @@ import { Viewer3dModelComponentModule } from '../../components/viewer-3d-model-c
 import { ListviewComponentModule } from '../../components/listview/listview.module';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
-import { File } from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
+import { MultipleDocumentsPicker } from '@awesome-cordova-plugins/multiple-document-picker/ngx';
 // import { FileChooser } from '@ionic-native/file-chooser/ngx';
 // import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 // import { FilePath } from '@ionic-native/file-path/ngx';

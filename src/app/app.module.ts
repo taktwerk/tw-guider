@@ -14,9 +14,9 @@ import { DownloadService } from 'src/services/download-service';
 import { HttpClientModule, HttpClient as Http } from '@angular/common/http';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
-import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { MultipleDocumentsPicker } from '@awesome-cordova-plugins/multiple-document-picker/ngx';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
-import { FilePath } from '@ionic-native/file-path/ngx';
+import { FilePath } from '@awesome-cordova-plugins/file-path/ngx';;
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
 import { Camera } from '@awesome-cordova-plugins/camera/ngx';
 import { VideoEditor } from '@awesome-cordova-plugins/video-editor/ngx';
@@ -29,11 +29,11 @@ import { AppSetting } from 'src/services/app-setting';
 import { AppSettingsDb } from 'src/models/db/app-settings-db';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { Device } from '@ionic-native/device/ngx';
-import { AppVersion } from '@ionic-native/app-version/ngx';
+import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { UserService } from 'src/services/user-service';
 import { ToastService } from 'src/services/toast-service';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { GuiderService } from 'src/providers/api/guider-service';
 import { GuideCategoryService } from 'src/providers/api/guide-category-service';
 import { GuideCategoryBindingService } from 'src/providers/api/guide-category-binding-service';
@@ -57,7 +57,7 @@ import { MigrationService } from 'src/providers/api/migration-service';
 import { MigrationProvider } from 'src/providers/migration-provider';
 import { AuthDb } from 'src/models/db/auth-db';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
 // import { DatePipe } from '@angular/common';
 // import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
@@ -72,7 +72,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CKEditorPageModule } from 'src/components/ckeditor/ckeditor.module';
 import { SharedModule } from './shared/shared.module';
 import { LoggerService } from 'src/services/logger-service';
-import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
+import { StreamingMedia, StreamingVideoOptions } from '@awesome-cordova-plugins/streaming-media/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CommonModule } from '@angular/common';
@@ -153,7 +153,7 @@ export function initializeApp(logService: LoggerService) {
     MediaCapture,
     FilePath,
     IOSFilePicker,
-    FileChooser,
+    MultipleDocumentsPicker,
     WebView,
     File,
     DownloadService,

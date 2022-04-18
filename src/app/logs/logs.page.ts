@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { IonSegment } from '@ionic/angular';
 import { NGXLogger } from 'ngx-logger';
 import { delay } from 'rxjs/operators';
-import { File } from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { ActionSheetController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 
