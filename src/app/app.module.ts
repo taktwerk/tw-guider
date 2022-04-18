@@ -60,7 +60,7 @@ import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
 // import { DatePipe } from '@angular/common';
-import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
+// import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 // import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { VideoService } from 'src/services/video-service';
@@ -77,6 +77,7 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CommonModule } from '@angular/common';
 import { ImageEditorPageModule } from 'src/components/imageeditor/imageeditor.module';
+import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
 
 export function languageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -113,6 +114,7 @@ export function initializeApp(logService: LoggerService) {
     ImageEditorPageModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    DatePipe,
     MigrationService,
     AuthDb,
     MigrationProvider,
@@ -158,7 +160,6 @@ export function initializeApp(logService: LoggerService) {
     DbProvider,
     QRScanner,
     BarcodeScanner,
-    DatePipe,
     Insomnia,
     PhotoViewer,
     VideoService,

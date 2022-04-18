@@ -9,7 +9,7 @@ import { TranslateConfigService } from './translate-config.service';
 import { Device } from '@capacitor/device';
 import { Network } from '@capacitor/network';
 import { ToastService } from './toast-service';
-import {  config } from '../environments/config';
+import { config } from '../environments/config';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -68,6 +68,22 @@ export class HttpClient {
     /**
      * Init the headers
      */
+    stringify(circObj: Object) {
+        const replacerFunc = () => {
+            const visited = new WeakSet();
+            return (key: any, value: any) => {
+                if (typeof value === "object" && value !== null) {
+                    if (visited.has(value)) {
+                        return;
+                    }
+                    visited.add(value);
+                }
+                return value;
+            };
+        };
+
+        return JSON.stringify(circObj, replacerFunc())
+    }
     public initHeaders() {
         const headers = {
             'Content-Type': 'application/json',
@@ -78,7 +94,7 @@ export class HttpClient {
             if (this.authService.auth.authToken) {
                 headers['X-Auth-Token'] = this.getAuthorizationToken();
                 /// send current device info with uuid and etc.
-                headers['X-Device-Info'] = JSON.stringify(this.deviceInfo);
+                headers['X-Device-Info'] = this.stringify(this.deviceInfo);
                 if (this.authService.auth.lastAuthItemChangedAt) {
                     headers['X-Auth-Item-Last-Changed-At'] = '' + this.authService.auth.lastAuthItemChangedAt;
                 }

@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth-service';
 import { SyncService } from '../../services/sync-service';
 import { Network } from '@ionic-native/network/ngx';
 import { take } from 'rxjs/operators';
-import { DatePipe } from '../../pipes/date-pipe/date-pipe';
+// import { DatePipe } from '../../pipes/date-pipe/date-pipe';
 import { UserService } from '../../services/user-service';
 import { SyncMode } from '../synchronization-component/synchronization-component';
 import { AppSetting } from '../../services/app-setting';
@@ -20,6 +20,7 @@ import { Subscription } from 'rxjs';
 import { MiscService } from '../../services/misc-service';
 import { Storage } from '@ionic/storage-angular';
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 /**
  * Generated class for the TodoPage page.
@@ -32,6 +33,7 @@ import { Router } from '@angular/router';
   selector: 'sync-modal-component',
   templateUrl: 'sync-modal-component.html',
   styleUrls: ['sync-modal-component.scss'],
+  providers: [DatePipe]
 })
 export class SyncModalComponent implements OnInit, OnDestroy {
   public isStartSync = false;
@@ -154,7 +156,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
 
   getLastSyncDate() {
     if (this.userService.userDb && this.userService.userDb.userSetting && this.userService.userDb.userSetting.lastSyncedAt) {
-      const date = this.userService.userDb.userSetting.lastSyncedAt;
+      let date = this.userService.userDb.userSetting.lastSyncedAt;
       return this.datepipe.transform(date, 'yyyy-MM-dd HH:mm:ss');
     }
 

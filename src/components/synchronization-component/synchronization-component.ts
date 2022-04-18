@@ -12,7 +12,7 @@ import { HttpClient } from '../../services/http-client';
 import { UserDb } from '../../models/db/user-db';
 import { DbProvider } from '../../providers/db-provider';
 import { SyncService } from '../../services/sync-service';
-import { DatePipe } from '@angular/common';
+// import { DatePipe } from '@angular/common';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { UserService } from '../../services/user-service';
 import { AppSetting } from '../../services/app-setting';
@@ -148,7 +148,7 @@ export class SynchronizationComponent implements OnInit {
         await this.cancelSyncData();
       }
 
-      if(this.platform.is('capacitor')) {
+      if (this.platform.is('capacitor')) {
         const isRemovedAllApiFiles = await this.downloadService.removeAllAppFiles();
         if (!isRemovedAllApiFiles) {
           this.http.showToast('synchronization-component.Failed to remove data');

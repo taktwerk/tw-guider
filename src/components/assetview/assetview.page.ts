@@ -138,7 +138,22 @@ export class AssetviewComponent implements OnInit {
       // }
     }
   }
+  stringify(circObj: Object) {
+    const replacerFunc = () => {
+      const visited = new WeakSet();
+      return (key: any, value: any) => {
+        if (typeof value === "object" && value !== null) {
+          if (visited.has(value)) {
+            return;
+          }
+          visited.add(value);
+        }
+        return value;
+      };
+    };
 
+    return JSON.stringify(circObj, replacerFunc())
+  }
   generateVideoPreview(e?) {
     // if (this.model.isExistThumbOfFile()) {
     // console.log(e)
@@ -171,7 +186,7 @@ export class AssetviewComponent implements OnInit {
 
     })
       .catch((error) => {
-        const _error = JSON.stringify(error);
+        const _error = this.stringify(error);
         if (_error.includes('java.io.FileNotFoundException')) {
           this.videoPreview = '/assets/videooverlay.png';
         }

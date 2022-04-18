@@ -120,12 +120,12 @@ export abstract class DbBaseModel {
      * @param downloadService
      */
     constructor(
-    ) { 
-        this.platform        = window['DbService'].platform;
-        this.db              = window['DbService'].db;
+    ) {
+        this.platform = window['DbService'].platform;
+        this.db = window['DbService'].db;
         this.downloadService = window['DbService'].downloadService;
-        this.loggerService   = window['DbService'].loggerService;
-        this.miscService     = window['DbService'].miscService;
+        this.loggerService = window['DbService'].loggerService;
+        this.miscService = window['DbService'].miscService;
     }
 
     /**
@@ -1035,8 +1035,24 @@ export abstract class DbBaseModel {
      * @param num
      * @returns {string}
      */
+    stringify(circObj: Object) {
+        const replacerFunc = () => {
+            const visited = new WeakSet();
+            return (key: any, value: any) => {
+                if (typeof value === "object" && value !== null) {
+                    if (visited.has(value)) {
+                        return;
+                    }
+                    visited.add(value);
+                }
+                return value;
+            };
+        };
+
+        return JSON.stringify(circObj, replacerFunc())
+    }
     protected getValueObject(obj: Object): string {
-        return obj ? this.quote(JSON.stringify(obj)) : 'null';
+        return obj ? this.quote(this.stringify(obj)) : 'null';
     }
 
     /**

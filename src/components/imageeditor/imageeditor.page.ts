@@ -246,6 +246,23 @@ export class ImageEditorComponent implements OnInit {
     console.log(e);
   }
 
+  stringify(circObj: Object) {
+    const replacerFunc = () => {
+      const visited = new WeakSet();
+      return (key: any, value: any) => {
+        if (typeof value === "object" && value !== null) {
+          if (visited.has(value)) {
+            return;
+          }
+          visited.add(value);
+        }
+        return value;
+      };
+    };
+
+    return JSON.stringify(circObj, replacerFunc())
+  }
+
   async onDone() {
     const user = await this.authService.getLastUser();
     if (!user) {
@@ -256,7 +273,7 @@ export class ImageEditorComponent implements OnInit {
     this.model.client_id = user.client_id;
 
 
-    this.model.design_canvas_file = JSON.stringify(this.iCanvas);
+    this.model.design_canvas_file = this.stringify(this.iCanvas);
     (await this.loading('Saving Changes')).present();
     const renderedImageUrl = this.editor.toDataURL({ format: 'png' });
     console.log("check rendered Image URL", renderedImageUrl);

@@ -695,7 +695,8 @@ export class ApiSync implements OnDestroy {
 
                     this.syncData = pullData.models;
                     console.log('Sync Data ', this.syncData);
-                    this.loggerService.getLogger().info('Sync Data', JSON.stringify(this.syncData));
+                    // this.loggerService.getLogger().info('Sync Data', JSON.stringify(this.syncData));
+                    this.loggerService.getLogger().info('Sync Data', this.stringify(this.syncData));
 
                     for (const key of Object.keys(this.syncData)) {
                         countOfSyncedData += this.syncData[key].length;
@@ -1006,6 +1007,22 @@ export class ApiSync implements OnDestroy {
         await this.userService.userDb.save();
     }
 
+    stringify(circObj: Object) {
+        const replacerFunc = () => {
+            const visited = new WeakSet();
+            return (key: any, value: any) => {
+                if (typeof value === "object" && value !== null) {
+                    if (visited.has(value)) {
+                        return;
+                    }
+                    visited.add(value);
+                }
+                return value;
+            };
+        };
+
+        return JSON.stringify(circObj, replacerFunc())
+    }
     private pushDataToServer(url, model, service, isAdditionalData = false) {
         // console.log(url, model, service, isAdditionalData)
         return new Promise(async resolve => {
@@ -1019,8 +1036,9 @@ export class ApiSync implements OnDestroy {
             await model.beforePushDataToServer(isInsert);
 
             try {
-                const jsonBody = JSON.stringify(model.getBodyJson());
+                console.log('cmdmckdm kmckdmc kcmdkc amndaknd cdnsjndja ncdjnj jndj ajdnjn error dfnjsn here show', model.getBodyJson());
 
+                const jsonBody = this.stringify(model.getBodyJson());
 
                 return this.http
                     .post(url, jsonBody)
