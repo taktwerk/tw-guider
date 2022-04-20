@@ -1,25 +1,29 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable @angular-eslint/component-selector */
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ModalController, Platform } from '@ionic/angular';
-import { UserDb } from '../../models/db/user-db';
+
 import { ApiSync } from '../../providers/api-sync';
-import { HttpClient } from '../../services/http-client';
-import { AuthService } from '../../services/auth-service';
-import { SyncService } from '../../services/sync-service';
-import { Network } from '@ionic-native/network/ngx';
-import { take } from 'rxjs/operators';
-import { DatePipe } from '../../pipes/date-pipe/date-pipe';
-import { UserService } from '../../services/user-service';
-import { SyncMode } from '../synchronization-component/synchronization-component';
 import { AppSetting } from '../../services/app-setting';
+import { AuthService } from '../../services/auth-service';
+import { DatePipe } from '@angular/common';
+import { HttpClient } from '../../services/http-client';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
-import { TranslateConfigService } from '../../services/translate-config.service';
 import { LoggerService } from '../../services/logger-service';
-import { Subscription } from 'rxjs';
 import { MiscService } from '../../services/misc-service';
-import { Storage } from '@ionic/storage-angular';
+import { Network } from '@ionic-native/network/ngx';
 import { Router } from '@angular/router';
+import { Storage } from '@ionic/storage-angular';
+import { Subscription } from 'rxjs';
+import { SyncMode } from '../synchronization-component/synchronization-component';
+import { SyncService } from '../../services/sync-service';
+import { TranslateConfigService } from '../../services/translate-config.service';
+import { UserDb } from '../../models/db/user-db';
+import { UserService } from '../../services/user-service';
+import { take } from 'rxjs/operators';
+
+// import { DatePipe } from '../../pipes/date-pipe/date-pipe';
 
 /**
  * Generated class for the TodoPage page.
@@ -32,6 +36,7 @@ import { Router } from '@angular/router';
   selector: 'sync-modal-component',
   templateUrl: 'sync-modal-component.html',
   styleUrls: ['sync-modal-component.scss'],
+  providers: [DatePipe]
 })
 export class SyncModalComponent implements OnInit, OnDestroy {
   public isStartSync = false;

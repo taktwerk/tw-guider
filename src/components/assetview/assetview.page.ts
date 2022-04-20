@@ -1,26 +1,42 @@
 /* eslint-disable @angular-eslint/component-selector */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/naming-convention */
+
 import { Component, Input, OnInit } from '@angular/core';
+import { CreateThumbnailOptions, VideoEditor } from '@awesome-cordova-plugins/video-editor/ngx';
+import { ModalController, Platform } from '@ionic/angular';
+import { faCubes, faExpand, faFilePdf, faQuestion, faVideo } from '@fortawesome/free-solid-svg-icons';
+
+import { ApiSync } from '../../providers/api-sync';
 import { DownloadService } from '../../services/download-service';
+import { File } from '@ionic-native/file/ngx';
+import { Filesystem } from '@capacitor/filesystem';
+import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
+import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
+import { HelpingService } from '../../controller/helping.service';
+import { ImageEditorComponent } from '../../components/imageeditor/imageeditor.page';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { PictureService } from '../../services/picture-service';
 import { VideoService } from '../../services/video-service';
-// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { Viewer3dService } from '../../services/viewer-3d-service';
-import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
-import { faExpand, faQuestion, faCubes, faFilePdf, faVideo } from '@fortawesome/free-solid-svg-icons';
-import { ModalController, Platform } from '@ionic/angular';
-import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
-import { ImageEditorComponent } from '../../components/imageeditor/imageeditor.page';
-// import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
-import { CreateThumbnailOptions, VideoEditor } from '@awesome-cordova-plugins/video-editor/ngx';
-// import { Capacitor, Plugins } from '@capacitor/core';
-import { Filesystem } from '@capacitor/filesystem';
-import { ApiSync } from '../../providers/api-sync';
-import { File } from '@ionic-native/file/ngx';
 import { ViewerService } from '../../services/viewer.service';
-import { HelpingService } from '../../controller/helping.service';
+
+// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+
+
+
+
+
+
+
+// import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
+
+// import { Capacitor, Plugins } from '@capacitor/core';
+
+
+
+
+
 // import { Camera } from '@capacitor/camera';
 
 // const { Filesystem } = Plugins;
@@ -139,6 +155,23 @@ export class AssetviewComponent implements OnInit {
     }
   }
 
+  stringify(circObj: any) {
+    const replacerFunc = () => {
+      const visited = new WeakSet();
+      return (key: any, value: any) => {
+        if (typeof value === 'object' && value !== null) {
+          if (visited.has(value)) {
+            return;
+          }
+          visited.add(value);
+        }
+        return value;
+      };
+    };
+
+    return JSON.stringify(circObj, replacerFunc());
+  }
+
   generateVideoPreview(e?) {
     // if (this.model.isExistThumbOfFile()) {
     // console.log(e)
@@ -171,7 +204,7 @@ export class AssetviewComponent implements OnInit {
 
     })
       .catch((error) => {
-        const _error = JSON.stringify(error);
+        const _error = this.stringify(error);
         if (_error.includes('java.io.FileNotFoundException')) {
           this.videoPreview = '/assets/videooverlay.png';
         }
@@ -199,7 +232,7 @@ export class AssetviewComponent implements OnInit {
 
       if (this.platform.is('capacitor')) {
         fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-        console.log("check fileUrl", fileUrl);
+        console.log('check fileUrl', fileUrl);
       } else {
         this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then((url: any) => {
 

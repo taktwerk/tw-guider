@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Injectable } from '@angular/core';
-import { HttpClient as Http, HttpHeaders as Headers, HttpResponse as Response } from '@angular/common/http';
+
+import { HttpHeaders as Headers, HttpClient as Http, HttpResponse as Response } from '@angular/common/http';
+import { NavController, Platform } from '@ionic/angular';
 
 import { AuthService } from './auth-service';
-
-import { NavController, Platform } from '@ionic/angular';
-import { TranslateConfigService } from './translate-config.service';
 import { Device } from '@capacitor/device';
+import { Injectable } from '@angular/core';
 import { Network } from '@capacitor/network';
-import { ToastService } from './toast-service';
-import {  config } from '../environments/config';
-import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { ToastService } from './toast-service';
+import { TranslateConfigService } from './translate-config.service';
+import { catchError } from 'rxjs/operators';
+import { config } from '../environments/config';
 
 @Injectable()
 export class HttpClient {
@@ -65,6 +65,23 @@ export class HttpClient {
         });
     }
 
+    stringify(circObj: any) {
+      const replacerFunc = () => {
+          const visited = new WeakSet();
+          return (key: any, value: any) => {
+              if (typeof value === 'object' && value !== null) {
+                  if (visited.has(value)) {
+                      return;
+                  }
+                  visited.add(value);
+              }
+              return value;
+          };
+      };
+
+      return JSON.stringify(circObj, replacerFunc());
+  }
+
     /**
      * Init the headers
      */
@@ -78,7 +95,7 @@ export class HttpClient {
             if (this.authService.auth.authToken) {
                 headers['X-Auth-Token'] = this.getAuthorizationToken();
                 /// send current device info with uuid and etc.
-                headers['X-Device-Info'] = JSON.stringify(this.deviceInfo);
+                headers['X-Device-Info'] = this.stringify(this.deviceInfo);
                 if (this.authService.auth.lastAuthItemChangedAt) {
                     headers['X-Auth-Item-Last-Changed-At'] = '' + this.authService.auth.lastAuthItemChangedAt;
                 }

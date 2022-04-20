@@ -5,21 +5,26 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @angular-eslint/component-selector */
-import { MiscService } from './../../services/misc-service';
-import { LoadingController, ModalController, Platform } from '@ionic/angular';
+
+import * as tui from 'tui-image-editor/dist/tui-image-editor';
+
 import { Component, Input, OnInit } from '@angular/core';
-import { RecordedFile, DownloadService } from '../../services/download-service';
-import { File as nFile } from '@ionic-native/file/ngx';
+import { DownloadService, RecordedFile } from '../../services/download-service';
+import { LoadingController, ModalController, Platform } from '@ionic/angular';
+
 import { ApiSync } from '../../providers/api-sync';
+import { AuthService } from '../../services/auth-service';
 import { GuideStepService } from '../../providers/api/guide-step-service';
 import { Location } from '@angular/common';
+import { MiscService } from './../../services/misc-service';
 import { Storage } from '@ionic/storage-angular';
-import { AuthService } from '../../services/auth-service';
+import { File as nFile } from '@ionic-native/file/ngx';
+
 // import 'tui-image-editor';
 // const tui = import('tui-image-editor');
 
 
-import * as tui from 'tui-image-editor/dist/tui-image-editor'
+
 
 
 interface CustomControls {
@@ -68,6 +73,7 @@ export class ImageEditorComponent implements OnInit {
       ]
     }
   ];
+
   constructor(private storage: Storage,
     private guideStepService: GuideStepService,
     private modalController: ModalController,
@@ -101,11 +107,11 @@ export class ImageEditorComponent implements OnInit {
 
     // load metadata
     try {
-      console.log("check this.model.local_attached_file", this.model.local_attached_file);
+      console.log('check this.model.local_attached_file', this.model.local_attached_file);
       // this.canvasFile = JSON.parse(this.model.design_canvas_file);
       // this.canvasFile = JSON.parse(this.model.local_attached_file);
       this.canvasFile = this.model.local_attached_file;
-      console.log("check this.canvasFile", this.canvasFile);
+      console.log('check this.canvasFile', this.canvasFile);
     }
     catch (error) {
       console.log(error);
@@ -131,7 +137,7 @@ export class ImageEditorComponent implements OnInit {
       this.iCanvas.lowerCanvasEl.style.border = 'double #2d2d2b';
       if (this.canvasFile != null) {
         // console.log("this.editor==>", this.editor);
-        console.log("check this.canvasFile.backgroundImage.src", this.canvasFile);
+        console.log('check this.canvasFile.backgroundImage.src', this.canvasFile);
         this.editor.loadImageFromURL(this.canvasFile, 'Editor Test');
       }
       else {
@@ -180,6 +186,23 @@ export class ImageEditorComponent implements OnInit {
         this.willUndo = true;
       }
     });
+  }
+
+  stringify(circObj: any) {
+    const replacerFunc = () => {
+      const visited = new WeakSet();
+      return (key: any, value: any) => {
+        if (typeof value === 'object' && value !== null) {
+          if (visited.has(value)) {
+            return;
+          }
+          visited.add(value);
+        }
+        return value;
+      };
+    };
+
+    return JSON.stringify(circObj, replacerFunc());
   }
 
   onControl(control: CustomControls) {
@@ -256,12 +279,12 @@ export class ImageEditorComponent implements OnInit {
     this.model.client_id = user.client_id;
 
 
-    this.model.design_canvas_file = JSON.stringify(this.iCanvas);
+    this.model.design_canvas_file = this.stringify(this.iCanvas);
     (await this.loading('Saving Changes')).present();
     const renderedImageUrl = this.editor.toDataURL({ format: 'png' });
-    console.log("check rendered Image URL", renderedImageUrl);
+    console.log('check rendered Image URL', renderedImageUrl);
     const blob = this.base64ToBlob(renderedImageUrl);
-    console.log("check blob", blob);
+    console.log('check blob', blob);
 
     const fileName = new Date().getTime() + '.png';
     const recordedFile = new RecordedFile();
