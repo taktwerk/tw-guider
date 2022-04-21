@@ -22,7 +22,7 @@ import { CommonModule } from '@angular/common';
 import { CryptoProvider } from 'src/providers/crypto-provider';
 import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
 import { DbProvider } from 'src/providers/db-provider';
-import { Device } from '@ionic-native/device/ngx';
+import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { DownloadService } from 'src/services/download-service';
 import { DrawImageService } from 'src/services/draw-image-service';
 import { FeedbackService } from 'src/providers/api/feedback-service';
