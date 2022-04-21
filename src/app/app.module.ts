@@ -40,7 +40,6 @@ import { GuiderService } from 'src/providers/api/guider-service';
 import { HttpClient } from 'src/services/http-client';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 import { ImageEditorPageModule } from 'src/components/imageeditor/imageeditor.module';
-import { Insomnia } from '@awesome-cordova-plugins/insomnia';
 import { IonicStorageModule, } from '@ionic/storage-angular';
 import { LoggerService } from 'src/services/logger-service';
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
@@ -72,25 +71,6 @@ import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { WorkflowService } from 'src/providers/api/workflow-service';
 import { WorkflowStepService } from 'src/providers/api/workflow-step-service';
 import { WorkflowTransitionService } from 'src/providers/api/workflow-transition-service';
-
-// import { DatePipe } from '@angular/common';
-
-
-// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-
-
-
-
-// import { DatePipe } from './date-pipe/date-pipe';
-
-
-
-
-
-
-
-
-
 
 export function languageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -126,7 +106,8 @@ export function initializeApp(logService: LoggerService) {
     CommonModule,
     ImageEditorPageModule
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     MigrationService,
     AuthDb,
     MigrationProvider,
@@ -172,7 +153,6 @@ export function initializeApp(logService: LoggerService) {
     DbProvider,
     QRScanner,
     DatePipe,
-    Insomnia,
     PhotoViewer,
     VideoService,
     Viewer3dService,
