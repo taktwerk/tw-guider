@@ -1,10 +1,10 @@
-import { MigrationProvider } from './../../providers/migration-provider';
-import { ChangeDetectorRef, Component, NgZone, OnDestroy } from '@angular/core';
-import { AlertController, LoadingController, NavController } from '@ionic/angular';
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+/* eslint-disable @typescript-eslint/naming-convention */
+import { ChangeDetectorRef, Component, NgZone, } from '@angular/core';
+import { AlertController,  NavController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { HttpClient } from '../../services/http-client';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { AppConfigurationModeEnum, AppSetting } from '../../services/app-setting';
 import { UserService } from '../../services/user-service';
 import { environment } from '../../environments/environment';
@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
  */
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html', 
+  templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
@@ -30,22 +30,17 @@ export class HomePage {
   private appConfirmUrl;
 
   constructor(
-    private loadingCtrl: LoadingController,
     private authService: AuthService,
     private alertController: AlertController,
     private qrScanner: QRScanner,
     private http: HttpClient,
-    private barcodeScanner: BarcodeScanner,
     public appSetting: AppSetting,
     private userService: UserService,
     public navCtrl: NavController,
     public changeDetectorRef: ChangeDetectorRef,
     private ngZone: NgZone,
     private miscService: MiscService,
-    private migrationProvider: MigrationProvider
   ) { }
-
-  b: any;
 
   public async scanQrcodeDev() {
               this.config = environment.setupConfig;
@@ -68,7 +63,7 @@ export class HomePage {
 
               this.appSetting.save(this.config, user).then(() => {
                 this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
-                
+
                   const isUserLoggedIn = !!user;
                   if (!isUserLoggedIn) {
                     this.ngZone.run(() => {
@@ -139,7 +134,7 @@ export class HomePage {
               this.config.isWasQrCodeSetup = true;
               this.appSetting.save(this.config, user).then(() => {
                 this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
-                
+
                   const isUserLoggedIn = !!user;
                   if (!isUserLoggedIn) {
                     this.ngZone.run(() => {
@@ -178,10 +173,10 @@ export class HomePage {
           config.isWasQrCodeSetup = true;
 
           const user = await this.userService.getUser();
-          
+
           this.appSetting.save(config, user).then(() => {
             this.appSetting.isWasQrCodeSetupSubscribtion.next(true);
- 
+
               const isUserLoggedIn = !!user;
               if (!isUserLoggedIn) {
                 this.ngZone.run(() => {
@@ -194,7 +189,7 @@ export class HomePage {
                   this.navCtrl.navigateRoot('/guide-categories');
                 });
               }
-     
+
             this.http.showToast('qr.Application was successfully configured');
             this.closeScanner();
           });
@@ -223,9 +218,7 @@ export class HomePage {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 
   async presentAlert(header: string, subHeader: string, message: string, buttons: Array<string>) {

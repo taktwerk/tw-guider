@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/contextual-lifecycle */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/member-ordering */
 
@@ -23,6 +24,7 @@ import { UserSetting } from '../models/user-setting';
 export class AuthService implements OnInit {
     /**
      * Auth Service
+     *
      * @param http
      * @param loadingController
      * @param events
@@ -81,8 +83,13 @@ export class AuthService implements OnInit {
     public isDummy: boolean;
 
     /**
+     *
+     *
      * Authentificate the last logged in user
-     * @returns {Promise<T>}
+     *
+     *
+     *
+     * @returns
      */
     authenticateLastUser(user: AuthDb): Promise<any> {
         return new Promise(resolve => {
@@ -97,8 +104,13 @@ export class AuthService implements OnInit {
     }
 
     /**
+     *
+     *
      * Get the last authed user for later
-     * @returns {Promise<T>}
+     *
+     *
+     *
+     * @returns
      */
     getLastUser(): Promise<any> {
         return new Promise(resolve => {
@@ -116,8 +128,13 @@ export class AuthService implements OnInit {
     }
 
     /**
+     *
+     *
      * Tries to authenticate with a given pin and returns whether the authentification was successful or not.
-     * @returns {Promise<boolean>}
+     *
+     *
+     *
+     * @returns
      * @param formData
      */
     authenticate(formData: any): Promise<any> {
@@ -198,7 +215,7 @@ export class AuthService implements OnInit {
                             if (res) {
                                 // send a notification to the rest of the app
                                 // this.events.publish('user:login', user.userId);
-                                this.miscService.events.next({ TAG: 'user:login', data: user.userId })
+                                this.miscService.events.next({ TAG: 'user:login', data: user.userId });
                                 resolve(user.userId);
                                 return;
                             }
@@ -228,8 +245,8 @@ export class AuthService implements OnInit {
                     const user = result[0];
                     resolve(user);
                 }
-            })
-        })
+            });
+        });
     }
 
     loginByIdentifier(appConfirmUrl, type: string, identifier: string) {
@@ -340,8 +357,8 @@ export class AuthService implements OnInit {
                     this.auth.groups = user.groups;
 
                     // show/hide sync button on guide category page
-                    const onboardingSyncShown = await this.miscService.get_guideShown("onboardingSyncShown");
-                    if (!onboardingSyncShown) this.miscService.unset_guideShown('onboardingSyncShown');
+                    const onboardingSyncShown = await this.miscService.get_guideShown('onboardingSyncShown');
+                    if (!onboardingSyncShown) {this.miscService.unset_guideShown('onboardingSyncShown');}
                 }
                 else {
                     // show sync button on guide category page
@@ -372,7 +389,7 @@ export class AuthService implements OnInit {
                     this.auth.groups = user.groups;
                 }
 
-                console.log("user.groups ", user.groups)
+                console.log('user.groups ', user.groups);
 
                 this.auth.save(!!(existUser.length)).then((authSaveResult) => {
                     if (authSaveResult) {
@@ -423,8 +440,13 @@ export class AuthService implements OnInit {
     }
 
     /**
+     *
+     *
      * Logout the current user. Therefor reset stored pin in the local storage.
-     * @returns {Promise<boolean>}
+     *
+     *
+     *
+     * @returns
      */
     logout() {
         return new Promise((resolve) => {
@@ -441,8 +463,13 @@ export class AuthService implements OnInit {
     }
 
     /**
+     *
+     *
      * Ask if a user is logged in
-     * @returns {boolean}
+     *
+     *
+     *
+     * @returns
      */
     authenticated(): boolean {
         return this.isLoggedin;
@@ -561,16 +588,26 @@ export class AuthService implements OnInit {
     }
 
     /**
+     *
+     *
      * Create a new auth model
-     * @returns {AuthDb}
+     *
+     *
+     *
+     * @returns
      */
     public newAuthModel(): AuthDb {
         return new AuthDb();
     }
 
     /**
+     *
+     *
      * Create a new user model
-     * @returns {UserDb}
+     *
+     *
+     *
+     * @returns
      */
     public newUserModel(): UserDb {
         return new UserDb();

@@ -14,7 +14,6 @@ import { AppSettingsDb } from 'src/models/db/app-settings-db';
 import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { AuthDb } from 'src/models/db/auth-db';
 import { AuthService } from 'src/services/auth-service';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { BrowserModule } from '@angular/platform-browser';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CKEditorPageModule } from 'src/components/ckeditor/ckeditor.module';
@@ -172,7 +171,6 @@ export function initializeApp(logService: LoggerService) {
     DownloadService,
     DbProvider,
     QRScanner,
-    BarcodeScanner,
     DatePipe,
     Insomnia,
     PhotoViewer,

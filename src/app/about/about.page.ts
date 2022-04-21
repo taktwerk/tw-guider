@@ -1,3 +1,5 @@
+/* eslint-disable @angular-eslint/component-selector */
+
 import { Component, OnInit } from '@angular/core';
 
 import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
