@@ -1,8 +1,8 @@
-import { Component, ViewChild, OnInit, Input } from '@angular/core';
-import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
-import { ModalController } from '@ionic/angular';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { HttpHeaders as Headers, HttpClient } from '@angular/common/http';
+
 import { DownloadService } from '../../services/download-service';
-import { Plugins } from '@capacitor/core';
+import { ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 
 /**
@@ -11,9 +11,6 @@ import { Storage } from '@ionic/storage-angular';
  * See http://ionicframework.com/docs/components/#navigation for more info
  * on Ionic pages and navigation.
  */
-
-const { Filesystem } = Plugins;
-
 @Component({
   selector: 'pdf-viewer-component',
   templateUrl: 'pdf-viewer-component.html'

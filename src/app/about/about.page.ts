@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Platform } from '@ionic/angular';
+
+import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { AuthService } from '../../services/auth-service';
-import { AppVersion } from '@ionic-native/app-version/ngx';
+import { Platform } from '@ionic/angular';
 import { config } from '../../environments/config';
 
 /**

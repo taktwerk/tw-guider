@@ -22,25 +22,6 @@ import { VideoService } from '../../services/video-service';
 import { Viewer3dService } from '../../services/viewer-3d-service';
 import { ViewerService } from '../../services/viewer.service';
 
-// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-
-
-
-
-
-
-
-// import { CreateThumbnailOptions, VideoEditor } from '@ionic-native/video-editor/ngx';
-
-// import { Capacitor, Plugins } from '@capacitor/core';
-
-
-
-
-
-// import { Camera } from '@capacitor/camera';
-
-// const { Filesystem } = Plugins;
 @Component({
   selector: 'model-assetcomponent',
   templateUrl: './assetview.page.html',

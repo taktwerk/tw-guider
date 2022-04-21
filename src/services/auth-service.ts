@@ -1,19 +1,23 @@
-import { MiscService } from '../services/misc-service';
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/member-ordering */
+
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { HttpHeaders as Headers, HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, NgZone, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders as Headers, HttpHeaders } from '@angular/common/http';
+
 import { AppSetting } from './app-setting';
-import { LoadingController, ToastController, AlertController } from '@ionic/angular';
+import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { AuthDb } from '../models/db/auth-db';
-import { UserDb } from '../models/db/user-db';
-import { UserSetting } from '../models/user-setting';
-import { NavController } from '@ionic/angular';
-import { DownloadService } from './download-service';
 import { CryptoProvider } from '../providers/crypto-provider';
 import { Device } from '@ionic-native/device/ngx';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { UserService } from './user-service';
-import { TranslateConfigService } from './translate-config.service';
+import { DownloadService } from './download-service';
+import { MiscService } from '../services/misc-service';
+import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
+import { TranslateConfigService } from './translate-config.service';
+import { UserDb } from '../models/db/user-db';
+import { UserService } from './user-service';
+import { UserSetting } from '../models/user-setting';
 
 @Injectable()
 export class AuthService implements OnInit {
