@@ -1,15 +1,17 @@
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @angular-eslint/component-selector */
+
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { MenuController, ModalController, NavController } from '@ionic/angular';
 
 import { ApiSync } from '../../providers/api-sync';
-import { Network } from '@ionic-native/network/ngx';
-import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
-import { debounceTime } from 'rxjs/operators';
-import { UserDb } from '../../models/db/user-db';
 import { AppSetting } from '../../services/app-setting';
 import { MiscService } from '../../services/misc-service';
-import { Subscription } from 'rxjs';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { UserDb } from '../../models/db/user-db';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'sync-spinner-component',
@@ -21,10 +23,10 @@ export class SyncSpinnerComponent implements OnInit {
     public userDb: UserDb;
     public isStartSync = false;
     public isNetwork = false;
-    public iconStatus: string = 'unsynced';
-    public isAvailableForSyncData: boolean = false;
-    public isAvailableForPushData: boolean = false;
-    public isLoggedUser: boolean = false;
+    public iconStatus = 'unsynced';
+    public isAvailableForSyncData = false;
+    public isAvailableForPushData = false;
+    public isLoggedUser = false;
     eventSubscription: Subscription;
 
     constructor(
@@ -43,13 +45,11 @@ export class SyncSpinnerComponent implements OnInit {
     }
 
     detectChanges() {
-        if (!this.changeDetectorRef['destroyed']) {
             this.changeDetectorRef.detectChanges();
-        }
     }
 
     async openSyncModal() {
-        this.navCtrl.navigateRoot('/sync-model')
+        this.navCtrl.navigateRoot('/sync-model');
         this.menu.close();
         // this.router.navigate(['/sync-model']);
         // if (!this.shouldOpenPopup) {

@@ -1,26 +1,22 @@
+/* eslint-disable @angular-eslint/component-selector */
+
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { IonSelect, ModalController, Platform } from '@ionic/angular';
 
-import { ApiSync } from '../../providers/api-sync';
-import { AuthService } from '../../services/auth-service';
-import { HttpClient } from '../../services/http-client';
-import { Network } from '@ionic-native/network/ngx';
-import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
-import { UserDb } from '../../models/db/user-db';
-import { DownloadService } from '../../services/download-service';
-import { DbProvider } from '../../providers/db-provider';
-import { TranslateConfigService } from '../../services/translate-config.service';
-import { UserService } from '../../services/user-service';
 import { MiscService } from '../../services/misc-service';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Subscription } from 'rxjs';
-import { Storage } from '@ionic/storage-angular';
+import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
+import { TranslateConfigService } from '../../services/translate-config.service';
+import { UserDb } from '../../models/db/user-db';
+import { UserService } from '../../services/user-service';
+
 /**
  * Generated class for the TodoPage page.
  *
  * See http://ionicframework.com/docs/components/#navigation for more info
  * on Ionic pages and navigation.
  */
-
 @Component({
     selector: 'language-selector-component',
     templateUrl: 'language-selector-component.html',
@@ -32,28 +28,22 @@ export class LanguageSelectorComponent implements OnInit {
     public isStartSync = false;
     public syncedItemsPercent = 0;
     public isNetwork = false;
-    public iconStatus: string = 'unsynced';
-    public isAvailableForSyncData: boolean = false;
-    public isAvailableForPushData: boolean = false;
-    public isLoggedUser: boolean = false;
+    public iconStatus = 'unsynced';
+    public isAvailableForSyncData = false;
+    public isAvailableForPushData = false;
+    public isLoggedUser = false;
     public params;
 
     selectedLanguage: string;
     eventSubscription: Subscription;
 
-    constructor(private platform: Platform,
-        private downloadService: DownloadService,
-        private db: DbProvider,
-        private apiSync: ApiSync,
+    constructor(
         private modalController: ModalController,
         private changeDetectorRef: ChangeDetectorRef,
-        private http: HttpClient,
-        private authService: AuthService,
         private network: Network,
         private translateConfigService: TranslateConfigService,
         private userService: UserService,
         private miscService: MiscService,
-        private storage: Storage
     ) {
         this.init();
     }
@@ -92,9 +82,7 @@ export class LanguageSelectorComponent implements OnInit {
     }
 
     detectChanges() {
-        if (!this.changeDetectorRef['destroyed']) {
             this.changeDetectorRef.detectChanges();
-        }
     }
 
     async openSyncModal() {
@@ -118,7 +106,7 @@ export class LanguageSelectorComponent implements OnInit {
                     break;
                 default:
             }
-        })
+        });
 
         // this.events.subscribe('user:logout', (isNetwork) => {
         //     this.isLoggedUser = false;

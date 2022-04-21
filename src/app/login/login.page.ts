@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+/* eslint-disable @angular-eslint/component-selector */
+
 import { LoadingController, NavController } from '@ionic/angular';
-import { AuthService } from '../../services/auth-service';
-import { HttpClient } from '../../services/http-client';
-import { NgForm } from '@angular/forms';
+
 import { ApiSync } from '../../providers/api-sync';
-import { Network } from '@ionic-native/network/ngx';
 import { AppSetting } from '../../services/app-setting';
+import { AuthService } from '../../services/auth-service';
+import { Component } from '@angular/core';
+import { HttpClient } from '../../services/http-client';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { NgForm } from '@angular/forms';
 
 /**
  * Generated class for the LoginPage page.
@@ -26,7 +29,7 @@ export class LoginPage {
 
     public params;
     /** flag that indicates if the login was failed or not */
-    isLoginFailed: boolean = false;
+    isLoginFailed = false;
 
     /**
      * @param navCtrl
@@ -63,10 +66,10 @@ export class LoginPage {
             return;
         }
         if (this.network.type === 'none' && !this.appSetting.isEnabledUsb) {
-            this.showLoader()
+            this.showLoader();
             this.loginOffine(form);
         } else {
-            this.showLoader()
+            this.showLoader();
             this.loginOnline(form);
         }
     }

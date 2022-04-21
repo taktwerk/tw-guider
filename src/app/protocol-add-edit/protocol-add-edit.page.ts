@@ -1,31 +1,29 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy } from '@angular/core';
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @angular-eslint/component-selector */
+
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { File } from '@ionic-native/file/ngx';
-import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
-import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { NavController, Platform } from '@ionic/angular';
+import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
-import { Network } from '@ionic-native/network/ngx';
 import { HttpClient } from '../../services/http-client';
-import { FilePath } from '@ionic-native/file-path/ngx';
-import { TranslateConfigService } from '../../services/translate-config.service';
-import { ProtocolModel } from '../../models/db/api/protocol-model';
-import { ProtocolService } from '../../providers/api/protocol-service';
 import { Md5 } from 'ts-md5';
-import { ProtocolTemplateModel } from '../../models/db/api/protocol-template-model';
-import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
-import { WorkflowStepService } from '../../providers/api/workflow-step-service';
-import { WorkflowTransitionModel } from '../../models/db/api/workflow-transition-model';
+import { MiscService } from '../../services/misc-service';
 import { ProtocolCommentService } from '../../providers/api/protocol-comment-service';
 import { ProtocolDefaultService } from '../../providers/api/protocol-default-service';
+import { ProtocolModel } from '../../models/db/api/protocol-model';
+import { ProtocolService } from '../../providers/api/protocol-service';
+import { ProtocolTemplateModel } from '../../models/db/api/protocol-template-model';
+import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
+import { Subscription } from 'rxjs';
+import { TranslateConfigService } from '../../services/translate-config.service';
 import { WorkflowService } from '../../providers/api/workflow-service';
+import { WorkflowStepService } from '../../providers/api/workflow-step-service';
+import { WorkflowTransitionModel } from '../../models/db/api/workflow-transition-model';
 import { WorkflowTransitionService } from '../../providers/api/workflow-transition-service';
-
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { MiscService } from '../../services/misc-service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'protocol-add-edit',
@@ -51,9 +49,6 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private file: File,
-    private streamingMedia: StreamingMedia,
-    private photoViewer: PhotoViewer,
     public http: HttpClient,
     public authService: AuthService,
     public changeDetectorRef: ChangeDetectorRef,
@@ -65,10 +60,6 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
     private workflowStepService: WorkflowStepService,
     private workflowTransitionService: WorkflowTransitionService,
     private workflowService: WorkflowService,
-    private navCtrl: NavController,
-    private network: Network,
-    private platform: Platform,
-    private filePath: FilePath,
     private ngZone: NgZone,
     private translateConfigService: TranslateConfigService,
     private router: Router,
@@ -97,9 +88,7 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 
   public async save() {
@@ -258,8 +247,8 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
     if (!this.model.local_protocol_form_number) {
       return protocolFormService.newModel();
     }
-    const protocolFormModel = await protocolFormService['dbModelApi'].findFirst(
-      [protocolFormService['dbModelApi'].COL_ID, this.model.local_protocol_form_number]
+    const protocolFormModel = await protocolFormService.dbModelApi.findFirst(
+      [protocolFormService.dbModelApi.COL_ID, this.model.local_protocol_form_number]
     );
     if (!protocolFormModel || !protocolFormModel[0]) {
       return protocolFormService.newModel();

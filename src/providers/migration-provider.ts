@@ -1,32 +1,32 @@
-import { SyncIndexService } from './api/sync-index-service';
-import { AuthService } from '../services/auth-service';
-import { Subject } from 'rxjs';
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable @typescript-eslint/prefer-for-of */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/member-ordering */
+
+import * as migrationList from '../migrations/base/migration-list';
+
 import { AuthDb } from '../models/db/auth-db';
-import { GuideViewHistoryService } from '../providers/api/guide-view-history-service';
-import { Injectable } from '@angular/core';
-import { AppSetting } from '../services/app-setting';
-import { ApiService } from '../providers/api/base/api-service';
-
-import { MigrationService } from '../providers/api/migration-service';
-
-import { GuiderService } from './api/guider-service';
-import { GuideCategoryService } from './api/guide-category-service';
-import { GuideCategoryBindingService } from './api/guide-category-binding-service';
-import { GuideStepService } from './api/guide-step-service';
-import { GuideChildService } from './api/guide-child-service';
-import { Network } from '@ionic-native/network/ngx';
-import { GuideAssetService } from './api/guide-asset-service';
-import { GuideAssetPivotService } from './api/guide-asset-pivot-service';
 import { FeedbackService } from './api/feedback-service';
-import { UserService } from '../services/user-service';
-import { ProtocolTemplateService } from './api/protocol-template-service';
-import { ProtocolService } from './api/protocol-service';
+import { GuideAssetPivotService } from './api/guide-asset-pivot-service';
+import { GuideAssetService } from './api/guide-asset-service';
+import { GuideCategoryBindingService } from './api/guide-category-binding-service';
+import { GuideCategoryService } from './api/guide-category-service';
+import { GuideChildService } from './api/guide-child-service';
+import { GuideStepService } from './api/guide-step-service';
+import { GuideViewHistoryService } from '../providers/api/guide-view-history-service';
+import { GuiderService } from './api/guider-service';
+import { Injectable } from '@angular/core';
+import { MigrationService } from '../providers/api/migration-service';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { ProtocolCommentService } from './api/protocol-comment-service';
 import { ProtocolDefaultService } from './api/protocol-default-service';
+import { ProtocolService } from './api/protocol-service';
+import { ProtocolTemplateService } from './api/protocol-template-service';
+import { SyncIndexService } from './api/sync-index-service';
+import { UserService } from '../services/user-service';
 import { WorkflowService } from './api/workflow-service';
 import { WorkflowStepService } from './api/workflow-step-service';
-import { ProtocolCommentService } from './api/protocol-comment-service';
 import { WorkflowTransitionService } from './api/workflow-transition-service';
-import * as migrationList from '../migrations/base/migration-list';
 
 @Injectable()
 export class MigrationProvider {
@@ -52,9 +52,6 @@ export class MigrationProvider {
     private guideViewHistoryService: GuideViewHistoryService,
     private syncIndexService: SyncIndexService,
     private authDb: AuthDb,
-    private authService: AuthService,
-    private network: Network,
-    private appSetting: AppSetting,
   ) { }
 
   modelsServices: any = {
@@ -138,7 +135,7 @@ export class MigrationProvider {
       //     }
       //   });
       // }
-    })
+    });
   }
 
   async addMigrations() {
@@ -163,7 +160,7 @@ export class MigrationProvider {
       if (modelMigrations.length) {
         Object.keys(modelMigrations).forEach(async (migrationKey) => {
           const migrationName = modelMigrations[migrationKey];
-          migrationModels.push({ migrationName: modelMigrations[migrationKey], tableName: tableName });
+          migrationModels.push({ migrationName: modelMigrations[migrationKey], tableName });
         });
       }
     });
@@ -180,14 +177,14 @@ export class MigrationProvider {
         migrationModel.name = migrationName;
         migrationModel.table_name = tableName;
         migrationModel.is_active = 0;
-        const isSaved = await migrationModel.save();
+        await migrationModel.save();
       }
     }
   }
 
   async executeMigrations() {
     const dbServices = [];
-    Object.keys(this.modelsServices).forEach(async (modelKey) => { dbServices.push(this.modelsServices[modelKey]) });
+    Object.keys(this.modelsServices).forEach(async (modelKey) => { dbServices.push(this.modelsServices[modelKey]); });
 
     for (let i = 0; i < dbServices.length; i++) {
       const service = dbServices[i];
@@ -266,7 +263,7 @@ export class MigrationProvider {
         // console.log("this.migration.dbModelApi.searchAll", res);
       })
         .catch((err) => {
-          console.log("this.migration.dbModelApi.searchAll Error ", err)
+          console.log('this.migration.dbModelApi.searchAll Error ', err);
           resolve([]);
         });
     });

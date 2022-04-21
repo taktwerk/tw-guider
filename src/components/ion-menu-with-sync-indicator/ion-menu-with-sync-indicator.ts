@@ -1,17 +1,19 @@
-import { LoggerService } from './../../services/logger-service';
-import { ChangeDetectorRef, Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { ModalController, Platform } from '@ionic/angular';
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @angular-eslint/component-class-suffix */
+/* eslint-disable @angular-eslint/component-selector */
+
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { ApiSync } from '../../providers/api-sync';
-import { Network } from '@ionic-native/network/ngx';
-import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
-import { debounceTime } from 'rxjs/operators';
-import { UserDb } from '../../models/db/user-db';
-import { DownloadService } from '../../services/download-service';
-import { DbProvider } from '../../providers/db-provider';
 import { AppSetting } from '../../services/app-setting';
-import { Subscription } from 'rxjs';
 import { MiscService } from '../../services/misc-service';
+import { ModalController } from '@ionic/angular';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Subscription } from 'rxjs';
+import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
+import { UserDb } from '../../models/db/user-db';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'ion-menu-with-sync-indicator',
@@ -24,17 +26,14 @@ export class ionMenuWithSyncIndicator implements OnInit, OnDestroy {
     public userDb: UserDb;
     public isStartSync = false;
     public isNetwork = false;
-    public iconStatus: string = 'unsynced';
-    public isAvailableForSyncData: boolean = false;
-    public isAvailableForPushData: boolean = false;
-    public isLoggedUser: boolean = false;
+    public iconStatus = 'unsynced';
+    public isAvailableForSyncData = false;
+    public isAvailableForPushData = false;
+    public isLoggedUser = false;
 
     eventSubscription: Subscription;
 
-    constructor(private platform: Platform,
-        private downloadService: DownloadService,
-        private loggerService: LoggerService,
-        private db: DbProvider,
+    constructor(
         private apiSync: ApiSync,
         private modalController: ModalController,
         private changeDetectorRef: ChangeDetectorRef,
@@ -46,9 +45,7 @@ export class ionMenuWithSyncIndicator implements OnInit, OnDestroy {
     }
 
     detectChanges() {
-        if (!this.changeDetectorRef['destroyed']) {
             this.changeDetectorRef.detectChanges();
-        }
     }
 
     async openSyncModal() {
@@ -57,7 +54,7 @@ export class ionMenuWithSyncIndicator implements OnInit, OnDestroy {
         }
         const modal = await this.modalController.create({
             component: SyncModalComponent,
-            cssClass: "modal-fullscreen"
+            cssClass: 'modal-fullscreen'
         });
         return await modal.present();
     }
@@ -133,7 +130,7 @@ export class ionMenuWithSyncIndicator implements OnInit, OnDestroy {
                     break;
                 default:
             }
-        })
+        });
 
         this.apiSync.isAvailableForSyncData.subscribe(isAvailableForSyncData => {
             this.isAvailableForSyncData = isAvailableForSyncData;

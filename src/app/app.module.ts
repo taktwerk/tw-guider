@@ -46,7 +46,7 @@ import { LoggerService } from 'src/services/logger-service';
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
 import { MigrationProvider } from 'src/providers/migration-provider';
 import { MigrationService } from 'src/providers/api/migration-service';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { PdfViewerComponentModule } from 'src/components/pdf-viewer-component/pdf-viewer-component.module';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';

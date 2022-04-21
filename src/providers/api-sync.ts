@@ -25,7 +25,7 @@ import { GuiderService } from './api/guider-service';
 import { HttpClient } from '../services/http-client';
 import { LoggerService } from '../services/logger-service';
 import { MiscService } from '../services/misc-service';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Platform, } from '@ionic/angular';
 import { ProtocolCommentService } from './api/protocol-comment-service';
 import { ProtocolDefaultService } from './api/protocol-default-service';

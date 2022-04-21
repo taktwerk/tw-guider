@@ -2,7 +2,6 @@
 /* eslint-disable @angular-eslint/component-selector */
 
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { ModalController, Platform } from '@ionic/angular';
 
 import { ApiSync } from '../../providers/api-sync';
 import { AppSetting } from '../../services/app-setting';
@@ -12,7 +11,8 @@ import { HttpClient } from '../../services/http-client';
 import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 import { LoggerService } from '../../services/logger-service';
 import { MiscService } from '../../services/misc-service';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage-angular';
 import { Subscription } from 'rxjs';
@@ -23,15 +23,12 @@ import { UserDb } from '../../models/db/user-db';
 import { UserService } from '../../services/user-service';
 import { take } from 'rxjs/operators';
 
-// import { DatePipe } from '../../pipes/date-pipe/date-pipe';
-
 /**
  * Generated class for the TodoPage page.
  *
  * See http://ionicframework.com/docs/components/#navigation for more info
  * on Ionic pages and navigation.
  */
-
 @Component({
   selector: 'sync-modal-component',
   templateUrl: 'sync-modal-component.html',
@@ -63,7 +60,6 @@ export class SyncModalComponent implements OnInit, OnDestroy {
 
   constructor(
     private storage: Storage,
-    private modalController: ModalController,
     public apiSync: ApiSync,
     public changeDetectorRef: ChangeDetectorRef,
     public http: HttpClient,
@@ -94,22 +90,11 @@ export class SyncModalComponent implements OnInit, OnDestroy {
 
   dismiss() {
     this.router.navigate(['/guide-categories']);
-    // this.modalController.dismiss().then(() => {
-    //   if (this.platform.is('capacitor')) {
-    //     this.insomnia.allowSleepAgain().then(
-    //       () => console.log('insomnia.allowSleepAgain success'),
-    //       () => console.log('insomnia.allowSleepAgain error')
-    //     );
-    //   }
-
-    // });
-
     this.storage.set('SyncModalComponentOpen', false);
   }
 
   syncData() {
     this.apiSync.makeSyncProcess();
-    // this.modalController.dismiss();
     this.router.navigate(['/guide-categories']);
     // if (!this.appSetting.isMigratedDatabase()) {
     //   this.appSetting.showIsNotMigratedDbPopup();
@@ -145,12 +130,6 @@ export class SyncModalComponent implements OnInit, OnDestroy {
     });
   }
 
-  // detectChanges() {
-  //   if (!this.changeDetectorRef['destroyed']) {
-  //     this.changeDetectorRef.detectChanges();
-  //   }
-  // }
-
   protected initUser() {
     return this.userService.getUser().then((result) => {
       this.userDb = result;
@@ -178,31 +157,24 @@ export class SyncModalComponent implements OnInit, OnDestroy {
         return;
       }
       this.modeSync = result;
-      // this.detectChanges();
     });
     this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
       this.isStartSync = isSync;
-      // this.detectChanges();
     });
     this.apiSync.syncProgressStatus.subscribe((syncProgressStatus) => {
       this.syncProgressStatus = syncProgressStatus;
-      // this.detectChanges();
     });
     this.apiSync.isPrepareSynData.subscribe((isPrepareSynData) => {
       this.isPrepareSynData = isPrepareSynData;
-      // this.detectChanges();
     });
     this.apiSync.syncedItemsCount.subscribe((syncedItemsCount) => {
       this.syncedItemsCount = syncedItemsCount ? syncedItemsCount : 0;
-      // this.detectChanges();
     });
     this.apiSync.syncAllItemsCount.subscribe((syncAllItemsCount) => {
       this.syncAllItemsCount = syncAllItemsCount ? syncAllItemsCount : 0;
-      // this.detectChanges();
     });
     this.apiSync.syncedItemsPercent.subscribe((syncedItemsPercent) => {
       this.syncedItemsPercent = syncedItemsPercent ? syncedItemsPercent : 0;
-      // this.detectChanges();
     });
     this.apiSync.noDataForSync.pipe(take(1)).subscribe((noDataForSync) => {
       this.noDataForSync = noDataForSync;
@@ -211,7 +183,6 @@ export class SyncModalComponent implements OnInit, OnDestroy {
           this.noDataForSync = false;
         }, 3000);
       }
-      // this.detectChanges();
     });
     this.apiSync.isAvailableForSyncData.subscribe((isAvailableForSyncData) => {
       this.isAvailableForSyncData = isAvailableForSyncData;
