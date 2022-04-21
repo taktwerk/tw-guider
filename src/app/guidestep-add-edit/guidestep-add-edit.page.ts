@@ -1,3 +1,6 @@
+/* eslint-disable max-len */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { MiscService } from '../../services/misc-service';
 import { GuiderModel } from './../../models/db/api/guider-model';
 import { GuiderService } from './../../providers/api/guider-service';
@@ -8,7 +11,6 @@ import { GuideStepService } from '../../providers/api/guide-step-service';
 import { DownloadService } from '../../services/download-service';
 import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
-// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { AuthService } from '../../services/auth-service';
 import { TranslateConfigService } from '../../services/translate-config.service';
@@ -46,9 +48,9 @@ export class GuidestepAddEditPage implements OnInit {
   shouldUpdate = false;
   shouldSave = false;
 
-  ckeConfig
+  ckeConfig;
 
-  title = "";
+  title = '';
   testBrowser: boolean;
 
   constructor(
@@ -81,13 +83,13 @@ export class GuidestepAddEditPage implements OnInit {
       this.stepId = param.stepId;
       this.action = param.action;
 
-      if (this.action == 'edit') {
+      if (this.action === 'edit') {
         this.guideStepService.dbModelApi.findAllWhere(['guide_id', this.guideId], 'order_number ASC').then(results => {
           this.model = results.filter(model => {
             if (model.idApi == null) {
               model.idApi = model._id;
             }
-            return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT] && model.idApi == this.stepId
+            return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT] && model.idApi === this.stepId;
           })[0];
           this.previousDescription = this.model.description_html;
           this.previousTitle = this.model.title;
@@ -96,17 +98,17 @@ export class GuidestepAddEditPage implements OnInit {
       }
       else {
         this.model = this.guideStepService.newModel();
-        this.model.description_html = "";
+        this.model.description_html = '';
       }
 
       this.setGuideSteps(this.guideId);
       this.setGuide();
-    })
+    });
   }
 
   ngOnInit() {
     this.ckeConfig = {
-      toolbar: ["heading", "bold", "italic", "blockQuote", "numberedList", "bulletedList", "insertTable"],
+      toolbar: ['heading', 'bold', 'italic', 'blockQuote', 'numberedList', 'bulletedList', 'insertTable'],
       toolbarLocation: 'bottom',
       isReadOnly: true
     };
@@ -135,14 +137,14 @@ export class GuidestepAddEditPage implements OnInit {
     this.downloadService.chooseFile(true).then((recordedFile) => {
       this.model.setFile(recordedFile);
       this.shouldUpdate = true;
-    })
+    });
   }
 
   async addVideoUsingCamera() {
     this.downloadService
       .recordVideo(true)
       .then((recordedFile) => {
-        this.model.setFile(recordedFile)
+        this.model.setFile(recordedFile);
         this.shouldUpdate = true;
       })
       .catch((e) => console.error('model', 'addVideoUsingCamera', e));
@@ -161,11 +163,9 @@ export class GuidestepAddEditPage implements OnInit {
 
   public setGuideSteps(id) {
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
-      this.guideSteps = results.filter(model => {
-        return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
-      });
+      this.guideSteps = results.filter(model => !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]);
 
-      if (this.action == "add") {
+      if (this.action === 'add') {
         this.model.order_number = this.guideSteps.length + 1;
       }
     });
@@ -176,29 +176,29 @@ export class GuidestepAddEditPage implements OnInit {
     if (guiderById.length) {
       this.guide = guiderById[0];
 
-      if (this.action == "add") {
+      if (this.action === 'add') {
         this.model.local_guide_id = this.guide[this.guide.COL_ID];
-        this.model.guide_id = this.guide.idApi
+        this.model.guide_id = this.guide.idApi;
         // console.log(this.model)
       }
     }
   }
 
   onChanges(event) {
-    if (event.target != undefined && event.target.value != this.previousTitle) {
+    if (event.target !== undefined && event.target.value !== this.previousTitle) {
       this.shouldUpdate = true;
     }
-    else if (this.previousDescription != this.model.description_html) {
+    else if (this.previousDescription !== this.model.description_html) {
       this.shouldUpdate = true;
     }
-    else { this.shouldUpdate = false }
+    else { this.shouldUpdate = false; }
   }
 
   editorChanges() {
-    if (this.previousDescription != this.model.description_html) {
+    if (this.previousDescription !== this.model.description_html) {
       this.shouldUpdate = true;
     }
-    else { this.shouldUpdate = false }
+    else { this.shouldUpdate = false; }
   }
 
   updateGuide() {
@@ -215,11 +215,11 @@ export class GuidestepAddEditPage implements OnInit {
     const user = await this.authService.getLastUser();
     if (!user) { return; }
     // save new step
-    if (this.action == 'add') {
+    if (this.action === 'add') {
       if (!this.model.order_number) { this.model.order_number = this.guideSteps.length + 1; }
       this.guideSteps.splice(this.model.order_number - 1, 0, this.model);
       // save one
-      if (this.model.order_number == this.guideSteps.length) {
+      if (this.model.order_number === this.guideSteps.length) {
         this.guideStepService.save(this.model).then(async () => {
           this.apiSync.setIsPushAvailableData(true);
           this.updateGuide();
@@ -228,8 +228,8 @@ export class GuidestepAddEditPage implements OnInit {
           this.shouldUpdate = false;
           this.shouldSave = false;
           // this.router.navigate(["/", "editguide", this.guideId]);
-          this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
-        }).catch((e) => console.error(e))
+          this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' });
+        }).catch((e) => console.error(e));
       }
       // save all
       else {
@@ -242,15 +242,15 @@ export class GuidestepAddEditPage implements OnInit {
               const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
               this.http.showToast(alertMessage);
               // this.router.navigate(["/", "editguide", this.guideId]);
-              this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
-            }).catch((e) => console.error(e))
-          })
-        })
+              this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' });
+            }).catch((e) => console.error(e));
+          });
+        });
       }
     }
 
     // save edited step
-    if (this.action == "edit") {
+    if (this.action === 'edit') {
       this.guideStepService.save(this.model).then(async () => {
         this.apiSync.setIsPushAvailableData(true);
         this.updateGuide();
@@ -258,9 +258,9 @@ export class GuidestepAddEditPage implements OnInit {
         this.http.showToast(alertMessage);
         this.shouldUpdate = false;
         this.shouldSave = false;
-        this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' })
+        this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' });
         // this.router.navigate(["/", "editguide", this.guideId]);
-      }).catch((e) => console.error(e))
+      }).catch((e) => console.error(e));
     }
   }
 
@@ -288,14 +288,14 @@ export class GuidestepAddEditPage implements OnInit {
       await alert.present();
     }
     else {
-      this.cancel()
+      this.cancel();
     }
   }
 
-  cancel() { this.router.navigate(["/", "editguide", this.guideId]); }
+  cancel() { this.router.navigate(['/', 'editguide', this.guideId]); }
 
   async showToast(message) {
-    const toast = await this.toastController.create({ message: message, duration: 800 });
+    const toast = await this.toastController.create({ message, duration: 800 });
     toast.present();
   }
 
@@ -305,12 +305,12 @@ export class GuidestepAddEditPage implements OnInit {
       componentProps: {
         content: this.model.description_html
       },
-      cssClass: "modal-fullscreen",
+      cssClass: 'modal-fullscreen',
     });
     modal.onDidDismiss()
       .then((res: any) => {
         if (res != null) {
-          this.model.description_html = res.data.data
+          this.model.description_html = res.data.data;
         }
       });
     return await modal.present();
@@ -346,10 +346,10 @@ export class GuidestepAddEditPage implements OnInit {
           step.order_number = index + 1;
           this.guideStepService.save(step).then(() => {
             this.apiSync.setIsPushAvailableData(true);
-          })
-        })
-      })
-      this.router.navigate(["/", "editguide", this.guideId]);
-    })
+          });
+        });
+      });
+      this.router.navigate(['/', 'editguide', this.guideId]);
+    });
   }
 }

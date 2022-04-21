@@ -1,19 +1,22 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, OnDestroy } from '@angular/core';
-import { ModalController, NavController } from '@ionic/angular';
-import { AuthService } from '../../services/auth-service';
-import { DownloadService } from '../../services/download-service';
-import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+/* eslint-disable no-fallthrough */
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @angular-eslint/component-selector */
+
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { VideoService } from '../../services/video-service';
+import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+
+import { AuthService } from '../../services/auth-service';
+import { MiscService } from '../../services/misc-service';
+import { NavController } from '@ionic/angular';
+import { ProtocolDefaultService } from '../../providers/api/protocol-default-service';
 import { ProtocolModel } from '../../models/db/api/protocol-model';
 import { ProtocolService } from '../../providers/api/protocol-service';
-import { WorkflowStepService } from '../../providers/api/workflow-step-service';
-import { ProtocolDefaultService } from '../../providers/api/protocol-default-service';
-import { WorkflowService } from '../../providers/api/workflow-service';
 import { ProtocolTemplateService } from '../../providers/api/protocol-template-service';
-import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
 import { SyncIndexService } from '../../providers/api/sync-index-service';
+import { WorkflowService } from '../../providers/api/workflow-service';
+import { WorkflowStepService } from '../../providers/api/workflow-step-service';
 
 @Component({
     selector: 'protocol-page',
@@ -30,7 +33,7 @@ export class ProtocolPage implements OnInit, OnDestroy {
     private reference_model_alias: any;
     private reference_model: string;
     private clientId: number;
-    public userCanCreateProtocol: boolean = false;
+    public userCanCreateProtocol = false;
 
     eventSubscription: Subscription;
 
@@ -77,8 +80,8 @@ export class ProtocolPage implements OnInit, OnDestroy {
         if (!protocolFormService) {
             return;
         }
-        const protocolFormModel = await protocolFormService['dbModelApi'].findFirst(
-            [protocolFormService['dbModelApi'].COL_ID, protocol.local_protocol_form_number]
+        const protocolFormModel = await protocolFormService.dbModelApi.findFirst(
+            [protocolFormService.dbModelApi.COL_ID, protocol.local_protocol_form_number]
         );
         if (!protocolFormModel || !protocolFormModel[0]) {
             return;
@@ -105,9 +108,7 @@ export class ProtocolPage implements OnInit, OnDestroy {
     }
 
     detectChanges() {
-        if (!this.changeDetectorRef['destroyed']) {
-            this.changeDetectorRef.detectChanges();
-        }
+        this.changeDetectorRef.detectChanges();
     }
 
     ngOnInit() {

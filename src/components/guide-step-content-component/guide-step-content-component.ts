@@ -7,7 +7,6 @@ import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
-// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { VideoService } from '../../services/video-service';
 import { Viewer3dService } from '../../services/viewer-3d-service';

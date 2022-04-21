@@ -1,10 +1,13 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild, ElementRef, PLATFORM_ID, Inject } from '@angular/core';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+/* eslint-disable max-len */
+/* eslint-disable @angular-eslint/component-selector */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/member-ordering */
+import { ChangeDetectorRef, Component, OnInit, ViewChild, ElementRef, PLATFORM_ID, Inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { AlertController, IonBackButtonDelegate, Platform, NavController } from '@ionic/angular';
+import { AlertController, IonBackButtonDelegate, NavController } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
-import { DownloadService, RecordedFile } from '../../services/download-service';
+import { DownloadService } from '../../services/download-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
 import { FeedbackService } from '../../providers/api/feedback-service';
 import { HttpClient } from '../../services/http-client';
@@ -13,7 +16,6 @@ import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
 import { ApiSync } from '../../providers/api-sync';
 import { isPlatformBrowser } from '@angular/common';
-import { AppSetting } from 'src/services/app-setting';
 
 @Component({
   selector: 'feedback-add-edit-page',
@@ -52,15 +54,11 @@ export class FeedbackAddEditPage implements OnInit {
     public changeDetectorRef: ChangeDetectorRef,
     public downloadService: DownloadService,
     private feedbackService: FeedbackService,
-    private ngZone: NgZone,
     public alertController: AlertController,
     private translateConfigService: TranslateConfigService,
-    private router: Router,
-    private appSetting: AppSetting,
     private videoService: VideoService,
     private pictureService: PictureService,
     private apiSync: ApiSync,
-    private platform: Platform,
     private navCtrl: NavController,
     @Inject(PLATFORM_ID) platformId: string
   ) {
@@ -97,7 +95,7 @@ export class FeedbackAddEditPage implements OnInit {
     //     },
     //   };
     //   this.router.navigate(['feedback'], feedbackNavigationExtras);
-    //  
+    //
     // });
 
     this.navCtrl.back();
@@ -197,9 +195,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 
   private async isValidFeedback() {
@@ -262,7 +258,6 @@ export class FeedbackAddEditPage implements OnInit {
     this.downloadService.makePhoto(1000, 1000)
       .then((recordedFile) => this.model.setFile(recordedFile))
       .catch((e) => console.log('FeedbackModal', 'addPhotoUsingCamera', e));
-    console.log("check recorded file in feedback add edit--->", RecordedFile);
   }
 
   async getDefaultTitle() {
@@ -289,7 +284,7 @@ export class FeedbackAddEditPage implements OnInit {
       this.reference_title = feedbackData.referenceTitle;
       this.reference_model_alias = feedbackData.referenceModelAlias;
       this.reference_model = this.feedbackService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
-      this.guideId = feedbackData.guideId
+      this.guideId = feedbackData.guideId;
 
       // console.log("guideId at feedback-add-edit", this.guideId)
 

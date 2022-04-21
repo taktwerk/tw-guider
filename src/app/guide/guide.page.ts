@@ -5,38 +5,25 @@
 /* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/member-ordering */
-import { UserService } from '../../services/user-service';
-import { SyncService } from '../../services/sync-service';
-import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
-import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
 
-import { MiscService } from './../../services/misc-service';
-import { ApiSync } from '../../providers/api-sync';
-import { MenuPopoverComponent } from '../../components/menupopover/menupopover.page';
-import { GuideinfoPage } from '../../components/guideinfo/guideinfo.page';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import {
   AfterContentChecked,
   ChangeDetectorRef,
   Component,
   ComponentFactoryResolver,
-  NgZone,
+  ElementRef,
+  HostListener,
   Input,
+  NgZone,
+  OnDestroy,
   OnInit,
   QueryList,
   ViewChild,
   ViewChildren,
   ViewContainerRef,
-  ElementRef,
-  OnDestroy,
-  HostListener,
 } from '@angular/core';
-import { GuiderService } from '../../providers/api/guider-service';
-import { GuiderModel } from '../../models/db/api/guider-model';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { GuideStepService } from '../../providers/api/guide-step-service';
-import { GuideStepModel } from '../../models/db/api/guide-step-model';
-// import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
+import { GuideAssetModel, GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
 import {
   IonBackButtonDelegate,
   IonContent,
@@ -44,34 +31,45 @@ import {
   LoadingController,
   ModalController,
   NavController,
-  ToastController,
   Platform,
+  ToastController,
 } from '@ionic/angular';
-import { AuthService } from '../../services/auth-service';
-import { GuideAssetService } from '../../providers/api/guide-asset-service';
-import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
-import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
-import { GuideAssetModel, GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
-import { DownloadService } from '../../services/download-service';
-import { VideoService } from '../../services/video-service';
-import { GuideCategoryService } from '../../providers/api/guide-category-service';
-import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
-import { PictureService } from '../../services/picture-service';
-
-import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
-import { Viewer3dService } from '../../services/viewer-3d-service';
-import { GuideStepContentComponent } from '../../components/guide-step-content-component/guide-step-content-component';
-import { PopoverController } from '@ionic/angular';
-import { TranslateConfigService } from '../../services/translate-config.service';
-import { HttpClient } from '../../services/http-client';
-import { UserDb } from '../../models/db/user-db';
 import { Subject, Subscription } from 'rxjs';
-import { SyncIndexService } from '../../providers/api/sync-index-service';
-import { HelpingService } from '../../controller/helping.service';
-import { ViewerService } from '../../services/viewer.service';
-import { AppSetting } from 'src/services/app-setting';
-import { GuideCategoryModel } from 'src/models/db/api/guide-category-model';
 
+import { ApiSync } from '../../providers/api-sync';
+import { AppSetting } from 'src/services/app-setting';
+import { AuthService } from '../../services/auth-service';
+import { DownloadService } from '../../services/download-service';
+import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
+import { GuideAssetService } from '../../providers/api/guide-asset-service';
+import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
+import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
+import { GuideCategoryModel } from 'src/models/db/api/guide-category-model';
+import { GuideCategoryService } from '../../providers/api/guide-category-service';
+import { GuideStepContentComponent } from '../../components/guide-step-content-component/guide-step-content-component';
+import { GuideStepModel } from '../../models/db/api/guide-step-model';
+import { GuideStepService } from '../../providers/api/guide-step-service';
+import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
+import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
+import { GuideinfoPage } from '../../components/guideinfo/guideinfo.page';
+import { GuiderModel } from '../../models/db/api/guider-model';
+import { GuiderService } from '../../providers/api/guider-service';
+import { HelpingService } from '../../controller/helping.service';
+import { HttpClient } from '../../services/http-client';
+import { MenuPopoverComponent } from '../../components/menupopover/menupopover.page';
+import { MiscService } from './../../services/misc-service';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
+import { PictureService } from '../../services/picture-service';
+import { PopoverController } from '@ionic/angular';
+import { SyncIndexService } from '../../providers/api/sync-index-service';
+import { SyncService } from '../../services/sync-service';
+import { TranslateConfigService } from '../../services/translate-config.service';
+import { UserDb } from '../../models/db/user-db';
+import { UserService } from '../../services/user-service';
+import { VideoService } from '../../services/video-service';
+import { Viewer3dService } from '../../services/viewer-3d-service';
+import { ViewerService } from '../../services/viewer.service';
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-guide',
