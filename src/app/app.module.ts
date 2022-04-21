@@ -16,7 +16,6 @@ import { AuthService } from 'src/services/auth-service';
 import { BrowserModule } from '@angular/platform-browser';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CKEditorPageModule } from 'src/components/ckeditor/ckeditor.module';
-import { Camera } from '@awesome-cordova-plugins/camera/ngx';
 import { CommonModule } from '@angular/common';
 import { CryptoProvider } from 'src/providers/crypto-provider';
 import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
@@ -141,7 +140,6 @@ export function initializeApp(logService: LoggerService) {
     HttpClient,
     ApiSync,
     VideoEditor,
-    Camera,
     MediaCapture,
     FilePath,
     IOSFilePicker,

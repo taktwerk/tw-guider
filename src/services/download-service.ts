@@ -15,8 +15,9 @@ import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 // import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
-// import { Camera } from '@ionic-native/camera/ngx';
-import { Camera } from '@awesome-cordova-plugins/camera/ngx';
+
+import { Camera, CameraResultType } from '@capacitor/camera';
+
 // import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
 import { CreateThumbnailOptions, VideoEditor } from '@awesome-cordova-plugins/video-editor/ngx';
 import { Filesystem, Directory, } from '@capacitor/filesystem';
@@ -66,7 +67,6 @@ export class DownloadService {
     private filePicker: IOSFilePicker,
     private filePath: FilePath,
     private mediaCapture: MediaCapture,
-    private camera: Camera,
     private videoEditor: VideoEditor,
     protected sanitizerImpl: ɵDomSanitizerImpl,
     private loggerService: LoggerService,
@@ -89,10 +89,8 @@ export class DownloadService {
   async downloadAndSaveFile(url: string, name: string, modelFolder: string, authToken = ''): Promise<any> {
     const promise = new Promise((resolve) => {
       const finalPath = this.file.dataDirectory + modelFolder + '/' + name;
-      console.log("check finalPath---->", finalPath);
       if (!this.platform.is('capacitor')) {
         resolve(url);
-        console.log("checkkkkkinggg url", url);
         return;
       }
 
@@ -247,16 +245,7 @@ export class DownloadService {
         //   console.log(e)
         // })
 
-        // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-        // console.log("filebBase64", filebBase64)
-        // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-
         const customBlob = this.base64ToBlob(filebBase64.data);
-
-        // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-        console.log("customBlob", customBlob)
-        // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
-
         const formData = new FormData();
         formData.append(fileKey, customBlob, fileName);
 
@@ -607,7 +596,6 @@ export class DownloadService {
         reader.onload = (_event) => {
           const url: any = reader.result;
           resolve(url);
-          console.log("check url from choosefilefromlocalpc", url);
         };
 
         // let reader: any = new FileReader();
@@ -806,7 +794,7 @@ export class DownloadService {
   public async makePhoto(targetWidth = 1000, targetHeight = 1000): Promise<RecordedFile> {
     const recordedFile = new RecordedFile();
 
-    if (!this.camera) {
+    if (!Camera) {
       this.loggerService.getLogger().error('MediaCapture plugin is not defined', new Error('MediaCapture plugin is not defined').stack);
       throw new Error('MediaCapture plugin is not defined');
     }
@@ -834,16 +822,21 @@ export class DownloadService {
     //   input.click();
     // }
 
-    const cameraOptions = {
-      // targetWidth: targetWidth,
-      // targetHeight: targetHeight,
-      sourceType: this.camera.PictureSourceType.CAMERA,
-      destinationType: this.camera.DestinationType.FILE_URI,
-      // encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.ALLMEDIA,
-    };
 
-    const photoFullPath = await this.camera.getPicture(cameraOptions);
+
+    const photoFullPath = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: true,
+      resultType: CameraResultType.Uri
+    });
+
+    // const cameraOptions = {
+    //   sourceType: this.camera.PictureSourceType.CAMERA,
+    //   destinationType: this.camera.DestinationType.FILE_URI,
+    //   mediaType: this.camera.MediaType.ALLMEDIA,
+    // };
+
+    // const photoFullPath = await this.camera.getPicture(cameraOptions);
     // const recordedFile = new RecordedFile();
 
     if (this.platform.is('ios')) {
