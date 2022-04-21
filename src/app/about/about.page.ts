@@ -2,8 +2,8 @@
 
 import { Component, OnInit } from '@angular/core';
 
-import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { AuthService } from '../../services/auth-service';
+import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { Platform } from '@ionic/angular';
 import { config } from '../../environments/config';
 
@@ -24,15 +24,13 @@ export class AboutPage implements OnInit {
   public params;
   currDate: Date = new Date();
 
-  constructor(private platform: Platform, public authService: AuthService, private appVersion: AppVersion) { }
+  constructor(private platform: Platform, public authService: AuthService, private device: Device) { }
 
   ngOnInit(): void {
     if (this.platform.is('cordova')) {
       this.platform.ready().then(() => {
-        if (this.appVersion) {
-          this.appVersion.getVersionNumber().then((versionNumber) => {
-            this.versionNumber = versionNumber;
-          });
+        if (this.device) {
+          this.versionNumber = this.device.version;
         }
         if (config) {
           if (config.apiVersion) {

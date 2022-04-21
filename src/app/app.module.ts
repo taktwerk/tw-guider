@@ -11,7 +11,6 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppSetting } from 'src/services/app-setting';
 import { AppSettingsDb } from 'src/models/db/app-settings-db';
-import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { AuthDb } from 'src/models/db/auth-db';
 import { AuthService } from 'src/services/auth-service';
 import { BrowserModule } from '@angular/platform-browser';
@@ -134,7 +133,6 @@ export function initializeApp(logService: LoggerService) {
     Network,
     ToastService,
     UserService,
-    AppVersion,
     Device,
     AppSettingsDb,
     AppSetting,

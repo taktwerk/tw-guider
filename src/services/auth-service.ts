@@ -7,7 +7,6 @@ import { HttpHeaders as Headers, HttpClient, HttpHeaders } from '@angular/common
 import { Injectable, NgZone, OnInit } from '@angular/core';
 
 import { AppSetting } from './app-setting';
-import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { AuthDb } from '../models/db/auth-db';
 import { CryptoProvider } from '../providers/crypto-provider';
 import { Device } from '@awesome-cordova-plugins/device/ngx';
@@ -36,7 +35,6 @@ export class AuthService implements OnInit {
      * @param ngZone
      * @param appSetting
      * @param device
-     * @param appVersion
      * @param alertController
      * @param userService
      * @param translateConfigService
@@ -50,7 +48,6 @@ export class AuthService implements OnInit {
         private ngZone: NgZone,
         private appSetting: AppSetting,
         private device: Device,
-        private appVersion: AppVersion,
         private alertController: AlertController,
         private userService: UserService,
         private translateConfigService: TranslateConfigService,
@@ -252,7 +249,7 @@ export class AuthService implements OnInit {
     loginByIdentifier(appConfirmUrl, type: string, identifier: string) {
         return new Promise(async (resolve, reject) => {
             if (type === 'client' || type === 'client-default-user') {
-                const version = await this.appVersion.getVersionNumber();
+                const version = this.device.version;
 
                 if (!version) {
                     resolve(false);
