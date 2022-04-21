@@ -1,14 +1,15 @@
-import { Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
-import { ModalController, ToastController, Platform, } from '@ionic/angular';
-import { ToastService } from '../../../services/toast-service';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media/ngx';
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @angular-eslint/component-selector */
+
+import { AfterViewChecked, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { ModalController, Platform, ToastController, } from '@ionic/angular';
+
 import { DownloadService } from '../../../services/download-service';
-
-import { TranslateService } from '@ngx-translate/core';
-import { TranslateConfigService } from '../../../services/translate-config.service';
 import { MiscService } from '../../../services/misc-service';
-
 import { Storage } from '@ionic/storage-angular';
+import { TranslateConfigService } from '../../../services/translate-config.service';
+
 /**
  * Generated class for the TodoPage page.
  *
@@ -92,7 +93,7 @@ export class DrawImageModalComponent implements AfterViewChecked {
 
     window.onresize = () => {
       console.log('onresize now');
-      var dataUrl = this.mainCanvasElement.toDataURL();
+      const dataUrl = this.mainCanvasElement.toDataURL();
       this.canvasElement.width = this.plt.width() + '';
       this.canvasElement.height = this.modelElement.clientHeight;
 
@@ -117,7 +118,7 @@ export class DrawImageModalComponent implements AfterViewChecked {
       pageY = ev.pageY;
     }
     this.drawing = true;
-    var canvasPosition = this.canvasElement.getBoundingClientRect();
+    const canvasPosition = this.canvasElement.getBoundingClientRect();
 
     this.saveX = pageX - canvasPosition.x;
     this.saveY = pageY - canvasPosition.y;
@@ -142,19 +143,19 @@ export class DrawImageModalComponent implements AfterViewChecked {
 
     background.onload = () => {
       // this.context.drawImage(background, 0, 0, 100, this.canvasElement.height);
-      var imgWidth = background.naturalWidth;
-      var screenWidth = this.canvasElement.width;
-      var scaleX = 1;
+      let imgWidth = background.naturalWidth;
+      const screenWidth = this.canvasElement.width;
+      let scaleX = 1;
       if (imgWidth > screenWidth)
-        scaleX = screenWidth / imgWidth;
-      var imgHeight = background.naturalHeight;
-      var screenHeight = this.canvasElement.height;
-      var scaleY = 1;
+        {scaleX = screenWidth / imgWidth;}
+      let imgHeight = background.naturalHeight;
+      const screenHeight = this.canvasElement.height;
+      let scaleY = 1;
       if (imgHeight > screenHeight)
-        scaleY = screenHeight / imgHeight;
-      var scale = scaleY;
+        {scaleY = screenHeight / imgHeight;}
+      let scale = scaleY;
       if (scaleX < scaleY)
-        scale = scaleX;
+        {scale = scaleX;}
       if (scale < 1) {
         imgHeight = imgHeight * scale;
         imgWidth = imgWidth * scale;
@@ -177,13 +178,13 @@ export class DrawImageModalComponent implements AfterViewChecked {
         this.mainContext.drawImage(background, 0, 0, background.naturalWidth, background.naturalHeight);
       }
 
-    }
+    };
   }
 
   moved(ev) {
-    if (!this.drawing) return;
+    if (!this.drawing) {return;}
 
-    var canvasPosition = this.canvasElement.getBoundingClientRect();
+    const canvasPosition = this.canvasElement.getBoundingClientRect();
     // let ctx = this.canvasElement.getContext('2d');
 
     let pageX = 0;
@@ -196,8 +197,8 @@ export class DrawImageModalComponent implements AfterViewChecked {
       pageY = ev.pageY;
     }
 
-    let currentX = pageX - canvasPosition.x;
-    let currentY = pageY - canvasPosition.y;
+    const currentX = pageX - canvasPosition.x;
+    const currentY = pageY - canvasPosition.y;
 
     this.context.lineJoin = 'round';
     this.context.strokeStyle = this.selectedColor;
@@ -238,32 +239,31 @@ export class DrawImageModalComponent implements AfterViewChecked {
           // resolve(finalPath);
           return;
         }).catch(writeFileErr => {
-          // resolve(false);
-          return;
+
         });
     });
   }
 
   b64toBlob(b64Data, contentType) {
     contentType = contentType || '';
-    var sliceSize = 512;
-    var byteCharacters = atob(b64Data);
-    var byteArrays = [];
+    const sliceSize = 512;
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
 
-    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      var slice = byteCharacters.slice(offset, offset + sliceSize);
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
 
-      var byteNumbers = new Array(slice.length);
-      for (var i = 0; i < slice.length; i++) {
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
         byteNumbers[i] = slice.charCodeAt(i);
       }
 
-      var byteArray = new Uint8Array(byteNumbers);
+      const byteArray = new Uint8Array(byteNumbers);
 
       byteArrays.push(byteArray);
     }
 
-    var blob = new Blob(byteArrays, { type: contentType });
+    const blob = new Blob(byteArrays, { type: contentType });
     return blob;
   }
 

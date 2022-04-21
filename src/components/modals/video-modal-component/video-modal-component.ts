@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @angular-eslint/component-selector */
+
 import { Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModalController, Platform } from '@ionic/angular';
-import { ToastService } from '../../../services/toast-service';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media/ngx';
+import { StreamingMedia, StreamingVideoOptions } from '@awesome-cordova-plugins/streaming-media/ngx';
+
 import { DownloadService } from '../../../services/download-service';
 import { Storage } from '@ionic/storage-angular';
+import { ToastService } from '../../../services/toast-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -39,8 +43,8 @@ export class VideoModalComponent implements OnInit, OnDestroy {
 
     dismiss() {
         this.modalController.dismiss();
-        this.storage.set('VideoModalComponentOpen', false)
-        console.log("dismiss", "VideoModalComponentOpen")
+        this.storage.set('VideoModalComponentOpen', false);
+        console.log('dismiss', 'VideoModalComponentOpen');
 
     }
 
@@ -49,7 +53,7 @@ export class VideoModalComponent implements OnInit, OnDestroy {
             this.videoElement = this.video.nativeElement;
             this.videoElement.src = this.downloadService.getWebviewFileSrc(this.fileUrl);
             this.videoElement.addEventListener('webkitfullscreenchange', () => {
-                if (!document['webkitIsFullScreen']) {
+                if (!(document as any).webkitIsFullScreen) {
                     this.dismiss();
                 }
             });
@@ -66,7 +70,7 @@ export class VideoModalComponent implements OnInit, OnDestroy {
     }
 
     ionViewDidEnter() {
-        this.storage.set('VideoModalComponentOpen', true)
+        this.storage.set('VideoModalComponentOpen', true);
         if (!this.videoElement || this.videoElement.paused) {
             this.playVideo();
         }

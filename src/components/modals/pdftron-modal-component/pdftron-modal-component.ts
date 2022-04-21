@@ -1,8 +1,7 @@
-import {AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
+/* eslint-disable @angular-eslint/component-selector */
+
+import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ModalController, Platform} from '@ionic/angular';
-import {ToastService} from '../../../services/toast-service';
-import {StreamingMedia, StreamingVideoOptions} from '@ionic-native/streaming-media/ngx';
-import {DownloadService} from '../../../services/download-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -11,9 +10,6 @@ import {DownloadService} from '../../../services/download-service';
  * on Ionic pages and navigation.
  */
 
-// declare var PDFTron: any;
-// declare var PSPDFKit: any;
-declare const WebViewer: any;
 
 @Component({
   selector: 'pdftron-modal-component',

@@ -56,7 +56,7 @@ import { ProtocolTemplateService } from 'src/providers/api/protocol-template-ser
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { RouteReuseStrategy } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
-import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
+import { StreamingMedia } from '@awesome-cordova-plugins/streaming-media/ngx';
 import { SyncIndexService } from 'src/providers/api/sync-index-service';
 import { SyncService } from 'src/services/sync-service';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
