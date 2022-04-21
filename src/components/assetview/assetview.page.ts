@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable @angular-eslint/component-selector */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -218,6 +219,12 @@ export class AssetviewComponent implements OnInit {
     //   this.videoPreview = '/assets/videooverlay.png'
     // }
 
+  }
+
+  get imageUrl() {
+      const fileUrl = this.downloadService.getNativeFilePath(this.model.getFileName(), this.model.TABLE_NAME);
+      console.log('check fileUrl', fileUrl);
+      return fileUrl;
   }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string, fileType = 'image') {

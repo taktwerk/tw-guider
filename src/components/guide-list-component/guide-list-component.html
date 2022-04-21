@@ -51,7 +51,7 @@
         </ion-card-content>
       </ion-card>
 
-      <ion-card color="light" class="ion-no-margin" *ngIf="isCapture && item.guide_collection.length == 0"
+      <ion-card color="light" class="ion-no-margin" *ngIf="isCapture && item.guide_collection.length === 0"
         (click)="openGuideSteps(item.idApi)">
         <div class="guide-preview">
           <div class="img" *ngIf="item.getFileImagePath()"

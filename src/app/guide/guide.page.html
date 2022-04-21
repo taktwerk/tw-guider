@@ -38,28 +38,11 @@
       <ion-back-button style="color: #ffffff;"></ion-back-button>
 
       <ion-button (click)="presentSlideInfo($event)">
-        <ion-icon style="color: #ffffff;"
-          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Ellipsis Vertical</title><circle cx='256' cy='256' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='256' cy='416' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='256' cy='96' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>">
+        <ion-icon style="color: #ffffff;" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Ellipsis Vertical</title><circle cx='256' cy='256' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='256' cy='416' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='256' cy='96' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>">
         </ion-icon>
       </ion-button>
-
-      <!-- <ion-button (click)="nextGuide()" *ngIf="hasNext" style="margin-right: 110px !important">
-        <ion-icon style="color: #ffffff; ;"
-          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Play Skip Forward</title><path d='M400 64a16 16 0 00-16 16v136.43L151.23 77.11a35.13 35.13 0 00-35.77-.44C103.46 83.47 96 96.63 96 111v290c0 14.37 7.46 27.53 19.46 34.33a35.14 35.14 0 0035.77-.45L384 295.57V432a16 16 0 0032 0V80a16 16 0 00-16-16z'/></svg>">
-        </ion-icon>
-      </ion-button>
-
-      <ion-button (click)="previousGuide()" *ngIf="hasPrevious" style="margin-right: 170px !important">
-        <ion-icon style="color: #ffffff;"
-          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Play Skip Back</title><path d='M112 64a16 16 0 0116 16v136.43L360.77 77.11a35.13 35.13 0 0135.77-.44c12 6.8 19.46 20 19.46 34.33v290c0 14.37-7.46 27.53-19.46 34.33a35.14 35.14 0 01-35.77-.45L128 295.57V432a16 16 0 01-32 0V80a16 16 0 0116-16z'/></svg>">
-        </ion-icon>
-      </ion-button> -->
-
-
-
 
     </ion-buttons>
-
 
   </ion-toolbar>
 
@@ -69,8 +52,7 @@
   <span *ngIf="isLoadedContent">
     <div *ngIf="guideSteps && guideSteps.length > 0" class="guide-step" [ngClass]="{'has-assets' : haveAssets}">
 
-      <ion-slides id="guideStepSlides" #guideStepSlides pager="false" [options]="slideOpts"
-        (ionSlideWillChange)="changeGuideStepCurrentSlide()">
+      <ion-slides id="guideStepSlides" #guideStepSlides pager="false" [options]="slideOpts" (ionSlideWillChange)="changeGuideStepCurrentSlide()">
         <ion-slide *ngFor="let step of guideSteps; let stepNumber = index">
           <guide-step-content-component [step]="step" [guide]="guide" [guideStepsLength]="guideSteps.length"
             [stepNumber]="stepNumber" [haveAssets]="step.haveAssets"
@@ -93,7 +75,7 @@
 
                   <ion-item *ngIf="asset.isExistFileByIndex() && asset.isPdf()" lines="none"
                     (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name, 'pdf')"
-                    [ngClass]="{'no__preview':asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null}">
+                    [ngClass]="{'no__preview':asset.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) === null}">
                     <ion-label>
                       <ion-thumbnail>
                         <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"
@@ -106,7 +88,7 @@
 
                   <ion-item *ngIf="asset.isExistFileByIndex() && !asset.isPdf() && !asset.isVideoFile()" lines="none"
                     (click)="openFile(asset.getFileName(), asset.getFileUrl(), asset.TABLE_NAME, asset.name)"
-                    [ngClass]="{'no__preview': asset.getFileImagePath() == null}">
+                    [ngClass]="{'no__preview': asset.getFileImagePath() === null}">
                     <ion-label>
                       <ion-thumbnail>
                         <model-assetcomponent [model]="asset" mini="true" [isthumbnail]="true" [floatingIcon]="false"

@@ -32,7 +32,7 @@
     <div *ngIf="model.isAudioFile()" class="inner_wrapper" style="min-height: 130px;"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
         <img appImgload [url]="model.getFileImagePath()" *ngIf="model.getFileImagePath() !==null">
-        <ion-icon name="musical-note" *ngIf="model.getFileImagePath() == null && !isthumbnail" style="font-size:100px">
+        <ion-icon name="musical-note" *ngIf="model.getFileImagePath() === null && !isthumbnail" style="font-size:100px">
         </ion-icon>
         <ion-icon name="musical-note" *ngIf="isthumbnail" class="thumbnail__icon"></ion-icon>
     </div>
@@ -44,8 +44,8 @@
         <fa-icon [icon]="faVideo" *ngIf="isthumbnail" class="thumbnail__icon"></fa-icon>
 
         <img appImgload [url]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
-            *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) !=null" />
-        <img *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) == null"
+            *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) !==null" />
+        <img *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) === null"
             (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
     </div>
 
@@ -65,11 +65,10 @@
         </ion-button>
     </ion-buttons>
 
-    <div *ngIf="model.isImageFile()" class="inner_wrapper"
-        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title, 'image')">
-        <img class="custom harjot" appImgload [url]="model.getFileUrl()" />
-        <ion-icon name="image" *ngIf="model.getFileImagePath() == null && !isthumbnail"> </ion-icon>
-        <!-- <ion-icon name="image" *ngIf="isthumbnail" class="thumbnail__icon"></ion-icon> -->
+    <div *ngIf="model.isImageFile()" class="inner_wrapper" (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title, 'image')">
+        <img *ngIf="!platform.is('capacitor')" appImgload [url]="model.getFileUrl()" />
+        <img *ngIf="platform.is('capacitor')" [src]="model.getFileImagePath(0,'trustStyle')" />
+        <ion-icon name="image" *ngIf="model.getFileImagePath() === null && !isthumbnail"> </ion-icon>
     </div>
 
     <!-- pdf -->
