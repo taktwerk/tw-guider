@@ -18,7 +18,6 @@ import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
 
 import { Camera, CameraResultType } from '@capacitor/camera';
 
-// import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor/ngx';
 import { CreateThumbnailOptions, VideoEditor } from '@awesome-cordova-plugins/video-editor/ngx';
 import { Filesystem, Directory, } from '@capacitor/filesystem';
 import { LoggerService } from './logger-service';
