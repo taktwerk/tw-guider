@@ -17,13 +17,11 @@ import { GuideViewHistoryService } from '../providers/api/guide-view-history-ser
 import { GuiderService } from './api/guider-service';
 import { Injectable } from '@angular/core';
 import { MigrationService } from '../providers/api/migration-service';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { ProtocolCommentService } from './api/protocol-comment-service';
 import { ProtocolDefaultService } from './api/protocol-default-service';
 import { ProtocolService } from './api/protocol-service';
 import { ProtocolTemplateService } from './api/protocol-template-service';
 import { SyncIndexService } from './api/sync-index-service';
-import { UserService } from '../services/user-service';
 import { WorkflowService } from './api/workflow-service';
 import { WorkflowStepService } from './api/workflow-step-service';
 import { WorkflowTransitionService } from './api/workflow-transition-service';
@@ -33,7 +31,6 @@ export class MigrationProvider {
 
   constructor(
     private migration: MigrationService,
-    private userService: UserService,
     private guideService: GuiderService,
     private guideCategoryService: GuideCategoryService,
     private guideCategoryBindingService: GuideCategoryBindingService,
