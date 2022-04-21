@@ -9,7 +9,7 @@ import { AppSetting } from '../../services/app-setting';
 import { AuthService } from '../../services/auth-service';
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '../../services/http-client';
-import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 import { LoggerService } from '../../services/logger-service';
 import { MiscService } from '../../services/misc-service';
 import { Network } from '@ionic-native/network/ngx';

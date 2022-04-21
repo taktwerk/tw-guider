@@ -40,7 +40,7 @@ import { GuiderService } from 'src/providers/api/guider-service';
 import { HttpClient } from 'src/services/http-client';
 import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 import { ImageEditorPageModule } from 'src/components/imageeditor/imageeditor.module';
-import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { Insomnia } from '@awesome-cordova-plugins/insomnia';
 import { IonicStorageModule, } from '@ionic/storage-angular';
 import { LoggerService } from 'src/services/logger-service';
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
