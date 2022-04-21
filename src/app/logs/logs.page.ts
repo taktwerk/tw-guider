@@ -1,22 +1,22 @@
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 
-import { LoggerService } from './../../services/logger-service';
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { IonSegment } from '@ionic/angular';
-import { NGXLogger } from 'ngx-logger';
-import { delay } from 'rxjs/operators';
-import { File } from '@ionic-native/file/ngx';
 import { ActionSheetController } from '@ionic/angular';
+import { DatePipe } from '@angular/common';
+import { File } from '@ionic-native/file/ngx';
+import { IonSegment } from '@ionic/angular';
+import { LoggerService } from './../../services/logger-service';
+import { NGXLogger } from 'ngx-logger';
 import { Subscription } from 'rxjs';
-
-
+import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-logs',
   templateUrl: './logs.page.html',
   styleUrls: ['./logs.page.scss'],
+  providers: [DatePipe]
 })
 export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
-  constructor(private loggerService: LoggerService, public file: File, public actionSheetController: ActionSheetController) { }
+  constructor(private loggerService: LoggerService, public file: File, public actionSheetController: ActionSheetController, public datepipe: DatePipe) { }
 
   currentSegment = 'All'
 

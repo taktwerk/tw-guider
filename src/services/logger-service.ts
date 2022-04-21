@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { BehaviorSubject } from 'rxjs';
-import { Injectable } from '@angular/core';
+
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { INGXLoggerMonitor, NGXLogger } from 'ngx-logger';
+
+import { BehaviorSubject } from 'rxjs';
 import { File } from '@awesome-cordova-plugins/file/ngx';
-
-
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { Injectable } from '@angular/core';
 
 export declare enum LoggerLevel {
     TRACE = 0,
@@ -63,7 +63,7 @@ export class LoggerService {
      */
     public async writeToFile(log) {
         const contents = await Filesystem.appendFile({
-            path: '/TaktwerkLogs/log.txt',
+            path: 'TaktwerkLogs/log.txt',
             data: log,
             directory: Directory.External,
             encoding: Encoding.UTF8,
@@ -79,7 +79,7 @@ export class LoggerService {
     public logDir() {
         return new Promise(async (resolve) => {
             const dir = await Filesystem.readdir({
-                path: '/TaktwerkLogs/log.txt',
+                path: 'TaktwerkLogs/log.txt',
                 directory: Directory.External,
             }).then(e => {
                 resolve(true);
@@ -101,7 +101,7 @@ export class LoggerService {
     public async clearLogFile() {
         try {
             const contents = await Filesystem.writeFile({
-                path: '/TaktwerkLogs/log.txt',
+                path: 'TaktwerkLogs/log.txt',
                 data: '',
                 directory: Directory.External,
                 encoding: Encoding.UTF8,
@@ -115,7 +115,7 @@ export class LoggerService {
 
     public async deleteLogFile() {
         await Filesystem.deleteFile({
-            path: '/TaktwerkLogs/log.txt',
+            path: 'TaktwerkLogs/log.txt',
             directory: Directory.External
         });
     }
