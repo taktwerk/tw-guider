@@ -647,7 +647,6 @@ export class ApiSync implements OnDestroy {
       await this.userService.userDb.save();
 
       this.syncProgressStatus.next(this.userService.userDb.userSetting.syncStatus);
-      // console.log("check sync progress status", JSON.stringify(this.syncProgressStatus, this.replacerFunc()));
       this.isPrepareSynData.next(true);
       let isCanPullData = false;
       let countOfSyncedData = 0;

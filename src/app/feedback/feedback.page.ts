@@ -1,3 +1,6 @@
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @angular-eslint/component-selector */
 import { ChangeDetectorRef, Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
 import { NavController, Platform } from '@ionic/angular';
 import { FeedbackService } from '../../providers/api/feedback-service';
@@ -13,16 +16,17 @@ import { MiscService } from '../../services/misc-service';
 import { SyncIndexService } from '../../providers/api/sync-index-service';
 import { isPlatformBrowser } from '@angular/common';
 import { AppSetting } from 'src/services/app-setting';
-
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'feedback-page',
   templateUrl: 'feedback.page.html',
   styleUrls: ['feedback.page.scss'],
+  providers: [DatePipe]
 })
 export class FeedbackPage implements OnInit, OnDestroy {
   public backDefaultHref: string;
   public guideId: string;
-  public reference_title: string = '';
+  public reference_title = '';
   public reference_id: number = null;
   public reference_model: string = null;
   public reference_model_alias: string = null;
@@ -53,6 +57,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
     private miscService: MiscService,
     private platform: Platform,
     private syncIndexService: SyncIndexService,
+    public datepipe: DatePipe,
     @Inject(PLATFORM_ID) platformId: string
 
   ) {
@@ -61,7 +66,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
     this.testBrowser = isPlatformBrowser(platformId);
   }
   ionViewDidLeave() {
-    this.reference_id = null
+    this.reference_id = null;
     // console.log(this.reference_id, "this.reference_id")
   }
 
@@ -137,9 +142,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 
   itemHeightFn() {
@@ -176,7 +179,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
         guideId: this.guideId
       },
     };
-    console.log("check feedbackNavigationExtras", feedbackNavigationExtras);
+    console.log('check feedbackNavigationExtras', feedbackNavigationExtras);
     this.router.navigate(['/feedback/save/' + feedbackId], feedbackNavigationExtras);
   }
 
@@ -210,7 +213,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
           break;
         default:
       }
-    })
+    });
   }
 
   ngOnDestroy(): void {
