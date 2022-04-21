@@ -10,7 +10,7 @@ import { AppSetting } from './app-setting';
 import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { AuthDb } from '../models/db/auth-db';
 import { CryptoProvider } from '../providers/crypto-provider';
-import { Device } from '@ionic-native/device/ngx';
+import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { DownloadService } from './download-service';
 import { MiscService } from '../services/misc-service';
 import { NavController } from '@ionic/angular';
