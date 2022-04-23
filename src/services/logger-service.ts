@@ -79,7 +79,7 @@ export class LoggerService {
    */
   public async writeToFile(log) {
 
-    if (typeof log == 'string') {
+    if (typeof log != 'string') {
       log = this.stringify(log);
     }
     const contents = await Filesystem.appendFile({
