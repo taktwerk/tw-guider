@@ -8,115 +8,135 @@ import { File } from '@awesome-cordova-plugins/file/ngx';
 import { Injectable } from '@angular/core';
 
 export declare enum LoggerLevel {
-    TRACE = 0,
-    DEBUG = 1,
-    INFO = 2,
-    LOG = 3,
-    WARN = 4,
-    ERROR = 5,
-    FATAL = 6,
-    OFF = 7
+  TRACE = 0,
+  DEBUG = 1,
+  INFO = 2,
+  LOG = 3,
+  WARN = 4,
+  ERROR = 5,
+  FATAL = 6,
+  OFF = 7
 }
 
 export interface Log {
-    level: LoggerLevel;
-    timestamp: string;
-    fileName: string;
-    lineNumber: string;
-    message: string;
-    additional: any[];
+  level: LoggerLevel;
+  timestamp: string;
+  fileName: string;
+  lineNumber: string;
+  message: string;
+  additional: any[];
 }
 
 @Injectable({ providedIn: 'root' })
 export class CustomLoggerMonitor implements INGXLoggerMonitor {
-    constructor(private loggerService: LoggerService) { }
+  constructor(private loggerService: LoggerService) { }
 
-    onLog(log: NGXLogger) { this.loggerService.setLogs(log); }
+  onLog(log: NGXLogger) { this.loggerService.setLogs(log); }
 
-    // onLog(log: NGXLogInterface) { this.loggerService.setLogs(log) }
+  // onLog(log: NGXLogInterface) { this.loggerService.setLogs(log) }
 }
 
 @Injectable({ providedIn: 'root' })
 export class LoggerService {
-    public Logs: NGXLogger[] = [];
-    public LogsSub = new BehaviorSubject<NGXLogger[]>(null);
-    // public Logs: NGXLogInterface[] = [];
-    // public LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
+  public Logs: NGXLogger[] = [];
+  public LogsSub = new BehaviorSubject<NGXLogger[]>(null);
+  // public Logs: NGXLogInterface[] = [];
+  // public LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
 
-    constructor(private logger: NGXLogger, public file: File) {
-        this.logger.registerMonitor(new CustomLoggerMonitor(this));
-    }
+  constructor(private logger: NGXLogger, public file: File) {
+    this.logger.registerMonitor(new CustomLoggerMonitor(this));
+  }
 
-    public getLogger(): NGXLogger {
-        return this.logger;
-    }
+  public getLogger(): NGXLogger {
+    return this.logger;
+  }
 
-    // public setLogs(log: NGXLogInterface) {
-    public setLogs(log: NGXLogger) {
-        this.Logs.push(log);
-        this.LogsSub.next(this.Logs);
-        this.writeToFile(log);
-    }
+  // public setLogs(log: NGXLogInterface) {
+  public setLogs(log: NGXLogger) {
+    this.Logs.push(log);
+    this.LogsSub.next(this.Logs);
+    this.writeToFile(log);
+  }
 
-    /**
-     * appends log message to file
-     */
-    public async writeToFile(log) {
-        const contents = await Filesystem.appendFile({
-            path: 'TaktwerkLogs/log.txt',
-            data: log,
-            directory: Directory.External,
-            encoding: Encoding.UTF8,
-        }).catch(e => {
-            console.error('Unable to write log file', e);
-        });
-    }
-
-    public createLogFile() {
-        this.logDir().then(async e => { });
-    }
-
-    public logDir() {
-        return new Promise(async (resolve) => {
-            const dir = await Filesystem.readdir({
-                path: 'TaktwerkLogs/log.txt',
-                directory: Directory.External,
-            }).then(e => {
-                resolve(true);
-            }).catch(async e => {
-                // create dir
-                const contents = await Filesystem.writeFile({
-                    path: '/TaktwerkLogs/log.txt',
-                    data: '',
-                    directory: Directory.External,
-                    encoding: Encoding.UTF8,
-                    recursive: true
-                }).then(() => {
-                    resolve(true);
-                });
-            });
-        });
-    }
-
-    public async clearLogFile() {
-        try {
-            const contents = await Filesystem.writeFile({
-                path: 'TaktwerkLogs/log.txt',
-                data: '',
-                directory: Directory.External,
-                encoding: Encoding.UTF8,
-                recursive: true
-            });
-        } catch (e) {
-            console.error('Unable to clear log file', e);
+  stringify(circObj: any) {
+    const replacerFunc = () => {
+      const visited = new WeakSet();
+      return (key: any, value: any) => {
+        if (typeof value === 'object' && value !== null) {
+          if (visited.has(value)) {
+            return;
+          }
+          visited.add(value);
         }
-        this.LogsSub.next(null);
-    }
+        return value;
+      };
+    };
+    return JSON.stringify(circObj, replacerFunc());
+  }
 
-    public async deleteLogFile() {
-        await Filesystem.deleteFile({
-            path: 'TaktwerkLogs/log.txt',
-            directory: Directory.External
-        });
+  /**
+   * appends log message to file
+   */
+  public async writeToFile(log) {
+
+    if (typeof log == 'string') {
+      log = this.stringify(log);
     }
+    const contents = await Filesystem.appendFile({
+      path: 'TaktwerkLogs/log.txt',
+      data: log,
+      directory: Directory.External,
+      encoding: Encoding.UTF8,
+    }).catch(e => {
+      console.error('Unable to write log file', e);
+    });
+  }
+
+  public createLogFile() {
+    this.logDir().then(async e => { });
+  }
+
+  public logDir() {
+    return new Promise(async (resolve) => {
+      const dir = await Filesystem.readdir({
+        path: 'TaktwerkLogs/log.txt',
+        directory: Directory.External,
+      }).then(e => {
+        resolve(true);
+      }).catch(async e => {
+        // create dir
+        const contents = await Filesystem.writeFile({
+          path: '/TaktwerkLogs/log.txt',
+          data: '',
+          directory: Directory.External,
+          encoding: Encoding.UTF8,
+          recursive: true
+        }).then(() => {
+          resolve(true);
+        });
+      });
+    });
+  }
+
+  public async clearLogFile() {
+    try {
+      const contents = await Filesystem.writeFile({
+        path: 'TaktwerkLogs/log.txt',
+        data: '',
+        directory: Directory.External,
+        encoding: Encoding.UTF8,
+        recursive: true
+      });
+    } catch (e) {
+      console.error('Unable to clear log file', e);
+    }
+    this.LogsSub.next(null);
+  }
+
+  public async deleteLogFile() {
+    await Filesystem.deleteFile({
+      path: 'TaktwerkLogs/log.txt',
+      directory: Directory.External
+    });
+  }
 }
