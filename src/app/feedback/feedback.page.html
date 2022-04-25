@@ -24,7 +24,7 @@
       <!-- <div *ngIf="testBrowser">
         <img [src]="feedback.url" alt="">
       </div> -->
-      <div *ngIf="feedback.attached_file_path && appSetting.isValidHttpUrl(feedback.attached_file_path) === false">
+      <div *ngIf="feedback.attached_file_path && appSetting?.isValidHttpUrl(feedback.attached_file_path) === false">
         <img appImgload [localurl]="feedback.attached_file_path" alt="" style="height: 100%; width: 100%;"
           *ngIf="appSetting.isImage(feedback.attached_file_path)">
         <video appImgload [localurl]="feedback.attached_file_path" style="height: 100%; width: 100%;"
@@ -36,7 +36,7 @@
         <video appImgload [localurl]="feedback.attached_file_path" style="width: 100%;"></video>
       </div> -->
 
-      <div *ngIf="feedback.attached_file && appSetting.isValidHttpUrl(feedback.attached_file_path)">
+      <div *ngIf="feedback.attached_file && appSetting?.isValidHttpUrl(feedback.attached_file_path)">
         <model-assetcomponent [model]="feedback" [isthumbnail]="true" style="height: 100%; width: 100%;">
         </model-assetcomponent>
       </div>
