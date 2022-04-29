@@ -36,7 +36,6 @@ import { GuideStepService } from 'src/providers/api/guide-step-service';
 import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
 import { GuiderService } from 'src/providers/api/guider-service';
 import { HttpClient } from 'src/services/http-client';
-import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 import { ImageEditorPageModule } from 'src/components/imageeditor/imageeditor.module';
 import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 import { IonicStorageModule, } from '@ionic/storage-angular';
@@ -142,7 +141,6 @@ export function initializeApp(logService: LoggerService) {
     VideoEditor,
     MediaCapture,
     FilePath,
-    IOSFilePicker,
     FileChooser,
     WebView,
     File,

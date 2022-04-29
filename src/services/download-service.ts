@@ -11,7 +11,6 @@ import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
-import { IOSFilePicker } from '@ionic-native/file-picker/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 // import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
@@ -63,7 +62,6 @@ export class DownloadService {
     public webview: WebView,
     private domSanitizer: DomSanitizer,
     private fileChooser: FileChooser,
-    private filePicker: IOSFilePicker,
     private filePath: FilePath,
     private mediaCapture: MediaCapture,
     private videoEditor: VideoEditor,
@@ -627,15 +625,16 @@ export class DownloadService {
 
     let uri = '';
 
-    if (this.platform.is('ios')) {
-      if (!this.filePicker) {
-        this.loggerService.getLogger().error('IOSFilePicker plugin is not defined', new Error('IOSFilePicker plugin is not defined').stack);
-        throw new Error('IOSFilePicker plugin is not defined');
-      }
-      uri = await this.filePicker.pickFile();
-    }
+    // if (this.platform.is('ios')) {
+    //   if (!this.filePicker) {
+    //     this.loggerService.getLogger().error('IOSFilePicker plugin is not defined', new Error('IOSFilePicker plugin is not defined').stack);
+    //     throw new Error('IOSFilePicker plugin is not defined');
+    //   }
+    //   uri = await this.filePicker.pickFile();
+    // }
 
-    else if (this.testBrowser) {
+    // else
+    if (this.testBrowser) {
       recordedFile.uri = await this.chooseFileFromLocalPC();
       recordedFile.thumbnailUri = recordedFile.uri;
       return recordedFile;
