@@ -10,7 +10,7 @@ import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 // import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
-import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 // import { MediaCapture } from '@ionic-native/media-capture/ngx';
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
@@ -61,7 +61,7 @@ export class DownloadService {
     public file: File,
     public webview: WebView,
     private domSanitizer: DomSanitizer,
-    private fileChooser: FileChooser,
+    private fileChooser: Chooser,
     private filePath: FilePath,
     private mediaCapture: MediaCapture,
     private videoEditor: VideoEditor,
@@ -645,7 +645,7 @@ export class DownloadService {
 
         throw new Error('FileChooser plugin is not defined');
       }
-      uri = await this.fileChooser.open();
+      uri = await (await this.fileChooser.getFile()).uri;
     }
 
     if (uri) {

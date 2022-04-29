@@ -25,7 +25,8 @@ import { DownloadService } from 'src/services/download-service';
 import { DrawImageService } from 'src/services/draw-image-service';
 import { FeedbackService } from 'src/providers/api/feedback-service';
 import { File } from '@awesome-cordova-plugins/file/ngx';
-import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
+// import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { GuideAssetPivotService } from 'src/providers/api/guide-asset-pivot-service';
 import { GuideAssetService } from 'src/providers/api/guide-asset-service';
@@ -141,7 +142,7 @@ export function initializeApp(logService: LoggerService) {
     VideoEditor,
     MediaCapture,
     FilePath,
-    FileChooser,
+    Chooser,
     WebView,
     File,
     DownloadService,

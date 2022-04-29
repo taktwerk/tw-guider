@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { EditguidePageRoutingModule } from './editguide-routing.module';
-
 import { EditguidePage } from './editguide.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { SyncSpinnerComponentModule } from '../../components/sync-spinner-component/sync-spinner-component.module';
@@ -33,7 +32,7 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
     HtmlDescriptionComponentModule,
     AssetviewComponentModule,
     ListviewComponentModule,
-    // FileChooser,
+    // Chooser,
     // IOSFilePicker,
     // FilePath
   ],

@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { LogsPageRoutingModule } from './logs-routing.module';
-
+import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
 import { LogsPage } from './logs.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
@@ -21,7 +21,7 @@ import { File } from '@ionic-native/file/ngx';
     ionMenuWithSyncIndicatorComponentModule,
     TranslateModule,
     MainPipe,
-    // FileChooser,
+    // Chooser,
     // IOSFilePicker,
     // FilePath
   ],
