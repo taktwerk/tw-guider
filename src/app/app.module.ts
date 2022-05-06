@@ -70,6 +70,7 @@ import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { WorkflowService } from 'src/providers/api/workflow-service';
 import { WorkflowStepService } from 'src/providers/api/workflow-step-service';
 import { WorkflowTransitionService } from 'src/providers/api/workflow-transition-service';
+import { DocumentViewer } from '@awesome-cordova-plugins/document-viewer/ngx';
 
 export function languageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -106,6 +107,7 @@ export function initializeApp(logService: LoggerService) {
     ImageEditorPageModule
   ],
   providers: [
+    DocumentViewer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     MigrationService,
     AuthDb,

@@ -18,7 +18,7 @@ dependencies {
     implementation project(':capacitor-network')
     implementation project(':capacitor-splash-screen')
     implementation project(':capacitor-status-bar')
-
+    implementation "androidx.appcompat:appcompat:1.0.0"
 }
 apply from: "../../node_modules/com-sarriaroman-photoviewer/src/android/photoviewer.gradle"
 apply from: "../../node_modules/cordova-plugin-video-editor/src/android/build.gradle"
