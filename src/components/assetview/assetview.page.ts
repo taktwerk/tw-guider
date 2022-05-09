@@ -235,11 +235,12 @@ export class AssetviewComponent implements OnInit {
               show: true
             };
           } else if (fileType === 'video') {
-            this.viewer.videoframe = {
-              url,
-              title,
-              show: true
-            };
+            // this.viewer.videoframe = {
+            //   url,
+            //   title,
+            //   show: true
+            // };
+            this.videoService.playVideo(url, title);
           } else if (fileType === 'pdf') {
             console.log(url);
             this.viewer.pdfframe = {

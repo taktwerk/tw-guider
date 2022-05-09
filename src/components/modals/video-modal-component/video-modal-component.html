@@ -1,4 +1,4 @@
-<ion-header *ngIf="this.canPlayVideoViaHtml5VideoTag()">
+<ion-header>
     <ion-toolbar>
         <ion-buttons slot="end">
             <ion-button (click)="dismiss()">
@@ -15,7 +15,7 @@
         </ion-row>
     </ion-grid>
 </ion-content>
-<ion-footer *ngIf="this.canPlayVideoViaHtml5VideoTag()" class="ion-padding ion-text-center"
+<!-- <ion-footer class="ion-padding ion-text-center"
     [ngStyle]="{color: 'white', backgroundColor: 'black'}">
     {{ fileTitle }}
-</ion-footer>
+</ion-footer> -->
