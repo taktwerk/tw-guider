@@ -83,7 +83,9 @@ export function initializeApp(logService: LoggerService) {
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
+  imports: [BrowserModule, IonicModule.forRoot({
+    mode:'md'
+  }), AppRoutingModule,
     IonicStorageModule.forRoot(),
     HttpClientModule,
     LoggerModule.forRoot({
