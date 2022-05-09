@@ -293,6 +293,7 @@ export class FeedbackAddEditPage implements OnInit {
       if (this.feedbackId) {
         const result = await this.feedbackService.dbModelApi.findFirst([this.model.COL_ID, this.feedbackId]);
         this.model = result[0];
+        console.log(this.model);
       }
       this.defaultTitle = await this.getDefaultTitle();
     });
