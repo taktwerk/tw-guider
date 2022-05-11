@@ -16,6 +16,7 @@ import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
 import { ApiSync } from '../../providers/api-sync';
 import { isPlatformBrowser } from '@angular/common';
+import { AppSetting } from 'src/services/app-setting';
 
 @Component({
   selector: 'feedback-add-edit-page',
@@ -40,10 +41,10 @@ export class FeedbackAddEditPage implements OnInit {
 
   public guideId: string;
   public imgURL;
-
-  public params;
   testBrowser: boolean;
+  public params;
 
+  shouldUpdate = false;
   @ViewChild(IonBackButtonDelegate) backButton: IonBackButtonDelegate;
 
   constructor(
@@ -51,6 +52,7 @@ export class FeedbackAddEditPage implements OnInit {
     private photoViewer: PhotoViewer,
     public http: HttpClient,
     public authService: AuthService,
+    public appSetting: AppSetting,
     public changeDetectorRef: ChangeDetectorRef,
     public downloadService: DownloadService,
     private feedbackService: FeedbackService,
@@ -195,7 +197,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   detectChanges() {
-      this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.detectChanges();
   }
 
   private async isValidFeedback() {
@@ -245,18 +247,30 @@ export class FeedbackAddEditPage implements OnInit {
   async addFileCapacitor() {
     this.downloadService.chooseFile(true).then((recordedFile) => {
       this.model.setFile(recordedFile);
+      this.shouldUpdate = true;
     }).catch((e) => console.log(e));
   }
 
   async addVideoUsingCamera() {
     this.downloadService.recordVideo(true)
-      .then((recordedFile) => this.model.setFile(recordedFile))
+      .then((recordedFile) => {
+        this.model.setFile(recordedFile);
+        this.shouldUpdate = true;
+      }
+
+      )
       .catch((e) => console.log('FeedbackModal', 'addVideoUsingCamera', e));
   }
 
   addPhotoUsingCamera() {
     this.downloadService.makePhoto(1000, 1000)
-      .then((recordedFile) => this.model.setFile(recordedFile))
+      .then((recordedFile) => {
+        this.model.setFile(recordedFile);
+        this.model.local_thumb_attached_file = null;
+        this.shouldUpdate = true;
+      }
+
+      )
       .catch((e) => console.log('FeedbackModal', 'addPhotoUsingCamera', e));
   }
 

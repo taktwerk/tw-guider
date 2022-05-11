@@ -142,7 +142,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-      this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.detectChanges();
   }
 
   itemHeightFn() {
@@ -184,6 +184,8 @@ export class FeedbackPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log('feedbackList', this.feedbackList);
+
     this.activatedRoute.queryParams.subscribe((params) => {
       const feedbackData = params;
       this.reference_id = +feedbackData.referenceId;
