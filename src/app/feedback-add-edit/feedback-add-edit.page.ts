@@ -245,6 +245,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addFileCapacitor() {
+    console.log('addFileCapacitor')
     this.downloadService.chooseFile(true).then((recordedFile) => {
       this.model.setFile(recordedFile);
       this.shouldUpdate = true;
@@ -252,6 +253,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addVideoUsingCamera() {
+    console.log('addVideoUsingCamera')
     this.downloadService.recordVideo(true)
       .then((recordedFile) => {
         this.model.setFile(recordedFile);
@@ -263,8 +265,10 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   addPhotoUsingCamera() {
+    console.log('addPhotoUsingCamera')
     this.downloadService.makePhoto(1000, 1000)
       .then((recordedFile) => {
+        console.log('recordedFile', recordedFile)
         this.model.setFile(recordedFile);
         this.model.local_thumb_attached_file = null;
         this.shouldUpdate = true;
