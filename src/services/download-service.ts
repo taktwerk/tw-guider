@@ -839,6 +839,8 @@ export class DownloadService {
 
     if (this.platform.is('ios')) {
       recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath);
+      console.log(' recordedFile.uri ios', recordedFile.uri);
+
       recordedFile.thumbnailUri = recordedFile.uri;
 
     }
