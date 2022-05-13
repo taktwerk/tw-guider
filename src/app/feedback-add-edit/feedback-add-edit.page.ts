@@ -295,6 +295,33 @@ export class FeedbackAddEditPage implements OnInit {
     return 'Feedback';
   }
 
+  get getImage() {
+
+    if (this.model.attached_file_path && this.appSetting.isImage(this.model.attached_file_path)) {
+      if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
+        return this.model.attached_file_path;
+      }
+      if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === true) {
+        return this.model.local_attached_file;
+      }
+    }
+    return false;
+  }
+
+
+  get getVideo() {
+    if (this.model.attached_file_path && this.appSetting.isVideo(this.model.attached_file_path)) {
+      if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
+        return this.model.attached_file_path;
+      }
+      if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === true) {
+        return this.model.local_attached_file;
+      }
+    }
+    return false;
+
+  }
+
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(async (params) => {
       const feedbackData = params;

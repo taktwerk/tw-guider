@@ -174,9 +174,12 @@ export class AppSetting {
     }
 
     isImage(base64Data) {
-        console.log('isImage');
-        
-        let mimeType = base64Data.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0].split('/')[0];
+        if (base64Data == null) return false;
+
+        let mimeType = base64Data?.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
+        if (mimeType == null) return false;
+
+        mimeType = mimeType[0]?.split('/')[0];
         if (mimeType == 'image') {
             return true
         }
@@ -184,8 +187,13 @@ export class AppSetting {
     }
 
     isVideo(base64Data) {
-        console.log('isVideo');
-        let mimeType = base64Data.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0].split('/')[0];
+        if (base64Data == null) return false;
+
+        let mimeType = base64Data.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
+        if (mimeType == null) return false;
+
+        mimeType = mimeType[0]?.split('/')[0];
+
         if (mimeType == 'video') {
             return true
         }

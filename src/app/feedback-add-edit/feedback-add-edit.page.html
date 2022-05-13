@@ -61,66 +61,8 @@
       </ion-item>
     </ion-list>
 
-    <!-- <div *ngIf="testBrowser && model.attached_file_path">
-      <img appImgload [localurl]="model.attached_file_path" alt="">
-    </div>
-
-    <div *ngIf="testBrowser && model.attached_file_path">
-      <video appImgload [localurl]="model.attached_file_path"></video>
-    </div>
-
-    <div *ngIf="model.attached_file && !testBrowser" class="top-file">
-      <model-assetcomponent [model]="model" mini="true"></model-assetcomponent>
-    </div> -->
-
-    <!-- <div *ngIf="testBrowser && model.attached_file_path">
-          <img appImgload [localurl]="model.attached_file_path" alt="">
-        </div>
-
-        <div *ngIf="testBrowser && model.attached_file_path">
-          <video appImgload [localurl]="model.attached_file_path"></video>
-        </div> -->
-
-    <!-- <div>
-      <img appImgload [localurl]="model.attached_file_path" alt="" style="height: 100%; width: 100%;">
-      <video appImgload [localurl]="model.attached_file_path" style="height: 100%; width: 100%;"></video>
-    </div>  -->
-
-    {{model.local_attached_file }} | {{appSetting?.isValidHttpUrl(model.local_attached_file)}}  
-    
-    
-    {{model.attached_file_path }} | {{appSetting?.isValidHttpUrl(model.attached_file_path)}}
+    <!-- 
     <div *ngIf="( model.attached_file_path) && appSetting?.isValidHttpUrl(model.attached_file_path) === false">
-      <img appImgload [localurl]="model.local_attached_file" alt="" style="height: 100%; width: 100%;"
-        *ngIf="appSetting.isImage(model.local_attached_file)">
-      <video controls="controls" *ngIf="appSetting.isVideo(model.attached_file_path)">
-        <source [src]="model.attached_file_path" type="video/mp4">
-        <source [src]="model.attached_file_path" type="video/ogg">
-        Your browser does not support the HTML5 Video element.
-      </video>
-    </div>
-    <div *ngIf="( model.attached_file_path) && appSetting?.isValidHttpUrl(model.attached_file_path) === true">
-      <img appImgload [localurl]="model.local_attached_file" alt="" style="height: 100%; width: 100%;"
-        *ngIf="appSetting.isImage(model.local_attached_file)">
-      <video controls="controls" *ngIf="appSetting.isVideo(model.local_attached_file)">
-        <source [src]="model.local_attached_file" type="video/mp4">
-        <source [src]="model.local_attached_file" type="video/ogg">
-        Your browser does not support the HTML5 Video element.
-      </video>
-    </div>
-
-    <!-- <div *ngIf="( model.local_attached_file)">
-      <img [src]="model.local_attached_file" alt="" style="height: 100%; width: 100%;">
-
-    </div> -->
-
-
-
-
-
-
-    <!-- <div
-      *ngIf="( model.attached_file_path) && appSetting?.isValidHttpUrl(model.attached_file_path) === false">
       <img appImgload [localurl]="model.attached_file_path" alt="" style="height: 100%; width: 100%;"
         *ngIf="appSetting.isImage(model.attached_file_path)">
       <video controls="controls" *ngIf="appSetting.isVideo(model.attached_file_path)">
@@ -128,8 +70,25 @@
         <source [src]="model.attached_file_path" type="video/ogg">
         Your browser does not support the HTML5 Video element.
       </video>
-   <video style="height: 100%; width: 100%;" *ngIf="appSetting.isVideo(model.attached_file_path)"></video>
+    </div>
+    <div *ngIf="( model.attached_file_path) && appSetting?.isValidHttpUrl(model.attached_file_path) === true">
+      <img appImgload [localurl]="model.local_attached_file" alt="" style="height: 100%; width: 100%;">
+      <video controls="controls">
+        <source [src]="model.local_attached_file" type="video/mp4">
+        <source [src]="model.local_attached_file" type="video/ogg">
+        Your browser does not support the HTML5 Video element.
+      </video>
     </div> -->
+
+
+    <img appImgload [localurl]="getImage" alt="" style="height: 100%; width: 100%;" *ngIf="getImage">
+
+    <video controls="controls" *ngIf="getVideo">
+      <source [src]="getVideo" type="video/mp4">
+      <source [src]="getVideo" type="video/ogg">
+      Your browser does not support the HTML5 Video element.
+    </video>
+
 
     <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path)" class="top-file">
       <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
