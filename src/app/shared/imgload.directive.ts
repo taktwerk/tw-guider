@@ -22,12 +22,28 @@ export class ImgloadDirective implements OnInit, OnChanges {
 
   }
 
-  onLoadData() {
+  isImage(base64Data) {
+    if (base64Data == null) return false;
 
-    if (this.platform.is('capacitor')) {
-      this.ele.nativeElement.src = this.url.changingThisBreaksApplicationSecurity;
-      return;
+    let mimeType = base64Data?.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
+    if (mimeType == null) return false;
+
+    mimeType = mimeType[0]?.split('/')[0];
+    if (mimeType == 'image') {
+        return true
     }
+    return false
+}
+
+  onLoadData() {
+    console.log(this.localurl);
+      
+    // if (this.platform.is('capacitor')) {
+    //   console.log(this.localurl);
+      
+    //   this.ele.nativeElement.src = this.localurl;
+    //   return;
+    // }
 
     const blobToBase64 = (blob) => new Promise((resolve, _) => {
         const reader = new FileReader();
@@ -35,6 +51,11 @@ export class ImgloadDirective implements OnInit, OnChanges {
         reader.readAsDataURL(blob);
       });
 
+
+    if(this.isImage(this.localurl)) {
+        this.ele.nativeElement.src = this.localurl;
+        return;
+    }
 
     if (this.localurl != null) {
       fetch(this.localurl).then(r => {

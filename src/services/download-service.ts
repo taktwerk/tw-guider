@@ -826,7 +826,7 @@ export class DownloadService {
     const photoFullPath = await Camera.getPhoto({
       quality: 90,
       allowEditing: true,
-      resultType: CameraResultType.Uri
+      resultType: CameraResultType.Base64
     });
 
     // const cameraOptions = {
@@ -838,7 +838,8 @@ export class DownloadService {
     // const photoFullPath = await this.camera.getPicture(cameraOptions);
     // const recordedFile = new RecordedFile();
 
-    recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath.path);
+    // recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath.path);
+    recordedFile.uri = photoFullPath.base64String;
     recordedFile.thumbnailUri = recordedFile.uri;
 
     console.log(recordedFile);

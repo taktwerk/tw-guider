@@ -15,7 +15,7 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
+<!-- {{feedbackList}}  -->
 <ion-content class="grey-background">
   <ion-item *ngFor="let feedback of feedbackList; trackBy: trackByFn">
 
@@ -24,19 +24,35 @@
       <!-- <div *ngIf="testBrowser">
         <img [src]="feedback.url" alt="">
       </div> -->
-      <div *ngIf="feedback.attached_file_path && appSetting?.isValidHttpUrl(feedback.attached_file_path) === false">
+      <!-- {{ feedback }} | {{feedbackList}} -->
+      <!-- {{feedback }}  | {{appSetting?.isValidHttpUrl(feedback.attached_file_path)}} -->
+      <div *ngIf="feedback.attached_file_path && appSetting?.isValidHttpUrl(feedback.attached_file_path) === true">
         <img appImgload [localurl]="feedback.attached_file_path" alt="" style="height: 100%; width: 100%;"
           *ngIf="appSetting.isImage(feedback.attached_file_path)">
-        <video appImgload [localurl]="feedback.attached_file_path" style="height: 100%; width: 100%;"
-          *ngIf="appSetting.isVideo(feedback.attached_file_path)"></video>
+        <!-- <video appImgload [localurl]="feedback.attached_file_path" style="height: 100%; width: 100%;"
+          *ngIf="appSetting.isVideo(feedback.attached_file_path)"></video> -->
+
+          <video controls="controls" *ngIf="appSetting.isVideo(feedback.attached_file_path)" style="height: 100%; width: 100%;"> 
+            <source [src]="feedback.attached_file_path" type="video/mp4">
+            <source [src]="feedback.attached_file_path" type="video/ogg">
+            Your browser does not support the HTML5 Video element.
+          </video>
       </div>
 
 
+      <div *ngIf="( feedback.attached_file_path) && appSetting?.isValidHttpUrl(feedback.attached_file_path) === false">
+      <img appImgload [localurl]="feedback.local_attached_file" alt="" style="height: 100%; width: 100%;">
+      <video controls="controls" *ngIf="appSetting.isVideo(feedback.attached_file_path)" style="height: 100%; width: 100%;">
+        <source [src]="feedback.local_attached_file" type="video/mp4">
+        <source [src]="feedback.local_attached_file" type="video/ogg">
+        Your browser does not support the HTML5 Video element.
+      </video>
+    </div>
       <!-- <div *ngIf="feedback.attached_file_path && isValidHttpUrl(feedback.attached_file_path) === false">
         <video appImgload [localurl]="feedback.attached_file_path" style="width: 100%;"></video>
       </div> -->
 
-      <div *ngIf="feedback.attached_file && appSetting?.isValidHttpUrl(feedback.attached_file_path)">
+      <div *ngIf=" appSetting?.isValidHttpUrl(feedback.attached_file_path)">
         <model-assetcomponent [model]="feedback" [isthumbnail]="true" style="height: 100%; width: 100%;">
         </model-assetcomponent>
       </div>

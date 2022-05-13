@@ -269,8 +269,9 @@ export class FeedbackAddEditPage implements OnInit {
     this.downloadService.makePhoto(1000, 1000)
       .then((recordedFile) => {
         console.log('recordedFile', recordedFile)
-        this.model.setFile(recordedFile);
-        this.model.local_thumb_attached_file = null;
+        // this.model.setFile(recordedFile);
+        // this.model.local_thumb_attached_file = null;
+        this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
         this.shouldUpdate = true;
       }
 
@@ -297,19 +298,24 @@ export class FeedbackAddEditPage implements OnInit {
 
   get getImage() {
 
+    
     if (this.model.attached_file_path && this.appSetting.isImage(this.model.attached_file_path)) {
       if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
         return this.model.attached_file_path;
       }
-      if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === true) {
-        return this.model.local_attached_file;
-      }
+     
     }
+
+    if (this.model.local_attached_file) {
+      return this.model.local_attached_file;
+    }
+
     return false;
   }
 
 
   get getVideo() {
+
     if (this.model.attached_file_path && this.appSetting.isVideo(this.model.attached_file_path)) {
       if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
         return this.model.attached_file_path;

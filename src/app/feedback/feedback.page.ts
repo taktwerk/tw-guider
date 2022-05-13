@@ -182,9 +182,44 @@ export class FeedbackPage implements OnInit, OnDestroy {
     console.log('check feedbackNavigationExtras', feedbackNavigationExtras);
     this.router.navigate(['/feedback/save/' + feedbackId], feedbackNavigationExtras);
   }
+  // get getImage() {
+
+    
+  //   if (this.model.attached_file_path && this.appSetting.isImage(this.model.attached_file_path)) {
+  //     if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
+  //       return this.model.attached_file_path;
+  //     }
+     
+  //   }
+
+  //   if (this.model.local_attached_file) {
+  //     return this.model.local_attached_file;
+  //   }
+
+  //   return false;
+  // }
+
+
+  // get getVideo() {
+
+  //   if (this.model.attached_file_path && this.appSetting.isVideo(this.model.attached_file_path)) {
+  //     if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
+  //       return this.model.attached_file_path;
+  //     }
+  //     if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === true) {
+  //       return this.model.local_attached_file;
+  //     }
+  //   }
+  //   return false;
+
+  // }
 
   ngOnInit() {
-    console.log('feedbackList', this.feedbackList);
+    setTimeout(() => {
+      console.log('feedbackList', this.feedbackList);
+    }, 1000);
+    
+
 
     this.activatedRoute.queryParams.subscribe((params) => {
       const feedbackData = params;
@@ -218,6 +253,8 @@ export class FeedbackPage implements OnInit, OnDestroy {
     });
   }
 
+
+  
   ngOnDestroy(): void {
     this.eventSubscription.unsubscribe();
   }
