@@ -744,7 +744,7 @@ export class DownloadService {
     }
 
 
-    if (this.testBrowser) {
+    if (!this.platform.is('capacitor')) {
       recordedFile.uri = await this.chooseFileFromLocalPC('video/*');
       return recordedFile;
     }
@@ -791,13 +791,13 @@ export class DownloadService {
 
   public async makePhoto(targetWidth = 1000, targetHeight = 1000): Promise<RecordedFile> {
     const recordedFile = new RecordedFile();
-
+    console.log(Camera, this.testBrowser);
     if (!Camera) {
       this.loggerService.getLogger().error('MediaCapture plugin is not defined', new Error('MediaCapture plugin is not defined').stack);
       throw new Error('MediaCapture plugin is not defined');
     }
 
-    if (this.testBrowser) {
+    if (!this.platform.is('capacitor')) {
       recordedFile.uri = await this.chooseFileFromLocalPC('image/*');
       return recordedFile;
     }
@@ -821,6 +821,7 @@ export class DownloadService {
     // }
 
 
+    console.log('photoFullPath');
 
     const photoFullPath = await Camera.getPhoto({
       quality: 90,
@@ -837,18 +838,8 @@ export class DownloadService {
     // const photoFullPath = await this.camera.getPicture(cameraOptions);
     // const recordedFile = new RecordedFile();
 
-    if (this.platform.is('ios')) {
-      recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath);
-      console.log(' recordedFile.uri ios', recordedFile.uri);
-
-      recordedFile.thumbnailUri = recordedFile.uri;
-
-    }
-
-    if (this.platform.is('android')) {
-      recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath);
-      recordedFile.thumbnailUri = recordedFile.uri;
-    }
+    recordedFile.uri = await this.getResolvedNativeFilePath(photoFullPath.path);
+    recordedFile.thumbnailUri = recordedFile.uri;
 
     console.log(recordedFile);
     return recordedFile;
