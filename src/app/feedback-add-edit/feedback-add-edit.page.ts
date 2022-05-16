@@ -5,7 +5,7 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild, ElementRef, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { AlertController, IonBackButtonDelegate, NavController } from '@ionic/angular';
+import { AlertController, IonBackButtonDelegate, NavController, Platform } from '@ionic/angular';
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
 import { FeedbackModel } from '../../models/db/api/feedback-model';
@@ -63,6 +63,7 @@ export class FeedbackAddEditPage implements OnInit {
     private pictureService: PictureService,
     private apiSync: ApiSync,
     private navCtrl: NavController,
+    public platform: Platform,
     @Inject(PLATFORM_ID) platformId: string
   ) {
     this.authService.checkAccess('feedback');
@@ -271,8 +272,8 @@ export class FeedbackAddEditPage implements OnInit {
       .then((recordedFile) => {
         console.log('recordedFile', recordedFile)
         // this.model.setFile(recordedFile);
-        // this.model.local_thumb_attached_file = null;
-        this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
+        this.model.local_attached_file = recordedFile.uri;
+        // this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
         this.shouldUpdate = true;
         this.isImageChange = true;
       }
@@ -303,17 +304,17 @@ export class FeedbackAddEditPage implements OnInit {
     if (this.model.attached_file_path && this.appSetting.isImage(this.model.attached_file_path)) {
       if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
         return this.model.attached_file_path;
-     
+
       }
-     
-    }
+      // if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === true) {
+      //   return this.model.local_attached_file;
+      // }
 
+    }
     if (this.model.local_attached_file) {
-      // this.isImage = true;
       return this.model.local_attached_file;
-
-    
     }
+
 
     return false;
   }
