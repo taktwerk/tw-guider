@@ -272,8 +272,13 @@ export class FeedbackAddEditPage implements OnInit {
       .then((recordedFile) => {
         console.log('recordedFile', recordedFile)
         // this.model.setFile(recordedFile);
-        this.model.local_attached_file = recordedFile.uri;
-        // this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
+        if (this.platform.is('capacitor')) {
+          this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
+        } else {
+          this.model.local_attached_file = recordedFile.uri;
+        }
+
+
         this.shouldUpdate = true;
         this.isImageChange = true;
       }
