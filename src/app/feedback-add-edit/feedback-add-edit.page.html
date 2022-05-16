@@ -90,7 +90,7 @@
     </video>
 
 
-    <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path)" class="top-file">
+    <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === false" class="top-file" >
       <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
       </model-assetcomponent>
     </div>

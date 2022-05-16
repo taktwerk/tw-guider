@@ -45,6 +45,7 @@ export class FeedbackAddEditPage implements OnInit {
   public params;
 
   shouldUpdate = false;
+  isImageChange = false;
   @ViewChild(IonBackButtonDelegate) backButton: IonBackButtonDelegate;
 
   constructor(
@@ -273,6 +274,7 @@ export class FeedbackAddEditPage implements OnInit {
         // this.model.local_thumb_attached_file = null;
         this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
         this.shouldUpdate = true;
+        this.isImageChange = true;
       }
 
       )
@@ -298,16 +300,19 @@ export class FeedbackAddEditPage implements OnInit {
 
   get getImage() {
 
-    
     if (this.model.attached_file_path && this.appSetting.isImage(this.model.attached_file_path)) {
       if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
         return this.model.attached_file_path;
+     
       }
      
     }
 
     if (this.model.local_attached_file) {
+      // this.isImage = true;
       return this.model.local_attached_file;
+
+    
     }
 
     return false;
