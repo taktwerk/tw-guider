@@ -746,6 +746,7 @@ export class DownloadService {
 
     if (!this.platform.is('capacitor')) {
       recordedFile.uri = await this.chooseFileFromLocalPC('video/*');
+      console.log('video recordedfile uri', recordedFile);
       return recordedFile;
     }
 
@@ -785,7 +786,7 @@ export class DownloadService {
         recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
       }
     }
-
+    console.log('video recordedfile',recordedFile);
     return recordedFile;
   }
 
