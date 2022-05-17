@@ -270,7 +270,7 @@ export class FeedbackAddEditPage implements OnInit {
           // this.isImageChange = false;
         }
         this.shouldUpdate = true;
-        // this.isVideoChange = true;
+        this.isVideoChange = true;
       }
 
       )
