@@ -279,12 +279,12 @@ export class FeedbackAddEditPage implements OnInit {
         
         } else {
           this.model.local_attached_file = recordedFile.uri;
-          this.isImageChange = false;
+        
         }
 
        
         this.shouldUpdate = true;
-        this.isImageChange = true;
+      this.isImageChange = true;
       }
 
       )

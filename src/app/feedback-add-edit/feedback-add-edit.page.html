@@ -92,12 +92,25 @@
     </video>
 
 
-    <div
+    <ng-container>
+   
+      <div *ngIf="!platform.is('capacitor') ">
+        <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === true" class="top-file">
+          <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
+          </model-assetcomponent>
+        </div>
+      </div>
+    </ng-container>
+
+
+
+
+    <!-- <div
       *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && (isImageChange === false && !platform.is('capacitor')) "
       class="top-file">
       <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
       </model-assetcomponent>
-    </div>
+    </div> -->
 
 
 
