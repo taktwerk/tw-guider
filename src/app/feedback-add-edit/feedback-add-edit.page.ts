@@ -46,7 +46,6 @@ export class FeedbackAddEditPage implements OnInit {
 
   shouldUpdate = false;
   isImageChange = false;
-  isVideoChange = false;
   @ViewChild(IonBackButtonDelegate) backButton: IonBackButtonDelegate;
 
   constructor(
@@ -259,18 +258,8 @@ export class FeedbackAddEditPage implements OnInit {
     console.log('addVideoUsingCamera')
     this.downloadService.recordVideo(true)
       .then((recordedFile) => {
-        console.log('recordedFile video', recordedFile)
-        // this.model.setFile(recordedFile);
-        if (this.platform.is('capacitor')) {
-          this.model.local_attached_file = recordedFile.uri;
-          // this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
-          // this.isImageChange = true;
-        } else {
-          this.model.local_attached_file = recordedFile.uri;
-          // this.isImageChange = false;
-        }
+        this.model.setFile(recordedFile);
         this.shouldUpdate = true;
-        this.isVideoChange = true;
       }
 
       )
@@ -281,21 +270,17 @@ export class FeedbackAddEditPage implements OnInit {
     console.log('addPhotoUsingCamera')
     this.downloadService.makePhoto(1000, 1000)
       .then((recordedFile) => {
-        console.log('recordedFile image', recordedFile)
+        console.log('recordedFile', recordedFile)
         // this.model.setFile(recordedFile);
         if (this.platform.is('capacitor')) {
           this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
-          // this.isImageChange = true;
         } else {
           this.model.local_attached_file = recordedFile.uri;
-          // this.isImageChange = false;
         }
-
 
 
         this.shouldUpdate = true;
         this.isImageChange = true;
-
       }
 
       )
@@ -346,14 +331,10 @@ export class FeedbackAddEditPage implements OnInit {
       if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
         return this.model.attached_file_path;
       }
-      // if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === true) {
-      //   return this.model.local_attached_file;
-      // }
+      if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === true) {
+        return this.model.local_attached_file;
+      }
     }
-    if (this.model.local_attached_file) {
-      return this.model.local_attached_file;
-    }
-
     return false;
 
   }

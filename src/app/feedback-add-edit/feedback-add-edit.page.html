@@ -81,15 +81,9 @@
     </div> -->
 
 
-    <img appImgload [localurl]="getImage" alt="" style="height: 100%; width: 100%;"
-      *ngIf="getImage && ((platform.is('capacitor') && isImageChange === true) || !platform.is('capacitor'))">
+    <img appImgload [localurl]="getImage" alt="" style="height: 100%; width: 100%;" *ngIf="getImage ">
 
-    <!-- <video controls="controls"
-      *ngIf="getVideo 
-      style="height: 100%; width: 100%;"> -->
-    <video controls="controls"
-      *ngIf="getVideo  && ((platform.is('capacitor') && isVideoChange === true) || !platform.is('capacitor'))"
-      style="height: 100%; width: 100%;">
+    <video controls="controls" *ngIf="getVideo" style="height: 100%; width: 100%;">
       <source [src]="getVideo" type="video/mp4">
       <source [src]="getVideo" type="video/ogg">
       Your browser does not support the HTML5 Video element.
@@ -97,7 +91,7 @@
 
 
     <div
-      *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === false && isVideoChange === false && platform.is('capacitor')"
+      *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === false  && platform.is('capacitor')"
       class="top-file">
       <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
       </model-assetcomponent>
