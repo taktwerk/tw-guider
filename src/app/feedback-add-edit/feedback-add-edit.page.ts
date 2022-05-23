@@ -46,6 +46,7 @@ export class FeedbackAddEditPage implements OnInit {
 
   shouldUpdate = false;
   isImageChange = false;
+  isVideoChange = false;
   @ViewChild(IonBackButtonDelegate) backButton: IonBackButtonDelegate;
 
   constructor(
