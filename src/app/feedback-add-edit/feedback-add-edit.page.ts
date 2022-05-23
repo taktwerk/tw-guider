@@ -276,16 +276,16 @@ export class FeedbackAddEditPage implements OnInit {
         if (this.platform.is('capacitor')) {
 
           this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
-        
+
 
         } else {
           this.model.local_attached_file = recordedFile.uri;
-        
+
         }
 
 
         this.shouldUpdate = true;
-      this.isImageChange = true;
+
       }
 
       )
