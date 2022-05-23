@@ -21,13 +21,30 @@ export class ImgloadDirective implements OnInit, OnChanges {
     this.onLoadData();
 
   }
+  isImage(base64Data) {
+    if (base64Data == null) return false;
+
+    let mimeType = base64Data?.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
+    if (mimeType == null) return false;
+
+    mimeType = mimeType[0]?.split('/')[0];
+    if (mimeType == 'image') {
+        return true
+    }
+    return false
+}
 
   onLoadData() {
 
     if (this.platform.is('capacitor')) {
-      this.ele.nativeElement.src = this.url.changingThisBreaksApplicationSecurity;
-      return;
+      if(this.isImage(this.localurl)) {
+        this.ele.nativeElement.src = this.localurl;
+        return;
     }
+    }
+
+   
+
 
     const blobToBase64 = (blob) => new Promise((resolve, _) => {
         const reader = new FileReader();
