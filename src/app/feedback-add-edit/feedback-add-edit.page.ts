@@ -285,7 +285,7 @@ export class FeedbackAddEditPage implements OnInit {
 
 
         this.shouldUpdate = true;
-        this.isImageChange = true;
+      this.isImageChange = true;
       }
 
       )
