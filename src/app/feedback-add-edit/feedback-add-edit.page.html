@@ -82,8 +82,8 @@
 
 
     <img appImgload [localurl]="getImage" alt="" style="height: 100%; width: 100%;"
-      *ngIf="getImage ">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-      <!-- *ngIf="getImage && ((platform.is('capacitor') && isImageChange === true) || !platform.is('capacitor'))"> -->
+     *ngIf="getImage ">
+    <!-- *ngIf="getImage && ((platform.is('capacitor') && isImageChange === true) || !platform.is('capacitor'))"> -->
 
     <video controls="controls" *ngIf="getVideo" style="height: 100%; width: 100%;">
       <source [src]="getVideo" type="video/mp4">
@@ -92,15 +92,56 @@
     </video>
 
 
-    <div
-      *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && (isImageChange === false && !platform.is('capacitor')) "
+    <ng-container>
+      <!-- <div *ngIf="platform.is('capacitor') ">
+        <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === false" class="top-file">
+          <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
+          </model-assetcomponent>
+        </div>
+      </div> -->
+      <div *ngIf="!platform.is('capacitor') ">
+        <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === true" class="top-file">
+          <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
+          </model-assetcomponent>
+        </div>
+      </div>
+    </ng-container>
+
+
+
+
+    <!-- <ng-container *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === false">
+      <div *ngIf=" platform.is('capacitor') " class="top-file">
+        <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
+        </model-assetcomponent>
+      </div>
+      <div *ngIf=" !platform.is('capacitor') " class="top-file">
+        <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
+        </model-assetcomponent>
+      </div>
+    </ng-container> -->
+    <!-- <div
+      *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && (isImageChange === false && platform.is('capacitor')) "
       class="top-file">
       <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
       </model-assetcomponent>
-    </div>
+    </div> -->
 
 
-
+    <!-- <ng-container
+  *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && (isImageChange === false && platform.is('capacitor')) ">
+  <div class="top-file">
+    <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
+    </model-assetcomponent>
+  </div>
+</ng-container>
+<ng-container
+  *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && (isImageChange === false && !platform.is('capacitor')) ">
+  <div class="top-file">
+    <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
+    </model-assetcomponent>
+  </div>
+</ng-container> -->
 
 
     <!-- <div class="top-file">

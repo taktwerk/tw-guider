@@ -29,7 +29,6 @@ export class ImgloadDirective implements OnInit, OnChanges {
 
     mimeType = mimeType[0]?.split('/')[0];
     if (mimeType == 'image') {
-
       return true
     }
     return false
@@ -48,13 +47,11 @@ export class ImgloadDirective implements OnInit, OnChanges {
     }
 
 
-
     const blobToBase64 = (blob) => new Promise((resolve, _) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result);
       reader.readAsDataURL(blob);
     });
-
 
 
     if (this.localurl != null) {
