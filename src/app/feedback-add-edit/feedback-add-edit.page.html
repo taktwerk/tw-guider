@@ -82,7 +82,8 @@
 
 
     <img appImgload [localurl]="getImage" alt="" style="height: 100%; width: 100%;"
-      *ngIf="getImage && ((platform.is('capacitor') && isImageChange === true) || !platform.is('capacitor'))">
+      *ngIf="getImage ">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+      <!-- *ngIf="getImage && ((platform.is('capacitor') && isImageChange === true) || !platform.is('capacitor'))"> -->
 
     <video controls="controls" *ngIf="getVideo" style="height: 100%; width: 100%;">
       <source [src]="getVideo" type="video/mp4">
@@ -92,7 +93,7 @@
 
 
     <div
-      *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === false  && platform.is('capacitor')"
+      *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && (isImageChange === false && !platform.is('capacitor')) "
       class="top-file">
       <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
       </model-assetcomponent>
