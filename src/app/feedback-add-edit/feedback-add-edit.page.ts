@@ -261,7 +261,18 @@ export class FeedbackAddEditPage implements OnInit {
     console.log('addVideoUsingCamera')
     this.downloadService.recordVideo(true)
       .then((recordedFile) => {
-        this.model.setFile(recordedFile);
+        console.log('recordedFile video', recordedFile)
+        // this.model.setFile(recordedFile);
+        if (this.platform.is('capacitor')) {
+
+          // this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
+          this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
+
+
+        } else {
+          this.model.local_attached_file = recordedFile.uri;
+
+        }
         this.shouldUpdate = true;
       }
 
@@ -273,7 +284,7 @@ export class FeedbackAddEditPage implements OnInit {
     console.log('addPhotoUsingCamera')
     this.downloadService.makePhoto(1000, 1000)
       .then((recordedFile) => {
-        console.log('recordedFile', recordedFile)
+        console.log('recordedFile image', recordedFile)
         // this.model.setFile(recordedFile);
 
         if (this.platform.is('capacitor')) {
