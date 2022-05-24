@@ -207,7 +207,7 @@ export class FeedbackAddEditPage implements OnInit {
 
   private async isValidFeedback() {
     let errorMessage = '';
-    if (!(this.model.title || this.model.description || this.model.attached_file)) {
+    if (!(this.model.title || this.model.description || this.model.local_attached_file)) {
       errorMessage = await this.translateConfigService.translate('validation.nothing_to_save');
     }
     if (this.model.title && this.model.title.length > 255) {
