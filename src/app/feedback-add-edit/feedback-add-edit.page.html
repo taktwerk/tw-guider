@@ -81,7 +81,8 @@
     </div> -->
 
 
-    <img appImgload [localurl]="getImage" alt="" style="height: 100%; width: 100%;" *ngIf="getImage ">
+    <!-- <img appImgload [localurl]="getImage" alt="" style="height: 100%; width: 100%;" *ngIf="getImage "> -->
+    <img alt="" [src]="getImage" style="height: 100%; width: 100%;" *ngIf="getImage ">
     <!-- *ngIf="getImage && ((platform.is('capacitor') && isImageChange === true) || !platform.is('capacitor'))"> -->
 
     <video controls="controls" *ngIf="getVideo" style="height: 100%; width: 100%;">

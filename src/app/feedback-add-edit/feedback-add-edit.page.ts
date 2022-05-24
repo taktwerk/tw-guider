@@ -2,7 +2,7 @@
 /* eslint-disable @angular-eslint/component-selector */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/member-ordering */
-import { ChangeDetectorRef, Component, OnInit, ViewChild, ElementRef, PLATFORM_ID, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild, ElementRef, PLATFORM_ID, Inject, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { AlertController, IonBackButtonDelegate, NavController, Platform } from '@ionic/angular';
@@ -47,6 +47,7 @@ export class FeedbackAddEditPage implements OnInit {
   shouldUpdate = false;
   isImageChange = false;
   isVideoChange = false;
+  @Input() localurl: any = null;
   @ViewChild(IonBackButtonDelegate) backButton: IonBackButtonDelegate;
 
   constructor(
@@ -65,6 +66,7 @@ export class FeedbackAddEditPage implements OnInit {
     private apiSync: ApiSync,
     private navCtrl: NavController,
     public platform: Platform,
+    private ele: ElementRef,
     @Inject(PLATFORM_ID) platformId: string
   ) {
     this.authService.checkAccess('feedback');
@@ -312,6 +314,10 @@ export class FeedbackAddEditPage implements OnInit {
 
   get getImage() {
 
+    if (this.appSetting.isImage(this.localurl) ){
+      this.ele.nativeElement.src = this.localurl;
+      return;
+    }
     if (this.model.attached_file_path && this.appSetting.isImage(this.model.attached_file_path)) {
       if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
         return this.model.attached_file_path;

@@ -36,16 +36,22 @@ export class ImgloadDirective implements OnInit, OnChanges {
 
   onLoadData() {
 
+    // if (!this.platform.is('capacitor')) {
+    //   this.ele.nativeElement.src = this.url.changingThisBreaksApplicationSecurity;
+    //  return
+
+    // }
     if (this.platform.is('capacitor')) {
       this.ele.nativeElement.src = this.url.changingThisBreaksApplicationSecurity;
-      return;
+     return
+
     }
 
-    if (this.isImage(this.localurl)) {
-      this.ele.nativeElement.src = this.localurl;
-      return;
-    }
 
+    // if (this.isImage(this.localurl)) {
+    //   this.ele.nativeElement.src = this.localurl;
+    //   return;
+    // }
 
     const blobToBase64 = (blob) => new Promise((resolve, _) => {
       const reader = new FileReader();
