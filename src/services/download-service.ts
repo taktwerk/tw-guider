@@ -737,7 +737,7 @@ export class DownloadService {
 
   public async recordVideo(withThumbnail = false): Promise<RecordedFile> {
     const recordedFile = new RecordedFile();
-
+    console.log(this.mediaCapture, this.testBrowser, recordedFile);
     if (!this.mediaCapture) {
       this.loggerService.getLogger().error('MediaCapture plugin is not defined', new Error('MediaCapture plugin is not defined').stack);
       throw new Error('MediaCapture plugin is not defined');
@@ -768,26 +768,46 @@ export class DownloadService {
     //   input.click();
     // }
 
-    const videoFile = await this.mediaCapture.captureVideo({ limit: 1 });
 
-    if (!videoFile || !videoFile[0]) {
-      this.loggerService.getLogger().error('Video was not uploaded.', new Error('Video was not uploaded.').stack);
-      throw new Error('Video was not uploaded.');
-    }
 
-    const fullPath = videoFile[0].fullPath;
-    console.log('const fullPath = videoFile[0].fullPath;', videoFile[0]);
+  // try {
+  //   this.mediaCapture.captureVideo().then(video => {
+  //     console.log(video);
+  //   }).catch(err => {
+  //     console.log(err)
+  //   })
+  //  } catch (e) {
+  //     console.log(e);
+  //   }
 
-    // const recordedFile = new RecordedFile();
-    if (this.platform.is('ios')) {
-      recordedFile.uri = await this.getResolvedNativeFilePath(fullPath);
 
-      if (recordedFile.uri && withThumbnail) {
-        recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
+      const videoFile = await this.mediaCapture.captureVideo({ limit: 1 });
+      console.log('videoFile', videoFile);
+
+      if (!videoFile || !videoFile[0]) {
+        this.loggerService.getLogger().error('Video was not uploaded.', new Error('Video was not uploaded.').stack);
+        throw new Error('Video was not uploaded.');
       }
-    }
-    console.log('video recordedfile',recordedFile);
-    return recordedFile;
+
+      const fullPath = videoFile[0].fullPath;
+      console.log('fullPath', fullPath);
+      console.log('const fullPath = videoFile[0].fullPath;', videoFile[0]);
+
+      // const recordedFile = new RecordedFile();
+      console.log('recordedFile.uri ', recordedFile.uri);
+      console.log('recordedFile.thumbnailUri ', recordedFile.thumbnailUri);
+
+      if (this.platform.is('ios')) {
+        recordedFile.uri = await this.getResolvedNativeFilePath(fullPath);
+
+        if (recordedFile.uri && withThumbnail) {
+          recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
+        }
+      }
+      console.log('video recordedfile', recordedFile);
+      return recordedFile;
+
+   
   }
 
   public async makePhoto(targetWidth = 1000, targetHeight = 1000): Promise<RecordedFile> {
