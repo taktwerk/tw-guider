@@ -99,12 +99,12 @@
           </model-assetcomponent>
         </div>
       </div> -->
-      <div *ngIf="!platform.is('capacitor') ">
+      <ng-container *ngIf="!platform.is('capacitor') ">
         <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === true" class="top-file">
           <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
           </model-assetcomponent>
         </div>
-      </div>
+      </ng-container>
     </ng-container>
 
 

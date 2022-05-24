@@ -35,7 +35,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
   public params;
   public imgURL;
   testBrowser: boolean;
-
+  isImageChange = false;
   possibleDatabaseNamespaces = [
     'app',
     'taktwerk\\yiiboilerplate'
@@ -115,6 +115,9 @@ export class FeedbackPage implements OnInit, OnDestroy {
       const syncedList = await this.syncIndexService.getSyncIndexModel(this.feedbackList, this.feedbackList[0].TABLE_NAME);
       this.feedbackList = syncedList;
     }
+
+    console.log(this.feedbackList);
+
   }
 
   public openFile(basePath: string, modelName: string, title?: string) {
@@ -184,12 +187,12 @@ export class FeedbackPage implements OnInit, OnDestroy {
   }
   // get getImage() {
 
-    
+
   //   if (this.model.attached_file_path && this.appSetting.isImage(this.model.attached_file_path)) {
   //     if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
   //       return this.model.attached_file_path;
   //     }
-     
+
   //   }
 
   //   if (this.model.local_attached_file) {
@@ -218,7 +221,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
     setTimeout(() => {
       console.log('feedbackList', this.feedbackList);
     }, 1000);
-    
+
 
 
     this.activatedRoute.queryParams.subscribe((params) => {
@@ -254,7 +257,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
   }
 
 
-  
+
   ngOnDestroy(): void {
     this.eventSubscription.unsubscribe();
   }
