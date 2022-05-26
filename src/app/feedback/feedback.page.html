@@ -42,7 +42,7 @@
       <div *ngIf="( feedback.attached_file_path) && appSetting?.isValidHttpUrl(feedback.attached_file_path) === true">
         <img [src]="feedback.local_attached_file" alt="" style="height: 100%; width: 100%;"
           *ngIf="appSetting.isImage(feedback.local_attached_file)">
-        <!-- <img appImgload [localurl]="feedback.local_attached_file" alt="" style="height: 100%; width: 100%;">  -->
+
         <video controls="controls" *ngIf="appSetting.isVideo(feedback.local_attached_file)"
           style="height: 100%; width: 100%;">
           <source [src]="feedback.local_attached_file" type="video/mp4">
