@@ -25,18 +25,18 @@
         <img [src]="feedback.url" alt="">
       </div> -->
       <!-- {{ feedback }} | {{appSetting?.isValidHttpUrl(feedback.attached_file_path)}} -->
-      <!-- <div *ngIf="feedback.attached_file_path && appSetting?.isValidHttpUrl(feedback.attached_file_path) === false">
-        <img [src]="feedback.thumb_attached_file_path" alt="" style="height: 100%; width: 100%;"
-          *ngIf="appSetting.isImage(feedback.attached_file_path)"> -->
-      <!-- <video appImgload [localurl]="feedback.attached_file_path" style="height: 100%; width: 100%;"
+      <div *ngIf="feedback.attached_file && appSetting?.isValidHttpUrl(feedback.attached_file_path) === false">
+        <img [src]="feedback.local_attached_file" alt="" style="height: 100%; width: 100%;"
+          *ngIf="appSetting.isImage(feedback.local_attached_file)">
+        <!-- <video appImgload [localurl]="feedback.attached_file_path" style="height: 100%; width: 100%;"
           *ngIf="appSetting.isVideo(feedback.attached_file_path)"></video> -->
-      <!-- <video controls="controls" *ngIf="appSetting.isVideo(feedback.attached_file_path)"
+        <video controls="controls" *ngIf="appSetting.isVideo(feedback.attached_file_path)"
           style="height: 100%; width: 100%;">
           <source [src]="feedback.attached_file_path" type="video/mp4">
           <source [src]="feedback.attached_file_path" type="video/ogg">
           Your browser does not support the HTML5 Video element.
         </video>
-      </div> -->
+      </div>
 
 
       <div *ngIf="( feedback.attached_file_path) && appSetting?.isValidHttpUrl(feedback.attached_file_path) === true">
@@ -51,12 +51,13 @@
         </video>
       </div>
 
-<ng-container *ngIf="!platform.is('capacitor') ">
-  <div *ngIf=" appSetting?.isValidHttpUrl(feedback.attached_file_path) && isImageChange === true" class="top-file">
-    <model-assetcomponent [model]="feedback" [isthumbnail]="true">
-    </model-assetcomponent>
-  </div>
-</ng-container>
+      <ng-container *ngIf="!platform.is('capacitor') ">
+        <div *ngIf=" appSetting?.isValidHttpUrl(feedback.attached_file_path) && isImageChange === true"
+          class="top-file">
+          <model-assetcomponent [model]="feedback" [isthumbnail]="true">
+          </model-assetcomponent>
+        </div>
+      </ng-container>
       <!-- <div *ngIf=" appSetting?.isValidHttpUrl(feedback.attached_file_path)">
         <model-assetcomponent [model]="feedback" [isthumbnail]="true" style="height: 100%; width: 100%;">
         </model-assetcomponent>
