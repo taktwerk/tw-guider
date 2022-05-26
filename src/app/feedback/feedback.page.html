@@ -25,7 +25,7 @@
         <img [src]="feedback.url" alt="">
       </div> -->
       <!-- {{ feedback }} | {{appSetting?.isValidHttpUrl(feedback.attached_file_path)}} -->
-      <div *ngIf="feedback.attached_file && appSetting?.isValidHttpUrl(feedback.attached_file_path) === false">
+      <div *ngIf="(feedback.attached_file === null) || appSetting?.isValidHttpUrl(feedback.attached_file_path) === false">
         <img [src]="feedback.local_attached_file" alt="" style="height: 100%; width: 100%;"
           *ngIf="appSetting.isImage(feedback.local_attached_file)">
         <!-- <video appImgload [localurl]="feedback.attached_file_path" style="height: 100%; width: 100%;"
@@ -39,7 +39,7 @@
       </div>
 
 
-      <div *ngIf="( feedback.attached_file_path) && appSetting?.isValidHttpUrl(feedback.attached_file_path) === true">
+      <div *ngIf="(feedback.attached_file_path !== null) && appSetting?.isValidHttpUrl(feedback.attached_file_path) === true">
         <img [src]="feedback.local_attached_file" alt="" style="height: 100%; width: 100%;"
           *ngIf="appSetting.isImage(feedback.local_attached_file)">
 
