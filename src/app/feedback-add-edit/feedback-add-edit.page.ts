@@ -250,7 +250,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addFileCapacitor() {
-    console.log('addFileCapacitor')
+    console.log('addFileCapacitor');
     this.downloadService.chooseFile(true).then((recordedFile) => {
       this.model.setFile(recordedFile);
       this.shouldUpdate = true;
@@ -258,15 +258,15 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async addVideoUsingCamera() {
-    console.log('addVideoUsingCamera')
+    console.log('addVideoUsingCamera');
     this.downloadService.recordVideo(true)
       .then((recordedFile) => {
-        console.log('recordedFile video', recordedFile)
+        console.log('recordedFile video', recordedFile);
         // this.model.setFile(recordedFile);
         if (this.platform.is('capacitor')) {
 
           // this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
-          this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
+          this.model.local_attached_file = 'data:image/png;base64,' + recordedFile.uri;
 
 
         } else {
@@ -281,15 +281,15 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   addPhotoUsingCamera() {
-    console.log('addPhotoUsingCamera')
+    console.log('addPhotoUsingCamera');
     this.downloadService.makePhoto(1000, 1000)
       .then((recordedFile) => {
-        console.log('recordedFile image', recordedFile)
+        console.log('recordedFile image', recordedFile);
         // this.model.setFile(recordedFile);
 
         if (this.platform.is('capacitor')) {
 
-          this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
+          this.model.local_attached_file = 'data:image/png;base64,' + recordedFile.uri;
 
 
         } else {
