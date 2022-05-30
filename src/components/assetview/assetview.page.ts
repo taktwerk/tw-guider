@@ -248,6 +248,7 @@ export class AssetviewComponent implements OnInit {
               title,
               show: true
             };
+            console.log('pdf check',url, title, );
           }
         });
         return;
@@ -261,12 +262,15 @@ export class AssetviewComponent implements OnInit {
         this.videoService.playVideo(fileUrl, fileTitle);
       }
       else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
+        console.log(filePath);
         this.photoViewer.show(fileUrl, fileTitle);
       }
       else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
+        console.log(filePath);
         this.pictureService.openFile(fileUrl, fileTitle);
       }
       else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
+        console.log(filePath);
         this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
       }
     }

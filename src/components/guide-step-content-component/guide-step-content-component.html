@@ -3,9 +3,15 @@
     <div class="grid" >
       <div class="col col-img" *ngIf="fileName">
 
-        <div class="guide-step-img" *ngIf="(testBrowser && step.attached_file_path) && appSetting?.isValidHttpUrl(step.attached_file_path) === false">
+        <div class="guide-step-img" *ngIf="(step.attached_file_path) && appSetting?.isValidHttpUrl(step.attached_file_path) === false">
           <img appImgload [localurl]="step.attached_file_path"  style="height: 100%; width: 100%;" *ngIf="appSetting.isImage(step.attached_file_path)">
-          <video appImgload [localurl]="step.attached_file_path" style="height: 100%; width: 100%;" *ngIf="appSetting.isVideo(step.attached_file_path)"></video>
+          <!-- <video appImgload [src]="step.attached_file_path" style="height: 100%; width: 100%;" *ngIf="appSetting.isVideo(step.attached_file_path)"></video> -->
+      <video controls="controls" *ngIf="appSetting.isVideo(step.attached_file_path)" style="height: 100%; width: 100%;">
+        <source [src]="step.attached_file_path" type="video/mp4">
+        <source [src]="step.attached_file_path" type="video/ogg">
+        Your browser does not support the HTML5 Video element.
+      </video>
+     
         </div>
 
         <div class="guide-step-img" *ngIf="appSetting?.isValidHttpUrl(step.attached_file_path)">
