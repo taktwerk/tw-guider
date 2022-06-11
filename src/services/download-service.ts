@@ -770,44 +770,45 @@ export class DownloadService {
 
 
 
-  // try {
-  //   this.mediaCapture.captureVideo().then(video => {
-  //     console.log(video);
-  //   }).catch(err => {
-  //     console.log(err)
-  //   })
-  //  } catch (e) {
-  //     console.log(e);
-  //   }
+    // try {
+    //   this.mediaCapture.captureVideo().then(video => {
+    //     console.log(video);
+    //   }).catch(err => {
+    //     console.log(err)
+    //   })
+    //  } catch (e) {
+    //     console.log(e);
+    //   }
 
 
-      const videoFile = await this.mediaCapture.captureVideo({ limit: 1 });
-      console.log('videoFile', videoFile);
+    const videoFile = await this.mediaCapture.captureVideo({ limit: 1 });
+    console.log('videoFile', videoFile);
 
-      if (!videoFile || !videoFile[0]) {
-        this.loggerService.getLogger().error('Video was not uploaded.', new Error('Video was not uploaded.').stack);
-        throw new Error('Video was not uploaded.');
-      }
+    if (!videoFile || !videoFile[0]) {
+      this.loggerService.getLogger().error('Video was not uploaded.', new Error('Video was not uploaded.').stack);
+      throw new Error('Video was not uploaded.');
+    }
 
-      const fullPath = videoFile[0].fullPath;
-      console.log('fullPath', fullPath);
-      console.log('const fullPath = videoFile[0].fullPath;', videoFile[0]);
+    const fullPath = videoFile[0].fullPath;
+    console.log('fullPath', fullPath);
+    //  const recordedFile = new RecordedFile();
+    // console.log('recordedFile.uri ', recordedFile.uri);
+    // console.log('recordedFile.thumbnailUri ', recordedFile.thumbnailUri);
 
-      // const recordedFile = new RecordedFile();
-      console.log('recordedFile.uri ', recordedFile.uri);
-      console.log('recordedFile.thumbnailUri ', recordedFile.thumbnailUri);
 
-      if (this.platform.is('ios')) {
-        recordedFile.uri = await this.getResolvedNativeFilePath(fullPath);
+    // recordedFile.uri = await this.getResolvedNativeFilePath(fullPath);
+    recordedFile.uri = fullPath;
+    console.log('recordedFile.uri bbb', recordedFile.uri);
 
-        if (recordedFile.uri && withThumbnail) {
-          recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
-        }
-      }
-      console.log('video recordedfile', recordedFile);
-      return recordedFile;
+    recordedFile.thumbnailUri = recordedFile.uri;
+    // if (recordedFile.uri && withThumbnail) {
+    //   recordedFile.thumbnailUri = await this.makeVideoThumbnail(recordedFile.uri);
+    // }
 
-   
+    console.log('video recordedfile', recordedFile, recordedFile.uri, recordedFile.thumbnailUri);
+    return recordedFile;
+
+
   }
 
   public async makePhoto(targetWidth = 1000, targetHeight = 1000): Promise<RecordedFile> {

@@ -82,14 +82,20 @@
 
 
     <!-- <img appImgload [localurl]="getImage" alt="" style="height: 100%; width: 100%;" *ngIf="getImage "> -->
-    <img alt="" [src]="getImage" style="height: 100%; width: 100%;" *ngIf="getImage ">
-    <!-- *ngIf="getImage && ((platform.is('capacitor') && isImageChange === true) || !platform.is('capacitor'))"> -->
+    
 
-    <video controls="controls" *ngIf="getVideo" style="height: 100%; width: 100%;">
-      <source [src]="getVideo" type="video/mp4">
-      <source [src]="getVideo" type="video/ogg">
-      Your browser does not support the HTML5 Video element.
-    </video>
+    <div *ngIf="getImage">
+    <img  [src]="getImage" style="height: 100%; width: 100%;" >
+    <!-- *ngIf="getImage && ((platform.is('capacitor') && isImageChange === true) || !platform.is('capacitor'))"> -->
+</div>
+<div *ngIf="getVideo">
+<video controls="controls"  style="height: 100%; width: 100%;">
+  <source [src]="getVideo" type="video/mp4">
+  <source [src]="getVideo" type="video/ogg">
+  Your browser does not support the HTML5 Video element.
+</video>
+</div>
+   
 
 
     <ng-container>
@@ -100,7 +106,7 @@
         </div>
       </div> -->
       <ng-container *ngIf="!platform.is('capacitor') ">
-        <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === true" class="top-file">
+        <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === true  " class="top-file">
           <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
           </model-assetcomponent>
         </div>

@@ -252,7 +252,19 @@ export class FeedbackAddEditPage implements OnInit {
   async addFileCapacitor() {
     console.log('addFileCapacitor');
     this.downloadService.chooseFile(true).then((recordedFile) => {
-      this.model.setFile(recordedFile);
+      console.log('recordedFile file', recordedFile);
+      // this.model.setFile(recordedFile);
+
+      if (this.platform.is('capacitor')) {
+
+        this.model.local_attached_file = 'data:image/png;base64,' + recordedFile.uri;
+
+
+      } else {
+        this.model.local_attached_file = recordedFile.uri;
+
+      }
+      // this.model.setFile(recordedFile);
       this.shouldUpdate = true;
     }).catch((e) => console.log(e));
   }
@@ -266,7 +278,7 @@ export class FeedbackAddEditPage implements OnInit {
         if (this.platform.is('capacitor')) {
 
           // this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
-          this.model.local_attached_file = 'data:image/png;base64,' + recordedFile.uri;
+          this.model.local_attached_file = 'data:video/mp4;base64,' + recordedFile.uri;
 
 
         } else {
@@ -325,8 +337,9 @@ export class FeedbackAddEditPage implements OnInit {
 
   get getImage() {
 
-    if (this.appSetting.isImage(this.localurl) ){
+    if (this.appSetting.isImage(this.localurl)) {
       this.ele.nativeElement.src = this.localurl;
+      console.log(this.ele.nativeElement.src);
       return;
     }
     if (this.model.attached_file_path && this.appSetting.isImage(this.model.attached_file_path)) {
@@ -349,14 +362,22 @@ export class FeedbackAddEditPage implements OnInit {
 
 
   get getVideo() {
-
+  
+    
+    // if (this.appSetting.isVideo(this.localurl)) {
+    //   this.ele.nativeElement.src = this.localurl;
+    //   console.log(this.ele.nativeElement.src);
+      
+    //   return;
+    // }
     if (this.model.attached_file_path && this.appSetting.isVideo(this.model.attached_file_path)) {
       if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
         return this.model.attached_file_path;
       }
-      if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === true) {
-        return this.model.local_attached_file;
-      }
+     
+    }
+    if (this.model.attached_file_path) {
+      return this.model.local_attached_file;
     }
     return false;
 
