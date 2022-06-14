@@ -203,9 +203,9 @@ export class AssetviewComponent implements OnInit {
   }
 
   get imageUrl() {
-      const fileUrl = this.downloadService.getNativeFilePath(this.model.getFileName(), this.model.TABLE_NAME);
-      console.log('check fileUrl', fileUrl);
-      return fileUrl;
+    const fileUrl = this.downloadService.getNativeFilePath(this.model.getFileName(), this.model.TABLE_NAME);
+    console.log('check fileUrl', fileUrl);
+    return fileUrl;
   }
 
   public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string, fileType = 'image') {
@@ -220,7 +220,6 @@ export class AssetviewComponent implements OnInit {
 
       if (this.platform.is('capacitor')) {
         fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-        console.log('check fileUrl', fileUrl);
       } else {
         this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then((url: any) => {
 
@@ -235,20 +234,13 @@ export class AssetviewComponent implements OnInit {
               show: true
             };
           } else if (fileType === 'video') {
-            // this.viewer.videoframe = {
-            //   url,
-            //   title,
-            //   show: true
-            // };
             this.videoService.playVideo(url, title);
           } else if (fileType === 'pdf') {
-            console.log(url);
             this.viewer.pdfframe = {
               url,
               title,
               show: true
             };
-            console.log('pdf check',url, title, );
           }
         });
         return;
@@ -262,12 +254,25 @@ export class AssetviewComponent implements OnInit {
         this.videoService.playVideo(fileUrl, fileTitle);
       }
       else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
-        console.log(filePath);
         this.photoViewer.show(fileUrl, fileTitle);
       }
       else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-        console.log(filePath);
-        this.pictureService.openFile(fileUrl, fileTitle);
+        console.log(this.platform.is('ios'));
+        if (this.platform.is('ios')) {
+          this.pictureService.openFile(fileUrl, fileTitle);
+        } else {
+
+          this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then((res) => {
+            console.log(res);
+
+            this.viewer.pdfframe = {
+              url: res,
+              title,
+              show: true
+            };
+          });
+        }
+
       }
       else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
         console.log(filePath);

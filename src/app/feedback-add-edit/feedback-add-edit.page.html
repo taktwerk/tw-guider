@@ -60,68 +60,38 @@
         </span>
       </ion-item>
     </ion-list>
+    <!-- {{model.attached_file_path | json}} || {{ appSetting?.isValidHttpUrl(model.attached_file_path ) | json}} -->
+    <div *ngIf="(model.attached_file === null) || appSetting?.isValidHttpUrl(model.attached_file_path) === false">
+      <img [src]="model.local_attached_file" alt="" style="height: 100%; width: 100%;"
+        *ngIf="appSetting.isImage(model.local_attached_file)">
 
-    <!-- 
-    <div *ngIf="( model.attached_file_path) && appSetting?.isValidHttpUrl(model.attached_file_path) === false">
-      <img appImgload [localurl]="model.attached_file_path" alt="" style="height: 100%; width: 100%;"
-        *ngIf="appSetting.isImage(model.attached_file_path)">
-      <video controls="controls" *ngIf="appSetting.isVideo(model.attached_file_path)">
-        <source [src]="model.attached_file_path" type="video/mp4">
-        <source [src]="model.attached_file_path" type="video/ogg">
-        Your browser does not support the HTML5 Video element.
-      </video>
-    </div>
-    <div *ngIf="( model.attached_file_path) && appSetting?.isValidHttpUrl(model.attached_file_path) === true">
-      <img appImgload [localurl]="model.local_attached_file" alt="" style="height: 100%; width: 100%;">
-      <video controls="controls"  style="height: 100%; width: 100%;">
+      <video controls="controls" *ngIf="appSetting.isVideo(model.local_attached_file)"
+        style="height: 100%; width: 100%;">
         <source [src]="model.local_attached_file" type="video/mp4">
         <source [src]="model.local_attached_file" type="video/ogg">
         Your browser does not support the HTML5 Video element.
       </video>
-    </div> -->
+    </div>
 
 
-    <!-- <img appImgload [localurl]="getImage" alt="" style="height: 100%; width: 100%;" *ngIf="getImage "> -->
-    
+    <div *ngIf="(model.attached_file_path !== null) && appSetting?.isValidHttpUrl(model.attached_file_path) === true">
+      <img [src]="model.local_attached_file" alt="" style="height: 100%; width: 100%;"
+        *ngIf="appSetting.isImage(model.local_attached_file)">
 
-    <div *ngIf="getImage">
-    <img  [src]="getImage" style="height: 100%; width: 100%;" >
-    <!-- *ngIf="getImage && ((platform.is('capacitor') && isImageChange === true) || !platform.is('capacitor'))"> -->
-</div>
-<div *ngIf="getVideo">
-<video controls="controls"  style="height: 100%; width: 100%;">
-  <source [src]="getVideo" type="video/mp4">
-  <source [src]="getVideo" type="video/ogg">
-  Your browser does not support the HTML5 Video element.
-</video>
-</div>
-   
+      <video controls="controls" *ngIf="appSetting.isVideo(model.local_attached_file)"
+        style="height: 100%; width: 100%;">
+        <source [src]="model.local_attached_file" type="video/mp4">
+        <source [src]="model.local_attached_file" type="video/ogg">
+        Your browser does not support the HTML5 Video element.
+      </video>
+    </div>
 
-
-    <ng-container>
-      <!-- <div *ngIf="platform.is('capacitor') ">
-        <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === false" class="top-file">
-          <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
-          </model-assetcomponent>
-        </div>
-      </div> -->
-      <ng-container *ngIf="!platform.is('capacitor') ">
-        <div *ngIf="appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === true  " class="top-file">
-          <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true">
-          </model-assetcomponent>
-        </div>
-      </ng-container>
+    <ng-container *ngIf="!platform.is('capacitor') ">
+      <div *ngIf=" appSetting?.isValidHttpUrl(model.attached_file_path) && isImageChange === true" class="top-file">
+        <model-assetcomponent [model]="model" [isthumbnail]="true" style="height: 100%; width: 100%;">
+        </model-assetcomponent>
+      </div>
     </ng-container>
-
-
-
-
-
-    <!-- <div class="top-file">
-      <model-assetcomponent [model]="model" mini="true" [solid_icon_color]="true" [mayEditImage]="true"
-        style="height: 100%; width: 100%;" mini="true">
-      </model-assetcomponent>
-    </div> -->
     <ion-row class="buttons">
       <ion-col>
         <ion-button expand="block" (click)="save()" [disabled]="!shouldUpdate">

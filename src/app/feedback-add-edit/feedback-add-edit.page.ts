@@ -75,7 +75,7 @@ export class FeedbackAddEditPage implements OnInit {
       this.originalModel = this.model;
     }
 
-    this.testBrowser = isPlatformBrowser(platformId);
+    // this.testBrowser = isPlatformBrowser(platformId);
 
     // this.imgURL = sessionStorage.getItem('base64');
 
@@ -85,6 +85,8 @@ export class FeedbackAddEditPage implements OnInit {
     //     this.dismiss();
     //   }
     // })
+    console.log('check model ', this.model);
+
   }
 
   @ViewChild('filePicker') filePickerRef: ElementRef<HTMLInputElement>;
@@ -184,6 +186,8 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   public openFile(basePath: string, modelName: string, title?: string) {
+    console.log('open file 1');
+
     const filePath = basePath;
     let fileTitle = 'Feedback';
     if (title) {
@@ -191,6 +195,8 @@ export class FeedbackAddEditPage implements OnInit {
     }
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
       const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+      console.log('fileUrl for video', fileUrl);
+
       this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
@@ -273,12 +279,13 @@ export class FeedbackAddEditPage implements OnInit {
     console.log('addVideoUsingCamera');
     this.downloadService.recordVideo(true)
       .then((recordedFile) => {
+        this.isImageChange = false
         console.log('recordedFile video', recordedFile);
         // this.model.setFile(recordedFile);
         if (this.platform.is('capacitor')) {
 
-          // this.model.local_attached_file = "data:image/png;base64," + recordedFile.uri;
-          this.model.local_attached_file = 'data:video/mp4;base64,' + recordedFile.uri;
+          this.model.local_attached_file = "data:video/mp4;base64," + recordedFile.uri;
+          // this.model.local_attached_file =  recordedFile.uri;
 
 
         } else {
@@ -286,6 +293,7 @@ export class FeedbackAddEditPage implements OnInit {
 
         }
         this.shouldUpdate = true;
+
       }
 
       )
@@ -339,18 +347,14 @@ export class FeedbackAddEditPage implements OnInit {
 
     if (this.appSetting.isImage(this.localurl)) {
       this.ele.nativeElement.src = this.localurl;
-      console.log(this.ele.nativeElement.src);
       return;
     }
+
     if (this.model.attached_file_path && this.appSetting.isImage(this.model.attached_file_path)) {
       if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
         return this.model.attached_file_path;
 
       }
-      // if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === true) {
-      //   return this.model.local_attached_file;
-      // }
-
     }
     if (this.model.local_attached_file) {
       return this.model.local_attached_file;
@@ -362,19 +366,21 @@ export class FeedbackAddEditPage implements OnInit {
 
 
   get getVideo() {
-  
-    
-    // if (this.appSetting.isVideo(this.localurl)) {
-    //   this.ele.nativeElement.src = this.localurl;
-    //   console.log(this.ele.nativeElement.src);
-      
-    //   return;
-    // }
+
+
+    if (this.appSetting.isVideo(this.localurl)) {
+      console.log(this.localurl);
+
+      this.ele.nativeElement.src = this.localurl;
+      console.log(this.ele.nativeElement.src);
+
+      return;
+    }
     if (this.model.attached_file_path && this.appSetting.isVideo(this.model.attached_file_path)) {
       if (this.appSetting?.isValidHttpUrl(this.model.attached_file_path) === false) {
         return this.model.attached_file_path;
       }
-     
+
     }
     if (this.model.attached_file_path) {
       return this.model.local_attached_file;

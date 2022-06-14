@@ -42,7 +42,17 @@
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title, 'video')">
 
         <fa-icon [icon]="faVideo" *ngIf="isthumbnail" class="thumbnail__icon"></fa-icon>
+        <!-- <video controls="controls" style="height: 100%; width: 100%;"
+            *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) !==null">
+            <source [src]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)" type="video/mp4">
+            <source [src]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)" type="video/ogg">
+            Your browser does not support the HTML5 Video element.
+        </video>
+        <video controls="controls" style="height: 100%; width: 100%;"
+            *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) === null"
+            (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title)">
 
+        </video> -->
         <img appImgload [url]="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE)"
             *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) !==null" />
         <img *ngIf="model.getFileImagePath(guideAssetModelFileMapIndexEnum.PDF_FILE_IMAGE) === null"
@@ -52,8 +62,17 @@
     <div *ngIf="model.isVideoFile() && model.TABLE_NAME !=='guide_asset'" class="inner_wrapper"
         (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title, 'video')">
 
-        <fa-icon [icon]="faVideo" *ngIf="isthumbnail" class="thumbnail__icon"></fa-icon>
-
+        <!-- <fa-icon [icon]="faVideo" *ngIf="isthumbnail" class="thumbnail__icon"></fa-icon>
+        <video controls="controls" style="height: 100%; width: 100%;" *ngIf="model.isExistThumbOfFile()">
+            <source [src]="model.getFileImagePath()" type="video/mp4">
+            <source [src]="model.getFileImagePath()" type="video/ogg">
+            Your browser does not support the HTML5 Video element.
+        </video>
+        <video controls="controls" style="height: 100%; width: 100%;" *ngIf="!model.isExistThumbOfFile()">
+           <source [src]="/assets/videooverlay.png" type="video/mp4">
+            <source [src]="/assets/videooverlay.png" type="video/ogg">
+            Your browser does not support the HTML5 Video element.
+        </video> -->
         <img *ngIf="model.isExistThumbOfFile()" appImgload [url]="model.getFileImagePath()" />
         <img *ngIf="!model.isExistThumbOfFile()" [src]="'/assets/videooverlay.png'" />
     </div>
@@ -65,7 +84,8 @@
         </ion-button>
     </ion-buttons>
 
-    <div *ngIf="model.isImageFile()" class="inner_wrapper" (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title, 'image')">
+    <div *ngIf="model.isImageFile()" class="inner_wrapper"
+        (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title, 'image')">
         <img *ngIf="!platform.is('capacitor')" appImgload [url]="model.getFileUrl()" />
         <img *ngIf="platform.is('capacitor')" class="image" [src]="model.getFileImagePath(0)" />
         <ion-icon name="image" *ngIf="model.getFileImagePath() === null && !isthumbnail"> </ion-icon>
