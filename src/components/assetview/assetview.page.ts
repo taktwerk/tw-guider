@@ -220,7 +220,7 @@ export class AssetviewComponent implements OnInit {
 
       if (this.platform.is('capacitor')) {
         fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-      } else {
+      } else if (!this.platform.is('capacitor')) {
         this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then((url: any) => {
 
           if (url === false) {
@@ -257,20 +257,19 @@ export class AssetviewComponent implements OnInit {
         this.photoViewer.show(fileUrl, fileTitle);
       }
       else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-        console.log(this.platform.is('ios'));
+         console.log(this.platform.is('ios'));
         if (this.platform.is('ios')) {
           this.pictureService.openFile(fileUrl, fileTitle);
-        } else {
-
-          this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then((res) => {
-            console.log(res);
-
-            this.viewer.pdfframe = {
-              url: res,
-              title,
-              show: true
-            };
-          });
+        } else if (this.platform.is('android')) {
+        this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then((url) => {
+          console.log('url', url);
+          
+          this.viewer.pdfframe = {
+            url,
+            title,
+            show: true
+          };
+        });
         }
 
       }

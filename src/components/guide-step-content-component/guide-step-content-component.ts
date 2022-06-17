@@ -1,7 +1,7 @@
 /* eslint-disable @angular-eslint/component-selector */
 /* eslint-disable @typescript-eslint/member-ordering */
 import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController, Platform } from '@ionic/angular';
 
 import { AuthService } from '../../services/auth-service';
 import { DownloadService } from '../../services/download-service';
@@ -20,6 +20,8 @@ import { LoggerService } from '../../services/logger-service';
 import { MiscService } from '../../services/misc-service';
 import { AppSetting } from 'src/services/app-setting';
 import { isPlatformBrowser } from '@angular/common';
+import { HelpingService } from 'src/controller/helping.service';
+import { ViewerService } from 'src/services/viewer.service';
 
 @Component({
   selector: 'guide-step-content-component',
@@ -68,6 +70,9 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     public loggerService: LoggerService,
     private appSetting: AppSetting,
     private router: Router,
+    public helper: HelpingService,
+    public viewer: ViewerService,
+    public platform: Platform,
     private videoService: VideoService,
     private viewer3dService: Viewer3dService,
     public navCtrl: NavController,
@@ -77,32 +82,90 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   ) {
     this.testBrowser = isPlatformBrowser(platformId);
   }
-
-  public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
+  public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string, fileType = 'image') {
     const filePath = basePath;
     let fileTitle = 'Guide';
     if (title) {
       fileTitle = title;
     }
 
-    const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+    let fileUrl = '';
+    //  console.log('basePath', basePath);
+    if (this.platform.is('capacitor')) {
+      fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+    } else {
+      this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then((url: any) => {
 
-    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
-      this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
+        if (url === false) {
+          return;
+        }
+
+        if (fileType === 'image') {
+          this.viewer.photoframe = {
+            url,
+            title,
+            show: true
+          };
+        } else if (fileType === 'video') {
+          this.viewer.videoframe = {
+            url,
+            title,
+            show: true
+          };
+        } else if (fileType === 'pdf') {
+          this.viewer.pdfframe = {
+            url,
+            title,
+            show: true
+          };
+        }
+      });
+      return;
+    }
+    //  console.log('fileUrl', fileUrl);
+    if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
       if (!fileApiUrl) {
         return false;
       }
-
       this.videoService.playVideo(fileUrl, fileTitle);
-
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-      this.pictureService.openFile(fileUrl, fileTitle);
+      this.viewer.videoframe = {
+        url: fileUrl,
+        title,
+        show: true
+      };
     } else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
       this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
     }
   }
+
+  // public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {
+  //   const filePath = basePath;
+  //   let fileTitle = 'Guide';
+  //   if (title) {
+  //     fileTitle = title;
+  //   }
+
+  //   const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
+
+  //   if (this.downloadService.checkFileTypeByExtension(filePath, 'video') ||
+  //     this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
+  //     if (!fileApiUrl) {
+  //       return false;
+  //     }
+
+  //     this.videoService.playVideo(fileUrl, fileTitle);
+
+  //   } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
+  //     this.photoViewer.show(fileUrl, fileTitle);
+  //   } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
+  //     this.pictureService.openFile(fileUrl, fileTitle);
+  //   } else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
+  //     this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
+  //   }
+  // }
 
   openFeedback(referenceModelAlias, referenceId, referenceTitle) {
     const feedbackNavigationExtras: NavigationExtras = {

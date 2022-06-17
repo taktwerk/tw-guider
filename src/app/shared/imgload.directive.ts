@@ -95,6 +95,8 @@ export class ImgloadDirective implements OnInit, OnChanges {
     console.log(this.url);
     this.http.get(this.url, { headers, observe: 'response', responseType: 'blob' }).toPromise()
       .then((response) => {
+        console.log('response 1',response);
+        
         blobToBase64(response.body).then(base64 => {
           this.zone.run(() => {
             this.ele.nativeElement.src = base64;

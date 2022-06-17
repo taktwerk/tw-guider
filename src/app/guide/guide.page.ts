@@ -352,7 +352,11 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-      this.pictureService.openFile(fileUrl, fileTitle);
+      this.viewer.videoframe = {
+        url:fileUrl,
+        title,
+        show: true
+      };
     } else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
       this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
     }
