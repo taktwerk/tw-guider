@@ -11,20 +11,20 @@ export class HelpingService {
 
   constructor(
     private domSanitizer: DomSanitizer,
-    private httpCustom: CustomHttpClient, 
+    private httpCustom: CustomHttpClient,
     protected sanitizerImpl: ɵDomSanitizerImpl,
     private http: HttpClient) { }
-  
+
   getSecureFile(url, blob = false) {
     return new Promise((resolve, reject) => {
-      if(typeof url != 'string' ) {
+      if (typeof url != 'string') {
         resolve(false);
       }
-  
+
       if (url.includes('/api/api/')) {
         url = url.replace('/api/api/', '/api/');
       }
-  
+
       const headerObject: any = {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
@@ -32,12 +32,11 @@ export class HelpingService {
       if (this.httpCustom.getAuthorizationToken()) {
         headerObject['X-Auth-Token'] = this.httpCustom.getAuthorizationToken();
       }
-  
+
       const headers = new Headers(headerObject);
-  
+
       this.http.get(url, { headers: headers, observe: 'response', responseType: 'blob' }).toPromise()
         .then((response) => {
-          console.log(response);
 
           const blobToBase64 = (blob) => {
             return new Promise((resolve, _) => {
@@ -47,15 +46,15 @@ export class HelpingService {
             });
           }
 
-          if(blob === false) {
-             resolve(response.url);
+          if (blob === false) {
+            resolve(response.url);
           } else {
             // var urlCreator = window.URL || window.webkitURL; 
             // resolve(this.getSafeUrl(urlCreator.createObjectURL(response.body))); 
             blobToBase64(response.body).then(base64 => {
               resolve(base64);
             });
-            
+
           }
         })
         .catch((downloadErr) => {
