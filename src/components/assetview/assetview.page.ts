@@ -257,21 +257,7 @@ export class AssetviewComponent implements OnInit {
         this.photoViewer.show(fileUrl, fileTitle);
       }
       else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-         console.log(this.platform.is('ios'));
-        if (this.platform.is('ios')) {
-          this.pictureService.openFile(fileUrl, fileTitle);
-        } else if (this.platform.is('android')) {
-        this.helper.getSecureFile(fileApiUrl, fileType === 'video' || fileType === 'pdf').then((url) => {
-          console.log('url', url);
-          
-          this.viewer.pdfframe = {
-            url,
-            title,
-            show: true
-          };
-        });
-        }
-
+        this.pictureService.openFile(fileUrl, fileTitle);
       }
       else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
         console.log(filePath);

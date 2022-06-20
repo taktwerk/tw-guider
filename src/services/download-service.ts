@@ -897,32 +897,6 @@ export class DownloadService {
       uri = 'file://' + uri;
     }
 
-    if (this.platform.is('android')) {
-      return this.filePath.resolveNativePath(uri);
-    }
-
-    // if (this.testBrowser) {
-    //   recordedFile.uri = await this.chooseFileFromLocalPC('image/*');
-    //   return recordedFile;
-    // }
-    // if (this.testBrowser) {
-    //   console.log("testing browser specification...");
-    //   let input = document.createElement('input');
-    //   input.type = 'file';
-    //   input.accept = 'image/*';
-    //   input.onchange = (e: any) => {
-    //     // console.log(e.target.files[0].name);
-    //     let reader = new FileReader();
-    //     // this.imagePath = files;
-    //     reader.readAsDataURL(e.target.files[0]);
-    //     reader.onload = (_event) => {
-    //       this.imgURL = reader.result;
-    //       console.log("check image =>", this.imgURL);
-    //     }
-    //   }
-    //   input.click();
-    // }
-
     return new Promise((resolve) => resolve(uri));
   }
 }

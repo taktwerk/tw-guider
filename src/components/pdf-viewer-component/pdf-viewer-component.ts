@@ -1,10 +1,10 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { HttpHeaders as Headers, HttpClient } from '@angular/common/http';
-
-import { DownloadService } from '../../services/download-service';
 import { ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { DocumentViewer, DocumentViewerOptions } from '@awesome-cordova-plugins/document-viewer/ngx';
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+import { Filesystem } from '@capacitor/filesystem';
+import { DownloadService } from 'src/services/download-service';
 
 /**
  * Generated class for the TodoPage page.
@@ -25,10 +25,9 @@ export class PdfViewerComponent implements OnInit {
   constructor(
     private document: DocumentViewer,
     private storage: Storage,
-
     private modalController: ModalController,
-    private http: HttpClient,
-    private download: DownloadService
+    private iab: InAppBrowser,
+    private downloadService: DownloadService
   ) { }
 
   dismiss() {
@@ -43,30 +42,12 @@ export class PdfViewerComponent implements OnInit {
 
   async ngOnInit() {
 
-    const options: DocumentViewerOptions = {
-      title: 'PDF'
-    }
 
-    this.document.viewDocument(this.url, 'application/pdf', options)
-    // const reqOptions = {
-    //   method: 'get' as any,
-    //   responseType: 'blob' as any,
-    //   headers: {
-    //     accept: 'application/pdf'
-    //   }
-    // };
+    const resolvedPath = await this.downloadService.getResolvedNativeFilePath(this.url);
 
-    // const headerObject: any = {
-    //   'Content-Type': 'application/pdf'
-    // };
+    Filesystem.readFile({ path: resolvedPath }).then((filebBase64) => {
+      this.pdfUrl = 'data:application/pdf;base64,' + filebBase64.data;;
+    });
 
-    // console.log('headerObject', headerObject);
-
-    // const headers = new Headers(headerObject);
-    // console.log(this.url);
-    // // this.url = this.download.getWebviewFileSrc(this.url);
-    // console.log(this.url)
-    // this.embeddedPdfViewer.pdfSrc = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
-    // this.embeddedPdfViewer.refresh();
   }
 }

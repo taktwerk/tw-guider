@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DocumentViewer } from '@awesome-cordova-plugins/document-viewer/ngx';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewer-component';
 
 /**
@@ -9,21 +9,23 @@ import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewe
 @Injectable()
 export class PictureService {
 
-    constructor(private modalController: ModalController, private document: DocumentViewer,) { }
+    constructor(private modalController: ModalController, private document: DocumentViewer, private platform: Platform) { }
 
     async openFile(url: string, fileTitle?: string) {
-         console.log('pdf open file picture service', url, fileTitle);
 
-        this.document.viewDocument(url, 'application/pdf', { title: fileTitle });
-        // const modal = await this.modalController.create({
-        //     component: PdfViewerComponent,
-        //     componentProps: {
-        //         url,
-        //         fileTitle
-        //     },
-        //     cssClass: "modal-fullscreen"
-        // });
+        if (this.platform.is('ios')) {
+            return this.document.viewDocument(url, 'application/pdf', { title: fileTitle });
+        }
 
-        // await modal.present();
+        const modal = await this.modalController.create({
+            component: PdfViewerComponent,
+            componentProps: {
+                url,
+                fileTitle
+            },
+            cssClass: "modal-fullscreen"
+        });
+
+        await modal.present();
     }
 }

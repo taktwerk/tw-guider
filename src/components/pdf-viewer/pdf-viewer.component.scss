@@ -1,0 +1,17 @@
+#pdfCanvas {
+  width: 100%;
+}
+button{
+  border: 1px solid #ff6c0c;
+  color: #ff6c0c;
+  font-weight: 600;
+  background: transparent;
+  box-shadow: none !important;
+  padding: 10px 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+button:hover{
+  background: #ff6c0c;
+  color: #fff;
+}
