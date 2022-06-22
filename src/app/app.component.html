@@ -51,29 +51,30 @@
       </div>
     </ion-content>
   </ng-container>
-<ng-container  *ngIf="viewer.pdfframe.show === true">
-  <div class="photoframe">
-    <div class="frame-outer">
-      <div class="content">
-        <!-- <iframe [src]="viewer.pdfframe.url" type="application/pdf" frameBorder="0" scrolling="auto" height="100%" width="100%"></iframe> -->
-        <pdf-viewer [src]="viewer.pdfframe.url" [original-size]="false" style="width: 100%; height: 100%;"></pdf-viewer>
-      </div>
-      <div class="header">
-        <div class="close" (click)="viewer.pdfframe.show === false">
-          <ion-icon name="close-outline" color="#fff" size="large" style="color: #fff !important;"></ion-icon>
+  <ng-container *ngIf="viewer.pdfframe.show">
+    <div class="photoframe">
+      <div class="frame-outer">
+        <div class="content">
+          <!-- <iframe [src]="viewer.pdfframe.url" type="application/pdf" frameBorder="0" scrolling="auto" height="100%" width="100%"></iframe> -->
+          <pdf-viewer [src]="viewer.pdfframe.url" [original-size]="false" style="width: 100%; height: 100%;">
+          </pdf-viewer>
         </div>
-        <div class="title">
-          <div>{{ viewer.pdfframe.title }}</div>
-          
-          <!-- <div>{{viewer?.pdfframe?.title}}</div> -->
-        </div>
-        <div class="close">
+        <div class="header">
+          <div class="close" (click)="viewer.pdfframe.show = false">
+            <ion-icon name="close-outline" color="#fff" size="large" style="color: #fff !important;"></ion-icon>
+          </div>
+          <div class="title">
+            <div>{{ viewer.pdfframe.title }}</div>
 
+            <!-- <div>{{viewer?.pdfframe?.title}}</div> -->
+          </div>
+          <div class="close">
+
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</ng-container>
+  </ng-container>
 
 
   <ion-split-pane when="(min-width: 100%)" contentId="main-content">
@@ -84,7 +85,7 @@
           <ion-buttons slot="end">
             <sync-spinner-component [shouldOpenPopup]="true" slot="primary"> </sync-spinner-component>
           </ion-buttons>
-        </ion-toolbar> 
+        </ion-toolbar>
       </ion-header>
       <ion-content class="grey-background">
         <ion-list class="header-list">
