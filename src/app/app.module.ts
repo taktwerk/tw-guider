@@ -72,7 +72,7 @@ import { WorkflowStepService } from 'src/providers/api/workflow-step-service';
 import { WorkflowTransitionService } from 'src/providers/api/workflow-transition-service';
 import { DocumentViewer } from '@awesome-cordova-plugins/document-viewer/ngx';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
-
+import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 export function languageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -162,6 +162,7 @@ export function initializeApp(logService: LoggerService) {
     LoggerService,
     Insomnia,
     InAppBrowser,
+    AppVersion,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,

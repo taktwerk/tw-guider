@@ -296,8 +296,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   protected initializeNetworkEvents(): void {
-    Network.addListener('networkStatusChange', (status)=> {
-      if(status.connected === false) {
+    Network.addListener('networkStatusChange', (status) => {
+      if (status.connected === false) {
         if (this.previousStatus === true) {
           this.miscService.events.next({ TAG: 'network:offline' });
           // this.events.publish('network:offline', true);
@@ -440,7 +440,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-      this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.detectChanges();
   }
 
   ngOnInit(): void {

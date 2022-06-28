@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth-service';
 import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { Platform } from '@ionic/angular';
 import { config } from '../../environments/config';
+import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 
 /**
  * Generated class for the ProfilePage page.
@@ -24,20 +25,36 @@ export class AboutPage implements OnInit {
   public params;
   currDate: Date = new Date();
 
-  constructor(private platform: Platform, public authService: AuthService, private device: Device) { }
+  constructor(private platform: Platform, public authService: AuthService, private appVersion: AppVersion) { }
 
   ngOnInit(): void {
-    if (this.platform.is('cordova')) {
-      this.platform.ready().then(() => {
-        if (this.device) {
-          this.versionNumber = this.device.version;
+
+    this.platform.ready().then(() => {
+      if (this.platform.is('capacitor')) {
+        this.appVersion.getVersionNumber().then(res => {
+          console.log('check version number', res);
+
+          this.versionNumber = res;
+        }).catch(error => {
+          alert(error);
+        });
+      }
+
+      if (config) {
+        if (config.apiVersion) {
+          this.apiVersionNumber = config.apiVersion;
         }
-        if (config) {
-          if (config.apiVersion) {
-            this.apiVersionNumber = config.apiVersion;
-          }
-        }
-      });
-    }
+      }
+    });
+
   }
 }
+// if (this.platform.is('capacitor')) {
+//   this.appVersion.getVersionNumber().then(res => {
+//     console.log('check version number', res);
+
+//     this.versionNumber = res;
+//   }).catch(error => {
+//     alert(error);
+//   });
+// }
