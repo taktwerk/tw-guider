@@ -7,6 +7,7 @@ import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { Platform } from '@ionic/angular';
 import { config } from '../../environments/config';
 import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
+import { Capacitor } from '@capacitor/core';
 
 /**
  * Generated class for the ProfilePage page.
@@ -29,23 +30,23 @@ export class AboutPage implements OnInit {
 
   ngOnInit(): void {
 
-    this.platform.ready().then(() => {
-      if (this.platform.is('capacitor')) {
-        this.appVersion.getVersionNumber().then(res => {
-          console.log('check version number', res);
 
-          this.versionNumber = res;
-        }).catch(error => {
-          alert(error);
-        });
-      }
+    if (Capacitor.getPlatform() === 'android') {
+      this.appVersion.getVersionNumber().then(res => {
+        console.log('check version number', res);
 
-      if (config) {
-        if (config.apiVersion) {
-          this.apiVersionNumber = config.apiVersion;
-        }
+        this.versionNumber = res;
+      }).catch(error => {
+        alert(error);
+      });
+    }
+
+    if (config) {
+      if (config.apiVersion) {
+        this.apiVersionNumber = config.apiVersion;
       }
-    });
+    }
+
 
   }
 }
