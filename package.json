@@ -21,7 +21,7 @@
     "@angular/router": "~13.0.0",
     "@awesome-cordova-plugins/app-version": "^5.41.0",
     "@awesome-cordova-plugins/camera": "^5.37.3",
-    "@awesome-cordova-plugins/chooser": "^5.41.0",
+    "@awesome-cordova-plugins/chooser": "^5.44.0",
     "@awesome-cordova-plugins/core": "^5.37.3",
     "@awesome-cordova-plugins/device": "5.41.0",
     "@awesome-cordova-plugins/document-viewer": "^5.41.0",
