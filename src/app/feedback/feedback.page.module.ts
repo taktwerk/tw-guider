@@ -1,20 +1,18 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { FeedbackPage } from './feedback.page';
-import { SyncSpinnerComponentModule } from '../../components/sync-spinner-component/sync-spinner-component.module';
-import { LanguageSelectorComponentModule } from '../../components/language-selector-component/language-selector-component.module';
-import { TranslateModule } from '@ngx-translate/core';
-import { MainPipe } from '../../pipes/main-pipe.module';
-import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AssetviewComponentModule } from '../../components/assetview/assetview.module';
-import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { SharedModule } from '../../app/shared/shared.module';
+import { CommonModule } from '@angular/common';
+import { FeedbackPage } from './feedback.page';
 import { File } from '@ionic-native/file/ngx';
+import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { LanguageSelectorComponentModule } from '../../components/language-selector-component/language-selector-component.module';
+import { MainPipe } from '../../pipes/main-pipe.module';
+import { NgModule } from '@angular/core';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-
+import { RouterModule } from '@angular/router';
+import { SharedModule } from '../../app/shared/shared.module';
+import { SyncSpinnerComponentModule } from '../../components/sync-spinner-component/sync-spinner-component.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   declarations: [
@@ -31,7 +29,6 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
     LanguageSelectorComponentModule,
     TranslateModule,
     MainPipe,
-    VirtualScrollerModule,
     AssetviewComponentModule,
     SharedModule
     // FileChooser,
