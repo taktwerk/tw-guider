@@ -15,7 +15,6 @@ import { TranslateConfigService } from '../../services/translate-config.service'
 import { VideoService } from '../../services/video-service';
 import { PictureService } from '../../services/picture-service';
 import { ApiSync } from '../../providers/api-sync';
-import { isPlatformBrowser } from '@angular/common';
 import { AppSetting } from 'src/services/app-setting';
 
 @Component({
@@ -279,12 +278,12 @@ export class FeedbackAddEditPage implements OnInit {
     console.log('addVideoUsingCamera');
     this.downloadService.recordVideo(true)
       .then((recordedFile) => {
-        this.isImageChange = false
+        this.isImageChange = false;
         console.log('recordedFile video', recordedFile);
         // this.model.setFile(recordedFile);
         if (this.platform.is('capacitor')) {
 
-          this.model.local_attached_file = "data:video/mp4;base64," + recordedFile.uri;
+          this.model.local_attached_file = 'data:video/mp4;base64,' + recordedFile.uri;
           // this.model.local_attached_file =  recordedFile.uri;
 
 

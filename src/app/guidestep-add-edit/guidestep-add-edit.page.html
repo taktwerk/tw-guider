@@ -3,15 +3,15 @@
     <ion-buttons slot="start">
       <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
     </ion-buttons>
-    <ion-title *ngIf="action == 'add'"> {{ 'guidestep.add' | translate }} </ion-title>
-    <ion-title *ngIf="action == 'edit'">{{ 'guidestep.edit' | translate }} </ion-title>
+    <ion-title *ngIf="action === 'add'"> {{ 'guidestep.add' | translate }} </ion-title>
+    <ion-title *ngIf="action === 'edit'">{{ 'guidestep.edit' | translate }} </ion-title>
 
     <ion-buttons slot="end" >
       <ion-button (click)="showCancelAlert()">
         <ion-icon name="chevron-back" style="color: #ffffff;"
-          *ngIf="platform.is('ios') && (action == 'add' || action == 'edit')"></ion-icon>
+          *ngIf="platform.is('ios') && (action === 'add' || action === 'edit')"></ion-icon>
         <ion-icon name="arrow-back" style="color: #ffffff;"
-          *ngIf="!platform.is('ios') && (action == 'add' || action == 'edit')"></ion-icon>
+          *ngIf="!platform.is('ios') && (action === 'add' || action === 'edit')"></ion-icon>
       </ion-button>
     </ion-buttons>
 
@@ -38,7 +38,7 @@
 
   <form *ngIf="model" class="grey__bg">
     <ion-list>
-      <ion-item class="" *ngIf="action =='add'">
+      <ion-item class="" *ngIf="action === 'add'">
         <ion-label position="floating">{{ 'Order' | translate:params }}: </ion-label>
         <ion-input [(ngModel)]="model.order_number" name="order" clear-input type="number" min="1"> </ion-input>
       </ion-item>
@@ -94,12 +94,12 @@
           {{ 'save' | translate:params }}
         </ion-button>
       </ion-col>
-      <ion-col *ngIf="action == 'edit'">
+      <ion-col *ngIf="action === 'edit'">
         <ion-button color="danger" expand="block" (click)="showDeleteAlert()">
           {{ 'delete' | translate:params }}
         </ion-button>
       </ion-col>
-      <ion-col *ngIf="action == 'add'">
+      <ion-col *ngIf="action === 'add'">
         <ion-button color="danger" expand="block" (click)="showCancelAlert()">
           {{ 'cancel' | translate:params }}
         </ion-button>
