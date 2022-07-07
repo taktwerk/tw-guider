@@ -71,7 +71,11 @@
         <source [src]="model.local_attached_file" type="video/ogg">
         Your browser does not support the HTML5 Video element.
       </video>
+
+      <img src="../../assets/icon/document.png" alt="" style="height: 100%; width: 100%;"
+        *ngIf="appSetting.isFile(model.local_attached_file)">
     </div>
+
 
 
     <div *ngIf="(model.attached_file_path !== null) && appSetting?.isValidHttpUrl(model.attached_file_path) === true">
@@ -84,6 +88,8 @@
         <source [src]="model.local_attached_file" type="video/ogg">
         Your browser does not support the HTML5 Video element.
       </video>
+      <img src="../../assets/icon/document.png" alt="" style="height: 100%; width: 100%;"
+        *ngIf="appSetting.isFile(model.local_attached_file)">
     </div>
 
     <ng-container *ngIf="!platform.is('capacitor') ">

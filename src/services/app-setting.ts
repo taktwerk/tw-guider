@@ -173,6 +173,15 @@ export class AppSetting {
         await alert.present();
     }
 
+    isFile(base64Data) {
+        if (base64Data == null) return false;
+        if (base64Data?.includes('application/pdf')) {
+            return true
+        }
+        return false
+    }
+
+
     isImage(base64Data) {
         if (base64Data == null) return false;
 
