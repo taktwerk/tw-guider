@@ -140,7 +140,6 @@ export class DownloadService {
   }
 
   download(url, authToken?: string): Promise<any> {
-    console.log('url to download from', url);
     if (url.includes('/api/api/')) {
       url = url.replace('/api/api/', '/api/');
     }
@@ -174,7 +173,6 @@ export class DownloadService {
 
   protected isExistFile(directory, name): Promise<boolean> {
     return new Promise((resolve) => {
-      console.log('isExistFile', directory, name);
       if (this.platform.is('capacitor')) {
         this.file
           .checkFile(directory, name)

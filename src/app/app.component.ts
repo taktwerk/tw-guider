@@ -1,31 +1,29 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/naming-convention */
-import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { App } from '@capacitor/app';
-import { Platform, NavController, AlertController, ModalController, IonRouterOutlet } from '@ionic/angular';
-import { Subscription, interval } from 'rxjs';
-import { Location } from '@angular/common';
 
+import { AlertController, IonRouterOutlet, ModalController, NavController, Platform } from '@ionic/angular';
+import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Subscription, interval } from 'rxjs';
+
+import { ApiSync } from '../providers/api-sync';
+import { App } from '@capacitor/app';
+import { AppSetting } from '../services/app-setting';
+import { AuthDb } from '../models/db/auth-db';
+import { AuthService } from '../services/auth-service';
+import { DbService } from '../models/db.service';
+import { Location } from '@angular/common';
+import { LoggerService } from '../services/logger-service';
+import { MigrationProvider } from '../providers/migration-provider';
+import { MiscService } from './../services/misc-service';
 import { Network } from '@capacitor/network';
 import { SplashScreen } from '@capacitor/splash-screen';
-
-import { MiscService } from './../services/misc-service';
-import { LoggerService } from '../services/logger-service';
-import { AuthService } from '../services/auth-service';
+import { Storage } from '@ionic/storage-angular';
 import { SyncService } from '../services/sync-service';
 import { TranslateConfigService } from '../services/translate-config.service';
-import { AppSetting } from '../services/app-setting';
+import { UserDb } from '../models/db/user-db';
 import { UserService } from '../services/user-service';
 import { ViewerService } from '../services/viewer.service';
-
-import { MigrationProvider } from '../providers/migration-provider';
-import { ApiSync } from '../providers/api-sync';
-
-import { DbService } from '../models/db.service';
-import { UserDb } from '../models/db/user-db';
-import { AuthDb } from '../models/db/auth-db';
-import { Storage } from '@ionic/storage-angular';
 
 export enum ConnectionStatusEnum {
   Online,
@@ -218,7 +216,6 @@ export class AppComponent implements OnInit, OnDestroy {
             }
           }
           if (this.userService.userDb.userSetting.language) {
-            // console.log(this.userService.userDb.userSetting.language, "this.userService.userDb.userSetting.language") // always device lang
             // first time opening app?
             // const storedLang = await this.storage.get("storedLang");
             // console.log(storedLang, "storedLang")
