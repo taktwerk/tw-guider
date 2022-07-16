@@ -29,7 +29,7 @@
     <div *ngSwitchDefault>
       <span *ngIf="isLoadedContent">
         <div class="guide-category" *ngFor="let guide_Activity of guideActivity;">
-          <ng-container *ngIf="guide_Activity.type == 'single'">
+          <ng-container *ngIf="guide_Activity.type === 'single'">
             <!-- <ion-item button [routerLink]="['/guide/' + guide_Activity.idApi + '/' + guide_Activity.parent_guide_id]"
                               class="guide-category" lines="full" inset="true"> -->
             <ion-item button (click)="openGuide(guide_Activity)" class="guide-category" lines="full" inset="true">
@@ -41,7 +41,7 @@
             </ion-item>
           </ng-container>
 
-          <ng-container *ngIf="guide_Activity.type == 'collection'">
+          <ng-container *ngIf="guide_Activity.type === 'collection'">
             <!-- <ion-item button [routerLink]="['/guide/' + guide_Activity.idApi + '/' + guide_Activity.parent_guide_id]"
                                                     class="guide-category" lines="full" inset="true"> -->
             <!-- <div *ngFor="let activity of guide_Activity.guide_collection;"> -->
