@@ -243,7 +243,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     await this.guideStepSlides.getActiveIndex()
       .then((index) => {
         this.activeGuideStepSlideIndex = index;
-        console.log('this.activeGuideStepSlideIndex', this.activeGuideStepSlideIndex);
         // this.updateGuideStepSlides();
       })
       .catch((error) => {
@@ -424,7 +423,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     // resume step from saved step
     if (this.guideStepSlides && this.guideViewHistory) {
       let stepValue = this.guideViewHistory.step;
-      console.log('check stepvalue', stepValue);
 
       if (this.guideViewHistory.step === this.guideSteps.length - 1) {
         stepValue = 0;
@@ -432,7 +430,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
       if (previous === true) {
         stepValue = this.guideViewHistory.step;
-        console.log('stepvalue', stepValue);
       }
 
       // slide to step
