@@ -94,15 +94,6 @@ export class AppComponent implements OnInit, OnDestroy {
       const SyncModalComponentOpen = await this.storage.get('SyncModalComponentOpen');
       const ImageEditorComponentOpen = await this.storage.get('ImageEditorComponentOpen');
 
-      // console.log("modal dismiss", guideInfoModalOpen
-      //   || VideoModalComponentOpen
-      //   || pdfViewerComponentOpen
-      //   || Viewer3dModalComponentOpen
-      //   || GuideAssetTextModalComponentOpen
-      //   || CKEditorComponentOpen
-      //   || SyncModalComponentOpen
-      //   || ImageEditorComponentOpen
-      // )
       if (
         guideInfoModalOpen
         || VideoModalComponentOpen
@@ -183,7 +174,6 @@ export class AppComponent implements OnInit, OnDestroy {
         }, 2000);
       }
 
-      //debugger;
       await this.migrationProvider.init();
       this.migrationProvider.checkAuthMigration();
 
@@ -218,7 +208,6 @@ export class AppComponent implements OnInit, OnDestroy {
           if (this.userService.userDb.userSetting.language) {
             // first time opening app?
             // const storedLang = await this.storage.get("storedLang");
-            // console.log(storedLang, "storedLang")
             // if (storedLang != null) {
             //   currentLanguage = storedLang;
             //   if (this.userService.userDb.userSetting.language != storedLang) {
