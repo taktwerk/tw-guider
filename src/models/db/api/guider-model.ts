@@ -1,16 +1,21 @@
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable max-len */
+
 import { DbApiModel, FileMapInModel } from '../../base/db-api-model';
+
 import { DbBaseModel } from '../../base/db-base-model';
-import { GuideStepModel } from './guide-step-model';
 import { GuideAssetModel } from './guide-asset-model';
-import { ProtocolTemplateModel } from './protocol-template-model';
 import { GuideChildModel } from './guide-child-model';
+import { GuideStepModel } from './guide-step-model';
+import { ProtocolTemplateModel } from './protocol-template-model';
 
 /**
  * API Db Model for 'Guider Model'.
  */
 export class GuiderModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'GuiderModel';
+    TAG = 'GuiderModel';
     public apiPk = 'id';
 
     /// relations
@@ -59,7 +64,7 @@ export class GuiderModel extends DbApiModel {
     ];
 
     /** @inheritDoc */
-    TABLE_NAME: string = 'guide';
+    TABLE_NAME = 'guide';
 
     /** @inheritDoc */
     TABLE: any = [
@@ -88,11 +93,16 @@ export class GuiderModel extends DbApiModel {
     }
 
     /**
+     *
+     *
      * Get short description
-     * @returns {string}
+     *
+     *
+     *
+     * @returns
      */
     public getDescription(): string {
-        return this.description.replace(/\n/g, "<br />");
+        return this.description.replace(/\n/g, '<br />');
     }
 
     public getByCategory() {
@@ -176,11 +186,13 @@ export class GuiderModel extends DbApiModel {
                 ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
                 ' AND ' + this.secure('guide') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL' +
                 ' AND ' + this.secure('guide_child') + '.' + this.secure(this.COL_DELETED_AT) + ' IS NULL' +
-                ' AND ' + this.secure('guide_child') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL'
-            ' GROUP BY guide_child.id';
+                ' AND ' + this.secure('guide_child') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL';
+            // ' GROUP BY guide_child.id';
+
+            this.guide_collection = [];
 
             this.db.query(query).then((res) => {
-                this.guide_collection = [];
+
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
                         const obj: any = new GuideChildModel();
@@ -196,9 +208,8 @@ export class GuiderModel extends DbApiModel {
                     }
                 }
                 resolve(this.guide_collection);
-                console.log("check this.guide_collection", this.guide_collection);
             }).catch((err) => {
-                // resolve(this.guide_collection);
+                resolve(this.guide_collection);
                 console.log(err);
             });
         });

@@ -203,7 +203,7 @@ export class HttpClient {
                 }
             } else {
                 errMsg = error.message ? error.message : error.toString();
-                console.log('errMsg', error);
+                // console.log('errMsg', error);
             }
         }
 
