@@ -300,7 +300,6 @@ export class ApiSync implements OnDestroy {
           this.userService.userDb.userSetting.lastModelUpdatedAt = this.lastModelUpdatedAt;
           this.userService.userDb.save();
         }
-        // console.log("Pull Function >>>>>>>>>>>>>>>>>", isSavedSyncData)
         resolve(isSavedSyncData);
       } catch (err) {
         this.failSync(err);
