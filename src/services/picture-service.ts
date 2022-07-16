@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
-import { DocumentViewer } from '@awesome-cordova-plugins/document-viewer/ngx';
 import { ModalController, Platform } from '@ionic/angular';
+
+import { DocumentViewer } from '@awesome-cordova-plugins/document-viewer/ngx';
+import { Injectable } from '@angular/core';
 import { PdfViewerComponent } from '../components/pdf-viewer-component/pdf-viewer-component';
 
 /**
@@ -23,7 +24,7 @@ export class PictureService {
                 url,
                 fileTitle
             },
-            cssClass: "modal-fullscreen"
+            cssClass: 'modal-fullscreen'
         });
 
         await modal.present();

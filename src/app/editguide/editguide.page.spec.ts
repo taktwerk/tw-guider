@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
 
 import { EditguidePage } from './editguide.page';
+import { IonicModule } from '@ionic/angular';
 
 describe('EditguidePage', () => {
   let component: EditguidePage;

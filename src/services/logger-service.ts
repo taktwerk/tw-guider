@@ -6,6 +6,7 @@ import { INGXLoggerMonitor, NGXLogger } from 'ngx-logger';
 import { BehaviorSubject } from 'rxjs';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { Injectable } from '@angular/core';
+import { Platform } from '@ionic/angular';
 
 export declare enum LoggerLevel {
   TRACE = 0,
@@ -29,21 +30,19 @@ export interface Log {
 
 @Injectable({ providedIn: 'root' })
 export class CustomLoggerMonitor implements INGXLoggerMonitor {
+
   constructor(private loggerService: LoggerService) { }
 
   onLog(log: NGXLogger) { this.loggerService.setLogs(log); }
-
-  // onLog(log: NGXLogInterface) { this.loggerService.setLogs(log) }
 }
 
 @Injectable({ providedIn: 'root' })
 export class LoggerService {
   public Logs: NGXLogger[] = [];
   public LogsSub = new BehaviorSubject<NGXLogger[]>(null);
-  // public Logs: NGXLogInterface[] = [];
-  // public LogsSub = new BehaviorSubject<NGXLogInterface[]>(null);
 
-  constructor(private logger: NGXLogger, public file: File) {
+
+  constructor(private logger: NGXLogger, public file: File, public platform: Platform) {
     this.logger.registerMonitor(new CustomLoggerMonitor(this));
   }
 
@@ -51,7 +50,6 @@ export class LoggerService {
     return this.logger;
   }
 
-  // public setLogs(log: NGXLogInterface) {
   public setLogs(log: NGXLogger) {
     this.Logs.push(log);
     this.LogsSub.next(this.Logs);
@@ -79,17 +77,19 @@ export class LoggerService {
    */
   public async writeToFile(log) {
 
-    if (typeof log != 'string') {
-      log = this.stringify(log);
+    if(this.platform.is('capacitor')) {
+      if (typeof log != 'string') {
+        log = this.stringify(log);
+      }
+      const contents = await Filesystem.appendFile({
+        path: 'TaktwerkLogs/log.txt',
+        data: log,
+        directory: Directory.External,
+        encoding: Encoding.UTF8,
+      }).catch(e => {
+        console.error('Unable to write log file', e);
+      });
     }
-    const contents = await Filesystem.appendFile({
-      path: 'TaktwerkLogs/log.txt',
-      data: log,
-      directory: Directory.External,
-      encoding: Encoding.UTF8,
-    }).catch(e => {
-      console.error('Unable to write log file', e);
-    });
   }
 
   public createLogFile() {

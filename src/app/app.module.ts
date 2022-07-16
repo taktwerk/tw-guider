@@ -11,22 +11,23 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppSetting } from 'src/services/app-setting';
 import { AppSettingsDb } from 'src/models/db/app-settings-db';
+import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { AuthDb } from 'src/models/db/auth-db';
 import { AuthService } from 'src/services/auth-service';
 import { BrowserModule } from '@angular/platform-browser';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CKEditorPageModule } from 'src/components/ckeditor/ckeditor.module';
+import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
 import { CommonModule } from '@angular/common';
 import { CryptoProvider } from 'src/providers/crypto-provider';
 import { DatePipe } from 'src/pipes/date-pipe/date-pipe';
 import { DbProvider } from 'src/providers/db-provider';
 import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { DocumentViewer } from '@awesome-cordova-plugins/document-viewer/ngx';
 import { DownloadService } from 'src/services/download-service';
 import { DrawImageService } from 'src/services/draw-image-service';
 import { FeedbackService } from 'src/providers/api/feedback-service';
 import { File } from '@awesome-cordova-plugins/file/ngx';
-import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
-// import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { GuideAssetPivotService } from 'src/providers/api/guide-asset-pivot-service';
 import { GuideAssetService } from 'src/providers/api/guide-asset-service';
@@ -38,6 +39,7 @@ import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-se
 import { GuiderService } from 'src/providers/api/guider-service';
 import { HttpClient } from 'src/services/http-client';
 import { ImageEditorPageModule } from 'src/components/imageeditor/imageeditor.module';
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 import { IonicStorageModule, } from '@ionic/storage-angular';
 import { LoggerService } from 'src/services/logger-service';
@@ -70,9 +72,7 @@ import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { WorkflowService } from 'src/providers/api/workflow-service';
 import { WorkflowStepService } from 'src/providers/api/workflow-step-service';
 import { WorkflowTransitionService } from 'src/providers/api/workflow-transition-service';
-import { DocumentViewer } from '@awesome-cordova-plugins/document-viewer/ngx';
-import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
-import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
+
 export function languageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
