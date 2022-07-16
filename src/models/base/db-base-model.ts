@@ -150,12 +150,6 @@ export abstract class DbBaseModel {
       this.platform.ready().then(() => {
         this.db.init().then(() => {
           this.dbCreateTable().then((res) => {
-            if (!res) {
-              // console.log(this.TAG, 'Could not initialize db ');
-              if (this.loggerService) {
-                this.loggerService.getLogger().error(this.TAG, 'Could not initialize db ', new Error().stack); // TODO: Loggerservice & MiscService seems unreachable here
-              }
-            }
             resolve(res);
           });
         });
@@ -444,8 +438,6 @@ export abstract class DbBaseModel {
             resolve(entries);
 
           }).catch((err) => {
-            console.log('searchAll error ', err);
-            this.loggerService.getLogger().error('error at db-base-model 362', err, new Error().stack);
             resolve(entries);
           });
         }
@@ -901,8 +893,6 @@ export abstract class DbBaseModel {
             resolve(res);
 
           }).catch((err) => {
-            console.log('Db Create errrr', err);
-            this.loggerService.getLogger().error('error at db-base-model 746', err, new Error().stack);
             resolve(false);
           });
         }
@@ -933,19 +923,11 @@ export abstract class DbBaseModel {
             }
             resolve(res);
           }).catch((err) => {
-            console.log('Db Update errrr', err);
             console.log(this.loggerService);
-            if (this.loggerService) {
-              this.loggerService.getLogger().error('error at db-base-model 780', err, new Error().stack);
-            }
             resolve(false);
           });
         }
       }).catch((err) => {
-        console.log('dbReady errrr', err);
-        if (this.loggerService) {
-          this.loggerService.getLogger().error('error at db-base-model 777', err, new Error().stack);
-        }
         resolve(false);
       });
     });
@@ -960,12 +942,9 @@ export abstract class DbBaseModel {
           const query = 'DELETE FROM ' + this.secure(this.TABLE_NAME) + ' ' +
             'WHERE ' + this.parseWhere(this.updateCondition);
           db.query(query).then((res) => {
-            // this.events.publish(this.TAG + ':delete', this);
             this.miscService.events.next({ TAG: this.TAG + ':create', data: this });
             resolve(res);
           }).catch((err) => {
-            console.log('delete error', err);
-            this.loggerService.getLogger().error('error at db-base-model 798', err, new Error().stack);
             resolve(false);
           });
         }
