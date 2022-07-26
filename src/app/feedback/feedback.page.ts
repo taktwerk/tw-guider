@@ -15,8 +15,8 @@ import { Subscription } from 'rxjs';
 import { MiscService } from '../../services/misc-service';
 import { SyncIndexService } from '../../providers/api/sync-index-service';
 import { isPlatformBrowser } from '@angular/common';
-import { AppSetting } from 'src/services/app-setting';
 import { DatePipe } from '@angular/common';
+import { AppSetting } from 'src/services/app-setting';
 @Component({
   selector: 'feedback-page',
   templateUrl: 'feedback.page.html',
@@ -51,13 +51,13 @@ export class FeedbackPage implements OnInit, OnDestroy {
     private photoViewer: PhotoViewer,
     private navCtrl: NavController,
     private router: Router,
-    private appSetting: AppSetting,
     private videoService: VideoService,
     private pictureService: PictureService,
     private miscService: MiscService,
-    private platform: Platform,
     private syncIndexService: SyncIndexService,
     public datepipe: DatePipe,
+    public platform: Platform,
+    public appSetting: AppSetting,
     @Inject(PLATFORM_ID) platformId: string
 
   ) {
@@ -109,15 +109,13 @@ export class FeedbackPage implements OnInit, OnDestroy {
       feedbackSearchCondition.push(['reference_id', this.reference_id]);
     }
 
-    this.feedbackList = await this.feedbackService.dbModelApi.findAllWhere(feedbackSearchCondition, 'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC');
-    // console.log("this.feedbackList", this.feedbackList)
-    if (this.feedbackList) {
-      const syncedList = await this.syncIndexService.getSyncIndexModel(this.feedbackList, this.feedbackList[0].TABLE_NAME);
-      this.feedbackList = syncedList;
+    let feedbackList = await this.feedbackService.dbModelApi.findAllWhere(feedbackSearchCondition, 'local_created_at DESC, created_at DESC, ' + this.feedbackService.dbModelApi.COL_ID + ' DESC');
+    if (feedbackList) {
+      feedbackList = await this.syncIndexService.getSyncIndexModel(feedbackList, feedbackList[0].TABLE_NAME);
     }
 
+    this.feedbackList = feedbackList;
     console.log(this.feedbackList);
-
   }
 
   public openFile(basePath: string, modelName: string, title?: string) {
@@ -182,7 +180,6 @@ export class FeedbackPage implements OnInit, OnDestroy {
         guideId: this.guideId
       },
     };
-    console.log('check feedbackNavigationExtras', feedbackNavigationExtras);
     this.router.navigate(['/feedback/save/' + feedbackId], feedbackNavigationExtras);
   }
   // get getImage() {
@@ -218,11 +215,6 @@ export class FeedbackPage implements OnInit, OnDestroy {
   // }
 
   ngOnInit() {
-    setTimeout(() => {
-      console.log('feedbackList', this.feedbackList);
-    }, 1000);
-
-
 
     this.activatedRoute.queryParams.subscribe((params) => {
       const feedbackData = params;
@@ -235,9 +227,6 @@ export class FeedbackPage implements OnInit, OnDestroy {
       }
       this.backDefaultHref = feedbackData.backUrl;
       this.guideId = feedbackData.guideId;
-
-      // console.log("this.guideId", this.guideId)
-
       this.setModels();
       this.detectChanges();
     });

@@ -193,27 +193,6 @@ export class SyncModalComponent implements OnInit, OnDestroy {
     this.apiSync.pushProgressStatus.pipe(take(1)).subscribe((pushProgressStatus) => {
       this.pushProgressStatus = pushProgressStatus;
     });
-    // this.events.subscribe('UserDb:update', (userDb) => {
-    //   this.userService.userDb = userDb;
-    //   this.loggerService.getLogger().info("userDb", userDb)
-
-    // });
-    // this.events.subscribe('network:offline', (isNetwork) => {
-    //   this.isNetwork = false;
-    //   this.loggerService.getLogger().info("isNetwork", this.isNetwork)
-
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe('network:online', (isNetwork) => {
-    //   this.isNetwork = true;
-    //   this.loggerService.getLogger().info("isNetwork", this.isNetwork)
-
-    //   this.detectChanges();
-    // });
-    // this.events.subscribe('user:logout', () => {
-    //   this.loggerService.getLogger().info("user:logout")
-    //   this.dismiss();
-    // });
 
 
     this.eventSubscription = this.miscService.events.subscribe(async (event) => {
@@ -242,13 +221,10 @@ export class SyncModalComponent implements OnInit, OnDestroy {
   getProgressText() {
     switch (this.syncProgressStatus) {
       case 'pause':
-        //    this.loggerService.getLogger().info("Sync", 'pause')
         return '(' + this.translateConfigService.translateWord('sync-modal.Paused') + ')';
       case 'failed':
-        //    this.loggerService.getLogger().debug("Sync", 'failed', new Error().stack)
         return '(' + this.translateConfigService.translateWord('sync-modal.Failed') + ')';
       case 'success':
-        //    this.loggerService.getLogger().info("Sync", 'success')
         return '(' + this.translateConfigService.translateWord('sync-modal.Success') + ')';
       default:
         return '';

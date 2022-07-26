@@ -1,13 +1,13 @@
-import { Location } from '@angular/common';
-import { Platform } from '@ionic/angular';
-
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { GuideStepModel } from '../../models/db/api/guide-step-model';
-import { GuideStepService } from '../../providers/api/guide-step-service';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 
 import { AuthService } from '../../services/auth-service';
+import { GuideStepModel } from '../../models/db/api/guide-step-model';
+import { GuideStepService } from '../../providers/api/guide-step-service';
+import { Location } from '@angular/common';
+import { Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-editguide',
   templateUrl: './editguide.page.html',

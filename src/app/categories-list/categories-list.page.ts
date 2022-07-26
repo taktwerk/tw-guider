@@ -1,30 +1,28 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/member-ordering */
-import { UserService } from './../../services/user-service';
 
-import { MiscService } from './../../services/misc-service';
-import { ChangeDetectorRef, Component, OnInit, OnDestroy, Input, AfterViewInit, NgZone } from '@angular/core';
-import { GuideCategoryService } from '../../providers/api/guide-category-service';
-import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
-import { GuideChildService } from '../../providers/api/guide-child-service';
-import { GuiderService } from '../../providers/api/guider-service';
-import { GuiderModel } from '../../models/db/api/guider-model';
-import { AuthService } from '../../services/auth-service';
-import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
-import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
-import { LoadingController, ModalController } from '@ionic/angular';
-import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
+import { AfterViewInit, ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+
 import { ApiSync } from '../../providers/api-sync';
 import { AppSetting } from '../../services/app-setting';
-import { SyncMode } from '../../components/synchronization-component/synchronization-component';
-import { SyncService } from '../../services/sync-service';
-import { SyncModalComponent } from '../../components/sync-modal-component/sync-modal-component';
-import { debounceTime } from 'rxjs/operators';
+import { AuthService } from '../../services/auth-service';
+import { GuideCategoryBindingService } from '../../providers/api/guide-category-binding-service';
+import { GuideCategoryModel } from '../../models/db/api/guide-category-model';
+import { GuideCategoryService } from '../../providers/api/guide-category-service';
+import { GuideChildService } from '../../providers/api/guide-child-service';
+import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
+import { GuiderModel } from '../../models/db/api/guider-model';
+import { GuiderService } from '../../providers/api/guider-service';
+import { LoadingController } from '@ionic/angular';
+import { MiscService } from './../../services/misc-service';
+import { StateService } from '../state.service';
 import { Subscription } from 'rxjs';
 import { SyncIndexService } from '../../providers/api/sync-index-service';
-import { StateService } from '../state.service';
+import { SyncMode } from '../../components/synchronization-component/synchronization-component';
+import { SyncService } from '../../services/sync-service';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-list',
@@ -48,8 +46,6 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
   public guideItemsLimit = 20;
   public guidesWithoutCategories: GuiderModel[] = [];
   public params;
-  // public guideId: any = [];
-  // public guideCollection: any = {};
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
 
@@ -366,10 +362,10 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
       this.guideArr = [];
 
       const isCollectionExistInArray = (guide) => {
-        for (let element of this.guideArr) {
+        for (const element of this.guideArr) {
           // console.log(element.id, element.type, guide.parent_guide_id);
 
-          if (element.type === 'collection' && element.id == guide.parent_guide_id) {
+          if (element.type === 'collection' && element.id === guide.parent_guide_id) {
             return element;
           }
         }
@@ -394,14 +390,14 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
         if (collection === false) {
 
           guide.setChildren().then(coll => {
-            console.log("check coll", coll);
+            console.log('check coll', coll);
           });
 
           const tempcollection = {
             id: guide.parent_guide_id,
             type: 'collection',
             guides: [guide]
-          }
+          };
 
           this.guideArr.push(tempcollection);
         } else {
@@ -435,13 +431,9 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   async findAllGuideActivity() {
-    // syncIndexify guides
-
     this.guideActivity = await this.guideViewHistoryService.findAll(this.searchValue);
-    console.log("this.guideActivity", this.guideActivity);
     if (this.guideActivity.length > 0) {
       const syncedList = await this.syncIndexService.getSyncIndexModel(this.guideActivity, this.guideActivity[0].TABLE_NAME);
-      console.log("syncedList", syncedList);
       // this.guideActivity = syncedList;
     }
   }
@@ -513,7 +505,6 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
   //MAIN CODE(NEW PART)
 
   openGuide(guideStep) {
-    console.log("check guidestep", guideStep);
     // if (typeof guideStep.guides != 'undefined') {
     //   if (guideStep.guides.parent_guide_id == 0) {
     //     this.router.navigate(['/guide/' + guideStep.guides.guide_id]);
@@ -524,7 +515,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
     //   }
     // }
     // else {
-    if (guideStep.guides.parent_guide_id == 0) {
+    if (guideStep.guides.parent_guide_id === 0) {
       this.router.navigate(['/guide/' + guideStep.guides.guide_id]);
     } else {
       this.appSetting.isActivity = true;

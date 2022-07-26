@@ -1,3 +1,7 @@
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 import { DbBaseModel } from './db-base-model';
 import { RecordedFile } from '../../services/download-service';
@@ -21,7 +25,7 @@ export class FileMapInModel extends BaseFileMapInModel {
  *
  * IMPORTANT: Do not extend this class if you only want to create a DbModel but not a model that has to be synced
  * with the remote API. In that case you'd have to extend only DbHelper.
- * 
+ *
  */
 export abstract class DbApiModel extends DbBaseModel {
     loadUrl: string;
@@ -53,28 +57,32 @@ export abstract class DbApiModel extends DbBaseModel {
 
     // API boilerplate default fields columns
     /** local column that indicates if the record is synced with the API */
-    public COL_IS_SYNCED: string = '_is_synced';
+    public COL_IS_SYNCED = '_is_synced';
     /** id's column name */
-    public COL_ID_API: string = 'id';
+    public COL_ID_API = 'id';
     /** date time when this record was created on API */
-    public COL_CREATED_AT: string = 'created_at';
-    public COL_LOCAL_CREATED_AT: string = 'local_created_at';
-    public COL_CREATED_BY: string = 'created_by';
-    public COL_CREATED_TERM: string = 'created_term';
+    public COL_CREATED_AT = 'created_at';
+    public COL_LOCAL_CREATED_AT = 'local_created_at';
+    public COL_CREATED_BY = 'created_by';
+    public COL_CREATED_TERM = 'created_term';
 
     /** date time when this record was updated on API */
-    public COL_UPDATED_AT: string = 'updated_at';
-    public COL_LOCAL_UPDATED_AT: string = 'local_updated_at';
-    public COL_UPDATED_BY: string = 'updated_by';
-    public COL_UPDATED_TERM: string = 'updated_term';
+    public COL_UPDATED_AT = 'updated_at';
+    public COL_LOCAL_UPDATED_AT = 'local_updated_at';
+    public COL_UPDATED_BY = 'updated_by';
+    public COL_UPDATED_TERM = 'updated_term';
 
     /** date time when this record was deleted on API */
-    public COL_DELETED_AT: string = 'deleted_at';
-    public COL_LOCAL_DELETED_AT: string = 'local_deleted_at';
-    public COL_DELETED_BY: string = 'deleted_by';
+    public COL_DELETED_AT = 'deleted_at';
+    public COL_LOCAL_DELETED_AT = 'local_deleted_at';
+    public COL_DELETED_BY = 'deleted_by';
+  preview_file_path: any;
+  thumb_attached_file_path: any;
+  attached_file_path: any;
 
     /**
      * Constructor
+     *
      * @param platform
      * @param db
      * @param events
@@ -86,12 +94,13 @@ export abstract class DbApiModel extends DbBaseModel {
 
     /**
      * Loads an instance of this from a row received from the API.
+     *
      * @param apiObj row received from API
      * @param oldModel
      */
     public loadFromApi(apiObj: any, oldModel = null): DbApiModel {
         let obj: DbApiModel = null;
-        obj = new (<any>this.constructor);
+        obj = new (<any>this.constructor)();
         obj.platform = this.platform;
         obj.db = this.db;
         // obj.events = this.events;
@@ -128,7 +137,7 @@ export abstract class DbApiModel extends DbBaseModel {
             }
             if (willChangeColumn) {
                 const columnName = column[0];
-                const type: number = parseInt(column[2]);
+                const type: number = parseInt(column[2], 10);
                 const memberName = column[3] ? column[3] : columnName;
                 if (apiObj[memberName] !== undefined) {
                     this[memberName] = this.getObjectByType(apiObj[memberName], type);
@@ -152,8 +161,13 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     /**
+     *
+     *
      * Creates the db table for the extended db class.
-     * @returns {Promise<any>}
+     *
+     *
+     *
+     * @returns
      */
     public dbCreateTable(): Promise<any> {
         this.TABLE.push([this.COL_IS_SYNCED, 'TINYINT(1) DEFAULT 1', DbBaseModel.TYPE_BOOLEAN, 'is_synced']);
@@ -179,6 +193,7 @@ export abstract class DbApiModel extends DbBaseModel {
 
     /**
      * Loads additional boilerplate fields and calls the super method.
+     *
      * @inheritDoc
      */
     public loadFromAttributes(item: any): DbBaseModel {
@@ -200,6 +215,7 @@ export abstract class DbApiModel extends DbBaseModel {
 
     /**
      * Event before this instance is saved in local db.
+     *
      * @param isSynced optional param that indicates whether this record is synced with api or not
      */
     protected beforeSave(isSynced?: boolean) {
@@ -209,6 +225,7 @@ export abstract class DbApiModel extends DbBaseModel {
     /**
      * Stores this api synced instance in sql lite db and creates
      * a new entry or updates this entry if the primary key is not empty.
+     *
      * @param forceCreation optional param to force creation
      * @param updateCondition
      */
@@ -219,6 +236,7 @@ export abstract class DbApiModel extends DbBaseModel {
     /**
      * Stores this instance in sql lite db and creates a new entry
      * or updates this entry if the primary key is not empty.
+     *
      * @param forceCreation optional param to force creation
      * @param isSynced optional param that indicates whether this record is synced with api or not
      * @param updateCondition optional fix updateCondition
@@ -277,12 +295,13 @@ export abstract class DbApiModel extends DbBaseModel {
 
     /**
      * Stores passed models in remote API server.
+     *
      * @param models
      */
     public prepareBatchPost(models: DbApiModel[]): Promise<any[]> {
         return new Promise((resolve) => {
-            let modelBodies: any[] = [];
-            for (let model of models) {
+            const modelBodies: any[] = [];
+            for (const model of models) {
                 // Push the model in the data
                 modelBodies.push(model.getBodyJson());
             }
@@ -291,9 +310,15 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     /**
+     *
+     *
      * Returns a Promise with information about the existing
+     *
      * of this DbApiModel instance by its `updateCondition`
-     * @returns {Promise<T>}
+     *
+     *
+     *
+     * @returns
      */
     public exists(condition?: any): Promise<boolean> {
         return new Promise((resolve) => {
@@ -304,7 +329,7 @@ export abstract class DbApiModel extends DbBaseModel {
                     if (!condition) {
                         condition = this.updateCondition;
                     }
-                    let query = "SELECT * FROM " + this.TABLE_NAME + " WHERE " + this.parseWhere(condition);
+                    const query = 'SELECT * FROM ' + this.TABLE_NAME + ' WHERE ' + this.parseWhere(condition);
                     if (query.indexOf('undefined') >= 0) {
                         resolve(false);
                     } else {
@@ -322,20 +347,21 @@ export abstract class DbApiModel extends DbBaseModel {
     /**
      * Returns a json object with all attributes and its values.
      * This json is needed for the api batch sync.
+     *
      * @return {}
      */
-    public getBodyJson(): {} {
-        let obj = {};
-        let columns = this.attributeNames();
-        let types = this.columnTypes();
+    public getBodyJson() {
+        const obj: any = {};
+        const columns = this.attributeNames();
+        const types = this.columnTypes();
 
         obj[this.apiPk] = this.idApi;
         obj[this.COL_ID] = this[this.COL_ID];
 
-        obj['deleted_at'] = this.formatApiDate(this[this.COL_DELETED_AT]);
-        obj['local_deleted_at'] = this.formatApiDate(this[this.COL_LOCAL_DELETED_AT]);
-        obj['local_updated_at'] = this.formatApiDate(this[this.COL_LOCAL_UPDATED_AT]);
-        obj['local_created_at'] = this.formatApiDate(this[this.COL_LOCAL_CREATED_AT]);
+        obj.deleted_at = this.formatApiDate(this[this.COL_DELETED_AT]);
+        obj.local_deleted_at = this.formatApiDate(this[this.COL_LOCAL_DELETED_AT]);
+        obj.local_updated_at = this.formatApiDate(this[this.COL_LOCAL_UPDATED_AT]);
+        obj.local_created_at = this.formatApiDate(this[this.COL_LOCAL_CREATED_AT]);
 
         for (let i = 0; i < columns.length; i++) {
             const type: number = types[i];
@@ -344,7 +370,7 @@ export abstract class DbApiModel extends DbBaseModel {
             //format value if required
             switch (type) {
                 case DbBaseModel.TYPE_NUMBER:
-                    if (isNaN(value)) value = null;
+                    if (isNaN(value)) {value = null;}
                     break;
                 case DbBaseModel.TYPE_DATE:
                     value = this.formatApiDate(value);
@@ -395,11 +421,15 @@ export abstract class DbApiModel extends DbBaseModel {
         return this.canThereBeFiles() && !!this.downloadMapping[columnNameIndex];
     }
     /**
+     *
+     *
      * Download new files of a model
      *
-     * @param {DbApiModel} oldModel the previous values
+     *
+     *
+     * @param oldModel the previous values
      * @param authorizationToken
-     * @returns {boolean}
+     * @returns
      */
     pullFiles(oldModel: any, authorizationToken: string) {
         return new Promise(async (resolve) => {
@@ -465,7 +495,7 @@ export abstract class DbApiModel extends DbBaseModel {
             this.TABLE_NAME,
             authorizationToken
         );
-        console.log("check final path on DB----->", finalPath);
+
         if (!finalPath) {
             return false;
         }
@@ -517,7 +547,7 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     setFilePropertyForBrowser(recordedFile: RecordedFile, columnNameIndex = 0, willDeleteFile = true) {
-        console.log("check recorded file from setFileProperty method =>", recordedFile);
+        console.log('check recorded file from setFileProperty method =>', recordedFile);
 
         const modelFileMap = this.downloadMapping[columnNameIndex];
         this[modelFileMap.name] = recordedFile.uri.substring(recordedFile.uri.lastIndexOf('/') + 1);
@@ -536,7 +566,7 @@ export abstract class DbApiModel extends DbBaseModel {
 
 
     setFileProperty(recordedFile: RecordedFile, columnNameIndex = 0, willDeleteFile = true) {
-        console.log("check recorded file from setFileProperty method =>", recordedFile);
+        console.log('check recorded file from setFileProperty method =>', recordedFile);
         if (!this.isExistFileIndex(columnNameIndex)) {
             return;
         }
@@ -558,8 +588,8 @@ export abstract class DbApiModel extends DbBaseModel {
         this[modelFileMap.localPath] = recordedFile.uri;
         this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = recordedFile.uri;
 
-        console.log(" this[modelFileMap.name]", this[modelFileMap.name])
-        console.log(" this[modelFileMap.localPath]", modelFileMap.localPath, this[modelFileMap.localPath])
+        console.log(' this[modelFileMap.name]', this[modelFileMap.name]);
+        console.log(' this[modelFileMap.localPath]', modelFileMap.localPath, this[modelFileMap.localPath]);
 
         /// If exist thumbnail for file
         if (modelFileMap.thumbnail) {
@@ -722,14 +752,14 @@ export abstract class DbApiModel extends DbBaseModel {
 
         if (!this.platform.is('capacitor')) {
 
-            let url = this['preview_file_path'];
+            let url = this.preview_file_path;
 
-            if (url == undefined) {
-                url = this['thumb_attached_file_path'];
+            if (url === undefined) {
+                url = this.thumb_attached_file_path;
             }
 
-            if (url == undefined) {
-                url = this['attached_file_path'];
+            if (url === undefined) {
+                url = this.attached_file_path;
             }
             return this.downloadService.previewSecuredImage(url);
         }
@@ -749,7 +779,7 @@ export abstract class DbApiModel extends DbBaseModel {
         try {
             imageName = encodeURI(imageName);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
         return this.downloadService.getSanitizedFileUrl(imageName, this.TABLE_NAME, sanitizeType);
     }

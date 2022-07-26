@@ -84,8 +84,6 @@ export class FeedbackAddEditPage implements OnInit {
     //     this.dismiss();
     //   }
     // })
-    console.log('check model ', this.model);
-
   }
 
   @ViewChild('filePicker') filePickerRef: ElementRef<HTMLInputElement>;
@@ -185,8 +183,6 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   public openFile(basePath: string, modelName: string, title?: string) {
-    console.log('open file 1');
-
     const filePath = basePath;
     let fileTitle = 'Feedback';
     if (title) {
@@ -194,13 +190,10 @@ export class FeedbackAddEditPage implements OnInit {
     }
     if (this.downloadService.checkFileTypeByExtension(filePath, 'video') || this.downloadService.checkFileTypeByExtension(filePath, 'audio')) {
       const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
-      console.log('fileUrl for video', fileUrl);
-
       this.videoService.playVideo(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'image')) {
       this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
-      // this.photoViewer.show(this.downloadService.getNativeFilePath(basePath, modelName), fileTitle);
       const fileUrl = this.downloadService.getNativeFilePath(basePath, modelName);
       this.pictureService.openFile(fileUrl, fileTitle);
     }

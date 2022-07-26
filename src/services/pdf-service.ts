@@ -1,9 +1,12 @@
-import {Injectable} from '@angular/core';
+/* eslint-disable @typescript-eslint/member-ordering */
+
 import {AlertController, Platform} from '@ionic/angular';
-import {DownloadService} from './download-service';
-import {TranslateConfigService} from './translate-config.service';
+
 import {ApiSync} from '../providers/api-sync';
 import {AuthService} from './auth-service';
+import {DownloadService} from './download-service';
+import {Injectable} from '@angular/core';
+import {TranslateConfigService} from './translate-config.service';
 import {environment} from '../environments/environment';
 
 /**

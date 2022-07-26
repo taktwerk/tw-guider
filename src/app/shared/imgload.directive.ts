@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable max-len */
+
 import { Directive, ElementRef, Input, NgZone, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { HttpHeaders as Headers, HttpClient } from '@angular/common/http';
+
 import { HttpClient as CustomHttpClient } from '../../services/http-client';
-import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
 
 @Directive({
@@ -22,16 +24,16 @@ export class ImgloadDirective implements OnInit, OnChanges {
 
   }
   isImage(base64Data) {
-    if (base64Data == null) return false;
+    if (base64Data == null) {return false;}
 
     let mimeType = base64Data?.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
-    if (mimeType == null) return false;
+    if (mimeType == null) {return false;}
 
     mimeType = mimeType[0]?.split('/')[0];
-    if (mimeType == 'image') {
-      return true
+    if (mimeType === 'image') {
+      return true;
     }
-    return false
+    return false;
   }
 
   onLoadData() {
@@ -43,7 +45,7 @@ export class ImgloadDirective implements OnInit, OnChanges {
     // }
     if (this.platform.is('capacitor')) {
       this.ele.nativeElement.src = this.url.changingThisBreaksApplicationSecurity;
-     return
+     return;
 
     }
 
@@ -92,11 +94,8 @@ export class ImgloadDirective implements OnInit, OnChanges {
     }
 
     const headers = new Headers(headerObject);
-    console.log(this.url);
     this.http.get(this.url, { headers, observe: 'response', responseType: 'blob' }).toPromise()
       .then((response) => {
-        console.log('response 1',response);
-        
         blobToBase64(response.body).then(base64 => {
           this.zone.run(() => {
             this.ele.nativeElement.src = base64;
@@ -106,7 +105,6 @@ export class ImgloadDirective implements OnInit, OnChanges {
       })
       .catch((downloadErr) => {
         this.ele.nativeElement.src = 'assets/placeholder.jpg';
-        console.log('downloadErr', downloadErr);
       });
   }
 
