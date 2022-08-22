@@ -14,61 +14,67 @@
 
 <ion-content class="grey-background">
   <ng-container *ngIf="feedbackList">
-  <ion-item *ngFor="let feedback of feedbackList; trackBy: trackByFn">
+    <ion-item *ngFor="let feedback of feedbackList; trackBy: trackByFn">
 
-    <ion-thumbnail slot="start">
-      <div
-        *ngIf="(feedback.attached_file === null) || appSetting?.isValidHttpUrl(feedback.attached_file_path) === false">
-        <img [src]="feedback.local_attached_file" alt="" style="height: 100%; width: 100%;"
-          *ngIf="appSetting.isImage(feedback.local_attached_file)">
+      <ion-thumbnail slot="start">
+        <div
+          *ngIf="(feedback.attached_file === null) || appSetting?.isValidHttpUrl(feedback.attached_file_path) === false">
+          <img [src]="feedback.local_attached_file" alt="" style="height: 100%; width: 100%;"
+            *ngIf="appSetting.isImage(feedback.local_attached_file)">
 
-        <video controls="controls" *ngIf="appSetting.isVideo(feedback.local_attached_file)" style="height: 100%; width: 100%;">
-          <source [src]="feedback.local_attached_file" type="video/mp4">
-          <source [src]="feedback.local_attached_file" type="video/ogg">
-          Your browser does not support the HTML5 Video element.
-        </video>
-        <img src="../../assets/icon/document.png" alt="" style="height: 100%; width: 100%;" *ngIf="appSetting.isFile(feedback.local_attached_file)">
-      </div>
+          <img src="../../assets/icon/video-camera.png" alt="video icon"
+            *ngIf="appSetting.isVideo(feedback.local_attached_file)" style="height: 100%; width: 100%;">
 
-
-      <div *ngIf="(feedback.attached_file_path !== null) && appSetting?.isValidHttpUrl(feedback.attached_file_path) === true">
-        <img [src]="feedback.local_attached_file" alt="" style="height: 100%; width: 100%;"
-          *ngIf="appSetting.isImage(feedback.local_attached_file)">
-
-        <video controls="controls" *ngIf="appSetting.isVideo(feedback.local_attached_file)"
-          style="height: 100%; width: 100%;">
-          <source [src]="feedback.local_attached_file" type="video/mp4">
-          <source [src]="feedback.local_attached_file" type="video/ogg">
-          Your browser does not support the HTML5 Video element.
-        </video>
-        <img src="../../assets/icon/document.png" alt="" style="height: 100%; width: 100%;"
-          *ngIf="appSetting.isFile(feedback.local_attached_file)">
-      </div>
-
-      <ng-container *ngIf="!platform.is('capacitor') ">
-        <div *ngIf=" appSetting?.isValidHttpUrl(feedback?.attached_file_path) && isImageChange === true"
-          class="top-file">
-          <model-assetcomponent [model]="feedback" [isthumbnail]="true" style="height: 100%; width: 100%;">
-          </model-assetcomponent>
+          <!-- <video controls="controls" *ngIf="appSetting.isVideo(feedback.local_attached_file)"
+            style="height: 100%; width: 100%;">
+            <source [src]="feedback.local_attached_file" type="video/mp4">
+            <source [src]="feedback.local_attached_file" type="video/ogg">
+            Your browser does not support the HTML5 Video element.
+          </video> -->
+          <img src="../../assets/icon/document.png" alt="" style="height: 100%; width: 100%;"
+            *ngIf="appSetting.isFile(feedback.local_attached_file)">
         </div>
-      </ng-container>
 
-    </ion-thumbnail>
 
-    <ion-label>
-      <h2><span *ngIf="feedback?.title">{{ feedback?.title }}</span></h2>
-      <p>{{ (feedback?.local_created_at || feedback?.created_at) | datePipe: 'dd.MM.yyyy H:mm a' }}</p>
-      <p>{{ feedback?.description }}</p>
-      <p>{{ 'Status' | translate:params }} : {{ feedback?.status | translate:params }}</p>
-    </ion-label>
+        <div
+          *ngIf="(feedback.attached_file_path !== null) && appSetting?.isValidHttpUrl(feedback.attached_file_path) === true">
+          <img [src]="feedback.local_attached_file" alt="" style="height: 100%; width: 100%;"
+            *ngIf="appSetting.isImage(feedback.local_attached_file)">
 
-    <ion-button slot="end" fill="clear" *ngIf="feedback?.isOpenStatus()"
-      (click)="openAddEditPage(feedback[feedback?.COL_ID])">
-      <ion-icon slot="icon-only" name="create"></ion-icon>
-    </ion-button>
+          <video controls="controls" *ngIf="appSetting.isVideo(feedback.local_attached_file)"
+            style="height: 100%; width: 100%;">
+            <source [src]="feedback.local_attached_file" type="video/mp4">
+            <source [src]="feedback.local_attached_file" type="video/ogg">
+            Your browser does not support the HTML5 Video element.
+          </video>
+          <img src="../../assets/icon/document.png" alt="" style="height: 100%; width: 100%;"
+            *ngIf="appSetting.isFile(feedback.local_attached_file)">
+        </div>
 
-  </ion-item>
-</ng-container>
+        <ng-container *ngIf="!platform.is('capacitor') ">
+          <div *ngIf=" appSetting?.isValidHttpUrl(feedback?.attached_file_path) && isImageChange === true"
+            class="top-file">
+            <model-assetcomponent [model]="feedback" [isthumbnail]="true" style="height: 100%; width: 100%;">
+            </model-assetcomponent>
+          </div>
+        </ng-container>
+
+      </ion-thumbnail>
+
+      <ion-label>
+        <h2><span *ngIf="feedback?.title">{{ feedback?.title }}</span></h2>
+        <p>{{ (feedback?.local_created_at || feedback?.created_at) | datePipe: 'dd.MM.yyyy H:mm a' }}</p>
+        <p>{{ feedback?.description }}</p>
+        <p>{{ 'Status' | translate:params }} : {{ feedback?.status | translate:params }}</p>
+      </ion-label>
+
+      <ion-button slot="end" fill="clear" *ngIf="feedback?.isOpenStatus()"
+        (click)="openAddEditPage(feedback[feedback?.COL_ID])">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
+
+    </ion-item>
+  </ng-container>
 
   <div *ngIf="!feedbackList.length" [ngStyle]="{'margin': '15px', 'text-align': 'center'}">
     {{ 'feedback?.No feedbacks' | translate:params }}
