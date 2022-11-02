@@ -13,6 +13,7 @@ import { SharedModule } from '../../app/shared/shared.module';
 import { SyncSpinnerComponentModule } from '../../components/sync-spinner-component/sync-spinner-component.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { ThumbViewerModule } from 'src/components/thumb-viewer/thumb-viewer.module';
 
 @NgModule({
   declarations: [
@@ -30,10 +31,11 @@ import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-me
     TranslateModule,
     MainPipe,
     AssetviewComponentModule,
-    SharedModule
+    SharedModule,
     // FileChooser,
     // IOSFilePicker,
-    // FilePath
+    // FilePath,
+    ThumbViewerModule
   ],
   exports: [
   ],
