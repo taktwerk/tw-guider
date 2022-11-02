@@ -13,6 +13,8 @@ export class ThumbViewerComponent implements OnInit {
 
   constructor(public appSetting: AppSetting, public platform: Platform) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.obj)
+  }
 
 }

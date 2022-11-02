@@ -1,4 +1,16 @@
-<div *ngIf="(obj.attached_file === null) || appSetting?.isValidHttpUrl(obj.attached_file_path) === false">
+<div *ngIf="!platform.is('capacitor') && appSetting?.isValidHttpUrl(obj?.attached_file_path)" class="top-file">
+  <model-assetcomponent [model]="obj" [isthumbnail]="true" style="height: 100%; width: 100%;">
+  </model-assetcomponent>
+</div>
+
+
+<ng-container *ngIf="platform.is('capacitor')">
+    <ng-container *ngIf="obj.thumb_attached_file_path">
+      <img [src]="obj.thumb_attached_file_path" alt="" style="height: 100%; width: 100%;">
+    </ng-container>
+</ng-container>
+
+<!-- <div *ngIf="(obj.attached_file === null) || appSetting?.isValidHttpUrl(obj.attached_file_path) === false">
   <img [src]="obj.local_attached_file" alt="" style="height: 100%; width: 100%;"
     *ngIf="appSetting.isImage(obj.local_attached_file)">
 
@@ -7,10 +19,10 @@
 
   <img src="../../assets/icon/document.png" alt="" style="height: 100%; width: 100%;"
     *ngIf="appSetting.isFile(obj.local_attached_file)">
-</div>
+</div> -->
 
 
-<div *ngIf="(obj.attached_file_path !== null) && appSetting?.isValidHttpUrl(obj.attached_file_path) === true">
+<!-- <div *ngIf="(obj.attached_file_path !== null) && appSetting?.isValidHttpUrl(obj.attached_file_path) === true">
   <img [src]="obj.local_attached_file" alt="" style="height: 100%; width: 100%;"
     *ngIf="appSetting.isImage(obj.local_attached_file)">
 
@@ -22,11 +34,4 @@
   </video>
   <img src="../../assets/icon/document.png" alt="" style="height: 100%; width: 100%;"
     *ngIf="appSetting.isFile(obj.local_attached_file)">
-</div>
-
-<ng-container *ngIf="!platform.is('capacitor') ">
-  <div *ngIf=" appSetting?.isValidHttpUrl(obj?.attached_file_path)" class="top-file">
-    <model-assetcomponent [model]="obj" [isthumbnail]="true" style="height: 100%; width: 100%;">
-    </model-assetcomponent>
-  </div>
-</ng-container>
+</div> -->

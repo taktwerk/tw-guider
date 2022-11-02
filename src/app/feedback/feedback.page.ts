@@ -115,7 +115,6 @@ export class FeedbackPage implements OnInit, OnDestroy {
     }
 
     this.feedbackList = feedbackList;
-    console.log(this.feedbackList);
   }
 
   public openFile(basePath: string, modelName: string, title?: string) {
