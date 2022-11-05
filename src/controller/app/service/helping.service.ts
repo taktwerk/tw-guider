@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
-import { HttpClient as CustomHttpClient } from '../services/http-client';
+import { HttpClient as CustomHttpClient } from '../../../services/http-client';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { SecurityContext } from '@angular/core';
 
@@ -49,8 +49,6 @@ export class HelpingService {
           if (blob === false) {
             resolve(response.url);
           } else {
-            // var urlCreator = window.URL || window.webkitURL; 
-            // resolve(this.getSafeUrl(urlCreator.createObjectURL(response.body))); 
             blobToBase64(response.body).then(base64 => {
               resolve(base64);
             });

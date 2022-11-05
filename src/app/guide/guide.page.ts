@@ -54,7 +54,6 @@ import { GuideViewHistoryService } from '../../providers/api/guide-view-history-
 import { GuideinfoPage } from '../../components/guideinfo/guideinfo.page';
 import { GuiderModel } from '../../models/db/api/guider-model';
 import { GuiderService } from '../../providers/api/guider-service';
-import { HelpingService } from '../../controller/helping.service';
 import { HttpClient } from '../../services/http-client';
 import { MenuPopoverComponent } from '../../components/menupopover/menupopover.page';
 import { MiscService } from './../../services/misc-service';
@@ -70,6 +69,7 @@ import { VideoService } from '../../services/video-service';
 import { Viewer3dService } from '../../services/viewer-3d-service';
 import { ViewerService } from '../../services/viewer.service';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { HelpingService } from 'src/controller/app/service/helping.service';
 
 @Component({
   selector: 'app-guide',

@@ -20,8 +20,8 @@ import { LoggerService } from '../../services/logger-service';
 import { MiscService } from '../../services/misc-service';
 import { AppSetting } from 'src/services/app-setting';
 import { isPlatformBrowser } from '@angular/common';
-import { HelpingService } from 'src/controller/helping.service';
 import { ViewerService } from 'src/services/viewer.service';
+import { HelpingService } from 'src/controller/app/service/helping.service';
 
 @Component({
   selector: 'guide-step-content-component',

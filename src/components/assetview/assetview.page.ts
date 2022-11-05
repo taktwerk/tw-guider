@@ -14,13 +14,13 @@ import { File } from '@ionic-native/file/ngx';
 import { Filesystem } from '@capacitor/filesystem';
 import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
-import { HelpingService } from '../../controller/helping.service';
 import { ImageEditorComponent } from '../../components/imageeditor/imageeditor.page';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { PictureService } from '../../services/picture-service';
 import { VideoService } from '../../services/video-service';
 import { Viewer3dService } from '../../services/viewer-3d-service';
 import { ViewerService } from '../../services/viewer.service';
+import { HelpingService } from 'src/controller/app/service/helping.service';
 
 @Component({
   selector: 'model-assetcomponent',
