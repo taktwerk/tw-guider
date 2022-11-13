@@ -352,7 +352,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       this.photoViewer.show(fileUrl, fileTitle);
     } else if (this.downloadService.checkFileTypeByExtension(filePath, 'pdf')) {
       this.viewer.videoframe = {
-        url:fileUrl,
+        url: fileUrl,
         title,
         show: true
       };
@@ -433,9 +433,9 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       }
 
       // slide to step
-      this.guideStepSlides.slideTo(stepValue,0).then(async () => {
+      this.guideStepSlides.slideTo(stepValue, 0).then(async () => {
         if (stepValue !== 0) {
-          if(isToast === true){
+          if (isToast === true) {
             const alertMessage = await this.translateConfigService.translate('alert.resumed');
             this.http.showToast(alertMessage);
           }

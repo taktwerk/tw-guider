@@ -24,8 +24,8 @@ export class StateService {
 
   set role(val) {
     StoreService.set(Constants.ROLE, val);
-  }   
-      
+  }
+
   get userID() {
     return StoreService.get(Constants.USER_ID) ?? this.default.user_id
   }
