@@ -21,7 +21,7 @@ import { MiscService } from '../../services/misc-service';
 import { AppSetting } from 'src/services/app-setting';
 import { isPlatformBrowser } from '@angular/common';
 import { ViewerService } from 'src/services/viewer.service';
-import { HelpingService } from 'src/controller/app/service/helping.service';
+import { HelpingService } from 'controller/app/service/helping.service';
 
 @Component({
   selector: 'guide-step-content-component',

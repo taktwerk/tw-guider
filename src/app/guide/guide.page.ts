@@ -69,7 +69,7 @@ import { VideoService } from '../../services/video-service';
 import { Viewer3dService } from '../../services/viewer-3d-service';
 import { ViewerService } from '../../services/viewer.service';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
-import { HelpingService } from 'src/controller/app/service/helping.service';
+import { HelpingService } from 'controller/app/service/helping.service';
 
 @Component({
   selector: 'app-guide',
@@ -83,8 +83,6 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChild('guideStepSlides') guideStepSlides: IonSlides;
 
   @ViewChild('guideStepContentTemplate', { read: ViewContainerRef }) guideStepContentTemplate;
-
-
 
   swipeNext() {
     this.guideStepSlides.slideNext();

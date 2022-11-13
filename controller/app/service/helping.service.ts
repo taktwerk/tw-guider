@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
-import { HttpClient as CustomHttpClient } from '../../../services/http-client';
+import { HttpClient as CustomHttpClient } from '../../../src/services/http-client';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { SecurityContext } from '@angular/core';
 

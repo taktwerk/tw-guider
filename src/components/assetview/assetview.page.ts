@@ -20,7 +20,7 @@ import { PictureService } from '../../services/picture-service';
 import { VideoService } from '../../services/video-service';
 import { Viewer3dService } from '../../services/viewer-3d-service';
 import { ViewerService } from '../../services/viewer.service';
-import { HelpingService } from 'src/controller/app/service/helping.service';
+import { HelpingService } from 'controller/app/service/helping.service';
 
 @Component({
   selector: 'model-assetcomponent',
