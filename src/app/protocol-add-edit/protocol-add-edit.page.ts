@@ -24,6 +24,7 @@ import { WorkflowTransitionModel } from '../../models/db/api/workflow-transition
 import { WorkflowTransitionService } from '../../providers/api/workflow-transition-service';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 @Component({
   selector: 'protocol-add-edit',
@@ -42,8 +43,8 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
   public comment: string = null;
   public params;
 
-  faClock = faClock;
-  faUser = faUser;
+  faClock:IconProp = faClock as IconProp;
+  faUser:IconProp = faUser as IconProp;
 
   eventSubscription: Subscription;
 

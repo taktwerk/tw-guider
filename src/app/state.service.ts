@@ -7,7 +7,6 @@ import { Storage } from '@ionic/storage-angular';
 export class StateService implements OnInit {
 
   constructor(private store: Storage) { }
-
   async ngOnInit() {
     await this.store.create();
   }
