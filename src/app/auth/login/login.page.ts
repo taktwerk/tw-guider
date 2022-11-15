@@ -4,10 +4,10 @@ import { LoadingController, NavController } from '@ionic/angular';
 import { Component } from '@angular/core';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NgForm } from '@angular/forms';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { HttpClient } from 'src/app/library/services/http-client';
-import { AppSetting } from 'src/app/library/services/app-setting';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { AuthService } from 'app/library/services/auth-service';
+import { HttpClient } from 'app/library/services/http-client';
+import { AppSetting } from 'app/library/services/app-setting';
 
 /**
  * Generated class for the LoginPage page.

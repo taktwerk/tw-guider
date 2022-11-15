@@ -11,7 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HtmlDescriptionComponentModule } from '../html-description/html-description-component.module';
 import { SyncSpinnerComponentModule } from '../sync-spinner-component/sync-spinner-component.module';
 import { Viewer3dModelComponentModule } from '../viewer-3d-model-component/viewer-3d-model-component.module';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
   imports: [

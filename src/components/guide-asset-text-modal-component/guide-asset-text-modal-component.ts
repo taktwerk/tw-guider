@@ -2,9 +2,9 @@ import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Storage } from '@ionic/storage-angular';
-import { GuideAssetModel } from 'src/app/database/models/db/api/guide-asset-model';
-import { GuideAssetService } from 'src/app/library/providers/api/guide-asset-service';
-import { MiscService } from 'src/app/library/services/misc-service';
+import { GuideAssetModel } from 'app/database/models/db/api/guide-asset-model';
+import { GuideAssetService } from 'app/library/providers/api/guide-asset-service';
+import { MiscService } from 'app/library/services/misc-service';
 
 /**
  * Generated class for the TodoPage page.

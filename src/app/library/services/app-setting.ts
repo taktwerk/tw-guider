@@ -6,8 +6,8 @@ import { BehaviorSubject } from 'rxjs';
 import { TranslateConfigService } from './translate-config.service';
 import { config } from '../../../environments/config';
 import { MiscService } from './misc-service';
-import { AppSettingsDb } from 'src/app/database/models/db/app-settings-db';
-import { environment } from 'src/environments/environment';
+import { AppSettingsDb } from 'app/database/models/db/app-settings-db';
+import { environment } from 'environments/environment';
 
 export enum AppConfigurationModeEnum {
     ONLY_CONFIGURE,
@@ -47,18 +47,16 @@ export class AppSetting {
         public downloadService: DownloadService,
         public alertController: AlertController,
         private translateConfigService: TranslateConfigService,
-        private loggerService: LoggerService
-        , private miscService: MiscService
     ) {
         this.isWasQrCodeSetupSubscribtion = new BehaviorSubject<boolean>(false);
         // this.appSetting = new AppSettingsDb(platform, db, downloadService, loggerService, miscService);
         this.appSetting.find().then(async (result) => {
             if (result) {
                 Object.keys(result.settings).map((key) => {
-                    if (this[key] === undefined) {
+                    if ((this as any)[key] === undefined) {
                         return;
                     }
-                    this[key] = result.settings[key];
+                    (this as any)[key] = result.settings[key];
                 });
                 this.isWasQrCodeSetupSubscribtion.next(result.settings.isWasQrCodeSetup);
             } else {
@@ -71,7 +69,7 @@ export class AppSetting {
         });
     }
 
-    validateData(data) {
+    validateData(data: any) {
         const errors = [];
         if (!data) {
             errors.push('Empty data');
@@ -103,20 +101,20 @@ export class AppSetting {
         return this.host + environment.apiUrlPath;
     }
 
-    async save(data, user) {
+    async save(data: any, user: any) {
         let userSettingsObject = {};
         Object.keys(data).map((key) => {
-            if (this[key] === undefined) {
+            if ((this as any)[key] === undefined) {
                 return;
             }
-            this[key] = data[key];
-            userSettingsObject[key] = data[key];
+            (this as any)[key] = data[key];
+            (userSettingsObject as any)[key] = data[key];
         });
         if (!userSettingsObject) {
             userSettingsObject = this.defaultData;
         }
-        userSettingsObject['isEnabledUsb'] = this.isEnabledUsb;
-        userSettingsObject['usbHost'] = environment.usbHost;
+        (userSettingsObject as any)['isEnabledUsb'] = this.isEnabledUsb;
+        (userSettingsObject as any)['usbHost'] = environment.usbHost;
         this.usbHost = environment.usbHost;
         let databaseVersion = '0.0.1';
         if (config.databaseVersion) {
@@ -124,7 +122,7 @@ export class AppSetting {
         } else if (environment.dbMigrationVersion) {
             databaseVersion = '' + environment.dbMigrationVersion;
         }
-        userSettingsObject['dbMigrationVersion'] = databaseVersion;
+        (userSettingsObject as any)['dbMigrationVersion'] = databaseVersion;
         this.dbMigrationVersion = '' + databaseVersion;
 
         //  const user = await this.userService.getUser();
@@ -173,7 +171,7 @@ export class AppSetting {
         await alert.present();
     }
 
-    isFile(base64Data) {
+    isFile(base64Data: any) {
         if (base64Data == null) return false;
         if (base64Data?.includes('application/pdf')) {
             return true
@@ -182,7 +180,7 @@ export class AppSetting {
     }
 
 
-    isImage(base64Data) {
+    isImage(base64Data: any) {
         if (base64Data == null) return false;
 
         let mimeType = base64Data?.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
@@ -195,7 +193,7 @@ export class AppSetting {
         return false
     }
 
-    isVideo(base64Data) {
+    isVideo(base64Data: any) {
         if (base64Data == null) return false;
 
         let mimeType = base64Data.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
@@ -209,7 +207,7 @@ export class AppSetting {
         return false
     }
 
-    isValidHttpUrl(string) {
+    isValidHttpUrl(string: any) {
         let url;
         try {
             url = new URL(string);

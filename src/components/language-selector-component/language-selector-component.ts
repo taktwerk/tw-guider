@@ -5,10 +5,10 @@ import { IonSelect, ModalController, Platform } from '@ionic/angular';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Subscription } from 'rxjs';
 import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
-import { UserDb } from 'src/app/database/models/db/user-db';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
-import { UserService } from 'src/app/library/services/user-service';
+import { UserDb } from 'app/database/models/db/user-db';
+import { MiscService } from 'app/library/services/misc-service';
+import { TranslateConfigService } from 'app/library/services/translate-config.service';
+import { UserService } from 'app/library/services/user-service';
 
 @Component({
     selector: 'language-selector-component',

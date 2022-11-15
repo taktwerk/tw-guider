@@ -2,9 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
-import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { GuiderService } from 'src/app/library/providers/api/guider-service';
+import { GuiderModel } from 'app/database/models/db/api/guider-model';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { GuiderService } from 'app/library/providers/api/guider-service';
 
 @Component({
   selector: 'app-guideinfo',

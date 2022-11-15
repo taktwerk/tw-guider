@@ -5,10 +5,9 @@ import {
     ElementRef,
     Input,
     OnDestroy,
-    OnInit,
     ViewChild
 } from '@angular/core';
-import { Capacitor, Plugins } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -19,7 +18,7 @@ import { createGesture, GestureDetail } from '@ionic/core';
 import { Storage } from '@ionic/storage-angular';
 
 import { SkeletonUtils } from "./SkeletonUtils";
-import { Viewer3dService } from 'src/app/library/services/viewer-3d-service';
+import { Viewer3dService } from '../../app/library/services/viewer-3d-service';
 
 
 @Component({
@@ -28,13 +27,13 @@ import { Viewer3dService } from 'src/app/library/services/viewer-3d-service';
     templateUrl: 'viewer-3d-model-component.html',
 })
 export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
-    @Input() fileName: string;
+    @Input() fileName: string = '';
     @Input() backgroundColor = 'green';
     @Input() madeUserIteractions = true;
     @Input() willStopRotate = true;
     @Input() fullScreen = true;
 
-    @ViewChild('domObj') domObj: ElementRef;
+    @ViewChild('domObj') domObj!: ElementRef;
 
     isInit = false;
     isRendered = false;
@@ -49,7 +48,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     renderer: any;
     gltfScene: any;
     pivot: any;
-    requestAnimationFrameId: number;
+    requestAnimationFrameId: number = 0;
 
     /// new
     ctx: any;
@@ -135,7 +134,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
             loader.setDRACOLoader(dracoLoader);
             console.log(bufferData)
             loader.parse(bufferData, '',
-                (gltf) => {
+                (gltf: any) => {
                     this.gltfScene = gltf.scene;
                     console.log(this.gltfScene)
                     THREE.Cache.enabled = true;
@@ -145,7 +144,7 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
                     this.storage.set(this.fileName, sceneSkeleton.toJSON());
                     this.renderModel();
                 },
-                (error) => {
+                (error: any) => {
                     console.log('gltfError', error);
                 }
             );
@@ -337,8 +336,6 @@ export class Viewer3dModelComponent implements AfterViewChecked, OnDestroy {
     }
 
     detectChanges() {
-        if (!this.changeDetectorRef['destroyed']) {
-            this.changeDetectorRef.detectChanges();
-        }
+      this.changeDetectorRef.detectChanges();
     }
 }

@@ -1,13 +1,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { ProtocolDefaultModel } from 'src/app/database/models/db/api/protocol-default-model';
-import { ProtocolModel } from 'src/app/database/models/db/api/protocol-model';
-import { ProtocolDefaultService } from 'src/app/library/providers/api/protocol-default-service';
-import { ProtocolService } from 'src/app/library/providers/api/protocol-service';
-import { DownloadService } from 'src/app/library/services/download-service';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
+import { ProtocolDefaultModel } from 'app/database/models/db/api/protocol-default-model';
+import { ProtocolModel } from 'app/database/models/db/api/protocol-model';
+import { ProtocolDefaultService } from 'app/library/providers/api/protocol-default-service';
+import { ProtocolService } from 'app/library/providers/api/protocol-service';
+import { DownloadService } from 'app/library/services/download-service';
+import { MiscService } from 'app/library/services/misc-service';
+import { TranslateConfigService } from 'app/library/services/translate-config.service';
 
 @Component({
     selector: 'protocol-default-component',

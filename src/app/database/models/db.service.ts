@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { DbProvider } from 'src/app/library/providers/db-provider';
-import { DownloadService } from 'src/app/library/services/download-service';
-import { LoggerService } from 'src/app/library/services/logger-service';
-import { MiscService } from 'src/app/library/services/misc-service';
+import { DbProvider } from 'app/library/providers/db-provider';
+import { DownloadService } from 'app/library/services/download-service';
+import { LoggerService } from 'app/library/services/logger-service';
+import { MiscService } from 'app/library/services/misc-service';
 
 declare var window;
 

@@ -5,23 +5,23 @@ import { Injectable } from '@angular/core';
 })
 export class ViewerService {
 
-  photoframe = {
+  photoframe: any = {
     show: false,
     url: null,
     title: ''
   };
 
-  videoframe = {
+  videoframe: any = {
     show: false,
     url: null,
     title: ''
   };
 
-  pdfframe = {
+  pdfframe: any = {
     show: false,
     url: null,
     title: ''
   };
-  
+
   constructor() { }
 }

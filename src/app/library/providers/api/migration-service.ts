@@ -4,7 +4,7 @@ import { ApiService } from './base/api-service';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
 import { AppSetting } from '../../services/app-setting';
-import { MigrationModel } from 'src/app/database/models/db/migration-model';
+import { MigrationModel } from 'app/database/models/db/migration-model';
 
 @Injectable()
 export class MigrationService extends ApiService {

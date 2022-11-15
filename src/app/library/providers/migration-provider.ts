@@ -23,7 +23,7 @@ import { SyncIndexService } from './api/sync-index-service';
 import { WorkflowService } from './api/workflow-service';
 import { WorkflowStepService } from './api/workflow-step-service';
 import { WorkflowTransitionService } from './api/workflow-transition-service';
-import { AuthDb } from 'src/app/database/models/db/auth-db';
+import { AuthDb } from 'app/database/models/db/auth-db';
 
 @Injectable()
 export class MigrationProvider {
@@ -83,12 +83,12 @@ export class MigrationProvider {
   async checkAuthMigration() {
     // auth group column exist?
     // check auth table exist == safety check
-    this.migration.dbModelApi.checkTableExit('auth').then(async tableRes => {
+    this.migration.dbModelApi.checkTableExit('auth').then(async (tableRes:any) => {
       // check all auth TABLE attributes exist
       // get migrations list
       const migrations = this.authDb.migrations;
       migrations.map(async (m, i) => {
-        const migrationInstance = new migrationList[m](this.authDb);
+        const migrationInstance = new (migrationList as any)[m](this.authDb);
         // execute migration
         const isExecutedMigration = await migrationInstance.execute();
         // console.log('Auth isExecutedMigration ', isExecutedMigration);
@@ -135,17 +135,17 @@ export class MigrationProvider {
   }
 
   async addMigrations() {
-    const migrationModels = [];
+    const migrationModels: any = [];
     Object.keys(this.modelsServices).forEach(async (modelKey) => {
       const service = this.modelsServices[modelKey];
-      let modelMigrations;
+      let modelMigrations: any;
       if (service.TAG === 'AuthDb') {
         modelMigrations = service.migrations;
       }
       else {
         modelMigrations = service.dbModelApi.migrations;
       }
-      let tableName;
+      let tableName: any;
       if (service.TAG === 'AuthDb') {
         tableName = service.TABLE_NAME;
       }
@@ -179,7 +179,7 @@ export class MigrationProvider {
   }
 
   async executeMigrations() {
-    const dbServices = [];
+    const dbServices:any = [];
     Object.keys(this.modelsServices).forEach(async (modelKey) => { dbServices.push(this.modelsServices[modelKey]); });
 
     for (let i = 0; i < dbServices.length; i++) {
@@ -228,13 +228,13 @@ export class MigrationProvider {
 
     for (let i = 0; i < migrations.length; i++) {
       // console.log(migrations[i])
-      const className = migrations[i].name;
+      const className:any = migrations[i].name;
 
       let isExecutedMigration = false;
 
-      if (migrationList[className]) {
+      if ((migrationList as any)[className]) {
         const service = this.modelsServices[migrations[i].table_name];
-        const migrationInstance = new migrationList[className](service);
+        const migrationInstance = new (migrationList as any)[className](service);
         // console.log("migrationInstance ", migrationInstance);
         isExecutedMigration = await migrationInstance.execute();
       }
@@ -254,11 +254,11 @@ export class MigrationProvider {
         condition.push(['table_name', tableName]);
       }
 
-      this.migration.dbModelApi.searchAll(condition).then((res) => {
+      this.migration.dbModelApi.searchAll(condition).then((res: any) => {
         resolve(res);
         // console.log("this.migration.dbModelApi.searchAll", res);
       })
-        .catch((err) => {
+        .catch((err: any) => {
           console.log('this.migration.dbModelApi.searchAll Error ', err);
           resolve([]);
         });

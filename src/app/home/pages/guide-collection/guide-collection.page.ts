@@ -3,15 +3,15 @@ import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { LoadingController, Platform } from '@ionic/angular';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { GuideCategoryModel } from 'src/app/database/models/db/api/guide-category-model';
-import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
-import { GuideCategoryBindingService } from 'src/app/library/providers/api/guide-category-binding-service';
-import { GuideCategoryService } from 'src/app/library/providers/api/guide-category-service';
-import { GuideChildService } from 'src/app/library/providers/api/guide-child-service';
-import { GuiderService } from 'src/app/library/providers/api/guider-service';
-import { ProtocolTemplateService } from 'src/app/library/providers/api/protocol-template-service';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { MiscService } from 'src/app/library/services/misc-service';
+import { GuideCategoryModel } from 'app/database/models/db/api/guide-category-model';
+import { GuiderModel } from 'app/database/models/db/api/guider-model';
+import { GuideCategoryBindingService } from 'app/library/providers/api/guide-category-binding-service';
+import { GuideCategoryService } from 'app/library/providers/api/guide-category-service';
+import { GuideChildService } from 'app/library/providers/api/guide-child-service';
+import { GuiderService } from 'app/library/providers/api/guider-service';
+import { ProtocolTemplateService } from 'app/library/providers/api/protocol-template-service';
+import { AuthService } from 'app/library/services/auth-service';
+import { MiscService } from 'app/library/services/misc-service';
 
 @Component({
   selector: 'guide-collection-page',

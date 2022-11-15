@@ -3,11 +3,10 @@
 /* eslint-disable @angular-eslint/component-selector */
 
 import { AfterViewChecked, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { ModalController, Platform, ToastController, } from '@ionic/angular';
-import { Storage } from '@ionic/storage-angular';
-import { DownloadService } from 'src/app/library/services/download-service';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
+import { ModalController, Platform } from '@ionic/angular';
+import { DownloadService } from 'app/library/services/download-service';
+import { MiscService } from 'app/library/services/misc-service';
+import { TranslateConfigService } from 'app/library/services/translate-config.service';
 
 @Component({
   selector: 'draw-image-modal-component',

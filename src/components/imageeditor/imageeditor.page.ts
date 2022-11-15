@@ -6,26 +6,23 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @angular-eslint/component-selector */
 
-import * as tui from 'tui-image-editor/dist/tui-image-editor';
+const tui = require('tui-image-editor')
 
 import { Component, Input, OnInit } from '@angular/core';
 import { LoadingController, ModalController, Platform } from '@ionic/angular';
-
-import { Location } from '@angular/common';
 import { Storage } from '@ionic/storage-angular';
 import { File as nFile } from '@ionic-native/file/ngx';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { GuideStepService } from 'src/app/library/providers/api/guide-step-service';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { DownloadService, RecordedFile } from 'src/app/library/services/download-service';
-import { MiscService } from 'src/app/library/services/misc-service';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { GuideStepService } from 'app/library/providers/api/guide-step-service';
+import { AuthService } from 'app/library/services/auth-service';
+import { DownloadService, RecordedFile } from 'app/library/services/download-service';
+import { MiscService } from 'app/library/services/misc-service';
 
 interface CustomControls {
-  name: string;
-  icon: string;
+  name: any;
+  icon: any;
   subControls?: CustomControls[];
 }
-
 
 @Component({
   selector: 'text-editor',
@@ -34,19 +31,18 @@ interface CustomControls {
 })
 export class ImageEditorComponent implements OnInit {
 
-  @Input() model;
+  @Input() model: any;
 
   // ImageEditor: any;
   editor: any;
   ImageEditor: any;
-  iCanvas;
-  loading = (message?) => this.loadingController.create({ duration: 2000, message: message || 'Please wait' });
-  canvasFile;
-
+  iCanvas: any;
+  loading = (message: any) => this.loadingController.create({ duration: 2000, message: message || 'Please wait' });
+  canvasFile: any;
   currentControl: CustomControls = { name: null, icon: null };
   currentSubControl: CustomControls = { name: null, icon: null };
 
-  selectedAnnotation = null;
+  selectedAnnotation: any = null;
   willRedo = false;
   willUndo = false;
 
@@ -143,7 +139,7 @@ export class ImageEditorComponent implements OnInit {
 
 
       // });
-      (await this.loading()).dismiss();
+      (await this.loading('')).dismiss();
     }, 200);
 
     if (this.editor._invoker._undoStack.length > 1) {
@@ -153,15 +149,15 @@ export class ImageEditorComponent implements OnInit {
       this.willRedo = true;
     }
 
-    this.editor.on('objectAdded', (props) => { });
+    this.editor.on('objectAdded', (props: any) => { });
 
-    this.editor.on('mousedown', (e) => { });
+    this.editor.on('mousedown', (e: any) => { });
 
-    this.editor.on('objectActivated', (props) => {
+    this.editor.on('objectActivated', (props: any) => {
       this.selectedAnnotation = props;
     });
 
-    this.editor.on('redoStackChanged', (length) => {
+    this.editor.on('redoStackChanged', (length: any) => {
       console.log('redoStackChanged', length);
       if (this.editor.isEmptyRedoStack()) {
         this.willRedo = false;
@@ -170,7 +166,7 @@ export class ImageEditorComponent implements OnInit {
       }
     });
 
-    this.editor.on('undoStackChanged', (length) => {
+    this.editor.on('undoStackChanged', (length: any) => {
       console.log('undoStackChanged', length);
       if (this.editor._invoker._undoStack.length === 1 || length === 1) {
         this.willUndo = false;
@@ -243,11 +239,11 @@ export class ImageEditorComponent implements OnInit {
   }
 
   deleteSelected() {
-    this.editor.removeObject(this.selectedAnnotation.id)
+    this.editor.removeObject(this.selectedAnnotation?.id)
       .then(() => {
         this.selectedAnnotation = null;
       })
-      .catch((e) => console.log('delete error', e));
+      .catch((e: any) => console.log('delete error', e));
   }
 
   closeControl() {
@@ -257,7 +253,7 @@ export class ImageEditorComponent implements OnInit {
     this.currentSubControl = { name: null, icon: null };
   }
 
-  onChange(e) {
+  onChange(e: any) {
     console.log(e);
   }
 
@@ -283,7 +279,7 @@ export class ImageEditorComponent implements OnInit {
 
     const xhr = new XMLHttpRequest();
     let originalImageDataUrl;
-    let originalImageDataUrlBlob;
+    let originalImageDataUrlBlob: any;
     xhr.onload = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -314,15 +310,15 @@ export class ImageEditorComponent implements OnInit {
             this.model.setFile(recordedFile);
 
             setTimeout(() => {
-              this.guideStepService.save(this.model).then(async (res) => {
+              this.guideStepService.save(this.model).then(async (res: any) => {
                 this.apiSync.setIsPushAvailableData(true);
 
                 this.storage.set('ImageEditorComponentOpen', false);
-                (await this.loading()).dismiss({ canvasSaved: true });
+                (await this.loading('')).dismiss({ canvasSaved: true });
                 this.miscService.events.next({ TAG: this.guideStepService.dbModelApi.TAG + ':update' });
 
                 await this.modalController.dismiss();
-              }).catch((e) => console.log(e));
+              }).catch((e: any) => console.log(e));
             }, 300);
           }).catch((e) => console.log(e));
         }).catch((e) => console.log(e));
@@ -330,12 +326,12 @@ export class ImageEditorComponent implements OnInit {
     }
   }
 
-  base64ToBlob(data) {
+  base64ToBlob(data: any) {
     const rImageType = /data:(image\/.+);base64,/;
     let mimeString = '';
     let raw; let uInt8Array; let i; let rawLength;
 
-    raw = data.replace(rImageType, (header, imageType) => {
+    raw = data.replace(rImageType, (header: any, imageType: any) => {
       mimeString = imageType;
       return '';
     });

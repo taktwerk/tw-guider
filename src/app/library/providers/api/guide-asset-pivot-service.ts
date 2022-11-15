@@ -3,7 +3,7 @@ import { ApiService } from './base/api-service';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
 import { AppSetting } from '../../services/app-setting';
-import { GuideAssetPivotModel } from 'src/app/database/models/db/api/guide-asset-pivot-model';
+import { GuideAssetPivotModel } from 'app/database/models/db/api/guide-asset-pivot-model';
 
 @Injectable()
 export class GuideAssetPivotService extends ApiService {

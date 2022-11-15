@@ -8,12 +8,12 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ThumbViewerModule } from 'src/components/thumb-viewer/thumb-viewer.module';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from 'app/shared/shared.module';
 import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
 import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { LanguageSelectorComponentModule } from 'src/components/language-selector-component/language-selector-component.module';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
-import { MainPipe } from 'src/app/library/pipes/main-pipe.module';
+import { MainPipe } from 'app/library/pipes/main-pipe.module';
 
 @NgModule({
   declarations: [

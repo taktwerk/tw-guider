@@ -7,7 +7,7 @@ import { IonSegment } from '@ionic/angular';
 import { NGXLogger } from 'ngx-logger';
 import { Subscription } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { LoggerService } from 'src/app/library/services/logger-service';
+import { LoggerService } from 'app/library/services/logger-service';
 
 @Component({
   selector: 'app-logs',

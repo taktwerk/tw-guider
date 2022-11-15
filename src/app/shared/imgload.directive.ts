@@ -4,7 +4,7 @@
 import { Directive, ElementRef, Input, NgZone, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { HttpHeaders as Headers, HttpClient } from '@angular/common/http';
 
-import { HttpClient as CustomHttpClient } from 'src/app/library/services/http-client';
+import { HttpClient as CustomHttpClient } from 'app/library/services/http-client';
 import { Platform } from '@ionic/angular';
 
 @Directive({
@@ -23,7 +23,7 @@ export class ImgloadDirective implements OnInit, OnChanges {
     this.onLoadData();
 
   }
-  isImage(base64Data) {
+  isImage(base64Data:any) {
     if (base64Data == null) {return false;}
 
     let mimeType = base64Data?.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
@@ -55,7 +55,7 @@ export class ImgloadDirective implements OnInit, OnChanges {
     //   return;
     // }
 
-    const blobToBase64 = (blob) => new Promise((resolve, _) => {
+    const blobToBase64 = (blob: any) => new Promise((resolve, _) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result);
       reader.readAsDataURL(blob);

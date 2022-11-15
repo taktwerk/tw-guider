@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, ɵDomSanitizerImpl } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { SecurityContext } from '@angular/core';
-import { HttpClient as CustomHttpClient } from 'src/app/library/services/http-client';
+import { HttpClient as CustomHttpClient } from 'app/library/services/http-client';
 
 @Injectable({
   providedIn: 'root'

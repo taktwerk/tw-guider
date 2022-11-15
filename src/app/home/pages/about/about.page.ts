@@ -5,7 +5,7 @@ import { Platform } from '@ionic/angular';
 import { config } from '../../../../environments/config';
 import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import { Capacitor } from '@capacitor/core';
-import { AuthService } from 'src/app/library/services/auth-service';
+import { AuthService } from 'app/library/services/auth-service';
 
 /**
  * Generated class for the ProfilePage page.

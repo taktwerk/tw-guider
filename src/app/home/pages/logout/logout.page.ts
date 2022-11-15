@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { HttpClient } from 'src/app/library/services/http-client';
+import { AuthService } from 'app/library/services/auth-service';
+import { HttpClient } from 'app/library/services/http-client';
 
 @Component({
   selector: 'page-logout',

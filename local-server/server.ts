@@ -19,7 +19,7 @@ const requestHandler = {
 export default requestHandler;
 
 
-const processRequest = (url = '', data = null, type) => {
+const processRequest = (url = '', data = null, type: 'get'| 'post' | 'put' | 'delete') => {
   const urlParams =  new URLSearchParams(window.location.search);
 
   let response = { status: 'Error', data: null }

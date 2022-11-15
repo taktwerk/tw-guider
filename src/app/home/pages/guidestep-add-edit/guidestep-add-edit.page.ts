@@ -9,19 +9,19 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { isPlatformBrowser } from '@angular/common';
 import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 import { AppSetting } from 'local-server/models/app-setting';
-import { GuideStepModel } from 'src/app/database/models/db/api/guide-step-model';
-import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { GuideStepService } from 'src/app/library/providers/api/guide-step-service';
-import { GuiderService } from 'src/app/library/providers/api/guider-service';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { DownloadService } from 'src/app/library/services/download-service';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { PictureService } from 'src/app/library/services/picture-service';
-import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
-import { UserService } from 'src/app/library/services/user-service';
-import { VideoService } from 'src/app/library/services/video-service';
-import { HttpClient } from 'src/app/library/services/http-client';
+import { GuideStepModel } from 'app/database/models/db/api/guide-step-model';
+import { GuiderModel } from 'app/database/models/db/api/guider-model';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { GuideStepService } from 'app/library/providers/api/guide-step-service';
+import { GuiderService } from 'app/library/providers/api/guider-service';
+import { AuthService } from 'app/library/services/auth-service';
+import { DownloadService } from 'app/library/services/download-service';
+import { MiscService } from 'app/library/services/misc-service';
+import { PictureService } from 'app/library/services/picture-service';
+import { TranslateConfigService } from 'app/library/services/translate-config.service';
+import { UserService } from 'app/library/services/user-service';
+import { VideoService } from 'app/library/services/video-service';
+import { HttpClient } from 'app/library/services/http-client';
 
 @Component({
   selector: 'app-guidestep-add-edit',

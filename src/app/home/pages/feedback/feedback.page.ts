@@ -9,14 +9,14 @@ import { Subscription } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { DatePipe } from '@angular/common';
 import { AppSetting } from 'local-server/models/app-setting';
-import { FeedbackModel } from 'src/app/database/models/db/api/feedback-model';
-import { FeedbackService } from 'src/app/library/providers/api/feedback-service';
-import { SyncIndexService } from 'src/app/library/providers/api/sync-index-service';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { DownloadService } from 'src/app/library/services/download-service';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { PictureService } from 'src/app/library/services/picture-service';
-import { VideoService } from 'src/app/library/services/video-service';
+import { FeedbackModel } from 'app/database/models/db/api/feedback-model';
+import { FeedbackService } from 'app/library/providers/api/feedback-service';
+import { SyncIndexService } from 'app/library/providers/api/sync-index-service';
+import { AuthService } from 'app/library/services/auth-service';
+import { DownloadService } from 'app/library/services/download-service';
+import { MiscService } from 'app/library/services/misc-service';
+import { PictureService } from 'app/library/services/picture-service';
+import { VideoService } from 'app/library/services/video-service';
 @Component({
   selector: 'feedback-page',
   templateUrl: 'feedback.page.html',

@@ -6,8 +6,8 @@ import { HttpClient } from '../../services/http-client';
 import { DownloadService } from '../../services/download-service';
 import { AppSetting } from '../../services/app-setting';
 import { WorkflowTransitionService } from './workflow-transition-service';
-import { WorkflowStepModel } from 'src/app/database/models/db/api/workflow-step-model';
-import { WorkflowTransitionModel } from 'src/app/database/models/db/api/workflow-transition-model';
+import { WorkflowStepModel } from 'app/database/models/db/api/workflow-step-model';
+import { WorkflowTransitionModel } from 'app/database/models/db/api/workflow-transition-model';
 
 @Injectable()
 export class WorkflowStepService extends ApiService {

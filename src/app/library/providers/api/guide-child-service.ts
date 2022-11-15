@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './base/api-service';
 import { HttpClient } from '../../services/http-client';
 import { AppSetting } from '../../services/app-setting';
-import { GuideChildModel } from 'src/app/database/models/db/api/guide-child-model';
+import { GuideChildModel } from 'app/database/models/db/api/guide-child-model';
 
 @Injectable()
 export class GuideChildService extends ApiService {

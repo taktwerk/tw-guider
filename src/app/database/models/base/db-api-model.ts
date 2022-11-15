@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { RecordedFile } from 'src/app/library/services/download-service';
+import { RecordedFile } from 'app/library/services/download-service';
 import { DbBaseModel } from './db-base-model';
 
 export class BaseFileMapInModel {

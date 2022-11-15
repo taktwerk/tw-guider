@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './base/api-service';
 import { HttpClient } from '../../services/http-client';
 import { AppSetting } from '../../services/app-setting';
-import { GuideCategoryBindingModel } from 'src/app/database/models/db/api/guide-category-binding-model';
+import { GuideCategoryBindingModel } from 'app/database/models/db/api/guide-category-binding-model';
 
 @Injectable()
 export class GuideCategoryBindingService extends ApiService {

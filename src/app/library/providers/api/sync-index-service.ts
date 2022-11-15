@@ -3,7 +3,7 @@ import { ApiService } from './base/api-service';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
 import { AppSetting } from '../../services/app-setting';
-import { SyncIndexModel } from 'src/app/database/models/db/api/sync-index-model';
+import { SyncIndexModel } from 'app/database/models/db/api/sync-index-model';
 
 @Injectable()
 export class SyncIndexService extends ApiService {

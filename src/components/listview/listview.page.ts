@@ -4,16 +4,16 @@ import { ItemReorderEventDetail } from '@ionic/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AlertController, IonItem, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { GuideAssetModelFileMapIndexEnum } from 'src/app/database/models/db/api/guide-asset-model';
-import { GuideStepModel } from 'src/app/database/models/db/api/guide-step-model';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { GuideAssetPivotService } from 'src/app/library/providers/api/guide-asset-pivot-service';
-import { GuideAssetService } from 'src/app/library/providers/api/guide-asset-service';
-import { GuideStepService } from 'src/app/library/providers/api/guide-step-service';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
-import { HttpClient } from 'src/app/library/services/http-client';
+import { GuideAssetModelFileMapIndexEnum } from 'app/database/models/db/api/guide-asset-model';
+import { GuideStepModel } from 'app/database/models/db/api/guide-step-model';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { GuideAssetPivotService } from 'app/library/providers/api/guide-asset-pivot-service';
+import { GuideAssetService } from 'app/library/providers/api/guide-asset-service';
+import { GuideStepService } from 'app/library/providers/api/guide-step-service';
+import { AuthService } from 'app/library/services/auth-service';
+import { MiscService } from 'app/library/services/misc-service';
+import { TranslateConfigService } from 'app/library/services/translate-config.service';
+import { HttpClient } from 'app/library/services/http-client';
 
 @Component({
   selector: 'listview-component',

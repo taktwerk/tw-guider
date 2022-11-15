@@ -39,7 +39,7 @@ export class CustomLoggerMonitor implements INGXLoggerMonitor {
 @Injectable({ providedIn: 'root' })
 export class LoggerService {
   public Logs: NGXLogger[] = [];
-  public LogsSub = new BehaviorSubject<NGXLogger[]>(null);
+  public LogsSub = new BehaviorSubject<NGXLogger[] | null>(null);
 
 
   constructor(private logger: NGXLogger, public file: File, public platform: Platform) {
@@ -75,7 +75,7 @@ export class LoggerService {
   /**
    * appends log message to file
    */
-  public async writeToFile(log) {
+  public async writeToFile(log: any) {
 
     if(this.platform.is('capacitor')) {
       if (typeof log != 'string') {

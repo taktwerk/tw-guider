@@ -10,7 +10,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AppSetting } from '../../services/app-setting';
 import { LoggerService } from '../../services/logger-service';
 import { MiscService } from '../../services/misc-service';
-import { GuideStepModel } from 'src/app/database/models/db/api/guide-step-model';
+import { GuideStepModel } from 'app/database/models/db/api/guide-step-model';
 
 @Injectable()
 export class GuideStepService extends ApiService {

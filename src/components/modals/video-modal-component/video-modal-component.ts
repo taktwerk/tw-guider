@@ -5,8 +5,8 @@ import { Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } fr
 import { ModalController, Platform } from '@ionic/angular';
 import { StreamingMedia, StreamingVideoOptions } from '@awesome-cordova-plugins/streaming-media/ngx';
 import { Storage } from '@ionic/storage-angular';
-import { DownloadService } from 'src/app/library/services/download-service';
-import { ToastService } from 'src/app/library/services/toast-service';
+import { DownloadService } from 'app/library/services/download-service';
+import { ToastService } from 'app/library/services/toast-service';
 
 @Component({
     selector: 'video-modal-component',

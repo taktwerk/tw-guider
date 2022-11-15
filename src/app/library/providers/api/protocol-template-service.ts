@@ -4,8 +4,8 @@ import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
 import { AppSetting } from '../../services/app-setting';
 import { WorkflowStepService } from './workflow-step-service';
-import { ProtocolTemplateModel } from 'src/app/database/models/db/api/protocol-template-model';
-import { AuthDb } from 'src/app/database/models/db/auth-db';
+import { ProtocolTemplateModel } from 'app/database/models/db/api/protocol-template-model';
+import { AuthDb } from 'app/database/models/db/auth-db';
 
 @Injectable()
 export class ProtocolTemplateService extends ApiService {

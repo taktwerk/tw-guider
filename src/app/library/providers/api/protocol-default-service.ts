@@ -12,9 +12,9 @@ import { ProtocolTemplateService } from './protocol-template-service';
 import { TranslateConfigService } from '../../services/translate-config.service';
 import { Md5 } from 'ts-md5/dist/md5';
 import { MiscService } from '../../services/misc-service';
-import { ProtocolDefaultModel } from 'src/app/database/models/db/api/protocol-default-model';
-import { ProtocolModel } from 'src/app/database/models/db/api/protocol-model';
-import { ProtocolTemplateModel } from 'src/app/database/models/db/api/protocol-template-model';
+import { ProtocolDefaultModel } from 'app/database/models/db/api/protocol-default-model';
+import { ProtocolModel } from 'app/database/models/db/api/protocol-model';
+import { ProtocolTemplateModel } from 'app/database/models/db/api/protocol-template-model';
 
 @Injectable()
 export class ProtocolDefaultService extends ApiService {

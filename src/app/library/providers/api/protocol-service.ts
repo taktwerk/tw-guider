@@ -10,8 +10,8 @@ import { ProtocolDefaultService } from './protocol-default-service';
 import { ProtocolCommentService } from './protocol-comment-service';
 import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
-import { ProtocolModel } from 'src/app/database/models/db/api/protocol-model';
-import { AuthDb } from 'src/app/database/models/db/auth-db';
+import { ProtocolModel } from 'app/database/models/db/api/protocol-model';
+import { AuthDb } from 'app/database/models/db/auth-db';
 
 @Injectable()
 export class ProtocolService extends ApiService {

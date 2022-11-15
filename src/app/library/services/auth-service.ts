@@ -15,9 +15,9 @@ import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { TranslateConfigService } from './translate-config.service';
 import { UserService } from './user-service';
-import { AuthDb } from 'src/app/database/models/db/auth-db';
-import { UserDb } from 'src/app/database/models/db/user-db';
-import { UserSetting } from 'src/app/database/models/user-setting';
+import { AuthDb } from 'app/database/models/db/auth-db';
+import { UserDb } from 'app/database/models/db/user-db';
+import { UserSetting } from 'app/database/models/user-setting';
 
 @Injectable()
 export class AuthService implements OnInit {

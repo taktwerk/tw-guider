@@ -20,17 +20,17 @@ export class MiscService implements OnInit {
         await this.storage.create();
     }
 
-    public set_guideShown(guideId) {
+    public set_guideShown(guideId: any) {
         this.storage.create();
         this.storage.set(guideId, true);
     }
 
-    public unset_guideShown(value) {
+    public unset_guideShown(value:any) {
         this.storage.create();
         this.storage.set(value, false);
     }
 
-    public get_guideShown(guideId) {
+    public get_guideShown(guideId: any) {
         this.storage.create();
         return this.storage.get(guideId);
     }

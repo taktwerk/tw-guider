@@ -13,7 +13,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { File } from '@ionic-native/file/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from 'app/shared/shared.module';
 import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
 import { HtmlDescriptionComponentModule } from 'src/components/html-description/html-description-component.module';
 import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';

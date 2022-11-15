@@ -4,7 +4,7 @@ import { ApiService } from './base/api-service';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
 import { AppSetting } from '../../services/app-setting';
-import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
+import { GuiderModel } from 'app/database/models/db/api/guider-model';
 
 @Injectable()
 export class GuiderService extends ApiService {

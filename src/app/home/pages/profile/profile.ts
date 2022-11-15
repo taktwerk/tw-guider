@@ -2,9 +2,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { AppSetting } from 'src/app/library/services/app-setting';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { MiscService } from 'src/app/library/services/misc-service';
+import { AppSetting } from 'app/library/services/app-setting';
+import { AuthService } from 'app/library/services/auth-service';
+import { MiscService } from 'app/library/services/misc-service';
 
 @Component({
     selector: 'page-profile',

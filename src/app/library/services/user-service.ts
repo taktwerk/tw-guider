@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { UserDb } from 'src/app/database/models/db/user-db';
+import { UserDb } from 'app/database/models/db/user-db';
 
 @Injectable()
 export class UserService {

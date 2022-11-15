@@ -9,9 +9,9 @@ import { HttpClient } from '../../services/http-client';
 import { DownloadService } from '../../services/download-service';
 import { AppSetting } from '../../services/app-setting';
 import { MiscService } from '../../services/misc-service';
-import { GuideCategoryModel } from 'src/app/database/models/db/api/guide-category-model';
-import { DbBaseModel } from 'src/app/database/models/base/db-base-model';
-import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
+import { GuideCategoryModel } from 'app/database/models/db/api/guide-category-model';
+import { DbBaseModel } from 'app/database/models/base/db-base-model';
+import { GuiderModel } from 'app/database/models/db/api/guider-model';
 
 @Injectable()
 export class GuideCategoryService extends ApiService {

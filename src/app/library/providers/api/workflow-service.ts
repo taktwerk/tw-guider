@@ -4,7 +4,7 @@ import { ApiService } from './base/api-service';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
 import { AppSetting } from '../../services/app-setting';
-import { WorkflowModel } from 'src/app/database/models/db/api/workflow-model';
+import { WorkflowModel } from 'app/database/models/db/api/workflow-model';
 
 @Injectable()
 export class WorkflowService extends ApiService {

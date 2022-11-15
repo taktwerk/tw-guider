@@ -8,8 +8,8 @@ import { HttpClient } from '../../services/http-client';
 import { DownloadService } from '../../services/download-service';
 import { AppSetting } from '../../services/app-setting';
 import { GuiderService } from './guider-service';
-import { GuideViewHistoryModel } from 'src/app/database/models/db/api/guide-view-history-model';
-import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
+import { GuideViewHistoryModel } from 'app/database/models/db/api/guide-view-history-model';
+import { GuiderModel } from 'app/database/models/db/api/guider-model';
 
 @Injectable()
 export class GuideViewHistoryService extends ApiService {

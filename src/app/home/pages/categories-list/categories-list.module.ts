@@ -14,7 +14,7 @@ import { ionMenuWithSyncIndicatorComponentModule } from '../../../../components/
 import { SyncModalComponentModule } from 'src/components/sync-modal-component/sync-modal-component.module';
 import { File } from '@ionic-native/file/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { MainPipe } from 'src/app/library/pipes/main-pipe.module';
+import { MainPipe } from 'app/library/pipes/main-pipe.module';
 
 @NgModule({
     imports: [

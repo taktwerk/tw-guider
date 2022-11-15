@@ -4,9 +4,9 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { GuideStepModel } from 'src/app/database/models/db/api/guide-step-model';
-import { GuideStepService } from 'src/app/library/providers/api/guide-step-service';
-import { AuthService } from 'src/app/library/services/auth-service';
+import { GuideStepModel } from 'app/database/models/db/api/guide-step-model';
+import { GuideStepService } from 'app/library/providers/api/guide-step-service';
+import { AuthService } from 'app/library/services/auth-service';
 
 @Component({
   selector: 'app-editguide',

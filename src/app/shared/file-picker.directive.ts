@@ -19,7 +19,7 @@ import { DOCUMENT } from '@angular/common';
 })
 export class FilePickerDirective implements OnDestroy, OnChanges {
 
-  private _form: HTMLFormElement;
+  private _form!: HTMLFormElement;
 
   /**
    * Prevent dragover event so drop events register.
@@ -36,7 +36,7 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
   @HostListener('drop', ['$event'])
   _drop(event: DragEvent) {
     event.preventDefault();
-    const files = event.dataTransfer.files;
+    const files = event?.dataTransfer?.files;
     this._nativeFileElement.files = files;
     this._onFilesChanged();
   }
@@ -87,7 +87,8 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
   get nativeFileElement() {
     return this._nativeFileElement;
   }
-  private _nativeFileElement: HTMLInputElement;
+
+  private _nativeFileElement!: any;
 
   private _onFilesChanged = () => {
     this.filesChanged.emit(this._nativeFileElement.files);
@@ -107,7 +108,7 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.multiple) {
+    if (changes) {
       this._nativeFileElement.multiple = this.multiple;
     }
   }

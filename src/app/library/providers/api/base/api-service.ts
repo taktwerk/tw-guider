@@ -3,8 +3,8 @@ import { HttpClient } from '../../../services/http-client';
 import { AppSetting } from '../../../services/app-setting';
 import { HttpHeaders as Headers } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { DbApiModel } from 'src/app/database/models/base/db-api-model';
-import { UserDb } from 'src/app/database/models/db/user-db';
+import { DbApiModel } from 'app/database/models/base/db-api-model';
+import { UserDb } from 'app/database/models/db/user-db';
 
 @Injectable()
 export abstract class ApiService {

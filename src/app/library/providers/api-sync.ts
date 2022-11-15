@@ -36,7 +36,7 @@ import { UserService } from '../services/user-service';
 import { WorkflowService } from './api/workflow-service';
 import { WorkflowStepService } from './api/workflow-step-service';
 import { WorkflowTransitionService } from './api/workflow-transition-service';
-import { DbApiModel } from 'src/app/database/models/base/db-api-model';
+import { DbApiModel } from 'app/database/models/base/db-api-model';
 
 @Injectable()
 /**

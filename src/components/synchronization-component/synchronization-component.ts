@@ -2,23 +2,20 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @angular-eslint/component-selector */
 /* eslint-disable @typescript-eslint/naming-convention */
-
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
-
+import { UserDb } from 'app/database/models/db/user-db';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { AppSetting } from 'app/library/services/app-setting';
+import { AuthService } from 'app/library/services/auth-service';
+import { DownloadService } from 'app/library/services/download-service';
+import { HttpClient } from 'app/library/services/http-client';
+import { MiscService } from 'app/library/services/misc-service';
+import { SyncService } from 'app/library/services/sync-service';
+import { TranslateConfigService } from 'app/library/services/translate-config.service';
+import { UserService } from 'app/library/services/user-service';
+import { environment } from 'environments/environment';
 import { Subscription } from 'rxjs';
-import { UserDb } from 'src/app/database/models/db/user-db';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { DbProvider } from 'src/app/library/providers/db-provider';
-import { AppSetting } from 'src/app/library/services/app-setting';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { DownloadService } from 'src/app/library/services/download-service';
-import { HttpClient } from 'src/app/library/services/http-client';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { SyncService } from 'src/app/library/services/sync-service';
-import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
-import { UserService } from 'src/app/library/services/user-service';
-import { environment } from 'src/environments/environment';
 
 export enum SyncMode {
   Manual,
@@ -38,12 +35,12 @@ export class SynchronizationComponent implements OnInit {
   public syncedItemsPercent = 0;
   public syncProgressStatus = 'not_sync';
   public isPrepareSynData = true;
-  public modeSync;
-  public resumeMode: boolean;
-  public userDb: UserDb;
+  public modeSync: any;
+  public resumeMode: boolean = false;
+  public userDb!: UserDb;
   public syncAllItemsCount = 0;
-  public params;
-  eventSubscription: Subscription;
+  public params:any;
+  eventSubscription!: Subscription;
 
   constructor(public apiSync: ApiSync,
     private downloadService: DownloadService,
@@ -51,7 +48,6 @@ export class SynchronizationComponent implements OnInit {
     public http: HttpClient,
     public authService: AuthService,
     private platform: Platform,
-    private db: DbProvider,
     private miscService: MiscService,
     private syncService: SyncService,
     public alertController: AlertController,
@@ -72,7 +68,7 @@ export class SynchronizationComponent implements OnInit {
   }
 
   cancelSyncData() {
-    return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
+    return this.apiSync.unsetSyncProgressData().then((isCanceled:any) => {
       if (isCanceled) {
         this.http.showToast('synchronization-component.Sync was canceled.');
       }
@@ -83,7 +79,8 @@ export class SynchronizationComponent implements OnInit {
     this.changeDetectorRef.detectChanges();
   }
 
-  changeSyncMode(mode) {
+  changeSyncMode(e: any) {
+    const mode = e.detail.value;
     if (this.modeSync === +mode) {
       return;
     }
@@ -137,7 +134,7 @@ export class SynchronizationComponent implements OnInit {
   }
 
   protected initUser() {
-    return this.userService.getUser().then(result => {
+    return this.userService.getUser().then((result:any) => {
       this.userDb = result;
     });
   }
@@ -199,39 +196,39 @@ export class SynchronizationComponent implements OnInit {
       // console.log("this.resumeMode", this.resumeMode)
     });
 
-    this.syncService.syncMode.subscribe((result) => {
+    this.syncService.syncMode.subscribe((result: any) => {
       if (result === null) { return; }
       this.modeSync = result;
     });
 
-    this.apiSync.isStartSyncBehaviorSubject.subscribe(isSync => {
+    this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync: any) => {
       this.isStartSync = isSync;
       this.detectChanges();
     });
-    this.apiSync.syncProgressStatus.subscribe(syncProgressStatus => {
+    this.apiSync.syncProgressStatus.subscribe((syncProgressStatus: any) => {
       this.syncProgressStatus = syncProgressStatus;
       this.detectChanges();
     });
-    this.apiSync.syncedItemsPercent.subscribe(syncedItemsPercent => {
+    this.apiSync.syncedItemsPercent.subscribe((syncedItemsPercent: any) => {
       this.syncedItemsPercent = syncedItemsPercent;
       this.detectChanges();
     });
-    this.apiSync.isPrepareSynData.subscribe(isPrepareSynData => {
+    this.apiSync.isPrepareSynData.subscribe((isPrepareSynData: any) => {
       this.isPrepareSynData = isPrepareSynData;
       this.detectChanges();
     });
-    this.apiSync.syncedItemsCount.subscribe(syncedItemsCount => {
+    this.apiSync.syncedItemsCount.subscribe((syncedItemsCount: any) => {
       this.syncedItemsCount = syncedItemsCount;
       this.detectChanges();
     });
-    this.apiSync.syncAllItemsCount.subscribe(syncAllItemsCount => {
+    this.apiSync.syncAllItemsCount.subscribe((syncAllItemsCount:any) => {
       this.syncAllItemsCount = syncAllItemsCount;
       this.detectChanges();
     });
     // this.events.subscribe('UserDb:update', (userDb) => {
     //   this.userService.userDb = userDb;
     // });
-    this.apiSync.isStartPushBehaviorSubject.subscribe(isPush => {
+    this.apiSync.isStartPushBehaviorSubject.subscribe((isPush: any) => {
       this.isStartPush = isPush;
       this.detectChanges();
     });
@@ -241,7 +238,7 @@ export class SynchronizationComponent implements OnInit {
     //   }
     // });
 
-    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+    this.eventSubscription = this.miscService.events.subscribe(async (event: any) => {
       switch (event.TAG) {
         case 'UserDb:update':
           this.userService.userDb = event.data;

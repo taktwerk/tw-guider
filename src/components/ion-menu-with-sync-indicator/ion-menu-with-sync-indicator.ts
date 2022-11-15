@@ -10,9 +10,9 @@ import { Subscription } from 'rxjs';
 import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
 import { debounceTime } from 'rxjs/operators';
 import { AppSetting } from 'local-server/models/app-setting';
-import { UserDb } from 'src/app/database/models/db/user-db';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { MiscService } from 'src/app/library/services/misc-service';
+import { UserDb } from 'app/database/models/db/user-db';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { MiscService } from 'app/library/services/misc-service';
 
 @Component({
     selector: 'ion-menu-with-sync-indicator',

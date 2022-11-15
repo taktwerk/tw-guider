@@ -14,7 +14,7 @@
 import * as THREE from 'three';
 
 export class SkeletonUtils {
-    retarget(target, source, options: any = {}) {
+    retarget(target: any, source: any, options: any = {}) {
 
         const pos = new THREE.Vector3(),
             quat = new THREE.Quaternion(),
@@ -35,7 +35,7 @@ export class SkeletonUtils {
 
         let bindBones,
             bone, name, boneTo,
-            bonesPosition;
+            bonesPosition: any;
 
         // reset bones
 
@@ -201,7 +201,7 @@ export class SkeletonUtils {
 
     }
 
-    retargetClip(target, source, clip, options: any = {}) {
+    retargetClip(target: any, source: any, clip: any, options: any = {}) {
 
         options.useFirstFramePosition = options.useFirstFramePosition !== undefined ? options.useFirstFramePosition : false;
         options.fps = options.fps !== undefined ? options.fps : 30;
@@ -218,7 +218,7 @@ export class SkeletonUtils {
             convertedTracks = [],
             mixer = new THREE.AnimationMixer(source),
             bones = this.getBones(target.skeleton),
-            boneDatas = [];
+            boneDatas: any[] = [];
         let positionOffset,
             bone, boneTo, boneData,
             name;
@@ -329,7 +329,7 @@ export class SkeletonUtils {
 
     }
 
-    getHelperFromSkeleton(skeleton) {
+    getHelperFromSkeleton(skeleton:any) {
 
         const source: any = new THREE.SkeletonHelper(skeleton.bones[0]);
         source.skeleton = skeleton;
@@ -338,7 +338,7 @@ export class SkeletonUtils {
 
     }
 
-    getSkeletonOffsets(target, source, options: any = {}) {
+    getSkeletonOffsets(target:any, source:any, options: any = {}) {
 
         const targetParentPos = new THREE.Vector3(),
             targetPos = new THREE.Vector3(),
@@ -424,7 +424,7 @@ export class SkeletonUtils {
 
     }
 
-    renameBones(skeleton, names) {
+    renameBones(skeleton:any, names: any) {
 
         const bones = this.getBones(skeleton);
 
@@ -444,13 +444,13 @@ export class SkeletonUtils {
 
     }
 
-    getBones(skeleton) {
+    getBones(skeleton: any) {
 
         return Array.isArray(skeleton) ? skeleton : skeleton.bones;
 
     }
 
-    getBoneByName(name, skeleton) {
+    getBoneByName(name:any, skeleton: any) {
 
         for (let i = 0, bones = this.getBones(skeleton); i < bones.length; i++) {
 
@@ -462,7 +462,7 @@ export class SkeletonUtils {
 
     }
 
-    getNearestBone(bone, names) {
+    getNearestBone(bone: any, names: any) {
 
         while (bone.isBone) {
 
@@ -478,7 +478,7 @@ export class SkeletonUtils {
 
     }
 
-    findBoneTrackData(name, tracks) {
+    findBoneTrackData(name:any, tracks: any) {
 
         const regexp = /\[(.*)\]\.(.*)/,
             result = { name: name };
@@ -491,7 +491,7 @@ export class SkeletonUtils {
 
             if (trackData && name === trackData[1]) {
 
-                result[trackData[2]] = i;
+                (result as any)[trackData[2]] = i;
 
             }
 
@@ -501,7 +501,7 @@ export class SkeletonUtils {
 
     }
 
-    getEqualsBonesNames(skeleton, targetSkeleton) {
+    getEqualsBonesNames(skeleton:any, targetSkeleton:any) {
 
         const sourceBones = this.getBones(skeleton),
             targetBones = this.getBones(targetSkeleton),
@@ -529,21 +529,21 @@ export class SkeletonUtils {
 
     }
 
-    clone(source) {
+    clone(source:any) {
 
         const sourceLookup = new Map();
         const cloneLookup = new Map();
 
         const clone = source.clone();
 
-        this.parallelTraverse(source, clone, function (sourceNode, clonedNode) {
+        this.parallelTraverse(source, clone, function (sourceNode: any, clonedNode: any) {
 
             sourceLookup.set(clonedNode, sourceNode);
             cloneLookup.set(sourceNode, clonedNode);
 
         });
 
-        clone.traverse(function (node) {
+        clone.traverse(function (node: any) {
 
             if (!node.isSkinnedMesh) return;
 
@@ -554,7 +554,7 @@ export class SkeletonUtils {
             clonedMesh.skeleton = sourceMesh.skeleton.clone();
             clonedMesh.bindMatrix.copy(sourceMesh.bindMatrix);
 
-            clonedMesh.skeleton.bones = sourceBones.map(function (bone) {
+            clonedMesh.skeleton.bones = sourceBones.map(function (bone:any) {
 
                 return cloneLookup.get(bone);
 
@@ -571,7 +571,7 @@ export class SkeletonUtils {
 
 
 
-    parallelTraverse(a, b, callback) {
+    parallelTraverse(a:any, b: any, callback:any) {
 
         callback(a, b);
 

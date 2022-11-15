@@ -9,7 +9,7 @@ import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu
 import { LanguageSelectorComponentModule } from 'src/components/language-selector-component/language-selector-component.module';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
 import { SynchronizationComponentModule } from 'src/components/synchronization-component/synchronization-component.module';
-import { MainPipe } from 'src/app/library/pipes/main-pipe.module';
+import { MainPipe } from 'app/library/pipes/main-pipe.module';
 
 @NgModule({
   declarations: [

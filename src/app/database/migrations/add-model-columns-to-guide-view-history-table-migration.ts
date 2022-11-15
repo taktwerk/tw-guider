@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { Injectable } from '@angular/core';
-import { GuideViewHistoryService } from 'src/app/library/providers/api/guide-view-history-service';
+import { GuideViewHistoryService } from 'app/library/providers/api/guide-view-history-service';
 
 @Injectable()
 export class AddModelColumnsToGuideViewHistoryTableMigration {

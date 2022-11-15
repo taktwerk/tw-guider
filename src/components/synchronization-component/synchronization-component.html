@@ -16,7 +16,7 @@
   <h4>
     {{ 'synchronization-component.Sync Modes' | translate:params }}
   </h4>
-  <ion-segment (ionChange)="changeSyncMode($event.detail.value)" color="secondary" value="{{ modeSync }}">
+  <ion-segment (ionChange)="changeSyncMode($event)" color="secondary" value="{{ modeSync }}">
     <ion-segment-button value="0">
       <ion-label>
         {{ 'synchronization-component.Manually' | translate:params }}

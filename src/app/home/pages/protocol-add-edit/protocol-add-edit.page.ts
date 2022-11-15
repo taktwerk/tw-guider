@@ -11,21 +11,21 @@ import { Subscription } from 'rxjs';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { ProtocolModel } from 'src/app/database/models/db/api/protocol-model';
-import { ProtocolTemplateModel } from 'src/app/database/models/db/api/protocol-template-model';
-import { WorkflowTransitionModel } from 'src/app/database/models/db/api/workflow-transition-model';
-import { ProtocolCommentService } from 'src/app/library/providers/api/protocol-comment-service';
-import { ProtocolDefaultService } from 'src/app/library/providers/api/protocol-default-service';
-import { ProtocolService } from 'src/app/library/providers/api/protocol-service';
-import { ProtocolTemplateService } from 'src/app/library/providers/api/protocol-template-service';
-import { WorkflowService } from 'src/app/library/providers/api/workflow-service';
-import { WorkflowStepService } from 'src/app/library/providers/api/workflow-step-service';
-import { WorkflowTransitionService } from 'src/app/library/providers/api/workflow-transition-service';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { DownloadService } from 'src/app/library/services/download-service';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
-import { HttpClient } from 'src/app/library/services/http-client';
+import { ProtocolModel } from 'app/database/models/db/api/protocol-model';
+import { ProtocolTemplateModel } from 'app/database/models/db/api/protocol-template-model';
+import { WorkflowTransitionModel } from 'app/database/models/db/api/workflow-transition-model';
+import { ProtocolCommentService } from 'app/library/providers/api/protocol-comment-service';
+import { ProtocolDefaultService } from 'app/library/providers/api/protocol-default-service';
+import { ProtocolService } from 'app/library/providers/api/protocol-service';
+import { ProtocolTemplateService } from 'app/library/providers/api/protocol-template-service';
+import { WorkflowService } from 'app/library/providers/api/workflow-service';
+import { WorkflowStepService } from 'app/library/providers/api/workflow-step-service';
+import { WorkflowTransitionService } from 'app/library/providers/api/workflow-transition-service';
+import { AuthService } from 'app/library/services/auth-service';
+import { DownloadService } from 'app/library/services/download-service';
+import { MiscService } from 'app/library/services/misc-service';
+import { TranslateConfigService } from 'app/library/services/translate-config.service';
+import { HttpClient } from 'app/library/services/http-client';
 
 @Component({
   selector: 'protocol-add-edit',

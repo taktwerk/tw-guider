@@ -12,23 +12,17 @@ import { Storage } from '@ionic/storage-angular';
 import { Subscription } from 'rxjs';
 import { SyncMode } from '../synchronization-component/synchronization-component';
 import { take } from 'rxjs/operators';
-import { AppSetting } from 'local-server/models/app-setting';
-import { UserDb } from 'src/app/database/models/db/user-db';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { LoggerService } from 'src/app/library/services/logger-service';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { SyncService } from 'src/app/library/services/sync-service';
-import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
-import { UserService } from 'src/app/library/services/user-service';
-import { HttpClient } from 'src/app/library/services/http-client';
+import { UserDb } from 'app/database/models/db/user-db';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { AuthService } from 'app/library/services/auth-service';
+import { LoggerService } from 'app/library/services/logger-service';
+import { MiscService } from 'app/library/services/misc-service';
+import { SyncService } from 'app/library/services/sync-service';
+import { TranslateConfigService } from 'app/library/services/translate-config.service';
+import { UserService } from 'app/library/services/user-service';
+import { HttpClient } from 'app/library/services/http-client';
+import { AppSetting } from 'app/library/services/app-setting';
 
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @Component({
   selector: 'sync-modal-component',
   templateUrl: 'sync-modal-component.html',
@@ -50,13 +44,13 @@ export class SyncModalComponent implements OnInit, OnDestroy {
   public syncProgressStatus = 'not_sync';
   public isPrepareSynData = false;
   public modeSync = SyncMode.Manual;
-  public userDb: UserDb;
+  public userDb!: UserDb;
   public isNetwork = false;
   public isAvailableForSyncData = false;
-  public pushProgressStatus: string;
-  public isAvailableForPushData: boolean;
-  public params;
-  eventSubscription: Subscription;
+  public pushProgressStatus!: string;
+  public isAvailableForPushData!: boolean;
+  public params: any;
+  eventSubscription!: Subscription;
 
   constructor(
     private storage: Storage,
@@ -123,7 +117,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
 
   cancelSyncData() {
     this.apiSync.sendSyncProgress('', true);
-    return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
+    return this.apiSync.unsetSyncProgressData().then((isCanceled: any) => {
       if (isCanceled) {
         this.http.showToast('synchronization-component.Sync was canceled.');
       }
@@ -131,7 +125,7 @@ export class SyncModalComponent implements OnInit, OnDestroy {
   }
 
   protected initUser() {
-    return this.userService.getUser().then((result) => {
+    return this.userService.getUser().then((result: any) => {
       this.userDb = result;
     });
   }
@@ -152,31 +146,31 @@ export class SyncModalComponent implements OnInit, OnDestroy {
         () => console.log('insomnia.keepAwake error')
       );
     }
-    this.syncService.syncMode.subscribe((result) => {
+    this.syncService.syncMode.subscribe((result:any) => {
       if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
         return;
       }
       this.modeSync = result;
     });
-    this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync) => {
+    this.apiSync.isStartSyncBehaviorSubject.subscribe((isSync: any) => {
       this.isStartSync = isSync;
     });
-    this.apiSync.syncProgressStatus.subscribe((syncProgressStatus) => {
+    this.apiSync.syncProgressStatus.subscribe((syncProgressStatus: any) => {
       this.syncProgressStatus = syncProgressStatus;
     });
-    this.apiSync.isPrepareSynData.subscribe((isPrepareSynData) => {
+    this.apiSync.isPrepareSynData.subscribe((isPrepareSynData: any) => {
       this.isPrepareSynData = isPrepareSynData;
     });
-    this.apiSync.syncedItemsCount.subscribe((syncedItemsCount) => {
+    this.apiSync.syncedItemsCount.subscribe((syncedItemsCount: any) => {
       this.syncedItemsCount = syncedItemsCount ? syncedItemsCount : 0;
     });
-    this.apiSync.syncAllItemsCount.subscribe((syncAllItemsCount) => {
+    this.apiSync.syncAllItemsCount.subscribe((syncAllItemsCount: any) => {
       this.syncAllItemsCount = syncAllItemsCount ? syncAllItemsCount : 0;
     });
-    this.apiSync.syncedItemsPercent.subscribe((syncedItemsPercent) => {
+    this.apiSync.syncedItemsPercent.subscribe((syncedItemsPercent: any) => {
       this.syncedItemsPercent = syncedItemsPercent ? syncedItemsPercent : 0;
     });
-    this.apiSync.noDataForSync.pipe(take(1)).subscribe((noDataForSync) => {
+    this.apiSync.noDataForSync.pipe(take(1)).subscribe((noDataForSync:any) => {
       this.noDataForSync = noDataForSync;
       if (noDataForSync) {
         setTimeout(() => {
@@ -184,18 +178,18 @@ export class SyncModalComponent implements OnInit, OnDestroy {
         }, 3000);
       }
     });
-    this.apiSync.isAvailableForSyncData.subscribe((isAvailableForSyncData) => {
+    this.apiSync.isAvailableForSyncData.subscribe((isAvailableForSyncData: any) => {
       this.isAvailableForSyncData = isAvailableForSyncData;
     });
-    this.apiSync.isAvailableForPushData.subscribe((isAvailableForPushData) => {
+    this.apiSync.isAvailableForPushData.subscribe((isAvailableForPushData: any) => {
       this.isAvailableForPushData = isAvailableForPushData;
     });
-    this.apiSync.pushProgressStatus.pipe(take(1)).subscribe((pushProgressStatus) => {
+    this.apiSync.pushProgressStatus.pipe(take(1)).subscribe((pushProgressStatus:any) => {
       this.pushProgressStatus = pushProgressStatus;
     });
 
 
-    this.eventSubscription = this.miscService.events.subscribe(async (event) => {
+    this.eventSubscription = this.miscService.events.subscribe(async (event: any) => {
       switch (event.TAG) {
         case 'UserDb:update':
           this.userService.userDb = event.data;

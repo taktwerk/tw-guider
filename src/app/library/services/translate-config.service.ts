@@ -41,15 +41,15 @@ export class TranslateConfigService {
             setLang = TranslateConfigService.DEFAULT_LANGUAGE;
         }
         this.translator.use(setLang);
-        this.translator.setTranslation(setLang, TranslateConfigService.AVAILABLE_LANGUAGES[setLang]);
+        this.translator.setTranslation(setLang, (TranslateConfigService.AVAILABLE_LANGUAGES as any)[setLang]);
         this.translator.setDefaultLang(setLang);
     }
 
-    isLanguageAvailable(language) {
+    isLanguageAvailable(language: any) {
         return Object.keys(TranslateConfigService.AVAILABLE_LANGUAGES).includes(language);
     }
 
-    translateWord(key): string {
+    translateWord(key: any): string {
         return this.translator.instant(key);
     }
 

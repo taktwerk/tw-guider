@@ -1,8 +1,8 @@
 import { GuideinfoPage } from '../../components/guideinfo/guideinfo.page';
 import { ModalController, NavParams, PopoverController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { MiscService } from 'src/app/library/services/misc-service';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { MiscService } from 'app/library/services/misc-service';
 
 @Component({
   selector: 'app-menupopover',

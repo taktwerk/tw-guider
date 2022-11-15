@@ -4,8 +4,8 @@ import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '../../services/http-client';
 import { AppSetting } from '../../services/app-setting';
 import { TranslateConfigService } from '../../services/translate-config.service';
-import { ProtocolCommentModel } from 'src/app/database/models/db/api/protocol-comment-model';
-import { WorkflowStepModel } from 'src/app/database/models/db/api/workflow-step-model';
+import { ProtocolCommentModel } from 'app/database/models/db/api/protocol-comment-model';
+import { WorkflowStepModel } from 'app/database/models/db/api/workflow-step-model';
 
 @Injectable()
 export class ProtocolCommentService extends ApiService {

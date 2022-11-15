@@ -11,12 +11,12 @@ export class StateService implements OnInit {
     await this.store.create();
   }
 
-  async getState(key) {
+  async getState(key:any) {
     await this.store.create();
     await this.store.get(key);
   }
 
-  async setState(key, value) {
+  async setState(key:any, value: any) {
     await this.store.create();
     return await this.store.set(key, value);
   }

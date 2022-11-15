@@ -8,10 +8,10 @@ import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { UserDb } from 'src/app/database/models/db/user-db';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { AppSetting } from 'src/app/library/services/app-setting';
+import { UserDb } from 'app/database/models/db/user-db';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { MiscService } from 'app/library/services/misc-service';
+import { AppSetting } from 'app/library/services/app-setting';
 
 @Component({
     selector: 'sync-spinner-component',
@@ -20,14 +20,14 @@ import { AppSetting } from 'src/app/library/services/app-setting';
 export class SyncSpinnerComponent implements OnInit {
     @Input() shouldOpenPopup = true;
 
-    public userDb: UserDb;
+    public userDb!: UserDb;
     public isStartSync = false;
     public isNetwork = false;
-    public iconStatus = 'unsynced';
+    public iconStatus: any = 'unsynced';
     public isAvailableForSyncData = false;
     public isAvailableForPushData = false;
     public isLoggedUser = false;
-    eventSubscription: Subscription;
+    eventSubscription!: Subscription;
 
     constructor(
         private apiSync: ApiSync,
@@ -35,7 +35,6 @@ export class SyncSpinnerComponent implements OnInit {
         private network: Network,
         public appSetting: AppSetting,
         private miscService: MiscService,
-        private router: Router,
         private navCtrl: NavController,
         private menu: MenuController
 

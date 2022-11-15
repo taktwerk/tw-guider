@@ -9,19 +9,19 @@ import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
-import { HelpingService } from 'src/app/library/helping.service';
+import { HelpingService } from 'app/library/helping.service';
 import { AppSetting } from 'local-server/models/app-setting';
-import { GuideAssetModel } from 'src/app/database/models/db/api/guide-asset-model';
-import { GuideStepModel } from 'src/app/database/models/db/api/guide-step-model';
-import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
-import { AuthService } from 'src/app/library/services/auth-service';
-import { DownloadService } from 'src/app/library/services/download-service';
-import { LoggerService } from 'src/app/library/services/logger-service';
-import { MiscService } from 'src/app/library/services/misc-service';
-import { PictureService } from 'src/app/library/services/picture-service';
-import { VideoService } from 'src/app/library/services/video-service';
-import { Viewer3dService } from 'src/app/library/services/viewer-3d-service';
-import { ViewerService } from 'src/app/library/services/viewer.service';
+import { GuideAssetModel } from 'app/database/models/db/api/guide-asset-model';
+import { GuideStepModel } from 'app/database/models/db/api/guide-step-model';
+import { GuiderModel } from 'app/database/models/db/api/guider-model';
+import { AuthService } from 'app/library/services/auth-service';
+import { DownloadService } from 'app/library/services/download-service';
+import { LoggerService } from 'app/library/services/logger-service';
+import { MiscService } from 'app/library/services/misc-service';
+import { PictureService } from 'app/library/services/picture-service';
+import { VideoService } from 'app/library/services/video-service';
+import { Viewer3dService } from 'app/library/services/viewer-3d-service';
+import { ViewerService } from 'app/library/services/viewer.service';
 
 @Component({
   selector: 'guide-step-content-component',

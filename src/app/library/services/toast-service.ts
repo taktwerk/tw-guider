@@ -10,7 +10,7 @@ export class ToastService {
       private translateConfigService: TranslateConfigService
   ) {}
 
-  previousToast = null;
+  previousToast:any = null;
 
   async showToast(msg?: string, header?: string , toastColor?: string, withLocalization: boolean = true) {
     if (!msg) {

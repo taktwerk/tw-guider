@@ -9,7 +9,7 @@ import { HttpClient } from '../../services/http-client';
 import { DownloadService } from '../../services/download-service';
 import { AppSetting } from '../../services/app-setting';
 import { MiscService } from '../../services/misc-service';
-import { WorkflowTransitionModel } from 'src/app/database/models/db/api/workflow-transition-model';
+import { WorkflowTransitionModel } from 'app/database/models/db/api/workflow-transition-model';
 
 @Injectable()
 export class WorkflowTransitionService extends ApiService {

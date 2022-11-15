@@ -13,14 +13,14 @@ import { Filesystem } from '@capacitor/filesystem';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { ImageEditorComponent } from '../../components/imageeditor/imageeditor.page';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { HelpingService } from 'src/app/library/helping.service';
-import { GuideAssetModelFileMapIndexEnum } from 'src/app/database/models/db/api/guide-asset-model';
-import { ApiSync } from 'src/app/library/providers/api-sync';
-import { DownloadService } from 'src/app/library/services/download-service';
-import { PictureService } from 'src/app/library/services/picture-service';
-import { VideoService } from 'src/app/library/services/video-service';
-import { Viewer3dService } from 'src/app/library/services/viewer-3d-service';
-import { ViewerService } from 'src/app/library/services/viewer.service';
+import { GuideAssetModelFileMapIndexEnum } from 'app/database/models/db/api/guide-asset-model';
+import { HelpingService } from 'app/library/helping.service';
+import { ApiSync } from 'app/library/providers/api-sync';
+import { DownloadService } from 'app/library/services/download-service';
+import { PictureService } from 'app/library/services/picture-service';
+import { VideoService } from 'app/library/services/video-service';
+import { Viewer3dService } from 'app/library/services/viewer-3d-service';
+import { ViewerService } from 'app/library/services/viewer.service';
 
 @Component({
   selector: 'model-assetcomponent',
@@ -30,9 +30,9 @@ import { ViewerService } from 'src/app/library/services/viewer.service';
 
 export class AssetviewComponent implements OnInit {
   @Input() model: any;
-  @Input() isthumbnail = false;
+  @Input() isthumbnail: boolean = false;
   @Input() showIcon = true;
-  @Input() largeIcon: boolean;
+  @Input() largeIcon: boolean = false;
 
   @Input() floatingIcon = false;
   /**Set to true to make image small */
@@ -40,12 +40,12 @@ export class AssetviewComponent implements OnInit {
 
   /** set to true to prevent default open function */
   @Input() preventDefaultClickFunction = false;
-  @Input() solid_icon_color: boolean;
+  @Input() solid_icon_color: boolean = false;
 
   @Input() mayEditImage = false;
   @Input() imageby50 = false;
 
-  filePath3d;
+  filePath3d: any;
 
   faExpand = faExpand;
   faQuestion = faQuestion;
@@ -54,10 +54,10 @@ export class AssetviewComponent implements OnInit {
   faVideo = faVideo;
   guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
 
-  isPdf;
+  isPdf: any;
 
-  videoPreview;
-  defaultVideoPreview;
+  videoPreview: any;
+  defaultVideoPreview: any;
 
   constructor(private downloadService: DownloadService,
     private videoService: VideoService,
@@ -66,7 +66,6 @@ export class AssetviewComponent implements OnInit {
     private viewer3dService: Viewer3dService,
     public modalController: ModalController,
     private videoEditor: VideoEditor,
-    private apiSync: ApiSync,
     public file: File,
     private platform: Platform,
     public viewer: ViewerService,
@@ -154,7 +153,7 @@ export class AssetviewComponent implements OnInit {
     return JSON.stringify(circObj, replacerFunc());
   }
 
-  generateVideoPreview(e?) {
+  generateVideoPreview(e: any) {
     // if (this.model.isExistThumbOfFile()) {
     // console.log(e)
     const videoFileUri = this.downloadService.getNativeFilePath(this.model.getFileName(), this.model.TABLE_NAME);
@@ -296,7 +295,7 @@ export class AssetviewComponent implements OnInit {
     return await modal.present();
   }
 
-  async onImageError(event) {
+  async onImageError(event: any) {
     console.log('Image has error');
     console.log(event.target.src);
     console.log(this.model);

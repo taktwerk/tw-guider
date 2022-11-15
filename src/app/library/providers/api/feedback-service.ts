@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './base/api-service';
 import { HttpClient } from '../../services/http-client';
 import { AppSetting } from '../../services/app-setting';
-import { FeedbackModel } from 'src/app/database/models/db/api/feedback-model';
+import { FeedbackModel } from 'app/database/models/db/api/feedback-model';
 
 @Injectable()
 export class FeedbackService extends ApiService {
