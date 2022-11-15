@@ -2,21 +2,14 @@
 
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { IonSelect, ModalController, Platform } from '@ionic/angular';
-
-import { MiscService } from '../../services/misc-service';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Subscription } from 'rxjs';
 import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
-import { TranslateConfigService } from '../../services/translate-config.service';
-import { UserDb } from '../../models/db/user-db';
-import { UserService } from '../../services/user-service';
+import { UserDb } from 'src/app/database/models/db/user-db';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
+import { UserService } from 'src/app/library/services/user-service';
 
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @Component({
     selector: 'language-selector-component',
     templateUrl: 'language-selector-component.html',

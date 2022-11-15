@@ -3,25 +3,25 @@
 import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
 import { ModalController, NavController, Platform } from '@ionic/angular';
 
-import { AuthService } from '../../services/auth-service';
-import { DownloadService } from '../../services/download-service';
-import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { VideoService } from '../../services/video-service';
-import { Viewer3dService } from '../../services/viewer-3d-service';
-import { PictureService } from '../../services/picture-service';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
-import { GuideStepModel } from '../../models/db/api/guide-step-model';
-import { GuideAssetModel } from '../../models/db/api/guide-asset-model';
 import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { SafeResourceUrl } from '@angular/platform-browser';
-import { LoggerService } from '../../services/logger-service';
-import { MiscService } from '../../services/misc-service';
-import { AppSetting } from 'src/services/app-setting';
 import { isPlatformBrowser } from '@angular/common';
-import { ViewerService } from 'src/services/viewer.service';
-import { HelpingService } from 'controller/app/service/helping.service';
+import { HelpingService } from 'src/app/library/helping.service';
+import { AppSetting } from 'local-server/models/app-setting';
+import { GuideAssetModel } from 'src/app/database/models/db/api/guide-asset-model';
+import { GuideStepModel } from 'src/app/database/models/db/api/guide-step-model';
+import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { DownloadService } from 'src/app/library/services/download-service';
+import { LoggerService } from 'src/app/library/services/logger-service';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { PictureService } from 'src/app/library/services/picture-service';
+import { VideoService } from 'src/app/library/services/video-service';
+import { Viewer3dService } from 'src/app/library/services/viewer-3d-service';
+import { ViewerService } from 'src/app/library/services/viewer.service';
 
 @Component({
   selector: 'guide-step-content-component',

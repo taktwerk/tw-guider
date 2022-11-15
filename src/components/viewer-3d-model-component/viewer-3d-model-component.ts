@@ -17,9 +17,9 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { NgZone } from '@angular/core';
 import { createGesture, GestureDetail } from '@ionic/core';
 import { Storage } from '@ionic/storage-angular';
-import { Viewer3dService } from "../../services/viewer-3d-service";
 
 import { SkeletonUtils } from "./SkeletonUtils";
+import { Viewer3dService } from 'src/app/library/services/viewer-3d-service';
 
 
 @Component({

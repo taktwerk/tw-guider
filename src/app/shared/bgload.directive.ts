@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
-import { HttpClient as CustomHttpClient } from '../../services/http-client';
+import { HttpClient as CustomHttpClient } from 'src/app/library/services/http-client';
 import { HttpClient, HttpHeaders as Headers } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
 

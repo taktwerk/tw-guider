@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import {HtmlDescriptionComponent} from './html-description-component';
 import {CommonModule} from '@angular/common';
 import {IonicModule} from '@ionic/angular';
-import {MainPipe} from '../../pipes/main-pipe.module';
+import { MainPipe } from 'src/app/library/pipes/main-pipe.module';
 
 @NgModule({
   declarations: [

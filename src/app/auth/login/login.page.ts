@@ -1,14 +1,13 @@
 /* eslint-disable @angular-eslint/component-selector */
 
 import { LoadingController, NavController } from '@ionic/angular';
-
-import { ApiSync } from '../../../providers/api-sync';
-import { AppSetting } from '../../../services/app-setting';
-import { AuthService } from '../../../services/auth-service';
 import { Component } from '@angular/core';
-import { HttpClient } from '../../../services/http-client';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NgForm } from '@angular/forms';
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { HttpClient } from 'src/app/library/services/http-client';
+import { AppSetting } from 'src/app/library/services/app-setting';
 
 /**
  * Generated class for the LoginPage page.

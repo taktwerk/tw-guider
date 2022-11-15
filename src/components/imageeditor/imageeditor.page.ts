@@ -9,23 +9,16 @@
 import * as tui from 'tui-image-editor/dist/tui-image-editor';
 
 import { Component, Input, OnInit } from '@angular/core';
-import { DownloadService, RecordedFile } from '../../services/download-service';
 import { LoadingController, ModalController, Platform } from '@ionic/angular';
 
-import { ApiSync } from '../../providers/api-sync';
-import { AuthService } from '../../services/auth-service';
-import { GuideStepService } from '../../providers/api/guide-step-service';
 import { Location } from '@angular/common';
-import { MiscService } from './../../services/misc-service';
 import { Storage } from '@ionic/storage-angular';
 import { File as nFile } from '@ionic-native/file/ngx';
-
-// import 'tui-image-editor';
-// const tui = import('tui-image-editor');
-
-
-
-
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { GuideStepService } from 'src/app/library/providers/api/guide-step-service';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { DownloadService, RecordedFile } from 'src/app/library/services/download-service';
+import { MiscService } from 'src/app/library/services/misc-service';
 
 interface CustomControls {
   name: string;
@@ -80,7 +73,6 @@ export class ImageEditorComponent implements OnInit {
     private downloadService: DownloadService,
     private file: nFile,
     private apiSync: ApiSync,
-    private location: Location,
     public platform: Platform,
     public loadingController: LoadingController,
     public authService: AuthService,

@@ -3,14 +3,14 @@
 import { Location } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { GuideinfoPage } from '../../components/guideinfo/guideinfo.page';
-import { AuthService } from '../../services/auth-service';
-import { AppSetting } from '../../services/app-setting';
-import { GuiderModel } from '../../models/db/api/guider-model';
 import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
-import { GuideViewHistoryModel } from '../../models/db/api/guide-view-history-model';
-import { GuideViewHistoryService } from '../../providers/api/guide-view-history-service';
-import { GuiderService } from 'src/providers/api/guider-service';
+import { AppSetting } from 'local-server/models/app-setting';
+import { GuideViewHistoryModel } from 'src/app/database/models/db/api/guide-view-history-model';
+import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
+import { GuideViewHistoryService } from 'src/app/library/providers/api/guide-view-history-service';
+import { GuiderService } from 'src/app/library/providers/api/guider-service';
+import { AuthService } from 'src/app/library/services/auth-service';
 
 @Component({
   selector: 'guide-list-component',

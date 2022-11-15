@@ -3,30 +3,22 @@
 /* eslint-disable @angular-eslint/component-selector */
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
 
-import { ApiSync } from '../../providers/api-sync';
-import { AppSetting } from '../../services/app-setting';
-import { AuthService } from '../../services/auth-service';
-import { DbProvider } from '../../providers/db-provider';
-import { DownloadService } from '../../services/download-service';
-import { HttpClient } from '../../services/http-client';
-import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
-import { SyncService } from '../../services/sync-service';
-import { TranslateConfigService } from '../../services/translate-config.service';
-import { UserDb } from '../../models/db/user-db';
-import { UserService } from '../../services/user-service';
+import { UserDb } from 'src/app/database/models/db/user-db';
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { DbProvider } from 'src/app/library/providers/db-provider';
+import { AppSetting } from 'src/app/library/services/app-setting';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { DownloadService } from 'src/app/library/services/download-service';
+import { HttpClient } from 'src/app/library/services/http-client';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { SyncService } from 'src/app/library/services/sync-service';
+import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
+import { UserService } from 'src/app/library/services/user-service';
 import { environment } from 'src/environments/environment';
-
-// import { DatePipe } from '@angular/common';
-
-
-
-
-
-
 
 export enum SyncMode {
   Manual,

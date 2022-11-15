@@ -8,19 +8,19 @@ import { CreateThumbnailOptions, VideoEditor } from '@awesome-cordova-plugins/vi
 import { ModalController, Platform } from '@ionic/angular';
 import { faCubes, faExpand, faFilePdf, faQuestion, faVideo } from '@fortawesome/free-solid-svg-icons';
 
-import { ApiSync } from '../../providers/api-sync';
-import { DownloadService } from '../../services/download-service';
 import { File } from '@ionic-native/file/ngx';
 import { Filesystem } from '@capacitor/filesystem';
-import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
 import { GuideAssetTextModalComponent } from '../../components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { ImageEditorComponent } from '../../components/imageeditor/imageeditor.page';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { PictureService } from '../../services/picture-service';
-import { VideoService } from '../../services/video-service';
-import { Viewer3dService } from '../../services/viewer-3d-service';
-import { ViewerService } from '../../services/viewer.service';
-import { HelpingService } from 'controller/app/service/helping.service';
+import { HelpingService } from 'src/app/library/helping.service';
+import { GuideAssetModelFileMapIndexEnum } from 'src/app/database/models/db/api/guide-asset-model';
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { DownloadService } from 'src/app/library/services/download-service';
+import { PictureService } from 'src/app/library/services/picture-service';
+import { VideoService } from 'src/app/library/services/video-service';
+import { Viewer3dService } from 'src/app/library/services/viewer-3d-service';
+import { ViewerService } from 'src/app/library/services/viewer.service';
 
 @Component({
   selector: 'model-assetcomponent',

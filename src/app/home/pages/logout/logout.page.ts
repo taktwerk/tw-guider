@@ -1,14 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { AuthService } from 'src/services/auth-service';
-import { HttpClient } from 'src/services/http-client';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { HttpClient } from 'src/app/library/services/http-client';
 
-/**
- * Generated class for the LogoutPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @Component({
   selector: 'page-logout',
   templateUrl: 'logout.page.html',

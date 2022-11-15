@@ -1,18 +1,18 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, DoCheck, OnChanges, OnInit, OnDestroy } from '@angular/core';
-import { GuideCategoryService } from '../../../../providers/api/guide-category-service';
-import { GuideChildService } from '../../../../providers/api/guide-child-service';
-import { GuiderService } from '../../../../providers/api/guider-service';
-import { GuiderModel } from '../../../../models/db/api/guider-model';
-import { AuthService } from '../../../../services/auth-service';
-import { GuideCategoryModel } from '../../../../models/db/api/guide-category-model';
+import {  ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
-import { GuideCategoryBindingService } from '../../../../providers/api/guide-category-binding-service';
-import { ProtocolTemplateService } from '../../../../providers/api/protocol-template-service';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { TranslateConfigService } from '../../../../services/translate-config.service';
-import { MiscService } from '../../../../services/misc-service';
 import { Subscription } from 'rxjs';
-import { SyncIndexService } from '../../../../providers/api/sync-index-service';
+import { GuideCategoryModel } from 'src/app/database/models/db/api/guide-category-model';
+import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
+import { GuideCategoryBindingService } from 'src/app/library/providers/api/guide-category-binding-service';
+import { GuideCategoryService } from 'src/app/library/providers/api/guide-category-service';
+import { GuideChildService } from 'src/app/library/providers/api/guide-child-service';
+import { GuiderService } from 'src/app/library/providers/api/guider-service';
+import { ProtocolTemplateService } from 'src/app/library/providers/api/protocol-template-service';
+import { SyncIndexService } from 'src/app/library/providers/api/sync-index-service';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
 
 @Component({
   selector: 'app-list',

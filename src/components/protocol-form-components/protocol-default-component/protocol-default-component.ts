@@ -1,21 +1,13 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ProtocolModel } from '../../../models/db/api/protocol-model';
-import { ProtocolService } from '../../../providers/api/protocol-service';
-import { ProtocolDefaultService } from '../../../providers/api/protocol-default-service';
-import { ProtocolDefaultModel } from '../../../models/db/api/protocol-default-model';
-import { DownloadService } from '../../../services/download-service';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { TranslateConfigService } from '../../../services/translate-config.service';
 import { Subscription } from 'rxjs';
-import { MiscService } from '../../../services/misc-service';
-
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-
+import { ProtocolDefaultModel } from 'src/app/database/models/db/api/protocol-default-model';
+import { ProtocolModel } from 'src/app/database/models/db/api/protocol-model';
+import { ProtocolDefaultService } from 'src/app/library/providers/api/protocol-default-service';
+import { ProtocolService } from 'src/app/library/providers/api/protocol-service';
+import { DownloadService } from 'src/app/library/services/download-service';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
 
 @Component({
     selector: 'protocol-default-component',

@@ -3,25 +3,25 @@
 
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 
-import { ApiSync } from '../../providers/api-sync';
-import { AppSetting } from '../../services/app-setting';
-import { AuthService } from '../../services/auth-service';
 import { DatePipe } from '@angular/common';
-import { HttpClient } from '../../services/http-client';
 import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
-import { LoggerService } from '../../services/logger-service';
-import { MiscService } from '../../services/misc-service';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage-angular';
 import { Subscription } from 'rxjs';
 import { SyncMode } from '../synchronization-component/synchronization-component';
-import { SyncService } from '../../services/sync-service';
-import { TranslateConfigService } from '../../services/translate-config.service';
-import { UserDb } from '../../models/db/user-db';
-import { UserService } from '../../services/user-service';
 import { take } from 'rxjs/operators';
+import { AppSetting } from 'local-server/models/app-setting';
+import { UserDb } from 'src/app/database/models/db/user-db';
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { LoggerService } from 'src/app/library/services/logger-service';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { SyncService } from 'src/app/library/services/sync-service';
+import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
+import { UserService } from 'src/app/library/services/user-service';
+import { HttpClient } from 'src/app/library/services/http-client';
 
 /**
  * Generated class for the TodoPage page.

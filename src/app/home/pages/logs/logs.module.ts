@@ -9,7 +9,7 @@ import { LogsPage } from './logs.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { File } from '@ionic-native/file/ngx';
 import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { MainPipe } from 'src/pipes/main-pipe.module';
+import { MainPipe } from 'src/app/library/pipes/main-pipe.module';
 
 @NgModule({
   imports: [

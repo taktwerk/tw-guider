@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { AppSetting } from 'src/services/app-setting';
+import { AppSetting } from 'src/app/library/services/app-setting';
 
 @Component({
   selector: 'app-thumb-viewer',

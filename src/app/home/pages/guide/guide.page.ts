@@ -31,44 +31,44 @@ import {
   ModalController,
   NavController,
   Platform,
-  ToastController,
+  PopoverController
 } from '@ionic/angular';
+
 import { Subject, Subscription } from 'rxjs';
-import { AppSetting } from 'src/services/app-setting';
-import { GuideCategoryModel } from 'src/models/db/api/guide-category-model';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { PopoverController } from '@ionic/angular';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
-import { HelpingService } from 'controller/app/service/helping.service';
+import { GuideAssetModelFileMapIndexEnum, GuideAssetModel } from 'src/app/database/models/db/api/guide-asset-model';
+import { GuideCategoryModel } from 'src/app/database/models/db/api/guide-category-model';
+import { GuideStepModel } from 'src/app/database/models/db/api/guide-step-model';
+import { GuideViewHistoryModel } from 'src/app/database/models/db/api/guide-view-history-model';
+import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
+import { UserDb } from 'src/app/database/models/db/user-db';
+import { HelpingService } from 'src/app/library/helping.service';
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { GuideAssetPivotService } from 'src/app/library/providers/api/guide-asset-pivot-service';
+import { GuideAssetService } from 'src/app/library/providers/api/guide-asset-service';
+import { GuideCategoryBindingService } from 'src/app/library/providers/api/guide-category-binding-service';
+import { GuideCategoryService } from 'src/app/library/providers/api/guide-category-service';
+import { GuideStepService } from 'src/app/library/providers/api/guide-step-service';
+import { GuideViewHistoryService } from 'src/app/library/providers/api/guide-view-history-service';
+import { GuiderService } from 'src/app/library/providers/api/guider-service';
+import { SyncIndexService } from 'src/app/library/providers/api/sync-index-service';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { DownloadService } from 'src/app/library/services/download-service';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { PictureService } from 'src/app/library/services/picture-service';
+import { SyncService } from 'src/app/library/services/sync-service';
+import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
+import { UserService } from 'src/app/library/services/user-service';
+import { VideoService } from 'src/app/library/services/video-service';
+import { Viewer3dService } from 'src/app/library/services/viewer-3d-service';
+import { ViewerService } from 'src/app/library/services/viewer.service';
 import { GuideAssetTextModalComponent } from 'src/components/guide-asset-text-modal-component/guide-asset-text-modal-component';
 import { GuideStepContentComponent } from 'src/components/guide-step-content-component/guide-step-content-component';
 import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
 import { MenuPopoverComponent } from 'src/components/menupopover/menupopover.page';
-import { GuideStepModel } from 'src/models/db/api/guide-step-model';
-import { GuideViewHistoryModel } from 'src/models/db/api/guide-view-history-model';
-import { GuiderModel } from 'src/models/db/api/guider-model';
-import { UserDb } from 'src/models/db/user-db';
-import { ApiSync } from 'src/providers/api-sync';
-import { GuideAssetPivotService } from 'src/providers/api/guide-asset-pivot-service';
-import { GuideAssetService } from 'src/providers/api/guide-asset-service';
-import { GuideCategoryBindingService } from 'src/providers/api/guide-category-binding-service';
-import { GuideCategoryService } from 'src/providers/api/guide-category-service';
-import { GuideStepService } from 'src/providers/api/guide-step-service';
-import { GuideViewHistoryService } from 'src/providers/api/guide-view-history-service';
-import { GuiderService } from 'src/providers/api/guider-service';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
-import { AuthService } from 'src/services/auth-service';
-import { DownloadService } from 'src/services/download-service';
-import { MiscService } from 'src/services/misc-service';
-import { PictureService } from 'src/services/picture-service';
-import { SyncService } from 'src/services/sync-service';
-import { TranslateConfigService } from 'src/services/translate-config.service';
-import { UserService } from 'src/services/user-service';
-import { VideoService } from 'src/services/video-service';
-import { Viewer3dService } from 'src/services/viewer-3d-service';
-import { ViewerService } from 'src/services/viewer.service';
-import { GuideAssetModelFileMapIndexEnum, GuideAssetModel } from 'src/models/db/api/guide-asset-model';
-import { HttpClient } from 'src/services/http-client';
+import { HttpClient } from 'src/app/library/services/http-client';
+import { AppSetting } from 'src/app/library/services/app-setting';
 
 @Component({
   selector: 'app-guide',

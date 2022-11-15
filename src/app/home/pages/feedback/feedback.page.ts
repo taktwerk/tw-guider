@@ -8,15 +8,15 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { DatePipe } from '@angular/common';
-import { AppSetting } from 'src/services/app-setting';
-import { FeedbackModel } from 'src/models/db/api/feedback-model';
-import { FeedbackService } from 'src/providers/api/feedback-service';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
-import { AuthService } from 'src/services/auth-service';
-import { DownloadService } from 'src/services/download-service';
-import { MiscService } from 'src/services/misc-service';
-import { PictureService } from 'src/services/picture-service';
-import { VideoService } from 'src/services/video-service';
+import { AppSetting } from 'local-server/models/app-setting';
+import { FeedbackModel } from 'src/app/database/models/db/api/feedback-model';
+import { FeedbackService } from 'src/app/library/providers/api/feedback-service';
+import { SyncIndexService } from 'src/app/library/providers/api/sync-index-service';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { DownloadService } from 'src/app/library/services/download-service';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { PictureService } from 'src/app/library/services/picture-service';
+import { VideoService } from 'src/app/library/services/video-service';
 @Component({
   selector: 'feedback-page',
   templateUrl: 'feedback.page.html',

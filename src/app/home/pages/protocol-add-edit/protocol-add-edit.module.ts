@@ -11,8 +11,8 @@ import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu
 import { LanguageSelectorComponentModule } from 'src/components/language-selector-component/language-selector-component.module';
 import { ProtocolDefaultComponentModule } from 'src/components/protocol-form-components/protocol-default-component/protocol-default-component.module';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
-import { DateAgoPipe } from 'src/pipes/date-ago.pipe';
-import { MainPipe } from 'src/pipes/main-pipe.module';
+import { DateAgoPipe } from 'src/app/library/pipes/date-ago.pipe';
+import { MainPipe } from 'src/app/library/pipes/main-pipe.module';
 
 @NgModule({
     declarations: [

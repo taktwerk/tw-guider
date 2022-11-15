@@ -6,16 +6,16 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild, ElementRef, PLATFORM_I
 import { ActivatedRoute } from '@angular/router';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { AlertController, IonBackButtonDelegate, NavController, Platform } from '@ionic/angular';
-import { FeedbackModel } from 'src/models/db/api/feedback-model';
-import { ApiSync } from 'src/providers/api-sync';
-import { FeedbackService } from 'src/providers/api/feedback-service';
-import { AppSetting } from 'src/services/app-setting';
-import { AuthService } from 'src/services/auth-service';
-import { DownloadService } from 'src/services/download-service';
-import { HttpClient } from 'src/services/http-client';
-import { PictureService } from 'src/services/picture-service';
-import { TranslateConfigService } from 'src/services/translate-config.service';
-import { VideoService } from 'src/services/video-service';
+import { FeedbackModel } from 'src/app/database/models/db/api/feedback-model';
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { FeedbackService } from 'src/app/library/providers/api/feedback-service';
+import { AppSetting } from 'src/app/library/services/app-setting';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { DownloadService } from 'src/app/library/services/download-service';
+import { HttpClient } from 'src/app/library/services/http-client';
+import { PictureService } from 'src/app/library/services/picture-service';
+import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
+import { VideoService } from 'src/app/library/services/video-service';
 
 @Component({
   selector: 'feedback-add-edit-page',

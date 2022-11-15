@@ -4,18 +4,9 @@
 import { Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModalController, Platform } from '@ionic/angular';
 import { StreamingMedia, StreamingVideoOptions } from '@awesome-cordova-plugins/streaming-media/ngx';
-
-import { DownloadService } from '../../../services/download-service';
 import { Storage } from '@ionic/storage-angular';
-import { ToastService } from '../../../services/toast-service';
-
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-
+import { DownloadService } from 'src/app/library/services/download-service';
+import { ToastService } from 'src/app/library/services/toast-service';
 
 @Component({
     selector: 'video-modal-component',
@@ -36,8 +27,7 @@ export class VideoModalComponent implements OnInit, OnDestroy {
         private platform: Platform,
         private toastService: ToastService,
         private streamingMedia: StreamingMedia,
-        private downloadService: DownloadService,
-        private ngZone: NgZone) {
+        private downloadService: DownloadService) {
         //  document['ionicComponentRef'] = { name: 'video-modal-component', component: this, zone: ngZone };
     }
 

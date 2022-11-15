@@ -4,14 +4,14 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { MenuController, ModalController, NavController } from '@ionic/angular';
 
-import { ApiSync } from '../../providers/api-sync';
-import { AppSetting } from '../../services/app-setting';
-import { MiscService } from '../../services/misc-service';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { UserDb } from '../../models/db/user-db';
 import { debounceTime } from 'rxjs/operators';
+import { UserDb } from 'src/app/database/models/db/user-db';
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { AppSetting } from 'src/app/library/services/app-setting';
 
 @Component({
     selector: 'sync-spinner-component',
@@ -31,7 +31,6 @@ export class SyncSpinnerComponent implements OnInit {
 
     constructor(
         private apiSync: ApiSync,
-        private modalController: ModalController,
         private changeDetectorRef: ChangeDetectorRef,
         private network: Network,
         public appSetting: AppSetting,

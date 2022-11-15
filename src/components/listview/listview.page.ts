@@ -1,20 +1,19 @@
 import { Component, Input, OnInit, ElementRef, ViewChildren, QueryList, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { GuideStepModel } from '../../models/db/api/guide-step-model';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AlertController, IonItem, ToastController } from '@ionic/angular';
-import { ApiSync } from '../../providers/api-sync';
-import { GuideAssetService } from '../../providers/api/guide-asset-service';
-import { GuideStepService } from '../../providers/api/guide-step-service';
-import { TranslateConfigService } from '../../services/translate-config.service';
-import { HttpClient } from '../../services/http-client';
-import { GuideAssetModelFileMapIndexEnum } from '../../models/db/api/guide-asset-model';
-import { AuthService } from '../../services/auth-service';
-import { GuideAssetPivotService } from '../../providers/api/guide-asset-pivot-service';
-import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
-import { AppSetting } from 'src/services/app-setting';
+import { GuideAssetModelFileMapIndexEnum } from 'src/app/database/models/db/api/guide-asset-model';
+import { GuideStepModel } from 'src/app/database/models/db/api/guide-step-model';
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { GuideAssetPivotService } from 'src/app/library/providers/api/guide-asset-pivot-service';
+import { GuideAssetService } from 'src/app/library/providers/api/guide-asset-service';
+import { GuideStepService } from 'src/app/library/providers/api/guide-step-service';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
+import { HttpClient } from 'src/app/library/services/http-client';
 
 @Component({
   selector: 'listview-component',
@@ -47,7 +46,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
     public alertController: AlertController,
     private translateConfigService: TranslateConfigService,
     public http: HttpClient,
-    private appSetting: AppSetting,
     public changeDetectorRef: ChangeDetectorRef,
     public authService: AuthService,
     private guideAssetService: GuideAssetService,

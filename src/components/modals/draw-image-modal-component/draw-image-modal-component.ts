@@ -4,19 +4,10 @@
 
 import { AfterViewChecked, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { ModalController, Platform, ToastController, } from '@ionic/angular';
-
-import { DownloadService } from '../../../services/download-service';
-import { MiscService } from '../../../services/misc-service';
 import { Storage } from '@ionic/storage-angular';
-import { TranslateConfigService } from '../../../services/translate-config.service';
-
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-
+import { DownloadService } from 'src/app/library/services/download-service';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { TranslateConfigService } from 'src/app/library/services/translate-config.service';
 
 @Component({
   selector: 'draw-image-modal-component',
@@ -60,12 +51,10 @@ export class DrawImageModalComponent implements AfterViewChecked {
 
   constructor(
     private plt: Platform,
-    private toastCtrl: ToastController,
     private modalController: ModalController,
     private downloadService: DownloadService,
     private translateConfigService: TranslateConfigService,
-    private miscService: MiscService,
-    private storage: Storage,
+    private miscService: MiscService
   ) {
     this.saveTranslatdWord = this.translateConfigService.translateWord('save');
   }

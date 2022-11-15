@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { LanguageSelectorComponentModule } from 'src/components/language-selector-component/language-selector-component.module';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
-import { MainPipe } from 'src/pipes/main-pipe.module';
+import { MainPipe } from 'src/app/library/pipes/main-pipe.module';
 
 @NgModule({
   declarations: [

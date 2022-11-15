@@ -7,9 +7,9 @@ import {SyncSpinnerComponentModule} from '../../../../components/sync-spinner-co
 import {FormsModule} from '@angular/forms';
 import {LanguageSelectorComponentModule} from '../../../../components/language-selector-component/language-selector-component.module';
 import {TranslateModule} from '@ngx-translate/core';
-import {MainPipe} from '../../../../pipes/main-pipe.module';
 import {AboutPage} from './about.page';
 import { ionMenuWithSyncIndicatorComponentModule } from '../../../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { MainPipe } from 'src/app/library/pipes/main-pipe.module';
 
 @NgModule({
   declarations: [

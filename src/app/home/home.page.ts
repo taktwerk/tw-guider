@@ -2,21 +2,15 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ChangeDetectorRef, Component, NgZone, } from '@angular/core';
 import { AlertController,  NavController } from '@ionic/angular';
-import { AuthService } from '../../services/auth-service';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
-import { HttpClient } from '../../services/http-client';
-import { AppConfigurationModeEnum, AppSetting } from '../../services/app-setting';
-import { UserService } from '../../services/user-service';
 import { environment } from '../../environments/environment';
-import { MiscService } from '../../services/misc-service';
 import { Subscription } from 'rxjs';
+import { AppSetting, AppConfigurationModeEnum } from '../library/services/app-setting';
+import { AuthService } from '../library/services/auth-service';
+import { MiscService } from '../library/services/misc-service';
+import { UserService } from '../library/services/user-service';
+import { HttpClient } from '../library/services/http-client';
 
-/**
- * Generated class for the TodoPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',

@@ -4,7 +4,7 @@
 import { Directive, ElementRef, Input, NgZone, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { HttpHeaders as Headers, HttpClient } from '@angular/common/http';
 
-import { HttpClient as CustomHttpClient } from '../../services/http-client';
+import { HttpClient as CustomHttpClient } from 'src/app/library/services/http-client';
 import { Platform } from '@ionic/angular';
 
 @Directive({

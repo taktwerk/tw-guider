@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { GuideCategoryModel } from 'src/models/db/api/guide-category-model';
-import { GuiderModel } from 'src/models/db/api/guider-model';
-import { GuideCategoryService } from 'src/providers/api/guide-category-service';
-import { GuideChildService } from 'src/providers/api/guide-child-service';
-import { GuiderService } from 'src/providers/api/guider-service';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
-import { AuthService } from 'src/services/auth-service';
-import { MiscService } from 'src/services/misc-service';
+import { GuideCategoryModel } from 'src/app/database/models/db/api/guide-category-model';
+import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
+import { GuideCategoryService } from 'src/app/library/providers/api/guide-category-service';
+import { GuideChildService } from 'src/app/library/providers/api/guide-child-service';
+import { GuiderService } from 'src/app/library/providers/api/guider-service';
+import { SyncIndexService } from 'src/app/library/providers/api/sync-index-service';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { MiscService } from 'src/app/library/services/misc-service';
 
 @Component({
   selector: 'app-guidecapture',

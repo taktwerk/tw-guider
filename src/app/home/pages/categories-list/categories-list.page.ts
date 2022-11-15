@@ -5,24 +5,24 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 
-import { ApiSync } from '../../../../providers/api-sync';
-import { AppSetting } from '../../../../services/app-setting';
-import { AuthService } from '../../../../services/auth-service';
-import { GuideCategoryBindingService } from '../../../../providers/api/guide-category-binding-service';
-import { GuideCategoryModel } from '../../../../models/db/api/guide-category-model';
-import { GuideCategoryService } from '../../../../providers/api/guide-category-service';
-import { GuideChildService } from '../../../../providers/api/guide-child-service';
-import { GuideViewHistoryService } from '../../../../providers/api/guide-view-history-service';
-import { GuiderModel } from '../../../../models/db/api/guider-model';
-import { GuiderService } from '../../../../providers/api/guider-service';
 import { LoadingController } from '@ionic/angular';
-import { MiscService } from '../../../../services/misc-service';
-import { StateService } from '../../../state.service';
 import { Subscription } from 'rxjs';
-import { SyncIndexService } from '../../../../providers/api/sync-index-service';
 import { SyncMode } from '../../../../components/synchronization-component/synchronization-component';
-import { SyncService } from '../../../../services/sync-service';
 import { debounceTime } from 'rxjs/operators';
+import { GuideCategoryModel } from 'src/app/database/models/db/api/guide-category-model';
+import { GuiderModel } from 'src/app/database/models/db/api/guider-model';
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { GuideCategoryBindingService } from 'src/app/library/providers/api/guide-category-binding-service';
+import { GuideCategoryService } from 'src/app/library/providers/api/guide-category-service';
+import { GuideChildService } from 'src/app/library/providers/api/guide-child-service';
+import { GuideViewHistoryService } from 'src/app/library/providers/api/guide-view-history-service';
+import { GuiderService } from 'src/app/library/providers/api/guider-service';
+import { SyncIndexService } from 'src/app/library/providers/api/sync-index-service';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { MiscService } from 'src/app/library/services/misc-service';
+import { SyncService } from 'src/app/library/services/sync-service';
+import { AppSetting } from 'src/app/library/services/app-setting';
+import { StateService } from 'src/app/library/state.service';
 
 @Component({
   selector: 'app-list',

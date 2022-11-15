@@ -8,15 +8,15 @@ import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angula
 
 import { NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { ProtocolModel } from 'src/models/db/api/protocol-model';
-import { ProtocolDefaultService } from 'src/providers/api/protocol-default-service';
-import { ProtocolService } from 'src/providers/api/protocol-service';
-import { ProtocolTemplateService } from 'src/providers/api/protocol-template-service';
-import { SyncIndexService } from 'src/providers/api/sync-index-service';
-import { WorkflowService } from 'src/providers/api/workflow-service';
-import { WorkflowStepService } from 'src/providers/api/workflow-step-service';
-import { AuthService } from 'src/services/auth-service';
-import { MiscService } from 'src/services/misc-service';
+import { ProtocolModel } from 'src/app/database/models/db/api/protocol-model';
+import { ProtocolDefaultService } from 'src/app/library/providers/api/protocol-default-service';
+import { ProtocolService } from 'src/app/library/providers/api/protocol-service';
+import { ProtocolTemplateService } from 'src/app/library/providers/api/protocol-template-service';
+import { SyncIndexService } from 'src/app/library/providers/api/sync-index-service';
+import { WorkflowService } from 'src/app/library/providers/api/workflow-service';
+import { WorkflowStepService } from 'src/app/library/providers/api/workflow-step-service';
+import { AuthService } from 'src/app/library/services/auth-service';
+import { MiscService } from 'src/app/library/services/misc-service';
 
 @Component({
     selector: 'protocol-page',

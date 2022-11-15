@@ -18,7 +18,7 @@ import { LanguageSelectorComponentModule } from 'src/components/language-selecto
 import { MenupopoverPageModule } from 'src/components/menupopover/menupopover.module';
 import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
 import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-component/viewer-3d-model-component.module';
-import { MainPipe } from 'src/pipes/main-pipe.module';
+import { MainPipe } from 'src/app/library/pipes/main-pipe.module';
 
 @NgModule({
     declarations: [

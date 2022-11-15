@@ -1,10 +1,10 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
-import { DocumentViewer, DocumentViewerOptions } from '@awesome-cordova-plugins/document-viewer/ngx';
+import { DocumentViewer } from '@awesome-cordova-plugins/document-viewer/ngx';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { Filesystem } from '@capacitor/filesystem';
-import { DownloadService } from 'src/services/download-service';
+import { DownloadService } from 'src/app/library/services/download-service';
 
 /**
  * Generated class for the TodoPage page.

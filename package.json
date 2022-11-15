@@ -97,6 +97,7 @@
     "@types/ckeditor__ckeditor5-build-classic": "^29.0.1",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^18.11.9",
     "@typescript-eslint/eslint-plugin": "5.3.0",
     "@typescript-eslint/parser": "5.3.0",
     "cordova-res": "0.15.4",

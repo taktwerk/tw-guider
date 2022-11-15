@@ -6,24 +6,24 @@ import { AlertController, IonRouterOutlet, ModalController, NavController, Platf
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
 
-import { ApiSync } from '../providers/api-sync';
 import { App } from '@capacitor/app';
-import { AppSetting } from '../services/app-setting';
-import { AuthDb } from '../models/db/auth-db';
-import { AuthService } from '../services/auth-service';
-import { DbService } from '../models/db.service';
 import { Location } from '@angular/common';
-import { LoggerService } from '../services/logger-service';
-import { MigrationProvider } from '../providers/migration-provider';
-import { MiscService } from './../services/misc-service';
 import { Network } from '@capacitor/network';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { Storage } from '@ionic/storage-angular';
-import { SyncService } from '../services/sync-service';
-import { TranslateConfigService } from '../services/translate-config.service';
-import { UserDb } from '../models/db/user-db';
-import { UserService } from '../services/user-service';
-import { ViewerService } from '../services/viewer.service';
+import { DbService } from './database/models/db.service';
+import { AuthDb } from './database/models/db/auth-db';
+import { UserDb } from './database/models/db/user-db';
+import { ApiSync } from './library/providers/api-sync';
+import { MigrationProvider } from './library/providers/migration-provider';
+import { AppSetting } from './library/services/app-setting';
+import { AuthService } from './library/services/auth-service';
+import { LoggerService } from './library/services/logger-service';
+import { MiscService } from './library/services/misc-service';
+import { SyncService } from './library/services/sync-service';
+import { TranslateConfigService } from './library/services/translate-config.service';
+import { UserService } from './library/services/user-service';
+import { ViewerService } from './library/services/viewer.service';
 
 export enum ConnectionStatusEnum {
   Online,

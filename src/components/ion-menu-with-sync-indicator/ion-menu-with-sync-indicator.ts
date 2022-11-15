@@ -4,16 +4,15 @@
 /* eslint-disable @angular-eslint/component-selector */
 
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-
-import { ApiSync } from '../../providers/api-sync';
-import { AppSetting } from '../../services/app-setting';
-import { MiscService } from '../../services/misc-service';
 import { ModalController } from '@ionic/angular';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Subscription } from 'rxjs';
 import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
-import { UserDb } from '../../models/db/user-db';
 import { debounceTime } from 'rxjs/operators';
+import { AppSetting } from 'local-server/models/app-setting';
+import { UserDb } from 'src/app/database/models/db/user-db';
+import { ApiSync } from 'src/app/library/providers/api-sync';
+import { MiscService } from 'src/app/library/services/misc-service';
 
 @Component({
     selector: 'ion-menu-with-sync-indicator',
