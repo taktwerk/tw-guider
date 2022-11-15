@@ -11,7 +11,7 @@ const routes: Routes = [
   },
   {
     path: 'about',
-    loadChildren: () => import('./about/about.page.module').then(m => m.AboutPageModule)
+    loadChildren: () => import('./home/pages/about/about.page.module').then(m => m.AboutPageModule)
   },
   {
     path: 'start',
@@ -19,7 +19,7 @@ const routes: Routes = [
   },
   {
     path: 'guide-categories',
-    loadChildren: () => import('./categories-list/categories-list.module').then(m => m.CategoriesListModule)
+    loadChildren: () => import('./home/pages/categories-list/categories-list.module').then(m => m.CategoriesListModule)
   },
   {
     path: 'sync-model',
@@ -28,97 +28,97 @@ const routes: Routes = [
   },
   {
     path: 'guides/:guideCategoryId',
-    loadChildren: () => import('./list/list.module').then(m => m.ListPageModule)
+    loadChildren: () => import('./home/pages/list/list.module').then(m => m.ListPageModule)
   },
   {
     path: 'guide/:guideId',
-    loadChildren: () => import('./guide/guide.module').then(m => m.GuidePageModule)
+    loadChildren: () => import('./home/pages/guide/guide.module').then(m => m.GuidePageModule)
   },
   {
     path: 'guide/:guideId/:parentCollectionId',
-    loadChildren: () => import('./guide/guide.module').then(m => m.GuidePageModule)
+    loadChildren: () => import('./home/pages/guide/guide.module').then(m => m.GuidePageModule)
   },
   {
     path: 'profile',
-    loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
+    loadChildren: () => import('./home/pages/profile/profile.module').then(m => m.ProfilePageModule)
   },
   {
     path: 'feedback',
-    loadChildren: () => import('./feedback/feedback.page.module').then(m => m.FeedbackPageModule)
+    loadChildren: () => import('./home/pages/feedback/feedback.page.module').then(m => m.FeedbackPageModule)
   },
   {
     path: ':reference_model_alias/:reference_id/feedback',
-    loadChildren: () => import('./feedback/feedback.page.module').then(m => m.FeedbackPageModule)
+    loadChildren: () => import('./home/pages/feedback/feedback.page.module').then(m => m.FeedbackPageModule)
   },
   /// add/edit feedback
   {
     path: 'feedback/save',
-    loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
+    loadChildren: () => import('./home/pages/feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
   },
   {
     path: ':reference_model_alias/:reference_id/feedback/save',
-    loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
+    loadChildren: () => import('./home/pages/feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
   },
   {
     path: 'feedback/save/:feedbackId',
-    loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
+    loadChildren: () => import('./home/pages/feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
   },
   {
     path: ':reference_model_alias/:reference_id/feedback/save/:feedbackId',
-    loadChildren: () => import('./feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
+    loadChildren: () => import('./home/pages/feedback-add-edit/feedback-add-edit.module').then(m => m.FeedbackAddEditModule)
   },
   {
     path: 'protocol/save/:protocolId',
-    loadChildren: () => import('./protocol-add-edit/protocol-add-edit.module').then(m => m.ProtocolAddEditModule)
+    loadChildren: () => import('./home/pages/protocol-add-edit/protocol-add-edit.module').then(m => m.ProtocolAddEditModule)
   },
   {
     path: 'protocol/save',
-    loadChildren: () => import('./protocol-add-edit/protocol-add-edit.module').then(m => m.ProtocolAddEditModule)
+    loadChildren: () => import('./home/pages/protocol-add-edit/protocol-add-edit.module').then(m => m.ProtocolAddEditModule)
   },
   {
     path: 'protocol',
-    loadChildren: () => import('./protocol/protocol.page.module').then(m => m.ProtocolPageModule)
+    loadChildren: () => import('./home/pages/protocol/protocol.page.module').then(m => m.ProtocolPageModule)
   },
   {
     path: 'guide-collection/:guideId',
-    loadChildren: () => import('./guide-collection/guide-collection.page.module').then(m => m.GuideCollectionModule)
+    loadChildren: () => import('./home/pages/guide-collection/guide-collection.page.module').then(m => m.GuideCollectionModule)
   },
   {
     path: 'guider_protocol_template/:templateId',
-    loadChildren: () => import('./protocol/protocol.page.module').then(m => m.ProtocolPageModule)
+    loadChildren: () => import('./home/pages/protocol/protocol.page.module').then(m => m.ProtocolPageModule)
   },
   {
     path: 'login',
-    loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)
+    loadChildren: () => import('./auth/login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: 'logout',
-    loadChildren: () => import('./logout/logout.module').then(m => m.LogoutPageModule)
+    loadChildren: () => import('./home/pages/logout/logout.module').then(m => m.LogoutPageModule)
   },
   {
     path: 'guidecapture',
-    loadChildren: () => import('./guidecapture/guidecapture.module').then(m => m.GuidecapturePageModule)
+    loadChildren: () => import('./home/pages/guidecapture/guidecapture.module').then(m => m.GuidecapturePageModule)
   },
   {
     path: 'editguide',
-    loadChildren: () => import('./editguide/editguide.module').then(m => m.EditguidePageModule)
+    loadChildren: () => import('./home/pages/editguide/editguide.module').then(m => m.EditguidePageModule)
   },
   {
     path: 'editguide',
     children: [
       {
         path: ':id',
-        loadChildren: () => import('./editguide/editguide.module').then(m => m.EditguidePageModule)
+        loadChildren: () => import('./home/pages/editguide/editguide.module').then(m => m.EditguidePageModule)
       }
     ]
   },
   {
     path: 'guidestep-add-edit',
-    loadChildren: () => import('./guidestep-add-edit/guidestep-add-edit.module').then(m => m.GuidestepAddEditPageModule)
+    loadChildren: () => import('./home/pages/guidestep-add-edit/guidestep-add-edit.module').then(m => m.GuidestepAddEditPageModule)
   },
   {
     path: 'logs',
-    loadChildren: () => import('./logs/logs.module').then(m => m.LogsPageModule)
+    loadChildren: () => import('./home/pages/logs/logs.module').then(m => m.LogsPageModule)
   },
 
 ];
