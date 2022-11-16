@@ -7,7 +7,7 @@ import { GuideAssetPivotModel } from 'app/database/models/db/api/guide-asset-piv
 
 @Injectable()
 export class GuideAssetPivotService extends ApiService {
-    data: GuideAssetPivotModel[] = [];
+    override data: GuideAssetPivotModel[] = [];
     loadUrl: string = '/guide-asset-pivot';
     dbModelApi: GuideAssetPivotModel = new GuideAssetPivotModel();
 
@@ -23,7 +23,7 @@ export class GuideAssetPivotService extends ApiService {
      */
     constructor(http: HttpClient,
         public authService: AuthService,
-        public appSetting: AppSetting,
+        public override appSetting: AppSetting,
     ) {
         super(http, appSetting);
         console.debug('GuideAssetPivotService', 'initialized');
@@ -33,7 +33,7 @@ export class GuideAssetPivotService extends ApiService {
      * Create a new instance of the service model
      * @returns {GuideAssetPivotModel}
      */
-    public newModel() {
+    public override newModel() {
         return new GuideAssetPivotModel();
     }
 }

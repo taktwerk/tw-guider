@@ -5,14 +5,15 @@ import { NgModule } from '@angular/core';
 import { ProtocolPage } from './protocol.page';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { LanguageSelectorComponentModule } from 'src/components/language-selector-component/language-selector-component.module';
-import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
+
 import { MainPipe } from 'app/library/pipes/main-pipe.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { LanguageSelectorComponentModule } from 'components/language-selector-component/language-selector-component.module';
+import { SyncSpinnerComponentModule } from 'components/sync-spinner-component/sync-spinner-component.module';
 
 @NgModule({
   declarations: [
-    ProtocolPage
+    ProtocolPage,
   ],
   imports: [
     CommonModule,
@@ -26,7 +27,6 @@ import { MainPipe } from 'app/library/pipes/main-pipe.module';
     ]),
     SyncSpinnerComponentModule,
     ionMenuWithSyncIndicatorComponentModule,
-
     LanguageSelectorComponentModule,
     TranslateModule,
     MainPipe

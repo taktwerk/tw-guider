@@ -7,7 +7,7 @@ export class UserService {
 
     user = new Subject<any>();
 
-    userDb!: UserDb | null;
+    userDb: UserDb = new UserDb();
 
     constructor() {
     }

@@ -24,18 +24,18 @@ import { MiscService } from 'app/library/services/misc-service';
     styleUrls: ['protocol.page.scss']
 })
 export class ProtocolPage implements OnInit, OnDestroy {
-    public backDefaultHref: string;
+    public backDefaultHref: any;
     public protocolList: ProtocolModel[] = [];
     public isComponentLikeModal = false;
-    public templateId: number;
-    public params;
-    private reference_id: number;
+    public templateId: any;
+    public params: any;
+    private reference_id: any;
     private reference_model_alias: any;
-    private reference_model: string;
-    private clientId: number;
+    private reference_model: any;
+    private clientId: any;
     public userCanCreateProtocol = false;
 
-    eventSubscription: Subscription;
+    eventSubscription: any;
 
     constructor(private protocolService: ProtocolService,
         public authService: AuthService,
@@ -75,7 +75,7 @@ export class ProtocolPage implements OnInit, OnDestroy {
         this.router.navigate(['/protocol/save/' + protocolId], protocolNavigationExtras);
     }
 
-    public async editProtocol(protocol?: ProtocolModel) {
+    public async editProtocol(protocol: ProtocolModel) {
         const protocolFormService = this.protocolService.getProtocolFormService(protocol.protocol_form_table);
         if (!protocolFormService) {
             return;
@@ -113,7 +113,7 @@ export class ProtocolPage implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.activatedRoute.queryParams.subscribe(params => {
-            const protocolData = params;
+            const protocolData:any = params;
             this.templateId = protocolData.templateId;
             this.reference_id = +protocolData.referenceId;
             this.clientId = +protocolData.clientId;

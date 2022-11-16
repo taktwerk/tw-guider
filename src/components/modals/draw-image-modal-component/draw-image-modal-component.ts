@@ -16,10 +16,10 @@ import { TranslateConfigService } from 'app/library/services/translate-config.se
 
 export class DrawImageModalComponent implements AfterViewChecked {
 
-  @Input() fileUrl: string;
-  @Input() fileTitle: string;
-  @Input() modelName: string;
-  @Input() saveName: string;
+  @Input() fileUrl: any;
+  @Input() fileTitle: any;
+  @Input() modelName: any;
+  @Input() saveName: any;
 
   consoleLog: any;
 
@@ -27,8 +27,8 @@ export class DrawImageModalComponent implements AfterViewChecked {
   @ViewChild('mainCanvas') mainCanvas: any;
   canvasElement: any;
   mainCanvasElement: any;
-  saveX: number;
-  saveY: number;
+  saveX: any;
+  saveY: any;
 
   context: any;
   mainContext: any;
@@ -38,7 +38,7 @@ export class DrawImageModalComponent implements AfterViewChecked {
 
   isInit = false;
 
-  @ViewChild('domObj') domObj: ElementRef;
+  @ViewChild('domObj') domObj: ElementRef | any;
 
   selectedColor = '#9e2956';
   colors = ['#9e2956', '#c2281d', '#de722f', '#edbf4c', '#5db37e', '#459cde', '#4250ad', '#802fa3'];
@@ -95,7 +95,7 @@ export class DrawImageModalComponent implements AfterViewChecked {
     }
   }
 
-  startDrawing(ev) {
+  startDrawing(ev: any) {
     let pageX = 0;
     let pageY = 0;
     if (ev instanceof TouchEvent) {
@@ -116,11 +116,11 @@ export class DrawImageModalComponent implements AfterViewChecked {
     this.drawing = false;
   }
 
-  selectColor(color) {
+  selectColor(color: any) {
     this.selectedColor = color;
   }
 
-  setBackground(fileUrl, shouldCreateMainCanvas = false) {
+  setBackground(fileUrl: any, shouldCreateMainCanvas = false) {
     const background = new Image();
     background.src = fileUrl;
     // background.crossOrigin = '*';
@@ -134,16 +134,13 @@ export class DrawImageModalComponent implements AfterViewChecked {
       let imgWidth = background.naturalWidth;
       const screenWidth = this.canvasElement.width;
       let scaleX = 1;
-      if (imgWidth > screenWidth)
-        {scaleX = screenWidth / imgWidth;}
+      if (imgWidth > screenWidth) { scaleX = screenWidth / imgWidth; }
       let imgHeight = background.naturalHeight;
       const screenHeight = this.canvasElement.height;
       let scaleY = 1;
-      if (imgHeight > screenHeight)
-        {scaleY = screenHeight / imgHeight;}
+      if (imgHeight > screenHeight) { scaleY = screenHeight / imgHeight; }
       let scale = scaleY;
-      if (scaleX < scaleY)
-        {scale = scaleX;}
+      if (scaleX < scaleY) { scale = scaleX; }
       if (scale < 1) {
         imgHeight = imgHeight * scale;
         imgWidth = imgWidth * scale;
@@ -169,8 +166,8 @@ export class DrawImageModalComponent implements AfterViewChecked {
     };
   }
 
-  moved(ev) {
-    if (!this.drawing) {return;}
+  moved(ev: any) {
+    if (!this.drawing) { return; }
 
     const canvasPosition = this.canvasElement.getBoundingClientRect();
     // let ctx = this.canvasElement.getContext('2d');
@@ -211,7 +208,7 @@ export class DrawImageModalComponent implements AfterViewChecked {
   }
 
   exportCanvasImage() {
-    this.mainCanvasElement.toBlob((blobFile) => {
+    this.mainCanvasElement.toBlob((blobFile: any) => {
       this.downloadService.file
         .writeFile(
           this.downloadService.file.dataDirectory + this.modelName,
@@ -232,7 +229,7 @@ export class DrawImageModalComponent implements AfterViewChecked {
     });
   }
 
-  b64toBlob(b64Data, contentType) {
+  b64toBlob(b64Data: any, contentType: any) {
     contentType = contentType || '';
     const sliceSize = 512;
     const byteCharacters = atob(b64Data);

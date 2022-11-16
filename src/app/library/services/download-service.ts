@@ -24,7 +24,7 @@ import { LoggerService } from './logger-service';
 import { isPlatformBrowser } from '@angular/common';
 
 export class RecordedFile {
-  uri: string;
+  uri: any;
   thumbnailUri?: string;
   type?: string;
   // public imagePath;
@@ -135,11 +135,11 @@ export class DownloadService {
     return await promise;
   }
 
-  previewSecuredImage(url) {
+  previewSecuredImage(url: any) {
     return url;
   }
 
-  download(url, authToken?: string): Promise<any> {
+  download(url: any, authToken?: string): Promise<any> {
     if (url.includes('/api/api/')) {
       url = url.replace('/api/api/', '/api/');
     }
@@ -171,7 +171,7 @@ export class DownloadService {
     });
   }
 
-  protected isExistFile(directory, name): Promise<boolean> {
+  protected isExistFile(directory: any, name: any): Promise<boolean> {
     return new Promise((resolve) => {
       if (this.platform.is('capacitor')) {
         this.file
@@ -188,7 +188,7 @@ export class DownloadService {
     });
   }
 
-  protected getDownloadDirectoryPath(baseSystemPath, folder) {
+  protected getDownloadDirectoryPath(baseSystemPath: any, folder: any) {
     return new Promise((resolve) => {
       this.checkDir(folder).then(() => {
         resolve(baseSystemPath + folder);
@@ -196,7 +196,7 @@ export class DownloadService {
     });
   }
 
-  startUpload(directoryName, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<any> {
+  startUpload(directoryName:any, fileKey: string, fileName: string, path: string, url: string, headers?: Headers): Promise<any> {
     return new Promise(async (resolve) => {
       try {
         fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
@@ -248,12 +248,12 @@ export class DownloadService {
     });
   }
 
-  base64ToBlob(data) {
+  base64ToBlob(data: any) {
     let rImageType = /data:(image\/.+);base64,/;
     let mimeString = '';
     let raw; let uInt8Array; let i; let rawLength;
 
-    raw = data.replace(rImageType, (header, imageType) => {
+    raw = data.replace(rImageType, (header: any, imageType: any) => {
       mimeString = imageType;
       return '';
     });
@@ -271,7 +271,7 @@ export class DownloadService {
 
   readFile(fileKey: string, file: any, url: string, headers?: Headers): Promise<Blob> {
     return new Promise((resolve) => {
-      const reader = new FileReader();
+      const reader: any = new FileReader();
       reader.onload = () => {
         const imgBlob = new Blob([reader.result], { type: file.type });
         resolve(imgBlob);
@@ -299,7 +299,7 @@ export class DownloadService {
    * @param apiPath API Url of the file
    * @param localPath Local fullpath
    */
-  public path(apiPath, localPath) {
+  public path(apiPath: any, localPath: any) {
     if (!apiPath && !localPath) {
       return null;
     }
@@ -413,7 +413,7 @@ export class DownloadService {
     });
   }
 
-  checkTempDir(dir): Promise<boolean> {
+  checkTempDir(dir: any): Promise<boolean> {
     return new Promise((resolve) => {
       this.file
         .checkDir(this.file.dataDirectory, dir)
@@ -485,33 +485,33 @@ export class DownloadService {
       const path = fullPath.substring(0, fullPath.lastIndexOf('/') + 1);
       const fileName = fullPath.substring(fullPath.lastIndexOf('/') + 1, fullPath.length);
 
-      this.file.removeFile(path, fileName).then((success) => {},(error) => {});
+      this.file.removeFile(path, fileName).then((success) => { }, (error) => { });
     }
   }
 
-  public getNativeFilePath(path, modelName) {
+  public getNativeFilePath(path: any, modelName: any) {
     return this.file.dataDirectory + modelName + '/' + path;
   }
 
-  public getWebviewFileSrc(path) {
+  public getWebviewFileSrc(path: any) {
     if (this.platform.is('capacitor')) {
       return this.webview.convertFileSrc(path);
     }
     return path;
   }
 
-  public getSanitizedFileUrl(path, modelName, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
+  public getSanitizedFileUrl(path: any, modelName: any, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
     path = this.getNativeFilePath(path, modelName);
     const convertFileSrc = this.getWebviewFileSrc(path);
 
     return this.getSafeUrl(convertFileSrc, sanitizeType);
   }
 
-  public getSafeUrl(convertFileSrc, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
+  public getSafeUrl(convertFileSrc: any, sanitizeType = 'trustResourceUrl'): any {
     const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
 
     if (sanitizeType === 'trustStyle') {
-      return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
+      return this.sanitizerImpl .sanitize(SecurityContext.RESOURCE_URL, safeUrl);
     }
 
     return safeUrl;
@@ -559,7 +559,7 @@ export class DownloadService {
 
     const recordedFile = new RecordedFile();
 
-    let uri = '';
+    let uri: any = '';
 
     if (this.testBrowser) {
       recordedFile.uri = await this.chooseFileFromLocalPC();
@@ -570,7 +570,9 @@ export class DownloadService {
       if (!this.fileChooser) {
         throw new Error('FileChooser plugin is not defined');
       }
-      uri = await (await this.fileChooser.getFile()).uri;
+    
+      uri = await (await this.fileChooser.getFile())?.uri;
+  
     }
 
     if (uri) {
@@ -704,7 +706,7 @@ export class DownloadService {
     //   }
 
 
-    const videoFile = await this.mediaCapture.captureVideo({ limit: 1 });
+    const videoFile:any = await this.mediaCapture.captureVideo({ limit: 1 });
     if (!videoFile || !videoFile[0]) {
       throw new Error('Video was not uploaded.');
     }
@@ -797,7 +799,7 @@ export class DownloadService {
     return this.getResolvedNativeFilePath(videoThumbnailPath);
   }
 
-  public getResolvedNativeFilePath(uri): Promise<string> {
+  public getResolvedNativeFilePath(uri: any): Promise<string> {
     const recordedFile = new RecordedFile();
 
     // console.log('URIII', uri);

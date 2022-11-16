@@ -10,9 +10,10 @@ export class DatePipe implements PipeTransform {
 
     }
 
-    transform(value: any, format?: string, timezone?: string, locale?: string): string | null {
-        const language = this.translateConfigService.getDefaultLanguage();
-        const dateFormatsByLanguage = dateFormats[language];
+    transform(value: any, format?: any, timezone?: any, locale?: any): any | null {
+        const language:any = this.translateConfigService.getDefaultLanguage();
+        let dates:any = dateFormats;
+        const dateFormatsByLanguage = dates[language];
         if (dateFormatsByLanguage && format) {
             const languageFormat = dateFormatsByLanguage[format];
             if (languageFormat) {

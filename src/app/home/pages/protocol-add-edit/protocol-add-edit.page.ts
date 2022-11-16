@@ -11,7 +11,6 @@ import { Subscription } from 'rxjs';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { ProtocolModel } from 'app/database/models/db/api/protocol-model';
 import { ProtocolTemplateModel } from 'app/database/models/db/api/protocol-template-model';
 import { WorkflowTransitionModel } from 'app/database/models/db/api/workflow-transition-model';
 import { ProtocolCommentService } from 'app/library/providers/api/protocol-comment-service';
@@ -33,21 +32,21 @@ import { HttpClient } from 'app/library/services/http-client';
   styleUrls: ['protocol-add-edit.page.scss']
 })
 export class ProtocolAddEditPage implements OnInit, OnDestroy {
-  public model: ProtocolModel;
-  public protocolId: number = null;
-  public reference_id: number = null;
-  public reference_model: string = null;
-  public reference_model_alias: string = null;
+  public model = null;
+  public protocolId = null;
+  public reference_id = null;
+  public reference_model: any = null;
+  public reference_model_alias: any = null;
   public protocol_form: any;
-  private templateId: number;
-  private clientId: number;
-  public comment: string = null;
-  public params;
+  private templateId = null;
+  private clientId = null;
+  public comment: any = null;
+  public params: any;
 
-  faClock:IconProp = faClock as IconProp;
-  faUser:IconProp = faUser as IconProp;
+  faClock: IconProp = faClock as IconProp;
+  faUser: IconProp = faUser as IconProp;
 
-  eventSubscription: Subscription;
+  eventSubscription?: Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -71,12 +70,12 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
     this.authService.checkAccess('protocol');
     this.comment = null;
     if (!this.model) {
-      this.model = protocolService.newModel();
+      (this.model as any) = protocolService.newModel();
     }
   }
 
   dismiss() {
-    this.model.deleteAttachedFilesForDelete();
+    (this.model as any).deleteAttachedFilesForDelete();
 
     this.ngZone.run(() => {
       const protocolNavigationExtras: NavigationExtras = {
@@ -90,12 +89,12 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-      this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.detectChanges();
   }
 
   public async save() {
-    if (!this.model[this.model.COL_ID]) {
-      const protocolTemplate = await this.getProtocolTemplate(this.templateId);
+    if ((!this.model as any)[(this.model as any).COL_ID]) {
+      const protocolTemplate = await this.getProtocolTemplate(this.templateId as any);
       const templateWorkflow = await protocolTemplate.getWorkflow();
       if (!templateWorkflow) {
         return;
@@ -106,49 +105,49 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
       }
       const md5 = new Md5();
       const protocolName = ('' + md5.appendStr('' + (new Date()).getTime()).end()).substr(0, 5).toUpperCase();
-      this.model.client_id = this.clientId;
-      this.model.protocol_template_id = protocolTemplate.idApi;
-      this.model.workflow_step_id = workflowFirstStep.idApi;
-      this.model.protocol_form_number = 0;
-      this.model.protocol_form_table = this.protocol_form.TABLE_NAME;
-      this.model.reference_model = 'taktwerk\\yiiboilerplate' + this.reference_model;
-      this.model.reference_id = this.reference_id;
-      this.model.name = protocolName;
-      this.model.creator = this.getCreatorName();
-      await this.model.save();
-      this.protocolId = this.model[this.model.COL_ID];
-      this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
-      this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
-      this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
+      (this.model as any).client_id = this.clientId;
+      (this.model as any).protocol_template_id = protocolTemplate.idApi;
+      (this.model as any).workflow_step_id = workflowFirstStep.idApi;
+      (this.model as any).protocol_form_number = 0;
+      (this.model as any).protocol_form_table = this.protocol_form.TABLE_NAME;
+      (this.model as any).reference_model = 'taktwerk\\yiiboilerplate' + this.reference_model;
+      (this.model as any).reference_id = this.reference_id;
+      (this.model as any).name = protocolName;
+      (this.model as any).creator = this.getCreatorName();
+      await (this.model as any).save();
+      this.protocolId = (this.model as any)[(this.model as any).COL_ID];
+      (this.model as any).workflowStep = await this.workflowStepService.getById((this.model as any).workflow_step_id);
+      (this.model as any).canEditProtocol = await this.protocolService.canEditProtocol(this.model as any);
+      (this.model as any).canFillProtocol = await this.protocolService.canFillProtocol(this.model as any);
       if (!this.protocol_form.local_pdf_image) {
         this.protocol_form.local_pdf_image = await this.downloadService.copy(
-          protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE],
+          (protocolTemplate as any)[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE],
           this.protocol_form.TABLE_NAME
         );
       }
     }
-    if (this.model.idApi) {
-      this.protocol_form.protocol_id = this.model.idApi;
+    if ((this.model as any).idApi) {
+      this.protocol_form.protocol_id = (this.model as any).idApi;
     }
-    this.protocol_form.local_protocol_id = this.model[this.model.COL_ID];
+    this.protocol_form.local_protocol_id = ((this.model as any) as any)[(this.model as any).COL_ID];
     const isSaved = await this.protocol_form.save();
     if (isSaved) {
       if (!this.protocol_form.idApi) {
-        this.model.local_protocol_form_number = this.protocol_form[this.protocol_form.COL_ID];
+        (this.model as any).local_protocol_form_number = this.protocol_form[this.protocol_form.COL_ID];
       }
-      await this.model.save();
+      await (this.model as any).save();
       if (this.comment) {
         const protocolCommentModel = this.protocolCommentService.newModel();
-        if (this.model.idApi) {
-          protocolCommentModel.protocol_id = this.model.idApi;
+        if ((this.model as any).idApi) {
+          protocolCommentModel.protocol_id = (this.model as any).idApi;
         }
-        protocolCommentModel.local_protocol_id = this.model[this.model.COL_ID];
+        protocolCommentModel.local_protocol_id = ((this.model as any) as any)[(this.model as any).COL_ID];
         protocolCommentModel.comment = this.comment;
         protocolCommentModel.event = 'comment';
         protocolCommentModel.name = 'a';
         protocolCommentModel.creator = this.getCreatorName();
         await protocolCommentModel.save();
-        this.comment = null;
+        this.comment;
       }
       this.detectChanges();
       // this.events.publish('setIsPushAvailableData');
@@ -170,41 +169,41 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
   public async transition(nextWorkflowTransition: WorkflowTransitionModel) {
     if (this.comment) {
       const writtenProtocolCommentModel = this.protocolCommentService.newModel();
-      if (this.model.idApi) {
-        writtenProtocolCommentModel.protocol_id = this.model.idApi;
+      if ((this.model as any).idApi) {
+        writtenProtocolCommentModel.protocol_id = (this.model as any).idApi;
       }
-      writtenProtocolCommentModel.local_protocol_id = this.model[this.model.COL_ID];
+      writtenProtocolCommentModel.local_protocol_id = ((this.model as any) as any)[(this.model as any).COL_ID];
       writtenProtocolCommentModel.comment = this.comment;
       writtenProtocolCommentModel.event = 'comment';
       writtenProtocolCommentModel.name = 'a';
       writtenProtocolCommentModel.creator = this.getCreatorName();
       await writtenProtocolCommentModel.save();
-      this.comment = null;
+      this.comment;
     }
     const transitionProtocolCommentModel = this.protocolCommentService.newModel();
-    if (this.model.idApi) {
-      transitionProtocolCommentModel.protocol_id = this.model.idApi;
+    if ((this.model as any).idApi) {
+      transitionProtocolCommentModel.protocol_id = (this.model as any).idApi;
     }
-    transitionProtocolCommentModel.local_protocol_id = this.model[this.model.COL_ID];
-    transitionProtocolCommentModel.event = this.model.workflowStep.type;
+    transitionProtocolCommentModel.local_protocol_id = ((this.model as any) as any)[(this.model as any).COL_ID];
+    transitionProtocolCommentModel.event = (this.model as any).workflowStep.type;
     transitionProtocolCommentModel.old_workflow_step_id = nextWorkflowTransition.workflow_step_id;
     transitionProtocolCommentModel.new_workflow_step_id = nextWorkflowTransition.next_workflow_step_id;
     transitionProtocolCommentModel.name = 'b';
     transitionProtocolCommentModel.creator = this.getCreatorName();
     await transitionProtocolCommentModel.save();
-    this.model.workflow_step_id = nextWorkflowTransition.next_workflow_step_id;
-    await this.model.save();
+    (this.model as any).workflow_step_id = nextWorkflowTransition.next_workflow_step_id;
+    await (this.model as any).save();
     let previousProtocolFormFile = null;
     if (this.protocol_form.local_pdf_image) {
       previousProtocolFormFile = this.protocol_form.local_pdf_image;
     }
-    const protocolFormService = this.protocolService.getProtocolFormService(this.model.protocol_form_table);
-    this.protocol_form = protocolFormService.newModel();
+    const protocolFormService = this.protocolService.getProtocolFormService((this.model as any).protocol_form_table);
+    this.protocol_form = protocolFormService?.newModel();
 
-    if (this.model.idApi) {
-      this.protocol_form.protocol_id = this.model.idApi;
+    if ((this.model as any).idApi) {
+      this.protocol_form.protocol_id = (this.model as any).idApi;
     }
-    this.protocol_form.local_protocol_id = this.model[this.model.COL_ID];
+    this.protocol_form.local_protocol_id = ((this.model as any) as any)[(this.model as any).COL_ID];
     if (previousProtocolFormFile) {
       const savedFilePath = await this.downloadService.copy(previousProtocolFormFile, this.protocol_form.TABLE_NAME);
       const modelFileMap = this.protocol_form.downloadMapping[0];
@@ -215,11 +214,11 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
     // return false;
     await this.protocol_form.save();
 
-    this.model.local_protocol_form_number = this.protocol_form[this.protocol_form.COL_ID];
-    await this.model.save();
-    this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
-    this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
-    this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
+    (this.model as any).local_protocol_form_number = this.protocol_form[this.protocol_form.COL_ID];
+    await (this.model as any).save();
+    (this.model as any).workflowStep = await this.workflowStepService.getById((this.model as any).workflow_step_id);
+    (this.model as any).canEditProtocol = await this.protocolService.canEditProtocol((this.model as any));
+    (this.model as any).canFillProtocol = await this.protocolService.canFillProtocol((this.model as any));
     this.detectChanges();
     // this.events.publish('setIsPushAvailableData');
     this.miscService.events.next({ TAG: 'setIsPushAvailableData' });
@@ -235,22 +234,22 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
         if (res && res[0]) {
           resolve(res[0]);
         } else {
-          resolve(null);
+          resolve (res);
         }
       });
     });
   }
 
   async getProtcolFormModel() {
-    const protocolFormService = this.protocolService.getProtocolFormService(this.model.protocol_form_table);
+    const protocolFormService = this.protocolService.getProtocolFormService((this.model as any).protocol_form_table);
     if (!protocolFormService) {
       return null;
     }
-    if (!this.model.local_protocol_form_number) {
+    if (!(this.model as any).local_protocol_form_number) {
       return protocolFormService.newModel();
     }
     const protocolFormModel = await protocolFormService.dbModelApi.findFirst(
-      [protocolFormService.dbModelApi.COL_ID, this.model.local_protocol_form_number]
+      [protocolFormService.dbModelApi.COL_ID, (this.model as any).local_protocol_form_number]
     );
     if (!protocolFormModel || !protocolFormModel[0]) {
       return protocolFormService.newModel();
@@ -262,37 +261,37 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
   async setExistModel() {
     if (this.protocolId) {
       this.workflowStepService.unsetWorkflowStepsListCache();
-      const result = await this.protocolService.dbModelApi.findFirst([this.model.COL_ID, this.protocolId]);
-      this.model = result[0];
-      this.model.workflowStep = await this.workflowStepService.getById(this.model.workflow_step_id);
-      this.model.canEditProtocol = await this.protocolService.canEditProtocol(this.model);
-      this.model.canFillProtocol = await this.protocolService.canFillProtocol(this.model);
-      this.model.comments = await this.protocolService.getComments(this.model);
+      const result = await this.protocolService.dbModelApi.findFirst([(this.model as any).COL_ID, this.protocolId]);
+      (this.model as any) = result[0];
+      (this.model as any).workflowStep = await this.workflowStepService.getById((this.model as any).workflow_step_id);
+      (this.model as any).canEditProtocol = await this.protocolService.canEditProtocol((this.model as any));
+      (this.model as any).canFillProtocol = await this.protocolService.canFillProtocol((this.model as any));
+      (this.model as any).comments = await this.protocolService.getComments((this.model as any));
       this.protocol_form = await this.getProtcolFormModel();
     }
   }
 
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(async params => {
-      const protocolData = params;
+      const protocolData: any = params;
       // console.log('protocol add edit page data', protocolData);
-      this.templateId = +protocolData.templateId;
-      this.clientId = +protocolData.clientId;
-      this.reference_id = +protocolData.referenceId;
+      (this.templateId as any) = +protocolData.templateId;
+      (this.clientId as any) = +protocolData.clientId;
+      (this.reference_id as any) = +protocolData.referenceId;
       this.reference_model_alias = protocolData.referenceModelAlias;
       this.reference_model = this.protocolService.dbModelApi.getReferenceModelByAlias(this.reference_model_alias);
-      this.protocolId = +protocolData.protocolId;
+      (this.protocolId as any) = +protocolData.protocolId;
       if (this.protocolId) {
         await this.setExistModel();
       } else {
-        this.model = this.protocolService.newModel();
-        this.model.client_id = this.clientId;
-        this.model.protocol_template_id = this.templateId;
-        this.model.reference_id = this.reference_id;
-        this.model.reference_model = this.reference_model;
-        this.model.protocol_form_table = 'protocol_default';
+        (this.model as any) = this.protocolService.newModel();
+        (this.model as any).client_id = this.clientId;
+        (this.model as any).protocol_template_id = this.templateId;
+        (this.model as any).reference_id = this.reference_id;
+        (this.model as any).reference_model = this.reference_model;
+        (this.model as any).protocol_form_table = 'protocol_default';
         this.protocol_form = await this.getProtcolFormModel();
-        this.model.canEditProtocol = await this.protocolTemplateService.canCreateProtocol(this.templateId);
+        (this.model as any).canEditProtocol = await this.protocolTemplateService.canCreateProtocol(this.templateId);
       }
       if (!this.protocol_form) {
         this.http.showToast('Can\'t open this protocol', '', 'danger', false);
@@ -400,7 +399,7 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
         case this.protocolCommentService.dbModelApi.TAG + ':create':
         case this.protocolCommentService.dbModelApi.TAG + ':update':
         case this.protocolCommentService.dbModelApi.TAG + ':delete':
-          this.model.comments = await this.protocolService.getComments(this.model);
+          (this.model as any).comments = await this.protocolService.getComments(this.model as any);
           this.detectChanges();
           break;
         default:
@@ -409,6 +408,6 @@ export class ProtocolAddEditPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.eventSubscription.unsubscribe();
+    (this.eventSubscription as any).unsubscribe();
   }
 }

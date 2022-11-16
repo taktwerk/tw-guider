@@ -7,11 +7,11 @@ export class CryptoProvider {
 
     public constructor() { }
 
-    public generateSalt(password) {
+    public generateSalt(password :) {
         return Forge.util.encode64(password);
     }
 
-    public generateIv(password) {
+    public generateIv(password : any) {
         return Forge.util.encode64(password);
     }
 
@@ -40,7 +40,7 @@ export class CryptoProvider {
         // return BcryptJS.hashSync(this.makeEncrypt(password));
     }
 
-    comparePassword(password, hashPassword) {
+    comparePassword(password:any, hashPassword:any) {
         return password === hashPassword;
         // return BcryptJS.compareSync(this.makeEncrypt(password), hashPassword);
     }

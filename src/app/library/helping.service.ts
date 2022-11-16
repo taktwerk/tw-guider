@@ -15,7 +15,7 @@ export class HelpingService {
     protected sanitizerImpl: ɵDomSanitizerImpl,
     private http: HttpClient) { }
 
-  getSecureFile(url, blob = false) {
+  getSecureFile(url:any, blob = false) {
     return new Promise((resolve, reject) => {
       if (typeof url != 'string') {
         resolve(false);
@@ -38,7 +38,7 @@ export class HelpingService {
       this.http.get(url, { headers: headers, observe: 'response', responseType: 'blob' }).toPromise()
         .then((response) => {
 
-          const blobToBase64 = (blob) => {
+          const blobToBase64 = (blob:any) => {
             return new Promise((resolve, _) => {
               const reader = new FileReader();
               reader.onloadend = () => resolve(reader.result);
@@ -62,13 +62,12 @@ export class HelpingService {
     });
   }
 
-  public getSafeUrl(convertFileSrc, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
+  public getSafeUrl(convertFileSrc:any, sanitizeType = 'trustResourceUrl'): SafeResourceUrl {
     const safeUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(convertFileSrc);
 
     if (sanitizeType === 'trustStyle') {
-      return this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
+     this.sanitizerImpl.sanitize(SecurityContext.RESOURCE_URL, safeUrl);
     }
-
     return safeUrl;
   }
 }

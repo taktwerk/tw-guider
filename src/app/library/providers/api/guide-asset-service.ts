@@ -7,7 +7,7 @@ import { GuideAssetModel } from 'app/database/models/db/api/guide-asset-model';
 
 @Injectable()
 export class GuideAssetService extends ApiService {
-    data: GuideAssetModel[] = [];
+    override data: GuideAssetModel[] = [];
     loadUrl = '/guide-asset';
     dbModelApi: GuideAssetModel = new GuideAssetModel();
 
@@ -22,8 +22,8 @@ export class GuideAssetService extends ApiService {
      * @param appSetting
      */
     constructor(
-        public http: HttpClient,
-        public appSetting: AppSetting,
+        public override http: HttpClient,
+        public override appSetting: AppSetting,
     ) {
         super(http, appSetting);
         console.debug('GuideAssetService', 'initialized');
@@ -33,7 +33,7 @@ export class GuideAssetService extends ApiService {
      * Create a new instance of the service model
      * @returns {GuideAssetModel}
      */
-    public newModel() {
+    public override newModel() {
         return new GuideAssetModel();
     }
 }

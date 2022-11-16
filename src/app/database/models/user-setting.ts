@@ -48,9 +48,9 @@ export class UserSetting {
 
   public resumeMode = false;
 
-  public language: string = TranslateConfigService.DEFAULT_LANGUAGE;
+  public language: any = TranslateConfigService.DEFAULT_LANGUAGE;
 
   public appSetting!: object;
 
-  public appDataVersion = 0;
+  public appDataVersion: any = 0;
 }

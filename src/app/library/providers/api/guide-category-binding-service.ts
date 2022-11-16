@@ -6,7 +6,7 @@ import { GuideCategoryBindingModel } from 'app/database/models/db/api/guide-cate
 
 @Injectable()
 export class GuideCategoryBindingService extends ApiService {
-    data: GuideCategoryBindingModel[] = [];
+    override data: GuideCategoryBindingModel[] = [];
     loadUrl: string = '/guide-category-binding';
     dbModelApi: GuideCategoryBindingModel = new GuideCategoryBindingModel();
 
@@ -21,7 +21,7 @@ export class GuideCategoryBindingService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-        public appSetting: AppSetting) {
+        public override appSetting: AppSetting) {
         super(http, appSetting);
         console.debug('GuideCategoryBindingService', 'initialized');
     }
@@ -30,7 +30,7 @@ export class GuideCategoryBindingService extends ApiService {
      * Create a new instance of the service model
      * @returns {GuideCategoryBindingModel}
      */
-    public newModel() {
+    public override newModel() {
         return new GuideCategoryBindingModel();
     }
 }

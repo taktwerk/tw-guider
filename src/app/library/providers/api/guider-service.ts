@@ -8,7 +8,7 @@ import { GuiderModel } from 'app/database/models/db/api/guider-model';
 
 @Injectable()
 export class GuiderService extends ApiService {
-    data: GuiderModel[] = [];
+    override data: GuiderModel[] = [];
     loadUrl: string = '/guider';
     dbModelApi: GuiderModel = new GuiderModel();
 
@@ -25,7 +25,7 @@ export class GuiderService extends ApiService {
     constructor(
         http: HttpClient,
         public authService: AuthService,
-        public appSetting: AppSetting,
+        public override appSetting: AppSetting,
     ) {
         super(http, appSetting);
         console.debug('GuiderService', 'initialized');
@@ -35,11 +35,11 @@ export class GuiderService extends ApiService {
      * Create a new instance of the service model
      * @returns {GuiderModel}
      */
-    public newModel() {
+    public override newModel() {
         return new GuiderModel();
     }
 
-    public getById(id): Promise<any> {
+    public getById(id:any): Promise<any> {
         return new Promise(async resolve => {
             const user = await this.authService.getLastUser();
             if (!user) {

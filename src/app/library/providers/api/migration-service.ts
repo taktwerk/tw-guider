@@ -8,8 +8,8 @@ import { MigrationModel } from 'app/database/models/db/migration-model';
 
 @Injectable()
 export class MigrationService extends ApiService {
-    data: MigrationModel[] = [];
-    loadUrl: string = null;
+    override data: MigrationModel[] = [];
+    loadUrl: any = null;
     dbModelApi: MigrationModel = new MigrationModel();
 
     /**
@@ -19,7 +19,7 @@ export class MigrationService extends ApiService {
      */
     constructor(http: HttpClient,
         public authService: AuthService,
-        public appSetting: AppSetting,
+        public override appSetting: AppSetting,
     ) {
         super(http, appSetting);
     }
@@ -28,7 +28,7 @@ export class MigrationService extends ApiService {
      * Create a new instance of the service model
      * @returns {MigrationkModel}
      */
-    public newModel() {
+    public override newModel() {
         return new MigrationModel();
     }
 }

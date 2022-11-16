@@ -6,7 +6,7 @@ import { FeedbackModel } from 'app/database/models/db/api/feedback-model';
 
 @Injectable()
 export class FeedbackService extends ApiService {
-    data: FeedbackModel[] = [];
+    override data: FeedbackModel[] = [];
     loadUrl: string = '/feedback';
     dbModelApi: FeedbackModel = new FeedbackModel();
 
@@ -21,7 +21,7 @@ export class FeedbackService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-        public appSetting: AppSetting
+        public override appSetting: AppSetting
     ) {
         super(http, appSetting);
         console.debug('FeedbackService', 'initialized');
@@ -31,7 +31,7 @@ export class FeedbackService extends ApiService {
      * Create a new instance of the service model
      * @returns {FeedbackModel}
      */
-    public newModel() {
+    public override newModel() {
         return new FeedbackModel();
     }
 }

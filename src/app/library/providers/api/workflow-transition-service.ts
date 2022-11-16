@@ -13,7 +13,7 @@ import { WorkflowTransitionModel } from 'app/database/models/db/api/workflow-tra
 
 @Injectable()
 export class WorkflowTransitionService extends ApiService {
-    data: WorkflowTransitionModel[] = [];
+    override data: WorkflowTransitionModel[] = [];
     loadUrl: string = '/workflow-transition';
     dbModelApi: WorkflowTransitionModel = new WorkflowTransitionModel();
 
@@ -34,7 +34,7 @@ export class WorkflowTransitionService extends ApiService {
 
         public downloadService: DownloadService,
         public loggerService: LoggerService,
-        public appSetting: AppSetting
+        public override appSetting: AppSetting
 
     ) {
         super(http, appSetting);
@@ -44,7 +44,7 @@ export class WorkflowTransitionService extends ApiService {
      * Create a new instance of the service model
      * @returns {WorkflowStepModel}
      */
-    public newModel() {
+    public override newModel() {
         return new WorkflowTransitionModel();
     }
 }

@@ -104,7 +104,7 @@ export class ApiSync implements OnDestroy {
   };
 
   allServicesBodiesForPush: any;
-  eventSubscription: Subscription;
+  eventSubscription!: Subscription;
 
   /**
    * ApiSync Constructor
@@ -196,7 +196,7 @@ export class ApiSync implements OnDestroy {
 
   replacerFunc = () => {
     const visited = new WeakSet();
-    return (key, value) => {
+    return (key: any, value: any) => {
       if (typeof value === 'object' && value !== null) {
         if (visited.has(value)) {
           return;
@@ -301,7 +301,7 @@ export class ApiSync implements OnDestroy {
           this.userService.userDb.save();
         }
         resolve(isSavedSyncData);
-      } catch (err) {
+      } catch (err: any) {
         this.failSync(err);
         resolve(false);
         return;
@@ -309,14 +309,14 @@ export class ApiSync implements OnDestroy {
     });
   }
 
-  protected async prepareDataForSavingPullData(countOfSyncedData) {
+  protected async prepareDataForSavingPullData(countOfSyncedData: any) {
     if (this.syncMustBeEnd()) {
       this.isBusy = false;
       return false;
     }
     if (this.syncProgressStatus.getValue() === 'resume') {
       if (!countOfSyncedData || countOfSyncedData < this.userService.userDb.userSetting.syncLastElementNumber) {
-          this.unsetSyncProgressData().then(() => {
+        this.unsetSyncProgressData().then(() => {
           this.userService.userDb.userSetting.lastSyncedAt = new Date();
           if (this.lastModelUpdatedAt) {
             this.userService.userDb.userSetting.lastModelUpdatedAt = this.lastModelUpdatedAt;
@@ -369,7 +369,7 @@ export class ApiSync implements OnDestroy {
     return true;
   }
 
-  private async saveModels(data) {
+  private async saveModels(data: any) {
     let savedDataCount = 0;
     for (const key of Object.keys(data)) {
       if (this.syncMustBeEnd()) {
@@ -412,7 +412,7 @@ export class ApiSync implements OnDestroy {
     return true;
   }
 
-  private saveSyncProgress(): Promise<boolean> {
+  private saveSyncProgress(): Promise<any> {
     if (!this.willMakeCancel()) {
       this.userService.userDb.userSetting.syncLastElementNumber++;
       this.syncedItemsCount.next(this.userService.userDb.userSetting.syncLastElementNumber);
@@ -494,7 +494,7 @@ export class ApiSync implements OnDestroy {
       let url = this.appSetting.getApiUrl() + '/sync/save-progress';
       url += '?syncProcessId=' + this.userService.userDb.userSetting.lastSyncProcessId;
 
-      let data = null;
+      let data: any = null;
       if (isCancel) {
         data = {
           id: this.userService.userDb.userSetting.lastSyncProcessId,
@@ -562,7 +562,7 @@ export class ApiSync implements OnDestroy {
     return url;
   }
 
-  async saveModel(apiService, newModel) {
+  async saveModel(apiService: any, newModel: any) {
     return apiService.saveSyncedModel(newModel);
   }
 
@@ -750,7 +750,7 @@ export class ApiSync implements OnDestroy {
   }
 
   resetSyncedData(): Promise<any> {
-    const apiSyncServicesPromises = [];
+    const apiSyncServicesPromises: any[] = [];
     Object.keys(this.apiServices).forEach((modelKey) => {
       const service: ApiService = this.apiServices[modelKey];
       const condition = [];
@@ -784,7 +784,7 @@ export class ApiSync implements OnDestroy {
    * @returns
    */
   public pushOneAtTime(): Promise<any> {
-    return new Promise(async resolve => {
+    return new Promise(async (resolve:any) => {
       // console.log('pushOneAtTime');
       if (this.isOffNetwork()) {
         resolve(false);
@@ -907,10 +907,10 @@ export class ApiSync implements OnDestroy {
       const bodies = await service.prepareBatchPost();
       if (bodies && bodies.length > 0) {
         const modelBody = {};
-        modelBody[key] = bodies;
+        (modelBody as any)[key] = bodies;
         this.allServicesBodiesForPush = { ...this.allServicesBodiesForPush, ...modelBody };
         // console.log("allServicesBodiesForPush", this.allServicesBodiesForPush);
-        this.countOfAllChangedItems += modelBody[key].length;
+        this.countOfAllChangedItems += (modelBody as any)[key].length;
       }
     }
     if (this.syncProgressStatus.getValue() === 'resume') {
@@ -941,7 +941,7 @@ export class ApiSync implements OnDestroy {
     return JSON.stringify(circObj, replacerFunc());
   }
 
-  private pushDataToServer(url, model, service, isAdditionalData = false) {
+  private pushDataToServer(url: any, model: any, service: any, isAdditionalData = false) {
     // console.log(url, model, service, isAdditionalData)
     return new Promise(async resolve => {
       if (this.pushProgressStatus.getValue() === 'failed') {
@@ -1009,7 +1009,7 @@ export class ApiSync implements OnDestroy {
               await service.pushFiles(dbModel, this.userService.userDb);
               const additionalModelsForPushDataToServer = await dbModelApi.afterPushDataToServer(isInsert);
               for (let i = 0; i < additionalModelsForPushDataToServer.length; i++) {
-                const additionalModel = additionalModelsForPushDataToServer[i];
+                const additionalModel: any = additionalModelsForPushDataToServer[i];
                 const urlForAddtinoalPush = this.appSetting.getApiUrl() + additionalModel.loadUrl + '/batch';
                 const serviceForAdditionalModel = this.apiPushServices[additionalModel.TABLE_NAME];
                 if (serviceForAdditionalModel) {

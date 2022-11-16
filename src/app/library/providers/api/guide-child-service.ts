@@ -6,7 +6,7 @@ import { GuideChildModel } from 'app/database/models/db/api/guide-child-model';
 
 @Injectable()
 export class GuideChildService extends ApiService {
-    data: GuideChildModel[] = [];
+    override data: GuideChildModel[] = [];
     loadUrl = '/guide-child';
     dbModelApi: GuideChildModel = new GuideChildModel();
 
@@ -17,7 +17,7 @@ export class GuideChildService extends ApiService {
      * @param appSetting
      */
     constructor(http: HttpClient,
-        public appSetting: AppSetting,
+        public override appSetting: AppSetting,
     ) {
         super(http, appSetting);
         console.debug('GuideChildService', 'initialized');
@@ -27,7 +27,7 @@ export class GuideChildService extends ApiService {
      * Create a new instance of the service model
      * @returns {GuideChildModel}
      */
-    public newModel() {
+    public override newModel() {
         return new GuideChildModel();
     }
 }

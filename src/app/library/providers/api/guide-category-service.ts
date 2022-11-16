@@ -15,7 +15,7 @@ import { GuiderModel } from 'app/database/models/db/api/guider-model';
 
 @Injectable()
 export class GuideCategoryService extends ApiService {
-    data: GuideCategoryModel[] = [];
+    override data: GuideCategoryModel[] = [];
     loadUrl: string = '/guide-category';
     dbModelApi: GuideCategoryModel = new GuideCategoryModel();
 
@@ -36,7 +36,7 @@ export class GuideCategoryService extends ApiService {
 
         public downloadService: DownloadService,
         public loggerService: LoggerService,
-        public appSetting: AppSetting,
+        private override  appSetting: AppSetting,
         public miscService: MiscService,
 
     ) {

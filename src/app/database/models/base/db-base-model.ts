@@ -6,7 +6,8 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { DbProvider } from "src/app/library/providers/db-provider";
+import { DbProvider } from "app/library/providers/db-provider";
+
 
 declare let window: any;
 
@@ -30,7 +31,7 @@ export abstract class DbBaseModel {
 
   // db helper's public and protected members
   /** primary key */
-  public id: number;
+  public id: any;
   /** id's column name */
   public COL_ID = '_id';
 
@@ -46,7 +47,7 @@ export abstract class DbBaseModel {
   /** this instance's table name for SQLite db */
   abstract TABLE_NAME: string;
 
-  queryBuilder: string;
+  queryBuilder: any;
   queryWhereArray: [] = [];
 
   /**
@@ -83,7 +84,7 @@ export abstract class DbBaseModel {
    * @param item db row
    */
   public loadFromAttributes(item: any): DbBaseModel {
-    this[this.COL_ID] = item[this.COL_ID];
+    (this as any)[+this.COL_ID] = item[this.COL_ID];
     for (const column of this.TABLE) {
       // get column name (if defined in 4th column - otherwise get column name defined in 1st column)
       const columnName = column[3] ? column[3] : column[0];
@@ -109,7 +110,7 @@ export abstract class DbBaseModel {
           break;
       }
     }
-    this.updateCondition = [[this.COL_ID, this[this.COL_ID]]];
+    this.updateCondition = [[this.COL_ID, (this as any)[this.COL_ID]]];
     return this;
   }
 
@@ -167,7 +168,7 @@ export abstract class DbBaseModel {
    *
    * @returns
    */
-  dbReady(): Promise<DbProvider> {
+  dbReady(): Promise<DbProvider | any> {
     return new Promise((resolve) => {
       if (this.dbIsReady) {
         resolve(this.db);
@@ -212,7 +213,7 @@ export abstract class DbBaseModel {
     return query;
   }
 
-  public isExitColInTable(tableName, colName) {
+  public isExitColInTable(tableName: any, colName: any) {
     return new Promise((resolve) => {
       if (this.dbIsBusy) {
         resolve(false);
@@ -220,11 +221,11 @@ export abstract class DbBaseModel {
         this.dbIsBusy = true;
         this.platform.ready().then(() => {
           this.db.query(`SELECT ${colName} FROM ${tableName}`)
-            .then((res) => {
+            .then((res: any) => {
               this.dbIsReady = true;
               this.dbIsBusy = false;
               resolve(true);
-            }).catch((err) => {
+            }).catch((err: any) => {
               this.dbIsBusy = false;
               resolve(false);
               console.log(err);
@@ -234,7 +235,7 @@ export abstract class DbBaseModel {
     });
   }
 
-  public checkTableExit(TABLE_NAME) {
+  public checkTableExit(TABLE_NAME: any) {
     return new Promise((resolve) => {
       if (this.dbIsBusy) {
         resolve(false);
@@ -242,11 +243,11 @@ export abstract class DbBaseModel {
         this.dbIsBusy = true;
         this.platform.ready().then(() => {
           this.db.query('SELECT COUNT(*) FROM ' + this.secure(TABLE_NAME))
-            .then((res) => {
+            .then((res: any) => {
               this.dbIsReady = true;
               this.dbIsBusy = false;
               resolve(true);
-            }).catch((err) => {
+            }).catch((err: any) => {
               this.dbIsBusy = false;
               resolve(false);
             });
@@ -263,11 +264,11 @@ export abstract class DbBaseModel {
         this.dbIsBusy = true;
         this.platform.ready().then(() => {
           this.db.query('SELECT COUNT(*) FROM ' + this.secure(this.TABLE_NAME))
-            .then((res) => {
+            .then((res: any) => {
               this.dbIsReady = true;
               this.dbIsBusy = false;
               resolve(true);
-            }).catch((err) => {
+            }).catch((err: any) => {
               this.dbIsBusy = false;
               resolve(false);
             });
@@ -276,7 +277,7 @@ export abstract class DbBaseModel {
     });
   }
 
-  public query(query) {
+  public query(query: any) {
     return new Promise((resolve) => {
       if (this.dbIsBusy) {
         resolve(false);
@@ -284,11 +285,11 @@ export abstract class DbBaseModel {
         this.dbIsBusy = true;
         this.platform.ready().then(() => {
           this.db.query(query)
-            .then((res) => {
+            .then((res: any) => {
               this.dbIsReady = true;
               this.dbIsBusy = false;
               resolve(true);
-            }).catch((err) => {
+            }).catch((err: any) => {
               this.dbIsBusy = false;
               resolve(false);
             });
@@ -313,11 +314,11 @@ export abstract class DbBaseModel {
       } else {
         this.dbIsBusy = true;
         this.platform.ready().then(() => {
-          this.db.query(this.getCreateSQLQuery()).then((res) => {
+          this.db.query(this.getCreateSQLQuery()).then((res: any) => {
             this.dbIsReady = true;
             this.dbIsBusy = false;
             resolve(true);
-          }).catch((err) => {
+          }).catch((err: any) => {
             this.dbIsBusy = false;
             resolve(false);
           });
@@ -344,7 +345,7 @@ export abstract class DbBaseModel {
           resolve(false);
         }
         const query = 'SELECT * FROM ' + this.secure(this.TABLE_NAME) + ' WHERE ' + this.secure(this.COL_ID) + ' = ' + id;
-        db.query(query).then((res) => {
+        db.query(query).then((res: any) => {
           if (res.rows.length === 1) {
             if (newObject) {
               const obj: DbBaseModel = new (<any>this.constructor)();
@@ -360,7 +361,7 @@ export abstract class DbBaseModel {
           } else {
             resolve(false);
           }
-        }).catch((err) => {
+        }).catch((err: any) => {
           resolve(false);
         });
       });
@@ -382,7 +383,7 @@ export abstract class DbBaseModel {
   public searchAllAndGetRowsResult(
     where?: any,
     orderBy?: string,
-    limit?: number,
+    limit?: any,
     join?: string,
     selectFrom?: string,
     groupBy?: string
@@ -396,13 +397,13 @@ export abstract class DbBaseModel {
           resolve(entries);
         } else {
           //  console.log('query', query);
-          db.query(query).then((res) => {
+          db.query(query).then((res: any) => {
             if (res.rows.length > 0) {
               resolve(res);
               return;
             }
             resolve(entries);
-          }).catch((err) => {
+          }).catch((err: any) => {
             resolve(entries);
           });
         }
@@ -422,7 +423,7 @@ export abstract class DbBaseModel {
           resolve(entries);
         }
         else {
-          db.query(query).then((res) => {
+          db.query(query).then((res: any) => {
             // console.log('search all res', res);
             if (res.rows.length > 0) {
               for (let i = 0; i < res.rows.length; i++) {
@@ -438,7 +439,7 @@ export abstract class DbBaseModel {
             //  console.log("entries", entries);
             resolve(entries);
 
-          }).catch((err) => {
+          }).catch((err: any) => {
             resolve(entries);
           });
         }
@@ -447,7 +448,7 @@ export abstract class DbBaseModel {
     });
   }
 
-  public executeQueryAndGetModels(query) {
+  public executeQueryAndGetModels(query: any) {
     const entries: any[] = [];
 
     return new Promise((resolve) => {
@@ -455,7 +456,7 @@ export abstract class DbBaseModel {
         if (db == null) {
           resolve(entries);
         } else {
-          db.query(query).then((res) => {
+          db.query(query).then((res: any) => {
             if (res.rows.length > 0) {
               for (let i = 0; i < res.rows.length; i++) {
                 const obj: DbBaseModel = new (<any>this.constructor)();
@@ -469,7 +470,7 @@ export abstract class DbBaseModel {
               }
             }
             resolve(entries);
-          }).catch((err) => {
+          }).catch((err: any) => {
             resolve(entries);
           });
         }
@@ -544,7 +545,7 @@ export abstract class DbBaseModel {
     return this.searchAll(conditionString, orderBy, limit);
   }
 
-  public findFirst(condition, orderBy = 'id ASC'): Promise<any> {
+  public findFirst(condition: any, orderBy = 'id ASC'): Promise<any> {
     return this.findAllWhere(condition, orderBy, 1);
   }
 
@@ -691,7 +692,7 @@ export abstract class DbBaseModel {
       this.dbReady().then((db) => {
         if (db == null) { resolve(false); }
         let deleteQuery = 'DELETE FROM ' + this.secure(this.TABLE_NAME);
-        if (condition.length) {
+        if (condition?.length) {
           deleteQuery = deleteQuery + ' WHERE ' + this.parseWhere(condition);
         }
 
@@ -713,7 +714,7 @@ export abstract class DbBaseModel {
   public save(forceCreation?: boolean): Promise<any> {
     return new Promise((resolve) => {
       // console.log('this[this.COL_ID] && !forceCreation', this[this.COL_ID] && !forceCreation);
-      if (this[this.COL_ID] && !forceCreation) {
+      if ([this.COL_ID] && !forceCreation) {
         this.update().then(() => resolve(true));
       } else {
         this.create().then(() => resolve(true));
@@ -833,7 +834,7 @@ export abstract class DbBaseModel {
    * @param type
    * @returns
    */
-  protected getValueByType(value: any, type: number): string {
+  protected getValueByType(value: any, type: number): any {
     switch (type) {
       case DbBaseModel.TYPE_NUMBER:
         return this.getValueNumber(value);
@@ -884,7 +885,7 @@ export abstract class DbBaseModel {
           if (this.TAG === 'ProtocolDefaultModel' || this.TAG === 'ProtocolModel') {
             console.log('insert query', query);
           }
-          db.query(query).then((res) => {
+          db.query(query).then((res:any) => {
             //  Save ID in the model
             // console.log('after execute query');
             this[this.COL_ID] = res.insertId;
@@ -893,7 +894,7 @@ export abstract class DbBaseModel {
             this.miscService.events.next({ TAG: this.TAG + ':create', data: this });
             resolve(res);
 
-          }).catch((err) => {
+          }).catch((err: any) => {
             resolve(false);
           });
         }
