@@ -7,7 +7,7 @@ import { SyncIndexModel } from 'app/database/models/db/api/sync-index-model';
 
 @Injectable()
 export class SyncIndexService extends ApiService {
-  data: SyncIndexModel[] = [];
+  override data: SyncIndexModel[] = [];
   loadUrl: string = '/sync-index';
   dbModelApi: SyncIndexModel = new SyncIndexModel();
 
@@ -24,7 +24,7 @@ export class SyncIndexService extends ApiService {
   constructor(
     http: HttpClient,
     public authService: AuthService,
-    public appSetting: AppSetting,
+    public override appSetting: AppSetting,
   ) {
     super(http, appSetting);
     console.debug('SyncIndexService', 'initialized');
@@ -34,12 +34,12 @@ export class SyncIndexService extends ApiService {
    * Create a new instance of the service model
    * @returns {SyncIndexModel}
    */
-  public newModel() {
+  public override newModel() {
     return new SyncIndexModel();
   }
 
   // find model by
-  public getById(id): Promise<any> {
+  public getById(id: any): Promise<any> {
     return new Promise(async (resolve) => {
       const user = await this.authService.getLastUser();
       if (!user) {
@@ -57,7 +57,7 @@ export class SyncIndexService extends ApiService {
   }
 
   // return new list of models found in the sync index
-  public async getSyncIndexModel(modelList: any[], modelName): Promise<any> {
+  public async getSyncIndexModel(modelList: any[], modelName: any): Promise<any> {
     // extract models not yet synced with API
     const unsyncedModels = modelList.filter((m) => m.is_synced === 0);
     // extract models synced with API
@@ -72,7 +72,7 @@ export class SyncIndexService extends ApiService {
         const entries: any[] = [];
         this.dbModelApi.dbReady().then((db) => {
           db.query('SELECT * FROM sync_index')
-            .then((res) => {
+            .then((res: any) => {
               for (let i = 0; i < res.rows.length; i++) {
                 entries.push(res.rows.item(i));
               }

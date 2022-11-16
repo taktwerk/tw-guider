@@ -15,9 +15,9 @@ import { UserService } from 'app/library/services/user-service';
     templateUrl: 'language-selector-component.html',
 })
 export class LanguageSelectorComponent implements OnInit {
-    @ViewChild('languageSelector', { static: true }) languageSelector: IonSelect;
+    @ViewChild('languageSelector', { static: true }) languageSelector!: IonSelect;
 
-    public userDb: UserDb;
+    public userDb: UserDb = new UserDb();
     public isStartSync = false;
     public syncedItemsPercent = 0;
     public isNetwork = false;
@@ -25,10 +25,10 @@ export class LanguageSelectorComponent implements OnInit {
     public isAvailableForSyncData = false;
     public isAvailableForPushData = false;
     public isLoggedUser = false;
-    public params;
+    public params: any;
 
-    selectedLanguage: string;
-    eventSubscription: Subscription;
+    selectedLanguage: any = '';
+    eventSubscription: Subscription = new Subscription();
 
     constructor(
         private modalController: ModalController,
@@ -45,7 +45,7 @@ export class LanguageSelectorComponent implements OnInit {
         this.isNetwork = (this.network.type !== 'none');
         this.userService.getUser().then((isExist) => {
             if (isExist) {
-                if (this.userService.userDb.userSetting &&
+                if (this.userService.userDb && this.userService.userDb.userSetting &&
                     this.userService.userDb.userSetting.language &&
                     this.translateConfigService.isLanguageAvailable(this.userService.userDb.userSetting.language)
                 ) {
@@ -62,7 +62,7 @@ export class LanguageSelectorComponent implements OnInit {
     languageChanged() {
         this.translateConfigService.setLanguage(this.selectedLanguage);
         this.userService.getUser().then((isExist) => {
-            if (isExist) {
+            if (isExist && this.userService.userDb) {
                 this.userService.userDb.userSetting.language = this.selectedLanguage;
                 this.userService.userDb.save();
                // this.storage.set("storedLang", this.selectedLanguage);

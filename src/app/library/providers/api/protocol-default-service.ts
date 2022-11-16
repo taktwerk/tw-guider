@@ -10,7 +10,7 @@ import { AppSetting } from '../../services/app-setting';
 import { DrawImageService } from '../../services/draw-image-service';
 import { ProtocolTemplateService } from './protocol-template-service';
 import { TranslateConfigService } from '../../services/translate-config.service';
-import { Md5 } from 'ts-md5/dist/md5';
+const Md5 = require('ts-md5/dist/md5');
 import { MiscService } from '../../services/misc-service';
 import { ProtocolDefaultModel } from 'app/database/models/db/api/protocol-default-model';
 import { ProtocolModel } from 'app/database/models/db/api/protocol-model';
@@ -18,19 +18,19 @@ import { ProtocolTemplateModel } from 'app/database/models/db/api/protocol-templ
 
 @Injectable()
 export class ProtocolDefaultService extends ApiService {
-    data: ProtocolDefaultModel[] = [];
+    override data: ProtocolDefaultModel[] = [];
     loadUrl: string = '/protocol-default';
     dbModelApi: ProtocolDefaultModel = new ProtocolDefaultModel();
     saveInformation: {
-        clientId: number,
-        protocol: ProtocolModel,
-        protocolFormModel: any,
-        protocolTemplate: ProtocolTemplateModel,
-        referenceModel: string,
-        referenceId: number,
-        protocol_file?,
-        fileMapIndex
-    };
+      clientId: number;
+      protocol: ProtocolModel | any;
+      protocolFormModel: any;
+      protocolTemplate: ProtocolTemplateModel;
+      referenceModel: string;
+      referenceId: number;
+      protocol_file?: any;
+      fileMapIndex: any;
+    } | undefined;
 
     /**
      * Constructor
@@ -54,7 +54,7 @@ export class ProtocolDefaultService extends ApiService {
 
         public downloadService: DownloadService,
         public loggerService: LoggerService,
-        public appSetting: AppSetting,
+        public override appSetting: AppSetting,
         private drawImageService: DrawImageService,
         private protocolTemplateService: ProtocolTemplateService,
         public miscService: MiscService,
@@ -62,8 +62,8 @@ export class ProtocolDefaultService extends ApiService {
         super(http, appSetting);
     }
 
-    async saveProtocol(saveInformation) {
-        let protocol = null;
+    async saveProtocol(saveInformation: any) {
+        let protocol:any = null;
         if (!saveInformation.protocol) {
             const protocolTemplate = saveInformation.protocolTemplate;
             const templateWorkflow = await protocolTemplate.getWorkflow();
@@ -92,17 +92,17 @@ export class ProtocolDefaultService extends ApiService {
         const protocolDefault = this.newModel();
         this.downloadService.copy(saveInformation.protocol_file, protocolDefault.TABLE_NAME).then(async (savedFilePath) => {
             const modelFileMap = protocolDefault.downloadMapping[saveInformation.fileMapIndex];
-            protocolDefault[modelFileMap.url] = '';
-            protocolDefault[modelFileMap.localPath] = savedFilePath;
-            protocolDefault[modelFileMap.name] = savedFilePath.substring(savedFilePath.lastIndexOf('/') + 1, savedFilePath.length);
+            (protocolDefault as any) [modelFileMap.url] = '';
+            (protocolDefault as any)[modelFileMap.localPath] = savedFilePath;
+            (protocolDefault as any)[modelFileMap.name] = savedFilePath.substring(savedFilePath.lastIndexOf('/') + 1, savedFilePath.length);
             if (protocol[protocol.COL_ID_API]) {
                 protocolDefault.protocol_id = protocol[protocol.COL_ID_API];
             }
             protocolDefault.local_protocol_id = protocol[protocol.COL_ID];
             const isSaved = await protocolDefault.save();
             if (isSaved) {
-                if (!protocolDefault[protocol.COL_ID_API]) {
-                    protocol.local_protocol_form_number = protocolDefault[protocol.COL_ID];
+                if (!(protocolDefault as any)[protocol.COL_ID_API]) {
+                    protocol.local_protocol_form_number = (protocolDefault as any)[protocol.COL_ID];
                 }
                 await protocol.save();
                 // this.events.publish('setIsPushAvailableData');
@@ -111,7 +111,7 @@ export class ProtocolDefaultService extends ApiService {
         });
     }
 
-    async showSavePopup(saveInformation) {
+    async showSavePopup(saveInformation: any) {
         const alert = await this.alertController.create({
             message: this.translateConfigService.translateWord('synchronization-component.Are you sure you want to overwrite the data?'),
             buttons: [
@@ -127,7 +127,7 @@ export class ProtocolDefaultService extends ApiService {
         await alert.present();
     }
 
-    public getProtocolTemplate(templateId: number): Promise<ProtocolTemplateModel> {
+    public getProtocolTemplate(templateId: number): Promise<ProtocolTemplateModel | null> {
         return new Promise((resolve) => {
             this.protocolTemplateService.dbModelApi.findFirst(
                 [this.protocolTemplateService.dbModelApi.COL_ID_API, templateId]
@@ -141,9 +141,9 @@ export class ProtocolDefaultService extends ApiService {
         });
     }
 
-    public async openEditPage(protocolDefault, protocol: ProtocolModel) {
+    public async openEditPage(protocolDefault: any, protocol: ProtocolModel) {
         console.log('protocolDefault[ProtocolDefaultModel.COL_PROTOCOL_FILE]', protocolDefault.local_pdf_image);
-        const protocolTemplate = await this.getProtocolTemplate(protocol.protocol_template_id);
+        const protocolTemplate: any = await this.getProtocolTemplate(protocol.protocol_template_id);
         if (!protocolDefault.local_pdf_image) {
             return;
         }
@@ -170,12 +170,12 @@ export class ProtocolDefaultService extends ApiService {
         this.saveInformation.protocol_file = editFilePath;
     }
 
-    public async openCreatePage(templateId: number, clientId?, referenceModel?, referenceId?) {
+    public async openCreatePage(templateId: number, clientId?:any, referenceModel?: any, referenceId?: any) {
 
         const protocolTemplate = await this.getProtocolTemplate(templateId);
         // const editFilePath = 'http://localhost/_app_file_/data/user/0/com.taktwerk.twguider2/files/guide_step/1592303527_7B5B4B0E-B92B-497C-8305-5CD629D6A223.jpeg';
 
-        if (!protocolTemplate || !protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE]) {
+        if (!protocolTemplate || !(protocolTemplate as any)[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE]) {
             return;
         }
         this.saveInformation = { clientId, protocol: null, protocolFormModel: null, protocolTemplate, referenceModel, referenceId, fileMapIndex: 1 };
@@ -183,14 +183,14 @@ export class ProtocolDefaultService extends ApiService {
         // this.drawImageService.open(editFilePath, protocolTemplate.name);
         // this.pictureService.editFile(editFilePath, protocolTemplate.name);
         this.downloadService.copy(
-            protocolTemplate[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE],
+            (protocolTemplate as any)[ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE],
             this.dbModelApi.TABLE_NAME
         ).then(async (savedFilePath) => {
             const editFilePath = await this.getEditFilePath(savedFilePath);
             if (!editFilePath) {
                 return false;
             }
-            this.saveInformation.protocol_file = editFilePath;
+            (this.saveInformation as any).protocol_file = editFilePath;
             console.log("openCreatePage");
             const convertFileSrc = this.downloadService.getWebviewFileSrc(editFilePath);
             const editFilePathNew = this.downloadService.getSafeUrl(convertFileSrc, 'trustStyle');
@@ -209,7 +209,7 @@ export class ProtocolDefaultService extends ApiService {
      * Create a new instance of the service model
      * @returns {ProtocolDefaultModel}
      */
-    public newModel() {
+    public override newModel() {
         return new ProtocolDefaultModel();
     }
 }

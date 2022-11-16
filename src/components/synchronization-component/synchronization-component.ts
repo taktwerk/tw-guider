@@ -39,7 +39,7 @@ export class SynchronizationComponent implements OnInit {
   public resumeMode: boolean = false;
   public userDb!: UserDb;
   public syncAllItemsCount = 0;
-  public params:any;
+  public params: any;
   eventSubscription!: Subscription;
 
   constructor(public apiSync: ApiSync,
@@ -56,19 +56,21 @@ export class SynchronizationComponent implements OnInit {
     public appSetting: AppSetting,
   ) {
     this.initUser().then(() => {
-      if ([0, 1, 2].includes(this.userService.userDb.userSetting.syncMode)) {
-        this.modeSync = this.userService.userDb.userSetting.syncMode;
-      } else {
-        this.modeSync = environment.syncMode;
+      if (this.userService.userDb) {
+        if ([0, 1, 2].includes(this.userService.userDb.userSetting.syncMode)) {
+          this.modeSync = this.userService.userDb.userSetting.syncMode;
+        } else {
+          this.modeSync = environment.syncMode;
+        }
+        this.resumeMode = this.userService.userDb.userSetting.resumeMode;
+        // console.log(this.resumeMode)
+        this.syncProgressStatus = this.userService.userDb.userSetting.syncStatus;
       }
-      this.resumeMode = this.userService.userDb.userSetting.resumeMode;
-      // console.log(this.resumeMode)
-      this.syncProgressStatus = this.userService.userDb.userSetting.syncStatus;
     });
   }
 
   cancelSyncData() {
-    return this.apiSync.unsetSyncProgressData().then((isCanceled:any) => {
+    return this.apiSync.unsetSyncProgressData().then((isCanceled: any) => {
       if (isCanceled) {
         this.http.showToast('synchronization-component.Sync was canceled.');
       }
@@ -95,8 +97,10 @@ export class SynchronizationComponent implements OnInit {
       this.http.showToast('synchronization-component.Now is periodic mode (every 15 seconds)');
     }
     this.initUser().then(() => {
-      this.userService.userDb.userSetting.syncMode = this.modeSync;
-      this.userService.userDb.save();
+      if (this.userService.userDb) {
+        this.userService.userDb.userSetting.syncMode = this.modeSync;
+        this.userService.userDb.save();
+      }
     });
     this.syncService.syncMode.next(this.modeSync);
   }
@@ -105,10 +109,13 @@ export class SynchronizationComponent implements OnInit {
     this.resumeMode === false ? this.resumeMode = true : this.resumeMode = false;
     console.log(this.resumeMode);
     this.initUser().then(() => {
-      this.userService.userDb.userSetting.resumeMode = this.resumeMode;
-      this.userService.userDb.save().then(() => {
-        this.syncService.resumeMode.next(this.resumeMode);
-      });
+      if (this.userService.userDb) {
+        this.userService.userDb.userSetting.resumeMode = this.resumeMode;
+        this.userService.userDb.save().then(() => {
+          this.syncService.resumeMode.next(this.resumeMode);
+        });
+      }
+
     });
   }
 
@@ -134,7 +141,7 @@ export class SynchronizationComponent implements OnInit {
   }
 
   protected initUser() {
-    return this.userService.getUser().then((result:any) => {
+    return this.userService.getUser().then((result: any) => {
       this.userDb = result;
     });
   }
@@ -145,7 +152,7 @@ export class SynchronizationComponent implements OnInit {
         await this.cancelSyncData();
       }
 
-      if(this.platform.is('capacitor')) {
+      if (this.platform.is('capacitor')) {
         const isRemovedAllApiFiles = await this.downloadService.removeAllAppFiles();
         if (!isRemovedAllApiFiles) {
           this.http.showToast('synchronization-component.Failed to remove data');
@@ -158,28 +165,33 @@ export class SynchronizationComponent implements OnInit {
 
       await this.apiSync.resetSyncedData();
       this.initUser().then(() => {
-        this.userService.userDb.userSetting.lastSyncedDiff = 0;
-        this.userService.userDb.userSetting.syncStatus = 'success';
-        this.userService.userDb.userSetting.syncLastElementNumber = 0;
-        this.userService.userDb.userSetting.syncAllItemsCount = 0;
-        this.userService.userDb.userSetting.syncPercent = 0;
-        this.userService.userDb.userSetting.lastSyncedAt = null;
-        this.userService.userDb.userSetting.lastModelUpdatedAt = null;
-        this.userService.userDb.userSetting.lastSyncProcessId = null;
-        this.userService.userDb.userSetting.appDataVersion = null;
-        this.apiSync.isAvailableForSyncData.next(true);
-        this.userService.userDb.userSetting.isSyncAvailableData = true;
-        this.apiSync.isAvailableForPushData.next(false);
-        this.userService.userDb.userSetting.isPushAvailableData = false;
-        this.userService.userDb.save().then(() => {
-          this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
-          this.apiSync.syncProgressStatus.next('success');
-          this.apiSync.isStartSyncBehaviorSubject.next(false);
-          this.http.showToast('synchronization-component.The database is cleared.');
-          this.apiSync.makeSyncProcess();
+        if (this.userService.userDb) {
+          this.userService.userDb.userSetting.lastSyncedDiff = 0;
+          this.userService.userDb.userSetting.syncStatus = 'success';
+          this.userService.userDb.userSetting.syncLastElementNumber = 0;
+          this.userService.userDb.userSetting.syncAllItemsCount = 0;
+          this.userService.userDb.userSetting.syncPercent = 0;
+          this.userService.userDb.userSetting.lastSyncedAt = null;
+          this.userService.userDb.userSetting.lastModelUpdatedAt = null;
+          this.userService.userDb.userSetting.lastSyncProcessId = null;
+          this.userService.userDb.userSetting.appDataVersion = null;
+          this.apiSync.isAvailableForSyncData.next(true);
+          this.userService.userDb.userSetting.isSyncAvailableData = true;
+          this.apiSync.isAvailableForPushData.next(false);
+          this.userService.userDb.userSetting.isPushAvailableData = false;
+          this.userService.userDb.save().then(() => {
+            if (this.userService.userDb) {
+              this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
+              this.apiSync.syncProgressStatus.next('success');
+              this.apiSync.isStartSyncBehaviorSubject.next(false);
+              this.http.showToast('synchronization-component.The database is cleared.');
+              this.apiSync.makeSyncProcess();
 
-          resolve(true);
-        });
+              resolve(true);
+            }
+          });
+        }
+
       });
     }).then((res) => {
       this.http.showToast('synchronization-component.All data was cleared');
@@ -188,12 +200,14 @@ export class SynchronizationComponent implements OnInit {
 
   ngOnInit() {
     this.initUser().then(() => {
-      this.apiSync.syncedItemsCount.next(this.userService.userDb.userSetting.syncLastElementNumber);
-      this.apiSync.syncAllItemsCount.next(this.userService.userDb.userSetting.syncAllItemsCount);
-      this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
+      if (this.userService.userDb) {
+        this.apiSync.syncedItemsCount.next(this.userService.userDb.userSetting.syncLastElementNumber);
+        this.apiSync.syncAllItemsCount.next(this.userService.userDb.userSetting.syncAllItemsCount);
+        this.apiSync.syncedItemsPercent.next(this.userService.userDb.userSetting.syncPercent);
 
-      // this.resumeMode = this.userService.userDb.userSetting.resumeMode;
-      // console.log("this.resumeMode", this.resumeMode)
+        // this.resumeMode = this.userService.userDb.userSetting.resumeMode;
+        // console.log("this.resumeMode", this.resumeMode)
+      }
     });
 
     this.syncService.syncMode.subscribe((result: any) => {
@@ -221,7 +235,7 @@ export class SynchronizationComponent implements OnInit {
       this.syncedItemsCount = syncedItemsCount;
       this.detectChanges();
     });
-    this.apiSync.syncAllItemsCount.subscribe((syncAllItemsCount:any) => {
+    this.apiSync.syncAllItemsCount.subscribe((syncAllItemsCount: any) => {
       this.syncAllItemsCount = syncAllItemsCount;
       this.detectChanges();
     });

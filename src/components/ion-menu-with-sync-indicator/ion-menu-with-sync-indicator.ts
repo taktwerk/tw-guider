@@ -9,10 +9,10 @@ import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Subscription } from 'rxjs';
 import { SyncModalComponent } from '../sync-modal-component/sync-modal-component';
 import { debounceTime } from 'rxjs/operators';
-import { AppSetting } from 'local-server/models/app-setting';
 import { UserDb } from 'app/database/models/db/user-db';
 import { ApiSync } from 'app/library/providers/api-sync';
 import { MiscService } from 'app/library/services/misc-service';
+import { AppSetting } from 'app/library/services/app-setting';
 
 @Component({
     selector: 'ion-menu-with-sync-indicator',
@@ -22,7 +22,7 @@ import { MiscService } from 'app/library/services/misc-service';
 export class ionMenuWithSyncIndicator implements OnInit, OnDestroy {
     @Input() shouldOpenPopup = true;
 
-    public userDb: UserDb;
+    public userDb: UserDb = new UserDb();
     public isStartSync = false;
     public isNetwork = false;
     public iconStatus = 'unsynced';
@@ -30,7 +30,7 @@ export class ionMenuWithSyncIndicator implements OnInit, OnDestroy {
     public isAvailableForPushData = false;
     public isLoggedUser = false;
 
-    eventSubscription: Subscription;
+    eventSubscription: Subscription = new Subscription();
 
     constructor(
         private apiSync: ApiSync,
@@ -160,7 +160,7 @@ export class ionMenuWithSyncIndicator implements OnInit, OnDestroy {
                         this.iconStatus = 'failed';
                         break;
                     default:
-                        this.iconStatus = null;
+                        this.iconStatus = '';
                 }
                 this.detectChanges();
             });

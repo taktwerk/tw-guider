@@ -15,13 +15,13 @@ import { config } from '../../../environments/config';
 
 @Injectable()
 export class HttpClient {
-    headers: Headers = null;
+    headers: Headers = new Headers();
     versionNumber = '0.0.1';
     databaseVersionNumber = '0.0.1';
 
     showAppVersionPopup = true;
 
-    deviceInfo: {
+    deviceInfo!: {
         model: any;
         platform: any;
         uuid: any;
@@ -93,14 +93,14 @@ export class HttpClient {
         };
         if (this.authService.auth) {
             if (this.authService.auth.authToken) {
-                headers['X-Auth-Token'] = this.getAuthorizationToken();
+                (headers as any)['X-Auth-Token'] = this.getAuthorizationToken();
                 /// send current device info with uuid and etc.
-                headers['X-Device-Info'] = this.stringify(this.deviceInfo);
+                (headers as any)['X-Device-Info'] = this.stringify(this.deviceInfo);
                 if (this.authService.auth.lastAuthItemChangedAt) {
-                    headers['X-Auth-Item-Last-Changed-At'] = '' + this.authService.auth.lastAuthItemChangedAt;
+                  (headers as any)['X-Auth-Item-Last-Changed-At'] = '' + this.authService.auth.lastAuthItemChangedAt;
                 }
-                headers['X-VERSION-NUMBER'] = this.versionNumber;
-                headers['X-DATABASE-VERSION-NUMBER'] = this.databaseVersionNumber;
+                (headers as any)['X-VERSION-NUMBER'] = this.versionNumber;
+                (headers as any)['X-DATABASE-VERSION-NUMBER'] = this.databaseVersionNumber;
             }
         }
         this.headers = new Headers(headers);
@@ -113,14 +113,14 @@ export class HttpClient {
         return this.authService.auth.authToken;
     }
 
-    get(url, headers?): Observable<any> {
+    get(url: string, headers?: any): Observable<any> {
         this.initHeaders();
         return this.http.get(url, {
             headers: this.headers
         }).pipe(catchError(error => this.handleError(error)));
     }
 
-    post(url, data): Observable<any> {
+    post(url: any, data:any): Observable<any> {
         this.initHeaders();
         return this.http.post(url, data, {
             headers: this.headers
@@ -128,7 +128,7 @@ export class HttpClient {
     }
 
     async handleError(error: any) {
-        let errMsg: string;
+        let errMsg: any = '';
         const network = await Network.getStatus();
         if (network.connected === false) {
             console.log('no network');
@@ -152,9 +152,7 @@ export class HttpClient {
                                         });
                                     }
                                     if (errorResponse.error === 'User was blocked') {
-                                        this.authService.presentAlert(
-                                            'Config Error',
-                                            null,
+                                        this.authService.presentAlert('Config Error', null,
                                             this.translateConfigService.translateWord('validation.user_blocked'),
                                             ['OK']
                                         );

@@ -9,10 +9,10 @@ import { AuthDb } from 'app/database/models/db/auth-db';
 
 @Injectable()
 export class ProtocolTemplateService extends ApiService {
-    data: ProtocolTemplateModel[] = [];
+    override data: ProtocolTemplateModel[] = [];
     loadUrl: string = '/protocol-template';
     dbModelApi: ProtocolTemplateModel = new ProtocolTemplateModel();
-    user: AuthDb;
+    user: AuthDb = new AuthDb();
 
     /**
      * Constructor
@@ -30,7 +30,7 @@ export class ProtocolTemplateService extends ApiService {
     constructor(
         http: HttpClient,
         public authService: AuthService,
-        public appSetting: AppSetting,
+        public override appSetting: AppSetting,
         private workflowStepService: WorkflowStepService,
     ) {
         super(http, appSetting);
@@ -42,7 +42,7 @@ export class ProtocolTemplateService extends ApiService {
         return this.user;
     }
 
-    async canCreateProtocol(templateId): Promise<boolean> {
+    async canCreateProtocol(templateId: any): Promise<boolean> {
         if (!templateId) {
             return false;
         }
@@ -94,7 +94,7 @@ export class ProtocolTemplateService extends ApiService {
      * Create a new instance of the service model
      * @returns {ProtocolTemplateModel}
      */
-    public newModel() {
+    public override newModel() {
         return new ProtocolTemplateModel();
     }
 }

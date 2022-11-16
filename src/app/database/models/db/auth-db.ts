@@ -11,21 +11,21 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class AuthDb extends DbBaseModel {
   /** @inheritDoc */
-  TAG: string = 'AuthDb';
+  override TAG: string = 'AuthDb';
 
-  userId: number;
-  client_id: number;
+  userId!: number;
+  client_id!: number;
   /** auth token from API */
-  authToken: string;
+  authToken!: string;
   /** username */
-  username: string;
-  isAuthority: boolean;
+  username!: string;
+  isAuthority!: boolean;
 
   /** password */
-  password: string;
+  password!: string;
   /** login date */
-  loginDate: Date = new Date();
-  lastAuthItemChangedAt: number;
+  loginDate: Date | null = new Date();
+  lastAuthItemChangedAt!: number;
   additionalInfo: any;
   groups: any;
 
@@ -77,7 +77,7 @@ export class AuthDb extends DbBaseModel {
     return this.findWhere(['login_at IS NOT NULL'], AuthDb.COL_LOGIN_DATE + ' DESC, ' + AuthDb.COL_ID + ' DESC');
   }
 
-  public save(forceCreation?: boolean): Promise<any> {
+  public override  save(forceCreation?: boolean): Promise<any> {
     return new Promise((resolve) => {
       if (this.userId && forceCreation) {
         this.update().then(() => resolve(true));
@@ -87,7 +87,7 @@ export class AuthDb extends DbBaseModel {
     });
   }
 
-  public can(permissionName): boolean {
+  public can(permissionName: any): boolean {
     if (!this.additionalInfo || !this.additionalInfo.permissions) {
       return false;
     }

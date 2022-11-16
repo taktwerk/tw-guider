@@ -18,8 +18,8 @@ import { MiscService } from 'app/library/services/misc-service';
   templateUrl: 'guide-asset-text-modal-component.html',
 })
 export class GuideAssetTextModalComponent implements OnInit, OnDestroy {
-  public asset: GuideAssetModel;
-  eventSubscription: Subscription;
+  public asset!: GuideAssetModel;
+  eventSubscription: Subscription = new Subscription();
 
   constructor(
     private modalController: ModalController,
@@ -36,9 +36,7 @@ export class GuideAssetTextModalComponent implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 
   ionViewDidEnter() {

@@ -15,10 +15,10 @@ import { AuthDb } from 'app/database/models/db/auth-db';
 
 @Injectable()
 export class ProtocolService extends ApiService {
-    data: ProtocolModel[] = [];
+    override data: ProtocolModel[] = [];
     loadUrl: string = '/protocol';
     dbModelApi: ProtocolModel = new ProtocolModel();
-    user: AuthDb;
+    user: AuthDb = new AuthDb();
 
     possibleDatabaseNamespaces = [
         'app',
@@ -42,7 +42,7 @@ export class ProtocolService extends ApiService {
         private db: DbProvider,
         public authService: AuthService,
         public downloadService: DownloadService,
-        public appSetting: AppSetting,
+        public override appSetting: AppSetting,
         public workflowStepService: WorkflowStepService,
         public protocolDefaultService: ProtocolDefaultService,
         public protocolCommentService: ProtocolCommentService,
@@ -58,7 +58,7 @@ export class ProtocolService extends ApiService {
         this.eventSubscription = this.miscService.events.subscribe(async (event) => {
             switch (event.TAG) {
                 case 'user:login':
-                    this.user = null;
+                    this.user = new AuthDb();
                     await this.getCurrentUser();
                     break;
                 default:
@@ -66,7 +66,7 @@ export class ProtocolService extends ApiService {
         })
     }
 
-    getAllProtocols(templateId: number, referenceModel?, referenceId?): Promise<any[]> {
+    getAllProtocols(templateId: number, referenceModel?: any, referenceId?:any): Promise<any[]> {
         return new Promise(async (resolve) => {
             const user = await this.authService.getLastUser();
             if (!user) {
@@ -170,7 +170,7 @@ export class ProtocolService extends ApiService {
     }
 
     async getComments(protocol: ProtocolModel) {
-        return this.protocolCommentService.getByProtocolId(protocol[protocol.COL_ID]);
+        return this.protocolCommentService.getByProtocolId((protocol as any)[protocol.COL_ID]);
     }
 
     async canEditProtocol(protocol: ProtocolModel) {
@@ -247,7 +247,7 @@ export class ProtocolService extends ApiService {
      * Create a new instance of the service model
      * @returns {ProtocolModel}
      */
-    public newModel() {
+    public override newModel() {
         return new ProtocolModel();
     }
 }

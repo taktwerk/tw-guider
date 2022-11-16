@@ -9,14 +9,14 @@ import { UserDb } from 'app/database/models/db/user-db';
 @Injectable()
 export abstract class ApiService {
     /** holds all loaded model instances together */
-    public data: DbApiModel[];
+    public data: DbApiModel[] | any[];
     // tslint:disable-next-line:jsdoc-format
     /** holds the current "query" data **/
     public currentData: DbApiModel[];
     /** API URL to load data from the remote server */
     abstract loadUrl: string;
     /** new instance of a DbHelperApi Model to load records into model instances */
-    abstract dbModelApi: DbApiModel;
+    abstract dbModelApi: DbApiModel | any;
 
     private isReady = true;
 
@@ -97,7 +97,7 @@ export abstract class ApiService {
             this.dbModelApi.searchAll(
                 this.dbModelApi.parseWhere([this.dbModelApi.COL_IS_SYNCED, 0])
             )
-                .then((models) => {
+                .then((models: any) => {
                     if (!models || models.length === 0) {
                         resolve(false);
                     } else {
@@ -173,7 +173,7 @@ export abstract class ApiService {
                     resolve(res);
                 });
             } else {
-                model[model.COL_DELETED_AT] = model[model.COL_LOCAL_DELETED_AT] = new Date();
+                (model as any)[model.COL_DELETED_AT] = (model as any)[model.COL_LOCAL_DELETED_AT] = new Date();
                 model.save().then(res => {
                     model.deleteAllFiles();
                     resolve(res);
@@ -208,7 +208,7 @@ export abstract class ApiService {
             for (const fields of model.downloadMapping) {
                 // console.log('in forrrrr of pushing files');
                 // If we have a local path but no api path, we need to upload the file!
-                if (model[fields.localPath] && !model[fields.url]) {
+                if ((model as any)[fields.localPath] && !(model as any)[fields.url]) {
                     //    console.log('model[fields.localPath] && !model[fields.url] pushing files');
                     const fieldUrl = url + '?fileAttribute=' + fields.name;
                     //   console.log('fieledUrl  pushing files', fieldUrl);
@@ -217,8 +217,8 @@ export abstract class ApiService {
                         const uploadResult = await model.downloadService.startUpload(
                             model.TABLE_NAME,
                             fields.name,
-                            model[fields.name],
-                            model[fields.localPath],
+                            (model as any)[fields.name],
+                            (model as any)[fields.localPath],
                             fieldUrl,
                             headers
                         );
@@ -241,7 +241,7 @@ export abstract class ApiService {
         });
     }
 
-    async saveSyncedModel(newModel, canUpdateNotSyncedData = false, willChangeFiles = true) {
+    async saveSyncedModel(newModel:any, canUpdateNotSyncedData = false, willChangeFiles = true) {
         let oldModel = await this.dbModelApi.findFirst(['id', newModel[this.dbModelApi.apiPk]]);
         oldModel = oldModel[0] ? oldModel[0] : null;
         if (newModel.deleted_at) {

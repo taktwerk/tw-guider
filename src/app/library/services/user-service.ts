@@ -7,7 +7,7 @@ export class UserService {
 
     user = new Subject<any>();
 
-    userDb: UserDb;
+    userDb!: UserDb | null;
 
     constructor() {
     }
@@ -25,7 +25,7 @@ export class UserService {
         this.userDb = userDb;
     }
 
-    getUser(): Promise<UserDb> {
+    getUser(): Promise<UserDb| null> {
         if (this.userDb) {
             return new Promise(resolve => {
                 resolve(this.userDb);

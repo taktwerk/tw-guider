@@ -6,51 +6,51 @@
  * NOTE: Make sure to store only settings and that are not needed on multiple devices for the same user.
  */
 
-import { TranslateConfigService } from "src/app/library/services/translate-config.service";
+import { TranslateConfigService } from "app/library/services/translate-config.service";
 
 export class UserSetting {
   /** last known access token for a user */
-  public accessToken: string;
+  public accessToken!: string;
   /** last sync date */
-  public lastSyncedAt: Date;
+  public lastSyncedAt!: Date | null;
 
   public lastModelUpdatedAt: any;
   /** last sync diff */
-  public lastSyncedDiff: number;
+  public lastSyncedDiff!: number;
 
-  public syncStatus: string;
+  public syncStatus!: string;
 
-  public syncPercent: number;
+  public syncPercent!: number;
 
-  public syncLastElementNumber: number;
+  public syncLastElementNumber!: number;
 
-  public syncAllItemsCount: number;
+  public syncAllItemsCount!: number;
 
-  public lastSyncProcessId: number = null;
+  public lastSyncProcessId: number | null = null;
 
   public isSyncAvailableData = false;
 
-  public pushStatus: string;
+  public pushStatus!: string;
 
-  public pushPercent: number;
+  public pushPercent!: number;
 
-  public pushAllItemsCount: number;
+  public pushAllItemsCount!: number;
 
-  public pushLastElementNumber: number;
+  public pushLastElementNumber!: number;
 
-  public lastPushedModel: string;
+  public lastPushedModel!: string;
 
-  public lastPushedModelId: number;
+  public lastPushedModelId!: number;
 
   public isPushAvailableData = false;
 
-  public syncMode: number;
+  public syncMode!: number;
 
   public resumeMode = false;
 
   public language: string = TranslateConfigService.DEFAULT_LANGUAGE;
 
-  public appSetting: object;
+  public appSetting!: object;
 
-  public appDataVersion = null;
+  public appDataVersion = 0;
 }

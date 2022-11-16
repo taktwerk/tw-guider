@@ -67,7 +67,7 @@ export class AssetviewComponent implements OnInit {
     public modalController: ModalController,
     private videoEditor: VideoEditor,
     public file: File,
-    private platform: Platform,
+    public platform: Platform,
     public viewer: ViewerService,
     public helper: HelpingService
   ) { }

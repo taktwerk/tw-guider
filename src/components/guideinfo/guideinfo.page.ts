@@ -15,10 +15,10 @@ export class GuideinfoPage implements OnInit {
   @Input() guideId: any;
   @Input() from: any;
   @Input() parentCollectionId: any;
-  @Input() guideCategoryId;
+  @Input() guideCategoryId: any;
 
-  guide: GuiderModel
-  public params;
+  guide: GuiderModel = new GuiderModel();
+  public params:any;
 
   constructor(
     public platform: Platform,

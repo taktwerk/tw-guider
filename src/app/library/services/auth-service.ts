@@ -71,13 +71,13 @@ export class AuthService implements OnInit {
     /** AuthDb instance that holds the login data and is stored in the local sql lite db */
     public auth: AuthDb;
     /** successful auth state info */
-    public isLoggedin: boolean;
+    public isLoggedin!: boolean;
 
     /** app is initialized **/
     public isInitialized = false;
 
     /** is currently a dummy user */
-    public isDummy: boolean;
+    public isDummy!: boolean;
 
     /**
      *
@@ -159,7 +159,7 @@ export class AuthService implements OnInit {
                                         if (user) {
                                             user.password = '';
                                             user.auth_token = '';
-                                            user.save(true).then((result) => { console.log('Was saved user', (result)); });
+                                            user.save(true).then((result: any) => { console.log('Was saved user', (result)); });
                                         }
                                     });
                                 }
@@ -204,7 +204,7 @@ export class AuthService implements OnInit {
                 user.password = this.cryptoProvider.hashPassword(formData.password);
                 user.loginDate = new Date();
 
-                user.save(true).then((authSaveResult) => {
+                user.save(true).then((authSaveResult:any) => {
                     if (authSaveResult) {
                         this.isLoggedin = true;
                         // create user setting
@@ -231,7 +231,7 @@ export class AuthService implements OnInit {
         });
     }
 
-    findExistingUser(formData) {
+    findExistingUser(formData: any) {
         return new Promise((resolve) => {
             this.auth.findFirst(['username', '"' + formData.username + '"'], 'user_id DESC').then((result) => {
                 if (!result || !result[0]) {
@@ -246,7 +246,7 @@ export class AuthService implements OnInit {
         });
     }
 
-    loginByIdentifier(appConfirmUrl, type: string, identifier: string) {
+    loginByIdentifier(appConfirmUrl: any, type: string, identifier: string) {
         return new Promise(async (resolve, reject) => {
             if (type === 'client' || type === 'client-default-user') {
                 const version = this.device.version;
@@ -295,7 +295,7 @@ export class AuthService implements OnInit {
                                     if (user) {
                                         user.password = '';
                                         user.auth_token = '';
-                                        user.save(true).then((result) => { console.log('Was saved user', (result)); });
+                                        user.save(true).then((result: any) => { console.log('Was saved user', (result)); });
                                     }
                                 });
                             }
@@ -331,7 +331,7 @@ export class AuthService implements OnInit {
         });
     }
 
-    saveAuthenticatedUser(user, formData?: any) {
+    saveAuthenticatedUser(user:any, formData?: any) {
         return new Promise(resolve => {
             const findAuthModel = this.newAuthModel();
 
@@ -428,7 +428,7 @@ export class AuthService implements OnInit {
                     user.userId = this.auth.userId;
                     user.userSetting = new UserSetting();
                     user.userSetting.accessToken = this.auth.authToken;
-                    user.save(true).then((res) => resolve(user));
+                    user.save(true).then((res: any) => resolve(user));
                 } else {
                     resolve(user);
                 }
@@ -480,7 +480,7 @@ export class AuthService implements OnInit {
                 'X-CURRENT-DATETIME': new Date().toISOString()
             };
             if (this.auth && this.auth.authToken) {
-                headers['X-Auth-Token'] = this.auth.authToken;
+                (headers as any)['X-Auth-Token'] = this.auth.authToken;
             } else {
                 resolve(false);
                 return;
@@ -574,7 +574,7 @@ export class AuthService implements OnInit {
         await toast.present();
     }
 
-    async presentAlert(header: string, subHeader: string, message: string, buttons: Array<string>) {
+    async presentAlert(header: string, subHeader: any, message: string, buttons: Array<string>) {
         const alert = await this.alertController.create({
             header,
             subHeader,

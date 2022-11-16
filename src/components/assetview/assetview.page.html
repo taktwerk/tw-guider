@@ -107,7 +107,7 @@
         <div (click)="openFile(model.getFileName(), model.getFileUrl(), model.TABLE_NAME, model.title, '3dFile')"
             class="preview_3D_overlay">
         </div>
-        <viewer-3d-model-component *ngIf="!isthumbnail" [fileName]="model.getFilePath()" [backgroundColor]="null"
+        <viewer-3d-model-component *ngIf="!isthumbnail" [fileName]="model.getFilePath()"
             [fullScreen]="false" [madeUserIteractions]="false" [willStopRotate]="false">
         </viewer-3d-model-component>
 

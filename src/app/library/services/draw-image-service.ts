@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DrawImageModalComponent } from 'src/components/modals/draw-image-modal-component/draw-image-modal-component';
+import { DrawImageModalComponent } from 'components/modals/draw-image-modal-component/draw-image-modal-component';
 
 /**
  * Download file class
