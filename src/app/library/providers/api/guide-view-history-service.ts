@@ -13,7 +13,7 @@ import { GuiderModel } from 'app/database/models/db/api/guider-model';
 
 @Injectable()
 export class GuideViewHistoryService extends ApiService {
-    data: GuideViewHistoryModel[] = [];
+    override data: GuideViewHistoryModel[] = [];
     loadUrl = '/guide-view-history';
     dbModelApi: GuideViewHistoryModel = new GuideViewHistoryModel();
 
@@ -35,7 +35,7 @@ export class GuideViewHistoryService extends ApiService {
         public downloadService: DownloadService,
         public loggerService: LoggerService,
         public guiderService: GuiderService,
-        public appSetting: AppSetting,
+        public override appSetting: AppSetting,
     ) {
         super(http, appSetting);
         console.debug('GuideViewHistoryService', 'initialized');
@@ -45,7 +45,7 @@ export class GuideViewHistoryService extends ApiService {
      * Create a new instance of the service model
      * @returns {GuideViewHistoryModel}
      */
-    public newModel() {
+    public override newModel() {
         return new GuideViewHistoryModel();
     }
     async findAll(searchValue?: string): Promise<any> {
@@ -80,7 +80,7 @@ export class GuideViewHistoryService extends ApiService {
             return this.dbModelApi.searchAllAndGetRowsResult(whereCondition, orderBy, undefined, undefined, from).then(async (res) => {
                 if (res && res.rows && res.rows.length > 0) {
 
-                    const isCollectionExistInArray = (guide) => {
+                    const isCollectionExistInArray = (guide: any) => {
                         for (let element of entries) {
                             if (element.type === 'collection' && element.id == guide.parent_guide_id) {
                                 return element;
@@ -166,7 +166,7 @@ export class GuideViewHistoryService extends ApiService {
             });
         });
     }
-    public getActivity(guideCategoryId?: number, searchValue?: string, withoutCategories = false): Promise<any> {
+    public getActivity(guideCategoryId?: number, searchValue?: string, withoutCategories = false): any {
         return new Promise(async (resolve) => {
             const user = await this.authService.getLastUser();
             if (!user) {
@@ -184,7 +184,7 @@ export class GuideViewHistoryService extends ApiService {
 
             const from = 'SELECT ' + '*, (SELECT count(*) AS COUNT from guide_step WHERE `guide_step`.`guide_id` = `guide_view_history`.`guide_id`) AS count' + ' from ' + this.dbModelApi.secure('guide_view_history');
 
-            const entries = [];
+            const entries: any = [];
 
             this.dbModelApi.searchAllAndGetRowsResult(null, orderBy, null, join, from).then(async (res) => {
                 if (res && res.rows && res.rows.length > 0) {

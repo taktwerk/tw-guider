@@ -14,11 +14,11 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { File } from '@ionic-native/file/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { SharedModule } from 'app/shared/shared.module';
-import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
-import { HtmlDescriptionComponentModule } from 'src/components/html-description/html-description-component.module';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
-import { Viewer3dModelComponentModule } from 'src/components/viewer-3d-model-component/viewer-3d-model-component.module';
+import { AssetviewComponentModule } from 'components/assetview/assetview.module';
+import { HtmlDescriptionComponentModule } from 'components/html-description/html-description-component.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { SyncSpinnerComponentModule } from 'components/sync-spinner-component/sync-spinner-component.module';
+import { Viewer3dModelComponentModule } from 'components/viewer-3d-model-component/viewer-3d-model-component.module';
 
 @NgModule({
   imports: [

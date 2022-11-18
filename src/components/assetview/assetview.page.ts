@@ -36,7 +36,7 @@ export class AssetviewComponent implements OnInit {
 
   @Input() floatingIcon = false;
   /**Set to true to make image small */
-  @Input() mini = false;
+  @Input() mini:any = false;
 
   /** set to true to prevent default open function */
   @Input() preventDefaultClickFunction = false;

@@ -32,7 +32,7 @@ import { HttpClient } from 'app/library/services/http-client';
   styleUrls: ['protocol-add-edit.page.scss']
 })
 export class ProtocolAddEditPage implements OnInit, OnDestroy {
-  public model = null;
+  public model:any = null;
   public protocolId = null;
   public reference_id = null;
   public reference_model: any = null;

@@ -20,7 +20,7 @@ export class DateAgoPipe implements PipeTransform {
         if (seconds < 29) {
             return await this.translateConfigService.translate('date.ago.just_now');
         }
-        const intervals = {
+        const intervals: any = {
             year: 31536000,
             month: 2592000,
             week: 604800,

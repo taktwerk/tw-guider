@@ -8,8 +8,8 @@ import { LogsPageRoutingModule } from './logs-routing.module';
 import { LogsPage } from './logs.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { File } from '@ionic-native/file/ngx';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 import { MainPipe } from 'app/library/pipes/main-pipe.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
 
 @NgModule({
   imports: [

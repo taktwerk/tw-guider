@@ -28,8 +28,6 @@ const processRequest = (url = '', data = null, type: 'get'| 'post' | 'put' | 'de
     if(route.type == type && route.path == url) {
       let controller = import('./controllers/' + route.controller);
       console.log(controller);
-
-
     }
   }
 

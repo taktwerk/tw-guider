@@ -17,12 +17,12 @@ import { TranslateConfigService } from 'app/library/services/translate-config.se
 
 export class ProtocolDefaultComponent implements OnInit, OnDestroy {
 
-    @Input() protocol: ProtocolModel;
-    @Input() protocol_form: ProtocolDefaultModel;
-    @Input() isInsert: boolean;
+    @Input() protocol: any = new ProtocolModel();
+    @Input() protocol_form: ProtocolDefaultModel = new ProtocolDefaultModel();
+    @Input() isInsert: boolean = false;
 
-    public params;
-    eventSubscription: Subscription;
+    public params: any;
+    eventSubscription: Subscription = new Subscription;
 
     constructor(private protocolService: ProtocolService,
         private protocolDefaultService: ProtocolDefaultService,
@@ -39,7 +39,7 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
     public async editProtocolFile() {
         console.log('editProtocolFile this.isInsert', this.isInsert);
         if (this.isInsert) {
-            if (!this.protocol_form[ProtocolDefaultModel.COL_LOCAL_PDF_IMAGE]) {
+            if (!(this.protocol_form as any)[ProtocolDefaultModel.COL_LOCAL_PDF_IMAGE]) {
                 this.protocolDefaultService.openCreatePage(
                     this.protocol.protocol_template_id,
                     this.protocol.client_id,
@@ -62,7 +62,7 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
         this.protocolDefaultService.openEditPage(this.protocol_form, this.protocol);
     }
 
-    async showSaveFilePopup(saveInformation) {
+    async showSaveFilePopup(saveInformation: any) {
         const alert = await this.alertController.create({
             message: this.translateConfigService.translateWord('synchronization-component.Are you sure you want to overwrite the data?'),
             buttons: [
@@ -78,7 +78,7 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
         await alert.present();
     }
 
-    updateProtocolFile(saveInformation) {
+    updateProtocolFile(saveInformation: any) {
         console.log('saveInformation', saveInformation);
         this.downloadService
             .copy(saveInformation.protocol_file, this.protocol_form.TABLE_NAME)
@@ -87,9 +87,9 @@ export class ProtocolDefaultComponent implements OnInit, OnDestroy {
                 const modelFileMap = this.protocol_form.downloadMapping[saveInformation.fileMapIndex];
                 console.log('modelFileMap', modelFileMap);
                 console.log('savedFilePath', savedFilePath);
-                this.protocol_form[modelFileMap.url] = '';
-                this.protocol_form[modelFileMap.localPath] = savedFilePath;
-                this.protocol_form[modelFileMap.name] = savedFilePath.substring(savedFilePath.lastIndexOf('/') + 1, savedFilePath.length);
+                (this.protocol_form as any)[modelFileMap.url] = '';
+                (this.protocol_form as any)[modelFileMap.localPath] = savedFilePath;
+                (this.protocol_form as any)[modelFileMap.name] = savedFilePath.substring(savedFilePath.lastIndexOf('/') + 1, savedFilePath.length);
                 console.log('this.protocol_form in copy file', this.protocol_form);
             });
     }

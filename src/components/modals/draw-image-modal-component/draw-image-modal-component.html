@@ -12,11 +12,11 @@
       canvas {
           border: 1px solid rgb(187, 178, 178);
         }
-         
+
         .color-block {
           height: 40px;
         }
-  </style>  
+  </style>
   <div class="ion-page">
         <div>
           <ion-row>
@@ -30,7 +30,7 @@
               </ion-col>
             </ion-row>
           </ion-radio-group>
-         
+
           <ion-range min="2" max="20" color="primary" [(ngModel)]="lineWidth">
             <ion-icon size="small" slot="start" name="brush"></ion-icon>
             <ion-icon slot="end" name="brush"></ion-icon>
@@ -56,10 +56,8 @@
         <ion-icon slot="start" name="save"></ion-icon>
         {{ saveTranslatdWord }}
       </ion-button>
-  </div>  
+  </div>
 </ion-content>
-<ion-footer class="ion-padding ion-text-center"
-            [ngStyle]="{color: 'white', backgroundColor: 'black'}"
->
+<ion-footer class="ion-padding ion-text-center" [ngStyle]="{color: 'white', backgroundColor: 'black'}">
     {{ fileTitle }}
 </ion-footer>

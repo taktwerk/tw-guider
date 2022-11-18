@@ -63,12 +63,12 @@ import { UserService } from 'app/library/services/user-service';
 import { VideoService } from 'app/library/services/video-service';
 import { Viewer3dService } from 'app/library/services/viewer-3d-service';
 import { ViewerService } from 'app/library/services/viewer.service';
-import { GuideAssetTextModalComponent } from 'src/components/guide-asset-text-modal-component/guide-asset-text-modal-component';
-import { GuideStepContentComponent } from 'src/components/guide-step-content-component/guide-step-content-component';
-import { GuideinfoPage } from 'src/components/guideinfo/guideinfo.page';
-import { MenuPopoverComponent } from 'src/components/menupopover/menupopover.page';
 import { HttpClient } from 'app/library/services/http-client';
 import { AppSetting } from 'app/library/services/app-setting';
+import { GuideStepContentComponent } from 'components/guide-step-content-component/guide-step-content-component';
+import { GuideAssetTextModalComponent } from 'components/guide-asset-text-modal-component/guide-asset-text-modal-component';
+import { GuideinfoPage } from 'components/guideinfo/guideinfo.page';
+import { MenuPopoverComponent } from 'components/menupopover/menupopover.page';
 
 @Component({
   selector: 'app-guide',
@@ -76,12 +76,12 @@ import { AppSetting } from 'app/library/services/app-setting';
   styleUrls: ['guide.page.scss'],
 })
 export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
-  @ViewChild(IonBackButtonDelegate) backButtonDelegate: IonBackButtonDelegate;
+  @ViewChild(IonBackButtonDelegate) backButtonDelegate!: IonBackButtonDelegate;
 
-  @ViewChildren('guideStepContent', { read: ViewContainerRef }) slideComponents: QueryList<any>;
-  @ViewChild('guideStepSlides') guideStepSlides: IonSlides;
+  @ViewChildren('guideStepContent', { read: ViewContainerRef }) slideComponents!: QueryList<any>;
+  @ViewChild('guideStepSlides') guideStepSlides!: IonSlides;
 
-  @ViewChild('guideStepContentTemplate', { read: ViewContainerRef }) guideStepContentTemplate;
+  @ViewChild('guideStepContentTemplate', { read: ViewContainerRef }) guideStepContentTemplate: any;
 
   swipeNext() {
     this.guideStepSlides.slideNext();
@@ -90,11 +90,11 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.guideStepSlides.slidePrev();
   }
 
-  @Input() categoryId: number;
+  @Input() categoryId: number = 0;
 
   @Input() guides: GuiderModel[] = [];
 
-  @ViewChild(IonContent) content: IonContent;
+  @ViewChild(IonContent) content!: IonContent;
   @ViewChild('assetSection') assetSection: any;
 
   isInitStepSlider = false;
@@ -111,35 +111,35 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   public activeGuideStepSlideIndex = 0;
 
   public guide: GuiderModel = this.guiderService.newModel();
-  public guideId: number = null;
+  public guideId: any = null;
   public guideSteps: GuideStepModel[] = [];
   public guideAssets: GuideAssetModel[] = [];
   public guideViewHistory: GuideViewHistoryModel = this.guideViewHistoryService.newModel();
   public guideHistories: GuideViewHistoryModel[] = [];
-  public guideParent: GuiderModel;
-  public guideCollection: GuiderModel;
-  public parentCollectionId;
+  public guideParent: GuiderModel = new GuiderModel;
+  public guideCollection: GuiderModel = new GuiderModel;
+  public parentCollectionId: any;
 
-  public guideCategory: GuideCategoryModel;
+  public guideCategory: GuideCategoryModel = new GuideCategoryModel;
 
   public collections: GuiderModel[] = [];
 
-  public virtualGuideStepSlides = [];
-  public params;
+  public virtualGuideStepSlides: any[] = [];
+  public params: any;
 
-  guideIndex: number = null;
-  restartSub: Subscription;
+  guideIndex: any = null;
+  restartSub: Subscription = new Subscription;
   hasPrevious = false;
   hasNext = false;
 
-  resumeModeSub: Subscription;
-  resumeMode: boolean;
-  eventSubscription: Subscription;
+  resumeModeSub: Subscription = new Subscription;
+  resumeMode: boolean = false;
+  eventSubscription: Subscription = new Subscription;
 
-  guiderSubscription: Subscription;
+  guiderSubscription: Subscription = new Subscription;
   guiderSubject = new Subject<any>();
 
-  public userDb: UserDb;
+  public userDb: UserDb = new UserDb;
 
   constructor(
     public http: HttpClient,
@@ -189,7 +189,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   protected initUser() {
-    return this.userService.getUser().then((result) => {
+    return this.userService.getUser().then((result: any) => {
       this.userDb = result;
     });
   }
@@ -377,7 +377,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     return element.idApi;
   }
 
-  public setGuideSteps(id) {
+  public setGuideSteps(id: any) {
     // console.log("id", id)
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(async (results) => {
       // console.log("results", results)
@@ -392,7 +392,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     });
   }
 
-  public async resumeStep(id, previous = false, isToast = true) {
+  public async resumeStep(id: any, previous = false, isToast = true) {
     this.guideHistories = await this.guideViewHistoryService.dbModelApi.findAllWhere(['guide_id', id]);
 
     // in collection
@@ -463,16 +463,16 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       this.guideViewHistory.step = 0;
     }
 
-    this.guideViewHistoryService.save(this.guideViewHistory).then(async (res) => {
+    this.guideViewHistoryService.save(this.guideViewHistory as any).then(async (res) => {
       if (this.resumeMode) {
         this.apiSync.setIsPushAvailableData(true);
       }
     });
   }
 
-  public setAssets(id) {
+  public setAssets(id: any) {
     return this.guiderService.dbModelApi.setAssets(id).then(async (results) => {
-      const _guideAssets = results.filter((model) => !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]);
+      const _guideAssets = results.filter((model) => !(model as any)[model.COL_DELETED_AT] && !(model as any)[model.COL_LOCAL_DELETED_AT]);
       if (_guideAssets.length > 0) {
         const syncedList = await this.syncIndexService.getSyncIndexModel(_guideAssets, 'guide_asset');
         this.guideAssets = syncedList;
@@ -617,13 +617,13 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       if (res) {
 
         if (typeof this.guideCollection == 'undefined') {
-          if (this.guideStepSlides.slideTo(0)) {
+          if ((this.guideStepSlides as any).slideTo(0)) {
             this.guideStepSlides.slideTo(0);
           } else {
             this.guideStepSlides.slideTo(1);
           }
         } else {
-          if (this.guideStepSlides.slideTo(0)) {
+          if ((this.guideStepSlides as any).slideTo(0)) {
             this.guideStepSlides.slideTo(0);
           } else {
             this.guideStepSlides.slideTo(1);
@@ -640,7 +640,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
       }
     });
 
-    this.resumeModeSub = this.syncService.resumeMode.subscribe((mode) => {
+    this.resumeModeSub = this.syncService.resumeMode.subscribe((mode: any) => {
       this.resumeMode = mode;
     });
   }
@@ -651,12 +651,18 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     this.slideOpts = { initialSlide: 0, speed: 400, spaceBetween: 100 };
     const loader = await this.loader.create();
     loader.present();
+
     // console.log("snapshot", this.activatedRoute.snapshot)
-    this.guideId = +this.activatedRoute.snapshot.paramMap.get('guideId');
-    // this.presentGuideInfo(this.guideId);
-    // console.log("guideId", this.guideId)
-    this.parentCollectionId = +this.activatedRoute.snapshot.paramMap.get('parentCollectionId');
-    // console.log("parentCollectionId", this.parentCollectionId);
+    if (this.activatedRoute?.snapshot?.paramMap?.get('guideId')) {
+      let number: any = this.activatedRoute.snapshot.paramMap.get('guideId');
+      this.guideId = +number;
+      // this.presentGuideInfo(this.guideId);
+      // console.log("guideId", this.guideId)
+      let parent_id: any = this.activatedRoute?.snapshot?.paramMap?.get('parentCollectionId');
+      this.parentCollectionId = +parent_id;
+      // console.log("parentCollectionId", this.parentCollectionId);
+    }
+
     if (this.guideId) {
       const guiderById = await this.guiderService.getById(this.guideId);
       // console.log("guiderById", guiderById)
@@ -676,7 +682,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   }
 
-  async presentGuideInfo(guideId) {
+  async presentGuideInfo(guideId: any) {
     const modal = await this.modalController.create({
       component: GuideinfoPage,
       cssClass: 'fullscreen',

@@ -6,9 +6,9 @@ export class AppSetting extends BaseEntity {
 
 
   @Column()
-    _id: string
+  _id!: string;
 
   @Column()
-    settings: string
+  settings!: string;
 
 }

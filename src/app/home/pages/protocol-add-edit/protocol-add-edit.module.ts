@@ -6,13 +6,13 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProtocolAddEditPage } from './protocol-add-edit.page';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { HtmlDescriptionComponentModule } from 'src/components/html-description/html-description-component.module';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { LanguageSelectorComponentModule } from 'src/components/language-selector-component/language-selector-component.module';
-import { ProtocolDefaultComponentModule } from 'src/components/protocol-form-components/protocol-default-component/protocol-default-component.module';
-import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
 import { DateAgoPipe } from 'app/library/pipes/date-ago.pipe';
 import { MainPipe } from 'app/library/pipes/main-pipe.module';
+import { HtmlDescriptionComponentModule } from 'components/html-description/html-description-component.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { LanguageSelectorComponentModule } from 'components/language-selector-component/language-selector-component.module';
+import { ProtocolDefaultComponentModule } from 'components/protocol-form-components/protocol-default-component/protocol-default-component.module';
+import { SyncSpinnerComponentModule } from 'components/sync-spinner-component/sync-spinner-component.module';
 
 @NgModule({
     declarations: [

@@ -8,7 +8,6 @@ import { AlertController, ModalController, ToastController, Platform } from '@io
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { isPlatformBrowser } from '@angular/common';
 import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
-import { AppSetting } from 'local-server/models/app-setting';
 import { GuideStepModel } from 'app/database/models/db/api/guide-step-model';
 import { GuiderModel } from 'app/database/models/db/api/guider-model';
 import { ApiSync } from 'app/library/providers/api-sync';
@@ -22,6 +21,7 @@ import { TranslateConfigService } from 'app/library/services/translate-config.se
 import { UserService } from 'app/library/services/user-service';
 import { VideoService } from 'app/library/services/video-service';
 import { HttpClient } from 'app/library/services/http-client';
+import { AppSetting } from 'app/library/services/app-setting';
 
 @Component({
   selector: 'app-guidestep-add-edit',
@@ -29,26 +29,26 @@ import { HttpClient } from 'app/library/services/http-client';
   styleUrls: ['./guidestep-add-edit.page.scss'],
 })
 export class GuidestepAddEditPage implements OnInit {
-  public Editor = ClassicEditor;
+  public Editor: any = ClassicEditor;
 
-  public params;
-  public model: GuideStepModel;
+  public params: any;
+  public model: GuideStepModel = new GuideStepModel;
 
-  public guide: GuiderModel;
-  public previousDescription;
-  public previousTitle;
-  public previousOrderNumber;
+  public guide: GuiderModel = new GuiderModel;
+  public previousDescription: any;
+  public previousTitle: any;
+  public previousOrderNumber: any;
   public stepId: any;
   public guideId: any;
   public defaultTitle = 'Guide Step';
-  public guideSteps: GuideStepModel[];
+  public guideSteps: GuideStepModel[] = [];
 
-  action: string;
+  action: string = '';
 
   shouldUpdate = false;
   shouldSave = false;
 
-  ckeConfig;
+  ckeConfig: any;
 
   title = '';
   testBrowser: boolean;
@@ -78,7 +78,7 @@ export class GuidestepAddEditPage implements OnInit {
 
     this.testBrowser = isPlatformBrowser(platformId);
 
-    this.activatedRoute.queryParams.subscribe((param) => {
+    this.activatedRoute.queryParams.subscribe((param: any) => {
       this.guideId = param.guideId;
       this.stepId = param.stepId;
       this.action = param.action;
@@ -155,13 +155,13 @@ export class GuidestepAddEditPage implements OnInit {
       .makePhoto(1000, 1000)
       .then((recordedFile) => {
         this.model.setFile(recordedFile);
-        this.model.design_canvas_file = null;
+        (this.model as any).design_canvas_file = null;
         this.shouldUpdate = true;
       })
       .catch((e) => console.error('model', 'addPhotoUsingCamera', e));
   }
 
-  public setGuideSteps(id) {
+  public setGuideSteps(id:any) {
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
       this.guideSteps = results.filter(model => !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]);
 
@@ -177,14 +177,14 @@ export class GuidestepAddEditPage implements OnInit {
       this.guide = guiderById[0];
 
       if (this.action === 'add') {
-        this.model.local_guide_id = this.guide[this.guide.COL_ID];
+        this.model.local_guide_id = (this.guide as any)[this.guide.COL_ID];
         this.model.guide_id = this.guide.idApi;
         // console.log(this.model)
       }
     }
   }
 
-  onChanges(event) {
+  onChanges(event: any) {
     if (event.target !== undefined && event.target.value !== this.previousTitle) {
       this.shouldUpdate = true;
     }
@@ -203,10 +203,10 @@ export class GuidestepAddEditPage implements OnInit {
 
   updateGuide() {
     if (this.guide) {
-      this.userService.getUser().then((res) => {
+      this.userService.getUser().then((res: any) => {
         this.guide.created_by = res.userId;
       });
-      this.guiderService.save(this.guide);
+      this.guiderService.save(this.guide as any);
     }
   }
 
@@ -220,7 +220,7 @@ export class GuidestepAddEditPage implements OnInit {
       this.guideSteps.splice(this.model.order_number - 1, 0, this.model);
       // save one
       if (this.model.order_number === this.guideSteps.length) {
-        this.guideStepService.save(this.model).then(async () => {
+        this.guideStepService.save(this.model as any).then(async () => {
           this.apiSync.setIsPushAvailableData(true);
           this.updateGuide();
           const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
@@ -236,7 +236,7 @@ export class GuidestepAddEditPage implements OnInit {
         this.guideSteps.map((step, index) => {
           step.order_number = index + 1;
           this.setGuideSteps(this.guideId).then(() => {
-            this.guideStepService.save(step).then(async () => {
+            this.guideStepService.save(step as any).then(async () => {
               this.updateGuide();
               this.apiSync.setIsPushAvailableData(true);
               const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
@@ -251,7 +251,7 @@ export class GuidestepAddEditPage implements OnInit {
 
     // save edited step
     if (this.action === 'edit') {
-      this.guideStepService.save(this.model).then(async () => {
+      this.guideStepService.save(this.model as any).then(async () => {
         this.apiSync.setIsPushAvailableData(true);
         this.updateGuide();
         const alertMessage = await this.translateConfigService.translate('alert.model_was_saved', { model: 'Entry' });
@@ -294,7 +294,7 @@ export class GuidestepAddEditPage implements OnInit {
 
   cancel() { this.router.navigate(['/', 'editguide', this.guideId]); }
 
-  async showToast(message) {
+  async showToast(message: any) {
     const toast = await this.toastController.create({ message, duration: 800 });
     toast.present();
   }
@@ -335,7 +335,7 @@ export class GuidestepAddEditPage implements OnInit {
   }
 
   delete() {
-    this.guideStepService.remove(this.model).then(async () => {
+    this.guideStepService.remove(this.model as any).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
       this.updateGuide();
       const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'Entry' });
@@ -344,7 +344,7 @@ export class GuidestepAddEditPage implements OnInit {
       this.setGuideSteps(this.guideId).then(() => {
         this.guideSteps.map((step, index) => {
           step.order_number = index + 1;
-          this.guideStepService.save(step).then(() => {
+          this.guideStepService.save(step as any).then(() => {
             this.apiSync.setIsPushAvailableData(true);
           });
         });

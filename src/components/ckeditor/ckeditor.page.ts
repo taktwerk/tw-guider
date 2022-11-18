@@ -14,9 +14,9 @@ import { Storage } from '@ionic/storage-angular';
 export class CKEditorComponent implements OnInit {
   public Editor = ClassicEditor;
 
-  @Input() content;
-  ckeditorContent;
-  ckeConfig;
+  @Input() content: any;
+  ckeditorContent: any;
+  ckeConfig: any;
 
   constructor(
     public platform: Platform,

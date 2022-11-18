@@ -36,7 +36,7 @@ export class GuideCategoryService extends ApiService {
 
         public downloadService: DownloadService,
         public loggerService: LoggerService,
-        private override  appSetting: AppSetting,
+        public override  appSetting: AppSetting,
         public miscService: MiscService,
 
     ) {
@@ -48,11 +48,11 @@ export class GuideCategoryService extends ApiService {
      * Create a new instance of the service model
      * @returns {GuideCategoryModel}
      */
-    public newModel() {
+    public override newModel() {
         return new GuideCategoryModel();
     }
 
-    public findByGuides(searchValue): Promise<any> {
+    public findByGuides(searchValue: any): Promise<any> {
         return new Promise(async (resolve) => {
             const user = await this.authService.getLastUser();
             if (!user) {
@@ -159,7 +159,7 @@ export class GuideCategoryService extends ApiService {
         });
     }
 
-    public getById(id): Promise<any> {
+    public getById(id: any): Promise<any> {
         return new Promise(async resolve => {
             const user = await this.authService.getLastUser();
             if (!user) {

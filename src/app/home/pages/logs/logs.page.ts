@@ -16,23 +16,24 @@ import { LoggerService } from 'app/library/services/logger-service';
   providers: [DatePipe]
 })
 export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
-  constructor(private loggerService: LoggerService, public file: File, public actionSheetController: ActionSheetController, public datepipe: DatePipe) { }
 
-  currentSegment = 'All'
+  constructor(private loggerService: LoggerService, public file: File,
+    public actionSheetController: ActionSheetController, public datepipe: DatePipe) { }
 
-  allLogs: NGXLogger[] = [];
-  debugLogs: NGXLogger[] = [];
-  infoLogs: NGXLogger[] = [];
-  warnLogs: NGXLogger[] = [];
-  errorLogs: NGXLogger[] = [];
+  currentSegment: any = 'All'
 
-  // allLogs: NGXLogInterface[] = [];
-  // debugLogs: NGXLogInterface[] = [];
-  // infoLogs: NGXLogInterface[] = [];
-  // warnLogs: NGXLogInterface[] = [];
-  // errorLogs: NGXLogInterface[] = [];
+  // allLogs: NGXLogger[] = [];
+  // debugLogs: NGXLogger[] = [];
+  // infoLogs: NGXLogger[] = [];
+  // warnLogs: NGXLogger[] = [];
+  // errorLogs: NGXLogger[] = [];
+  allLogs: any[] = [];
+  debugLogs: any[] = [];
+  infoLogs: any[] = [];
+  warnLogs: any[] = [];
+  errorLogs: any[] = [];
 
-  logSubscription: Subscription;
+  logSubscription: Subscription = new Subscription;
 
   ngOnInit(): void { }
 
@@ -86,7 +87,7 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // trackLog(log: NGXLogInterface) {
-  trackLog(log: NGXLogger) {
+  trackLog(log: any) {
     return log;
   }
 
