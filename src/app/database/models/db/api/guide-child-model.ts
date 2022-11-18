@@ -6,13 +6,13 @@ import { DbBaseModel } from '../../base/db-base-model';
  */
 export class GuideChildModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'GuideChildModel';
+    override TAG: string = 'GuideChildModel';
     public apiPk = 'id';
 
     //members
-    public parent_guide_id: number;
-    public guide_id: number;
-    public order_number: number;
+    public parent_guide_id: any;
+    public guide_id: any;
+    public order_number: any;
 
     //db columns
     static COL_PARENT_GUIDE_ID = 'parent_guide_id';

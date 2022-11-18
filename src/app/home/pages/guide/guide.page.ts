@@ -572,6 +572,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
           if (this.guide) {
             this.setAssets(this.guide.idApi).then(() => this.detectChanges());
           }
+          break;
         case this.guideAssetPivotService.dbModelApi.TAG + ':delete':
           if (this.guide) {
             this.setAssets(this.guide.idApi).then(() => this.detectChanges());

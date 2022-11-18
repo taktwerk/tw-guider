@@ -12,17 +12,17 @@ export enum GuideAssetModelFileMapIndexEnum {
  */
 export class GuideAssetModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'GuideAssetModel';
+    override TAG: string = 'GuideAssetModel';
     public apiPk = 'id';
 
-    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuideAssetModel.COL_CLIENT_ID + ')';
+    public override UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuideAssetModel.COL_CLIENT_ID + ')';
 
     //members
-    public name: string;
-    public asset_file: string;
-    public asset_html: string;
-    public thumb_asset_file: string; // pdf_image
-    public client_id: number;
+    public name!: string;
+    public asset_file!: string;
+    public asset_html!: string;
+    public thumb_asset_file!: string; // pdf_image
+    public client_id!: number;
 
     //db columns
     static COL_CLIENT_ID = 'client_id';
@@ -36,7 +36,7 @@ export class GuideAssetModel extends DbApiModel {
     static COL_API_PDF_IMAGE_PATH = 'thumb_asset_file_path';
     static COL_LOCAL_PDF_IMAGE = 'local_pdf_image';
 
-    public downloadMapping: FileMapInModel[] = [
+    public override downloadMapping: FileMapInModel[] = [
         {
             name: GuideAssetModel.COL_ASSET_FILE,
             url: GuideAssetModel.COL_API_ASSET_FILE_PATH,
@@ -66,7 +66,7 @@ export class GuideAssetModel extends DbApiModel {
         [GuideAssetModel.COL_LOCAL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
     ];
 
-    public migrations = ['NewTestMigration'];
+    public override migrations = ['NewTestMigration'];
 
     /**
      * @inheritDoc
@@ -75,7 +75,7 @@ export class GuideAssetModel extends DbApiModel {
         super();
     }
 
-    setUpdateCondition() {
+    override setUpdateCondition() {
         super.setUpdateCondition();
         this.updateCondition.push(['client_id', this.client_id]);
     }

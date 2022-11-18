@@ -67,7 +67,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     public modalController: ModalController,
     public downloadService: DownloadService,
     public loggerService: LoggerService,
-    private appSetting: AppSetting,
+    public appSetting: AppSetting,
     private router: Router,
     public helper: HelpingService,
     public viewer: ViewerService,
@@ -138,6 +138,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
     } else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
       this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
     }
+    return;
   }
 
   // public openFile(basePath: string, fileApiUrl: string, modelName: string, title?: string) {

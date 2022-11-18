@@ -9,7 +9,7 @@ import { WorkflowStepModel } from 'app/database/models/db/api/workflow-step-mode
 
 @Injectable()
 export class ProtocolCommentService extends ApiService {
-    data: ProtocolCommentModel[] = [];
+    override data: ProtocolCommentModel[] = [];
     loadUrl: string = '/protocol-comment';
     dbModelApi: ProtocolCommentModel = new ProtocolCommentModel();
 
@@ -27,13 +27,13 @@ export class ProtocolCommentService extends ApiService {
     constructor(
         http: HttpClient,
         public authService: AuthService,
-        public appSetting: AppSetting,
+        public override appSetting: AppSetting,
         private translateConfigService: TranslateConfigService,
     ) {
         super(http, appSetting);
     }
 
-    getByProtocolId(protocolId: number): Promise<ProtocolCommentModel[]> {
+    getByProtocolId(protocolId: number): Promise<ProtocolCommentModel[] | any> {
         return new Promise(async (resolve) => {
             this.dbModelApi.findAllWhere(
                 [ProtocolCommentModel.COL_LOCAL_PROTOCOL_ID, protocolId], '_id DESC').then(async result => {
@@ -94,7 +94,7 @@ export class ProtocolCommentService extends ApiService {
      * Create a new instance of the service model
      * @returns {ProtocolCommentModel}
      */
-    public newModel() {
+    public override newModel() {
         return new ProtocolCommentModel();
     }
 }

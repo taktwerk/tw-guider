@@ -62,7 +62,8 @@ export class ProtocolPage implements OnInit, OnDestroy {
         this.detectChanges();
     }
 
-    openAddEditPage(protocolId?: number) {
+    openAddEditPage(protocol?: any) {
+        let protocolId = protocol?.[protocol.COL_ID];
         const protocolNavigationExtras: NavigationExtras = {
             queryParams: {
                 protocolId,

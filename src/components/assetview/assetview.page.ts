@@ -263,6 +263,7 @@ export class AssetviewComponent implements OnInit {
         this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
       }
     }
+    return;
   }
 
   async openAssetTextModal() {

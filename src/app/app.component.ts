@@ -39,16 +39,17 @@ export enum ConnectionStatusEnum {
 export class AppComponent implements OnInit, OnDestroy {
 
   // hardware back button
-  @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
+  @ViewChildren(IonRouterOutlet)
+  routerOutlets!: QueryList<IonRouterOutlet>;
 
-  public appPages = [];
+  public appPages: Array<any> = [];
   public versionNumber = '0.0.1';
   public showPageView = false;
   public b: any;
-  eventSubscription: Subscription;
+  eventSubscription!: Subscription;
 
-  public userDb: UserDb;
-  previousStatus;
+  public userDb!: UserDb;
+  previousStatus: boolean | ConnectionStatusEnum = false;
   periodicSync: any;
   checkAvailableSyncChanges: any;
 
@@ -252,7 +253,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   protected initUserDB() {
-    return this.userService.getUser().then(result => {
+    return this.userService.getUser().then((result: any) => {
       this.userService.userDb = result;
     });
   }
@@ -352,7 +353,7 @@ export class AppComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       this.authService.getLastUser().then((res) => {
         resolve(res);
-        let lastUser: AuthDb = null;
+        let lastUser: AuthDb | null = null;
         if (res) {
           lastUser = res;
         }
@@ -394,7 +395,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   protected logoutAction() {
-    this.userService.userDb = null;
+    (this.userService.userDb as any)= null;
     this.translateConfigService.setLanguage();
     if (this.periodicSync) {
       this.periodicSync.unsubscribe();
@@ -406,7 +407,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected changeSyncModeAction(syncMode) {
+  protected changeSyncModeAction(syncMode: any) {
     if (syncMode !== 2 && this.periodicSync) {
       this.periodicSync.unsubscribe();
       this.periodicSync = null;

@@ -98,6 +98,7 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
             this.guideCategory = guiderCategoryById[0];
             this.detectChanges();
           }
+          break;
         case this.guideCategoryService.dbModelApi.TAG + ':delete':
           if (guiderCategoryById.length) {
             this.guideCategory = guiderCategoryById[0];

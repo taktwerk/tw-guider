@@ -8,7 +8,7 @@ import { WorkflowModel } from 'app/database/models/db/api/workflow-model';
 
 @Injectable()
 export class WorkflowService extends ApiService {
-    data: WorkflowModel[] = [];
+    override data: WorkflowModel[] = [];
     loadUrl: string = '/workflow';
     dbModelApi: WorkflowModel = new WorkflowModel();
 
@@ -24,7 +24,7 @@ export class WorkflowService extends ApiService {
      */
     constructor(http: HttpClient,
         public authService: AuthService,
-        public appSetting: AppSetting) {
+        public override appSetting: AppSetting) {
         super(http, appSetting);
     }
 
@@ -32,7 +32,7 @@ export class WorkflowService extends ApiService {
      * Create a new instance of the service model
      * @returns {WorkflowModel}
      */
-    public newModel() {
+    public override newModel() {
         return new WorkflowModel();
     }
 }

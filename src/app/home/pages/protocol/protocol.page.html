@@ -9,7 +9,7 @@
         <ion-back-button *ngIf="isComponentLikeModal" text=""
             defaultHref="{{ backDefaultHref || '/guide-categories' }}">
         </ion-back-button>
-              
+
     </ion-toolbar>
 </ion-header>
 
@@ -34,7 +34,7 @@
                 </p>
             </ion-label>
             <ion-button *ngIf="protocol.workflowStep && protocol.canEditProtocol" slot="end" fill="clear"
-                (click)="openAddEditPage(protocol[protocol.COL_ID])">
+                (click)="openAddEditPage(protocol)">
                 <ion-icon slot="icon-only" name="create"></ion-icon>
             </ion-button>
         </ion-item>

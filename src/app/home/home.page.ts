@@ -151,6 +151,7 @@ export class HomePage {
             }
           }
         });
+        return;
       })
       .catch( async (err: any) => {
         // ---- iOS Simulator

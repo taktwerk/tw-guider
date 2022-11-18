@@ -14,6 +14,7 @@ import { AuthService } from 'app/library/services/auth-service';
 import { MiscService } from 'app/library/services/misc-service';
 import { TranslateConfigService } from 'app/library/services/translate-config.service';
 import { HttpClient } from 'app/library/services/http-client';
+import { AppSetting } from 'app/library/services/app-setting';
 
 @Component({
   selector: 'listview-component',
@@ -54,6 +55,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     private guideAssetService: GuideAssetService,
     private guideAssetPivotService: GuideAssetPivotService,
     private miscService: MiscService,
+    public appSetting: AppSetting
 
   ) { }
 
@@ -103,7 +105,12 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.router.navigate(["/", "guidestep-add-edit"], navigationExtras);
   }
 
-  Reorder(ev: CustomEvent<ItemReorderEventDetail>) {
+  // Reorder(ev: CustomEvent<ItemReorderEventDetail>) {
+  //   this.guideSteps = ev.detail.complete(this.guideSteps);
+  //   this.reOrderStep();
+  // }
+
+  Reorder(ev: any) {
     this.guideSteps = ev.detail.complete(this.guideSteps);
     this.reOrderStep();
   }
@@ -191,7 +198,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  tracklist(element: GuideStepModel) {
+  tracklist(element: any) {
     return element.idApi;
   }
 

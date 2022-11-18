@@ -33,7 +33,7 @@ export abstract class DbBaseModel {
   /** primary key */
   public id: any;
   /** id's column name */
-  public COL_ID = '_id';
+  public COL_ID: any = '_id';
 
   public UNIQUE_PAIR = '';
 
@@ -1031,7 +1031,7 @@ export abstract class DbBaseModel {
    *
    * @param date
    */
-  protected getDateFromString(date: string | number): Date| null {
+  protected getDateFromString(date: string | number): any {
     if (Number.isInteger(date as number)) {
       /// if date is integer that it is seconds
       date = +date * 1000;

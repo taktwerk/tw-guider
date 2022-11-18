@@ -7,5 +7,6 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation, AfterVi
   encapsulation: ViewEncapsulation.None
 })
 export class HtmlDescriptionComponent {
-  @Input() html: string;
+  @Input()
+  html!: string;
 }

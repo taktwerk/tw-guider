@@ -11,7 +11,7 @@ import { MiscService } from 'app/library/services/misc-service';
 })
 export class MenuPopoverComponent implements OnInit {
   guideId;
-  params;
+  params: any;
   constructor(
     private apiSync: ApiSync,
     private modalController: ModalController,

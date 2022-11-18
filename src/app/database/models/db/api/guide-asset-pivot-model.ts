@@ -6,12 +6,12 @@ import { DbBaseModel } from '../../base/db-base-model';
  */
 export class GuideAssetPivotModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'GuideAssetPivotModel';
+    override TAG: string = 'GuideAssetPivotModel';
     public apiPk = 'id';
 
     //members
-    public guide_id: number;
-    public guide_asset_id: number;
+    public guide_id: any;
+    public guide_asset_id: any;
 
     //db columns
     static COL_GUIDE_ID = 'guide_id';

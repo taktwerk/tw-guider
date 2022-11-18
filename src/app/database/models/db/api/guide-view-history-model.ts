@@ -3,17 +3,17 @@ import { DbBaseModel } from '../../base/db-base-model';
 
 export class GuideViewHistoryModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'GuideViewHistoryModel';
+    override TAG: string = 'GuideViewHistoryModel';
     public apiPk = 'id';
 
     // members
-    public client_id: number;
-    public user_id: number;
-    public guide_id: number;
-    public step: number;
-    public parent_guide_id: number;
+    public client_id: any;
+    public user_id: any;
+    public guide_id: any;
+    public step: any;
+    public parent_guide_id: any;
     /** indicate true when a guide information modal is already displayed. 1 if already shown*/
-    public show_info: number;
+    public show_info: any;
 
     // db columns
     static COL_CLIENT_ID = 'client_id';
@@ -37,7 +37,7 @@ export class GuideViewHistoryModel extends DbApiModel {
         [GuideViewHistoryModel.COL_SHOW_INFO, 'TINYINT(1) DEFAULT 0', DbBaseModel.TYPE_NUMBER],
     ];
 
-    public migrations = ['AddShowInfoColumnToGuideViewHistory', 'AddModelColumnsToGuideViewHistoryTableMigration'];
+    public override migrations = ['AddShowInfoColumnToGuideViewHistory', 'AddModelColumnsToGuideViewHistoryTableMigration'];
 
     /**
   * @inheritDoc
