@@ -10,8 +10,6 @@ import { Injectable, OnDestroy } from '@angular/core';
 
 import { ApiService } from './api/base/api-service';
 import { AppSetting } from '../services/app-setting';
-import { DbProvider } from './db-provider';
-import { DownloadService } from '../services/download-service';
 import { FeedbackService } from './api/feedback-service';
 import { GuideAssetPivotService } from './api/guide-asset-pivot-service';
 import { GuideAssetService } from './api/guide-asset-service';
@@ -25,7 +23,6 @@ import { HttpClient } from '../services/http-client';
 import { LoggerService } from '../services/logger-service';
 import { MiscService } from '../services/misc-service';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
-import { Platform, } from '@ionic/angular';
 import { ProtocolCommentService } from './api/protocol-comment-service';
 import { ProtocolDefaultService } from './api/protocol-default-service';
 import { ProtocolService } from './api/protocol-service';
@@ -112,9 +109,6 @@ export class ApiSync implements OnDestroy {
   constructor(
     private loggerService: LoggerService,
     public http: HttpClient,
-    private platform: Platform,
-    private db: DbProvider,
-    private downloadService: DownloadService,
     private network: Network,
     private appSetting: AppSetting,
     private userService: UserService,

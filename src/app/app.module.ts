@@ -1,7 +1,7 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { HttpClient as Http, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient as Http, HttpClientModule } from '@angular/common/http';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -73,6 +73,7 @@ import { DrawImageModalComponentModule } from 'components/modals/draw-image-moda
 import { GuideAssetTextModalComponentModule } from 'components/guide-asset-text-modal-component/guide-asset-text-modal-component.module';
 import { Viewer3dModalComponentModule } from 'components/modals/viewer-3d-modal-component/viewer-3d-modal-component.module';
 import { VideoModalComponentModule } from 'components/modals/video-modal-component/video-modal-component.module';
+import { HttpClient } from './library/services/http-client';
 
 export function languageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -107,6 +108,7 @@ export function initializeApp(logService: LoggerService) {
         CKEditorModule,
         SharedModule,
         CommonModule,
+        HttpClientModule,
         ImageEditorPageModule,
         DrawImageModalComponentModule,
         GuideAssetTextModalComponentModule,
