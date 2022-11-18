@@ -4,7 +4,7 @@ import {IonicModule} from '@ionic/angular';
 import {VideoModalComponent} from './video-modal-component';
 
 @NgModule({
-  declarations: [],
+  declarations: [VideoModalComponent],
   imports: [
     CommonModule,
     IonicModule,

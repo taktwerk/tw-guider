@@ -439,6 +439,7 @@ export class ApiSync implements OnDestroy {
         this.isBusy = false;
         return true;
       }
+      return;
     });
   }
 
@@ -893,7 +894,7 @@ export class ApiSync implements OnDestroy {
       resolve(true);
 
       this.isBusyPush = false;
-      resolve(true);
+      return resolve(true);
     });
   }
 

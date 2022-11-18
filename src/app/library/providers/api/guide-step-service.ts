@@ -14,7 +14,7 @@ import { GuideStepModel } from 'app/database/models/db/api/guide-step-model';
 
 @Injectable()
 export class GuideStepService extends ApiService {
-    data: GuideStepModel[] = [];
+    override data: GuideStepModel[] = [];
     loadUrl = '/guide-step';
     dbModelApi: GuideStepModel = new GuideStepModel();
 
@@ -38,7 +38,7 @@ export class GuideStepService extends ApiService {
         public loggerService: LoggerService,
         private miscService: MiscService,
         private sanitized: DomSanitizer,
-        public appSetting: AppSetting) {
+        public override appSetting: AppSetting) {
         super(http, appSetting);
         console.debug('GuideStepService', 'initialized');
     }
@@ -47,11 +47,11 @@ export class GuideStepService extends ApiService {
      * Create a new instance of the service model
      * @returns {GuideStepModel}
      */
-    public newModel() {
+    public override newModel() {
         return new GuideStepModel();
     }
 
-    public getDescriptionHtml(descriptionHtml) {
+    public getDescriptionHtml(descriptionHtml: any) {
         return this.sanitized.bypassSecurityTrustHtml(descriptionHtml);
     }
 }

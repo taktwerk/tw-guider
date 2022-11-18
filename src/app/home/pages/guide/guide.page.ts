@@ -357,6 +357,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     } else if (this.downloadService.checkFileTypeByExtension(filePath, '3d')) {
       this.viewer3dService.openPopupWithRenderedFile(fileUrl, fileTitle);
     }
+
+    return
   }
 
   detectChanges() {

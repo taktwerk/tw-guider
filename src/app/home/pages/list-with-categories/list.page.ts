@@ -21,7 +21,7 @@ export class ListPage implements OnInit, OnDestroy {
   public searchValue: string;
   public haveProtocolPermissions = false;
   public isLoadedContent = false;
-  public params;
+  public params: any;
 
   eventSubscription: Subscription;
 
@@ -49,7 +49,7 @@ export class ListPage implements OnInit, OnDestroy {
     }
     this.showAllGuides();
 
-   
+
   }
 
   async showAllGuides() {

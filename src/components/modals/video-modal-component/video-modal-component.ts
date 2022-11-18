@@ -15,10 +15,13 @@ import { ToastService } from 'app/library/services/toast-service';
 })
 
 export class VideoModalComponent implements OnInit, OnDestroy {
-    @ViewChild('video') video: ElementRef; // binds to #video in video.html
-    videoElement: HTMLVideoElement;
-    @Input() fileUrl: string;
-    @Input() fileTitle: string;
+    @ViewChild('video')
+  video!: ElementRef; // binds to #video in video.html
+    videoElement!: HTMLVideoElement;
+    @Input()
+  fileUrl!: string;
+    @Input()
+  fileTitle!: string;
     // backButtonSubscribe;
 
     constructor(private modalController: ModalController,
@@ -66,10 +69,10 @@ export class VideoModalComponent implements OnInit, OnDestroy {
         }
     }
 
-    openVideoViaMediaStreamingPlugin(fileUrl) {
+    openVideoViaMediaStreamingPlugin(fileUrl: any) {
         const options: StreamingVideoOptions = {
             successCallback: () => { console.log('Video played'); },
-            errorCallback: (e) => {
+            errorCallback: () => {
                 this.toastService.showToast('Sorry, can\'t open file', 'Error', 'danger');
             },
             controls: true,

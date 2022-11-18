@@ -1022,7 +1022,7 @@ export abstract class DbBaseModel {
    *
    * @param date
    */
-  protected getDateValue(date: number): Date|null {
+  protected getDateValue(date: number): any {
     return date ? new Date(date * 1000) : null;
   }
 

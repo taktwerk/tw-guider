@@ -21,12 +21,12 @@ import { AppSetting } from 'app/library/services/app-setting';
     styleUrls: ['login.page.scss']
 })
 export class LoginPage {
-    username: string;
-    password: string;
+    username!: string;
+    password!: string;
     currDate: Date = new Date();
-    public center;
+    public center: any;
 
-    public params;
+    public params: any;
     /** flag that indicates if the login was failed or not */
     isLoginFailed = false;
 

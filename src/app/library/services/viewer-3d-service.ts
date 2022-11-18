@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Viewer3dModalComponent } from 'src/components/modals/viewer-3d-modal-component/viewer-3d-modal-component';
+import { Viewer3dModalComponent } from 'components/modals/viewer-3d-modal-component/viewer-3d-modal-component';
 import * as THREE from 'three';
 
 /**

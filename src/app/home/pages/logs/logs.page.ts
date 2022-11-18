@@ -84,6 +84,8 @@ export class LogsPage implements OnInit, OnDestroy, AfterViewInit {
       case 7:
         return 'OFF'
     }
+
+    return;
   }
 
   // trackLog(log: NGXLogInterface) {

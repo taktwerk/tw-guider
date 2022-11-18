@@ -25,7 +25,7 @@ export class AddShowInfoColumnToGuideViewHistory {
 		});
 	}
 
-	executeQuery(query): Promise<boolean> {
+	executeQuery(query: any): Promise<boolean> {
 		return new Promise(async (resolve) => {
 			this.guideViewHistoryService
 				.dbModelApi

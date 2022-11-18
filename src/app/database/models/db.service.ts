@@ -5,7 +5,7 @@ import { DownloadService } from 'app/library/services/download-service';
 import { LoggerService } from 'app/library/services/logger-service';
 import { MiscService } from 'app/library/services/misc-service';
 
-declare var window;
+declare var window: any;
 
 @Injectable({
   providedIn: 'root'

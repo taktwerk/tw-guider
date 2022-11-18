@@ -328,6 +328,7 @@ export class AuthService implements OnInit {
                         ['OK']
                     );
                 });
+            return
         });
     }
 
@@ -410,7 +411,9 @@ export class AuthService implements OnInit {
                         resolve(false);
                         return false;
                     }
+                    return;
                 });
+                return;
             });
         });
     }
@@ -451,7 +454,7 @@ export class AuthService implements OnInit {
             this.auth.loginDate = null;
             this.auth.save(true).then(() => {
                 this.isLoggedin = false;
-                this.userService.userDb = null;
+                (this.userService.userDb as any) = null;
                 // this.events.publish('user:logout');
                 this.miscService.events.next({ TAG: 'user:logout' });
                 resolve(true);

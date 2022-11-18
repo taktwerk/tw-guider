@@ -18,9 +18,12 @@ import { Storage } from '@ionic/storage-angular';
 })
 
 export class Viewer3dModalComponent implements OnInit, OnDestroy {
-    @Input() fileName: string;
-    @Input() fileTitle: string;
-    @ViewChild('viewer3d') viewer3d: Viewer3dModelComponent;
+    @Input()
+  fileName!: string;
+    @Input()
+  fileTitle!: string;
+    @ViewChild('viewer3d')
+  viewer3d!: Viewer3dModelComponent;
 
 
     constructor(private modalController: ModalController, private storage: Storage,

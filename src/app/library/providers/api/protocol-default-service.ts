@@ -168,6 +168,7 @@ export class ProtocolDefaultService extends ApiService {
         this.drawImageService.open(editFilePathNew, protocolTemplate.name, this.dbModelApi.TABLE_NAME, saveFileName);
 
         this.saveInformation.protocol_file = editFilePath;
+        return;
     }
 
     public async openCreatePage(templateId: number, clientId?:any, referenceModel?: any, referenceId?: any) {
@@ -198,6 +199,7 @@ export class ProtocolDefaultService extends ApiService {
             var saveFileName = editFilePath.substring(n + 1);
             this.drawImageService.open(editFilePathNew, protocolTemplate.name, this.dbModelApi.TABLE_NAME, saveFileName);
             // this.pictureService.editFile(editFilePath, protocolTemplate.name);
+            return;
         });
     }
 

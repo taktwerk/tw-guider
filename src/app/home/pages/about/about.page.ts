@@ -21,7 +21,7 @@ import { AuthService } from 'app/library/services/auth-service';
 export class AboutPage implements OnInit {
   public versionNumber = '0.0.1';
   public apiVersionNumber = '0.0.1';
-  public params;
+  public params: any;
   currDate: Date = new Date();
 
   constructor(private platform: Platform, public authService: AuthService, private appVersion: AppVersion) { }

@@ -6,12 +6,12 @@ import { DbBaseModel } from '../../base/db-base-model';
  */
 export class GuideCategoryBindingModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'GuideCategoryBindingModel';
+    override TAG: string = 'GuideCategoryBindingModel';
     public apiPk = 'id';
 
     //members
-    public guide_id: number;
-    public guide_category_id: number;
+    public guide_id!: number;
+    public guide_category_id!: number;
 
     //db columns
     static COL_GUIDE_ID = 'guide_id';

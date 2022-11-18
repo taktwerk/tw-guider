@@ -11,7 +11,7 @@ import { WorkflowTransitionModel } from 'app/database/models/db/api/workflow-tra
 
 @Injectable()
 export class WorkflowStepService extends ApiService {
-    data: WorkflowStepModel[] = [];
+    override data: WorkflowStepModel[] = [];
     loadUrl: string = '/workflow-step';
     dbModelApi: WorkflowStepModel = new WorkflowStepModel();
     private workflowStepsListCache: WorkflowStepModel[] = [];
@@ -31,13 +31,13 @@ export class WorkflowStepService extends ApiService {
         public authService: AuthService,
         public downloadService: DownloadService,
         public loggerService: LoggerService,
-        public appSetting: AppSetting,
+        public override appSetting: AppSetting,
         private workflowTransitionService: WorkflowTransitionService
     ) {
         super(http, appSetting);
     }
 
-    getById(workflowStepId: number): Promise<WorkflowStepModel> {
+    getById(workflowStepId: number): Promise<any> {
         return new Promise(async (resolve) => {
             if (this.workflowStepsListCache.length) {
                 for (let i = 0; i < this.workflowStepsListCache.length; i++) {
@@ -62,7 +62,7 @@ export class WorkflowStepService extends ApiService {
         });
     }
 
-    getNextWorkflowTransitions(stepId): Promise<WorkflowTransitionModel[]> {
+    getNextWorkflowTransitions(stepId: any): Promise<WorkflowTransitionModel[]> {
         return new Promise(resolve => {
             this.workflowTransitionService.dbModelApi.findAllWhere(['workflow_step_id', stepId])
                 .then((result) => {
@@ -83,7 +83,7 @@ export class WorkflowStepService extends ApiService {
      * Create a new instance of the service model
      * @returns {WorkflowStepModel}
      */
-    public newModel() {
+    public override newModel(): WorkflowStepModel {
         return new WorkflowStepModel();
     }
 }

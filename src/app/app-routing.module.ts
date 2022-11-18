@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { SyncModalComponent } from 'src/components/sync-modal-component/sync-modal-component';
+import { SyncModalComponent } from 'components/sync-modal-component/sync-modal-component';
 
 const routes: Routes = [
   {

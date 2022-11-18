@@ -7,12 +7,12 @@ import { GuiderModel } from './guider-model';
  */
 export class GuideCategoryModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'GuideCategoryModel';
+    override TAG: string = 'GuideCategoryModel';
     public apiPk = 'id';
 
     //members
-    public client_id: number = null;
-    public name: string = null;
+    public client_id: any = null;
+    public name: any = null;
 
     /// relation
     public guides: GuiderModel[] = [];
@@ -25,7 +25,7 @@ export class GuideCategoryModel extends DbApiModel {
     /** @inheritDoc */
     TABLE_NAME: string = 'guide_category';
 
-    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuideCategoryModel.COL_CLIENT_ID + ')';
+    public override UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuideCategoryModel.COL_CLIENT_ID + ')';
 
     /** @inheritDoc */
     TABLE: any = [
@@ -40,7 +40,7 @@ export class GuideCategoryModel extends DbApiModel {
         super();
     }
 
-    public addGuide(newData) {
+    public addGuide(newData: any) {
         const indexApi = this.guides.findIndex(record => newData.idApi && record.idApi === newData.idApi);
 
         if (indexApi !== -1) {
@@ -104,12 +104,12 @@ export class GuideCategoryModel extends DbApiModel {
         });
     }
 
-    setUpdateCondition() {
+    override setUpdateCondition() {
         super.setUpdateCondition();
         this.updateCondition.push(['client_id', this.client_id]);
     }
 
-    removeAll(condition?: []): Promise<any> {
+    override removeAll(condition?: []): Promise<any> {
         return super.removeAll(condition);
     }
 }

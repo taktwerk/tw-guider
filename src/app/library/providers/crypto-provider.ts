@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import Forge from 'node-forge';
+import * as Forge from 'node-forge';
 // import * as BcryptJS from 'bcryptjs';
 
 @Injectable()
@@ -7,7 +7,7 @@ export class CryptoProvider {
 
     public constructor() { }
 
-    public generateSalt(password :) {
+    public generateSalt(password :any) {
         return Forge.util.encode64(password);
     }
 

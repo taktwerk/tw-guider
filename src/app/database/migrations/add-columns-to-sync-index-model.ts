@@ -26,7 +26,7 @@ export class AddModelColumnsToSyncIndexTableMigration {
 		});
 	}
 
-	executeQuery(query): Promise<boolean> {
+	executeQuery(query: any): Promise<boolean> {
 		return new Promise(async (resolve) => {
 			this.syncIndexService
 				.dbModelApi

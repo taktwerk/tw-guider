@@ -11,8 +11,8 @@ import { MiscService } from 'app/library/services/misc-service';
     templateUrl: 'profile.html',
 })
 export class ProfilePage implements OnInit, OnDestroy {
-    public params;
-    eventSubscription: Subscription;
+    public params: any;
+    eventSubscription: Subscription = new Subscription;
 
     constructor(
         public navCtrl: NavController,

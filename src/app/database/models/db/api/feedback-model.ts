@@ -9,22 +9,22 @@ export enum FeedbackModelDownloadMapEnum {
  */
 export class FeedbackModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'FeedbackModel';
+    override TAG: string = 'FeedbackModel';
     public apiPk = 'id';
 
     //members
-    public user_id: number = null;
-    public title: string;
-    public description: string;
-    public reference_model: string = null;
-    public feedback_url: string = '';
+    public user_id: any = null;
+    public title: any;
+    public description: any;
+    public reference_model: any = null;
+    public feedback_url: any = '';
     public status = 'Open';
-    public reference_id: number = null;
-    public attached_file: string;
-    public attached_file_path: string;
-    public local_attached_file: string;
-    public local_thumb_attached_file: string;
-    public client_id: number;
+    public reference_id: any = null;
+    public attached_file: any;
+    public override attached_file_path: any;
+    public local_attached_file: any;
+    public local_thumb_attached_file: any;
+    public client_id: any;
 
     //db columns
     static COL_TITLE = 'title';
@@ -65,7 +65,7 @@ export class FeedbackModel extends DbApiModel {
         [FeedbackModel.COL_LOCAL_THUMB_ATTACHED_FILE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING, null, true],
     ];
 
-    public downloadMapping: FileMapInModel[] = [
+    public override downloadMapping: FileMapInModel[] = [
         {
             name: FeedbackModel.COL_ATTACHED_FILE,
             url: FeedbackModel.COL_ATTACHED_FILE_PATH,
@@ -90,7 +90,7 @@ export class FeedbackModel extends DbApiModel {
         return this.status === 'Open';
     }
 
-    getReferenceModelByAlias(referenceModelAlias) {
+    getReferenceModelByAlias(referenceModelAlias: any) {
         switch (referenceModelAlias) {
             case 'guide':
                 return '\\modules\\guide\\models\\Guide';

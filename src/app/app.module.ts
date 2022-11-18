@@ -71,6 +71,8 @@ import { SyncSpinnerComponentModule } from 'components/sync-spinner-component/sy
 import { MigrationProvider } from './library/providers/migration-provider';
 import { DrawImageModalComponentModule } from 'components/modals/draw-image-modal-component/draw-image-modal-component.module';
 import { GuideAssetTextModalComponentModule } from 'components/guide-asset-text-modal-component/guide-asset-text-modal-component.module';
+import { Viewer3dModalComponentModule } from 'components/modals/viewer-3d-modal-component/viewer-3d-modal-component.module';
+import { VideoModalComponentModule } from 'components/modals/video-modal-component/video-modal-component.module';
 
 export function languageLoader(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -107,7 +109,9 @@ export function initializeApp(logService: LoggerService) {
         CommonModule,
         ImageEditorPageModule,
         DrawImageModalComponentModule,
-        GuideAssetTextModalComponentModule
+        GuideAssetTextModalComponentModule,
+        Viewer3dModalComponentModule,
+        VideoModalComponentModule
     ],
     providers: [
         DocumentViewer,

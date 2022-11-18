@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { VideoModalComponent } from 'src/components/modals/video-modal-component/video-modal-component';
+import { VideoModalComponent } from 'components/modals/video-modal-component/video-modal-component';
 
 /**
  * Download file class
