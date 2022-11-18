@@ -19,18 +19,18 @@ import { MiscService } from 'app/library/services/misc-service';
   styleUrls: ['guide-collection.page.scss']
 })
 export class GuideCollectionPage implements OnInit, OnDestroy {
-  public guideCategory: GuideCategoryModel;
-  public searchValue: string;
+  public guideCategory: GuideCategoryModel = new GuideCategoryModel();
+  public searchValue: string = '';
   public haveProtocolPermissions = false;
   public isLoadedContent = false;
   public guideCategoryId = null;
 
-  public guide: GuiderModel;
+  public guide: GuiderModel = new GuiderModel;
   public collectionGuides: GuiderModel[] = [];
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
 
-  eventSubscription: Subscription;
+  eventSubscription: Subscription = new Subscription;
 
   constructor(
     private guideCategoryBindingService: GuideCategoryBindingService,
@@ -58,7 +58,7 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(async params => {
+    this.activatedRoute.queryParams.subscribe(async (params: any) => {
       if (params.guideId) {
         this.guideCategoryId = params.guideCategoryId;
         // console.log(this.guideCategoryId, "this.guideCategoryId")
@@ -139,7 +139,7 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
     })
   }
 
-  public searchGuides($event) {
+  public searchGuides($event: any) {
     this.searchValue = $event.detail.value;
     this.setGuideInfo();
   }
@@ -171,12 +171,10 @@ export class GuideCollectionPage implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 
-  trackByFn(item, index) {
+  trackByFn(item:any, index: any) {
     return item[item.COL_ID];
   }
 

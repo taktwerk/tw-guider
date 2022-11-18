@@ -8,7 +8,6 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { DatePipe } from '@angular/common';
-import { AppSetting } from 'local-server/models/app-setting';
 import { FeedbackModel } from 'app/database/models/db/api/feedback-model';
 import { FeedbackService } from 'app/library/providers/api/feedback-service';
 import { SyncIndexService } from 'app/library/providers/api/sync-index-service';
@@ -17,6 +16,7 @@ import { DownloadService } from 'app/library/services/download-service';
 import { MiscService } from 'app/library/services/misc-service';
 import { PictureService } from 'app/library/services/picture-service';
 import { VideoService } from 'app/library/services/video-service';
+import { AppSetting } from 'app/library/services/app-setting';
 @Component({
   selector: 'feedback-page',
   templateUrl: 'feedback.page.html',
@@ -24,23 +24,23 @@ import { VideoService } from 'app/library/services/video-service';
   providers: [DatePipe]
 })
 export class FeedbackPage implements OnInit, OnDestroy {
-  public backDefaultHref: string;
-  public guideId: string;
+  public backDefaultHref: any;
+  public guideId: any;
   public reference_title = '';
-  public reference_id: number = null;
-  public reference_model: string = null;
-  public reference_model_alias: string = null;
+  public reference_id: any = null;
+  public reference_model: any = null;
+  public reference_model_alias: any = null;
   public feedbackList: FeedbackModel[] = [];
   public isComponentLikeModal = false;
-  public params;
-  public imgURL;
+  public params: any;
+  public imgURL:any;
   testBrowser: boolean;
   isImageChange = false;
   possibleDatabaseNamespaces = [
     'app',
     'taktwerk\\yiiboilerplate'
   ];
-  eventSubscription: Subscription;
+  eventSubscription: Subscription = new Subscription;
 
   constructor(
     private feedbackService: FeedbackService,
@@ -149,7 +149,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
     return 99;
   }
 
-  trackByFn(item) {
+  trackByFn(item: any) {
     return item;
   }
 
@@ -215,7 +215,7 @@ export class FeedbackPage implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.activatedRoute.queryParams.subscribe((params) => {
+    this.activatedRoute.queryParams.subscribe((params: any) => {
       const feedbackData = params;
       this.reference_id = +feedbackData.referenceId;
       this.reference_title = feedbackData.referenceTitle;

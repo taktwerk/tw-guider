@@ -7,10 +7,8 @@ import { NavigationExtras, Router } from '@angular/router';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { GuideAssetTextModalComponent } from '../guide-asset-text-modal-component/guide-asset-text-modal-component';
-import { SafeResourceUrl } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { HelpingService } from 'app/library/helping.service';
-import { AppSetting } from 'local-server/models/app-setting';
 import { GuideAssetModel } from 'app/database/models/db/api/guide-asset-model';
 import { GuideStepModel } from 'app/database/models/db/api/guide-step-model';
 import { GuiderModel } from 'app/database/models/db/api/guider-model';
@@ -22,6 +20,7 @@ import { PictureService } from 'app/library/services/picture-service';
 import { VideoService } from 'app/library/services/video-service';
 import { Viewer3dService } from 'app/library/services/viewer-3d-service';
 import { ViewerService } from 'app/library/services/viewer.service';
+import { AppSetting } from 'app/library/services/app-setting';
 
 @Component({
   selector: 'guide-step-content-component',
@@ -35,30 +34,30 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   }
 
   public faFilePdf = faFilePdf;
-  @Input() step: GuideStepModel = null;
+  @Input() step: any = null;
   @Input() portraitOriginal = false;
-  @Input() guide: GuiderModel = null;
+  @Input() guide: any = null;
   @Input() haveFeedbackPermissions = false;
   @Input() haveAssets = false;
   @Input() guideStepsLength = 0;
   @Input() stepNumber = 0;
 
-  fileName: string;
-  fileImagePath: SafeResourceUrl;
-  fileUrl: string;
-  isVideoFile: boolean;
+  fileName: any;
+  fileImagePath: any;
+  fileUrl: any;
+  isVideoFile: any;
   filePath3d: any;
-  existThumbOfFile: boolean;
-  isImageFile: boolean;
-  is3dFile: boolean;
-  isExistFormatFile: boolean;
-  isAudioFile: boolean;
-  isPdf: boolean;
+  existThumbOfFile: any;
+  isImageFile: any;
+  is3dFile: any;
+  isExistFormatFile: any;
+  isAudioFile: any;
+  isPdf: any;
   testBrowser: boolean;
 
   @Output() loaded: EventEmitter<void> = new EventEmitter<void>();
 
-  public params;
+  public params: any;
 
   constructor(
 
@@ -167,7 +166,7 @@ export class GuideStepContentComponent implements OnInit, OnDestroy {
   //   }
   // }
 
-  openFeedback(referenceModelAlias, referenceId, referenceTitle) {
+  openFeedback(referenceModelAlias: any, referenceId: any, referenceTitle: any) {
     const feedbackNavigationExtras: NavigationExtras = {
       queryParams: {
         backUrl: this.router.url,

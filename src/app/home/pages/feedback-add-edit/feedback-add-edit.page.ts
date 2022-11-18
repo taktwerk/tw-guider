@@ -24,30 +24,31 @@ import { VideoService } from 'app/library/services/video-service';
 })
 export class FeedbackAddEditPage implements OnInit {
   public model: FeedbackModel;
-  public originalModel: FeedbackModel;
-  public feedbackId: number = null;
+  // public originalModel: FeedbackModel;
+  public originalModel: any;
+  public feedbackId: any = null;
   public slideOpts = {
     initialSlide: 0,
     speed: 400,
     autoHeight: true,
   };
 
-  public reference_title: string;
-  public reference_id: number = null;
-  public reference_model: string = null;
-  public reference_model_alias: string = null;
+  public reference_title: any;
+  public reference_id: any = null;
+  public reference_model: any = null;
+  public reference_model_alias: any = null;
   public defaultTitle = 'Feedback';
 
-  public guideId: string;
-  public imgURL;
-  testBrowser: boolean;
-  public params;
+  public guideId: any;
+  public imgURL: any;
+  testBrowser: any;
+  public params: any;
 
   shouldUpdate = false;
   isImageChange = false;
   isVideoChange = false;
   @Input() localurl: any = null;
-  @ViewChild(IonBackButtonDelegate) backButton: IonBackButtonDelegate;
+  @ViewChild(IonBackButtonDelegate) backButton: any;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -69,10 +70,8 @@ export class FeedbackAddEditPage implements OnInit {
     @Inject(PLATFORM_ID) platformId: string
   ) {
     this.authService.checkAccess('feedback');
-    if (!this.model) {
-      this.model = feedbackService.newModel();
-      this.originalModel = this.model;
-    }
+    this.model = feedbackService.newModel();
+    this.originalModel = this.model;
 
     // this.testBrowser = isPlatformBrowser(platformId);
 
@@ -86,7 +85,8 @@ export class FeedbackAddEditPage implements OnInit {
     // })
   }
 
-  @ViewChild('filePicker') filePickerRef: ElementRef<HTMLInputElement>;
+  // @ViewChild('filePicker') filePickerRef: ElementRef<HTMLInputElement>;
+  @ViewChild('filePicker') filePickerRef: any;
 
   dismiss() {
     this.model.deleteAttachedFilesForDelete();
@@ -109,12 +109,12 @@ export class FeedbackAddEditPage implements OnInit {
 
   async backToFeedbackList() {
     let wasChanges = false;
-    if (!this.model[this.model.COL_ID]) {
+    if (!(this.model as any)[this.model.COL_ID]) {
       if (this.model.title || this.model.description || this.model.attached_file) {
         wasChanges = true;
       }
     } else {
-      const modelById = await this.feedbackService.dbModelApi.findFirst([this.model.COL_ID, this.model[this.model.COL_ID]]);
+      const modelById = await this.feedbackService.dbModelApi.findFirst([this.model.COL_ID, (this.model as any)[this.model.COL_ID]]);
       if (modelById && modelById.length) {
         const originalModel = modelById[0];
         if (
@@ -319,7 +319,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   async getDefaultTitle() {
-    if (this.model[this.model.COL_ID] && this.model.reference_model && this.model.reference_id) {
+    if ((this.model as any)[this.model.COL_ID] && this.model.reference_model && this.model.reference_id) {
       return `${this.model.reference_model}:${this.model.reference_id}`;
     }
     if (this.model.idApi) {
@@ -329,8 +329,8 @@ export class FeedbackAddEditPage implements OnInit {
       // return `${this.reference_model_alias}:${this.reference_id}`;
       return this.reference_title;
     }
-    if (this.model[this.model.COL_ID]) {
-      return `Feedback:${this.model[this.model.COL_ID]}`;
+    if ((this.model as any)[this.model.COL_ID]) {
+      return `Feedback:${(this.model as any)[this.model.COL_ID]}`;
     }
     return 'Feedback';
   }
@@ -382,7 +382,7 @@ export class FeedbackAddEditPage implements OnInit {
   }
 
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(async (params) => {
+    this.activatedRoute.queryParams.subscribe(async (params: any) => {
       const feedbackData = params;
       this.reference_id = +feedbackData.referenceId;
       this.reference_title = feedbackData.referenceTitle;

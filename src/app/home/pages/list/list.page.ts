@@ -20,16 +20,16 @@ import { TranslateConfigService } from 'app/library/services/translate-config.se
   styleUrls: ['list.page.scss'],
 })
 export class ListPage implements OnInit, OnDestroy {
-  public guideCategory: GuideCategoryModel;
-  public searchValue: string;
+  public guideCategory: GuideCategoryModel = new GuideCategoryModel();
+  public searchValue: string = '';
   public haveProtocolPermissions = false;
   public isLoadedContent = false;
-  public guideCategoryId: number;
-  public params;
+  public guideCategoryId: number = 0;
+  public params: any;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
 
-  eventSubscription: Subscription;
+  eventSubscription: Subscription = new Subscription;
 
   constructor(
     private guideCategoryBindingService: GuideCategoryBindingService,
@@ -60,7 +60,8 @@ export class ListPage implements OnInit, OnDestroy {
   async showAllGuides() {
     const loader = await this.loader.create();
     loader.present();
-    this.guideCategoryId = +this.activatedRoute.snapshot.paramMap.get('guideCategoryId');
+    let num: any = this.activatedRoute.snapshot.paramMap.get('guideCategoryId');
+    this.guideCategoryId = +num;
 
     if (this.guideCategoryId) {
       const guiderCategoryById = await this.guideCategoryService.getById(this.guideCategoryId);
@@ -81,7 +82,7 @@ export class ListPage implements OnInit, OnDestroy {
     this.isLoadedContent = true;
   }
 
-  public searchGuides($event) {
+  public searchGuides($event: any) {
     this.searchValue = $event.detail.value;
     this.setGuideInfo();
   }
@@ -92,7 +93,7 @@ export class ListPage implements OnInit, OnDestroy {
 
   setGuideInfo() {
     const guideCategoryId = this.guideCategory ? this.guideCategory.idApi : null;
-    this.guideCategoryService.getGuides(guideCategoryId, this.searchValue, !guideCategoryId).then(async (guides) => {
+    this.guideCategoryService.getGuides(guideCategoryId as any, this.searchValue, !guideCategoryId).then(async (guides) => {
       if (guides.length > 0) {
         const syncedList = await this.syncIndexService.getSyncIndexModel(guides, guides[0].TABLE_NAME);
         this.guideCategory.guides = syncedList;
@@ -101,12 +102,10 @@ export class ListPage implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 
-  trackByFn(item, index) {
+  trackByFn(item: any, index: any) {
     return item[item.COL_ID];
   }
 

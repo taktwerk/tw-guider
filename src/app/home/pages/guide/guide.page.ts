@@ -112,7 +112,8 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
 
   public guide: GuiderModel = this.guiderService.newModel();
   public guideId: any = null;
-  public guideSteps: GuideStepModel[] = [];
+  // public guideSteps: GuideStepModel[] = [];
+  public guideSteps: any[] = [];
   public guideAssets: GuideAssetModel[] = [];
   public guideViewHistory: GuideViewHistoryModel = this.guideViewHistoryService.newModel();
   public guideHistories: GuideViewHistoryModel[] = [];
@@ -373,7 +374,7 @@ export class GuidePage implements OnInit, AfterContentChecked, OnDestroy {
     return await modal.present();
   }
 
-  trackGuideAsset(element: GuideAssetModel) {
+  trackGuideAsset(element: any) {
     return element.idApi;
   }
 

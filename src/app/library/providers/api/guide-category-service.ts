@@ -176,7 +176,7 @@ export class GuideCategoryService extends ApiService {
         });
     }
 
-    public getGuides(guideCategoryId?: number, searchValue?: string, withoutCategories = false): Promise<GuiderModel[]> {
+    public getGuides(guideCategoryId?: any, searchValue?: string, withoutCategories = false): Promise<GuiderModel[]> {
         return new Promise(async (resolve) => {
             const user = await this.authService.getLastUser();
             if (!user) {

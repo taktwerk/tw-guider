@@ -17,17 +17,17 @@ import { MiscService } from 'app/library/services/misc-service';
 })
 export class GuidecapturePage implements OnInit, OnDestroy {
   public guideCategories: GuideCategoryModel[] = [];
-  public searchValue: string;
+  public searchValue: any;
   public haveProtocolPermissions = false;
   public isLoadedContent = false;
   public guides: GuiderModel[] = [];
   public guideItemsLimit = 20;
-  public params;
+  public params: any;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
-  public type: string;
+  public type: string = '';
 
-  eventSubscription: Subscription;
+  eventSubscription: Subscription = new Subscription();
 
   constructor(
     private guideCategoryService: GuideCategoryService,
@@ -59,7 +59,7 @@ export class GuidecapturePage implements OnInit, OnDestroy {
     }
   }
 
-  async searchGuides($event) {
+  async searchGuides($event: any) {
     this.searchValue = $event.detail.value;
     const _guides = await this.guideCategoryService.getGuides(null, this.searchValue);
     const syncedList = await this.syncIndexService.getSyncIndexModel(_guides, _guides[0].TABLE_NAME);
@@ -67,9 +67,7 @@ export class GuidecapturePage implements OnInit, OnDestroy {
   }
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 
   ngOnInit() {

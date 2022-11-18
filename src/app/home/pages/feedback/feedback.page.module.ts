@@ -7,13 +7,13 @@ import { NgModule } from '@angular/core';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { ThumbViewerModule } from 'src/components/thumb-viewer/thumb-viewer.module';
 import { SharedModule } from 'app/shared/shared.module';
-import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { LanguageSelectorComponentModule } from 'src/components/language-selector-component/language-selector-component.module';
-import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
 import { MainPipe } from 'app/library/pipes/main-pipe.module';
+import { AssetviewComponentModule } from 'components/assetview/assetview.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { LanguageSelectorComponentModule } from 'components/language-selector-component/language-selector-component.module';
+import { SyncSpinnerComponentModule } from 'components/sync-spinner-component/sync-spinner-component.module';
+import { ThumbViewerModule } from 'components/thumb-viewer/thumb-viewer.module';
 
 @NgModule({
   declarations: [
