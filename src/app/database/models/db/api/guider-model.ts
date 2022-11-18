@@ -15,30 +15,30 @@ import { ProtocolTemplateModel } from './protocol-template-model';
  */
 export class GuiderModel extends DbApiModel {
     /** @inheritDoc */
-    TAG = 'GuiderModel';
+    override TAG = 'GuiderModel';
     public apiPk = 'id';
 
     /// relations
     steps: GuideStepModel[] = [];
     assets: GuideAssetModel[] = [];
-    protocol_template: ProtocolTemplateModel;
+    protocol_template: ProtocolTemplateModel = new ProtocolTemplateModel;
     guide_collection: GuideChildModel[] = [];
 
-    public UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_CLIENT_ID + ')';
+    public override UNIQUE_PAIR: string = 'UNIQUE(' + this.COL_ID_API + ', ' + GuiderModel.COL_CLIENT_ID + ')';
 
     // members
-    public client_id: number = null;
-    public short_name: string;
-    public title: string;
-    public description: string;
-    public preview_file: string;
-    public preview_file_path: string;
-    public revision_term: string;
-    public revision_counter: number;
-    public duration: number;
-    public template_id: number;
-    public protocol_template_id: number;
-    public revision: string;
+    public client_id: any = null;
+    public short_name: any;
+    public title: any;
+    public description: any;
+    public preview_file: any;
+    public override preview_file_path: any;
+    public revision_term: any;
+    public revision_counter: any;
+    public duration: any;
+    public template_id: any;
+    public protocol_template_id: any;
+    public revision: any;
 
     // db columns
     static COL_CLIENT_ID = 'client_id';
@@ -55,7 +55,7 @@ export class GuiderModel extends DbApiModel {
     static COL_PROTOCOL_TEMPLATE_ID = 'protocol_template_id';
     static COL_REVISION = 'revision';
 
-    public downloadMapping: FileMapInModel[] = [
+    public override downloadMapping: FileMapInModel[] = [
         {
             name: GuiderModel.COL_PREVIEW_FILE,
             url: GuiderModel.COL_API_PREVIEW_FILE_PATH,
@@ -83,7 +83,7 @@ export class GuiderModel extends DbApiModel {
         [GuiderModel.COL_REVISION, 'VARCHAR(255)', DbBaseModel.TYPE_STRING]
     ];
 
-    public migrations = ['AddCreatedTermAndUpdatedTermToGuideTableMigration'];
+    public override migrations = ['AddCreatedTermAndUpdatedTermToGuideTableMigration'];
 
     /**
      * @inheritDoc
@@ -128,20 +128,20 @@ export class GuiderModel extends DbApiModel {
         return `${dayString}${hourString}${minuteString}`;
     }
 
-    public addRelativeData(newData, relationKey) {
-        const indexApi = this[relationKey].findIndex(record => newData.idApi && record.idApi === newData.idApi);
-        const deletedIndexApi = this[relationKey]
-            .findIndex(record => !record.deleted_at && !record.local_deleted_at);
+    public addRelativeData(newData: any, relationKey:any) {
+        const indexApi = (this as any)[relationKey].findIndex((record: any) => newData.idApi && record.idApi === newData.idApi);
+        const deletedIndexApi = (this as any)[relationKey]
+            .findIndex((record:any) => !record.deleted_at && !record.local_deleted_at);
 
         if (indexApi !== -1) {
-            this[relationKey][indexApi] = newData;
+          (this as any)[relationKey][indexApi] = newData;
         } else {
-            this[relationKey].push(newData);
+          (this as any)[relationKey].push(newData);
         }
     }
 
 
-    public setAssets(id): Promise<GuideAssetModel[]> {
+    public setAssets(id: any): Promise<GuideAssetModel[]> {
         return new Promise((resolve) => {
             const query = 'SELECT ' + this.secure('guide_asset') + '.*' + ' from ' + this.secure('guide') +
                 ' JOIN ' + this.secure('guide_asset_pivot') + ' ON ' + this.secure('guide_asset_pivot') + '.' + this.secure('guide_id') + '=' + this.secure('guide') + '.' + this.secure('id') +
@@ -155,7 +155,7 @@ export class GuiderModel extends DbApiModel {
                 ' AND ' + this.secure('guide_asset_pivot') + '.' + this.secure(this.COL_LOCAL_DELETED_AT) + ' IS NULL' +
                 ' GROUP BY guide_asset.id';
 
-            this.db.query(query).then((res) => {
+            this.db.query(query).then((res: any) => {
                 this.assets = [];
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
@@ -168,7 +168,7 @@ export class GuiderModel extends DbApiModel {
                     }
                 }
                 resolve(this.assets);
-            }).catch((err) => {
+            }).catch((err: any) => {
                 resolve(this.assets);
             });
         });
@@ -191,7 +191,7 @@ export class GuiderModel extends DbApiModel {
 
             this.guide_collection = [];
 
-            this.db.query(query).then((res) => {
+            this.db.query(query).then((res: any) => {
 
                 if (res.rows.length > 0) {
                     for (let i = 0; i < res.rows.length; i++) {
@@ -208,7 +208,7 @@ export class GuiderModel extends DbApiModel {
                     }
                 }
                 resolve(this.guide_collection);
-            }).catch((err) => {
+            }).catch((err: any) => {
                 resolve(this.guide_collection);
                 console.log(err);
             });
@@ -226,8 +226,8 @@ export class GuiderModel extends DbApiModel {
                 ' WHERE ' + this.secure('guide') + '.' + this.secure('id') + ' = ' + this.idApi +
                 ' GROUP BY guide.id';
 
-            this.db.query(query).then((res) => {
-                this.protocol_template = null;
+            this.db.query(query).then((res: any) => {
+                (this.protocol_template as any) = null;
                 if (res.rows.length > 0) {
                     const obj: ProtocolTemplateModel = new ProtocolTemplateModel();
                     obj.platform = this.platform;
@@ -237,14 +237,14 @@ export class GuiderModel extends DbApiModel {
                     this.protocol_template = obj;
                 }
                 resolve(this.protocol_template);
-            }).catch((err) => {
+            }).catch((err: any) => {
                 console.log('errrr', err);
                 resolve(this.protocol_template);
             });
         });
     }
 
-    setUpdateCondition() {
+    override setUpdateCondition() {
         super.setUpdateCondition();
         this.updateCondition.push(['client_id', this.client_id]);
     }

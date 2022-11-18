@@ -888,8 +888,8 @@ export abstract class DbBaseModel {
           db.query(query).then((res:any) => {
             //  Save ID in the model
             // console.log('after execute query');
-            this[this.COL_ID] = res.insertId;
-            this.updateCondition = [this.COL_ID, this[this.COL_ID]];
+            (this as any)[this.COL_ID] = res.insertId;
+            this.updateCondition = [this.COL_ID, (this as any)[this.COL_ID]];
             // this.events.publish(this.TAG + ':create', this);
             this.miscService.events.next({ TAG: this.TAG + ':create', data: this });
             resolve(res);
@@ -917,14 +917,14 @@ export abstract class DbBaseModel {
           }
           const query = 'UPDATE ' + this.secure(this.TABLE_NAME) + ' ' +
             'SET ' + this.getColumnValueNames().join(', ') + ' WHERE ' + this.parseWhere(condition);
-          db.query(query).then((res) => {
+          db.query(query).then((res: any) => {
             // this.events.publish(this.TAG + ':update', this);
             // console.log("this.miscService", this.miscService)
             if (this.miscService) {
               this.miscService.events.next({ TAG: this.TAG + ':update', data: this });
             }
             resolve(res);
-          }).catch((err) => {
+          }).catch((err: any) => {
             console.log(this.loggerService);
             resolve(false);
           });
@@ -943,10 +943,10 @@ export abstract class DbBaseModel {
         } else {
           const query = 'DELETE FROM ' + this.secure(this.TABLE_NAME) + ' ' +
             'WHERE ' + this.parseWhere(this.updateCondition);
-          db.query(query).then((res) => {
+          db.query(query).then((res: any) => {
             this.miscService.events.next({ TAG: this.TAG + ':create', data: this });
             resolve(res);
-          }).catch((err) => {
+          }).catch((err: any) => {
             resolve(false);
           });
         }
@@ -964,7 +964,7 @@ export abstract class DbBaseModel {
    * @param text unquoted text
    * @returns quoted text
    */
-  protected quote(text: string): string {
+  protected quote(text: string): any {
     if (text === undefined) { return null; }
     return '\'' + text + '\'';
   }
@@ -980,7 +980,7 @@ export abstract class DbBaseModel {
    * @param inverse (optional)
    * @returns quoted text
    */
-  protected escape(text: string): string {
+  protected escape(text: string): any {
     if (text === undefined) { return null; }
     return text.replace(/\'/g, '&#39;');
   }
@@ -996,7 +996,7 @@ export abstract class DbBaseModel {
    * @param inverse (optional)
    * @returns quoted text
    */
-  protected unescape(text: string): string {
+  protected unescape(text: string): any {
     if (text === undefined) {
       return null;
     }
@@ -1022,7 +1022,7 @@ export abstract class DbBaseModel {
    *
    * @param date
    */
-  protected getDateValue(date: number): Date {
+  protected getDateValue(date: number): Date|null {
     return date ? new Date(date * 1000) : null;
   }
 
@@ -1031,7 +1031,7 @@ export abstract class DbBaseModel {
    *
    * @param date
    */
-  protected getDateFromString(date: string | number): Date {
+  protected getDateFromString(date: string | number): Date| null {
     if (Number.isInteger(date as number)) {
       /// if date is integer that it is seconds
       date = +date * 1000;
@@ -1044,7 +1044,7 @@ export abstract class DbBaseModel {
    *
    * @param num
    */
-  protected getNumberValue(num: string): number {
+  protected getNumberValue(num: string): any {
     return Number(num) !== Number.NaN ? Number.parseInt(num) : null;
   }
 
@@ -1053,7 +1053,7 @@ export abstract class DbBaseModel {
    *
    * @param num
    */
-  protected getDecimalValue(num: string): number {
+  protected getDecimalValue(num: string): any {
     return Number(num) !== Number.NaN ? Number.parseFloat(num) : null;
   }
 
@@ -1085,7 +1085,7 @@ export abstract class DbBaseModel {
    * @param str
    * @returns
    */
-  protected getNumberFromTime(str: string): number {
+  protected getNumberFromTime(str: string): any {
     if (!str) { return null; }
     // split it at the colons
     const a = str.split(':');

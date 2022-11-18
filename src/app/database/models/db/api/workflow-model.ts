@@ -7,14 +7,14 @@ import { WorkflowStepModel } from './workflow-step-model';
  */
 export class WorkflowModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'WorkflowModel';
+    override TAG: string = 'WorkflowModel';
     public apiPk = 'id';
 
-    public steps: WorkflowStepModel[];
+    public steps: WorkflowStepModel[] = [];
 
     //members
-    public client_id: number = null;
-    public name: string = null;
+    public client_id: any = null;
+    public name: any = null;
 
     //db columns
     static COL_CLIENT_ID = 'client_id';
@@ -37,7 +37,7 @@ export class WorkflowModel extends DbApiModel {
     }
 
     async getSteps() {
-        if (this.steps && this.steps.length && this.steps[0][WorkflowStepModel.COL_WORKFLOW_ID] === this.idApi) {
+        if (this.steps && this.steps.length && (this.steps[0] as any)[WorkflowStepModel.COL_WORKFLOW_ID] === this.idApi) {
             return this.steps;
         }
         const stepModel = new WorkflowStepModel();
@@ -65,7 +65,7 @@ export class WorkflowModel extends DbApiModel {
         return null;
     }
 
-    setUpdateCondition() {
+    override setUpdateCondition() {
         super.setUpdateCondition();
         this.updateCondition.push(['client_id', this.client_id]);
     }

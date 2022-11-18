@@ -6,13 +6,13 @@ import { DbBaseModel } from '../base/db-base-model';
  */
 export class MigrationModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'MigrationModel';
+    override TAG: string = 'MigrationModel';
     public apiPk = 'id';
 
     //members
-    public name: string;
-    public table_name: string;
-    public is_active: number;
+    public name: any;
+    public table_name: any;
+    public is_active: any;
 
     //db columns
     static COL_NAME = 'name';

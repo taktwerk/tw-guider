@@ -17,11 +17,11 @@ import { HttpClient } from '../library/services/http-client';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  public isScanning: boolean;
-  public params;
-  private scanSub: Subscription;
-  private config;
-  private appConfirmUrl;
+  public isScanning: any;
+  public params: any;
+  private scanSub: Subscription = new Subscription;
+  private config: any;
+  private appConfirmUrl: any;
 
   constructor(
     private authService: AuthService,
@@ -155,7 +155,7 @@ export class HomePage {
       .catch( async (err: any) => {
         // ---- iOS Simulator
         if ((<any>window).device.isVirtual) {
-          this.presentAlert('Config Error', null, 'Running on Simulator', ['OK']);
+          this.presentAlert('Config Error', '', 'Running on Simulator', ['OK']);
           const text = '{"mode":2,"taktwerk":"guider","host":"http://tw-app-dev.devhost.taktwerk.ch"}';
           const config = JSON.parse(text);
           const appConfirmUrl = config.host + environment.apiUrlPath + '/login/';
@@ -190,10 +190,12 @@ export class HomePage {
         }
         // ----
         else {
-          this.presentAlert('Config Error', null, 'There was an error using the camera. Please try again.', ['OK']);
+          this.presentAlert('Config Error', '', 'There was an error using the camera. Please try again.', ['OK']);
           this.closeScanner();
         }
       });
+
+      return;
   }
 
   closeScanner() {

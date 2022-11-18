@@ -23,7 +23,8 @@ import { VideoService } from 'app/library/services/video-service';
   styleUrls: ['feedback-add-edit.page.scss'],
 })
 export class FeedbackAddEditPage implements OnInit {
-  public model: FeedbackModel;
+  // public model: FeedbackModel;
+  public model: any;
   // public originalModel: FeedbackModel;
   public originalModel: any;
   public feedbackId: any = null;

@@ -7,14 +7,14 @@ import { WorkflowModel } from './workflow-model';
  */
 export class ProtocolTemplateModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'ProtocolTemplateModel';
+    override TAG: string = 'ProtocolTemplateModel';
     public apiPk = 'id';
 
     //members
-    public client_id: number;
-    public name: string;
-    public workflow_id: number;
-    public protocol_form_table: string;
+    public client_id: any;
+    public name: any;
+    public workflow_id: any;
+    public protocol_form_table: any;
 
     //db columns
     static COL_CLIENT_ID = 'client_id';
@@ -34,7 +34,7 @@ export class ProtocolTemplateModel extends DbApiModel {
     /** @inheritDoc */
     TABLE_NAME: string = 'protocol_template';
 
-    workflow: WorkflowModel;
+    workflow: WorkflowModel = new WorkflowModel;
 
     /** @inheritDoc */
     TABLE: any = [
@@ -56,7 +56,7 @@ export class ProtocolTemplateModel extends DbApiModel {
         [ProtocolTemplateModel.COL_LOCAL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
     ];
 
-    public downloadMapping: FileMapInModel[] = [
+    public override downloadMapping: FileMapInModel[] = [
         {
             name: ProtocolTemplateModel.COL_PROTOCOL_FILE,
             url: ProtocolTemplateModel.COL_API_PROTOCOL_FILE_PATH,
@@ -79,7 +79,7 @@ export class ProtocolTemplateModel extends DbApiModel {
         if (!this.workflow_id) {
             return;
         }
-        if (this.workflow && this.workflow[this.COL_ID_API] === this.workflow_id) {
+        if (this.workflow && (this.workflow as any)[this.COL_ID_API] === this.workflow_id) {
             return this.workflow;
         }
         const workflowModel = new WorkflowModel();

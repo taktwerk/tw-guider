@@ -7,9 +7,9 @@ import { RecordedFile } from 'app/library/services/download-service';
 import { DbBaseModel } from './db-base-model';
 
 export class BaseFileMapInModel {
-    public name: string;
-    public url: string;
-    public localPath: string;
+    public name!: string;
+    public url!: string;
+    public localPath!: string;
     public originalFile?: string = '';
     public attachedFilesForDelete?: string[] = [];
     public notSavedModelUploadedFilePath?: string;
@@ -28,32 +28,32 @@ export class FileMapInModel extends BaseFileMapInModel {
  *
  */
 export abstract class DbApiModel extends DbBaseModel {
-    loadUrl: string;
+    loadUrl: any;
     public defaultImage = '/assets/placeholder.jpg';
     /** flag that indicate either a record is synced with the API or not */
-    public is_synced: boolean;
+    public is_synced: any;
     /** primary key */
-    public idApi: number;
+    public idApi: any;
     /** name of the primary key from API (required to sync records) */
     public abstract apiPk: string;
 
     //API boilerplate default fields members
-    public created_at: Date;
-    public local_created_at: Date;
-    public created_by: number;
-    public updated_at: Date;
-    public local_updated_at: Date;
-    public updated_by: number;
-    public created_term: string;
-    public updated_term: string;
-    public deleted_at: Date;
-    public local_deleted_at: Date;
-    public deleted_by: number;
+    public created_at!: Date;
+    public local_created_at!: Date;
+    public created_by!: number;
+    public updated_at!: Date;
+    public local_updated_at!: Date;
+    public updated_by!: number;
+    public created_term!: string;
+    public updated_term!: string;
+    public deleted_at!: Date;
+    public local_deleted_at!: Date;
+    public deleted_by!: number;
 
-    public migrations = [];
+    public migrations: any[] = [];
 
     // download mapping
-    public downloadMapping: FileMapInModel[];
+    public downloadMapping!: FileMapInModel[];
 
     // API boilerplate default fields columns
     /** local column that indicates if the record is synced with the API */
@@ -99,7 +99,7 @@ export abstract class DbApiModel extends DbBaseModel {
      * @param oldModel
      */
     public loadFromApi(apiObj: any, oldModel = null): DbApiModel {
-        let obj: DbApiModel = null;
+        let obj: any | null = null;
         obj = new (<any>this.constructor)();
         obj.platform = this.platform;
         obj.db = this.db;
@@ -125,7 +125,7 @@ export abstract class DbApiModel extends DbBaseModel {
                                         memberNameOfFile = columnForFile[3] ? columnForFile[3] : memberNameOfFile;
                                     }
                                 }
-                                if (apiObj[memberNameOfFile] !== undefined && this[memberNameOfFile] === apiObj[memberNameOfFile]) {
+                                if (apiObj[memberNameOfFile] !== undefined && (this as any)[memberNameOfFile] === apiObj[memberNameOfFile]) {
                                     // console.log('not willChangeColumn', memberNameOfFile);
                                     // console.log('not willChangeColumn in model', this);
                                     willChangeColumn = false;
@@ -140,7 +140,7 @@ export abstract class DbApiModel extends DbBaseModel {
                 const type: number = parseInt(column[2], 10);
                 const memberName = column[3] ? column[3] : columnName;
                 if (apiObj[memberName] !== undefined) {
-                    this[memberName] = this.getObjectByType(apiObj[memberName], type);
+                  (this as any)[memberName] = this.getObjectByType(apiObj[memberName], type);
                 }
             }
         }
@@ -169,7 +169,7 @@ export abstract class DbApiModel extends DbBaseModel {
      *
      * @returns
      */
-    public dbCreateTable(): Promise<any> {
+    public override dbCreateTable(): Promise<any> {
         this.TABLE.push([this.COL_IS_SYNCED, 'TINYINT(1) DEFAULT 1', DbBaseModel.TYPE_BOOLEAN, 'is_synced']);
         this.TABLE.push([this.COL_CREATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
         this.TABLE.push([this.COL_LOCAL_CREATED_AT, 'DATETIME', DbBaseModel.TYPE_DATE]);
@@ -196,7 +196,7 @@ export abstract class DbApiModel extends DbBaseModel {
      *
      * @inheritDoc
      */
-    public loadFromAttributes(item: any): DbBaseModel {
+    public override loadFromAttributes(item: any): DbBaseModel {
         this.idApi = item[this.COL_ID_API];
         this.is_synced = item[this.COL_IS_SYNCED];
         this.created_at = this.getDateValue(item[this.COL_CREATED_AT]);
@@ -243,7 +243,7 @@ export abstract class DbApiModel extends DbBaseModel {
      * @param isSaveLocaleDates
      * @override
      */
-    public save(forceCreation?: boolean, isSynced?: boolean, updateCondition?: string, isSaveLocaleDates: boolean = true): Promise<any> {
+    public override save(forceCreation?: boolean, isSynced?: boolean, updateCondition?: string, isSaveLocaleDates: boolean = true): Promise<any> {
         if (!isSynced || !this.updateCondition) {
             if (updateCondition) {
                 this.updateCondition = updateCondition;
@@ -256,7 +256,7 @@ export abstract class DbApiModel extends DbBaseModel {
             const res = await this.exists();
             if (res) {
                 if (isSaveLocaleDates) {
-                    this[this.COL_LOCAL_UPDATED_AT] = new Date();
+                  (this as any)[this.COL_LOCAL_UPDATED_AT] = new Date();
                 }
                 await this.update();
                 this.unsetNotSavedModelUploadedFilePaths();
@@ -264,8 +264,8 @@ export abstract class DbApiModel extends DbBaseModel {
                 return;
             } else {
                 if (isSaveLocaleDates) {
-                    this[this.COL_LOCAL_CREATED_AT] = new Date();
-                    this[this.COL_LOCAL_UPDATED_AT] = new Date();
+                  (this as any)[this.COL_LOCAL_CREATED_AT] = new Date();
+                  (this as any)[this.COL_LOCAL_UPDATED_AT] = new Date();
                 }
                 // console.log('before create');
                 await this.create();
@@ -278,7 +278,7 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     public setUpdateCondition() {
-        this.updateCondition = [[this.COL_ID, this[this.COL_ID]]];
+        this.updateCondition = [[this.COL_ID, (this as any)[this.COL_ID]]];
     }
 
     public remove(): Promise<any> {
@@ -333,9 +333,9 @@ export abstract class DbApiModel extends DbBaseModel {
                     if (query.indexOf('undefined') >= 0) {
                         resolve(false);
                     } else {
-                        db.query(query).then((res) => {
+                        db.query(query).then((res: any) => {
                             resolve(res.rows.length > 0);
-                        }).catch((err) => {
+                        }).catch((err: any) => {
                             resolve(false);
                         });
                     }
@@ -356,16 +356,16 @@ export abstract class DbApiModel extends DbBaseModel {
         const types = this.columnTypes();
 
         obj[this.apiPk] = this.idApi;
-        obj[this.COL_ID] = this[this.COL_ID];
+        obj[this.COL_ID] = (this as any)[this.COL_ID];
 
-        obj.deleted_at = this.formatApiDate(this[this.COL_DELETED_AT]);
-        obj.local_deleted_at = this.formatApiDate(this[this.COL_LOCAL_DELETED_AT]);
-        obj.local_updated_at = this.formatApiDate(this[this.COL_LOCAL_UPDATED_AT]);
-        obj.local_created_at = this.formatApiDate(this[this.COL_LOCAL_CREATED_AT]);
+        obj.deleted_at = this.formatApiDate((this as any)[this.COL_DELETED_AT]);
+        obj.local_deleted_at = this.formatApiDate((this as any)[this.COL_LOCAL_DELETED_AT]);
+        obj.local_updated_at = this.formatApiDate((this as any)[this.COL_LOCAL_UPDATED_AT]);
+        obj.local_created_at = this.formatApiDate((this as any)[this.COL_LOCAL_CREATED_AT]);
 
         for (let i = 0; i < columns.length; i++) {
             const type: number = types[i];
-            let value: any = this[columns[i]];
+            let value: any = (this as any)[columns[i]];
 
             //format value if required
             switch (type) {
@@ -388,7 +388,7 @@ export abstract class DbApiModel extends DbBaseModel {
             return false;
         }
         for (const fields of this.downloadMapping) {
-            if (this[fields.localPath] && !this[fields.url]) {
+            if ((this as any)[fields.localPath] && !(this as any)[fields.url]) {
                 return true;
             }
         }
@@ -399,7 +399,7 @@ export abstract class DbApiModel extends DbBaseModel {
     getFieldsForPushFiles(): any[] {
         const fieldsForPush = [];
         for (const fields of this.downloadMapping) {
-            if (this[fields.localPath] && !this[fields.url]) {
+            if ((this as any)[fields.localPath] && !(this as any)[fields.url]) {
                 fieldsForPush.push(fields);
             }
         }
@@ -414,7 +414,7 @@ export abstract class DbApiModel extends DbBaseModel {
     isExistFileByIndex(columnNameIndex: number = 0): boolean {
         return this.isExistFileIndex(columnNameIndex) &&
             !!this.downloadMapping[columnNameIndex].name &&
-            !!this[this.downloadMapping[columnNameIndex].name];
+            !!(this as any)[this.downloadMapping[columnNameIndex].name];
     }
 
     isExistFileIndex(columnNameIndex: number = 0): boolean {
@@ -452,13 +452,13 @@ export abstract class DbApiModel extends DbBaseModel {
         });
     }
 
-    protected async downloadAndSaveFile(fileMap: any, oldModel, authorizationToken) {
-        if (!fileMap.name || !this[fileMap.name]) {
+    protected async downloadAndSaveFile(fileMap: any, oldModel: any, authorizationToken: any) {
+        if (!fileMap.name || !(this as any)[fileMap.name]) {
             return false;
         }
-        let fileName = this[fileMap.name];
-        if (oldModel && oldModel[fileMap.url] === this[fileMap.url]) {
-            this[fileMap.name] = oldModel[fileMap.name];
+        let fileName = (this as any)[fileMap.name];
+        if (oldModel && oldModel[fileMap.url] === (this as any)[fileMap.url]) {
+          (this as any)[fileMap.name] = oldModel[fileMap.name];
             if (this.isExistThumbnail(fileMap)) {
                 await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
             }
@@ -466,15 +466,15 @@ export abstract class DbApiModel extends DbBaseModel {
             return true;
         }
         if (!this.isExistFilePathInModel(fileMap)) {
-            if (!this[fileMap.url]) {
-                this[fileMap.name] = fileName;
-                this[fileMap.localPath] = null;
+            if (!(this as any)[fileMap.url]) {
+              (this as any)[fileMap.name] = fileName;
+              (this as any)[fileMap.localPath] = null;
                 if (this.isExistThumbnail(fileMap) &&
                     (oldModel && oldModel[fileMap.url])
                 ) {
-                    this[fileMap.thumbnail.name] = null;
-                    this[fileMap.thumbnail.url] = null;
-                    this[fileMap.thumbnail.localPath] = null;
+                    (this as any)[fileMap.thumbnail.name] = null;
+                    (this as any)[fileMap.thumbnail.url] = null;
+                    (this as any)[fileMap.thumbnail.localPath] = null;
                 }
                 await this.saveSynced(true);
             }
@@ -482,15 +482,15 @@ export abstract class DbApiModel extends DbBaseModel {
             return false;
         }
         if (oldModel &&
-            oldModel[fileMap.url] !== this[fileMap.url] &&
-            oldModel[fileMap.name] === this[fileMap.name]
+            oldModel[fileMap.url] !== (this as any)[fileMap.url] &&
+            oldModel[fileMap.name] === (this as any)[fileMap.name]
         ) {
             fileName = '1' + fileName;
         }
         // If we have a local path but no api path, we need to upload the file!
         // Only download if the new file is different than the old one? We don't have this information here.
         const finalPath = await this.downloadService.downloadAndSaveFile(
-            this[fileMap.url],
+          (this as any)[fileMap.url],
             fileName,
             this.TABLE_NAME,
             authorizationToken
@@ -499,16 +499,16 @@ export abstract class DbApiModel extends DbBaseModel {
         if (!finalPath) {
             return false;
         }
-        this[fileMap.name] = fileName;
-        this[fileMap.localPath] = finalPath;
+        (this as any)[fileMap.name] = fileName;
+        (this as any)[fileMap.localPath] = finalPath;
         // We received the local path back if it's successful
         await this.saveSynced(true);
         // Delete old file
-        if (oldModel && oldModel[fileMap.localPath] !== this[fileMap.localPath]) {
+        if (oldModel && oldModel[fileMap.localPath] !== (this as any)[fileMap.localPath]) {
             await this.downloadService.deleteFile(oldModel[fileMap.localPath]);
         }
         if (this.isExistThumbnail(fileMap) &&
-            (!oldModel || oldModel[fileMap.url] !== this[fileMap.url])
+            (!oldModel || oldModel[fileMap.url] !== (this as any)[fileMap.url])
         ) {
             console.log('download thumbnail');
             await this.downloadAndSaveFile(fileMap.thumbnail, oldModel, authorizationToken);
@@ -517,19 +517,19 @@ export abstract class DbApiModel extends DbBaseModel {
         return true;
     }
 
-    isExistFilePathInModel(fileMap) {
+    isExistFilePathInModel(fileMap:any) {
         return fileMap.name &&
             fileMap.url &&
-            this[fileMap.name] &&
-            this[fileMap.url];
+            (this as any)[fileMap.name] &&
+            (this as any)[fileMap.url];
     }
 
     isExistThumbnail(fileMap: any): boolean {
         return (!!fileMap.thumbnail &&
             !!fileMap.thumbnail.name &&
             !!fileMap.thumbnail.url &&
-            !!this[fileMap.thumbnail.name] &&
-            !!this[fileMap.thumbnail.url]);
+            !!(this as any)[fileMap.thumbnail.name] &&
+            !!(this as any)[fileMap.thumbnail.url]);
     }
 
     async setFile(recordedFile: RecordedFile, fileMapIndex = 0) {
@@ -550,17 +550,17 @@ export abstract class DbApiModel extends DbBaseModel {
         console.log('check recorded file from setFileProperty method =>', recordedFile);
 
         const modelFileMap = this.downloadMapping[columnNameIndex];
-        this[modelFileMap.name] = recordedFile.uri.substring(recordedFile.uri.lastIndexOf('/') + 1);
-        this[modelFileMap.url] = recordedFile.uri;
-        this[modelFileMap.localPath] = '';
+        (this as any)[modelFileMap.name] = recordedFile.uri.substring(recordedFile.uri.lastIndexOf('/') + 1);
+        (this as any)[modelFileMap.url] = recordedFile.uri;
+        (this as any)[modelFileMap.localPath] = '';
         this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = recordedFile.uri;
         /// If exist thumbnail for file
         if (modelFileMap.thumbnail) {
 
-            this[modelFileMap.thumbnail.name] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri.substr(recordedFile.thumbnailUri.lastIndexOf('/') + 1) : '';
-            this[modelFileMap.thumbnail.url] = '';
-            this[modelFileMap.thumbnail.localPath] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
-            this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
+            (this as any)[modelFileMap.thumbnail.name] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri.substr(recordedFile.thumbnailUri.lastIndexOf('/') + 1) : '';
+            (this as any)[modelFileMap.thumbnail.url] = '';
+            (this as any)[modelFileMap.thumbnail.localPath] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
+            (this.downloadMapping as any) [columnNameIndex].thumbnail.notSavedModelUploadedFilePath = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
         }
     }
 
@@ -572,46 +572,46 @@ export abstract class DbApiModel extends DbBaseModel {
         }
         const modelFileMap = this.downloadMapping[columnNameIndex];
         if (willDeleteFile) {
-            if (this[modelFileMap.name]) {
-                const attachedFileForDelete = this[modelFileMap.name] ? this.downloadService.getNativeFilePath(this[modelFileMap.name], this.TABLE_NAME) : '';
-                if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].originalFile && attachedFileForDelete) {
+            if ((this as any)[modelFileMap.name]) {
+                const attachedFileForDelete = (this as any)[modelFileMap.name] ? this.downloadService.getNativeFilePath((this as any)[modelFileMap.name], this.TABLE_NAME) : '';
+                if ((this as any)[this.COL_ID] && !this.downloadMapping[columnNameIndex].originalFile && attachedFileForDelete) {
                     this.downloadMapping[columnNameIndex].originalFile = attachedFileForDelete;
                 }
                 if (!this.downloadMapping[columnNameIndex].attachedFilesForDelete) {
                     this.downloadMapping[columnNameIndex].attachedFilesForDelete = [];
                 }
-                this.downloadMapping[columnNameIndex].attachedFilesForDelete.push(attachedFileForDelete);
+                (this.downloadMapping as any)[columnNameIndex].attachedFilesForDelete.push(attachedFileForDelete);
             }
         }
-        this[modelFileMap.name] = recordedFile.uri.substring(recordedFile.uri.lastIndexOf('/') + 1);
-        this[modelFileMap.url] = '';
-        this[modelFileMap.localPath] = recordedFile.uri;
+        (this as any)[modelFileMap.name] = recordedFile.uri.substring(recordedFile.uri.lastIndexOf('/') + 1);
+        (this as any)[modelFileMap.url] = '';
+        (this as any)[modelFileMap.localPath] = recordedFile.uri;
         this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath = recordedFile.uri;
 
-        console.log(' this[modelFileMap.name]', this[modelFileMap.name]);
-        console.log(' this[modelFileMap.localPath]', modelFileMap.localPath, this[modelFileMap.localPath]);
+        console.log(' (this as any)[modelFileMap.name]', (this as any)[modelFileMap.name]);
+        console.log(' (this as any)[modelFileMap.localPath]', modelFileMap.localPath, (this as any)[modelFileMap.localPath]);
 
         /// If exist thumbnail for file
         if (modelFileMap.thumbnail) {
-            if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile) {
-                this.downloadMapping[columnNameIndex].thumbnail.originalFile = this[modelFileMap.thumbnail.name];
+            if ((this as any)[this.COL_ID] && !(this.downloadMapping as any)[columnNameIndex].thumbnail.originalFile) {
+                (this.downloadMapping as any)[columnNameIndex].thumbnail.originalFile = (this as any)[modelFileMap.thumbnail.name];
             }
             if (willDeleteFile) {
-                if (this[modelFileMap.thumbnail.name]) {
-                    const thumbnailAttachedFileForDelete = this[modelFileMap.thumbnail.name] ? this.downloadService.getNativeFilePath(this[modelFileMap.thumbnail.name], this.TABLE_NAME) : '';
-                    if (this[this.COL_ID] && !this.downloadMapping[columnNameIndex].thumbnail.originalFile && thumbnailAttachedFileForDelete) {
-                        this.downloadMapping[columnNameIndex].thumbnail.originalFile = thumbnailAttachedFileForDelete;
+                if ((this as any)[modelFileMap.thumbnail.name]) {
+                    const thumbnailAttachedFileForDelete = (this as any)[modelFileMap.thumbnail.name] ? this.downloadService.getNativeFilePath((this as any)[modelFileMap.thumbnail.name], this.TABLE_NAME) : '';
+                    if ((this as any)[this.COL_ID] && !(this.downloadMapping as any)[columnNameIndex].thumbnail.originalFile && thumbnailAttachedFileForDelete) {
+                        (this.downloadMapping as any)[columnNameIndex].thumbnail.originalFile = thumbnailAttachedFileForDelete;
                     }
-                    if (!this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete) {
-                        this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete = [];
+                    if (!(this.downloadMapping as any)[columnNameIndex].thumbnail.attachedFilesForDelete) {
+                        (this.downloadMapping as any)[columnNameIndex].thumbnail.attachedFilesForDelete = [];
                     }
-                    this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete.push(thumbnailAttachedFileForDelete);
+                    (this.downloadMapping as any)[columnNameIndex].thumbnail.attachedFilesForDelete.push(thumbnailAttachedFileForDelete);
                 }
             }
-            this[modelFileMap.thumbnail.name] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri.substr(recordedFile.thumbnailUri.lastIndexOf('/') + 1) : '';
-            this[modelFileMap.thumbnail.url] = '';
-            this[modelFileMap.thumbnail.localPath] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
-            this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
+            (this as any)[modelFileMap.thumbnail.name] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri.substr(recordedFile.thumbnailUri.lastIndexOf('/') + 1) : '';
+            (this as any)[modelFileMap.thumbnail.url] = '';
+            (this as any)[modelFileMap.thumbnail.localPath] = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
+            (this.downloadMapping as any)[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = recordedFile.thumbnailUri ? recordedFile.thumbnailUri : '';
         }
     }
 
@@ -640,16 +640,16 @@ export abstract class DbApiModel extends DbBaseModel {
                 fileMap.thumbnail.attachedFilesForDelete.length
             ) {
                 for (const thumbnailAttachedFileForDelete of fileMap.thumbnail.attachedFilesForDelete) {
-                    if (thumbnailAttachedFileForDelete !== this.downloadMapping[columnNameIndex].thumbnail.originalFile) {
+                    if (thumbnailAttachedFileForDelete !== (this.downloadMapping as any)[columnNameIndex].thumbnail.originalFile) {
                         this.downloadService.deleteFile(thumbnailAttachedFileForDelete);
                     }
                 }
-                this.downloadMapping[columnNameIndex].thumbnail.attachedFilesForDelete = [];
-                if (this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath) {
-                    this.downloadService.deleteFile(this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath);
+                (this.downloadMapping as any)[columnNameIndex].thumbnail.attachedFilesForDelete = [];
+                if ((this.downloadMapping as any)[columnNameIndex].thumbnail.notSavedModelUploadedFilePath) {
+                    this.downloadService.deleteFile((this.downloadMapping as any)[columnNameIndex].thumbnail.notSavedModelUploadedFilePath);
                 }
-                this.downloadMapping[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = '';
-                this.downloadMapping[columnNameIndex].thumbnail.originalFile = '';
+                (this.downloadMapping as any)[columnNameIndex].thumbnail.notSavedModelUploadedFilePath = '';
+                (this.downloadMapping as any)[columnNameIndex].thumbnail.originalFile = '';
             }
         });
     }
@@ -659,7 +659,7 @@ export abstract class DbApiModel extends DbBaseModel {
             return;
         }
         this.downloadMapping.map((fileMap, columnNameIndex) => {
-            const filePath = this[fileMap.localPath];
+            const filePath = (this as any)[fileMap.localPath];
             if (filePath) {
                 this.downloadService.deleteFile(filePath);
             }
@@ -678,7 +678,7 @@ export abstract class DbApiModel extends DbBaseModel {
         });
     }
 
-    unsetNotSavedModelUploadedFilePath(columnNameIndex) {
+    unsetNotSavedModelUploadedFilePath(columnNameIndex: any) {
         if (!this.isExistFileIndex(columnNameIndex) ||
             !this.downloadMapping[columnNameIndex].notSavedModelUploadedFilePath
         ) {
@@ -716,7 +716,7 @@ export abstract class DbApiModel extends DbBaseModel {
         return this.checkFileType(fileMapIndex, '3d');
     }
 
-    checkFileType(fileMapIndex, format): boolean {
+    checkFileType(fileMapIndex: any, format: any): boolean {
         const localFilePath = this.getLocalFilePath(fileMapIndex);
         const fileName = this.getFileName(fileMapIndex);
 
@@ -725,27 +725,27 @@ export abstract class DbApiModel extends DbBaseModel {
     }
 
     public getLocalFilePath(fileMapIndex = 0) {
-        return this[this.downloadMapping[fileMapIndex].localPath];
+        return (this as any)[this.downloadMapping[fileMapIndex].localPath];
     }
 
     public getFileUrl(fileMapIndex = 0) {
-        return this[this.downloadMapping[fileMapIndex].url];
+        return (this as any)[this.downloadMapping[fileMapIndex].url];
     }
 
     public getFileName(fileMapIndex = 0) {
-        return this[this.downloadMapping[fileMapIndex].name];
+        return (this as any)[this.downloadMapping[fileMapIndex].name];
     }
 
     public getApiThumbFilePath(fileMapIndex = 0) {
-        return this[this.downloadMapping[fileMapIndex].thumbnail.name];
+        return (this as any)[(this.downloadMapping as any)[fileMapIndex].thumbnail.name];
     }
 
     public isExistThumbOfFile(fileMapIndex = 0) {
         return this.isExistFileIndex(fileMapIndex) &&
-            this.downloadMapping[fileMapIndex].thumbnail &&
-            this.downloadMapping[fileMapIndex].thumbnail.name &&
-            this[this.downloadMapping[fileMapIndex].thumbnail.name] &&
-            this[this.downloadMapping[fileMapIndex].thumbnail.localPath];
+            (this.downloadMapping as any)[fileMapIndex].thumbnail &&
+            (this.downloadMapping as any)[fileMapIndex].thumbnail.name &&
+            (this as any)[(this.downloadMapping as any)[fileMapIndex].thumbnail.name] &&
+            (this as any)[(this.downloadMapping as any)[fileMapIndex].thumbnail.localPath];
     }
 
     public getFileImagePath(fileMapIndex = 0, sanitizeType = 'trustResourceUrl') {

@@ -15,9 +15,9 @@ import { AuthService } from 'app/library/services/auth-service';
 })
 export class EditguidePage implements OnInit, OnDestroy {
 
-  guideId: string;
+  guideId: any;
   public guideSteps: GuideStepModel[] = [];
-  refreshSub: Subscription;
+  refreshSub: Subscription = new Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
     private guideStepService: GuideStepService,
@@ -40,13 +40,13 @@ export class EditguidePage implements OnInit, OnDestroy {
   ionViewWillEnter() {}
 
 
-  public setGuideSteps(id) {
+  public setGuideSteps(id: any) {
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
       this.guideSteps = results.filter(model => !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT]);
     });
   }
 
-  addStep(guide, action) {
+  addStep(guide: any, action: any) {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         guideId: guide,

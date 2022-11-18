@@ -21,22 +21,25 @@ import { HttpClient } from 'app/library/services/http-client';
   styleUrls: ['./listview.page.scss'],
 })
 export class ListViewComponent implements OnInit, OnDestroy {
-  guideSteps: GuideStepModel[];
+  // guideSteps: GuideStepModel[];
+  guideSteps: any[] = [];
   guideStepsData: GuideStepModel[] = [];
 
-  @Input() canReorder: boolean;
-  @Input() guideId: string;
+  @Input() canReorder: any = false;
+  @Input() guideId: any;
 
-  @ViewChildren(IonItem, { read: ElementRef }) items: QueryList<ElementRef>;
+  // @ViewChildren(IonItem, { read: ElementRef }) items: QueryList<ElementRef>;
+  @ViewChildren(IonItem, { read: ElementRef }) items: any;
 
-  public params;
+  public params: any;
   public faFilePdf = faFilePdf;
   disableReorder = true;
   isScrolling = false;
   displayLimit: number = 10;
 
   guideAssetModelFileMapIndexEnum: typeof GuideAssetModelFileMapIndexEnum = GuideAssetModelFileMapIndexEnum;
-  eventSubscription: Subscription;
+
+  eventSubscription: Subscription = new Subscription;
 
   constructor(
     private guideStepService: GuideStepService,
@@ -77,7 +80,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  public setGuideSteps(id) {
+  public setGuideSteps(id: any) {
     return this.guideStepService.dbModelApi.findAllWhere(['guide_id', id], 'order_number ASC').then(results => {
       this.guideStepsData = results.filter(model => {
         return !model[model.COL_DELETED_AT] && !model[model.COL_LOCAL_DELETED_AT];
@@ -126,14 +129,14 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.disableReorder = true;
   }
 
-  async showToast(message) {
+  async showToast(message: any) {
     const toast = await this.toastController.create({ message: message, duration: 800 });
     toast.present();
   }
 
   logScrollStart() { }
 
-  logScrolling(event?) {
+  logScrolling(event: any) {
     this.isScrolling = true;
   }
 
@@ -141,7 +144,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.isScrolling = false;
   }
 
-  loadData(event) {
+  loadData(event: any) {
     setTimeout(() => {
       this.displayLimit += 10;
       this.guideSteps = this.guideStepsData.slice(0, this.displayLimit);
@@ -154,7 +157,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
   }
 
   delete(step: GuideStepModel) {
-    this.guideStepService.remove(step).then(async () => {
+    this.guideStepService.remove(step as any).then(async () => {
       this.apiSync.setIsPushAvailableData(true);
       const alertMessage = await this.translateConfigService.translate('alert.model_was_deleted', { model: 'GuideStep' });
       this.http.showToast(alertMessage);
@@ -198,9 +201,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
 
   detectChanges() {
-    if (!this.changeDetectorRef['destroyed']) {
       this.changeDetectorRef.detectChanges();
-    }
   }
 
   ngOnDestroy() {

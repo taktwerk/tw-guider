@@ -30,7 +30,8 @@ export class FeedbackPage implements OnInit, OnDestroy {
   public reference_id: any = null;
   public reference_model: any = null;
   public reference_model_alias: any = null;
-  public feedbackList: FeedbackModel[] = [];
+  // public feedbackList: FeedbackModel[] = [];
+  public feedbackList: any[] = [];
   public isComponentLikeModal = false;
   public params: any;
   public imgURL:any;

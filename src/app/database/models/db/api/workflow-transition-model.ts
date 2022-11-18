@@ -7,14 +7,14 @@ import { DbBaseModel } from '../../base/db-base-model';
 
 export class WorkflowTransitionModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'WorkflowTransitionModel';
+    override TAG: string = 'WorkflowTransitionModel';
     public apiPk = 'id';
 
     //members
-    public workflow_step_id: number = null;
-    public next_workflow_step_id: number;
-    public action_key: string;
-    public default_order: number;
+    public workflow_step_id: any = null;
+    public next_workflow_step_id: any;
+    public action_key: any;
+    public default_order: any;
 
     //db columns
     static COL_WORKFLOW_STEP_ID = 'workflow_step_id';

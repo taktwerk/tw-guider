@@ -31,7 +31,7 @@ import { StateService } from 'app/library/state.service';
 })
 export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
   public isStartSync = false;
-  public iconStatus = 'unsynced';
+  public iconStatus: any = 'unsynced';
 
   public modeSync = SyncMode.Manual;
   public syncProgressStatus = 'not_sync';
@@ -39,21 +39,21 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
   public guideCategories: GuideCategoryModel[] = [];
   public guideActivity: Array<any> = [];
   public guideArr: any = [];
-  public searchValue: string;
+  public searchValue: any;
   public haveProtocolPermissions = false;
   public isLoadedContent = true;
   public guides: GuiderModel[] = [];
   public guideItemsLimit = 20;
   public guidesWithoutCategories: GuiderModel[] = [];
-  public params;
+  public params: any;
 
   public items: Array<{ title: string; note: string; icon: string }> = [];
 
-  public type: string;
+  public type: any;
 
-  onboardingSyncShown: boolean;
+  onboardingSyncShown: any;
 
-  eventSubscription: Subscription;
+  eventSubscription: Subscription = new Subscription
 
   isPreStateLoad = false;
   @Input() guideStepsLength = 0;
@@ -222,7 +222,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
       this.detectChanges();
     });
 
-    this.syncService.syncMode.subscribe((result) => {
+    this.syncService.syncMode.subscribe((result: any) => {
       if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
         return;
       }
@@ -330,7 +330,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
     await this.setGuides();
   }
 
-  async searchGuides($event) {
+  async searchGuides($event: any) {
     this.searchValue = $event.detail.value;
     this.setGuides();
   }
@@ -361,7 +361,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
       const syncedList = await this.syncIndexService.getSyncIndexModel(_guidesActivity, _guidesActivity[0].TABLE_NAME);
       this.guideArr = [];
 
-      const isCollectionExistInArray = (guide) => {
+      const isCollectionExistInArray = (guide: any) => {
         for (const element of this.guideArr) {
           // console.log(element.id, element.type, guide.parent_guide_id);
 
@@ -374,7 +374,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
       };
 
 
-      syncedList.forEach((guide) => {
+      syncedList.forEach((guide: any) => {
 
         if (guide.parent_guide_id === 0) {
           this.guideArr.push({
@@ -389,7 +389,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
         // console.log(collection);
         if (collection === false) {
 
-          guide.setChildren().then(coll => {
+          guide.setChildren().then((coll: any) => {
             console.log('check coll', coll);
           });
 
@@ -471,7 +471,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
     this.changeDetectorRef.detectChanges();
   }
 
-  trackByFn(item) {
+  trackByFn(item: any) {
     return item[item.COL_ID];
   }
 
@@ -504,7 +504,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
 
   //MAIN CODE(NEW PART)
 
-  openGuide(guideStep) {
+  openGuide(guideStep: any) {
     // if (typeof guideStep.guides != 'undefined') {
     //   if (guideStep.guides.parent_guide_id == 0) {
     //     this.router.navigate(['/guide/' + guideStep.guides.guide_id]);

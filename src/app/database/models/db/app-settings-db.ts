@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class AppSettingsDb extends DbBaseModel {
     /** @inheritDoc */
-    TAG: string = 'AppSettingsDb';
+    override TAG: string = 'AppSettingsDb';
 
     static COL_SETTINGS = 'settings';
 

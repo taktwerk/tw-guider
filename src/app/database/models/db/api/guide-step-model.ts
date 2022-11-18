@@ -7,20 +7,20 @@ import { GuiderModel } from './guider-model';
  */
 export class GuideStepModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'GuideStepModel';
+    override TAG: string = 'GuideStepModel';
     public apiPk = 'id';
 
     //members
-    public _id: number;
-    public guide_id: number;
-    public order_number: number;
-    public title: string;
-    public description_html: string;
-    public attached_file: string;
-    public local_attached_file: string;
-    public local_guide_id: number;
-    public design_canvas_meta: string;
-    public design_canvas_file: string;
+    public _id: any;
+    public guide_id: any;
+    public order_number: any;
+    public title: any;
+    public description_html: any;
+    public attached_file: any;
+    public local_attached_file: any;
+    public local_guide_id: any;
+    public design_canvas_meta: any;
+    public design_canvas_file: any;
 
     //db columns
     static COL_GUIDE_ID = 'guide_id';
@@ -38,7 +38,7 @@ export class GuideStepModel extends DbApiModel {
     static COL_DESIGN_CANVAS_FILE = "design_canvas_file";
 
 
-    public downloadMapping: FileMapInModel[] = [
+    public override downloadMapping: FileMapInModel[] = [
         {
             name: GuideStepModel.COL_ATTACHED_FILE,
             url: GuideStepModel.COL_API_ATTACHED_FILE_PATH,
@@ -86,8 +86,8 @@ export class GuideStepModel extends DbApiModel {
         super();
     }
 
-    async updateLocalRelations() {
-        if (!this[this.COL_ID] || !this.idApi) {
+    override async updateLocalRelations() {
+        if (!(this as any)[this.COL_ID] || !this.idApi) {
             return;
         }
 
@@ -106,11 +106,11 @@ export class GuideStepModel extends DbApiModel {
         }
     }
 
-    public migrations = ['AddLocalGuideIdToGuideStepTableMigration', 'AddDesignCanvasMetaToGuideStepTableMigration', 'AddDesignCanvasFileToGuideStepTableMigration'];
+    public override migrations = ['AddLocalGuideIdToGuideStepTableMigration', 'AddDesignCanvasMetaToGuideStepTableMigration', 'AddDesignCanvasFileToGuideStepTableMigration'];
 
-    async beforePushDataToServer(isInsert?: boolean) {
+    override async beforePushDataToServer(isInsert?: boolean) {
         if (isInsert) {
-            if (!this[this.COL_ID]) {
+            if (!(this as any)[this.COL_ID]) {
                 return;
             }
             const guiderModel = new GuiderModel();

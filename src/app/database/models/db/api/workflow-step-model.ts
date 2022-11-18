@@ -14,17 +14,17 @@ export enum WorkflowStepTypeEnum {
 
 export class WorkflowStepModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'WorkflowStepModel';
+    override TAG: string = 'WorkflowStepModel';
     public apiPk = 'id';
 
     //members
-    public client_id: number = null;
-    public name: string;
-    public type: string;
-    public role: string;
-    public user_id: number;
-    public assignee: string;
-    public is_first: boolean;
+    public client_id: any = null;
+    public name: any;
+    public type: any;
+    public role: any;
+    public user_id: any;
+    public assignee: any;
+    public is_first: any;
 
     //db columns
     static COL_CLIENT_ID = 'client_id';
@@ -39,7 +39,7 @@ export class WorkflowStepModel extends DbApiModel {
     /** @inheritDoc */
     TABLE_NAME: string = 'workflow_step';
 
-    public workflowStepNextTransitions: WorkflowTransitionModel[];
+    public workflowStepNextTransitions: WorkflowTransitionModel[] = [];
 
     /** @inheritDoc */
     TABLE: any = [
@@ -60,7 +60,7 @@ export class WorkflowStepModel extends DbApiModel {
         super();
     }
 
-    setUpdateCondition() {
+    override setUpdateCondition() {
         super.setUpdateCondition();
         this.updateCondition.push(['client_id', this.client_id]);
     }

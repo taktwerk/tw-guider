@@ -7,13 +7,13 @@ import { ProtocolModel } from './protocol-model';
  */
 export class ProtocolDefaultModel extends DbApiModel {
     /** @inheritDoc */
-    loadUrl: string = '/protocol-default';
-    TAG: string = 'ProtocolDefaultModel';
+    override loadUrl: string = '/protocol-default';
+    override TAG: string = 'ProtocolDefaultModel';
     public apiPk = 'id';
 
     //members
-    public protocol_id: number;
-    public local_protocol_id: number;
+    public protocol_id: any;
+    public local_protocol_id: any;
 
     //db columns
     static COL_PROTOCOL_ID = 'protocol_id';
@@ -48,7 +48,7 @@ export class ProtocolDefaultModel extends DbApiModel {
         [ProtocolDefaultModel.COL_LOCAL_PDF_IMAGE, 'VARCHAR(255)', DbBaseModel.TYPE_STRING],
     ];
 
-    public downloadMapping: FileMapInModel[] = [
+    public override downloadMapping: FileMapInModel[] = [
         {
             name: ProtocolDefaultModel.COL_PROTOCOL_FILE,
             url: ProtocolDefaultModel.COL_API_PROTOCOL_FILE_PATH,
@@ -66,10 +66,10 @@ export class ProtocolDefaultModel extends DbApiModel {
         }
     ];
 
-    public migrations = ['AddPdfImageColumnsToProtocolDefaultTableMigration'];
+    public override migrations = ['AddPdfImageColumnsToProtocolDefaultTableMigration'];
 
-    async updateLocalRelations() {
-        if (!this[this.COL_ID] || !this.idApi) {
+    override async updateLocalRelations() {
+        if (!(this as any)[this.COL_ID] || !this.idApi) {
             return;
         }
         console.log('after check');
@@ -84,7 +84,7 @@ export class ProtocolDefaultModel extends DbApiModel {
                 if (protocol) {
                     this.local_protocol_id = protocol[protocol.COL_ID];
                     await this.save(false, true);
-                    protocol[ProtocolModel.COL_LOCAL_PROTOCOL_FORM_NUMBER] = this[this.COL_ID];
+                    protocol[ProtocolModel.COL_LOCAL_PROTOCOL_FORM_NUMBER] = (this as any)[this.COL_ID];
                     await protocol.save(false, true);
                 }
             }
@@ -92,9 +92,9 @@ export class ProtocolDefaultModel extends DbApiModel {
         }
     }
 
-    async beforePushDataToServer(isInsert?: boolean) {
+    override async beforePushDataToServer(isInsert?: boolean) {
         if (isInsert) {
-            if (!this[this.COL_ID]) {
+            if (!(this as any)[this.COL_ID]) {
                 return;
             }
             const protocolModel = new ProtocolModel();
@@ -110,10 +110,10 @@ export class ProtocolDefaultModel extends DbApiModel {
     }
 
     /// return additional models for push data to server
-    async afterPushDataToServer(isInsert?: boolean) {
+    override async afterPushDataToServer(isInsert?: boolean): Promise<any> {
         const additionalModelsForPushDataToServer = [];
         if (isInsert) {
-            if (!this[this.COL_ID] || !this.idApi) {
+            if (!(this as any)[this.COL_ID] || !this.idApi) {
                 return;
             }
             const protocolModel = new ProtocolModel();

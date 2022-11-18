@@ -13,22 +13,22 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 export class ProtocolCommentModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'ProtocolCommentModel';
+    override TAG: string = 'ProtocolCommentModel';
     public apiPk = 'id';
 
     //members
-    public protocol_id: number = null;
-    public local_protocol_id: number = null;
-    public comment: string;
-    public event: string;
-    public name: string;
-    public old_workflow_step_id: number = null;
-    public new_workflow_step_id: number = null;
-    public creator: string = null;
+    public protocol_id: any = null;
+    public local_protocol_id: any = null;
+    public comment: any;
+    public event: any;
+    public name: any;
+    public old_workflow_step_id: any = null;
+    public new_workflow_step_id: any = null;
+    public creator: any = null;
 
-    public body;
-    public icon;
-    public colour;
+    public body: any;
+    public icon: any;
+    public colour: any;
 
     //db columns
     static COL_CREATOR = 'creator';
@@ -104,8 +104,8 @@ export class ProtocolCommentModel extends DbApiModel {
         return '#00a65a';
     }
 
-    async updateLocalRelations() {
-        if (!this[this.COL_ID] || !this.idApi) {
+    override async updateLocalRelations() {
+        if (!(this as any)[this.COL_ID] || !this.idApi) {
             return;
         }
 
@@ -125,9 +125,9 @@ export class ProtocolCommentModel extends DbApiModel {
         }
     }
 
-    async beforePushDataToServer(isInsert?: boolean) {
+    override async beforePushDataToServer(isInsert?: boolean) {
         if (isInsert) {
-            if (!this[this.COL_ID]) {
+            if (!(this as any)[this.COL_ID]) {
                 return;
             }
             const protocolModel = new ProtocolModel();

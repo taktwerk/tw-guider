@@ -8,12 +8,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { SharedModule } from 'app/shared/shared.module';
-import { HtmlDescriptionComponentModule } from 'src/components/html-description/html-description-component.module';
-import { ionMenuWithSyncIndicatorComponentModule } from 'src/components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
-import { LanguageSelectorComponentModule } from 'src/components/language-selector-component/language-selector-component.module';
-import { SyncSpinnerComponentModule } from 'src/components/sync-spinner-component/sync-spinner-component.module';
-import { AssetviewComponentModule } from 'src/components/assetview/assetview.module';
 import { MainPipe } from 'app/library/pipes/main-pipe.module';
+import { AssetviewComponentModule } from 'components/assetview/assetview.module';
+import { HtmlDescriptionComponentModule } from 'components/html-description/html-description-component.module';
+import { ionMenuWithSyncIndicatorComponentModule } from 'components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { LanguageSelectorComponentModule } from 'components/language-selector-component/language-selector-component.module';
+import { SyncSpinnerComponentModule } from 'components/sync-spinner-component/sync-spinner-component.module';
 
 @NgModule({
     declarations: [

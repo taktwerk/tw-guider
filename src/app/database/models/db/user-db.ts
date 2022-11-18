@@ -7,11 +7,11 @@ import { AuthDb } from './auth-db';
 
 export class UserDb extends DbBaseModel {
     /** @inheritDoc */
-    TAG: string = 'UserDb';
+    override TAG: any = 'UserDb';
 
-    userId: number;
+    userId: any;
     /** user settings */
-    userSetting: UserSetting;
+    userSetting: UserSetting = new UserSetting;
 
     static COL_USER_SETTING = 'user_setting';
     static COL_USER_ID = 'user_id';

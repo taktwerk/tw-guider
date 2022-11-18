@@ -6,13 +6,13 @@ import { DbBaseModel } from '../../base/db-base-model';
  */
 export class SyncIndexModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'SyncIndexModel';
+    override TAG: string = 'SyncIndexModel';
     public apiPk = 'id';
 
     // members
-    public model: string; //
-    public model_id: number; //
-    public user_id: number = null; //
+    public model: any; //
+    public model_id: any; //
+    public user_id: any = null; //
 
     // db columns
     static COL_MODEL = 'model';
@@ -29,7 +29,7 @@ export class SyncIndexModel extends DbApiModel {
         [SyncIndexModel.COL_USER_ID, 'INT(11)', DbBaseModel.TYPE_NUMBER, 'user_id'],
     ];
 
-    public migrations = ['AddModelColumnsToSyncIndexTableMigration'];
+    public override migrations = ['AddModelColumnsToSyncIndexTableMigration'];
 
     /**
      * @inheritDoc

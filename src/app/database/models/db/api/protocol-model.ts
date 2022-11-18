@@ -9,21 +9,21 @@ import { ProtocolCommentModel } from './protocol-comment-model';
  */
 export class ProtocolModel extends DbApiModel {
     /** @inheritDoc */
-    TAG: string = 'ProtocolModel';
+    override TAG: string = 'ProtocolModel';
     public apiPk = 'id';
-    loadUrl: string = '/protocol';
+    override loadUrl: string = '/protocol';
 
     //members
-    public client_id: number = null;
-    public name: string = null;
-    public protocol_template_id: number;
-    public workflow_step_id: number;
-    public protocol_form_table: string;
-    public protocol_form_number: number;
-    public local_protocol_form_number: number;
-    public reference_model: string = null;
-    public reference_id: number = null;
-    public creator: string = null;
+    public client_id: any = null;
+    public name: any = null;
+    public protocol_template_id: any;
+    public workflow_step_id: any;
+    public protocol_form_table: any;
+    public protocol_form_number: any;
+    public local_protocol_form_number: any;
+    public reference_model: any = null;
+    public reference_id: any = null;
+    public creator: any = null;
 
     //db columns
     static COL_CREATOR = 'creator';
@@ -41,11 +41,11 @@ export class ProtocolModel extends DbApiModel {
     TABLE_NAME: string = 'protocol';
 
     /// relations
-    workflowStep: WorkflowStepModel;
-    comments: ProtocolCommentModel[];
+    workflowStep: WorkflowStepModel = new WorkflowStepModel;
+    comments: ProtocolCommentModel[] = [];
 
-    canEditProtocol: boolean;
-    canFillProtocol: boolean;
+    canEditProtocol: boolean = false;
+    canFillProtocol: boolean = false;
 
     /** @inheritDoc */
     TABLE: any = [
@@ -68,7 +68,7 @@ export class ProtocolModel extends DbApiModel {
         super();
     }
 
-    getReferenceModelByAlias(referenceModelAlias) {
+    getReferenceModelByAlias(referenceModelAlias: any) {
         switch (referenceModelAlias) {
             case 'guide':
                 return '\\modules\\guide\\models\\Guide';
@@ -79,7 +79,7 @@ export class ProtocolModel extends DbApiModel {
         }
     }
 
-    setUpdateCondition() {
+    override setUpdateCondition() {
         super.setUpdateCondition();
         this.updateCondition.push(['client_id', this.client_id]);
     }
@@ -96,8 +96,8 @@ export class ProtocolModel extends DbApiModel {
         }
     }
 
-    async updateLocalRelations() {
-        if (!this[this.COL_ID] || !this.idApi) {
+    override async updateLocalRelations() {
+        if (!(this as any)[this.COL_ID] || !this.idApi) {
             return;
         }
 
@@ -112,7 +112,7 @@ export class ProtocolModel extends DbApiModel {
                     if (protocolFormTableModel) {
                         this.local_protocol_form_number = protocolFormTableModel[protocolFormTableModel.COL_ID];
                         await this.save(false, true);
-                        protocolFormTableModel[ProtocolDefaultModel.COL_LOCAL_PROTOCOL_ID] = this[this.COL_ID];
+                        protocolFormTableModel[ProtocolDefaultModel.COL_LOCAL_PROTOCOL_ID] = (this as any)[this.COL_ID];
                         await protocolFormTableModel.save(false, true);
                     }
                 }
