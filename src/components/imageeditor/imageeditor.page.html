@@ -41,7 +41,7 @@
   <ion-toolbar>
     <ion-buttons>
       <ion-button class="parentControl" shape="round" (click)="onControl(control)" *ngFor="let control of controls"
-        [ngClass]="{'currentControl' :currentControl?.name ==control.name}">
+        [ngClass]="{'currentControl' :currentControl.name ==control.name}">
         <ion-icon [name]="control.icon" style="color: #ffffff;"> </ion-icon>
       </ion-button>
     </ion-buttons>
