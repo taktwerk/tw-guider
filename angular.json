@@ -34,7 +34,12 @@
             "styles": ["src/theme/variables.scss", "src/theme/global.scss"],
             "scripts": [],
             "allowedCommonJsDependencies": [
-              "localforage"
+              "localforage",
+              "ng2-pdf-viewer",
+              "@ckeditor/ckeditor5-angular",
+              "@ckeditor/ckeditor5-build-classic",
+              "pdfjs-dist/legacy/web/pdf_viewer",
+              "pdfjs-dist/legacy/build/pdf"
            ]
           },
           "configurations": {

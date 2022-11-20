@@ -1,5 +1,3 @@
-/* eslint-disable @angular-eslint/component-selector */
-
 import { LoadingController, NavController } from '@ionic/angular';
 import { Component } from '@angular/core';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
@@ -9,18 +7,13 @@ import { AuthService } from 'app/library/services/auth-service';
 import { HttpClient } from 'app/library/services/http-client';
 import { AppSetting } from 'app/library/services/app-setting';
 
-/**
- * Generated class for the LoginPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @Component({
     selector: 'page-login',
     templateUrl: 'login.page.html',
     styleUrls: ['login.page.scss']
 })
 export class LoginPage {
+
     username!: string;
     password!: string;
     currDate: Date = new Date();

@@ -30,6 +30,4 @@ const processRequest = (url = '', data = null, type: 'get'| 'post' | 'put' | 'de
       console.log(controller);
     }
   }
-
-
 }

@@ -4,18 +4,24 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SyncModalComponent } from 'components/sync-modal-component/sync-modal-component';
 
 const routes: Routes = [
+  //
+  {
+    path: 'login',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+  },
+  //
   {
     path: '',
     redirectTo: 'start',
     pathMatch: 'full'
   },
   {
-    path: 'about',
-    loadChildren: () => import('./home/pages/about/about.page.module').then(m => m.AboutPageModule)
-  },
-  {
     path: 'start',
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
+  },
+  {
+    path: 'about',
+    loadChildren: () => import('./home/pages/about/about.page.module').then(m => m.AboutPageModule)
   },
   {
     path: 'guide-categories',
@@ -87,10 +93,7 @@ const routes: Routes = [
     path: 'guider_protocol_template/:templateId',
     loadChildren: () => import('./home/pages/protocol/protocol.page.module').then(m => m.ProtocolPageModule)
   },
-  {
-    path: 'login',
-    loadChildren: () => import('./auth/login/login.module').then(m => m.LoginPageModule)
-  },
+
   {
     path: 'logout',
     loadChildren: () => import('./home/pages/logout/logout.module').then(m => m.LogoutPageModule)
