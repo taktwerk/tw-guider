@@ -8,7 +8,7 @@ import { LogsPageRoutingModule } from './logs-routing.module';
 import { LogsPage } from './logs.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { ComponentsModule } from 'src/app/components/components.module';
-import { LoggerService } from 'src/controller/services/logger-service';
+import { LoggerService } from 'src/controller/services/logger.service';
 
 
 @NgModule({

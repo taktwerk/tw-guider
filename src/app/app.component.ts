@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { LoggerService } from 'src/controller/services/logger-service';
+import { LoggerService } from 'src/controller/services/logger.service';
 import { TranslateConfigService } from 'src/controller/services/translate-config.service';
 import { ConnectionService } from 'src/localServer/services/connection.service';
 
