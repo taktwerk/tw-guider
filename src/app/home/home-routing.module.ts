@@ -27,12 +27,12 @@ const routes: Routes = [
       {
         path: 'logs',
         loadChildren: () => import('./logs/logs.module').then(m => m.LogsPageModule),
-        canActivate: [HomeGuard],
+        // canActivate: [HomeGuard],
       },
       {
         path: 'about',
         loadChildren: () => import('./about/about.page.module').then(m => m.AboutPageModule),
-        canActivate: [HomeGuard],
+        // canActivate: [HomeGuard],
       },
     ]
   }

@@ -63,11 +63,15 @@ export class LoggerService {
   }
 
   createLogFile() {
-    Filesystem.readdir({path: 'TaktwerkLogs/log.txt', directory: Directory.External }).catch(async e => {
-      Filesystem.writeFile({ path: '/TaktwerkLogs/log.txt', data: '',
-        directory: Directory.External, encoding: Encoding.UTF8, recursive: true }).then(() => {
+    if (this.platform.is('capacitor')) {
+      Filesystem.readdir({ path: 'TaktwerkLogs/log.txt', directory: Directory.External }).catch(async e => {
+        Filesystem.writeFile({
+          path: '/TaktwerkLogs/log.txt', data: '',
+          directory: Directory.External, encoding: Encoding.UTF8, recursive: true
+        }).then(() => {
+        });
       });
-    });
+    }
   }
 
   clearLogFile() {
