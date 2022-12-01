@@ -1,34 +1,27 @@
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
-import { IonicModule } from '@ionic/angular';
-import { LanguageSelectorComponentModule } from '../../components/language-selector-component/language-selector-component.module';
-import { NgModule } from '@angular/core';
-import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { QRScanner } from '@ionic-native/qr-scanner/ngx';
-import { RouterModule } from '@angular/router';
-import { SyncSpinnerComponentModule } from '../../components/sync-spinner-component/sync-spinner-component.module';
+
+import { HomePageRoutingModule } from './home-routing.module';
+import { ComponentsModule } from '../components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { ionMenuWithSyncIndicatorComponentModule } from '../../components/ion-menu-with-sync-indicator/ion-menu-with-sync-indicator.module';
+import { AuthService } from 'src/controller/auth/auth.service';
+import { StateService } from 'src/controller/state/state.service';
+import { AppSettingService } from 'src/controller/services/app-setting.service';
+
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        IonicModule,
-        RouterModule.forChild([
-            {
-                path: '',
-                component: HomePage
-            }
-        ]),
-        SyncSpinnerComponentModule,
-        ionMenuWithSyncIndicatorComponentModule,
-
-        LanguageSelectorComponentModule,
-        TranslateModule.forChild()
-    ],
-    declarations: [HomePage],
-    providers: [QRScanner, PhotoViewer]
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    HomePageRoutingModule,
+    ComponentsModule,
+    TranslateModule.forChild()
+  ],
+  declarations: [HomePage],
+  providers: [StateService, AuthService, AppSettingService]
 })
-export class HomePageModule { }
+export class HomePageModule {}

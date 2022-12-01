@@ -1,0 +1,141 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-ion-menu-with-sync-indicator></app-ion-menu-with-sync-indicator>
+    </ion-buttons>
+    <ion-title>
+      {{ 'profile.header' | translate:{name:authService.user.username} }}
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<style>
+  ion-content {
+    text-align: center;
+  }
+</style>
+
+<ion-content class="grey-background ion-padding">
+
+  <ion-item>
+    <ion-label>
+      <ion-icon name="logo-twitter"></ion-icon>
+      <span>
+        {{ 'profile.ID' | translate }}
+      </span>
+    </ion-label>
+    <ion-badge class="ion-align-items-end">{{ authService.user.user_id }}</ion-badge>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>
+      <ion-icon name="person"></ion-icon>
+      <span>
+        {{ 'profile.Username' | translate }}
+      </span>
+    </ion-label>
+    <span class="ion-align-items-end">{{ authService.user.username }}</span>
+  </ion-item>
+
+  <span>
+
+    <ion-item>
+      <ion-label>
+        <ion-icon name="person-add"></ion-icon>
+        <span>
+          {{ 'profile.Full name' | translate }}
+        </span>
+      </ion-label>
+      <span class="ion-align-items-end">{{ authService.user.fullname }}</span>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <ion-icon name="mail"></ion-icon>
+        <span>
+          {{ 'profile.Email' | translate }}
+        </span>
+      </ion-label>
+      <span class="ion-align-items-end">{{ authService.user.email }}</span>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <ion-icon name="exit"></ion-icon>
+        <span>
+          {{ 'profile.Last Login At' | translate }}
+        </span>
+      </ion-label>
+      <span *ngIf="authService.user.last_login_at" class="ion-align-items-end">
+        {{ authService.user.last_login_at }}
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <ion-icon name="accessibility"></ion-icon>
+        <span>
+          {{ 'profile.Groups' | translate }}
+        </span>
+      </ion-label>
+      <span class="ion-align-items-end">
+        <div *ngFor="let group of authService.user.groups">{{ group.name }}</div>
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <ion-icon name="key"></ion-icon>
+        <span>
+          {{ 'profile.Roles' | translate }}
+        </span>
+      </ion-label>
+      <span class="ion-align-items-end">
+        <div *ngFor="let role of authService.user.roles">{{ role }}</div>
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <ion-icon name="briefcase"></ion-icon>
+        <span>
+          {{ 'profile.Company' | translate }}
+        </span>
+      </ion-label>
+      <span class="ion-align-items-end">{{ authService.user.clientName }}</span>
+    </ion-item>
+
+  </span>
+
+  <!-- <language-selector-component> -->
+    <ion-item>
+      <ion-label>
+          <ion-icon name="globe"></ion-icon>
+          <span> {{ 'language-selector.Language' | translate }}</span>
+      </ion-label>
+      <ion-select [(ngModel)]="selectedLanguage" (ionChange)="languageChanged()">
+          <ion-select-option value="en">English</ion-select-option>
+          <ion-select-option value="de">Deutsch</ion-select-option>
+      </ion-select>
+  </ion-item>
+  <!-- </language-selector-component> -->
+
+  <ion-list>
+    <ion-item>
+      <ion-label>{{ 'Enable USB mode' | translate }}</ion-label>
+      <ion-toggle slot="start" checked="{{ stateService.isEnabledUsb }}" (click)="appSettingService.changeUsbMode()">
+      </ion-toggle>
+    </ion-item>
+  </ion-list>
+
+  <ion-item>
+    <ion-button [routerLink]="['/logout']">
+      <ion-icon name="exit"></ion-icon>
+      {{ 'Logout' | translate }}
+    </ion-button>
+  </ion-item>
+
+  <!-- <synchronization-component></synchronization-component> -->
+
+</ion-content>

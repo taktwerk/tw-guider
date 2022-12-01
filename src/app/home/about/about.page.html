@@ -1,0 +1,46 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <app-ion-menu-with-sync-indicator></app-ion-menu-with-sync-indicator>
+        </ion-buttons>
+        <ion-title>
+            {{ 'about.header' | translate }}
+        </ion-title>
+
+    </ion-toolbar>
+</ion-header>
+<ion-content class="grey-background ion-padding">
+    <ion-item *ngIf="versionNumber">
+        <ion-label>
+            <ion-icon slot="start" name="apps"></ion-icon>
+            <span>
+                {{ 'about.App Version' | translate }}
+            </span>
+        </ion-label>
+        <span class="ion-align-items-end">
+            {{ versionNumber }}
+        </span>
+    </ion-item>
+    <ion-item *ngIf="apiVersionNumber">
+        <ion-label>
+            <ion-icon slot="start" name="apps"></ion-icon>
+            <span>
+                {{ 'about.API Version' | translate }}
+            </span>
+        </ion-label>
+        <span class="ion-align-items-end">
+            {{ apiVersionNumber }}
+        </span>
+    </ion-item>
+    <ion-item>
+        <ion-label>
+            <ion-icon slot="start" name="apps"></ion-icon>
+            <span>
+                {{ 'about.Copyright' | translate }}
+            </span>
+        </ion-label>
+        <span class="ion-align-items-end">
+            taktwerk GmbH, 2012-{{currDate | date:'yyyy'}}
+        </span>
+    </ion-item>
+</ion-content>

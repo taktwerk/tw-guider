@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-ion-menu-with-sync-indicator></app-ion-menu-with-sync-indicator>
+    </ion-buttons>
+    <ion-title>
+      {{ 'start.header' | translate }}
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [ngClass]="{'bg-camera': isScanning}">
+  <div class="ion-text-center">
+    <ion-button *ngIf="isScanning" id="close-scanner-button" (click)="closeScanner()" color="warning">
+      {{ 'qr.Close Scanner' | translate }}
+    </ion-button>
+  </div>
+  <ion-card *ngIf="!isScanning" [ngClass]="{'bg-none': isScanning}">
+    <ion-card-header>
+      <p>
+        {{ 'qr.The Guider app enables the display of digital instructions (assembly, training, etc.)' |
+        translate}}
+      </p>
+      <p>
+        {{ 'qr.The app only works with a customer account. Please contact taktwerk GmbH for this' | translate }}:
+        <a href="mailto:support@taktwerk.ch">support@taktwerk.ch</a>
+      </p>
+      <p>
+        <a href="https://taktwerk.ch/guider/demo">{{ 'qr.Or try the demo' | translate }}</a>
+      </p>
+      <hr>
+      <div class="ion-text-center">
+        <h1>
+          {{ 'qr.Setup' | translate }}
+        </h1>
+        <p>{{ 'qr.Scan the received' | translate }}<strong>
+            {{ 'qr.QR-Code' | translate }}</strong>
+        </p>
+        <ion-button size="large" expand="full" (click)="scanQrcode()">
+          <ion-icon name="qr-code" style="margin-right: 10px;"></ion-icon>
+          {{ 'qr.QR-Code' | translate }}
+        </ion-button>
+        <ion-list>
+          <ion-item>
+            <ion-label>{{ 'Enable USB mode' | translate }}</ion-label>
+            <ion-toggle slot="start" checked="{{ appSettingService.isEnabledUsb }}" (click)="appSettingService.changeUsbMode()">
+            </ion-toggle>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-card-header>
+  </ion-card>
+</ion-content>

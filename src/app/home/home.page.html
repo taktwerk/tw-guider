@@ -1,54 +1,28 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-with-sync-indicator></ion-menu-with-sync-indicator>
-    </ion-buttons>
-    <ion-title>
-      {{ 'start.header' | translate:params }}
-    </ion-title>
-
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [ngClass]="{'bg-camera': isScanning}">
-  <div class="ion-text-center">
-    <ion-button *ngIf="isScanning" id="close-scanner-button" (click)="closeScanner()" color="warning">
-      {{ 'qr.Close Scanner' | translate:params }}
-    </ion-button>
-  </div>
-  <ion-card *ngIf="!isScanning" [ngClass]="{'bg-none': isScanning}">
-    <ion-card-header>
-      <p>
-        {{ 'qr.The Guider app enables the display of digital instructions (assembly, training, etc.)' |
-        translate:params}}
-      </p>
-      <p>
-        {{ 'qr.The app only works with a customer account. Please contact taktwerk GmbH for this' | translate:params }}:
-        <a href="mailto:support@taktwerk.ch">support@taktwerk.ch</a>
-      </p>
-      <p>
-        <a href="https://taktwerk.ch/guider/demo">{{ 'qr.Or try the demo' | translate:params }}</a>
-      </p>
-      <hr>
-      <div class="ion-text-center">
-        <h1>
-          {{ 'qr.Setup' | translate:params }}
-        </h1>
-        <p>{{ 'qr.Scan the received' | translate:params }}<strong>
-            {{ 'qr.QR-Code' | translate:params }}</strong>
-        </p>
-        <ion-button size="large" expand="full" (click)="scanQrcode()">
-          <ion-icon name="qr-code" style="margin-right: 10px;"></ion-icon>
-          {{ 'qr.QR-Code' | translate:params }}
-        </ion-button>
-        <ion-list>
-          <ion-item>
-            <ion-label>{{ 'Enable USB mode' | translate:params }}</ion-label>
-            <ion-toggle slot="start" checked="{{ appSetting.isEnabledUsb }}" (click)="changeUsbMode()">
-            </ion-toggle>
-          </ion-item>
-        </ion-list>
-      </div>
-    </ion-card-header>
-  </ion-card>
-</ion-content>
+<ion-split-pane when="(min-width: 100%)" contentId="main-content">
+  <ion-menu contentId="main-content" type="overlay">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Guider App</ion-title>
+        <ion-buttons slot="end">
+          <!-- <sync-spinner-component [shouldOpenPopup]="true" slot="primary"> </sync-spinner-component> -->
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="grey-background">
+      <ion-list class="header-list">
+        <ng-container *ngFor="let p of appPages">
+          <ion-menu-toggle auto-hide="false" *ngIf="p.condition()">
+            <ion-item *ngIf="p.url" [routerDirection]="(p.url === '/guide-categories') ? 'root' : 'forward'"
+              [routerLink]="[p.url]">
+              <ion-icon slot="start" [name]="p.icon"></ion-icon>
+              <ion-label>
+                {{p.title | translate}}
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ng-container>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet id="main-content"></ion-router-outlet>
+</ion-split-pane>

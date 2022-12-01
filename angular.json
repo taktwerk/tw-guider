@@ -31,16 +31,8 @@
                 "output": "./svg"
               }
             ],
-            "styles": ["src/theme/variables.scss", "src/theme/global.scss"],
-            "scripts": [],
-            "allowedCommonJsDependencies": [
-              "localforage",
-              "ng2-pdf-viewer",
-              "@ckeditor/ckeditor5-angular",
-              "@ckeditor/ckeditor5-build-classic",
-              "pdfjs-dist/legacy/web/pdf_viewer",
-              "pdfjs-dist/legacy/build/pdf"
-           ]
+            "styles": ["src/theme/variables.scss", "src/global.scss"],
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -118,7 +110,7 @@
                 "output": "./svg"
               }
             ],
-            "styles": ["src/theme/variables.scss", "src/theme/global.scss"],
+            "styles": ["src/theme/variables.scss", "src/global.scss"],
             "scripts": []
           },
           "configurations": {
@@ -144,7 +136,7 @@
     "schematicCollections": [
       "@ionic/angular-toolkit"
     ],
-    "analytics": "36e58b33-fdd3-49b5-8b76-0f46b40b0e82"
+    "analytics": "6461c2d3-5085-41cb-b365-9bcc1efa9a60"
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {
