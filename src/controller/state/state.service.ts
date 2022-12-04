@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Constants } from './constant';
-import { AppConfigurationModeEnum } from './interface';
+import { AppConfigurationModeEnum, SyncStatusEnum } from './interface';
 import { StoreService } from './store.service';
 
 @Injectable({
@@ -19,7 +19,10 @@ export class StateService {
     authToken: null,
     isLoggedin: false,
     user_id: null,
-    synced: false
+    synced: false,
+    syncStatus: 'unsynced',
+    isAvailableForPushData: false,
+    isAvailableForSyncData: false
   }
 
   //isLoggedin
@@ -39,16 +42,6 @@ export class StateService {
   set user_id(val) {
     StoreService.set(Constants.USER_ID, val);
   }
-
-  //user_id
-  get synced() {
-    return StoreService.get(Constants.SYNCED) ?? this.default.user_id;
-  }
-
-  set synced(val) {
-    StoreService.set(Constants.SYNCED, val);
-  }
-
 
 
   // mode
@@ -115,4 +108,39 @@ export class StateService {
     StoreService.set(Constants.TOKEN, val);
   }
 
+
+  //Synced
+  get synced() {
+    return StoreService.get(Constants.SYNCED) ?? this.default.user_id;
+  }
+
+  set synced(val) {
+    StoreService.set(Constants.SYNCED, val);
+  }
+
+  get syncStatus(): SyncStatusEnum {
+    return StoreService.get(Constants.SYNC_STATUS) ?? this.default.syncStatus;
+  }
+
+  set syncStatus(val: SyncStatusEnum) {
+    StoreService.set(Constants.SYNC_STATUS, val);
+  }
+
+  //isAvailableForPushData
+  get isAvailableForPushData() {
+    return StoreService.get(Constants.isAvailableForPushData) ?? this.default.isAvailableForPushData;
+  }
+
+  set isAvailableForPushData(val) {
+    StoreService.set(Constants.isAvailableForPushData, val);
+  }
+
+  //isAvailableForSyncData
+  get isAvailableForSyncData() {
+    return StoreService.get(Constants.isAvailableForSyncData) ?? this.default.isAvailableForSyncData;
+  }
+
+  set isAvailableForSyncData(val) {
+    StoreService.set(Constants.isAvailableForSyncData, val);
+  }
 }

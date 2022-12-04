@@ -1,0 +1,38 @@
+<ion-buttons *ngIf="stateService.isLoggedin" slot="primary">
+  <div (click)="openSyncModal()" class="sync-status">
+
+    <span *ngIf="stateService.isAvailableForPushData">
+      <ion-icon class="orangeColor" name="send"></ion-icon>
+    </span>
+
+    <span *ngIf="stateService.isEnabledUsb">
+      <ion-icon *ngIf="!stateService.isAvailableForPushData" name="laptop"></ion-icon>
+    </span>
+
+    <span *ngIf="!isNetwork && !stateService.isEnabledUsb">
+      <ion-icon *ngIf="stateService.isAvailableForPushData" name="cloud-outline"></ion-icon>
+    </span>
+
+    <span *ngIf="isNetwork || stateService.isEnabledUsb">
+
+      <span *ngIf="(syncService.isStartSync && stateService.syncStatus === 'progress')">
+        <ion-spinner name="lines" style="color:#fff"></ion-spinner>
+      </span>
+
+      <span *ngIf="!(syncService.isStartSync && stateService.syncStatus === 'progress')">
+
+        <span *ngIf="stateService.isAvailableForSyncData">
+          <ion-icon name="sync" class="orangeColor"></ion-icon>
+        </span>
+
+        <span *ngIf="!stateService.isAvailableForSyncData">
+          <ion-icon *ngIf="stateService.syncStatus === 'synced'" color="success" name="checkmark-circle"></ion-icon>
+          <ion-icon *ngIf="stateService.syncStatus === 'pause'" name="pause"></ion-icon>
+          <ion-icon *ngIf="stateService.syncStatus === 'failed'" color="danger" name="alert"></ion-icon>
+          <ion-icon *ngIf="stateService.syncStatus === 'wifi-icon'" class="wifi-icon" name="wifi"></ion-icon>
+        </span>
+
+      </span>
+    </span>
+  </div>
+</ion-buttons>

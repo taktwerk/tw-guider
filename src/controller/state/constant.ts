@@ -8,5 +8,8 @@ export const Constants = {
   TOKEN: 'authToken',
   SYNCED: 'synced',
   IS_LOGGED_IN: 'isLoggedIn',
-  USER_ID: 'user_id'
+  USER_ID: 'user_id',
+  SYNC_STATUS: 'syncStatus',
+  isAvailableForPushData: 'isAvailableForPushData',
+  isAvailableForSyncData: 'isAvailableForSyncData'
 };

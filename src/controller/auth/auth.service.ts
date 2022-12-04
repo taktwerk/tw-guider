@@ -20,6 +20,9 @@ export class AuthService {
     const user = await Auth.findOneBy({user_id: this.stateService.user_id});
     if(user != null) {
       this.user = user;
+      if(!this.stateService.synced) {
+        this.stateService.isAvailableForSyncData = true;
+      }
     }
     return user;
   }
@@ -134,6 +137,7 @@ export class AuthService {
           this.stateService.isLoggedin = true;
           this.stateService.qrCodeSetup = true;
           this.stateService.user_id = user.user_id;
+          this.stateService.isAvailableForSyncData = true;
           this.appSettingService.initalAfterLogin(this.user);
           this.navCtrl.goTo('/home/guides');
         }

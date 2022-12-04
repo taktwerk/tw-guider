@@ -5,6 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class SyncService {
 
+  isStartSync = false;
+
   constructor() { }
 
 }

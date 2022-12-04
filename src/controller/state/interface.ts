@@ -31,3 +31,12 @@ export enum AppSettingKey {
   'MigrationVersion' = 'MigrationVersion', 'usbHost' = 'usbHost', 'isEnabledUsb' = 'isEnabledUsb',
   'host' = 'host'
 }
+
+export enum SyncStatusEnum {
+  'unsynced' = 'unsynced',
+  'progress' = 'progress',
+  'synced'   = 'synced',
+  'pause'    = 'pause',
+  'failed'   = 'failed',
+  'wifi-icon'= 'wifi-icon',
+}
