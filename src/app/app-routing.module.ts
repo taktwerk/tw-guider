@@ -13,7 +13,7 @@ const routes: Routes = [
   },
   {
     path: 'sync-model',
-    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
+    loadChildren: () => import('./sync-modal-component/sync-modal-component.module').then(m => m.SyncModalComponentModule)
   },
 ];
 

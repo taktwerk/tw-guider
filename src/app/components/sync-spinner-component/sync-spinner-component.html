@@ -1,38 +1,37 @@
-<ion-buttons *ngIf="stateService.isLoggedin" slot="primary">
-  <div class="sync-status">
+<ng-container *ngIf="stateService.isLoggedin">
 
-    <span *ngIf="syncService.isAvailableForPushData">
-      <ion-icon class="orangeColor" name="send"></ion-icon>
-    </span>
+    <ng-container *ngIf="syncService.isAvailableForPushData">
+      <ion-icon style="font-size: 27px" class="orangeColor" name="send"></ion-icon>
+    </ng-container>
 
-    <span *ngIf="stateService.isEnabledUsb">
-      <ion-icon *ngIf="!syncService.isAvailableForPushData" name="laptop"></ion-icon>
-    </span>
+    <ng-container *ngIf="stateService.isEnabledUsb">
+      <ion-icon style="font-size: 27px" *ngIf="!syncService.isAvailableForPushData" name="laptop"></ion-icon>
+    </ng-container>
 
-    <span *ngIf="!isNetwork && !stateService.isEnabledUsb">
-      <ion-icon *ngIf="syncService.isAvailableForPushData" name="cloud-outline"></ion-icon>
-    </span>
+    <ng-container *ngIf="!isNetwork && !stateService.isEnabledUsb">
+      <ion-icon style="font-size: 27px" *ngIf="syncService.isAvailableForPushData" name="cloud-outline"></ion-icon>
+    </ng-container>
 
-    <span *ngIf="isNetwork || stateService.isEnabledUsb">
+    <ng-container *ngIf="isNetwork || stateService.isEnabledUsb">
 
-      <span *ngIf="(syncService.isStartSync && syncService.syncStatus === 'progress')">
-        <ion-spinner name="lines" style="color:#fff"></ion-spinner>
-      </span>
+      <ng-container *ngIf="(syncService.isStartSync && syncService.syncStatus === 'progress')">
+        <ion-spinner style="font-size: 27px" name="lines" style="color:#fff"></ion-spinner>
+      </ng-container>
 
-      <span *ngIf="!(syncService.isStartSync && syncService.syncStatus === 'progress')">
+      <ng-container *ngIf="!(syncService.isStartSync && syncService.syncStatus === 'progress')">
 
-        <span *ngIf="syncService.isAvailableForSyncData">
-          <ion-icon name="sync" class="orangeColor"></ion-icon>
-        </span>
+        <ng-container *ngIf="syncService.isAvailableForSyncData">
+          <ion-icon style="font-size: 27px" name="sync" class="orangeColor"></ion-icon>
+        </ng-container>
 
-        <span *ngIf="!syncService.isAvailableForSyncData">
-          <ion-icon *ngIf="syncService.syncStatus === 'synced'" color="success" name="checkmark-circle"></ion-icon>
-          <ion-icon *ngIf="syncService.syncStatus === 'pause'" name="pause"></ion-icon>
-          <ion-icon *ngIf="syncService.syncStatus === 'failed'" color="danger" name="alert"></ion-icon>
-          <ion-icon *ngIf="syncService.syncStatus === 'wifi-icon'" class="wifi-icon" name="wifi"></ion-icon>
-        </span>
+        <ng-container *ngIf="!syncService.isAvailableForSyncData">
+          <ion-icon style="font-size: 27px" *ngIf="syncService.syncStatus === 'synced'" color="success" name="checkmark-circle"></ion-icon>
+          <ion-icon style="font-size: 27px" *ngIf="syncService.syncStatus === 'pause'" name="pause"></ion-icon>
+          <ion-icon style="font-size: 27px" *ngIf="syncService.syncStatus === 'failed'" color="danger" name="alert"></ion-icon>
+          <ion-icon style="font-size: 27px" *ngIf="syncService.syncStatus === 'wifi-icon'" class="wifi-icon" name="wifi"></ion-icon>
+        </ng-container>
 
-      </span>
-    </span>
-  </div>
-</ion-buttons>
+      </ng-container>
+    </ng-container>
+
+</ng-container>

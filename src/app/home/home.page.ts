@@ -44,7 +44,7 @@ export class HomePage {
   async openSyncModal() {
     this.menu.close();
     setTimeout(() => {
-      this.navCtrl.goTo('/sync-model');
+      this.navCtrl.goTo('/sync-model', null, 'root');
     }, 100);
   }
 }
