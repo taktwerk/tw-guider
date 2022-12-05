@@ -1,5 +1,6 @@
 
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AppSetting } from 'src/localServer/models/app-setting';
 import { Auth } from 'src/localServer/models/auth';
@@ -10,8 +11,9 @@ import { StateService } from '../state/state.service';
 @Injectable()
 export class AppSettingService {
 
-    public host = null;
-    public isEnabledUsb = false;
+    host = null;
+    isEnabledUsb = false;
+    network = new Subject();
 
     constructor( private stateService: StateService) {
       this.loadSetting();

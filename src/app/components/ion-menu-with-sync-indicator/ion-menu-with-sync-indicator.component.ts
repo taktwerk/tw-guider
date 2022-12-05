@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SyncService } from 'src/controller/services/sync.service';
 
 @Component({
   selector: 'app-ion-menu-with-sync-indicator',
@@ -7,11 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IonMenuWithSyncIndicatorComponent implements OnInit {
 
-  iconStatus = 'unsynced';
-  isAvailableForSyncData = false;
-  isAvailableForPushData = false;
-
-  constructor() { }
+  constructor(public syncService: SyncService) { }
 
   ngOnInit() {}
 

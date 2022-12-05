@@ -5,16 +5,21 @@ export enum AppConfigurationModeEnum {
   CONFIGURE_AND_DEFAULT_LOGIN_BY_CLIENT
 }
 
-
 export enum LoggerLevel {
-  TRACE = 0,
-  DEBUG = 1,
-  INFO = 2,
-  LOG = 3,
-  WARN = 4,
-  ERROR = 5,
-  FATAL = 6,
-  OFF = 7
+  TRACE,
+  DEBUG,
+  INFO,
+  LOG,
+  WARN,
+  ERROR,
+  FATAL,
+  OFF
+}
+
+export enum SyncMode {
+  Manual,
+  NetworkConnect,
+  Periodic
 }
 
 export interface Log {
@@ -39,4 +44,6 @@ export enum SyncStatusEnum {
   'pause'    = 'pause',
   'failed'   = 'failed',
   'wifi-icon'= 'wifi-icon',
+  'success'  = 'success',
+  'resume'   = 'resume',
 }

@@ -1,2 +1,2 @@
-<ion-menu-button [ngClass]="{'dataAvailable': isAvailableForPushData || isAvailableForSyncData, 'allSynced': iconStatus=='synced','error': iconStatus=='failed' }">
+<ion-menu-button [ngClass]="{'dataAvailable': syncService.isAvailableForPushData || syncService.isAvailableForSyncData, 'allSynced': syncService.syncStatus=='synced','error': syncService.syncStatus=='failed' }">
 </ion-menu-button>

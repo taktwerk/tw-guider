@@ -1,0 +1,111 @@
+::ng-deep .sc-ion-modal-md-h {
+  --height: 80%;
+  --width: 80%;
+  --border-radius: 20px;
+}
+
+.center-data {
+  width: 100%;
+  height: 100%;
+  //overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+ion-content {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100%;
+}
+
+ion-progress-bar {
+  height: 30px;
+}
+section {
+  margin-top: 2em;
+  margin-bottom: 2.5em;
+  text-align: center;
+}
+
+ion-button {
+  font-size: 12px;
+
+  &:not(.sync-btn) {
+    width: 83px;
+  }
+}
+
+.dot1 {
+  animation: visibility 3s linear infinite;
+  margin-left: 2px;
+}
+
+@keyframes visibility {
+  0% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 1;
+  }
+  66% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.dot2 {
+  animation: visibility2 3s linear infinite;
+}
+
+@keyframes visibility2 {
+  0% {
+    opacity: 0;
+  }
+  21% {
+    opacity: 0;
+  }
+  22% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 1;
+  }
+  66% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.dot3 {
+  animation: visibility3 3s linear infinite;
+}
+
+@keyframes visibility3 {
+  0% {
+    opacity: 0;
+  }
+  43% {
+    opacity: 0;
+  }
+  44% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 1;
+  }
+  66% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}

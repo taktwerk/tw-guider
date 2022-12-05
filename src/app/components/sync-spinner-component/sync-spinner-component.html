@@ -1,35 +1,35 @@
 <ion-buttons *ngIf="stateService.isLoggedin" slot="primary">
-  <div (click)="openSyncModal()" class="sync-status">
+  <div class="sync-status">
 
-    <span *ngIf="stateService.isAvailableForPushData">
+    <span *ngIf="syncService.isAvailableForPushData">
       <ion-icon class="orangeColor" name="send"></ion-icon>
     </span>
 
     <span *ngIf="stateService.isEnabledUsb">
-      <ion-icon *ngIf="!stateService.isAvailableForPushData" name="laptop"></ion-icon>
+      <ion-icon *ngIf="!syncService.isAvailableForPushData" name="laptop"></ion-icon>
     </span>
 
     <span *ngIf="!isNetwork && !stateService.isEnabledUsb">
-      <ion-icon *ngIf="stateService.isAvailableForPushData" name="cloud-outline"></ion-icon>
+      <ion-icon *ngIf="syncService.isAvailableForPushData" name="cloud-outline"></ion-icon>
     </span>
 
     <span *ngIf="isNetwork || stateService.isEnabledUsb">
 
-      <span *ngIf="(syncService.isStartSync && stateService.syncStatus === 'progress')">
+      <span *ngIf="(syncService.isStartSync && syncService.syncStatus === 'progress')">
         <ion-spinner name="lines" style="color:#fff"></ion-spinner>
       </span>
 
-      <span *ngIf="!(syncService.isStartSync && stateService.syncStatus === 'progress')">
+      <span *ngIf="!(syncService.isStartSync && syncService.syncStatus === 'progress')">
 
-        <span *ngIf="stateService.isAvailableForSyncData">
+        <span *ngIf="syncService.isAvailableForSyncData">
           <ion-icon name="sync" class="orangeColor"></ion-icon>
         </span>
 
-        <span *ngIf="!stateService.isAvailableForSyncData">
-          <ion-icon *ngIf="stateService.syncStatus === 'synced'" color="success" name="checkmark-circle"></ion-icon>
-          <ion-icon *ngIf="stateService.syncStatus === 'pause'" name="pause"></ion-icon>
-          <ion-icon *ngIf="stateService.syncStatus === 'failed'" color="danger" name="alert"></ion-icon>
-          <ion-icon *ngIf="stateService.syncStatus === 'wifi-icon'" class="wifi-icon" name="wifi"></ion-icon>
+        <span *ngIf="!syncService.isAvailableForSyncData">
+          <ion-icon *ngIf="syncService.syncStatus === 'synced'" color="success" name="checkmark-circle"></ion-icon>
+          <ion-icon *ngIf="syncService.syncStatus === 'pause'" name="pause"></ion-icon>
+          <ion-icon *ngIf="syncService.syncStatus === 'failed'" color="danger" name="alert"></ion-icon>
+          <ion-icon *ngIf="syncService.syncStatus === 'wifi-icon'" class="wifi-icon" name="wifi"></ion-icon>
         </span>
 
       </span>

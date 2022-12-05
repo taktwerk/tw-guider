@@ -1,7 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { MenuController, NavController } from '@ionic/angular';
-;
-import { Subscription } from 'rxjs';
+import { Component} from '@angular/core';
 import { SyncService } from 'src/controller/services/sync.service';
 import { StateService } from 'src/controller/state/state.service';
 
@@ -9,29 +6,9 @@ import { StateService } from 'src/controller/state/state.service';
     selector: 'sync-spinner-component',
     templateUrl: 'sync-spinner-component.html',
 })
-export class SyncSpinnerComponent implements OnInit {
-
-    @Input() shouldOpenPopup = true;
+export class SyncSpinnerComponent {
 
     isNetwork = true;
 
-    eventSubscription: Subscription = new Subscription;
-
-    constructor(
-        private navCtrl: NavController,
-        private menu: MenuController,
-        public stateService: StateService,
-        public syncService: SyncService
-    ) {
-
-    }
-
-    async openSyncModal() {
-        this.navCtrl.navigateRoot('/sync-model');
-        this.menu.close();
-    }
-
-    ngOnInit() {
-
-    }
+    constructor( public syncService: SyncService, public stateService: StateService ) {}
 }

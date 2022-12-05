@@ -18,11 +18,7 @@ export class StateService {
     isEnabledUsb: false,
     authToken: null,
     isLoggedin: false,
-    user_id: null,
-    synced: false,
-    syncStatus: 'unsynced',
-    isAvailableForPushData: false,
-    isAvailableForSyncData: false
+    user_id: null
   }
 
   //isLoggedin
@@ -106,41 +102,5 @@ export class StateService {
 
   set authToken(val) {
     StoreService.set(Constants.TOKEN, val);
-  }
-
-
-  //Synced
-  get synced() {
-    return StoreService.get(Constants.SYNCED) ?? this.default.user_id;
-  }
-
-  set synced(val) {
-    StoreService.set(Constants.SYNCED, val);
-  }
-
-  get syncStatus(): SyncStatusEnum {
-    return StoreService.get(Constants.SYNC_STATUS) ?? this.default.syncStatus;
-  }
-
-  set syncStatus(val: SyncStatusEnum) {
-    StoreService.set(Constants.SYNC_STATUS, val);
-  }
-
-  //isAvailableForPushData
-  get isAvailableForPushData() {
-    return StoreService.get(Constants.isAvailableForPushData) ?? this.default.isAvailableForPushData;
-  }
-
-  set isAvailableForPushData(val) {
-    StoreService.set(Constants.isAvailableForPushData, val);
-  }
-
-  //isAvailableForSyncData
-  get isAvailableForSyncData() {
-    return StoreService.get(Constants.isAvailableForSyncData) ?? this.default.isAvailableForSyncData;
-  }
-
-  set isAvailableForSyncData(val) {
-    StoreService.set(Constants.isAvailableForSyncData, val);
   }
 }
