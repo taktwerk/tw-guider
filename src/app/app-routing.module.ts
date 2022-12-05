@@ -10,11 +10,7 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
-  },
-  {
-    path: 'sync-model',
-    loadChildren: () => import('./sync-modal-component/sync-modal-component.module').then(m => m.SyncModalComponentModule)
-  },
+  }
 ];
 
 @NgModule({

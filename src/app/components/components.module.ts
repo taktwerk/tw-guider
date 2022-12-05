@@ -4,15 +4,20 @@ import { IonMenuWithSyncIndicatorComponent } from './ion-menu-with-sync-indicato
 import { SyncSpinnerComponent } from './sync-spinner-component/sync-spinner-component';
 import { IonicModule } from '@ionic/angular';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
+import { SyncModalComponent } from './sync-modal-component/sync-modal-component';
+import { TranslateModule } from '@ngx-translate/core';
+import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 
 
 
 @NgModule({
-  declarations: [IonMenuWithSyncIndicatorComponent,SyncSpinnerComponent, ProgressBarComponent],
+  declarations: [IonMenuWithSyncIndicatorComponent,SyncSpinnerComponent, ProgressBarComponent, SyncModalComponent],
   imports: [
     CommonModule,
-    IonicModule
+    IonicModule,
+    TranslateModule
   ],
-  exports: [IonMenuWithSyncIndicatorComponent, SyncSpinnerComponent, ProgressBarComponent],
+  exports: [IonMenuWithSyncIndicatorComponent, SyncSpinnerComponent, ProgressBarComponent, SyncModalComponent],
+  providers: [Insomnia]
 })
 export class ComponentsModule { }

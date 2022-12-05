@@ -8,32 +8,25 @@ import { CryptoProvider } from '../core/providers/crypto.provider';
 import { StateService } from '../state/state.service';
 import { AppSettingService } from '../services/app-setting.service';
 import { NavCtrlService } from '../core/ui/nav-ctrl.service';
-import { SyncService } from '../services/sync.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  user = new Auth();
-
-  async loadUser() {
-    const user = await Auth.findOneBy({user_id: this.stateService.user_id});
-    if(user != null) {
-      this.user = user;
-      if(!this.syncService.synced) {
-        this.syncService.isAvailableForSyncData = true;
-      }
-    }
-    return user;
-  }
+  public user: Auth = new Auth;
 
   constructor(private http: HttpClient, private toastr: ToastrService,
     private translateConfigService: TranslateConfigService,
     private appSettingService: AppSettingService,
     private navCtrl: NavCtrlService,
-    private syncService: SyncService,
+
     private stateService: StateService) { }
+
+  async loadUser() {
+    const user = await Auth.findOneBy({ user_id: this.stateService.user_id });
+    return user;
+  }
 
   async loginByIdentifier(appConfirmUrl: any, type: string, identifier: string) {
 
@@ -97,54 +90,51 @@ export class AuthService {
     return this.http.get(appConfirmUrl).subscribe(onSuccess, onError);
   }
 
-  saveAuthenticatedUser(user: any, formData?: any) {
+  async saveAuthenticatedUser(user: any, formData?: any) {
 
     this.stateService.authToken = user.access_token;
 
-    Auth.findOneBy({ user_id: user.user_id }).then((existUser) => {
-      if (existUser) {
-        this.user = existUser;
+    const existUser = await Auth.findOneBy({ user_id: user.user_id });
+    if (existUser) {
+      this.user = existUser;
+    }
+    else {
+      this.user = new Auth();
+    }
+
+    this.user.user_id = user.user_id;
+    this.user.auth_token = user.access_token ?? '';
+    this.user.client_id = user.client_id ?? '';
+    this.user.last_auth_item_changed_at = user.lastAuthItemChangedAt ?? '';
+    this.user.is_authority = user.isAuthority ?? false;
+
+    if (formData) {
+      this.user.username = formData.username;
+      this.user.password = CryptoProvider.hashPassword(formData.password);
+    } else {
+      this.user.username = user.username ?? '';
+    }
+
+    this.user.login_at = (new Date()).toDateString() ?? '';
+
+    // additonal_info
+    this.user.clientName = user.additionalInfo.clientName;
+    this.user.email = user.additionalInfo.email;
+    this.user.fullname = user.additionalInfo.fullname;
+    this.user.last_login_at = user.additionalInfo.last_login_at;
+    this.user.roles = user.additionalInfo.roles;
+    this.user.permissions = user.additionalInfo.permissions;
+
+    this.user.groups = user.groups ?? '';
+
+    this.user.save().then((authSaveResult) => {
+      if (authSaveResult) {
+        this.stateService.isLoggedin = true;
+        this.stateService.qrCodeSetup = true;
+        this.stateService.user_id = user.user_id;
+        this.appSettingService.initalAfterLogin(this.user);
+        this.navCtrl.goTo('/home/guides');
       }
-      else {
-        this.user = new Auth();
-      }
-
-      this.user.user_id = user.user_id;
-      this.user.auth_token = user.access_token ?? '';
-      this.user.client_id = user.client_id ?? '';
-      this.user.last_auth_item_changed_at = user.lastAuthItemChangedAt ?? '';
-      this.user.is_authority = user.isAuthority ?? false;
-
-      if (formData) {
-        this.user.username = formData.username;
-        this.user.password = CryptoProvider.hashPassword(formData.password);
-      } else {
-        this.user.username = user.username ?? '';
-      }
-
-      this.user.login_at = (new Date()).toDateString() ?? '';
-
-      // additonal_info
-      this.user.clientName        = user.additionalInfo.clientName;
-      this.user.email             = user.additionalInfo.email;
-      this.user.fullname          = user.additionalInfo.fullname;
-      this.user.last_login_at     = user.additionalInfo.last_login_at;
-      this.user.roles             = user.additionalInfo.roles;
-      this.user.permissions       = user.additionalInfo.permissions;
-
-      this.user.groups = user.groups ?? '';
-
-      this.user.save().then((authSaveResult) => {
-        if (authSaveResult) {
-          this.stateService.isLoggedin = true;
-          this.stateService.qrCodeSetup = true;
-          this.stateService.user_id = user.user_id;
-          this.syncService.isAvailableForSyncData = true;
-          this.appSettingService.initalAfterLogin(this.user);
-          this.navCtrl.goTo('/home/guides');
-        }
-      });
-
     });
   }
 
@@ -158,9 +148,9 @@ export class AuthService {
       this.user.login_at = '';
 
       this.user.save().then(() => {
-          this.stateService.isLoggedin = false;
-          resolve(true);
+        this.stateService.isLoggedin = false;
+        resolve(true);
       });
-  });
+    });
   }
 }

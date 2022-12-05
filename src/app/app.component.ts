@@ -45,9 +45,9 @@ export class AppComponent {
 
   async initNetworkListener() {
     const status = await Network.getStatus();
-    this.appSettingService.network.next(status);
+    this.appSettingService.network = status;
     Network.addListener('networkStatusChange', status => {
-      this.appSettingService.network.next(status);
+      this.appSettingService.network = status;
     });
   }
 

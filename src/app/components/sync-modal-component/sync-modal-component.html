@@ -5,13 +5,10 @@
       <sync-spinner-component> </sync-spinner-component>
     </ion-buttons>
 
-    <ion-title> {{ 'sync-modal.header' | translate }} </ion-title>
-
+    <ion-title style="text-align: center; width:100%"> {{ 'sync-modal.header' | translate }} </ion-title>
 
     <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">
-        <ion-icon name="close" style="color: #ffffff; font-size: 24px;"></ion-icon>
-      </ion-button>
+        <ion-icon name="close" style="color: #ffffff; font-size: 24px;" (click)="dismiss()"></ion-icon>
     </ion-buttons>
 
 
@@ -22,12 +19,13 @@
   <ion-grid>
     <ion-row>
       <ion-col>
+
         <section>
           <h6>{{ 'sync-modal.Last successful sync date:' | translate }}</h6>
           {{ this.getLastSyncDate() }}
         </section>
 
-        <div *ngIf="appSettingService.network || stateService.isEnabledUsb">
+        <div *ngIf="appSettingService.network.connected || stateService.isEnabledUsb">
 
           <section>
             <app-progress-bar [progress]="syncedItemsPercent"
@@ -41,26 +39,17 @@
                 <span class="dot2">.</span><span class="dot3">.</span>
               </span>
             </div>
-
           </section>
-
-          {{syncService.syncStatus}}
-          {{!['progress', 'resume', 'pause'].includes(syncService.syncStatus)}}
-          {{syncService.isAvailableForSyncData}}
 
           <!-- Show if Sync Mode is Manual -->
           <section *ngIf="modeSync === 0" class="modeSync0">
-            <ion-button class="sync-btn"
-              *ngIf="!['pause', 'progress'].includes(syncService.syncStatus) && !syncService.isAvailableForSyncData && !isStartSync"
-              (click)="syncData()" color="primary">
+            <ion-button class="sync-btn" *ngIf="!['pause', 'progress'].includes(syncService.syncStatus) && !syncService.isAvailableForSyncData && !isStartSync" (click)="syncData()" color="primary">
               {{ 'sync-modal.Synchronize Data' | translate }}
             </ion-button>
 
             <!-- Show if sync not started -->
             <span *ngIf="!isStartSync" class="notStartSync">
-              <ion-button class="sync-btn"
-                *ngIf="!['pause', 'progress'].includes(syncService.syncStatus) && syncService.isAvailableForSyncData"
-                (click)="syncData()" color="primary">
+              <ion-button class="sync-btn" *ngIf="!['pause', 'progress'].includes(syncService.syncStatus) && syncService.isAvailableForSyncData" (click)="syncData()" color="primary">
                 {{ 'sync-modal.Synchronize Data' | translate }}
               </ion-button>
 
@@ -71,36 +60,35 @@
 
             <!-- Show when sync starts -->
             <span *ngIf="isStartSync">
-              <ion-button *ngIf="['progress', 'resume'].includes(syncService.syncStatus)" (click)="stopSyncData()"
-                color="primary">
+              <ion-button *ngIf="['progress', 'resume'].includes(syncService.syncStatus)" (click)="stopSyncData()" color="primary">
                 {{ 'sync-modal.Stop' | translate }}
               </ion-button>
             </span>
 
-            <ion-button style="margin-left: 8px"
-              *ngIf="['progress', 'resume', 'pause'].includes(syncService.syncStatus)" (click)="cancelSyncData()"
-              color="primary">
+            <ion-button style="margin-left: 8px" *ngIf="['progress', 'resume', 'pause'].includes(syncService.syncStatus)" (click)="cancelSyncData()" color="primary">
               {{ 'sync-modal.Cancel' | translate }}
             </ion-button>
           </section>
         </div>
 
-        <div *ngIf="!appSettingService.network && !stateService.isEnabledUsb">
+        <div *ngIf="!appSettingService.network.connected && !stateService.isEnabledUsb">
           <div>{{ 'sync-modal.No network connection.' | translate }}</div>
           <div>{{ 'sync-modal.Data synchronization is not yet possible.' | translate }}</div>
         </div>
-        <section *ngIf="syncService.isAvailableForPushData" style="color: green">{{ 'sync-modal.There is data available
-          for pushing to the server.' | translate }}</section>
-        <section
-          *ngIf="!(isStartSync && ['progress', 'resume'].includes(syncService.syncStatus)) && syncService.isAvailableForSyncData"
-          style="color: green">{{ 'sync-modal.There is data available for synchronization from the server.' | translate
-          }}</section>
-        <div *ngIf="pushProgressStatus === 'failed'">{{ 'sync-modal.Sending data to the server failed.' | translate }}
-        </div>
+
+        <section *ngIf="syncService.isAvailableForPushData" style='color: green'>
+          {{ "sync-modal.There is data available for pushing to the server." | translate }}
+        </section>
+
+        <section *ngIf="!(isStartSync && ['progress', 'resume'].includes(syncService.syncStatus)) && syncService.isAvailableForSyncData" style="color: green">
+          {{ 'sync-modal.There is data available for synchronization from the server.' | translate }}
+        </section>
+
+        <div *ngIf="pushProgressStatus === 'failed'">{{ 'sync-modal.Sending data to the server failed.' | translate }}</div>
         <div *ngIf="pushProgressStatus === 'progress'">{{ 'sync-modal.Data is sent to the server' | translate }}</div>
-        <div *ngIf="pushProgressStatus === 'success'">{{ 'sync-modal.Data has been sent to the server' | translate }}
-        </div>
+        <div *ngIf="pushProgressStatus === 'success'">{{ 'sync-modal.Data has been sent to the server' | translate }}</div>
         <div *ngIf="noDataForSync">{{ 'sync-modal.No data for sync' | translate }}</div>
+
       </ion-col>
     </ion-row>
   </ion-grid>

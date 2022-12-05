@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { AuthService } from 'src/controller/auth/auth.service';
 import { NavCtrlService } from 'src/controller/core/ui/nav-ctrl.service';
+import { SyncService } from 'src/controller/services/sync.service';
 import { StateService } from 'src/controller/state/state.service';
+import { SyncModalComponent } from '../components/sync-modal-component/sync-modal-component';
 
 @Component({
   selector: 'app-home',
@@ -23,7 +25,8 @@ export class HomePage {
     { title: 'log.header', url: '/home/logs', icon: 'hourglass', condition: () => true },
   ];
 
-  constructor(private stateService: StateService, private authService: AuthService, private navCtrl: NavCtrlService, private menu: MenuController) {
+  constructor(private stateService: StateService, private authService: AuthService,
+    private navCtrl: NavCtrlService, private menu: MenuController, private syncService: SyncService) {
     if (this.stateService.isLoggedin) {
       this.loadUser();
     } else {
@@ -34,17 +37,23 @@ export class HomePage {
   async loadUser() {
     const user = await this.authService.loadUser();
     if (user) {
+      this.authService.user = user;
+      if (!this.syncService.synced) {
+        this.syncService.isAvailableForSyncData = true;
+      }
       this.navCtrl.goTo('/home/guides')
     } else {
       this.navCtrl.goTo('/home/start')
     }
+    console.log(this.authService.user);
+
   }
 
 
   async openSyncModal() {
     this.menu.close();
     setTimeout(() => {
-      this.navCtrl.goTo('/sync-model', null, 'root');
+      this.navCtrl.popup(SyncModalComponent);
     }, 100);
   }
 }

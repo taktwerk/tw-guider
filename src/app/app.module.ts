@@ -15,6 +15,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { ConnectionService } from 'src/localServer/services/connection.service';
 import { LoggerService } from 'src/controller/services/logger.service';
 import { AppSettingService } from 'src/controller/services/app-setting.service';
+import { ComponentsModule } from './components/components.module';
+import { AuthService } from 'src/controller/auth/auth.service';
 
 export function languageLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -39,12 +41,13 @@ export function initializeApp(logService: LoggerService) {
       level: NgxLoggerLevel.DEBUG,
       serverLogLevel: NgxLoggerLevel.ERROR
     }),
-    HttpClientModule
+    HttpClientModule,
+    ComponentsModule
   ],
 
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    ConnectionService, AppSettingService,
+    ConnectionService, AppSettingService, AuthService,
     LoggerService,
     {
       provide: APP_INITIALIZER,

@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { Subscription } from 'rxjs';
 import { AuthService } from 'src/controller/auth/auth.service';
 import { NavCtrlService } from 'src/controller/core/ui/nav-ctrl.service';
-import { LoggerService } from 'src/controller/services/logger.service';
 import { SyncService } from 'src/controller/services/sync.service';
 import { TranslateConfigService } from 'src/controller/services/translate-config.service';
 import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
@@ -20,89 +18,33 @@ export class SyncModalComponent implements OnInit {
 
   isStartSync = false;
   noDataForSync = false;
+
   syncedItemsCount = 0;
   syncedItemsPercent = 0;
   syncAllItemsCount = 0;
+
   pulledItemsCount = 0;
   pulledItemsPercent = 0;
   pullAllItemsCount = 0;
+
   pushedItemsCount = 0;
   pushedItemsPercent = 0;
   pushAllItemsCount = 0;
 
-  isPrepareSynData = false;
   modeSync = SyncMode.Manual;
-
-
-  public pushProgressStatus!: string;
-
-  eventSubscription!: Subscription;
-
-  appSetting: any;
+  pushProgressStatus!: string;
 
   constructor(
-    public authService: AuthService,
-    private translateConfigService: TranslateConfigService,
-    public syncService: SyncService,
-    public stateService: StateService,
-    public platform: Platform,
+    private platform: Platform,
     private navCtrl: NavCtrlService,
     private insomnia: Insomnia,
+    private translateConfigService: TranslateConfigService,
+    private authService: AuthService,
+    public syncService: SyncService,
+    public stateService: StateService,
     public appSettingService: AppSettingService
   ) {
 
-  }
-
-
-  dismiss() {
-    this.navCtrl.goTo('/home/guides', null, 'back');
-  }
-
-  // syncData() {
-  //   this.apiSync.makeSyncProcess();
-  //   this.router.navigate(['/guide-categories']);
-  //   // if (!this.appSetting.isMigratedDatabase()) {
-  //   //   this.appSetting.showIsNotMigratedDbPopup();
-  //   //   return;
-  //   // }
-  //   // // make sync if local changes
-  //   // if (this.isAvailableForPushData) {
-  //   //   this.apiSync.makeSyncProcess();
-  //   // }
-  //   // // force sync when data changes on server
-  //   // this.apiSync.checkAvailableChanges().then((res) => {
-  //   //   // make sync if changes from server
-  //   //   if (res) {
-  //   //     this.apiSync.makeSyncProcess();
-  //   //   }
-  //   // });
-  // }
-
-  // stopSyncData() {
-  //   this.apiSync.makeSyncPause();
-  // }
-
-  // resumeSyncData() {
-  //   this.apiSync.makeSyncProcess('resume');
-  // }
-
-  // cancelSyncData() {
-  //   this.apiSync.sendSyncProgress('', true);
-  //   return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
-  //     if (isCanceled) {
-  //       this.http.showToast('synchronization-component.Sync was canceled.');
-  //     }
-  //   });
-  // }
-
-
-  getLastSyncDate() {
-    // if (this.userService.userDb && this.userService.userDb.userSetting && this.userService.userDb.userSetting.lastSyncedAt) {
-    //   const date = this.userService.userDb.userSetting.lastSyncedAt;
-    //   return this.datepipe.transform(date, 'yyyy-MM-dd HH:mm:ss');
-    // }
-
-    return '-';
   }
 
   ngOnInit() {
@@ -113,6 +55,11 @@ export class SyncModalComponent implements OnInit {
         () => console.log('insomnia.keepAwake error')
       );
     }
+
+    setInterval(() => {
+      console.log(this.authService.user);
+    }, 2000)
+
 
     // this.syncService.syncMode.subscribe((result) => {
     //   if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
@@ -179,6 +126,60 @@ export class SyncModalComponent implements OnInit {
     //   }
     // });
   }
+
+
+
+  dismiss() {
+    this.navCtrl.closePopup();
+  }
+
+  // syncData() {
+  //   this.apiSync.makeSyncProcess();
+  //   this.router.navigate(['/guide-categories']);
+  //   // if (!this.appSetting.isMigratedDatabase()) {
+  //   //   this.appSetting.showIsNotMigratedDbPopup();
+  //   //   return;
+  //   // }
+  //   // // make sync if local changes
+  //   // if (this.isAvailableForPushData) {
+  //   //   this.apiSync.makeSyncProcess();
+  //   // }
+  //   // // force sync when data changes on server
+  //   // this.apiSync.checkAvailableChanges().then((res) => {
+  //   //   // make sync if changes from server
+  //   //   if (res) {
+  //   //     this.apiSync.makeSyncProcess();
+  //   //   }
+  //   // });
+  // }
+
+  // stopSyncData() {
+  //   this.apiSync.makeSyncPause();
+  // }
+
+  // resumeSyncData() {
+  //   this.apiSync.makeSyncProcess('resume');
+  // }
+
+  // cancelSyncData() {
+  //   this.apiSync.sendSyncProgress('', true);
+  //   return this.apiSync.unsetSyncProgressData().then((isCanceled) => {
+  //     if (isCanceled) {
+  //       this.http.showToast('synchronization-component.Sync was canceled.');
+  //     }
+  //   });
+  // }
+
+
+  getLastSyncDate() {
+    // if (this.userService.userDb && this.userService.userDb.userSetting && this.userService.userDb.userSetting.lastSyncedAt) {
+    //   const date = this.userService.userDb.userSetting.lastSyncedAt;
+    //   return this.datepipe.transform(date, 'yyyy-MM-dd HH:mm:ss');
+    // }
+
+    return '-';
+  }
+
 
   getProgressText() {
     switch (this.syncService.syncStatus) {

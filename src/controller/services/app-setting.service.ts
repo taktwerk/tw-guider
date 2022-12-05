@@ -1,21 +1,22 @@
-
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AppSetting } from 'src/localServer/models/app-setting';
 import { Auth } from 'src/localServer/models/auth';
 import { AppSettingKey } from '../state/interface';
 import { StateService } from '../state/state.service';
+import { SyncService } from './sync.service';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AppSettingService {
 
     host = null;
     isEnabledUsb = false;
-    network = new Subject();
+    network = {connected: true, connectionType: 'unknown'};
 
-    constructor( private stateService: StateService) {
+    constructor( private stateService: StateService, private syncService: SyncService) {
 
     }
 
@@ -43,6 +44,7 @@ export class AppSettingService {
     }
 
     initalAfterLogin(user: Auth) {
+      this.syncService.isAvailableForSyncData = true;
       AppSetting.set(AppSettingKey.QrCodeSetup, this.stateService.qrCodeSetup);
     }
 
