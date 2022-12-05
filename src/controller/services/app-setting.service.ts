@@ -16,7 +16,7 @@ export class AppSettingService {
     network = new Subject();
 
     constructor( private stateService: StateService) {
-      this.loadSetting();
+
     }
 
     async loadSetting() {

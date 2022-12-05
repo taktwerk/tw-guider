@@ -20,8 +20,9 @@
         </section>
 
         <div *ngIf="appSettingService.network || stateService.isEnabledUsb">
+
           <section>
-            <!-- <app-progress-bar [progress]="syncedItemsPercent" [color]="syncProgressStatus === 'failed' ? '#989aa2' : '#babcbf'"></app-progress-bar> -->
+            <app-progress-bar [progress]="syncedItemsPercent" [color]="syncService.syncStatus === 'failed' ? '#989aa2' : '#babcbf'"></app-progress-bar>
 
             <div style="font-size: 15px">
               {{ syncedItemsCount }}/{{ syncAllItemsCount }}{{getProgressText()}}

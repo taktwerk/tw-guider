@@ -8,6 +8,7 @@ import { CryptoProvider } from '../core/providers/crypto.provider';
 import { StateService } from '../state/state.service';
 import { AppSettingService } from '../services/app-setting.service';
 import { NavCtrlService } from '../core/ui/nav-ctrl.service';
+import { SyncService } from '../services/sync.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,8 @@ export class AuthService {
     const user = await Auth.findOneBy({user_id: this.stateService.user_id});
     if(user != null) {
       this.user = user;
-      if(!this.stateService.synced) {
-        this.stateService.isAvailableForSyncData = true;
+      if(!this.syncService.synced) {
+        this.syncService.isAvailableForSyncData = true;
       }
     }
     return user;
@@ -31,6 +32,7 @@ export class AuthService {
     private translateConfigService: TranslateConfigService,
     private appSettingService: AppSettingService,
     private navCtrl: NavCtrlService,
+    private syncService: SyncService,
     private stateService: StateService) { }
 
   async loginByIdentifier(appConfirmUrl: any, type: string, identifier: string) {
@@ -137,7 +139,7 @@ export class AuthService {
           this.stateService.isLoggedin = true;
           this.stateService.qrCodeSetup = true;
           this.stateService.user_id = user.user_id;
-          this.stateService.isAvailableForSyncData = true;
+          this.syncService.isAvailableForSyncData = true;
           this.appSettingService.initalAfterLogin(this.user);
           this.navCtrl.goTo('/home/guides');
         }

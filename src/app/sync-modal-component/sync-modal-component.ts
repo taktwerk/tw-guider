@@ -44,7 +44,6 @@ export class SyncModalComponent implements OnInit {
     public authService: AuthService,
     private translateConfigService: TranslateConfigService,
     public syncService: SyncService,
-    private loggerService: LoggerService,
     public stateService: StateService,
     public platform: Platform,
     private navCtrl: NavCtrlService,

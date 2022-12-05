@@ -14,6 +14,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ConnectionService } from 'src/localServer/services/connection.service';
 import { LoggerService } from 'src/controller/services/logger.service';
+import { AppSettingService } from 'src/controller/services/app-setting.service';
 
 export function languageLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -43,7 +44,7 @@ export function initializeApp(logService: LoggerService) {
 
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    ConnectionService,
+    ConnectionService, AppSettingService,
     LoggerService,
     {
       provide: APP_INITIALIZER,

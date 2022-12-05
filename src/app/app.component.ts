@@ -36,6 +36,7 @@ export class AppComponent {
       this.connection.init().then(() => {
         this.appReady = true;
         this.translateConfigService.setLanguage(this.translateConfigService.getDeviceLanguage());
+        this.appSettingService.loadSetting();
       });
     });
 
