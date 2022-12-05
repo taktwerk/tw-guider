@@ -7,10 +7,6 @@ import { HomePage } from './home.page';
 import { HomePageRoutingModule } from './home-routing.module';
 import { ComponentsModule } from '../components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { AuthService } from 'src/controller/auth/auth.service';
-import { StateService } from 'src/controller/state/state.service';
-import { AppSettingService } from 'src/controller/services/app-setting.service';
-
 
 @NgModule({
   imports: [
@@ -21,7 +17,6 @@ import { AppSettingService } from 'src/controller/services/app-setting.service';
     ComponentsModule,
     TranslateModule.forChild()
   ],
-  declarations: [HomePage],
-  providers: [StateService, AuthService, AppSettingService]
+  declarations: [HomePage]
 })
 export class HomePageModule {}

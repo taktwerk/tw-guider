@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { SyncModalComponent } from 'src/app/components/sync-modal-component/sync-modal-component';
 import { AuthService } from 'src/controller/auth/auth.service';
+import { NavCtrlService } from 'src/controller/core/ui/nav-ctrl.service';
 import { SyncService } from 'src/controller/services/sync.service';
 
 @Component({
@@ -20,13 +22,9 @@ export class GuidesComponent implements OnInit {
 
   guideItemsLimit = 20;
 
-  constructor(private authService: AuthService, private syncService: SyncService) { }
+  constructor(private navCtrl: NavCtrlService) { }
 
   ngOnInit() {
-    setInterval(() => {
-      console.log(this.authService.user);
-    }, 2000)
-
 
   }
 
@@ -47,7 +45,7 @@ export class GuidesComponent implements OnInit {
   }
 
   syncData() {
-
+    this.navCtrl.popup(SyncModalComponent);
   }
 
   async searchGuides($event: any) {

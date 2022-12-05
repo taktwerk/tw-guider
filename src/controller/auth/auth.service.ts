@@ -1,20 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Device } from '@capacitor/device';
+import { CryptoProvider } from 'src/controller/core/providers/crypto.provider';
+import { NavCtrlService } from 'src/controller/core/ui/nav-ctrl.service';
+import { ToastrService } from 'src/controller/core/ui/toastr.service';
+import { AppSettingService } from 'src/controller/services/app-setting.service';
+import { TranslateConfigService } from 'src/controller/services/translate-config.service';
+import { StateService } from 'src/controller/state/state.service';
 import { Auth } from 'src/localServer/models/auth';
-import { TranslateConfigService } from '../services/translate-config.service';
-import { ToastrService } from '../core/ui/toastr.service';
-import { CryptoProvider } from '../core/providers/crypto.provider';
-import { StateService } from '../state/state.service';
-import { AppSettingService } from '../services/app-setting.service';
-import { NavCtrlService } from '../core/ui/nav-ctrl.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  public user: Auth = new Auth;
+  user: Auth = new Auth;
 
   constructor(private http: HttpClient, private toastr: ToastrService,
     private translateConfigService: TranslateConfigService,

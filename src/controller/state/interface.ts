@@ -37,6 +37,10 @@ export enum AppSettingKey {
   'host' = 'host'
 }
 
+export enum UserSettingKey {
+  'lastSyncedAt' = 'lastSyncedAt'
+}
+
 export enum SyncStatusEnum {
   'unsynced' = 'unsynced',
   'progress' = 'progress',

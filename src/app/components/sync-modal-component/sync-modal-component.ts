@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { AuthService } from 'src/controller/auth/auth.service';
 import { NavCtrlService } from 'src/controller/core/ui/nav-ctrl.service';
 import { SyncService } from 'src/controller/services/sync.service';
 import { TranslateConfigService } from 'src/controller/services/translate-config.service';
@@ -8,11 +7,14 @@ import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 import { StateService } from 'src/controller/state/state.service';
 import { SyncMode } from 'src/controller/state/interface';
 import { AppSettingService } from 'src/controller/services/app-setting.service';
+import { UserSettingService } from 'src/controller/services/user-setting.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'sync-modal-component',
   templateUrl: 'sync-modal-component.html',
-  styleUrls: ['sync-modal-component.scss']
+  styleUrls: ['sync-modal-component.scss'],
+  providers:[DatePipe]
 })
 export class SyncModalComponent implements OnInit {
 
@@ -36,13 +38,14 @@ export class SyncModalComponent implements OnInit {
 
   constructor(
     private platform: Platform,
+    private datepipe: DatePipe,
+    private userSettingService: UserSettingService,
     private navCtrl: NavCtrlService,
     private insomnia: Insomnia,
     private translateConfigService: TranslateConfigService,
-    private authService: AuthService,
     public syncService: SyncService,
     public stateService: StateService,
-    public appSettingService: AppSettingService
+    public appSettingService: AppSettingService,
   ) {
 
   }
@@ -55,11 +58,6 @@ export class SyncModalComponent implements OnInit {
         () => console.log('insomnia.keepAwake error')
       );
     }
-
-    setInterval(() => {
-      console.log(this.authService.user);
-    }, 2000)
-
 
     // this.syncService.syncMode.subscribe((result) => {
     //   if (![SyncMode.Manual, SyncMode.Periodic, SyncMode.NetworkConnect].includes(result)) {
@@ -127,10 +125,44 @@ export class SyncModalComponent implements OnInit {
     // });
   }
 
-
-
   dismiss() {
     this.navCtrl.closePopup();
+  }
+
+  getLastSyncDate() {
+    if (this.userSettingService.lastSyncedAt) {
+      return this.datepipe.transform(this.userSettingService.lastSyncedAt, 'yyyy-MM-dd HH:mm:ss');
+    }
+    return '-';
+  }
+
+  getProgressText() {
+    switch (this.syncService.syncStatus) {
+      case 'pause':
+        return '(' + this.translateConfigService.translateWord('sync-modal.Paused') + ')';
+      case 'failed':
+        return '(' + this.translateConfigService.translateWord('sync-modal.Failed') + ')';
+      case 'success':
+        return '(' + this.translateConfigService.translateWord('sync-modal.Success') + ')';
+      default:
+        return '';
+    }
+  }
+
+  syncData() {
+    throw new Error('Method not implemented.');
+  }
+
+  resumeSyncData() {
+    throw new Error('Method not implemented.');
+  }
+
+  stopSyncData() {
+    throw new Error('Method not implemented.');
+  }
+
+  cancelSyncData() {
+    throw new Error('Method not implemented.');
   }
 
   // syncData() {
@@ -169,46 +201,5 @@ export class SyncModalComponent implements OnInit {
   //     }
   //   });
   // }
-
-
-  getLastSyncDate() {
-    // if (this.userService.userDb && this.userService.userDb.userSetting && this.userService.userDb.userSetting.lastSyncedAt) {
-    //   const date = this.userService.userDb.userSetting.lastSyncedAt;
-    //   return this.datepipe.transform(date, 'yyyy-MM-dd HH:mm:ss');
-    // }
-
-    return '-';
-  }
-
-
-  getProgressText() {
-    switch (this.syncService.syncStatus) {
-      case 'pause':
-        return '(' + this.translateConfigService.translateWord('sync-modal.Paused') + ')';
-      case 'failed':
-        return '(' + this.translateConfigService.translateWord('sync-modal.Failed') + ')';
-      case 'success':
-        return '(' + this.translateConfigService.translateWord('sync-modal.Success') + ')';
-      default:
-        return '';
-    }
-  }
-
-  syncData() {
-    throw new Error('Method not implemented.');
-  }
-
-  resumeSyncData() {
-    throw new Error('Method not implemented.');
-  }
-
-  stopSyncData() {
-    throw new Error('Method not implemented.');
-  }
-
-  cancelSyncData() {
-    throw new Error('Method not implemented.');
-  }
-
 
 }

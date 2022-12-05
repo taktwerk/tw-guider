@@ -45,8 +45,6 @@ export class HomePage {
     } else {
       this.navCtrl.goTo('/home/start')
     }
-    console.log(this.authService.user);
-
   }
 
 

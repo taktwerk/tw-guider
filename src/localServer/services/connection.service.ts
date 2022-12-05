@@ -20,6 +20,7 @@ import { ProtocolDefault } from '../models/protocol_default';
 import { ProtocolTemplate } from '../models/protocol_template';
 import { Sequence } from '../models/sequence';
 import { SyncIndex } from '../models/sync_index';
+import { UserSetting } from '../models/user-setting';
 import { Workflow } from '../models/workflow';
 import { WorkflowStep } from '../models/workflow_step';
 import { WorkflowTransition } from '../models/workflow_transition';
@@ -58,7 +59,7 @@ export class ConnectionService {
         GuideChild, GuidStep, GuidViewHistory,
         Migration,
         Protocol, ProtocolComments, ProtocolDefault, ProtocolTemplate,
-        Sequence, SyncIndex,
+        Sequence, SyncIndex, UserSetting,
         Workflow, WorkflowStep, WorkflowTransition
       ],
       migrations: [],

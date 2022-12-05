@@ -15,21 +15,23 @@ import { AppRoutingModule } from './app-routing.module';
 import { ConnectionService } from 'src/localServer/services/connection.service';
 import { LoggerService } from 'src/controller/services/logger.service';
 import { AppSettingService } from 'src/controller/services/app-setting.service';
-import { ComponentsModule } from './components/components.module';
 import { AuthService } from 'src/controller/auth/auth.service';
+import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 
-export function languageLoader(http: HttpClient) {
+export const languageLoader = (http: HttpClient) => {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
-export function initializeApp(logService: LoggerService) {
+export const initializeApp = (logService: LoggerService) => {
   return () => logService.getLogger();
 }
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule, IonicModule.forRoot(), AppRoutingModule,
+    BrowserModule,
+    IonicModule.forRoot(),
+    AppRoutingModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -41,8 +43,7 @@ export function initializeApp(logService: LoggerService) {
       level: NgxLoggerLevel.DEBUG,
       serverLogLevel: NgxLoggerLevel.ERROR
     }),
-    HttpClientModule,
-    ComponentsModule
+    HttpClientModule
   ],
 
   providers: [
@@ -54,7 +55,8 @@ export function initializeApp(logService: LoggerService) {
       useFactory: initializeApp,
       deps: [LoggerService],
       multi: true,
-    }
+    },
+    Insomnia
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
