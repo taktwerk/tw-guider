@@ -11,7 +11,33 @@
             "instruction_id": 2,
             "step_nr": 1,
             "description": "This describes the first instruction step of instruction2."
+        },
+        {
+            "id": 3,
+            "instruction_id": 3,
+            "step_nr": 1,
+            "description": "This describes the first instruction step of instruction3."
+        },
+        {
+            "id": 4,
+            "instruction_id": 4,
+            "step_nr": 1,
+            "description": "This describes the first instruction step of instruction4."
+        },
+        {
+            "id": 5,
+            "instruction_id": 1,
+            "step_nr": 2,
+            "description": "This describes the second instruction step of instruction1."
+        },
+        {
+            "id": 6,
+            "instruction_id": 1,
+            "step_nr": 3,
+            "description": "This describes the third instruction step of instruction1."
         }
+        
+        
         
     ]
 }

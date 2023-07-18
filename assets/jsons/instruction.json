@@ -3,27 +3,32 @@
         {
             "id": 1,
             "title": "instruction1",
-            "short_title": "xxx1"
+            "short_title": "xxx1",
+            "image": "https://dummyimage.com/720.png/09f/fff"
         },
         {
             "id": 2,
             "title": "instruction2",
-            "short_title": "xxx2"
+            "short_title": "xxx2",
+            "image": "https://dummyimage.com/300.png/09f/fff"
         },
         {
             "id": 3,
             "title": "instruction3",
-            "short_title": "xxx3"
+            "short_title": "xxx3",
+            "image": "https://dummyimage.com/300.png/09f/fff"
         },
         {
             "id": 4,
             "title": "instruction4",
-            "short_title": "xxx4"
+            "short_title": "xxx4",
+            "image": "https://dummyimage.com/300.png/09f/fff"
         },
         {
             "id": 5,
-            "title": "instruction3",
-            "short_title": "xxx5"
+            "title": "instruction5",
+            "short_title": "xxx5",
+            "image": "https://dummyimage.com/300.png/09f/fff"
         }
     ]
   }

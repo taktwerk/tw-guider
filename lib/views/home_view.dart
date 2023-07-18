@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        children: [
+          children: [
           SearchBarWidget(updateInstructions: updateInstructions),
           _instructions != null
           ? Expanded(child: 
@@ -52,19 +52,31 @@ class _HomeState extends State<Home> {
             itemBuilder: (context, index) {
               return Card(
                 child: SizedBox(
-                  height: 120,
-                  child: ListTile(
+                  height: 100,
+                  child: ListTile(    
+                      leading: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minWidth: 100,
+                          minHeight: 120,
+                          maxWidth: 200,
+                          maxHeight: 120,
+                        ),
+                        child: Image.network(_instructions![index].image),
+                      ),
+
                         title: Text(_instructions![index].title),
                         subtitle: Text(_instructions![index].shortTitle),
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => InstructionView(user: _instructions![index])),
+                            MaterialPageRoute(builder: (context) => InstructionView(instruction: _instructions![index])),
                           );
                         },
-                      ),),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                      ),
+                      ),
               );
-            })
+            },)
           ,)
           :Container(),
         ],
@@ -73,4 +85,5 @@ class _HomeState extends State<Home> {
 
     );
   }
+
 }
