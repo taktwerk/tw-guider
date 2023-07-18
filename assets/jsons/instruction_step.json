@@ -1,0 +1,17 @@
+{
+    "instruction-steps": [
+        {
+            "id": 1,
+            "instruction_id": 1,
+            "step_nr": 1,
+            "description": "This describes the first instruction step of instruction1."
+        },
+        {
+            "id": 2,
+            "instruction_id": 2,
+            "step_nr": 1,
+            "description": "This describes the first instruction step of instruction2."
+        }
+        
+    ]
+}
