@@ -17,7 +17,8 @@ class ListOfInstructions extends ChangeNotifier {
   var list = [];
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home>
+with AutomaticKeepAliveClientMixin<Home> {
   List<InstructionElement>? _instructions;
 
   Future getAllInstructions() async {
@@ -26,6 +27,9 @@ class _HomeState extends State<Home> {
       _instructions = result;
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -85,5 +89,4 @@ class _HomeState extends State<Home> {
 
     );
   }
-
 }
