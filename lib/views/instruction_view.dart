@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/objects/instruction_steps.dart';
+import 'package:guider/views/fullscreen_image_viewer.dart';
+import 'package:guider/views/instructionstep_view.dart';
 
 class InstructionView extends StatefulWidget {
   const InstructionView({super.key, required this.instruction});
@@ -17,6 +19,7 @@ class InstructionView extends StatefulWidget {
 class _InstructionViewState extends State<InstructionView> {
   List<InstructionStep>? _steps;
 
+  @override
   void initState() {
     super.initState();
     getAllInstructionSteps();
@@ -34,12 +37,74 @@ class _InstructionViewState extends State<InstructionView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('${widget.instruction.title}'),
+        title: Text(widget.instruction.title),
       ),
       body: _steps != null
-      ? Text("Number of steps: ${_steps!.length}") 
-      : Text("Empty."),
+      ? Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+              Text("Short title: ${widget.instruction.shortTitle}"),
+              const SizedBox(height: 10),
+              const Text("Description"),
+              buildDesc(),
+              buildImage(),
+              const SizedBox(height: 10),
+              buildButton(),
+          ],
+        ),
+      ) : const Text("Empty."),
     );
   }
-  
+
+  Widget buildDesc() => Expanded(
+    flex: 1,
+    // child: Scrollbar(
+      // thumbVisibility: true,
+      child: SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Text(widget.instruction.description),
+    ),
+    // ),
+    );
+
+    Widget buildImage() => Expanded(
+      flex: 1,
+      child: GestureDetector(
+      child: Hero(
+        tag: "imageHero",
+        child: Image.network(widget.instruction.image, fit: BoxFit.cover)),
+      onTap: () {
+      Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => FullScreenImageViewer(widget.instruction.image)),
+        );
+      },
+    ),
+  );
+
+    Widget buildButton() => ElevatedButton(
+      onPressed: () {
+        if(_steps!.isNotEmpty) {
+          Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => InstructionStepView(instructionStep: _steps![0], instructionTitle: widget.instruction.title,)),
+        );
+        }
+        else {
+          print("No instruction steps available.");
+        }
+      }, 
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text("Instruction steps"),
+          Icon(
+            Icons.arrow_forward,
+            size: 24,
+          )
+        ],
+      ),
+      );
+
 }
