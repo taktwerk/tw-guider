@@ -11,8 +11,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> 
-  with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   late TabController tabController;
   final List<Tab> myTabs = <Tab>[
     const Tab(text: 'Home', icon: Icon(Icons.home)),
@@ -26,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage>
     tabController = TabController(length: 3, vsync: this);
     tabController.addListener(() {
       setState(() {});
-      });
+    });
   }
 
   @override
@@ -35,26 +35,17 @@ class _MyHomePageState extends State<MyHomePage>
     super.dispose();
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text("${myTabs[tabController.index].text}"),
-          bottom: TabBar(
-            controller: tabController,
-            tabs: myTabs
-          ),
-        ),
-        body: TabBarView(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text("${myTabs[tabController.index].text}"),
+        bottom: TabBar(controller: tabController, tabs: myTabs),
+      ),
+      body: TabBarView(
           controller: tabController,
-          children: const [
-            Home(),
-            Settings(), 
-            History()
-          ]
-          ),
+          children: const [Home(), Settings(), History()]),
     );
   }
 }
