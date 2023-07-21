@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:guider/objects/category.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/objects/instruction_steps.dart';
 
@@ -15,7 +16,7 @@ class Search {
     var allInstructions = await getAllInstructions();
     final result = <InstructionElement>[];
     for (var item in allInstructions) {
-      if (myFilter(item, value)) {
+      if (_isContained(item, value)) {
         result.add(item);
       }
     }
@@ -23,7 +24,7 @@ class Search {
     return result;
   }
 
-  static bool myFilter(item, value) {
+  static bool _isContained(item, value) {
     var lowercaseItemTitle = item.title.toLowerCase();
     var lowercaseItemShorttitle = item.shortTitle.toLowerCase();
     var lowercaseValue = value.toLowerCase();
@@ -42,7 +43,7 @@ class Search {
         instructionStepsFromJson(response);
     final filteredList = <InstructionStep>[];
     for (var step in instructionsteps.instructionSteps) {
-      if (filterByInstructionId(step, instructionId)) {
+      if (_filterByInstructionId(step, instructionId)) {
         filteredList.add(step);
       }
     }
@@ -50,10 +51,17 @@ class Search {
     return filteredList;
   }
 
-  static bool filterByInstructionId(step, instructionId) {
+  static bool _filterByInstructionId(step, instructionId) {
     if (step.instructionId == instructionId) {
       return true;
     }
     return false;
+  }
+
+  static Future<List<Category>> getCategories() async {
+    final String response =
+        await rootBundle.loadString('assets/jsons/category.json');
+    final Categories categories = categoriesFromJson(response);
+    return categories.categoryElements;
   }
 }
