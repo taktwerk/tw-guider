@@ -50,7 +50,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.all(8.0),
       child: Container(
         // Add padding around the search bar
