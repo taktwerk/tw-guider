@@ -19,7 +19,7 @@ class Search {
         result.add(item);
       }
     }
-    print("Result length ${result.length}");
+    print("Found ${result.length} instructions");
     return result;
   }
 
