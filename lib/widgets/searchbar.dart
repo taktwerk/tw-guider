@@ -50,7 +50,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-   return Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
         // Add padding around the search bar
@@ -78,6 +78,6 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
           onSubmitted: (value) => search(value),
         ),
       ),
-      );
+    );
   }
 }

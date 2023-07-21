@@ -33,11 +33,14 @@
         {
             "id": 6,
             "instruction_id": 1,
+            "step_nr": 4,
+            "description": "This describes the forth instruction step of instruction1."
+        },
+        {
+            "id": 7,
+            "instruction_id": 1,
             "step_nr": 3,
             "description": "This describes the third instruction step of instruction1."
         }
-        
-        
-        
     ]
 }

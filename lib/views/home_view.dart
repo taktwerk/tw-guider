@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
 import 'package:guider/objects/instruction.dart';
+import 'package:guider/views/instruction_view.dart';
 import 'package:guider/widgets/searchbar.dart';
-import 'package:guider/widgets/listitem.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -42,6 +42,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
         body: Column(
       children: [
@@ -51,7 +52,33 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                 child: ListView.builder(
                   itemCount: _instructions!.length,
                   itemBuilder: (context, index) {
-                    return ListItem(instruction: _instructions![index]);
+                    return Card(
+                      child: SizedBox(
+                        height: 100,
+                        child: ListTile(
+                          leading: ConstrainedBox(
+                            constraints: const BoxConstraints(
+                              minWidth: 100,
+                              minHeight: 120,
+                              maxWidth: 200,
+                              maxHeight: 120,
+                            ),
+                            child: Image.network(_instructions![index].image),
+                          ),
+                          title: Text(_instructions![index].title),
+                          subtitle: Text(_instructions![index].shortTitle),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => InstructionView(
+                                      instruction: _instructions![index])),
+                            );
+                          },
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                        ),
+                      ),
+                    );
                   },
                 ),
               )
