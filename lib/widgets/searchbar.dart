@@ -19,9 +19,6 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
   void initState() {
     super.initState();
     _searchController.addListener(_latestInputValue);
-    // if(lastSearchInput!.isNotEmpty) {
-    //   _searchController.text = lastSearchInput!;
-    // }
   }
 
   @override
@@ -31,10 +28,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
   }
 
   void _latestInputValue() {
-    // setState(() {
-    //   lastSearchInput = _searchController.text;
-    // });
-    print("Latest text ${_searchController.text}");
+    // print("Latest text ${_searchController.text}");
   }
 
   Future<void> search(value) async {

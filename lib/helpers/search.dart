@@ -63,7 +63,7 @@ class Search {
     final String response =
         await rootBundle.loadString('assets/jsons/category.json');
     final Categories categories = categoriesFromJson(response);
-    return categories.categoryElements;
+    return categories.categories;
   }
 
   static Future<List<InstructionElement>> getInstructionByCategory(
@@ -76,7 +76,7 @@ class Search {
     final result = <InstructionElement>[];
     for (var instruction in allInstructions) {
       if (_isInCategory(
-          instruction, category, instructionCategory.instructionCategory)) {
+          instruction, category, instructionCategory.instructionCategories)) {
         result.add(instruction);
       }
     }
