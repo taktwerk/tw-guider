@@ -80,7 +80,7 @@ class ListItem extends StatelessWidget {
                               flex: 1,
                               child: Align(
                                   alignment: Alignment.bottomLeft,
-                                  child: Text('Steps: ? | Last uupdate: ?',
+                                  child: Text('Steps: ? | Last update: ?',
                                       style: TextStyle(color: Colors.grey))),
                             ),
                           ],
