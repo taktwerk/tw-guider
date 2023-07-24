@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
+import 'package:guider/main.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/objects/instruction_steps.dart';
 import 'package:guider/views/fullscreen_image_viewer.dart';
@@ -103,7 +104,7 @@ class _InstructionViewState extends State<InstructionView> {
                 ),
               );
             } else {
-              print("No instruction steps available.");
+              logger.i("No instruction steps available.");
             }
           },
           label: const Text("Instruction Steps"),
