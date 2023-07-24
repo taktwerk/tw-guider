@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/instruction.dart';
-import 'package:guider/views/instruction_view.dart';
 import 'package:guider/views/category.dart';
+import 'package:guider/widgets/listitem.dart';
 import 'package:guider/widgets/searchbar.dart';
 
 class Home extends StatefulWidget {
@@ -18,7 +18,7 @@ class ListOfInstructions extends ChangeNotifier {
 }
 
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
-  List<InstructionElement>? _instructions;
+  List<InstructionElement>? _filteredInstructions;
   List<InstructionElement>? _instructionsBySearch;
   List<InstructionElement>? _instructionsByCategory;
   List<InstructionElement>? _allInstructions;
@@ -28,10 +28,10 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   Future getAllInstructions() async {
     var result = await Search.getAllInstructions();
     setState(() {
-      _instructions = result;
-      _instructionsBySearch = _instructions;
-      _instructionsByCategory = _instructions;
-      _allInstructions = _instructions;
+      _filteredInstructions = result;
+      _instructionsBySearch = _filteredInstructions;
+      _instructionsByCategory = _filteredInstructions;
+      _allInstructions = _filteredInstructions;
     });
   }
 
@@ -66,11 +66,11 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
         .toList();
     logger.d("Filtered $filtered");
     setState(() {
-      _instructions = filtered;
+      _filteredInstructions = filtered;
     });
   }
 
-  void showCategories(BuildContext context, String message) async {
+  void showCategories(BuildContext context) async {
     await showDialog(
       context: context,
       builder: (context) {
@@ -103,86 +103,80 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
         children: [
           Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: TextButton(
-                  onPressed: () {
-                    showCategories(context, "Text");
-                  },
-                  child: const Text('Categories'),
-                ),
-              ),
+              getCategoryButton(),
               Expanded(
                 child: SearchBarWidget(
                     updateInstructions: updateSearchInstructions),
               ),
             ],
           ),
-          Visibility(
-            visible: isVisible,
-            child: Container(
-              margin: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
-              padding: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blueAccent),
-                  borderRadius: const BorderRadius.all(Radius.circular(10))),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(chosenCategory),
-                  IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isVisible = false;
-                          chosenCategory = "";
-                          _instructions = _instructionsBySearch;
-                          _instructionsByCategory = _allInstructions;
-                        });
-                      },
-                      icon: const Icon(Icons.close))
-                ],
-              ),
-            ),
-          ),
-          _instructions != null
+          getCategoryTag(),
+          _filteredInstructions != null
               ? Expanded(
                   child: ListView.builder(
-                    itemCount: _instructions!.length,
+                    itemCount: _filteredInstructions!.length,
                     itemBuilder: (context, index) {
-                      return Card(
-                        child: SizedBox(
-                          height: 100,
-                          child: ListTile(
-                            leading: ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                minWidth: 100,
-                                minHeight: 120,
-                                maxWidth: 200,
-                                maxHeight: 120,
-                              ),
-                              child: Image.network(_instructions![index].image),
-                            ),
-                            title: Text(_instructions![index].title),
-                            subtitle: Text(_instructions![index].shortTitle),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => InstructionView(
-                                      instruction: _instructions![index]),
-                                ),
-                              );
-                            },
-                            trailing: const Icon(Icons.arrow_forward_ios),
-                          ),
-                        ),
-                      );
+                      return ListItem(
+                          instruction: _filteredInstructions![index]);
                     },
                   ),
                 )
-              : Container(),
+              : const CircularProgressIndicator(),
         ],
       ),
     );
   }
+
+  Widget getCategoryButton() => Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: TextButton(
+          onPressed: () {
+            showCategories(context);
+          },
+          child: const Text('Categories'),
+        ),
+      );
+
+  Widget getCategoryTag() => Visibility(
+        visible: isVisible,
+        child: Container(
+          margin: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 239, 239, 239),
+            border: Border.all(color: const Color.fromARGB(255, 239, 239, 239)),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  chosenCategory,
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 35, 38, 68),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    isVisible = false;
+                    chosenCategory = "";
+                    _filteredInstructions = _instructionsBySearch;
+                    _instructionsByCategory = _allInstructions;
+                  });
+                },
+                icon: const Icon(
+                  Icons.close,
+                  color: Color.fromARGB(255, 146, 146, 146),
+                ),
+              )
+            ],
+          ),
+        ),
+      );
 }
