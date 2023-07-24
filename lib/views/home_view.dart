@@ -143,7 +143,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
           margin: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 239, 239, 239),
-            border: Border.all(color: const Color.fromARGB(255, 239, 239, 239)),
+            border: Border.all(
+              color: const Color.fromARGB(255, 239, 239, 239),
+            ),
             borderRadius: const BorderRadius.all(
               Radius.circular(20),
             ),
@@ -151,13 +153,16 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  chosenCategory,
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 35, 38, 68),
-                    fontWeight: FontWeight.bold,
+              Container(
+                constraints: const BoxConstraints(maxWidth: 200),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    chosenCategory,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 35, 38, 68),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
