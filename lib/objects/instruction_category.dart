@@ -11,22 +11,22 @@ String instructionCategoryToJson(InstructionCategory data) =>
     json.encode(data.toJson());
 
 class InstructionCategory {
-  List<InstructionCategoryElement> instructionCategory;
+  List<InstructionCategoryElement> instructionCategories;
 
   InstructionCategory({
-    required this.instructionCategory,
+    required this.instructionCategories,
   });
 
   factory InstructionCategory.fromJson(Map<String, dynamic> json) =>
       InstructionCategory(
-        instructionCategory: List<InstructionCategoryElement>.from(
+        instructionCategories: List<InstructionCategoryElement>.from(
             json["instruction_category"]
                 .map((x) => InstructionCategoryElement.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "instruction_category":
-            List<dynamic>.from(instructionCategory.map((x) => x.toJson())),
+            List<dynamic>.from(instructionCategories.map((x) => x.toJson())),
       };
 }
 

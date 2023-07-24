@@ -32,7 +32,7 @@ class _CategoryPopupState extends State<CategoryPopup> {
       _categories = result;
     });
     _selectedIndex = _categories!
-        .indexWhere((element) => element.name == widget.chosenCategory);
+        .indexWhere((category) => category.name == widget.chosenCategory);
   }
 
   void search(category) async {
@@ -101,68 +101,3 @@ class _CategoryPopupState extends State<CategoryPopup> {
     );
   }
 }
-
-
-
-  // Container(
-  //           width: double.maxFinite,
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               const Text(
-  //                 "Categories",
-  //                 style: TextStyle(fontWeight: FontWeight.bold),
-  //               ),
-  //               const SizedBox(height: 8),
-  //               Flexible(
-  //                 child: SingleChildScrollView(
-  //                   child: Text(message),
-  //                 ),
-  //               ),
-  //               ElevatedButton(
-  //                 onPressed: () {
-  //                   Navigator.of(context).pop();
-  //                 },
-  //                 child: Text("OK"),
-  //               )
-  //             ],
-  //           ),
-  //         ),
-
-
-
-
-
-    //   return Column(
-    //   mainAxisSize: MainAxisSize.min,
-    //   children: [
-    //     DropdownButton(
-    //       // Initial Value
-    //       value: dropdownvalue,
-
-    //       // Down Arrow Icon
-    //       icon: const Icon(Icons.keyboard_arrow_down),
-
-    //       // Array list of items
-    //       items: items.map((String items) {
-    //         return DropdownMenuItem(
-    //           value: items,
-    //           child: Text(items),
-    //         );
-    //       }).toList(),
-    //       // After selecting the desired option,it will
-    //       // change button value to selected value
-    //       onChanged: (String? newValue) {
-    //         setState(() {
-    //           dropdownvalue = newValue!;
-    //         });
-    //       },
-    //     ),
-    //     TextButton(
-    //         onPressed: () {
-    //           Navigator.pop(context, dropdownvalue);
-    //         },
-    //         child: const Text("Ok"))
-    //   ],
-    // );

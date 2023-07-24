@@ -6,19 +6,19 @@ Categories categoriesFromJson(String str) =>
 String categoriesToJson(Categories data) => json.encode(data.toJson());
 
 class Categories {
-  List<Category> categoryElements;
+  List<Category> categories;
 
   Categories({
-    required this.categoryElements,
+    required this.categories,
   });
 
   factory Categories.fromJson(Map<String, dynamic> json) => Categories(
-        categoryElements: List<Category>.from(
+        categories: List<Category>.from(
             json["category"].map((x) => Category.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "category": List<dynamic>.from(categoryElements.map((x) => x.toJson())),
+        "category": List<dynamic>.from(categories.map((x) => x.toJson())),
       };
 }
 
