@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
+import 'package:guider/main.dart';
 import 'package:guider/objects/category.dart';
 import 'package:guider/objects/instruction.dart';
+import 'package:guider/objects/instruction_category.dart';
 import 'package:guider/objects/instruction_steps.dart';
 
 class Search {
@@ -12,7 +14,6 @@ class Search {
   }
 
   static Future<List<InstructionElement>> getInstructionBySearch(value) async {
-    // TODO: take from localstorage
     var allInstructions = await getAllInstructions();
     final result = <InstructionElement>[];
     for (var item in allInstructions) {
@@ -20,7 +21,7 @@ class Search {
         result.add(item);
       }
     }
-    print("Found ${result.length} instructions");
+    logger.i("Found ${result.length} instructions.");
     return result;
   }
 
@@ -63,5 +64,31 @@ class Search {
         await rootBundle.loadString('assets/jsons/category.json');
     final Categories categories = categoriesFromJson(response);
     return categories.categoryElements;
+  }
+
+  static Future<List<InstructionElement>> getInstructionByCategory(
+      category) async {
+    var allInstructions = await getAllInstructions();
+    final String response =
+        await rootBundle.loadString('assets/jsons/instruction_category.json');
+    final InstructionCategory instructionCategory =
+        instructionCategoryFromJson(response);
+    final result = <InstructionElement>[];
+    for (var instruction in allInstructions) {
+      if (_isInCategory(
+          instruction, category, instructionCategory.instructionCategory)) {
+        result.add(instruction);
+      }
+    }
+    return result;
+  }
+
+  static bool _isInCategory(instruction, category, instructionCategory) {
+    for (var item in instructionCategory) {
+      if (item.instructionId == instruction.id && item.category == category) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -56,4 +56,9 @@ class InstructionElement {
         "image": image,
         "description": description
       };
+
+  @override
+  String toString() {
+    return '{id: $id, title: $title}';
+  }
 }

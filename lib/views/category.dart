@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
 import 'package:guider/objects/category.dart';
 
-class CategoryPopUp extends StatefulWidget {
-  const CategoryPopUp({Key? key}) : super(key: key);
+class CategoryPopup extends StatefulWidget {
+  const CategoryPopup(
+      {Key? key,
+      required this.chosenCategory,
+      required this.updateCategoryInstructions})
+      : super(key: key);
+  final String chosenCategory;
+  final Function updateCategoryInstructions;
 
   @override
-  State<CategoryPopUp> createState() => _CategoryPopUpState();
+  State<CategoryPopup> createState() => _CategoryPopupState();
 }
 
-class _CategoryPopUpState extends State<CategoryPopUp> {
+class _CategoryPopupState extends State<CategoryPopup> {
   // Initial Selected Value
-  String dropdownvalue = 'Category 1';
-  int _selectedIndex = 0;
+  int _selectedIndex = -1;
   List<Category>? _categories;
 
   @override
@@ -26,12 +31,24 @@ class _CategoryPopUpState extends State<CategoryPopUp> {
     setState(() {
       _categories = result;
     });
+    _selectedIndex = _categories!
+        .indexWhere((element) => element.name == widget.chosenCategory);
+  }
+
+  void search(category) async {
+    var val = await Search.getInstructionByCategory(category);
+    widget.updateCategoryInstructions(val);
+  }
+
+  void clear() async {
+    var val = await Search.getAllInstructions();
+    widget.updateCategoryInstructions(val);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
+    return SizedBox(
+      width: double.minPositive,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -53,7 +70,11 @@ class _CategoryPopUpState extends State<CategoryPopUp> {
                         onTap: () {
                           setState(
                             () {
-                              _selectedIndex = index;
+                              if (_selectedIndex == index) {
+                                _selectedIndex = -1;
+                              } else {
+                                _selectedIndex = index;
+                              }
                             },
                           );
                         },
@@ -62,9 +83,16 @@ class _CategoryPopUpState extends State<CategoryPopUp> {
                   )
                 : const CircularProgressIndicator(),
           ),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop(_categories![_selectedIndex].name);
+              if (_selectedIndex == -1) {
+                Navigator.of(context).pop("");
+                clear();
+              } else {
+                Navigator.of(context).pop(_categories![_selectedIndex].name);
+                search(_categories![_selectedIndex].id);
+              }
             },
             child: const Text("OK"),
           )
