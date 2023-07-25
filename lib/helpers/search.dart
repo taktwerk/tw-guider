@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/category.dart';
@@ -6,10 +8,17 @@ import 'package:guider/objects/instruction_category.dart';
 import 'package:guider/objects/instruction_steps.dart';
 
 class Search {
+  // static Future<List<InstructionElement>> getAllInstructions() async {
+  //   final String response =
+  //       await rootBundle.loadString('assets/jsons/instruction.json');
+  //   final Instructions instructions = instructionFromJson(response);
+  //   //print(instructions.instructionElements);
+  //   return instructions.instructionElements;
+  // }
+
   static Future<List<InstructionElement>> getAllInstructions() async {
-    final String response =
-        await rootBundle.loadString('assets/jsons/instruction.json');
-    final Instructions instructions = instructionFromJson(response);
+    final data = await supabase.from('instruction').select("*");
+    final Instructions instructions = instructionFromJson(jsonEncode(data));
     return instructions.instructionElements;
   }
 

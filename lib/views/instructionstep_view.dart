@@ -26,7 +26,7 @@ class _InstructionStepViewState extends State<InstructionStepView> {
     return Column(
       children: [
         HtmlWidget(
-          widget.instructionStep.htmlText,
+          widget.instructionStep.description,
         ),
         Text("Step ${widget.instructionStep.stepNr}")
       ],
