@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final instruction = instructionFromJson(jsonString);
-
 import 'dart:convert';
 
 Instructions instructionFromJson(String str) =>
@@ -16,9 +12,9 @@ class Instructions {
     required this.instructionElements,
   });
 
-  factory Instructions.fromJson(Map<String, dynamic> json) => Instructions(
+  factory Instructions.fromJson(List<dynamic> json) => Instructions(
         instructionElements: List<InstructionElement>.from(
-            json["instructions"].map((x) => InstructionElement.fromJson(x))),
+            json.map((x) => InstructionElement.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
