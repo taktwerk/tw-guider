@@ -34,13 +34,11 @@ class InstructionStep {
   int instructionId;
   int stepNr;
   String description;
-  String htmlText;
 
   InstructionStep({
     required this.id,
     required this.instructionId,
     required this.stepNr,
-    required this.htmlText,
     required this.description,
   });
 
@@ -49,7 +47,6 @@ class InstructionStep {
         id: json["id"],
         instructionId: json["instruction_id"],
         stepNr: json["step_nr"],
-        htmlText: json["html_text"],
         description: json["description"],
       );
 
@@ -58,6 +55,5 @@ class InstructionStep {
         "instruction_id": instructionId,
         "step_nr": stepNr,
         "description": description,
-        "html_text": htmlText,
       };
 }

@@ -48,37 +48,35 @@ class _InstructionViewState extends State<InstructionView> {
       body: _steps != null
           ? Container(
               padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
-              child: Column(
-                children: [
-                  const Text("Categories:"),
-                  _categories!.isEmpty
-                      ? const Text("---")
-                      : Wrap(
-                          children: List.generate(
-                              _categories!.length,
-                              (index) => TagContainer(
-                                  child:
-                                      getTagContent(_categories![index].name))),
-                        ),
-                  Text("Short title: ${widget.instruction.shortTitle}"),
-                  const SizedBox(height: 10),
-                  const Text("Description"),
-                  buildDesc(),
-                  buildImage(),
-                  const SizedBox(height: 10),
-                  buildButton(),
-                ],
-              ),
-            )
+              child: Center(
+                child: Column(
+                  children: [
+                    const Text("Categories:"),
+                    _categories!.isEmpty
+                        ? const Text("---")
+                        : Wrap(
+                            children: List.generate(
+                                _categories!.length,
+                                (index) => TagContainer(
+                                    child: getTagContent(
+                                        _categories![index].name))),
+                          ),
+                    Text("Short title: ${widget.instruction.shortTitle}"),
+                    const SizedBox(height: 10),
+                    const Text("Description"),
+                    buildDesc(),
+                    buildImage(),
+                    const SizedBox(height: 10),
+                    buildButton(),
+                  ],
+                ),
+              ))
           : const Text("Empty."),
     );
   }
 
   Widget buildDesc() => Expanded(
       flex: 1,
-      // child: SafeArea(
-      //   child: Scrollbar(
-      // thumbVisibility: true,
       child: Container(
         margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
@@ -109,10 +107,7 @@ class _InstructionViewState extends State<InstructionView> {
             ),
           ),
         ),
-      )
-      //   ),
-      // ),
-      );
+      ));
 
   Widget buildImage() => Expanded(
         flex: 1,
