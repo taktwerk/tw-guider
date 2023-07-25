@@ -20,6 +20,7 @@ class InstructionView extends StatefulWidget {
 class _InstructionViewState extends State<InstructionView> {
   List<InstructionStep>? _steps;
   List<Category>? _categories;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _InstructionViewState extends State<InstructionView> {
       ),
       body: _steps != null
           ? Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
               child: Column(
                 children: [
                   const Text("Categories:"),
@@ -74,16 +75,43 @@ class _InstructionViewState extends State<InstructionView> {
   }
 
   Widget buildDesc() => Expanded(
-        flex: 1,
-        // child: SafeArea(
-        //   child: Scrollbar(
-        // thumbVisibility: true,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Text(widget.instruction.description),
+      flex: 1,
+      // child: SafeArea(
+      //   child: Scrollbar(
+      // thumbVisibility: true,
+      child: Container(
+        margin: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
         ),
-        //   ),
-        // ),
+        child: Scrollbar(
+          thumbVisibility: true,
+          controller: _scrollController,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            scrollDirection: Axis.vertical,
+            child: Text(
+              widget.instruction.description,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      )
+      //   ),
+      // ),
       );
 
   Widget buildImage() => Expanded(

@@ -25,6 +25,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   List<InstructionElement>? _allInstructions;
   String chosenCategory = "";
   bool isVisible = false;
+  final ScrollController _scrollController = ScrollController();
 
   Future getAllInstructions() async {
     var result = await Search.getAllInstructions();
@@ -114,14 +115,19 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
           getCategoryTag(),
           _filteredInstructions != null
               ? Expanded(
+                  child: Scrollbar(
+                  controller: _scrollController,
+                  thumbVisibility: true,
                   child: ListView.builder(
+                    controller: _scrollController,
+                    physics: const BouncingScrollPhysics(),
                     itemCount: _filteredInstructions!.length,
                     itemBuilder: (context, index) {
                       return ListItem(
                           instruction: _filteredInstructions![index]);
                     },
                   ),
-                )
+                ))
               : const CircularProgressIndicator(),
         ],
       ),
