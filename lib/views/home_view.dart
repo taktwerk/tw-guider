@@ -5,6 +5,7 @@ import 'package:guider/objects/instruction.dart';
 import 'package:guider/views/category.dart';
 import 'package:guider/widgets/listitem.dart';
 import 'package:guider/widgets/searchbar.dart';
+import 'package:guider/widgets/tag.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -138,50 +139,41 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
       );
 
   Widget getCategoryTag() => Visibility(
-        visible: isVisible,
-        child: Container(
-          margin: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 239, 239, 239),
-            border: Border.all(
-              color: const Color.fromARGB(255, 239, 239, 239),
-            ),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(20),
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                constraints: const BoxConstraints(maxWidth: 200),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    chosenCategory,
-                    style: const TextStyle(
-                      color: Color.fromARGB(255, 35, 38, 68),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+      visible: isVisible,
+      child: TagContainer(
+        child: getTagContent(),
+      ));
+
+  Widget getTagContent() => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            constraints: const BoxConstraints(maxWidth: 200),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                chosenCategory,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 35, 38, 68),
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    isVisible = false;
-                    chosenCategory = "";
-                    _filteredInstructions = _instructionsBySearch;
-                    _instructionsByCategory = _allInstructions;
-                  });
-                },
-                icon: const Icon(
-                  Icons.close,
-                  color: Color.fromARGB(255, 146, 146, 146),
-                ),
-              )
-            ],
+            ),
           ),
-        ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                isVisible = false;
+                chosenCategory = "";
+                _filteredInstructions = _instructionsBySearch;
+                _instructionsByCategory = _allInstructions;
+              });
+            },
+            icon: const Icon(
+              Icons.close,
+              color: Color.fromARGB(255, 146, 146, 146),
+            ),
+          )
+        ],
       );
 }

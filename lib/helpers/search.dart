@@ -69,14 +69,10 @@ class Search {
   static Future<List<InstructionElement>> getInstructionByCategory(
       category) async {
     var allInstructions = await getAllInstructions();
-    final String response =
-        await rootBundle.loadString('assets/jsons/instruction_category.json');
-    final InstructionCategory instructionCategory =
-        instructionCategoryFromJson(response);
+    var instruction_category = await _getInstructionCategoryTuples();
     final result = <InstructionElement>[];
     for (var instruction in allInstructions) {
-      if (_isInCategory(
-          instruction, category, instructionCategory.instructionCategories)) {
+      if (_isInCategory(instruction, category, instruction_category)) {
         result.add(instruction);
       }
     }
@@ -90,5 +86,29 @@ class Search {
       }
     }
     return false;
+  }
+
+  static Future<List<InstructionCategoryElement>>
+      _getInstructionCategoryTuples() async {
+    final String response =
+        await rootBundle.loadString('assets/jsons/instruction_category.json');
+    final InstructionCategory instructionCategory =
+        instructionCategoryFromJson(response);
+    return instructionCategory.instructionCategories;
+  }
+
+  static Future<List<Category>> getCategoriesOfInstruction(
+      instructionId) async {
+    var allCategories = await getCategories();
+    var instruction_category = await _getInstructionCategoryTuples();
+    final ids = <int>[];
+    for (var tuple in instruction_category) {
+      if (tuple.instructionId == instructionId) {
+        ids.add(tuple.category);
+      }
+    }
+    final filtered =
+        allCategories.where((category) => ids.contains(category.id)).toList();
+    return filtered;
   }
 }

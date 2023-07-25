@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
 import 'package:guider/main.dart';
+import 'package:guider/objects/category.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/objects/instruction_steps.dart';
 import 'package:guider/views/fullscreen_image_viewer.dart';
 import 'package:guider/views/instructionstep_overview.dart';
+import 'package:guider/widgets/tag.dart';
 
 class InstructionView extends StatefulWidget {
   const InstructionView({super.key, required this.instruction});
@@ -17,17 +19,21 @@ class InstructionView extends StatefulWidget {
 
 class _InstructionViewState extends State<InstructionView> {
   List<InstructionStep>? _steps;
+  List<Category>? _categories;
 
   @override
   void initState() {
     super.initState();
-    getAllInstructionSteps();
+    getData();
   }
 
-  Future getAllInstructionSteps() async {
-    var result = await Search.getInstructionSteps(widget.instruction.id);
+  Future getData() async {
+    var steps = await Search.getInstructionSteps(widget.instruction.id);
+    var categories =
+        await Search.getCategoriesOfInstruction(widget.instruction.id);
     setState(() {
-      _steps = result;
+      _steps = steps;
+      _categories = categories;
     });
   }
 
@@ -43,6 +49,16 @@ class _InstructionViewState extends State<InstructionView> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
+                  const Text("Categories:"),
+                  _categories!.isEmpty
+                      ? const Text("---")
+                      : Wrap(
+                          children: List.generate(
+                              _categories!.length,
+                              (index) => TagContainer(
+                                  child:
+                                      getTagContent(_categories![index].name))),
+                        ),
                   Text("Short title: ${widget.instruction.shortTitle}"),
                   const SizedBox(height: 10),
                   const Text("Description"),
@@ -109,5 +125,28 @@ class _InstructionViewState extends State<InstructionView> {
           },
           label: const Text("Instruction Steps"),
         ),
+      );
+
+  Widget getTagContent(category) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            constraints: const BoxConstraints(maxWidth: 200),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                category,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 35, 38, 68),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const Icon(
+            Icons.close,
+            color: Color.fromARGB(255, 146, 146, 146),
+          ),
+        ],
       );
 }
