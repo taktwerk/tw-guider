@@ -19,6 +19,7 @@ class _CategoryPopupState extends State<CategoryPopup> {
   // Initial Selected Value
   int _selectedIndex = -1;
   List<Category>? _categories;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -60,26 +61,32 @@ class _CategoryPopupState extends State<CategoryPopup> {
           const SizedBox(height: 8),
           Flexible(
             child: _categories != null
-                ? ListView.builder(
-                    itemCount: _categories!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        selectedTileColor: Colors.blue,
-                        title: Center(child: Text(_categories![index].name)),
-                        selected: index == _selectedIndex,
-                        onTap: () {
-                          setState(
-                            () {
-                              if (_selectedIndex == index) {
-                                _selectedIndex = -1;
-                              } else {
-                                _selectedIndex = index;
-                              }
-                            },
-                          );
-                        },
-                      );
-                    },
+                ? Scrollbar(
+                    controller: _scrollController,
+                    thumbVisibility: true,
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: _categories!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          selectedTileColor: Colors.blue,
+                          title: Center(child: Text(_categories![index].name)),
+                          selected: index == _selectedIndex,
+                          onTap: () {
+                            setState(
+                              () {
+                                if (_selectedIndex == index) {
+                                  _selectedIndex = -1;
+                                } else {
+                                  _selectedIndex = index;
+                                }
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
                   )
                 : const CircularProgressIndicator(),
           ),
