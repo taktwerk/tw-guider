@@ -7,14 +7,6 @@ import 'package:guider/objects/instruction_category.dart';
 import 'package:guider/objects/instruction_steps.dart';
 
 class Search {
-  // static Future<List<InstructionElement>> getAllInstructions() async {
-  //   final String response =
-  //       await rootBundle.loadString('assets/jsons/instruction.json');
-  //   final Instructions instructions = instructionFromJson(response);
-  //   //print(instructions.instructionElements);
-  //   return instructions.instructionElements;
-  // }
-
   static Future<List<InstructionElement>> getAllInstructions() async {
     final data = await supabase.from('instruction').select("*");
     final Instructions instructions = instructionFromJson(jsonEncode(data));
@@ -44,29 +36,6 @@ class Search {
     return false;
   }
 
-  // static Future<List<InstructionStep>> getInstructionSteps(
-  //     instructionId) async {
-  //   final String response =
-  //       await rootBundle.loadString('assets/jsons/instruction_step.json');
-  //   final InstructionSteps instructionsteps =
-  //       instructionStepsFromJson(response);
-  //   final filteredList = <InstructionStep>[];
-  //   for (var step in instructionsteps.instructionSteps) {
-  //     if (_filterByInstructionId(step, instructionId)) {
-  //       filteredList.add(step);
-  //     }
-  //   }
-  //   filteredList.sort(((a, b) => a.stepNr.compareTo(b.stepNr)));
-  //   return filteredList;
-  // }
-
-  //   static bool _filterByInstructionId(step, instructionId) {
-  //   if (step.instructionId == instructionId) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
   static Future<List<InstructionStep>> getInstructionSteps(
       instructionId) async {
     final data = await supabase
@@ -80,32 +49,19 @@ class Search {
   }
 
   static Future<List<Category>> getCategories() async {
-    final String response =
-        await rootBundle.loadString('assets/jsons/category.json');
-    final Categories categories = categoriesFromJson(response);
+    final data = await supabase.from('category').select('*');
+    final Categories categories = categoriesFromJson(jsonEncode(data));
     return categories.categories;
   }
 
   static Future<List<InstructionElement>> getInstructionByCategory(
       category) async {
-    var allInstructions = await getAllInstructions();
-    var instruction_category = await _getInstructionCategoryTuples();
-    final result = <InstructionElement>[];
-    for (var instruction in allInstructions) {
-      if (_isInCategory(instruction, category, instruction_category)) {
-        result.add(instruction);
-      }
-    }
-    return result;
-  }
-
-  static bool _isInCategory(instruction, category, instructionCategory) {
-    for (var item in instructionCategory) {
-      if (item.instructionId == instruction.id && item.category == category) {
-        return true;
-      }
-    }
-    return false;
+    final data = await supabase
+        .from('instruction')
+        .select('*, instruction_category!inner(*)')
+        .eq('instruction_category.category_id', category);
+    final Instructions instructions = instructionFromJson(jsonEncode(data));
+    return instructions.instructionElements;
   }
 
   static Future<List<InstructionCategoryElement>>
@@ -131,4 +87,64 @@ class Search {
         allCategories.where((category) => ids.contains(category.id)).toList();
     return filtered;
   }
+
+  // static Future<List<InstructionElement>> getAllInstructions() async {
+  //   final String response =
+  //       await rootBundle.loadString('assets/jsons/instruction.json');
+  //   final Instructions instructions = instructionFromJson(response);
+  //   //print(instructions.instructionElements);
+  //   return instructions.instructionElements;
+  // }
+
+  // static Future<List<InstructionStep>> getInstructionSteps(
+  //     instructionId) async {
+  //   final String response =
+  //       await rootBundle.loadString('assets/jsons/instruction_step.json');
+  //   final InstructionSteps instructionsteps =
+  //       instructionStepsFromJson(response);
+  //   final filteredList = <InstructionStep>[];
+  //   for (var step in instructionsteps.instructionSteps) {
+  //     if (_filterByInstructionId(step, instructionId)) {
+  //       filteredList.add(step);
+  //     }
+  //   }
+  //   filteredList.sort(((a, b) => a.stepNr.compareTo(b.stepNr)));
+  //   return filteredList;
+  // }
+
+  //   static bool _filterByInstructionId(step, instructionId) {
+  //   if (step.instructionId == instructionId) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  // static Future<List<Category>> getCategories() async {
+  //   final String response =
+  //       await rootBundle.loadString('assets/jsons/category.json');
+  //   final Categories categories = categoriesFromJson(response);
+  //   return categories.categories;
+  // }
+
+  // static Future<List<InstructionElement>> getInstructionByCategory(
+  //     category) async {
+  //   var allInstructions = await getAllInstructions();
+  //   var instruction_category = await _getInstructionCategoryTuples();
+  //   final result = <InstructionElement>[];
+  //   for (var instruction in allInstructions) {
+  //     if (_isInCategory(instruction, category, instruction_category)) {
+  //       result.add(instruction);
+  //     }
+  //   }
+  //   return result;
+  // }
+
+  // static bool _isInCategory(instruction, category, instructionCategory) {
+  //   for (var item in instructionCategory) {
+  //     if (item.instructionId == instruction.id && item.category == category) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 }

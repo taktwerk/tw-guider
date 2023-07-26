@@ -12,9 +12,8 @@ class Categories {
     required this.categories,
   });
 
-  factory Categories.fromJson(Map<String, dynamic> json) => Categories(
-        categories: List<Category>.from(
-            json["category"].map((x) => Category.fromJson(x))),
+  factory Categories.fromJson(List<dynamic> json) => Categories(
+        categories: List<Category>.from(json.map((x) => Category.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
