@@ -7,8 +7,7 @@ import 'package:guider/objects/instruction_steps.dart';
 class Search {
   static Future<List<InstructionElement>> getAllInstructions() async {
     final data = await supabase.from('instruction').select("*");
-    final Instructions instructions = instructionFromJson(jsonEncode(data));
-    return instructions.instructionElements;
+    return _mapToInstructions(data);
   }
 
   static Future<List<InstructionElement>> getInstructionBySearch(value) async {
@@ -16,8 +15,7 @@ class Search {
         .from('instruction')
         .select('*')
         .or('title.ilike.%$value%, short_title.ilike.%$value%');
-    final Instructions instructions = instructionFromJson(jsonEncode(data));
-    return instructions.instructionElements;
+    return _mapToInstructions(data);
   }
 
   static Future<List<InstructionStep>> getInstructionSteps(
@@ -34,8 +32,7 @@ class Search {
 
   static Future<List<Category>> getCategories() async {
     final data = await supabase.from('category').select('*');
-    final Categories categories = categoriesFromJson(jsonEncode(data));
-    return categories.categories;
+    return _mapToCategories(data);
   }
 
   static Future<List<InstructionElement>> getInstructionByCategory(
@@ -44,8 +41,7 @@ class Search {
         .from('instruction')
         .select('*, instruction_category!inner(*)')
         .eq('instruction_category.category_id', category);
-    final Instructions instructions = instructionFromJson(jsonEncode(data));
-    return instructions.instructionElements;
+    return _mapToInstructions(data);
   }
 
   static Future<List<Category>> getCategoriesOfInstruction(
@@ -54,7 +50,26 @@ class Search {
         .from('category')
         .select('*, instruction_category!inner(*)')
         .eq('instruction_category.instruction_id', instructionId);
+    return _mapToCategories(data);
+  }
+
+  static List<Category> _mapToCategories(data) {
     final Categories categories = categoriesFromJson(jsonEncode(data));
     return categories.categories;
+  }
+
+  static List<InstructionElement> _mapToInstructions(data) {
+    final Instructions instructions = instructionFromJson(jsonEncode(data));
+    return instructions.instructionElements;
+  }
+
+  // Default: fetch history of user with id = 2
+  static Future<List<InstructionElement>> getHistory({userId = 2}) async {
+    final data = await supabase
+        .from('instruction')
+        .select('*, history!inner(*)')
+        .eq('history.user_id', userId);
+    logger.d("History: ${_mapToInstructions(data)}");
+    return _mapToInstructions(data);
   }
 }
