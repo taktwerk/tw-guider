@@ -17,10 +17,9 @@ class InstructionSteps {
     required this.instructionSteps,
   });
 
-  factory InstructionSteps.fromJson(Map<String, dynamic> json) =>
-      InstructionSteps(
+  factory InstructionSteps.fromJson(List<dynamic> json) => InstructionSteps(
         instructionSteps: List<InstructionStep>.from(
-            json["instruction-steps"].map((x) => InstructionStep.fromJson(x))),
+            json.map((x) => InstructionStep.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
