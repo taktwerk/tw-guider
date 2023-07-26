@@ -14,26 +14,12 @@ class Search {
   }
 
   static Future<List<InstructionElement>> getInstructionBySearch(value) async {
-    var allInstructions = await getAllInstructions();
-    final result = <InstructionElement>[];
-    for (var item in allInstructions) {
-      if (_isContained(item, value)) {
-        result.add(item);
-      }
-    }
-    logger.i("Found ${result.length} instructions.");
-    return result;
-  }
-
-  static bool _isContained(item, value) {
-    var lowercaseItemTitle = item.title.toLowerCase();
-    var lowercaseItemShorttitle = item.shortTitle.toLowerCase();
-    var lowercaseValue = value.toLowerCase();
-    if (lowercaseItemTitle.contains(lowercaseValue) ||
-        lowercaseItemShorttitle.contains(lowercaseValue)) {
-      return true;
-    }
-    return false;
+    final data = await supabase
+        .from('instruction')
+        .select('*')
+        .or('title.ilike.%$value%, short_title.ilike.%$value%');
+    final Instructions instructions = instructionFromJson(jsonEncode(data));
+    return instructions.instructionElements;
   }
 
   static Future<List<InstructionStep>> getInstructionSteps(
@@ -94,6 +80,29 @@ class Search {
   //   final Instructions instructions = instructionFromJson(response);
   //   //print(instructions.instructionElements);
   //   return instructions.instructionElements;
+  // }
+
+  // static Future<List<InstructionElement>> getInstructionBySearch(value) async {
+  //   var allInstructions = await getAllInstructions();
+  //   final result = <InstructionElement>[];
+  //   for (var item in allInstructions) {
+  //     if (_isContained(item, value)) {
+  //       result.add(item);
+  //     }
+  //   }
+  //   logger.i("Found ${result.length} instructions.");
+  //   return result;
+  // }
+
+  // static bool _isContained(item, value) {
+  //   var lowercaseItemTitle = item.title.toLowerCase();
+  //   var lowercaseItemShorttitle = item.shortTitle.toLowerCase();
+  //   var lowercaseValue = value.toLowerCase();
+  //   if (lowercaseItemTitle.contains(lowercaseValue) ||
+  //       lowercaseItemShorttitle.contains(lowercaseValue)) {
+  //     return true;
+  //   }
+  //   return false;
   // }
 
   // static Future<List<InstructionStep>> getInstructionSteps(
