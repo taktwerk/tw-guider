@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/services.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/category.dart';
@@ -45,27 +44,39 @@ class Search {
     return false;
   }
 
+  // static Future<List<InstructionStep>> getInstructionSteps(
+  //     instructionId) async {
+  //   final String response =
+  //       await rootBundle.loadString('assets/jsons/instruction_step.json');
+  //   final InstructionSteps instructionsteps =
+  //       instructionStepsFromJson(response);
+  //   final filteredList = <InstructionStep>[];
+  //   for (var step in instructionsteps.instructionSteps) {
+  //     if (_filterByInstructionId(step, instructionId)) {
+  //       filteredList.add(step);
+  //     }
+  //   }
+  //   filteredList.sort(((a, b) => a.stepNr.compareTo(b.stepNr)));
+  //   return filteredList;
+  // }
+
+  //   static bool _filterByInstructionId(step, instructionId) {
+  //   if (step.instructionId == instructionId) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
   static Future<List<InstructionStep>> getInstructionSteps(
       instructionId) async {
-    final String response =
-        await rootBundle.loadString('assets/jsons/instruction_step.json');
-    final InstructionSteps instructionsteps =
-        instructionStepsFromJson(response);
-    final filteredList = <InstructionStep>[];
-    for (var step in instructionsteps.instructionSteps) {
-      if (_filterByInstructionId(step, instructionId)) {
-        filteredList.add(step);
-      }
-    }
-    filteredList.sort(((a, b) => a.stepNr.compareTo(b.stepNr)));
-    return filteredList;
-  }
-
-  static bool _filterByInstructionId(step, instructionId) {
-    if (step.instructionId == instructionId) {
-      return true;
-    }
-    return false;
+    final data = await supabase
+        .from('instruction_step')
+        .select('*')
+        .eq('instruction_id', instructionId);
+    final List<InstructionStep> instructionSteps =
+        instructionStepsFromJson(jsonEncode(data)).instructionSteps;
+    instructionSteps.sort(((a, b) => a.stepNr.compareTo(b.stepNr)));
+    return instructionSteps;
   }
 
   static Future<List<Category>> getCategories() async {

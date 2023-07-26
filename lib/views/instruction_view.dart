@@ -71,7 +71,9 @@ class _InstructionViewState extends State<InstructionView> {
                   ],
                 ),
               ))
-          : const Text("Empty."),
+          : const Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 
