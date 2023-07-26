@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'package:flutter/services.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/category.dart';
 import 'package:guider/objects/instruction.dart';
-import 'package:guider/objects/instruction_category.dart';
 import 'package:guider/objects/instruction_steps.dart';
 
 class Search {
@@ -50,29 +48,21 @@ class Search {
     return instructions.instructionElements;
   }
 
-  static Future<List<InstructionCategoryElement>>
-      _getInstructionCategoryTuples() async {
-    final String response =
-        await rootBundle.loadString('assets/jsons/instruction_category.json');
-    final InstructionCategory instructionCategory =
-        instructionCategoryFromJson(response);
-    return instructionCategory.instructionCategories;
-  }
-
   static Future<List<Category>> getCategoriesOfInstruction(
       instructionId) async {
-    var allCategories = await getCategories();
-    var instruction_category = await _getInstructionCategoryTuples();
-    final ids = <int>[];
-    for (var tuple in instruction_category) {
-      if (tuple.instructionId == instructionId) {
-        ids.add(tuple.category);
-      }
-    }
-    final filtered =
-        allCategories.where((category) => ids.contains(category.id)).toList();
-    return filtered;
+    final data = await supabase
+        .from('category')
+        .select('*, instruction_category!inner(*)')
+        .eq('instruction_category.instruction_id', instructionId);
+    final Categories categories = categoriesFromJson(jsonEncode(data));
+    return categories.categories;
   }
+
+  // static Future<List<Category>> getCategoriesOfInstruction1(
+  //     instructionId) async {
+  //       final data = await supabase.from('category').select('*, instruction_category!inner(*)').eq('instruction_category.instruction_id', instructionId);
+  //       print(data);
+  // }
 
   // static Future<List<InstructionElement>> getAllInstructions() async {
   //   final String response =
@@ -155,5 +145,29 @@ class Search {
   //     }
   //   }
   //   return false;
+  // }
+
+  // static Future<List<InstructionCategoryElement>>
+  //     _getInstructionCategoryTuples() async {
+  //   final String response =
+  //       await rootBundle.loadString('assets/jsons/instruction_category.json');
+  //   final InstructionCategory instructionCategory =
+  //       instructionCategoryFromJson(response);
+  //   return instructionCategory.instructionCategories;
+  // }
+
+  // static Future<List<Category>> getCategoriesOfInstruction(
+  //     instructionId) async {
+  //   var allCategories = await getCategories();
+  //   var instruction_category = await _getInstructionCategoryTuples();
+  //   final ids = <int>[];
+  //   for (var tuple in instruction_category) {
+  //     if (tuple.instructionId == instructionId) {
+  //       ids.add(tuple.category);
+  //     }
+  //   }
+  //   final filtered =
+  //       allCategories.where((category) => ids.contains(category.id)).toList();
+  //   return filtered;
   // }
 }
