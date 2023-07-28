@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/insert.dart';
+import 'package:guider/helpers/search.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/objects/instruction_steps.dart';
 import 'package:guider/views/instructionstep_view.dart';
@@ -20,27 +22,45 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
   String? selectedItem;
   InstructionStepView? currentView;
   int? _itemsLength;
+  int? instructionId;
 
   @override
   void initState() {
     super.initState();
     initializeStepViews();
+    getLastVisitedStep(widget.instruction.id);
   }
 
-  void initializeStepViews() async {
-    _itemsLength = widget.steps.length;
+  Future getLastVisitedStep(id) async {
+    var res = await Search.getLastVisitedStep(instructionId: id);
+    var item = "Step ${res.stepNr}/${widget.steps.length}";
+    int index = _items.indexOf(item);
+    setState(() {
+      selectedItem = item;
+      currentView = _views[index];
+      instructionId = id;
+    });
+  }
+
+  void initializeStepViews() {
     for (var item in widget.steps) {
       _views.add(InstructionStepView(
           instructionTitle: widget.instruction.title, instructionStep: item));
-      _items.add("Step ${item.stepNr}/$_itemsLength");
+      _items.add("Step ${item.stepNr}/${widget.steps.length}");
     }
-    selectedItem = _items[0];
-    currentView = _views[0];
-    _itemsLength = _items.length;
+    setState(() {
+      _itemsLength = _items.length;
+    });
   }
 
   _renderWidget() {
     return currentView;
+  }
+
+  void setNewStep(index) {
+    Insert.setNewStep(
+        instructionStepId: _views[index].instructionStep.id,
+        instructionId: instructionId);
   }
 
   @override
@@ -50,42 +70,46 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(widget.instruction.title),
         ),
-        body: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 300,
-                child: DropdownButtonFormField(
-                  isExpanded: true,
-                  icon: const Icon(Icons.arrow_drop_down_circle),
-                  value: selectedItem,
-                  items: _items
-                      .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(item),
-                          ))
-                      .toList(),
-                  onChanged: (item) => setState(
-                    () {
-                      selectedItem = item;
-                      currentView = _views[_items.indexOf(item!)];
-                    },
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: "Instruction Steps",
-                    prefixIcon: Icon(Icons.format_list_numbered),
-                    border: OutlineInputBorder(),
-                  ),
+        body: currentView != null
+            ? Container(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      child: DropdownButtonFormField(
+                        isExpanded: true,
+                        icon: const Icon(Icons.arrow_drop_down_circle),
+                        value: selectedItem,
+                        items: _items
+                            .map((item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(item),
+                                ))
+                            .toList(),
+                        onChanged: (item) => setState(
+                          () {
+                            selectedItem = item;
+                            currentView = _views[_items.indexOf(item!)];
+                          },
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: "Instruction Steps",
+                          prefixIcon: Icon(Icons.format_list_numbered),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 5.0),
+                    _renderWidget(),
+                    backAndForthButtons(),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 5.0),
-              _renderWidget(),
-              backAndForthButtons(),
-            ],
-          ),
-        ));
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 
   Widget backAndForthButtons() {
@@ -99,6 +123,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                   setState(() {
                     var index =
                         (_items.indexOf(selectedItem!) - 1) % _itemsLength!;
+                    setNewStep(index);
                     selectedItem = _items[index];
                     currentView = _views[index];
                   });
@@ -115,6 +140,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                     setState(() {
                       var index =
                           (_items.indexOf(selectedItem!) + 1) % _itemsLength!;
+                      setNewStep(index);
                       selectedItem = _items[index];
                       currentView = _views[index];
                     });

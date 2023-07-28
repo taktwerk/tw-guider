@@ -8,7 +8,16 @@ class Insert {
       'instruction_id': instructionId,
       "created_by": created_by,
       "updated_by": updated_by,
-      "updated_at": (DateTime.now()).toIso8601String()
+      "updated_at": (DateTime.now()).toIso8601String(),
     }, onConflict: 'user_id,instruction_id');
+  }
+
+  static Future<void> setNewStep(
+      {userId = 2, instructionId, instructionStepId}) async {
+    await supabase
+        .from('history')
+        .update({'instruction_step_id': instructionStepId})
+        .eq('instruction_id', instructionId)
+        .eq('user_id', userId);
   }
 }
