@@ -2,12 +2,12 @@ import 'package:guider/main.dart';
 
 class Insert {
   static Future<void> updateHistory(
-      {userID = 2, instructionId, created_by = 2, updated_by = 2}) async {
+      {userID = 2, instructionId, createdBy = 2, updatedBy = 2}) async {
     await supabase.from('history').upsert({
       'user_id': userID,
       'instruction_id': instructionId,
-      "created_by": created_by,
-      "updated_by": updated_by,
+      "created_by": createdBy,
+      "updated_by": updatedBy,
       "updated_at": (DateTime.now()).toIso8601String(),
     }, onConflict: 'user_id,instruction_id');
   }
@@ -22,10 +22,10 @@ class Insert {
   }
 
   static Future<void> sendFeedback(
-      {instructionId, user_id = 2, text, image}) async {
+      {instructionId, userId = 2, text, image}) async {
     await supabase.from('feedback').insert({
       'instruction_id': instructionId,
-      'user_id': user_id,
+      'user_id': userId,
       'text': text,
       'image': image
     });

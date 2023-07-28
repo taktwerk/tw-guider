@@ -53,14 +53,11 @@ class _FeedbackViewState extends State<FeedbackView> {
     XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     _imagesBytes = base64Encode(await pickedFile!.readAsBytes());
-    if (pickedFile != null) {
-      if (kIsWeb) {
-        selectedImage = Image.network(pickedFile.path);
-      } else {
-        selectedImage = Image.file(File(pickedFile.path));
-      }
+
+    if (kIsWeb) {
+      selectedImage = Image.network(pickedFile.path);
     } else {
-      print("No image selected");
+      selectedImage = Image.file(File(pickedFile.path));
     }
 
     setState(() {});
@@ -92,7 +89,7 @@ class _FeedbackViewState extends State<FeedbackView> {
               },
             ),
             Container(
-                margin: EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
                 //TODO: show file name here
                 child: selectedImage == null
                     ? const Text("No Image selected.")
