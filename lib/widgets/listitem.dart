@@ -84,7 +84,8 @@ class ListItem extends StatelessWidget {
                                   alignment: Alignment.bottomLeft,
                                   child: Text(
                                       'Steps: ? | Last update: ${_instruction.updatedAt}',
-                                      style: TextStyle(color: Colors.grey))),
+                                      style:
+                                          const TextStyle(color: Colors.grey))),
                             ),
                           ],
                         ),
