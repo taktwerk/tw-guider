@@ -24,8 +24,7 @@ class Search {
         .from('instruction_step')
         .select('*')
         .eq('instruction_id', instructionId);
-    final List<InstructionStep> instructionSteps =
-        instructionStepsFromJson(jsonEncode(data)).instructionSteps;
+    final List<InstructionStep> instructionSteps = _mapToInstructionSteps(data);
     instructionSteps.sort(((a, b) => a.stepNr.compareTo(b.stepNr)));
     return instructionSteps;
   }
@@ -63,6 +62,12 @@ class Search {
     return instructions.instructionElements;
   }
 
+  static List<InstructionStep> _mapToInstructionSteps(data) {
+    final List<InstructionStep> instructionSteps =
+        instructionStepsFromJson(jsonEncode(data)).instructionSteps;
+    return instructionSteps;
+  }
+
   // Default: fetch history of user with id = 2
   static Future<List<InstructionElement>> getHistory({userId = 2}) async {
     final data = await supabase
@@ -80,18 +85,6 @@ class Search {
     logger.d(instructions);
     logger.d("History: ${_mapToInstructions(instructions)}");
     return _mapToInstructions(instructions);
-
-    // final data = await supabase
-    //     .from('instruction')
-    //     .select('*, history!inner(instruction_id, up)')
-    //     .eq('history.user_id', userId)
-    //     .order('updated_at', ascending: true);
-
-    // print(data);
-
-    // List<InstructionElement> instr = _mapToInstructions(data);
-    // logger.d("History: ${instr}");
-    // return _mapToInstructions(data);
   }
 
   static Future<InstructionStep> getLastVisitedStep(
@@ -103,8 +96,8 @@ class Search {
         .eq('user_id', userId);
     final steps = [data[0]['instruction_step']];
     final List<InstructionStep> instructionSteps =
-        instructionStepsFromJson(jsonEncode(steps)).instructionSteps;
-    logger.d("Last visited step: ${instructionSteps}");
+        _mapToInstructionSteps(steps);
+    logger.d("Last visited step: $instructionSteps");
     return instructionSteps[0];
   }
 }
