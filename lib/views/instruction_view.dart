@@ -7,6 +7,7 @@ import 'package:guider/objects/instruction_steps.dart';
 import 'package:guider/views/fullscreen_image_viewer.dart';
 import 'package:guider/views/instructionstep_overview.dart';
 import 'package:guider/widgets/tag.dart';
+import 'package:guider/views/feedback_view.dart';
 
 class InstructionView extends StatefulWidget {
   const InstructionView({super.key, required this.instruction});
@@ -67,7 +68,7 @@ class _InstructionViewState extends State<InstructionView> {
                     buildDesc(),
                     buildImage(),
                     const SizedBox(height: 10),
-                    buildButton(),
+                    buildButtons(),
                   ],
                 ),
               ))
@@ -76,6 +77,44 @@ class _InstructionViewState extends State<InstructionView> {
             ),
     );
   }
+
+  Widget buildButtons() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [getCategoryButton(), buildStepButton()],
+      );
+
+  Widget getCategoryButton() => TextButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) =>
+                  FeedbackView(instruction: widget.instruction));
+        },
+        child: const Text('Feedback'),
+      );
+
+  Widget buildStepButton() => Directionality(
+        textDirection: TextDirection.rtl,
+        child: ElevatedButton.icon(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            if (_steps!.isNotEmpty) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => InstructionStepOverview(
+                    instruction: widget.instruction,
+                    steps: _steps!,
+                  ),
+                ),
+              );
+            } else {
+              logger.i("No instruction steps available.");
+            }
+          },
+          label: const Text("Instruction Steps"),
+        ),
+      );
 
   Widget buildDesc() => Expanded(
       flex: 1,
@@ -126,29 +165,6 @@ class _InstructionViewState extends State<InstructionView> {
                       FullScreenImageViewer(widget.instruction.image)),
             );
           },
-        ),
-      );
-
-  Widget buildButton() => Directionality(
-        textDirection: TextDirection.rtl,
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            if (_steps!.isNotEmpty) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => InstructionStepOverview(
-                    instruction: widget.instruction,
-                    steps: _steps!,
-                  ),
-                ),
-              );
-            } else {
-              logger.i("No instruction steps available.");
-            }
-          },
-          label: const Text("Instruction Steps"),
         ),
       );
 

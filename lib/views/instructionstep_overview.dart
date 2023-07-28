@@ -90,8 +90,10 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                             .toList(),
                         onChanged: (item) => setState(
                           () {
+                            int index = _items.indexOf(item!);
+                            setNewStep(index);
                             selectedItem = item;
-                            currentView = _views[_items.indexOf(item!)];
+                            currentView = _views[index];
                           },
                         ),
                         decoration: const InputDecoration(

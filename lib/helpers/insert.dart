@@ -20,4 +20,14 @@ class Insert {
         .eq('instruction_id', instructionId)
         .eq('user_id', userId);
   }
+
+  static Future<void> sendFeedback(
+      {instructionId, user_id = 2, text, image}) async {
+    await supabase.from('feedback').insert({
+      'instruction_id': instructionId,
+      'user_id': user_id,
+      'text': text,
+      'image': image
+    });
+  }
 }
