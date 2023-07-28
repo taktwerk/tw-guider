@@ -78,11 +78,12 @@ class ListItem extends StatelessWidget {
                                   child: Text(_instruction.title,
                                       style: const TextStyle(fontSize: 23))),
                             ),
-                            const Expanded(
+                            Expanded(
                               flex: 1,
                               child: Align(
                                   alignment: Alignment.bottomLeft,
-                                  child: Text('Steps: ? | Last update: ?',
+                                  child: Text(
+                                      'Steps: ? | Last update: ${_instruction.updatedAt}',
                                       style: TextStyle(color: Colors.grey))),
                             ),
                           ],

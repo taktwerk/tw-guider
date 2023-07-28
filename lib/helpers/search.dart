@@ -24,8 +24,7 @@ class Search {
         .from('instruction_step')
         .select('*')
         .eq('instruction_id', instructionId);
-    final List<InstructionStep> instructionSteps =
-        instructionStepsFromJson(jsonEncode(data)).instructionSteps;
+    final List<InstructionStep> instructionSteps = _mapToInstructionSteps(data);
     instructionSteps.sort(((a, b) => a.stepNr.compareTo(b.stepNr)));
     return instructionSteps;
   }
@@ -63,13 +62,42 @@ class Search {
     return instructions.instructionElements;
   }
 
+  static List<InstructionStep> _mapToInstructionSteps(data) {
+    final List<InstructionStep> instructionSteps =
+        instructionStepsFromJson(jsonEncode(data)).instructionSteps;
+    return instructionSteps;
+  }
+
   // Default: fetch history of user with id = 2
   static Future<List<InstructionElement>> getHistory({userId = 2}) async {
     final data = await supabase
-        .from('instruction')
-        .select('*, history!inner(*)')
-        .eq('history.user_id', userId);
-    logger.d("History: ${_mapToInstructions(data)}");
-    return _mapToInstructions(data);
+        .from('history')
+        .select('*, instruction(*)')
+        .eq('user_id', userId)
+        .limit(5)
+        .order('updated_at', ascending: false);
+
+    final instructions = [];
+
+    for (final value in data) {
+      instructions.add(value['instruction']);
+    }
+    logger.d(instructions);
+    logger.d("History: ${_mapToInstructions(instructions)}");
+    return _mapToInstructions(instructions);
+  }
+
+  static Future<InstructionStep> getLastVisitedStep(
+      {userId = 2, instructionId}) async {
+    final data = await supabase
+        .from('history')
+        .select('instruction_step_id, instruction_step(*)')
+        .eq('instruction_id', instructionId)
+        .eq('user_id', userId);
+    final steps = [data[0]['instruction_step']];
+    final List<InstructionStep> instructionSteps =
+        _mapToInstructionSteps(steps);
+    logger.d("Last visited step: $instructionSteps");
+    return instructionSteps[0];
   }
 }

@@ -55,4 +55,9 @@ class InstructionStep {
         "step_nr": stepNr,
         "description": description,
       };
+
+  @override
+  String toString() {
+    return '{id: $id, stepNr: $stepNr}';
+  }
 }
