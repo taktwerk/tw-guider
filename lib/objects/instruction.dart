@@ -29,13 +29,15 @@ class InstructionElement {
   String shortTitle;
   String image;
   String description;
+  String updatedAt;
 
   InstructionElement(
       {required this.id,
       required this.title,
       required this.shortTitle,
       required this.image,
-      required this.description});
+      required this.description,
+      required this.updatedAt});
 
   factory InstructionElement.fromJson(Map<String, dynamic> json) =>
       InstructionElement(
@@ -43,7 +45,8 @@ class InstructionElement {
           title: json["title"],
           shortTitle: json["short_title"],
           image: json["image"],
-          description: json["description"]);
+          description: json["description"],
+          updatedAt: json["updated_at"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -55,6 +58,6 @@ class InstructionElement {
 
   @override
   String toString() {
-    return '{id: $id, title: $title}';
+    return '{title: $title}';
   }
 }

@@ -67,34 +67,43 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
         .where((element) => selectedIds.contains(element.id))
         .toList();
     logger.d("Filtered $filtered");
-    setState(() {
-      _filteredInstructions = filtered;
-    });
+    setState(
+      () {
+        _filteredInstructions = filtered;
+      },
+    );
   }
 
   void showCategories(BuildContext context) async {
     await showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(content: StatefulBuilder(
+        return AlertDialog(
+          content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-          return CategoryPopup(
-              chosenCategory: chosenCategory,
-              updateCategoryInstructions: updateCategoryInstructions);
-        }));
+              return CategoryPopup(
+                  chosenCategory: chosenCategory,
+                  updateCategoryInstructions: updateCategoryInstructions);
+            },
+          ),
+        );
       },
-    ).then((value) {
-      if (value != null) {
-        setState(() {
-          chosenCategory = value;
-          if (chosenCategory != "") {
-            isVisible = true;
-          } else {
-            isVisible = false;
-          }
-        });
-      }
-    });
+    ).then(
+      (value) {
+        if (value != null) {
+          setState(
+            () {
+              chosenCategory = value;
+              if (chosenCategory != "") {
+                isVisible = true;
+              } else {
+                isVisible = false;
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   @override
