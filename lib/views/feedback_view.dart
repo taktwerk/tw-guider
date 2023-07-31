@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/insert.dart';
+import 'package:guider/main.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -16,6 +17,7 @@ class FeedbackView extends StatefulWidget {
 }
 
 class _FeedbackViewState extends State<FeedbackView> {
+  final _popupMenu = GlobalKey<PopupMenuButtonState>();
   final TextEditingController _controller = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
   Image? selectedImage;
@@ -27,39 +29,39 @@ class _FeedbackViewState extends State<FeedbackView> {
     super.dispose();
   }
 
-  // selectFile() async {
-  //   FilePickerResult? result = null;
-  //   if (kIsWeb) {
-  //     // result = await FilePickerWeb.platform
-  //     //     .pickFiles(type: FileType.custom, allowedExtensions: ['jpg', 'png']);
-  //   } else {
-  //     result = await FilePicker.platform
-  //         .pickFiles(type: FileType.custom, allowedExtensions: ['jpg', 'png']);
-  //   }
-
-  //   if (result != null) {
-  //     setState(() {
-  //       String? path = result!.files.first.path;
-  //       selectedfile = File(path!);
-  //     });
-  //   } else {
-  //     print("No file selected");
-  //   }
-
-  //   setState(() {}); //update the UI so that file name is shown
-  // }
-
   selectImage() async {
     XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-    _imagesBytes = base64Encode(await pickedFile!.readAsBytes());
+    if (pickedFile != null) {
+      _imagesBytes = base64Encode(await pickedFile!.readAsBytes());
 
-    if (kIsWeb) {
-      selectedImage = Image.network(pickedFile.path);
+      if (kIsWeb) {
+        selectedImage = Image.network(pickedFile.path);
+      } else {
+        selectedImage = Image.file(File(pickedFile.path));
+      }
     } else {
-      selectedImage = Image.file(File(pickedFile.path));
+      logger.i("No image chosen.");
     }
 
+    setState(() {});
+  }
+
+  takeImage() async {
+    XFile? takenImage =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+
+    if (takenImage != null) {
+      _imagesBytes = base64Encode(await takenImage.readAsBytes());
+
+      if (kIsWeb) {
+        selectedImage = Image.network(takenImage.path);
+      } else {
+        selectedImage = Image.file(File(takenImage.path));
+      }
+    } else {
+      logger.i("No image taken.");
+    }
     setState(() {});
   }
 
@@ -94,13 +96,7 @@ class _FeedbackViewState extends State<FeedbackView> {
                 child: selectedImage == null
                     ? const Text("No Image selected.")
                     : const Text("Image uploaded.")),
-            ElevatedButton.icon(
-              onPressed: () {
-                selectImage();
-              },
-              icon: const Icon(Icons.folder_open),
-              label: const Text("CHOOSE FILE"),
-            ),
+            _getPopupMenuButton(),
           ],
         ),
       ),
@@ -125,6 +121,42 @@ class _FeedbackViewState extends State<FeedbackView> {
           },
         )
       ],
+    );
+  }
+
+  Widget _getPopupMenuButton() => PopupMenuButton(
+        onSelected: (value) => print(value),
+        key: _popupMenu,
+        child: ElevatedButton.icon(
+          onPressed: () {
+            _popupMenu.currentState?.showButtonMenu();
+          },
+          icon: const Icon(Icons.folder_open),
+          label: const Text("CHOOSE IMAGE"),
+        ),
+        itemBuilder: (context) => [
+          _buildPopupMenuItem(
+              "From Gallery", Icons.collections, 0, selectImage),
+          _buildPopupMenuItem("Take Image", Icons.photo_camera, 1, takeImage)
+        ],
+      );
+
+  PopupMenuItem _buildPopupMenuItem(
+      String title, IconData iconData, int position, Function function) {
+    return PopupMenuItem(
+      onTap: () {
+        function();
+      },
+      value: position,
+      child: Row(
+        children: [
+          Icon(
+            iconData,
+            color: Colors.black,
+          ),
+          Text(title),
+        ],
+      ),
     );
   }
 }
