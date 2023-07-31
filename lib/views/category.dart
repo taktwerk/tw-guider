@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
+import 'package:guider/languages/languages.dart';
 import 'package:guider/objects/category.dart';
 
 class CategoryPopup extends StatefulWidget {
@@ -48,15 +49,16 @@ class _CategoryPopupState extends State<CategoryPopup> {
 
   @override
   Widget build(BuildContext context) {
+    final l = Languages.of(context);
     return SizedBox(
       width: double.minPositive,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            "Categories",
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Text(
+            l!.categorieButtonText,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Flexible(
@@ -101,7 +103,7 @@ class _CategoryPopupState extends State<CategoryPopup> {
                 search(_categories![_selectedIndex].id);
               }
             },
-            child: const Text("OK"),
+            child: Text(l.done),
           )
         ],
       ),

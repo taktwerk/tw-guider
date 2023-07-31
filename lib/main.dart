@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:guider/languages/app_localizations.dart';
 import 'package:guider/views/homepage.dart';
 import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:guider/languages/supported_languages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,12 +28,47 @@ var logger = Logger(
         printTime: true // Should each log print contain a timestamp  ),
         ));
 
-class GuiderApp extends StatelessWidget {
+class GuiderApp extends StatefulWidget {
   const GuiderApp({super.key});
+
+  static void setLocale(BuildContext context, Locale newLocale) {
+    var state = context.findAncestorStateOfType<_GuiderAppState>();
+    state!.setLocale(newLocale);
+  }
+
+  @override
+  State<StatefulWidget> createState() => _GuiderAppState();
+}
+
+class _GuiderAppState extends State<GuiderApp> {
+  Locale _locale = const Locale.fromSubtags(languageCode: 'en');
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      locale: _locale,
+      supportedLocales: SupportedLanguages.all,
+      localizationsDelegates: const [
+        AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      localeResolutionCallback: (locale, supportedLocales) {
+        for (var supportedLocale in supportedLocales) {
+          if (supportedLocale.languageCode == locale?.languageCode &&
+              supportedLocale.countryCode == locale?.countryCode) {
+            return supportedLocale;
+          }
+        }
+        return supportedLocales.first;
+      },
       debugShowCheckedModeBanner: false,
       title: 'Guider',
       theme: ThemeData(
@@ -38,7 +76,7 @@ class GuiderApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 92, 172, 252)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Homepage'),
+      home: const MyHomePage(),
     );
   }
 }

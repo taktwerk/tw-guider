@@ -7,8 +7,7 @@ import 'package:guider/views/settings_view.dart';
 import 'package:guider/views/home_view.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -17,6 +16,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
+  //TODO: add language specific text
   final List<Tab> myTabs = <Tab>[
     const Tab(text: 'Home', icon: Icon(Icons.home)),
     const Tab(text: 'Settings', icon: Icon(Icons.settings)),

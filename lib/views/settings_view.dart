@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:guider/languages/languages.dart';
+import 'package:guider/main.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -10,6 +12,25 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
-    return const Text("Settings");
+    final l = Languages.of(context);
+    return Column(
+      children: [
+        Text(l!.settingsTitle),
+        ElevatedButton(
+            onPressed: () {
+              GuiderApp.setLocale(
+                  context, const Locale.fromSubtags(languageCode: 'de'));
+              setState(() {});
+            },
+            child: const Text("DE")),
+        ElevatedButton(
+            onPressed: () {
+              GuiderApp.setLocale(
+                  context, const Locale.fromSubtags(languageCode: 'en'));
+              setState(() {});
+            },
+            child: const Text("EN"))
+      ],
+    );
   }
 }

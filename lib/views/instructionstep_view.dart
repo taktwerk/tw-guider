@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guider/languages/languages.dart';
 import 'package:guider/objects/instruction_steps.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
@@ -23,12 +24,13 @@ class _InstructionStepViewState extends State<InstructionStepView> {
 
   @override
   Widget build(BuildContext context) {
+    final l = Languages.of(context);
     return Column(
       children: [
         HtmlWidget(
           widget.instructionStep.description,
         ),
-        Text("Step ${widget.instructionStep.stepNr}")
+        Text("${l!.step} ${widget.instructionStep.stepNr}")
       ],
     );
   }
