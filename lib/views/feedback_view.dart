@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/insert.dart';
@@ -29,38 +30,64 @@ class _FeedbackViewState extends State<FeedbackView> {
     super.dispose();
   }
 
-  selectImage() async {
-    XFile? pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      _imagesBytes = base64Encode(await pickedFile!.readAsBytes());
+  bool isDevice() {
+    return Platform.isAndroid || Platform.isIOS;
+  }
 
-      if (kIsWeb) {
-        selectedImage = Image.network(pickedFile.path);
+  bool isDesktop() {
+    return Platform.isMacOS || Platform.isLinux || Platform.isWindows;
+  }
+
+  selectImage() async {
+    if (kIsWeb || isDevice()) {
+      XFile? pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        _imagesBytes = base64Encode(await pickedFile.readAsBytes());
+
+        if (kIsWeb) {
+          selectedImage = Image.network(pickedFile.path);
+        } else {
+          selectedImage = Image.file(File(pickedFile.path));
+        }
       } else {
+        logger.i("No image chosen.");
+      }
+
+      setState(() {});
+    } else {
+      logger.i("Desktop image.");
+
+      const XTypeGroup typeGroup = XTypeGroup(
+        label: 'images',
+        extensions: <String>['jpg', 'png'],
+      );
+      final XFile? pickedFile =
+          await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+      if (pickedFile != null) {
+        print("Image Desktop");
+        _imagesBytes = base64Encode(await pickedFile.readAsBytes());
         selectedImage = Image.file(File(pickedFile.path));
       }
-    } else {
-      logger.i("No image chosen.");
+      setState(() {});
     }
-
-    setState(() {});
   }
 
   takeImage() async {
-    XFile? takenImage =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+    if (!kIsWeb && !isDesktop()) {
+      XFile? takenImage =
+          await ImagePicker().pickImage(source: ImageSource.camera);
 
-    if (takenImage != null) {
-      _imagesBytes = base64Encode(await takenImage.readAsBytes());
+      if (takenImage != null) {
+        _imagesBytes = base64Encode(await takenImage.readAsBytes());
 
-      if (kIsWeb) {
-        selectedImage = Image.network(takenImage.path);
-      } else {
         selectedImage = Image.file(File(takenImage.path));
+        setState(() {});
+      } else {
+        logger.i("No image selected");
       }
     } else {
-      logger.i("No image taken.");
+      selectImage();
     }
     setState(() {});
   }
@@ -110,6 +137,7 @@ class _FeedbackViewState extends State<FeedbackView> {
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               Insert.sendFeedback(
+                  userId: currentUser,
                   text: _controller.text,
                   instructionId: widget.instruction.id,
                   image: _imagesBytes);

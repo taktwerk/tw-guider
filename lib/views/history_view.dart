@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
+import 'package:guider/main.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/widgets/listitem.dart';
 
@@ -21,7 +22,7 @@ class _HistoryState extends State<History> {
   }
 
   void getData() async {
-    var data = await Search.getHistory();
+    var data = await Search.getHistory(userId: currentUser);
     setState(() {
       _instructions = data;
     });

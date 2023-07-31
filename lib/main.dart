@@ -13,6 +13,7 @@ void main() async {
 }
 
 final supabase = Supabase.instance.client;
+int currentUser = 1;
 
 var logger = Logger(
     printer: PrettyPrinter(
@@ -30,6 +31,7 @@ class GuiderApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Guider',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(

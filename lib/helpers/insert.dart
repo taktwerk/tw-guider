@@ -2,9 +2,9 @@ import 'package:guider/main.dart';
 
 class Insert {
   static Future<void> updateHistory(
-      {userID = 2, instructionId, createdBy = 2, updatedBy = 2}) async {
+      {userId = 2, instructionId, createdBy = 2, updatedBy = 2}) async {
     await supabase.from('history').upsert({
-      'user_id': userID,
+      'user_id': userId,
       'instruction_id': instructionId,
       "created_by": createdBy,
       "updated_by": updatedBy,
