@@ -3,6 +3,7 @@ import 'package:guider/main.dart';
 import 'package:guider/objects/category.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/objects/instruction_steps.dart';
+import 'package:guider/objects/user.dart';
 
 class Search {
   static Future<List<InstructionElement>> getAllInstructions() async {
@@ -68,6 +69,11 @@ class Search {
     return instructionSteps;
   }
 
+  static List<User> _mapToUsers(data) {
+    final Users users = usersFromJson(jsonEncode(data));
+    return users.users;
+  }
+
   // Default: fetch history of user with id = 2
   static Future<List<InstructionElement>> getHistory({userId = 2}) async {
     final data = await supabase
@@ -99,5 +105,10 @@ class Search {
         _mapToInstructionSteps(steps);
     logger.d("Last visited step: $instructionSteps");
     return instructionSteps[0];
+  }
+
+  static Future<List<User>> getUsers() async {
+    final data = await supabase.from('user').select('*');
+    return _mapToUsers(data);
   }
 }

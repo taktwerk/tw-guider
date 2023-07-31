@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/insert.dart';
+import 'package:guider/main.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/views/instruction_view.dart';
 
@@ -19,7 +20,8 @@ class ListItem extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       child: InkWell(
           onTap: () {
-            Insert.updateHistory(instructionId: _instruction.id);
+            Insert.updateHistory(
+                userId: currentUser, instructionId: _instruction.id);
             Navigator.push(
               context,
               MaterialPageRoute(

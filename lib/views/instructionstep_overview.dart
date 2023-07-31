@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/insert.dart';
 import 'package:guider/helpers/search.dart';
+import 'package:guider/main.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/objects/instruction_steps.dart';
 import 'package:guider/views/instructionstep_view.dart';
@@ -32,7 +33,8 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
   }
 
   Future getLastVisitedStep(id) async {
-    var res = await Search.getLastVisitedStep(instructionId: id);
+    var res =
+        await Search.getLastVisitedStep(instructionId: id, userId: currentUser);
     var item = "Step ${res.stepNr}/${widget.steps.length}";
     int index = _items.indexOf(item);
     setState(() {
@@ -59,6 +61,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
 
   void setNewStep(index) {
     Insert.setNewStep(
+        userId: currentUser,
         instructionStepId: _views[index].instructionStep.id,
         instructionId: instructionId);
   }
