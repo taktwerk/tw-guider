@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
+import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/views/category.dart';
@@ -149,7 +150,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
           onPressed: () {
             showCategories(context);
           },
-          child: const Text('Categories'),
+          child: Text(Languages.of(context)!.categorieButtonText),
         ),
       );
 

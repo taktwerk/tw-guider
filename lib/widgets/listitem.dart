@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/insert.dart';
+import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/views/instruction_view.dart';
@@ -14,6 +15,7 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = Languages.of(context);
     return Card(
       elevation: 4,
       margin: const EdgeInsets.all(10),
@@ -85,7 +87,7 @@ class ListItem extends StatelessWidget {
                               child: Align(
                                   alignment: Alignment.bottomLeft,
                                   child: Text(
-                                      'Steps: ? | Last update: ${_instruction.updatedAt}',
+                                      '${l!.steps}: ? | ${l.lastUpdate}: ${_instruction.updatedAt}',
                                       style:
                                           const TextStyle(color: Colors.grey))),
                             ),

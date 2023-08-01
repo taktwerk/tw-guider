@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
+import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/category.dart';
 import 'package:guider/objects/instruction.dart';
@@ -41,6 +42,7 @@ class _InstructionViewState extends State<InstructionView> {
 
   @override
   Widget build(BuildContext context) {
+    final l = Languages.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -52,7 +54,7 @@ class _InstructionViewState extends State<InstructionView> {
               child: Center(
                 child: Column(
                   children: [
-                    const Text("Categories:"),
+                    Text("${l!.categorieButtonText}:"),
                     _categories!.isEmpty
                         ? const Text("---")
                         : Wrap(
@@ -62,9 +64,9 @@ class _InstructionViewState extends State<InstructionView> {
                                     child: getTagContent(
                                         _categories![index].name))),
                           ),
-                    Text("Short title: ${widget.instruction.shortTitle}"),
+                    Text("${l.shortTitle}: ${widget.instruction.shortTitle}"),
                     const SizedBox(height: 10),
-                    const Text("Description"),
+                    Text(l.description),
                     buildDesc(),
                     buildImage(),
                     const SizedBox(height: 10),
@@ -90,7 +92,7 @@ class _InstructionViewState extends State<InstructionView> {
               builder: (context) =>
                   FeedbackView(instruction: widget.instruction));
         },
-        child: const Text('Feedback'),
+        child: Text(Languages.of(context)!.feedback),
       );
 
   Widget buildStepButton() => Directionality(
@@ -112,7 +114,7 @@ class _InstructionViewState extends State<InstructionView> {
               logger.i("No instruction steps available.");
             }
           },
-          label: const Text("Instruction Steps"),
+          label: Text(Languages.of(context)!.instructionSteps),
         ),
       );
 

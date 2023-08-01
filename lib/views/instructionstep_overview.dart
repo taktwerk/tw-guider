@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/insert.dart';
 import 'package:guider/helpers/search.dart';
+import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/objects/instruction_steps.dart';
@@ -35,7 +36,8 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
   Future getLastVisitedStep(id) async {
     var res =
         await Search.getLastVisitedStep(instructionId: id, userId: currentUser);
-    var item = "Step ${res.stepNr}/${widget.steps.length}";
+
+    var item = "${res.stepNr}/${widget.steps.length}";
     int index = _items.indexOf(item);
     setState(() {
       selectedItem = item;
@@ -48,7 +50,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
     for (var item in widget.steps) {
       _views.add(InstructionStepView(
           instructionTitle: widget.instruction.title, instructionStep: item));
-      _items.add("Step ${item.stepNr}/${widget.steps.length}");
+      _items.add("${item.stepNr}/${widget.steps.length}");
     }
     setState(() {
       _itemsLength = _items.length;
@@ -68,6 +70,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
 
   @override
   Widget build(BuildContext context) {
+    final l = Languages.of(context);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -88,7 +91,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                         items: _items
                             .map((item) => DropdownMenuItem<String>(
                                   value: item,
-                                  child: Text(item),
+                                  child: Text("${l!.step} $item"),
                                 ))
                             .toList(),
                         onChanged: (item) => setState(
@@ -99,10 +102,10 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                             currentView = _views[index];
                           },
                         ),
-                        decoration: const InputDecoration(
-                          labelText: "Instruction Steps",
-                          prefixIcon: Icon(Icons.format_list_numbered),
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l!.instructionSteps,
+                          prefixIcon: const Icon(Icons.format_list_numbered),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                     ),
@@ -118,6 +121,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
   }
 
   Widget backAndForthButtons() {
+    final l = Languages.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -133,7 +137,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                     currentView = _views[index];
                   });
                 },
-                label: const Text("Back"),
+                label: Text(l!.back),
               )
             : Container(),
         _items.indexOf(selectedItem!) != _itemsLength! - 1
@@ -150,7 +154,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                       currentView = _views[index];
                     });
                   },
-                  label: const Text("Next"),
+                  label: Text(l!.next),
                 ),
               )
             : Directionality(
@@ -160,7 +164,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  label: const Text("!Done"),
+                  label: Text("!${l!.done}"),
                 ),
               ),
       ],

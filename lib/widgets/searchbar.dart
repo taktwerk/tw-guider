@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/search.dart';
+import 'package:guider/languages/languages.dart';
 
 class SearchBarWidget extends StatefulWidget {
   final Function updateInstructions;
@@ -44,6 +45,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final l = Languages.of(context);
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -52,7 +54,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
         child: TextField(
           controller: _searchController,
           decoration: InputDecoration(
-            hintText: 'Search...',
+            hintText: l!.search,
             // Add a clear button to the search bar
             suffixIcon: IconButton(
               icon: const Icon(Icons.clear),

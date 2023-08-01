@@ -4,6 +4,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/insert.dart';
+import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:image_picker/image_picker.dart';
@@ -65,7 +66,6 @@ class _FeedbackViewState extends State<FeedbackView> {
       final XFile? pickedFile =
           await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
       if (pickedFile != null) {
-        print("Image Desktop");
         _imagesBytes = base64Encode(await pickedFile.readAsBytes());
         selectedImage = Image.file(File(pickedFile.path));
       }
@@ -94,6 +94,7 @@ class _FeedbackViewState extends State<FeedbackView> {
 
   @override
   Widget build(BuildContext context) {
+    final l = Languages.of(context);
     return AlertDialog(
       content: Form(
         key: _formKey,
@@ -103,8 +104,8 @@ class _FeedbackViewState extends State<FeedbackView> {
             TextFormField(
               controller: _controller,
               keyboardType: TextInputType.multiline,
-              decoration: const InputDecoration(
-                hintText: 'Enter your feedback here',
+              decoration: InputDecoration(
+                hintText: l!.feedbackContent,
                 filled: true,
               ),
               maxLines: 5,
@@ -112,7 +113,7 @@ class _FeedbackViewState extends State<FeedbackView> {
               textInputAction: TextInputAction.done,
               validator: (String? text) {
                 if (text == null || text.isEmpty) {
-                  return 'Please enter a value';
+                  return l.pleaseEnterValue;
                 }
                 return null;
               },
@@ -121,19 +122,19 @@ class _FeedbackViewState extends State<FeedbackView> {
                 margin: const EdgeInsets.all(10),
                 //TODO: show file name here
                 child: selectedImage == null
-                    ? const Text("No Image selected.")
-                    : const Text("Image uploaded.")),
+                    ? Text(l.noImageSelected)
+                    : Text(l.imageSelected)),
             _getPopupMenuButton(),
           ],
         ),
       ),
       actions: [
         TextButton(
-          child: const Text('Cancel'),
+          child: Text(l.cancel),
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
-          child: const Text('Send'),
+          child: Text(l.send),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               Insert.sendFeedback(
@@ -152,22 +153,24 @@ class _FeedbackViewState extends State<FeedbackView> {
     );
   }
 
-  Widget _getPopupMenuButton() => PopupMenuButton(
-        onSelected: (value) => print(value),
-        key: _popupMenu,
-        child: ElevatedButton.icon(
-          onPressed: () {
-            _popupMenu.currentState?.showButtonMenu();
-          },
-          icon: const Icon(Icons.folder_open),
-          label: const Text("CHOOSE IMAGE"),
-        ),
-        itemBuilder: (context) => [
-          _buildPopupMenuItem(
-              "From Gallery", Icons.collections, 0, selectImage),
-          _buildPopupMenuItem("Take Image", Icons.photo_camera, 1, takeImage)
-        ],
-      );
+  Widget _getPopupMenuButton() {
+    final l = Languages.of(context);
+    return PopupMenuButton(
+      onSelected: (value) => print(value),
+      key: _popupMenu,
+      child: ElevatedButton.icon(
+        onPressed: () {
+          _popupMenu.currentState?.showButtonMenu();
+        },
+        icon: const Icon(Icons.folder_open),
+        label: Text(l!.chooseImage.toUpperCase()),
+      ),
+      itemBuilder: (context) => [
+        _buildPopupMenuItem(l.fromGallery, Icons.collections, 0, selectImage),
+        _buildPopupMenuItem(l.takeImage, Icons.photo_camera, 1, takeImage)
+      ],
+    );
+  }
 
   PopupMenuItem _buildPopupMenuItem(
       String title, IconData iconData, int position, Function function) {
