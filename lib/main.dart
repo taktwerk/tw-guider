@@ -1,13 +1,21 @@
+import 'dart:async';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:guider/languages/app_localizations.dart';
 import 'package:guider/views/homepage.dart';
 import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:guider/languages/supported_languages.dart';
 
+ValueNotifier<bool> isDeviceConnected = ValueNotifier(false);
+final database = AppDatabase();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Supabase.initialize(
       url: "https://spohaqvzfgvdihxcwvff.supabase.co",
       anonKey:
@@ -42,11 +50,41 @@ class GuiderApp extends StatefulWidget {
 
 class _GuiderAppState extends State<GuiderApp> {
   Locale _locale = const Locale.fromSubtags(languageCode: 'en');
+  late StreamSubscription<ConnectivityResult> subscription;
 
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    database.addInstruction(InstructionsCompanion.insert(
+        description: 'description',
+        image: 'image',
+        shortTitle: 'short title',
+        title: 'title'));
+    test();
+
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) async {
+      isDeviceConnected.value = await InternetConnectionChecker().hasConnection;
+      logger.w("Internet status: $isDeviceConnected");
+    });
+  }
+
+  test() async {
+    var allI = await database.allInstructionEntries;
+    print("INSTRUCTIONS $allI");
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   @override
