@@ -24,16 +24,32 @@ class Categories {
 class Category {
   int id;
   String name;
+  String updatedAt;
+  int updatedBy;
+  String createdAt;
+  int createdBy;
+  String? deletedAt;
+  int? deletedBy;
 
-  Category({
-    required this.id,
-    required this.name,
-  });
+  Category(
+      {required this.id,
+      required this.name,
+      required this.updatedAt,
+      required this.updatedBy,
+      required this.createdAt,
+      required this.createdBy,
+      required this.deletedAt,
+      required this.deletedBy});
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-        id: json["id"],
-        name: json["name"],
-      );
+      id: json["id"],
+      name: json["name"],
+      updatedAt: json["updated_at"],
+      updatedBy: json["updated_by"],
+      createdBy: json["created_by"],
+      createdAt: json["created_at"],
+      deletedAt: json["deleted_at"],
+      deletedBy: json["deleted_by"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
