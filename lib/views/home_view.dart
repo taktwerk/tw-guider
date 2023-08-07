@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/search.dart';
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/instruction.dart';
 import 'package:guider/views/category.dart';
 import 'package:guider/widgets/listitem.dart';
 import 'package:guider/widgets/searchbar.dart';
 import 'package:guider/widgets/tag.dart';
+import 'package:guider/objects/guider_database.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -20,22 +21,43 @@ class ListOfInstructions extends ChangeNotifier {
 }
 
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
-  List<InstructionElement>? _filteredInstructions;
-  List<InstructionElement>? _instructionsBySearch;
-  List<InstructionElement>? _instructionsByCategory;
-  List<InstructionElement>? _allInstructions;
+  List<Instruction>? driftInstructions;
+  List<Instruction>? _filteredInstructions;
+  List<Instruction>? _instructionsBySearch;
+  List<Instruction>? _instructionsByCategory;
+  List<Instruction>? _allInstructions;
   String chosenCategory = "";
   bool isVisible = false;
+  bool loaded = false;
+  bool loading = false;
   final ScrollController _scrollController = ScrollController();
 
   Future getAllInstructions() async {
-    var result = await Search.getAllInstructions();
+    var data = await Singleton().getDatabase().allInstructionEntries;
     setState(() {
-      _filteredInstructions = result;
+      _filteredInstructions = data;
       _instructionsBySearch = _filteredInstructions;
       _instructionsByCategory = _filteredInstructions;
       _allInstructions = _filteredInstructions;
     });
+  }
+
+  Future sync() async {
+    try {
+      await SupabaseToDrift.sync();
+
+      var data = await Singleton().getDatabase().allInstructionEntries;
+      setState(() {
+        driftInstructions = data;
+      });
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+      //handleError(e);
+      logger.e("Error log ${e.toString()}");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$e")));
+    }
   }
 
   @override
@@ -123,21 +145,36 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
             ],
           ),
           getCategoryTag(),
+          ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  loading = true;
+                });
+                sync().then((value) {
+                  setState(() {
+                    loading = false;
+                  });
+                });
+              },
+              child: const Text("Get instructions")),
+          loading ? const CircularProgressIndicator() : Container(),
           _filteredInstructions != null
-              ? Expanded(
-                  child: Scrollbar(
-                  controller: _scrollController,
-                  thumbVisibility: true,
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: _filteredInstructions!.length,
-                    itemBuilder: (context, index) {
-                      return ListItem(
-                          instruction: _filteredInstructions![index]);
-                    },
-                  ),
-                ))
+              ? _filteredInstructions!.isEmpty
+                  ? const Text("No instructions available")
+                  : Expanded(
+                      child: Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: true,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: _filteredInstructions?.length,
+                        itemBuilder: (context, index) {
+                          return ListItem(
+                              instruction: _filteredInstructions![index]);
+                        },
+                      ),
+                    ))
               : const CircularProgressIndicator(),
         ],
       ),

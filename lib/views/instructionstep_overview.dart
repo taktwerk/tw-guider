@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/insert.dart';
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/search.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/instruction.dart';
-import 'package:guider/objects/instruction_steps.dart';
 import 'package:guider/views/instructionstep_view.dart';
 
 class InstructionStepOverview extends StatefulWidget {
   const InstructionStepOverview(
       {super.key, required this.instruction, required this.steps});
 
-  final InstructionElement instruction;
+  final Instruction instruction;
   final List<InstructionStep> steps;
 
   @override

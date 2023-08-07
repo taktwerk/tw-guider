@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/insert.dart';
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/instruction.dart';
 import 'package:guider/views/instruction_view.dart';
 
 class ListItem extends StatelessWidget {
   const ListItem({
     super.key,
-    required InstructionElement instruction,
+    required Instruction instruction,
   }) : _instruction = instruction;
 
-  final InstructionElement _instruction;
+  final Instruction _instruction;
 
   @override
   Widget build(BuildContext context) {
