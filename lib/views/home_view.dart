@@ -21,7 +21,6 @@ class ListOfInstructions extends ChangeNotifier {
 }
 
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
-  List<Instruction>? driftInstructions;
   List<Instruction>? _filteredInstructions;
   List<Instruction>? _instructionsBySearch;
   List<Instruction>? _instructionsByCategory;
@@ -48,7 +47,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
 
       var data = await Singleton().getDatabase().allInstructionEntries;
       setState(() {
-        driftInstructions = data;
+        _filteredInstructions = data;
       });
     } catch (e) {
       setState(() {
@@ -156,7 +155,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                   });
                 });
               },
-              child: const Text("Get instructions")),
+              child: const Text("Sync")),
           loading ? const CircularProgressIndicator() : Container(),
           _filteredInstructions != null
               ? _filteredInstructions!.isEmpty
