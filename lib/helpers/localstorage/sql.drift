@@ -1,0 +1,104 @@
+create table
+  categories (
+    id bigint not null,
+    name character not null,
+    created_at dateTime not null,
+    created_by bigint not null,
+    updated_at dateTime not null,
+    updated_by bigint not null,
+    deleted_at dateTime null,
+    deleted_by bigint null,
+    constraint category_pkey primary key (id)
+  ) as Category;
+
+
+create table
+  instructions (
+    id bigint,
+    title character not null,
+    short_title character not null,
+    image character not null,
+    description character not null,
+    created_at dateTime not null,
+    created_by bigint not null,
+    updated_at dateTime not null,
+    updated_by bigint not null,
+    deleted_at dateTime null,
+    deleted_by bigint null,
+    constraint instruction_pkey primary key (id)
+  );
+
+  create table
+  feedback (
+    id bigint,
+    instruction_id bigint not null,
+    user_id bigint not null,
+    feedback_text character not null,
+    image character null,
+    created_at datetime not null,
+    constraint feedback_pkey primary key (id)
+  ) as Feedback;
+
+  create table
+  histories (
+    user_id bigint not null,
+    instruction_id bigint not null,
+    created_at datetime not null,
+    created_by bigint not null,
+    updated_at datetime not null,
+    updated_by bigint not null,
+    deleted_at datetime null,
+    deleted_by bigint null,
+    instruction_step_id bigint null,
+    constraint history_pkey primary key (user_id, instruction_id),
+    constraint history_instruction_id_fkey foreign key (instruction_id) references instructions (id) on delete cascade,
+    constraint history_instruction_step_id_fkey foreign key (instruction_step_id) references instruction_steps (id) on delete cascade,
+    constraint history_user_id_fkey foreign key (user_id) references users (id) on delete cascade
+  ) as History;
+
+  create table
+  users (
+    id bigint,
+    username not null,
+    role not null,
+    last_online datetime not null,
+    created_at datetime not null,
+    created_by bigint not null,
+    updated_at datetime not null,
+    updated_by bigint not null,
+    deleted_at datetime null,
+    deleted_by bigint null,
+    constraint user_pkey primary key (id)
+  );
+
+  create table
+  instruction_steps (
+    id bigint,
+    instruction_id bigint not null,
+    step_nr bigint not null,
+    description character not null,
+    image character not null,
+    created_at datetime not null,
+    created_by bigint not null,
+    updated_at datetime not null,
+    updated_by bigint not null,
+    deleted_at datetime null,
+    deleted_by bigint null,
+    constraint instruction_steps_pkey primary key (id),
+    constraint instruction_step_instruction_id_fkey foreign key (instruction_id) references instructions (id) on delete cascade
+  );
+
+  create table
+  InstructionsCategories (
+    category_id bigint not null,
+    instruction_id bigint not null,
+    created_at datetime not null,
+    created_by bigint not null,
+    updated_at datetime not null,
+    updated_by bigint not null,
+    deleted_at datetime null,
+    deleted_by bigint null,
+    constraint instruction_category_pkey primary key (category_id, instruction_id),
+    constraint instruction_category_category_id_fkey foreign key (category_id) references categories (id) on delete cascade,
+    constraint instruction_category_instruction_id_fkey foreign key (instruction_id) references instructions (id) on delete cascade
+  ) as InstructionCategory;
