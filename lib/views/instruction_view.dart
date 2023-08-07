@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/search.dart';
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/category.dart';
-import 'package:guider/objects/instruction.dart';
-import 'package:guider/objects/instruction_steps.dart';
+import 'package:guider/objects/guider_database.dart';
 import 'package:guider/views/fullscreen_image_viewer.dart';
 import 'package:guider/views/instructionstep_overview.dart';
 import 'package:guider/widgets/tag.dart';
@@ -13,7 +11,7 @@ import 'package:guider/views/feedback_view.dart';
 class InstructionView extends StatefulWidget {
   const InstructionView({super.key, required this.instruction});
 
-  final InstructionElement instruction;
+  final Instruction instruction;
 
   @override
   State<InstructionView> createState() => _InstructionViewState();
@@ -31,9 +29,13 @@ class _InstructionViewState extends State<InstructionView> {
   }
 
   Future getData() async {
-    var steps = await Search.getInstructionSteps(widget.instruction.id);
-    var categories =
-        await Search.getCategoriesOfInstruction(widget.instruction.id);
+    var steps = await Singleton()
+        .getDatabase()
+        .getInstructionStepsByInstructionId(widget.instruction.id);
+
+    var categories = await Singleton()
+        .getDatabase()
+        .getCategoriesOfInstruction(widget.instruction.id);
     setState(() {
       _steps = steps;
       _categories = categories;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/search.dart';
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
-import 'package:guider/objects/category.dart';
+import 'package:guider/objects/guider_database.dart';
 
 class CategoryPopup extends StatefulWidget {
   const CategoryPopup(
@@ -29,7 +29,7 @@ class _CategoryPopupState extends State<CategoryPopup> {
   }
 
   Future getCategories() async {
-    var result = await Search.getCategories();
+    var result = await Singleton().getDatabase().allCategoryEntries;
     setState(() {
       _categories = result;
     });
@@ -38,12 +38,13 @@ class _CategoryPopupState extends State<CategoryPopup> {
   }
 
   void search(category) async {
-    var val = await Search.getInstructionByCategory(category);
+    var val =
+        await Singleton().getDatabase().getInstructionByCategory(category);
     widget.updateCategoryInstructions(val);
   }
 
   void clear() async {
-    var val = await Search.getAllInstructions();
+    var val = await Singleton().getDatabase().allInstructionEntries;
     widget.updateCategoryInstructions(val);
   }
 

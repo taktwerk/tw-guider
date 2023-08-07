@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/search.dart';
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/instruction.dart';
+import 'package:guider/objects/guider_database.dart';
 import 'package:guider/widgets/listitem.dart';
 
-class History extends StatefulWidget {
-  const History({super.key});
+class HistoryView extends StatefulWidget {
+  const HistoryView({super.key});
 
   @override
-  State<StatefulWidget> createState() => _HistoryState();
+  State<StatefulWidget> createState() => _HistoryViewState();
 }
 
-class _HistoryState extends State<History> {
-  List<InstructionElement>? _instructions;
+class _HistoryViewState extends State<HistoryView> {
+  List<Instruction>? _instructions;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -21,8 +21,8 @@ class _HistoryState extends State<History> {
     getData();
   }
 
-  void getData() async {
-    var data = await Search.getHistory(userId: currentUser);
+  Future getData() async {
+    var data = await Singleton().getDatabase().getUserHistory(currentUser);
     setState(() {
       _instructions = data;
     });

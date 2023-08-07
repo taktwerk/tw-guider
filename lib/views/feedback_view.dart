@@ -4,15 +4,15 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/insert.dart';
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/instruction.dart';
 import 'package:image_picker/image_picker.dart';
 
 class FeedbackView extends StatefulWidget {
   const FeedbackView({super.key, required this.instruction});
 
-  final InstructionElement instruction;
+  final Instruction instruction;
 
   @override
   State<StatefulWidget> createState() => _FeedbackViewState();
