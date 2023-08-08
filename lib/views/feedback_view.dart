@@ -156,7 +156,6 @@ class _FeedbackViewState extends State<FeedbackView> {
   Widget _getPopupMenuButton() {
     final l = Languages.of(context);
     return PopupMenuButton(
-      onSelected: (value) => print(value),
       key: _popupMenu,
       child: ElevatedButton.icon(
         onPressed: () {

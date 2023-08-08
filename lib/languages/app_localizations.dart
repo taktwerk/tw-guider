@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guider/languages/de.dart';
 import 'package:guider/languages/en.dart';
 import 'package:guider/languages/languages.dart';
+import 'package:guider/main.dart';
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<Languages> {
   const AppLocalizationsDelegate();
@@ -15,10 +16,10 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<Languages> {
   static Future<Languages> _load(Locale locale) async {
     switch (locale.languageCode) {
       case 'en':
-        print("changed to EN");
+        logger.i("changed to EN");
         return LanguageEn();
       case 'de':
-        print("changed to DE");
+        logger.i("changed to DE");
         return LanguageDe();
       default:
         return LanguageEn();
