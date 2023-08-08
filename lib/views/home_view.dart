@@ -35,9 +35,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     var data = await Singleton().getDatabase().allInstructionEntries;
     setState(() {
       _filteredInstructions = data;
-      _instructionsBySearch = _filteredInstructions;
-      _instructionsByCategory = _filteredInstructions;
-      _allInstructions = _filteredInstructions;
+      _instructionsBySearch = data;
+      _instructionsByCategory = data;
+      _allInstructions = data;
     });
   }
 
@@ -45,10 +45,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     try {
       await SupabaseToDrift.sync();
 
-      var data = await Singleton().getDatabase().allInstructionEntries;
-      setState(() {
-        _filteredInstructions = data;
-      });
+      await getAllInstructions();
     } catch (e) {
       setState(() {
         loading = false;
@@ -68,21 +65,21 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     getAllInstructions();
   }
 
-  void updateSearchInstructions(newInstructions) {
+  Future<void> updateSearchInstructions(newInstructions) async {
     setState(() {
       _instructionsBySearch = newInstructions;
     });
-    combineCategoryAndSearch();
+    await combineCategoryAndSearch();
   }
 
-  void updateCategoryInstructions(newInstructions) {
+  Future<void> updateCategoryInstructions(newInstructions) async {
     setState(() {
       _instructionsByCategory = newInstructions;
     });
-    combineCategoryAndSearch();
+    await combineCategoryAndSearch();
   }
 
-  void combineCategoryAndSearch() {
+  Future<void> combineCategoryAndSearch() async {
     final selectedIds =
         _instructionsBySearch!.map((component) => component.id).toList();
     final filtered = _instructionsByCategory!
