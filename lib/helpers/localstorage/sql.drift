@@ -30,12 +30,18 @@ create table
 
   create table
   feedback (
-    id bigint,
+    id char(20) not null,
+    is_synced bool not null,
     instruction_id bigint not null,
     user_id bigint not null,
-    feedback_text character not null,
+    message character not null,
     image character null,
     created_at datetime not null,
+    created_by bigint not null,
+    updated_at datetime not null,
+    updated_by bigint not null,
+    deleted_at datetime null,
+    deleted_by bigint null,
     constraint feedback_pkey primary key (id)
   ) as Feedback;
 
@@ -59,9 +65,8 @@ create table
   create table
   users (
     id bigint,
-    username not null,
-    role not null,
-    last_online datetime not null,
+    username character not null,
+    role character not null,
     created_at datetime not null,
     created_by bigint not null,
     updated_at datetime not null,
@@ -102,3 +107,25 @@ create table
     constraint instruction_category_category_id_fkey foreign key (category_id) references categories (id) on delete cascade,
     constraint instruction_category_instruction_id_fkey foreign key (instruction_id) references instructions (id) on delete cascade
   ) as InstructionCategory;
+
+  create table
+  settings (
+    user_id bigint,
+    language character not null,
+    created_at datetime not null,
+    created_by bigint not null,
+    updated_at datetime not null,
+    updated_by bigint not null,
+    deleted_at datetime null,
+    deleted_by bigint null,
+    constraint setting_pkey primary key (user_id),
+    constraint setting_user_id_fkey foreign key (user_id) references users (id) on delete cascade
+  );
+
+
+updateHistoryEntry(REQUIRED :instruction_id as int, REQUIRED :updated_at as datetime): WITH new_id AS (SELECT :instruction_id AS instruction_id, :updated_at as updated_at)
+INSERT INTO histories (user_id, instruction_id, created_by, created_at, updated_at, updated_by, instruction_step_id)
+VALUES (:user_id,(SELECT instruction_id FROM new_id), :created_by, :created_at, :updated_at, :updated_by, (SELECT i.id FROM instruction_steps i
+WHERE i.step_nr = (SELECT MIN(j.step_nr) FROM instruction_steps j WHERE j.instruction_id = (SELECT id FROM new_id)) AND i.instruction_id = (SELECT id FROM new_id)))
+ON CONFLICT (user_id, instruction_id) DO UPDATE
+SET updated_at = (SELECT updated_at FROM new_id);
