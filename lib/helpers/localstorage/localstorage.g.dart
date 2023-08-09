@@ -956,11 +956,18 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
   final String? _alias;
   FeedbackTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints: '');
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _isSyncedMeta =
+      const VerificationMeta('isSynced');
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+      'is_synced', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _instructionIdMeta =
       const VerificationMeta('instructionId');
   late final GeneratedColumn<int> instructionId = GeneratedColumn<int>(
@@ -974,10 +981,10 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-  static const VerificationMeta _feedbackTextMeta =
-      const VerificationMeta('feedbackText');
-  late final GeneratedColumn<String> feedbackText = GeneratedColumn<String>(
-      'feedback_text', aliasedName, false,
+  static const VerificationMeta _messageMeta =
+      const VerificationMeta('message');
+  late final GeneratedColumn<String> message = GeneratedColumn<String>(
+      'message', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
@@ -994,9 +1001,56 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
       type: DriftSqlType.dateTime,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdByMeta =
+      const VerificationMeta('createdBy');
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+      'created_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedByMeta =
+      const VerificationMeta('updatedBy');
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+      'updated_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _deletedByMeta =
+      const VerificationMeta('deletedBy');
+  late final GeneratedColumn<int> deletedBy = GeneratedColumn<int>(
+      'deleted_by', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, instructionId, userId, feedbackText, image, createdAt];
+  List<GeneratedColumn> get $columns => [
+        id,
+        isSynced,
+        instructionId,
+        userId,
+        message,
+        image,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
+        deletedAt,
+        deletedBy
+      ];
   @override
   String get aliasedName => _alias ?? 'feedback';
   @override
@@ -1008,6 +1062,14 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('is_synced')) {
+      context.handle(_isSyncedMeta,
+          isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta));
+    } else if (isInserting) {
+      context.missing(_isSyncedMeta);
     }
     if (data.containsKey('instruction_id')) {
       context.handle(
@@ -1023,13 +1085,11 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
     } else if (isInserting) {
       context.missing(_userIdMeta);
     }
-    if (data.containsKey('feedback_text')) {
-      context.handle(
-          _feedbackTextMeta,
-          feedbackText.isAcceptableOrUnknown(
-              data['feedback_text']!, _feedbackTextMeta));
+    if (data.containsKey('message')) {
+      context.handle(_messageMeta,
+          message.isAcceptableOrUnknown(data['message']!, _messageMeta));
     } else if (isInserting) {
-      context.missing(_feedbackTextMeta);
+      context.missing(_messageMeta);
     }
     if (data.containsKey('image')) {
       context.handle(
@@ -1041,6 +1101,32 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('created_by')) {
+      context.handle(_createdByMeta,
+          createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
+    } else if (isInserting) {
+      context.missing(_createdByMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(_updatedByMeta,
+          updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta));
+    } else if (isInserting) {
+      context.missing(_updatedByMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('deleted_by')) {
+      context.handle(_deletedByMeta,
+          deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
+    }
     return context;
   }
 
@@ -1051,17 +1137,29 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Feedback(
       id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      isSynced: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_synced'])!,
       instructionId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}instruction_id'])!,
       userId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!,
-      feedbackText: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}feedback_text'])!,
+      message: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}message'])!,
       image: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      createdBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_by'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      updatedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_by'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      deletedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
     );
   }
 
@@ -1078,42 +1176,74 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
 }
 
 class Feedback extends DataClass implements Insertable<Feedback> {
-  final int id;
+  final String id;
+  final bool isSynced;
   final int instructionId;
   final int userId;
-  final String feedbackText;
+  final String message;
   final String? image;
   final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
   const Feedback(
       {required this.id,
+      required this.isSynced,
       required this.instructionId,
       required this.userId,
-      required this.feedbackText,
+      required this.message,
       this.image,
-      required this.createdAt});
+      required this.createdAt,
+      required this.createdBy,
+      required this.updatedAt,
+      required this.updatedBy,
+      this.deletedAt,
+      this.deletedBy});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
+    map['id'] = Variable<String>(id);
+    map['is_synced'] = Variable<bool>(isSynced);
     map['instruction_id'] = Variable<int>(instructionId);
     map['user_id'] = Variable<int>(userId);
-    map['feedback_text'] = Variable<String>(feedbackText);
+    map['message'] = Variable<String>(message);
     if (!nullToAbsent || image != null) {
       map['image'] = Variable<String>(image);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    map['created_by'] = Variable<int>(createdBy);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['updated_by'] = Variable<int>(updatedBy);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || deletedBy != null) {
+      map['deleted_by'] = Variable<int>(deletedBy);
+    }
     return map;
   }
 
   FeedbackCompanion toCompanion(bool nullToAbsent) {
     return FeedbackCompanion(
       id: Value(id),
+      isSynced: Value(isSynced),
       instructionId: Value(instructionId),
       userId: Value(userId),
-      feedbackText: Value(feedbackText),
+      message: Value(message),
       image:
           image == null && nullToAbsent ? const Value.absent() : Value(image),
       createdAt: Value(createdAt),
+      createdBy: Value(createdBy),
+      updatedAt: Value(updatedAt),
+      updatedBy: Value(updatedBy),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deletedBy: deletedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedBy),
     );
   }
 
@@ -1121,128 +1251,218 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Feedback(
-      id: serializer.fromJson<int>(json['id']),
+      id: serializer.fromJson<String>(json['id']),
+      isSynced: serializer.fromJson<bool>(json['is_synced']),
       instructionId: serializer.fromJson<int>(json['instruction_id']),
       userId: serializer.fromJson<int>(json['user_id']),
-      feedbackText: serializer.fromJson<String>(json['feedback_text']),
+      message: serializer.fromJson<String>(json['message']),
       image: serializer.fromJson<String?>(json['image']),
       createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      createdBy: serializer.fromJson<int>(json['created_by']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
+      updatedBy: serializer.fromJson<int>(json['updated_by']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
+      deletedBy: serializer.fromJson<int?>(json['deleted_by']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'id': serializer.toJson<String>(id),
+      'is_synced': serializer.toJson<bool>(isSynced),
       'instruction_id': serializer.toJson<int>(instructionId),
       'user_id': serializer.toJson<int>(userId),
-      'feedback_text': serializer.toJson<String>(feedbackText),
+      'message': serializer.toJson<String>(message),
       'image': serializer.toJson<String?>(image),
       'created_at': serializer.toJson<DateTime>(createdAt),
+      'created_by': serializer.toJson<int>(createdBy),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
+      'updated_by': serializer.toJson<int>(updatedBy),
+      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
+      'deleted_by': serializer.toJson<int?>(deletedBy),
     };
   }
 
   Feedback copyWith(
-          {int? id,
+          {String? id,
+          bool? isSynced,
           int? instructionId,
           int? userId,
-          String? feedbackText,
+          String? message,
           Value<String?> image = const Value.absent(),
-          DateTime? createdAt}) =>
+          DateTime? createdAt,
+          int? createdBy,
+          DateTime? updatedAt,
+          int? updatedBy,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          Value<int?> deletedBy = const Value.absent()}) =>
       Feedback(
         id: id ?? this.id,
+        isSynced: isSynced ?? this.isSynced,
         instructionId: instructionId ?? this.instructionId,
         userId: userId ?? this.userId,
-        feedbackText: feedbackText ?? this.feedbackText,
+        message: message ?? this.message,
         image: image.present ? image.value : this.image,
         createdAt: createdAt ?? this.createdAt,
+        createdBy: createdBy ?? this.createdBy,
+        updatedAt: updatedAt ?? this.updatedAt,
+        updatedBy: updatedBy ?? this.updatedBy,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
       );
   @override
   String toString() {
     return (StringBuffer('Feedback(')
           ..write('id: $id, ')
+          ..write('isSynced: $isSynced, ')
           ..write('instructionId: $instructionId, ')
           ..write('userId: $userId, ')
-          ..write('feedbackText: $feedbackText, ')
+          ..write('message: $message, ')
           ..write('image: $image, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, instructionId, userId, feedbackText, image, createdAt);
+  int get hashCode => Object.hash(id, isSynced, instructionId, userId, message,
+      image, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Feedback &&
           other.id == this.id &&
+          other.isSynced == this.isSynced &&
           other.instructionId == this.instructionId &&
           other.userId == this.userId &&
-          other.feedbackText == this.feedbackText &&
+          other.message == this.message &&
           other.image == this.image &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
+          other.updatedAt == this.updatedAt &&
+          other.updatedBy == this.updatedBy &&
+          other.deletedAt == this.deletedAt &&
+          other.deletedBy == this.deletedBy);
 }
 
 class FeedbackCompanion extends UpdateCompanion<Feedback> {
-  final Value<int> id;
+  final Value<String> id;
+  final Value<bool> isSynced;
   final Value<int> instructionId;
   final Value<int> userId;
-  final Value<String> feedbackText;
+  final Value<String> message;
   final Value<String?> image;
   final Value<DateTime> createdAt;
+  final Value<int> createdBy;
+  final Value<DateTime> updatedAt;
+  final Value<int> updatedBy;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> deletedBy;
+  final Value<int> rowid;
   const FeedbackCompanion({
     this.id = const Value.absent(),
+    this.isSynced = const Value.absent(),
     this.instructionId = const Value.absent(),
     this.userId = const Value.absent(),
-    this.feedbackText = const Value.absent(),
+    this.message = const Value.absent(),
     this.image = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   FeedbackCompanion.insert({
-    this.id = const Value.absent(),
+    required String id,
+    required bool isSynced,
     required int instructionId,
     required int userId,
-    required String feedbackText,
+    required String message,
     this.image = const Value.absent(),
     required DateTime createdAt,
-  })  : instructionId = Value(instructionId),
+    required int createdBy,
+    required DateTime updatedAt,
+    required int updatedBy,
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        isSynced = Value(isSynced),
+        instructionId = Value(instructionId),
         userId = Value(userId),
-        feedbackText = Value(feedbackText),
-        createdAt = Value(createdAt);
+        message = Value(message),
+        createdAt = Value(createdAt),
+        createdBy = Value(createdBy),
+        updatedAt = Value(updatedAt),
+        updatedBy = Value(updatedBy);
   static Insertable<Feedback> custom({
-    Expression<int>? id,
+    Expression<String>? id,
+    Expression<bool>? isSynced,
     Expression<int>? instructionId,
     Expression<int>? userId,
-    Expression<String>? feedbackText,
+    Expression<String>? message,
     Expression<String>? image,
     Expression<DateTime>? createdAt,
+    Expression<int>? createdBy,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? updatedBy,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? deletedBy,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (isSynced != null) 'is_synced': isSynced,
       if (instructionId != null) 'instruction_id': instructionId,
       if (userId != null) 'user_id': userId,
-      if (feedbackText != null) 'feedback_text': feedbackText,
+      if (message != null) 'message': message,
       if (image != null) 'image': image,
       if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deletedBy != null) 'deleted_by': deletedBy,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
   FeedbackCompanion copyWith(
-      {Value<int>? id,
+      {Value<String>? id,
+      Value<bool>? isSynced,
       Value<int>? instructionId,
       Value<int>? userId,
-      Value<String>? feedbackText,
+      Value<String>? message,
       Value<String?>? image,
-      Value<DateTime>? createdAt}) {
+      Value<DateTime>? createdAt,
+      Value<int>? createdBy,
+      Value<DateTime>? updatedAt,
+      Value<int>? updatedBy,
+      Value<DateTime?>? deletedAt,
+      Value<int?>? deletedBy,
+      Value<int>? rowid}) {
     return FeedbackCompanion(
       id: id ?? this.id,
+      isSynced: isSynced ?? this.isSynced,
       instructionId: instructionId ?? this.instructionId,
       userId: userId ?? this.userId,
-      feedbackText: feedbackText ?? this.feedbackText,
+      message: message ?? this.message,
       image: image ?? this.image,
       createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deletedBy: deletedBy ?? this.deletedBy,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -1250,7 +1470,10 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<String>(id.value);
+    }
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
     }
     if (instructionId.present) {
       map['instruction_id'] = Variable<int>(instructionId.value);
@@ -1258,14 +1481,32 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     if (userId.present) {
       map['user_id'] = Variable<int>(userId.value);
     }
-    if (feedbackText.present) {
-      map['feedback_text'] = Variable<String>(feedbackText.value);
+    if (message.present) {
+      map['message'] = Variable<String>(message.value);
     }
     if (image.present) {
       map['image'] = Variable<String>(image.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (deletedBy.present) {
+      map['deleted_by'] = Variable<int>(deletedBy.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
     }
     return map;
   }
@@ -1274,11 +1515,18 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
   String toString() {
     return (StringBuffer('FeedbackCompanion(')
           ..write('id: $id, ')
+          ..write('isSynced: $isSynced, ')
           ..write('instructionId: $instructionId, ')
           ..write('userId: $userId, ')
-          ..write('feedbackText: $feedbackText, ')
+          ..write('message: $message, ')
           ..write('image: $image, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -1832,22 +2080,15 @@ class Users extends Table with TableInfo<Users, User> {
       $customConstraints: '');
   static const VerificationMeta _usernameMeta =
       const VerificationMeta('username');
-  late final GeneratedColumn<Uint8List> username = GeneratedColumn<Uint8List>(
+  late final GeneratedColumn<String> username = GeneratedColumn<String>(
       'username', aliasedName, false,
-      type: DriftSqlType.blob,
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
   static const VerificationMeta _roleMeta = const VerificationMeta('role');
-  late final GeneratedColumn<Uint8List> role = GeneratedColumn<Uint8List>(
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
       'role', aliasedName, false,
-      type: DriftSqlType.blob,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  static const VerificationMeta _lastOnlineMeta =
-      const VerificationMeta('lastOnline');
-  late final GeneratedColumn<DateTime> lastOnline = GeneratedColumn<DateTime>(
-      'last_online', aliasedName, false,
-      type: DriftSqlType.dateTime,
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
   static const VerificationMeta _createdAtMeta =
@@ -1897,7 +2138,6 @@ class Users extends Table with TableInfo<Users, User> {
         id,
         username,
         role,
-        lastOnline,
         createdAt,
         createdBy,
         updatedAt,
@@ -1928,14 +2168,6 @@ class Users extends Table with TableInfo<Users, User> {
           _roleMeta, role.isAcceptableOrUnknown(data['role']!, _roleMeta));
     } else if (isInserting) {
       context.missing(_roleMeta);
-    }
-    if (data.containsKey('last_online')) {
-      context.handle(
-          _lastOnlineMeta,
-          lastOnline.isAcceptableOrUnknown(
-              data['last_online']!, _lastOnlineMeta));
-    } else if (isInserting) {
-      context.missing(_lastOnlineMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -1981,11 +2213,9 @@ class Users extends Table with TableInfo<Users, User> {
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       username: attachedDatabase.typeMapping
-          .read(DriftSqlType.blob, data['${effectivePrefix}username'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
       role: attachedDatabase.typeMapping
-          .read(DriftSqlType.blob, data['${effectivePrefix}role'])!,
-      lastOnline: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}last_online'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}role'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       createdBy: attachedDatabase.typeMapping
@@ -2015,9 +2245,8 @@ class Users extends Table with TableInfo<Users, User> {
 
 class User extends DataClass implements Insertable<User> {
   final int id;
-  final Uint8List username;
-  final Uint8List role;
-  final DateTime lastOnline;
+  final String username;
+  final String role;
   final DateTime createdAt;
   final int createdBy;
   final DateTime updatedAt;
@@ -2028,7 +2257,6 @@ class User extends DataClass implements Insertable<User> {
       {required this.id,
       required this.username,
       required this.role,
-      required this.lastOnline,
       required this.createdAt,
       required this.createdBy,
       required this.updatedAt,
@@ -2039,9 +2267,8 @@ class User extends DataClass implements Insertable<User> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['username'] = Variable<Uint8List>(username);
-    map['role'] = Variable<Uint8List>(role);
-    map['last_online'] = Variable<DateTime>(lastOnline);
+    map['username'] = Variable<String>(username);
+    map['role'] = Variable<String>(role);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['created_by'] = Variable<int>(createdBy);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -2060,7 +2287,6 @@ class User extends DataClass implements Insertable<User> {
       id: Value(id),
       username: Value(username),
       role: Value(role),
-      lastOnline: Value(lastOnline),
       createdAt: Value(createdAt),
       createdBy: Value(createdBy),
       updatedAt: Value(updatedAt),
@@ -2079,9 +2305,8 @@ class User extends DataClass implements Insertable<User> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return User(
       id: serializer.fromJson<int>(json['id']),
-      username: serializer.fromJson<Uint8List>(json['username']),
-      role: serializer.fromJson<Uint8List>(json['role']),
-      lastOnline: serializer.fromJson<DateTime>(json['last_online']),
+      username: serializer.fromJson<String>(json['username']),
+      role: serializer.fromJson<String>(json['role']),
       createdAt: serializer.fromJson<DateTime>(json['created_at']),
       createdBy: serializer.fromJson<int>(json['created_by']),
       updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
@@ -2095,9 +2320,8 @@ class User extends DataClass implements Insertable<User> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'username': serializer.toJson<Uint8List>(username),
-      'role': serializer.toJson<Uint8List>(role),
-      'last_online': serializer.toJson<DateTime>(lastOnline),
+      'username': serializer.toJson<String>(username),
+      'role': serializer.toJson<String>(role),
       'created_at': serializer.toJson<DateTime>(createdAt),
       'created_by': serializer.toJson<int>(createdBy),
       'updated_at': serializer.toJson<DateTime>(updatedAt),
@@ -2109,9 +2333,8 @@ class User extends DataClass implements Insertable<User> {
 
   User copyWith(
           {int? id,
-          Uint8List? username,
-          Uint8List? role,
-          DateTime? lastOnline,
+          String? username,
+          String? role,
           DateTime? createdAt,
           int? createdBy,
           DateTime? updatedAt,
@@ -2122,7 +2345,6 @@ class User extends DataClass implements Insertable<User> {
         id: id ?? this.id,
         username: username ?? this.username,
         role: role ?? this.role,
-        lastOnline: lastOnline ?? this.lastOnline,
         createdAt: createdAt ?? this.createdAt,
         createdBy: createdBy ?? this.createdBy,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -2136,7 +2358,6 @@ class User extends DataClass implements Insertable<User> {
           ..write('id: $id, ')
           ..write('username: $username, ')
           ..write('role: $role, ')
-          ..write('lastOnline: $lastOnline, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdBy: $createdBy, ')
           ..write('updatedAt: $updatedAt, ')
@@ -2148,25 +2369,15 @@ class User extends DataClass implements Insertable<User> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      $driftBlobEquality.hash(username),
-      $driftBlobEquality.hash(role),
-      lastOnline,
-      createdAt,
-      createdBy,
-      updatedAt,
-      updatedBy,
-      deletedAt,
-      deletedBy);
+  int get hashCode => Object.hash(id, username, role, createdAt, createdBy,
+      updatedAt, updatedBy, deletedAt, deletedBy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is User &&
           other.id == this.id &&
-          $driftBlobEquality.equals(other.username, this.username) &&
-          $driftBlobEquality.equals(other.role, this.role) &&
-          other.lastOnline == this.lastOnline &&
+          other.username == this.username &&
+          other.role == this.role &&
           other.createdAt == this.createdAt &&
           other.createdBy == this.createdBy &&
           other.updatedAt == this.updatedAt &&
@@ -2177,9 +2388,8 @@ class User extends DataClass implements Insertable<User> {
 
 class UsersCompanion extends UpdateCompanion<User> {
   final Value<int> id;
-  final Value<Uint8List> username;
-  final Value<Uint8List> role;
-  final Value<DateTime> lastOnline;
+  final Value<String> username;
+  final Value<String> role;
   final Value<DateTime> createdAt;
   final Value<int> createdBy;
   final Value<DateTime> updatedAt;
@@ -2190,7 +2400,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.id = const Value.absent(),
     this.username = const Value.absent(),
     this.role = const Value.absent(),
-    this.lastOnline = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.createdBy = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -2200,9 +2409,8 @@ class UsersCompanion extends UpdateCompanion<User> {
   });
   UsersCompanion.insert({
     this.id = const Value.absent(),
-    required Uint8List username,
-    required Uint8List role,
-    required DateTime lastOnline,
+    required String username,
+    required String role,
     required DateTime createdAt,
     required int createdBy,
     required DateTime updatedAt,
@@ -2211,16 +2419,14 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.deletedBy = const Value.absent(),
   })  : username = Value(username),
         role = Value(role),
-        lastOnline = Value(lastOnline),
         createdAt = Value(createdAt),
         createdBy = Value(createdBy),
         updatedAt = Value(updatedAt),
         updatedBy = Value(updatedBy);
   static Insertable<User> custom({
     Expression<int>? id,
-    Expression<Uint8List>? username,
-    Expression<Uint8List>? role,
-    Expression<DateTime>? lastOnline,
+    Expression<String>? username,
+    Expression<String>? role,
     Expression<DateTime>? createdAt,
     Expression<int>? createdBy,
     Expression<DateTime>? updatedAt,
@@ -2232,7 +2438,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       if (id != null) 'id': id,
       if (username != null) 'username': username,
       if (role != null) 'role': role,
-      if (lastOnline != null) 'last_online': lastOnline,
       if (createdAt != null) 'created_at': createdAt,
       if (createdBy != null) 'created_by': createdBy,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -2244,9 +2449,8 @@ class UsersCompanion extends UpdateCompanion<User> {
 
   UsersCompanion copyWith(
       {Value<int>? id,
-      Value<Uint8List>? username,
-      Value<Uint8List>? role,
-      Value<DateTime>? lastOnline,
+      Value<String>? username,
+      Value<String>? role,
       Value<DateTime>? createdAt,
       Value<int>? createdBy,
       Value<DateTime>? updatedAt,
@@ -2257,7 +2461,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       id: id ?? this.id,
       username: username ?? this.username,
       role: role ?? this.role,
-      lastOnline: lastOnline ?? this.lastOnline,
       createdAt: createdAt ?? this.createdAt,
       createdBy: createdBy ?? this.createdBy,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -2274,13 +2477,10 @@ class UsersCompanion extends UpdateCompanion<User> {
       map['id'] = Variable<int>(id.value);
     }
     if (username.present) {
-      map['username'] = Variable<Uint8List>(username.value);
+      map['username'] = Variable<String>(username.value);
     }
     if (role.present) {
-      map['role'] = Variable<Uint8List>(role.value);
-    }
-    if (lastOnline.present) {
-      map['last_online'] = Variable<DateTime>(lastOnline.value);
+      map['role'] = Variable<String>(role.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -2309,7 +2509,6 @@ class UsersCompanion extends UpdateCompanion<User> {
           ..write('id: $id, ')
           ..write('username: $username, ')
           ..write('role: $role, ')
-          ..write('lastOnline: $lastOnline, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdBy: $createdBy, ')
           ..write('updatedAt: $updatedAt, ')
@@ -3244,6 +3443,425 @@ class InstructionsCategoriesCompanion
   }
 }
 
+class Settings extends Table with TableInfo<Settings, Setting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  Settings(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  late final GeneratedColumn<int> userId = GeneratedColumn<int>(
+      'user_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _languageMeta =
+      const VerificationMeta('language');
+  late final GeneratedColumn<String> language = GeneratedColumn<String>(
+      'language', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdByMeta =
+      const VerificationMeta('createdBy');
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+      'created_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedByMeta =
+      const VerificationMeta('updatedBy');
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+      'updated_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _deletedByMeta =
+      const VerificationMeta('deletedBy');
+  late final GeneratedColumn<int> deletedBy = GeneratedColumn<int>(
+      'deleted_by', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  @override
+  List<GeneratedColumn> get $columns => [
+        userId,
+        language,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
+        deletedAt,
+        deletedBy
+      ];
+  @override
+  String get aliasedName => _alias ?? 'settings';
+  @override
+  String get actualTableName => 'settings';
+  @override
+  VerificationContext validateIntegrity(Insertable<Setting> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    }
+    if (data.containsKey('language')) {
+      context.handle(_languageMeta,
+          language.isAcceptableOrUnknown(data['language']!, _languageMeta));
+    } else if (isInserting) {
+      context.missing(_languageMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(_createdByMeta,
+          createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
+    } else if (isInserting) {
+      context.missing(_createdByMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(_updatedByMeta,
+          updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta));
+    } else if (isInserting) {
+      context.missing(_updatedByMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('deleted_by')) {
+      context.handle(_deletedByMeta,
+          deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {userId};
+  @override
+  Setting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Setting(
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!,
+      language: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}language'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      createdBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_by'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      updatedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_by'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      deletedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
+    );
+  }
+
+  @override
+  Settings createAlias(String alias) {
+    return Settings(attachedDatabase, alias);
+  }
+
+  @override
+  List<String> get customConstraints => const [
+        'CONSTRAINT setting_pkey PRIMARY KEY(user_id)',
+        'CONSTRAINT setting_user_id_fkey FOREIGN KEY(user_id)REFERENCES users(id)ON DELETE CASCADE'
+      ];
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class Setting extends DataClass implements Insertable<Setting> {
+  final int userId;
+  final String language;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  const Setting(
+      {required this.userId,
+      required this.language,
+      required this.createdAt,
+      required this.createdBy,
+      required this.updatedAt,
+      required this.updatedBy,
+      this.deletedAt,
+      this.deletedBy});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['user_id'] = Variable<int>(userId);
+    map['language'] = Variable<String>(language);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['created_by'] = Variable<int>(createdBy);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['updated_by'] = Variable<int>(updatedBy);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || deletedBy != null) {
+      map['deleted_by'] = Variable<int>(deletedBy);
+    }
+    return map;
+  }
+
+  SettingsCompanion toCompanion(bool nullToAbsent) {
+    return SettingsCompanion(
+      userId: Value(userId),
+      language: Value(language),
+      createdAt: Value(createdAt),
+      createdBy: Value(createdBy),
+      updatedAt: Value(updatedAt),
+      updatedBy: Value(updatedBy),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deletedBy: deletedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedBy),
+    );
+  }
+
+  factory Setting.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Setting(
+      userId: serializer.fromJson<int>(json['user_id']),
+      language: serializer.fromJson<String>(json['language']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      createdBy: serializer.fromJson<int>(json['created_by']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
+      updatedBy: serializer.fromJson<int>(json['updated_by']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
+      deletedBy: serializer.fromJson<int?>(json['deleted_by']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'user_id': serializer.toJson<int>(userId),
+      'language': serializer.toJson<String>(language),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'created_by': serializer.toJson<int>(createdBy),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
+      'updated_by': serializer.toJson<int>(updatedBy),
+      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
+      'deleted_by': serializer.toJson<int?>(deletedBy),
+    };
+  }
+
+  Setting copyWith(
+          {int? userId,
+          String? language,
+          DateTime? createdAt,
+          int? createdBy,
+          DateTime? updatedAt,
+          int? updatedBy,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          Value<int?> deletedBy = const Value.absent()}) =>
+      Setting(
+        userId: userId ?? this.userId,
+        language: language ?? this.language,
+        createdAt: createdAt ?? this.createdAt,
+        createdBy: createdBy ?? this.createdBy,
+        updatedAt: updatedAt ?? this.updatedAt,
+        updatedBy: updatedBy ?? this.updatedBy,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Setting(')
+          ..write('userId: $userId, ')
+          ..write('language: $language, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(userId, language, createdAt, createdBy,
+      updatedAt, updatedBy, deletedAt, deletedBy);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Setting &&
+          other.userId == this.userId &&
+          other.language == this.language &&
+          other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
+          other.updatedAt == this.updatedAt &&
+          other.updatedBy == this.updatedBy &&
+          other.deletedAt == this.deletedAt &&
+          other.deletedBy == this.deletedBy);
+}
+
+class SettingsCompanion extends UpdateCompanion<Setting> {
+  final Value<int> userId;
+  final Value<String> language;
+  final Value<DateTime> createdAt;
+  final Value<int> createdBy;
+  final Value<DateTime> updatedAt;
+  final Value<int> updatedBy;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> deletedBy;
+  const SettingsCompanion({
+    this.userId = const Value.absent(),
+    this.language = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+  });
+  SettingsCompanion.insert({
+    this.userId = const Value.absent(),
+    required String language,
+    required DateTime createdAt,
+    required int createdBy,
+    required DateTime updatedAt,
+    required int updatedBy,
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+  })  : language = Value(language),
+        createdAt = Value(createdAt),
+        createdBy = Value(createdBy),
+        updatedAt = Value(updatedAt),
+        updatedBy = Value(updatedBy);
+  static Insertable<Setting> custom({
+    Expression<int>? userId,
+    Expression<String>? language,
+    Expression<DateTime>? createdAt,
+    Expression<int>? createdBy,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? updatedBy,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? deletedBy,
+  }) {
+    return RawValuesInsertable({
+      if (userId != null) 'user_id': userId,
+      if (language != null) 'language': language,
+      if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deletedBy != null) 'deleted_by': deletedBy,
+    });
+  }
+
+  SettingsCompanion copyWith(
+      {Value<int>? userId,
+      Value<String>? language,
+      Value<DateTime>? createdAt,
+      Value<int>? createdBy,
+      Value<DateTime>? updatedAt,
+      Value<int>? updatedBy,
+      Value<DateTime?>? deletedAt,
+      Value<int?>? deletedBy}) {
+    return SettingsCompanion(
+      userId: userId ?? this.userId,
+      language: language ?? this.language,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deletedBy: deletedBy ?? this.deletedBy,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (userId.present) {
+      map['user_id'] = Variable<int>(userId.value);
+    }
+    if (language.present) {
+      map['language'] = Variable<String>(language.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (deletedBy.present) {
+      map['deleted_by'] = Variable<int>(deletedBy.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SettingsCompanion(')
+          ..write('userId: $userId, ')
+          ..write('language: $language, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final Categories categories = Categories(this);
@@ -3254,6 +3872,23 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Histories histories = Histories(this);
   late final InstructionsCategories instructionsCategories =
       InstructionsCategories(this);
+  late final Settings settings = Settings(this);
+  Future<int> updateHistoryEntry(int instructionId, DateTime updatedAt,
+      int userId, int createdBy, DateTime createdAt, int updatedBy) {
+    return customInsert(
+      'WITH new_id AS (SELECT ?1 AS instruction_id, ?2 AS updated_at) INSERT INTO histories (user_id, instruction_id, created_by, created_at, updated_at, updated_by, instruction_step_id) VALUES (?3, (SELECT instruction_id FROM new_id), ?4, ?5, ?2, ?6, (SELECT i.id FROM instruction_steps AS i WHERE i.step_nr = (SELECT MIN(j.step_nr) FROM instruction_steps AS j WHERE j.instruction_id = (SELECT id FROM new_id)) AND i.instruction_id = (SELECT id FROM new_id))) ON CONFLICT (user_id, instruction_id) DO UPDATE SET updated_at = (SELECT updated_at FROM new_id)',
+      variables: [
+        Variable<int>(instructionId),
+        Variable<DateTime>(updatedAt),
+        Variable<int>(userId),
+        Variable<int>(createdBy),
+        Variable<DateTime>(createdAt),
+        Variable<int>(updatedBy)
+      ],
+      updates: {histories},
+    );
+  }
+
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3265,7 +3900,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         instructionSteps,
         users,
         histories,
-        instructionsCategories
+        instructionsCategories,
+        settings
       ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
@@ -3310,6 +3946,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('InstructionsCategories', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('users',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('settings', kind: UpdateKind.delete),
             ],
           ),
         ],

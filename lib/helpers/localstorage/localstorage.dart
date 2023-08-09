@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:guider/main.dart';
 import 'connection/connection.dart' as impl;
 
 part 'localstorage.g.dart';
@@ -91,7 +92,7 @@ class AppDatabase extends _$AppDatabase {
   Future<int> createOrUpdateHistory(HistoriesCompanion entry) =>
       into(histories).insertOnConflictUpdate(entry);
 
-  Future<List<Instruction>> getUserHistory(int givenUserId) {
+  Future<List<Instruction>> getUserHistoryAsInstructions(int givenUserId) {
     final query = select(instructions).join([
       innerJoin(histories, instructions.id.equalsExp(histories.instructionId),
           useColumns: false)
@@ -101,6 +102,9 @@ class AppDatabase extends _$AppDatabase {
     return query.map((row) => row.readTable(instructions)).get();
   }
 
+  Future<List<History>> getUserHistory(int givenUserId) =>
+      (select(histories)..where((t) => t.userId.equals(givenUserId))).get();
+
   // Instruction-Category
   Future<List<InstructionCategory>> get allInstructionCategoryEntries =>
       select(instructionsCategories).get();
@@ -108,6 +112,33 @@ class AppDatabase extends _$AppDatabase {
   Future<int> createOrUpdateInstructionCategory(
           InstructionsCategoriesCompanion entry) =>
       into(instructionsCategories).insertOnConflictUpdate(entry);
+
+  // Feedback
+  Future<List<Feedback>> get allFeedbackEntries => select(feedback).get();
+
+  Future<List<Feedback>> get notSyncedFeedbackEntries =>
+      (select(feedback)..where((t) => t.isSynced.equals(false))).get();
+
+  Future<int> createOrUpdateFeedback(FeedbackCompanion entry) =>
+      into(feedback).insertOnConflictUpdate(entry);
+
+  Future<int> insertFeedback(FeedbackCompanion entry) =>
+      into(feedback).insert(entry);
+
+  Future<int> updateFeedback(Feedback entry) =>
+      (update(feedback)..where((t) => t.id.equals(entry.id))).write(
+          FeedbackCompanion(
+              isSynced: const Value(true),
+              updatedAt: Value(DateTime.now()),
+              updatedBy: Value(currentUser)));
+
+  // Users
+  Future<int> createOrUpdateUser(UsersCompanion entry) =>
+      into(users).insertOnConflictUpdate(entry);
+
+  // Settings
+  Future<int> createOrUpdateSetting(SettingsCompanion entry) =>
+      into(settings).insertOnConflictUpdate(entry);
 
   @override
   int get schemaVersion => 1;

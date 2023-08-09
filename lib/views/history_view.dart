@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/guider_database.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:guider/widgets/listitem.dart';
 
 class HistoryView extends StatefulWidget {
@@ -22,7 +22,9 @@ class _HistoryViewState extends State<HistoryView> {
   }
 
   Future getData() async {
-    var data = await Singleton().getDatabase().getUserHistory(currentUser);
+    var data = await Singleton()
+        .getDatabase()
+        .getUserHistoryAsInstructions(currentUser);
     setState(() {
       _instructions = data;
     });

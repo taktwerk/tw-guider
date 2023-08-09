@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
@@ -6,7 +7,7 @@ import 'package:guider/views/category.dart';
 import 'package:guider/widgets/listitem.dart';
 import 'package:guider/widgets/searchbar.dart';
 import 'package:guider/widgets/tag.dart';
-import 'package:guider/objects/guider_database.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 
 class Home extends StatefulWidget {
@@ -31,24 +32,25 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   bool loading = false;
   final ScrollController _scrollController = ScrollController();
 
-  Future getAllInstructions() async {
-    var data = await Singleton().getDatabase().allInstructionEntries;
+  void getAllInstructions() async {
+    var inst = Singleton().getDatabase();
+    var data = await inst.allInstructionEntries;
     setState(() {
       _filteredInstructions = data;
-      _instructionsBySearch = _filteredInstructions;
-      _instructionsByCategory = _filteredInstructions;
-      _allInstructions = _filteredInstructions;
+      _instructionsBySearch = data;
+      _instructionsByCategory = data;
+      _allInstructions = data;
     });
   }
 
-  Future sync() async {
+  Future<void> sync() async {
     try {
       await SupabaseToDrift.sync();
 
-      var data = await Singleton().getDatabase().allInstructionEntries;
-      setState(() {
-        _filteredInstructions = data;
-      });
+      await DriftToSupabase.uploadFeedback();
+      //var data = await Singleton().getDatabase().getUserHistory(currentUser);
+      //print("~~~~~ BEFORE INSERT: ${data} ~~~~~");
+      getAllInstructions();
     } catch (e) {
       setState(() {
         loading = false;
@@ -68,21 +70,21 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     getAllInstructions();
   }
 
-  void updateSearchInstructions(newInstructions) {
+  Future<void> updateSearchInstructions(newInstructions) async {
     setState(() {
       _instructionsBySearch = newInstructions;
     });
-    combineCategoryAndSearch();
+    await combineCategoryAndSearch();
   }
 
-  void updateCategoryInstructions(newInstructions) {
+  Future<void> updateCategoryInstructions(newInstructions) async {
     setState(() {
       _instructionsByCategory = newInstructions;
     });
-    combineCategoryAndSearch();
+    await combineCategoryAndSearch();
   }
 
-  void combineCategoryAndSearch() {
+  Future<void> combineCategoryAndSearch() async {
     final selectedIds =
         _instructionsBySearch!.map((component) => component.id).toList();
     final filtered = _instructionsByCategory!

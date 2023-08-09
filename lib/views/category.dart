@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
-import 'package:guider/objects/guider_database.dart';
+import 'package:guider/objects/singleton.dart';
 
 class CategoryPopup extends StatefulWidget {
   const CategoryPopup(

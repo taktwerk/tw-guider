@@ -12,7 +12,9 @@ DatabaseConnection connect() {
       sqlite3Uri: Uri.parse('/sqlite3.wasm'),
       driftWorkerUri: Uri.parse('/drift_worker.js'),
     );
-
+    // Depending how central local persistence is to your app, you may want
+    // to show a warning to the user if only unrealiable implemetentations
+    // are available.
     if (db.missingFeatures.isNotEmpty) {
       debugPrint('Using ${db.chosenImplementation} due to unsupported '
           'browser features: ${db.missingFeatures}');

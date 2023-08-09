@@ -3,6 +3,7 @@ import 'package:guider/helpers/insert.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/instruction_view.dart';
 
 class ListItem extends StatelessWidget {
@@ -21,9 +22,19 @@ class ListItem extends StatelessWidget {
       margin: const EdgeInsets.all(10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       child: InkWell(
-          onTap: () {
+          onTap: () async {
+            // TODO: Change this
+            Singleton().getDatabase().updateHistoryEntry(
+                _instruction.id,
+                DateTime.now(),
+                currentUser,
+                currentUser,
+                DateTime.now(),
+                currentUser);
+            logger.w("Ok, history");
             Insert.updateHistory(
                 userId: currentUser, instructionId: _instruction.id);
+
             Navigator.push(
               context,
               MaterialPageRoute(

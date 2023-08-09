@@ -1,14 +1,18 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
+import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/category.dart';
-import 'package:guider/objects/guider_database.dart';
+import 'package:guider/objects/feedback.dart';
+import 'package:guider/objects/setting.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:guider/objects/history.dart';
 import 'package:guider/objects/instruction.dart';
 import 'package:guider/objects/instruction_category.dart';
 import 'package:guider/objects/instruction_steps.dart';
+import 'package:guider/objects/user.dart';
 
 class SupabaseToDrift {
   static Future<void> getAllInstructions() async {
@@ -121,24 +125,119 @@ class SupabaseToDrift {
     }
   }
 
+  static Future<void> getFeedback() async {
+    final data = await supabase.from('feedback').select('*');
+    var feedback = feedbackFromJson(jsonEncode(data)).feedbackelements;
+    int len = feedback.length;
+    for (int i = 0; i < len; i++) {
+      var feedbackElement = feedback[i];
+      await Singleton()
+          .getDatabase()
+          .createOrUpdateFeedback(FeedbackCompanion.insert(
+            id: feedbackElement.id,
+            isSynced: true,
+            instructionId: feedbackElement.instructionId,
+            userId: feedbackElement.userId,
+            message: feedbackElement.message,
+            image: Value(feedbackElement.image),
+            createdAt: DateTime.parse(feedbackElement.createdAt),
+            createdBy: feedbackElement.createdBy,
+            updatedAt: DateTime.parse(feedbackElement.updatedAt),
+            updatedBy: feedbackElement.updatedBy,
+            deletedAt: Value(DateTime.parse(feedbackElement.updatedAt)),
+            deletedBy: Value(feedbackElement.deletedBy),
+          ));
+    }
+  }
+
+  static Future<void> getUsers() async {
+    final data = await supabase.from('user').select('*');
+    var users = usersFromJson(jsonEncode(data)).users;
+    int len = users.length;
+    for (int i = 0; i < len; i++) {
+      var user = users[i];
+      await Singleton().getDatabase().createOrUpdateUser(UsersCompanion.insert(
+            id: Value(user.id),
+            username: user.username,
+            role: user.role,
+            createdAt: DateTime.parse(user.createdAt),
+            createdBy: user.createdBy,
+            updatedAt: DateTime.parse(user.updatedAt),
+            updatedBy: user.updatedBy,
+            deletedAt: Value(DateTime.parse(user.updatedAt)),
+            deletedBy: Value(user.deletedBy),
+          ));
+    }
+  }
+
+  static Future<void> getSettings() async {
+    final data = await supabase.from('setting').select('*');
+    var settings = settingsFromJson(jsonEncode(data)).settings;
+    int len = settings.length;
+    for (int i = 0; i < len; i++) {
+      var setting = settings[i];
+      await Singleton()
+          .getDatabase()
+          .createOrUpdateSetting(SettingsCompanion.insert(
+            userId: Value(setting.userId),
+            language: setting.language,
+            createdAt: DateTime.parse(setting.createdAt),
+            createdBy: setting.createdBy,
+            updatedAt: DateTime.parse(setting.updatedAt),
+            updatedBy: setting.updatedBy,
+            deletedAt: Value(DateTime.parse(setting.updatedAt)),
+            deletedBy: Value(setting.deletedBy),
+          ));
+    }
+  }
+
   static Future<void> sync() async {
     await SupabaseToDrift.getAllInstructions().then((value) {
       logger.i("Got instructions from supabase.");
+      KeyValue.setNewValue(
+          KeyValueEnum.instruction.key, DateTime.now().toIso8601String());
     });
+
     await SupabaseToDrift.getAllInstructionSteps().then((value) {
       logger.i("Got instructionsteps from supabase.");
+      KeyValue.setNewValue(
+          KeyValueEnum.steps.key, DateTime.now().toIso8601String());
     });
 
     await SupabaseToDrift.getAllCategories().then((value) {
       logger.i("Got categories from supabase.");
+      KeyValue.setNewValue(
+          KeyValueEnum.category.key, DateTime.now().toIso8601String());
     });
 
     await SupabaseToDrift.getHistory().then((value) {
       logger.i("Got history from supabase.");
+      KeyValue.setNewValue(
+          KeyValueEnum.history.key, DateTime.now().toIso8601String());
     });
 
     await SupabaseToDrift.getInstructionsCategories().then((value) {
       logger.i("Got instructions-categories from supabase.");
+      KeyValue.setNewValue(KeyValueEnum.instructionCategory.key,
+          DateTime.now().toIso8601String());
+    });
+
+    await SupabaseToDrift.getFeedback().then((value) {
+      logger.i("Got feedback from supabase.");
+      KeyValue.setNewValue(
+          KeyValueEnum.feedback.key, DateTime.now().toIso8601String());
+    });
+
+    await SupabaseToDrift.getUsers().then((value) {
+      logger.i("Got users from supabase.");
+      KeyValue.setNewValue(
+          KeyValueEnum.user.key, DateTime.now().toIso8601String());
+    });
+
+    await SupabaseToDrift.getSettings().then((value) {
+      logger.i("Got settings from supabase.");
+      KeyValue.setNewValue(
+          KeyValueEnum.setting.key, DateTime.now().toIso8601String());
     });
   }
 }
