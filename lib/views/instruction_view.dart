@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/guider_database.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/fullscreen_image_viewer.dart';
 import 'package:guider/views/instructionstep_overview.dart';
 import 'package:guider/widgets/tag.dart';

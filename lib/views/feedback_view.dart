@@ -1,13 +1,15 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:drift/drift.dart' as drift;
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/insert.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:xid/xid.dart';
 
 class FeedbackView extends StatefulWidget {
   const FeedbackView({super.key, required this.instruction});
@@ -137,14 +139,20 @@ class _FeedbackViewState extends State<FeedbackView> {
           child: Text(l.send),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
-              Insert.sendFeedback(
-                  userId: currentUser,
-                  text: _controller.text,
+              Singleton().getDatabase().insertFeedback(FeedbackCompanion.insert(
+                  id: Xid().toString(),
+                  isSynced: false,
                   instructionId: widget.instruction.id,
-                  image: _imagesBytes);
-              String message = 'Feedback sent successfully!';
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(message)));
+                  userId: currentUser,
+                  message: _controller.text,
+                  image: drift.Value(_imagesBytes),
+                  createdAt: DateTime.now(),
+                  createdBy: currentUser,
+                  updatedAt: DateTime.now(),
+                  updatedBy: currentUser));
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Feedback saved successfully!")));
+
               Navigator.pop(context);
             }
           },
