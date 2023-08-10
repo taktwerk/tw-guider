@@ -54,30 +54,31 @@ class _MyHomePageState extends State<MyHomePage>
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("${myTabs[tabController.index].text}"),
         bottom: TabBar(controller: tabController, tabs: myTabs),
-        actions: [
-          PopupMenuButton(
-              itemBuilder: (context) => users != null
-                  ? List.generate(
-                      users!.length,
-                      (index) => PopupMenuItem(
-                            onTap: () {
-                              currentUser = users![index].id;
-                              logger.i("Selected user $currentUser");
-                              setState(() {});
-                            },
-                            child: Text("User ${users![index].id}"),
-                          ))
-                  : [const PopupMenuItem(child: CircularProgressIndicator())])
-        ],
+        actions: [getUserPopup()],
       ),
       body: TabBarView(
         controller: tabController,
         children: const [
           Home(),
           Settings(),
-          History(),
+          HistoryView(),
         ],
       ),
     );
   }
+
+  Widget getUserPopup() => PopupMenuButton(
+      itemBuilder: (context) => users != null
+          ? List.generate(
+              users!.length,
+              (index) => PopupMenuItem(
+                    onTap: () {
+                      setState(() {
+                        currentUser = users![index].id;
+                      });
+                      logger.i("Selected user $currentUser");
+                    },
+                    child: Text("User ${users![index].id}"),
+                  ))
+          : [const PopupMenuItem(child: CircularProgressIndicator())]);
 }

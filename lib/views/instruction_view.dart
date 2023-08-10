@@ -29,16 +29,25 @@ class _InstructionViewState extends State<InstructionView> {
   }
 
   Future getData() async {
-    var steps = await Singleton()
-        .getDatabase()
-        .getInstructionStepsByInstructionId(widget.instruction.id);
+    await getCategories();
+    await getSteps();
+  }
 
+  Future<void> getCategories() async {
     var categories = await Singleton()
         .getDatabase()
         .getCategoriesOfInstruction(widget.instruction.id);
     setState(() {
-      _steps = steps;
       _categories = categories;
+    });
+  }
+
+  Future<void> getSteps() async {
+    var steps = await Singleton()
+        .getDatabase()
+        .getInstructionStepsByInstructionId(widget.instruction.id);
+    setState(() {
+      _steps = steps;
     });
   }
 
