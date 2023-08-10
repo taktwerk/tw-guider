@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/insert.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
@@ -23,17 +22,14 @@ class ListItem extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       child: InkWell(
           onTap: () async {
-            // TODO: Change this
             Singleton().getDatabase().updateHistoryEntry(
                 _instruction.id,
-                DateTime.now(),
+                DateTime.now().toUtc(),
                 currentUser,
                 currentUser,
-                DateTime.now(),
+                DateTime.now().toUtc(),
                 currentUser);
             logger.w("Ok, history");
-            Insert.updateHistory(
-                userId: currentUser, instructionId: _instruction.id);
 
             Navigator.push(
               context,

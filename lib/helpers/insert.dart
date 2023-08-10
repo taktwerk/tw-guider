@@ -8,7 +8,7 @@ class Insert {
       'instruction_id': instructionId,
       "created_by": createdBy,
       "updated_by": updatedBy,
-      "updated_at": (DateTime.now()).toIso8601String(),
+      "updated_at": (DateTime.now().toUtc()).toIso8601String(),
     }, onConflict: 'user_id,instruction_id');
   }
 
@@ -22,11 +22,11 @@ class Insert {
   }
 
   static Future<void> sendFeedback(
-      {instructionId, userId = 2, text, image}) async {
+      {instructionId, userId = 2, message, image}) async {
     await supabase.from('feedback').insert({
       'instruction_id': instructionId,
       'user_id': userId,
-      'text': text,
+      'message': message,
       'image': image
     });
   }

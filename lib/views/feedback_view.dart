@@ -146,9 +146,9 @@ class _FeedbackViewState extends State<FeedbackView> {
                   userId: currentUser,
                   message: _controller.text,
                   image: drift.Value(_imagesBytes),
-                  createdAt: DateTime.now(),
+                  createdAt: DateTime.now().toUtc(),
                   createdBy: currentUser,
-                  updatedAt: DateTime.now(),
+                  updatedAt: DateTime.now().toUtc(),
                   updatedBy: currentUser));
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text("Feedback saved successfully!")));
