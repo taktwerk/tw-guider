@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/search.dart';
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/user.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/history_view.dart';
 import 'package:guider/views/settings_view.dart';
 import 'package:guider/views/home_view.dart';
@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Future getUsers() async {
-    var result = await Search.getUsers();
+    var result = await Singleton().getDatabase().allUserEntries;
     setState(() {
       users = result;
     });
@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage>
         controller: tabController,
         children: const [
           Home(),
-          Settings(),
+          SettingsView(),
           HistoryView(),
         ],
       ),

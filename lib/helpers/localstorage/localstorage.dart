@@ -164,6 +164,8 @@ class AppDatabase extends _$AppDatabase {
               updatedBy: Value(currentUser)));
 
   // Users
+  Future<List<User>> get allUserEntries => select(users).get();
+
   Future<int> createOrUpdateUser(UsersCompanion entry) =>
       into(users).insertOnConflictUpdate(entry);
 
