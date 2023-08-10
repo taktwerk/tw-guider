@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({super.key});
+class SettingsView extends StatefulWidget {
+  const SettingsView({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SettingsState();
+  State<StatefulWidget> createState() => _SettingsViewState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     final l = Languages.of(context);

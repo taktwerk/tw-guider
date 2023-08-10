@@ -126,6 +126,6 @@ create table
 updateHistoryEntry(REQUIRED :instruction_id as int, REQUIRED :updated_at as datetime): WITH new_id AS (SELECT :instruction_id AS instruction_id, :updated_at as updated_at)
 INSERT INTO histories (user_id, instruction_id, created_by, created_at, updated_at, updated_by, instruction_step_id)
 VALUES (:user_id,(SELECT instruction_id FROM new_id), :created_by, :created_at, :updated_at, :updated_by, (SELECT i.id FROM instruction_steps i
-WHERE i.step_nr = (SELECT MIN(j.step_nr) FROM instruction_steps j WHERE j.instruction_id = (SELECT id FROM new_id)) AND i.instruction_id = (SELECT id FROM new_id)))
+WHERE i.step_nr = (SELECT MIN(j.step_nr) FROM instruction_steps j WHERE j.instruction_id = (SELECT instruction_id FROM new_id)) AND i.instruction_id = (SELECT instruction_id FROM new_id)))
 ON CONFLICT (user_id, instruction_id) DO UPDATE
 SET updated_at = (SELECT updated_at FROM new_id);

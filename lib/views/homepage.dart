@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/search.dart';
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/user.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/history_view.dart';
 import 'package:guider/views/settings_view.dart';
 import 'package:guider/views/home_view.dart';
@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Future getUsers() async {
-    var result = await Search.getUsers();
+    var result = await Singleton().getDatabase().allUserEntries;
     setState(() {
       users = result;
     });
@@ -54,30 +54,31 @@ class _MyHomePageState extends State<MyHomePage>
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("${myTabs[tabController.index].text}"),
         bottom: TabBar(controller: tabController, tabs: myTabs),
-        actions: [
-          PopupMenuButton(
-              itemBuilder: (context) => users != null
-                  ? List.generate(
-                      users!.length,
-                      (index) => PopupMenuItem(
-                            onTap: () {
-                              currentUser = users![index].id;
-                              logger.i("Selected user $currentUser");
-                              setState(() {});
-                            },
-                            child: Text("User ${users![index].id}"),
-                          ))
-                  : [const PopupMenuItem(child: CircularProgressIndicator())])
-        ],
+        actions: [getUserPopup()],
       ),
       body: TabBarView(
         controller: tabController,
         children: const [
           Home(),
-          Settings(),
-          History(),
+          SettingsView(),
+          HistoryView(),
         ],
       ),
     );
   }
+
+  Widget getUserPopup() => PopupMenuButton(
+      itemBuilder: (context) => users != null
+          ? List.generate(
+              users!.length,
+              (index) => PopupMenuItem(
+                    onTap: () {
+                      setState(() {
+                        currentUser = users![index].id;
+                      });
+                      logger.i("Selected user $currentUser");
+                    },
+                    child: Text("User ${users![index].id}"),
+                  ))
+          : [const PopupMenuItem(child: CircularProgressIndicator())]);
 }

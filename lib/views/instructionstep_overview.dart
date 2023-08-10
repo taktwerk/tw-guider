@@ -4,6 +4,7 @@ import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/search.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/instructionstep_view.dart';
 
 class InstructionStepOverview extends StatefulWidget {
@@ -28,24 +29,33 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
   @override
   void initState() {
     super.initState();
-    initializeStepViews();
-    getLastVisitedStep(widget.instruction.id);
+    init();
   }
 
-  Future getLastVisitedStep(id) async {
-    var res =
-        await Search.getLastVisitedStep(instructionId: id, userId: currentUser);
-
-    var item = "${res.stepNr}/${widget.steps.length}";
-    int index = _items.indexOf(item);
-    setState(() {
-      selectedItem = item;
-      currentView = _views[index];
-      instructionId = id;
-    });
+  void init() async {
+    await initializeStepViews();
+    await getLastVisitedStep(widget.instruction.id);
   }
 
-  void initializeStepViews() {
+  Future<void> getLastVisitedStep(id) async {
+    try {
+      var res = await Singleton()
+          .getDatabase()
+          .getLastVisitedStep(instructionId: id, userId: currentUser);
+
+      var item = "${res.stepNr}/${widget.steps.length}";
+      int index = _items.indexOf(item);
+      setState(() {
+        selectedItem = item;
+        currentView = _views[index];
+        instructionId = id;
+      });
+    } catch (e) {
+      logger.e("Exception: $e");
+    }
+  }
+
+  Future<void> initializeStepViews() async {
     for (var item in widget.steps) {
       _views.add(InstructionStepView(
           instructionTitle: widget.instruction.title, instructionStep: item));
@@ -60,11 +70,11 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
     return currentView;
   }
 
-  void setNewStep(index) {
-    Insert.setNewStep(
+  void setNewStep(index) async {
+    await Singleton().getDatabase().setNewStep(
         userId: currentUser,
-        instructionStepId: _views[index].instructionStep.id,
-        instructionId: instructionId);
+        instructionId: instructionId!,
+        instructionStepId: _views[index].instructionStep.id);
   }
 
   @override

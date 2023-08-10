@@ -45,11 +45,21 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
 
   Future<void> sync() async {
     try {
+      await DriftToSupabase.uploadFeedback();
+
+      await DriftToSupabase.uploadHistory();
       await SupabaseToDrift.sync();
 
-      await DriftToSupabase.uploadFeedback();
-      //var data = await Singleton().getDatabase().getUserHistory(currentUser);
-      //print("~~~~~ BEFORE INSERT: ${data} ~~~~~");
+      //   print(
+      //       "All history entries: ${await Singleton().getDatabase().allHistoryEntries}");
+
+      // var lastSynced = await KeyValue.getValue(KeyValueEnum.feedback.key);
+
+      //           var history = await Singleton()
+      //     .getDatabase()
+      //     .notSyncedHistoryEntries(DateTime.parse(lastSynced!));
+      // print("Not synced history: $history");
+
       getAllInstructions();
     } catch (e) {
       setState(() {

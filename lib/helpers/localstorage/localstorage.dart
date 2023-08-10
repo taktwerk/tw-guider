@@ -55,6 +55,9 @@ class AppDatabase extends _$AppDatabase {
     return query.map((row) => row.readTable(instructions)).get();
   }
 
+  Future<Instruction> getInstructionById(int id) =>
+      (select(instructions)..where((t) => t.id.equals(id))).getSingle();
+
 // InstructionStep
   Future<List<InstructionStep>> get allInstructionStepEntries =>
       select(instructionSteps).get();
@@ -68,6 +71,18 @@ class AppDatabase extends _$AppDatabase {
             ..where((step) => ((step.instructionId).equals(instructionId)))
             ..orderBy([(t) => OrderingTerm(expression: t.stepNr)]))
           .get();
+
+  Future<InstructionStep> getLastVisitedStep(
+      {required int instructionId, required int userId}) {
+    final query = select(instructionSteps).join([
+      innerJoin(
+          histories, instructionSteps.id.equalsExp(histories.instructionStepId),
+          useColumns: false)
+    ])
+      ..where((histories.userId).equals(userId))
+      ..where((histories.instructionId).equals(instructionId));
+    return query.map((t) => t.readTable(instructionSteps)).getSingle();
+  }
 
   // Category
   Future<List<Category>> get allCategoryEntries => select(categories).get();
@@ -105,6 +120,22 @@ class AppDatabase extends _$AppDatabase {
   Future<List<History>> getUserHistory(int givenUserId) =>
       (select(histories)..where((t) => t.userId.equals(givenUserId))).get();
 
+  Future<int> setNewStep(
+          {required int userId,
+          required int instructionId,
+          required int instructionStepId}) =>
+      (update(histories)
+            ..where((t) => t.instructionId.equals(instructionId))
+            ..where((t) => t.userId.equals(userId)))
+          .write(
+              HistoriesCompanion(instructionStepId: Value(instructionStepId)));
+
+  Future<List<History>> notSyncedHistoryEntries(DateTime timestamp) {
+    return (select(histories)
+          ..where((t) => t.updatedAt.isBiggerThanValue(timestamp)))
+        .get();
+  }
+
   // Instruction-Category
   Future<List<InstructionCategory>> get allInstructionCategoryEntries =>
       select(instructionsCategories).get();
@@ -129,10 +160,12 @@ class AppDatabase extends _$AppDatabase {
       (update(feedback)..where((t) => t.id.equals(entry.id))).write(
           FeedbackCompanion(
               isSynced: const Value(true),
-              updatedAt: Value(DateTime.now()),
+              updatedAt: Value(DateTime.now().toUtc()),
               updatedBy: Value(currentUser)));
 
   // Users
+  Future<List<User>> get allUserEntries => select(users).get();
+
   Future<int> createOrUpdateUser(UsersCompanion entry) =>
       into(users).insertOnConflictUpdate(entry);
 

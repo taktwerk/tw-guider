@@ -2,6 +2,7 @@ import 'package:guider/objects/singleton.dart';
 
 class KeyValue {
   static Future<void> initialize() async {
+    _setInitialUser();
     _setInitialValue(KeyValueEnum.instruction.key);
     _setInitialValue(KeyValueEnum.steps.key);
     _setInitialValue(KeyValueEnum.user.key);
@@ -18,6 +19,17 @@ class KeyValue {
     if (value == null) {
       value = DateTime(1900, 3, 1).toIso8601String();
       prefs.setString(key, value);
+    }
+  }
+
+  static Future<void> _setInitialUser() async {
+    String key = KeyValueEnum.currentUser.key;
+    var prefs = await Singleton().getPrefInstance();
+    int? value = prefs.getInt(key);
+    //print("User was: $value");
+    if (value == null) {
+      //print("New user set");
+      prefs.setInt(key, 1);
     }
   }
 
@@ -40,7 +52,8 @@ enum KeyValueEnum {
   steps("sync_steps"),
   history("sync_history"),
   instructionCategory("sync_instruction_category"),
-  feedback("sync_feedback");
+  feedback("sync_feedback"),
+  currentUser("current_user");
 
   const KeyValueEnum(this.key);
   final String key;
