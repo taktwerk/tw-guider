@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
@@ -168,14 +172,35 @@ class _InstructionViewState extends State<InstructionView> {
         child: GestureDetector(
           child: Hero(
               tag: "imageHero",
-              child:
-                  Image.network(widget.instruction.image, fit: BoxFit.cover)),
+              child: (foundation.kIsWeb)
+                  ? Image.network(
+                      widget.instruction.image,
+                      fit: BoxFit.cover,
+                    )
+                  : FutureBuilder(
+                      future: AppUtil.filePath(widget.instruction.id),
+                      builder: (_, snapshot) {
+                        if (snapshot.hasError) {
+                          return const Text("Something went wrong");
+                        }
+                        if ((snapshot.connectionState ==
+                            ConnectionState.waiting)) {
+                          return const CircularProgressIndicator();
+                        }
+                        if (snapshot.data!.isNotEmpty) {
+                          return Image.file(
+                            File(snapshot.data!),
+                            fit: BoxFit.cover,
+                          );
+                        }
+                        return const Text("No image available");
+                      })),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      FullScreenImageViewer(widget.instruction.image)),
+                      FullScreenImageViewer(widget.instruction)),
             );
           },
         ),
