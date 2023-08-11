@@ -19,6 +19,8 @@ class DriftToSupabase {
         'created_by': entry.createdBy,
         'updated_at': entry.updatedAt.toUtc().toIso8601String(),
         'updated_by': entry.updatedBy,
+        'deleted_at': entry.deletedAt,
+        'deleted_by': entry.deletedBy,
       });
       await Singleton().getDatabase().updateFeedback(entry);
     }
@@ -34,8 +36,6 @@ class DriftToSupabase {
     int len = history.length;
     for (int i = 0; i < len; i++) {
       var historyEntry = history[i];
-      print("Iso string: ${historyEntry.updatedAt.toIso8601String()}");
-      print("UTC string: ${historyEntry.updatedAt.toUtc()}");
       await supabase.from('history').upsert({
         'user_id': historyEntry.userId,
         'instruction_id': historyEntry.instructionId,
@@ -43,6 +43,8 @@ class DriftToSupabase {
         "created_by": historyEntry.createdBy,
         "updated_at": historyEntry.updatedAt.toUtc().toIso8601String(),
         "updated_by": historyEntry.updatedBy,
+        'deleted_at': historyEntry.deletedAt,
+        'deleted_by': historyEntry.deletedBy,
         "instruction_step_id": historyEntry.instructionStepId,
       }, onConflict: 'user_id,instruction_id').gt("updated_at", lastSynced);
     }

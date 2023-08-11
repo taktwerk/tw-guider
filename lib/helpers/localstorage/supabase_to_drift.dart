@@ -38,8 +38,8 @@ class SupabaseToDrift {
             createdBy: instr.createdBy,
             updatedAt: DateTime.parse(instr.updatedAt),
             updatedBy: instr.updatedBy,
-            // deletedAt: Value(DateTime.parse(instr.deletedAt!)),
-            // deletedBy: Value(instr.deletedBy),
+            deletedAt: Value(DateTime.tryParse(instr.deletedAt ?? "")),
+            deletedBy: Value(instr.deletedBy),
           ));
     }
   }
@@ -67,8 +67,8 @@ class SupabaseToDrift {
             createdBy: step.createdBy,
             updatedAt: DateTime.parse(step.updatedAt),
             updatedBy: step.updatedBy,
-            // deletedAt: Value(DateTime.parse(step.deletedAt!)),
-            // deletedBy: Value(step.deletedBy),
+            deletedAt: Value(DateTime.tryParse(step.deletedAt ?? "")),
+            deletedBy: Value(step.deletedBy),
           ));
     }
   }
@@ -91,8 +91,8 @@ class SupabaseToDrift {
               createdBy: category.createdBy,
               updatedAt: DateTime.parse(category.updatedAt),
               updatedBy: category.updatedBy,
-              // deletedAt: Value(DateTime.parse(category.deletedAt!)),
-              // deletedBy: Value(category.deletedBy),
+              deletedAt: Value(DateTime.tryParse(category.deletedAt ?? "")),
+              deletedBy: Value(category.deletedBy),
             ),
           );
     }
@@ -116,8 +116,8 @@ class SupabaseToDrift {
                 createdBy: history.createdBy,
                 updatedAt: DateTime.parse(history.updatedAt),
                 updatedBy: history.updatedBy,
-                // deletedAt: Value(DateTime.parse(del)),
-                // deletedBy: Value(history.deletedBy),
+                deletedAt: Value(DateTime.tryParse(history.deletedAt ?? "")),
+                deletedBy: Value(history.deletedBy),
                 instructionStepId: Value(history.instructionStepId)),
           );
     }
@@ -143,8 +143,9 @@ class SupabaseToDrift {
               createdBy: instructionCategory.createdBy,
               updatedAt: DateTime.parse(instructionCategory.updatedAt),
               updatedBy: instructionCategory.updatedBy,
-              // deletedAt: Value(DateTime.parse(instructionCategory.deletedAt!)),
-              // deletedBy: Value(instructionCategory.deletedBy),
+              deletedAt:
+                  Value(DateTime.tryParse(instructionCategory.deletedAt ?? "")),
+              deletedBy: Value(instructionCategory.deletedBy),
             ),
           );
     }
@@ -173,8 +174,9 @@ class SupabaseToDrift {
             createdBy: feedbackElement.createdBy,
             updatedAt: DateTime.parse(feedbackElement.updatedAt),
             updatedBy: feedbackElement.updatedBy,
-            // deletedAt: Value(DateTime.parse(feedbackElement.deletedAt!)),
-            // deletedBy: Value(feedbackElement.deletedBy),
+            deletedAt:
+                Value(DateTime.tryParse(feedbackElement.deletedAt ?? "")),
+            deletedBy: Value(feedbackElement.deletedBy),
           ));
     }
   }
@@ -195,8 +197,8 @@ class SupabaseToDrift {
             createdBy: user.createdBy,
             updatedAt: DateTime.parse(user.updatedAt),
             updatedBy: user.updatedBy,
-            // deletedAt: Value(DateTime.parse(user.deletedAt!)),
-            // deletedBy: Value(user.deletedBy),
+            deletedAt: Value(DateTime.tryParse(user.deletedAt ?? "")),
+            deletedBy: Value(user.deletedBy),
           ));
     }
   }
@@ -218,8 +220,8 @@ class SupabaseToDrift {
             createdBy: setting.createdBy,
             updatedAt: DateTime.parse(setting.updatedAt),
             updatedBy: setting.updatedBy,
-            // deletedAt: Value(DateTime.parse(setting.deletedAt!)),
-            // deletedBy: Value(setting.deletedBy),
+            deletedAt: Value(DateTime.tryParse(setting.deletedAt ?? "")),
+            deletedBy: Value(setting.deletedBy),
           ));
     }
   }
