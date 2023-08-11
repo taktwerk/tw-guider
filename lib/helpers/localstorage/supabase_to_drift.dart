@@ -1,5 +1,8 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:guider/helpers/localstorage/app_util.dart';
+import 'package:http/http.dart' as http;
 import 'package:drift/drift.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
@@ -13,6 +16,7 @@ import 'package:guider/objects/instruction.dart';
 import 'package:guider/objects/instruction_category.dart';
 import 'package:guider/objects/instruction_steps.dart';
 import 'package:guider/objects/user.dart';
+import 'package:path/path.dart';
 
 class SupabaseToDrift {
   static Future<void> getAllInstructions() async {
@@ -26,6 +30,14 @@ class SupabaseToDrift {
     int len = instructions.length;
     for (int i = 0; i < len; i++) {
       var instr = instructions[i];
+
+      if (!kIsWeb) {
+        //only downloads the first 10 images (not all 1000)
+        if (i >= 0 && i <= 10) {
+          _downloadImages(instr);
+        }
+      }
+
       await Singleton()
           .getDatabase()
           .createOrUpdateInstruction(InstructionsCompanion.insert(
@@ -41,6 +53,17 @@ class SupabaseToDrift {
             deletedAt: Value(DateTime.tryParse(instr.deletedAt ?? "")),
             deletedBy: Value(instr.deletedBy),
           ));
+    }
+  }
+
+  static void _downloadImages(InstructionElement instruction) async {
+    final response = await http.get(Uri.parse(instruction.image));
+    String folderInAppDocDir =
+        await AppUtil.createFolderInAppDocDir(instruction.id.toString());
+    final file =
+        File(join(folderInAppDocDir, AppUtil.getFileName(instruction.id)));
+    if (!(await file.exists())) {
+      file.writeAsBytesSync(response.bodyBytes);
     }
   }
 
