@@ -138,18 +138,18 @@ class _FeedbackViewState extends State<FeedbackView> {
         TextButton(
           child: Text(l.send),
           onPressed: () async {
-            if (_formKey.currentState!.validate()) {
+            if (_formKey.currentState!.validate() && currentUser != null) {
               Singleton().getDatabase().insertFeedback(FeedbackCompanion.insert(
                   id: Xid().toString(),
                   isSynced: false,
                   instructionId: widget.instruction.id,
-                  userId: currentUser,
+                  userId: currentUser!,
                   message: _controller.text,
                   image: drift.Value(_imagesBytes),
                   createdAt: DateTime.now().toUtc(),
-                  createdBy: currentUser,
+                  createdBy: currentUser!,
                   updatedAt: DateTime.now().toUtc(),
-                  updatedBy: currentUser));
+                  updatedBy: currentUser!));
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text("Feedback saved successfully!")));
 

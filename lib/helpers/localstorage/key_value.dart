@@ -1,8 +1,8 @@
+import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 
 class KeyValue {
   static Future<void> initialize() async {
-    _setInitialUser();
     _setInitialValue(KeyValueEnum.instruction.key);
     _setInitialValue(KeyValueEnum.steps.key);
     _setInitialValue(KeyValueEnum.user.key);
@@ -14,22 +14,26 @@ class KeyValue {
   }
 
   static Future<void> _setInitialValue(key) async {
-    var prefs = await Singleton().getPrefInstance();
-    String? value = prefs.getString(key);
+    String? value = await getValue(key);
     if (value == null) {
       value = DateTime(1900, 3, 1).toIso8601String();
-      prefs.setString(key, value);
+      setNewValue(key, value);
     }
   }
 
-  static Future<void> _setInitialUser() async {
+  static Future<void> setInitialUser() async {
     String key = KeyValueEnum.currentUser.key;
     var prefs = await Singleton().getPrefInstance();
     int? value = prefs.getInt(key);
     //print("User was: $value");
     if (value == null) {
+      var users = await Singleton().getDatabase().getUserSortedById();
+      var initialUser = users.firstOrNull;
       //print("New user set");
-      prefs.setInt(key, 1);
+      if (initialUser != null) {
+        prefs.setInt(key, initialUser.id);
+        currentUser = initialUser.id;
+      }
     }
   }
 
@@ -41,6 +45,16 @@ class KeyValue {
   static Future<String?> getValue(key) async {
     var prefs = await Singleton().getPrefInstance();
     return prefs.getString(key);
+  }
+
+  static Future<void> setNewUser(value) async {
+    var prefs = await Singleton().getPrefInstance();
+    prefs.setInt(KeyValueEnum.currentUser.key, value);
+  }
+
+  static Future<int?> getCurrentUser() async {
+    var prefs = await Singleton().getPrefInstance();
+    return prefs.getInt(KeyValueEnum.currentUser.key);
   }
 }
 

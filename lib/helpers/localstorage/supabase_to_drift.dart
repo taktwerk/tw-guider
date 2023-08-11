@@ -265,6 +265,7 @@ class SupabaseToDrift {
       logger.i("Got users from supabase.");
       KeyValue.setNewValue(
           KeyValueEnum.user.key, DateTime.now().toUtc().toIso8601String());
+      KeyValue.setInitialUser();
     });
 
     await SupabaseToDrift.getSettings().then((value) {

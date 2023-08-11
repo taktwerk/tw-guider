@@ -22,12 +22,14 @@ class _HistoryViewState extends State<HistoryView> {
   }
 
   Future getData() async {
-    var data = await Singleton()
-        .getDatabase()
-        .getUserHistoryAsInstructions(currentUser);
-    setState(() {
-      _instructions = data;
-    });
+    if (currentUser != null) {
+      var data = await Singleton()
+          .getDatabase()
+          .getUserHistoryAsInstructions(currentUser!);
+      setState(() {
+        _instructions = data;
+      });
+    }
   }
 
   @override
@@ -49,7 +51,11 @@ class _HistoryViewState extends State<HistoryView> {
                   },
                 ),
               ))
-            : const CircularProgressIndicator(),
+            : Center(
+                child: currentUser != null
+                    ? const CircularProgressIndicator()
+                    : const Text("No history available"),
+              ),
       ],
     ));
   }

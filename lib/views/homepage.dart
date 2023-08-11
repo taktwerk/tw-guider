@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -75,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage>
                     onTap: () {
                       setState(() {
                         currentUser = users![index].id;
+                        KeyValue.setNewUser(users![index].id);
                       });
                       logger.i("Selected user $currentUser");
                     },

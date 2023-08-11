@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/insert.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
-import 'package:guider/helpers/search.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -41,7 +39,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
     try {
       var res = await Singleton()
           .getDatabase()
-          .getLastVisitedStep(instructionId: id, userId: currentUser);
+          .getLastVisitedStep(instructionId: id, userId: currentUser!);
 
       var item = "${res.stepNr}/${widget.steps.length}";
       int index = _items.indexOf(item);
@@ -72,7 +70,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
 
   void setNewStep(index) async {
     await Singleton().getDatabase().setNewStep(
-        userId: currentUser,
+        userId: currentUser!,
         instructionId: instructionId!,
         instructionStepId: _views[index].instructionStep.id);
   }

@@ -161,13 +161,16 @@ class AppDatabase extends _$AppDatabase {
           FeedbackCompanion(
               isSynced: const Value(true),
               updatedAt: Value(DateTime.now().toUtc()),
-              updatedBy: Value(currentUser)));
+              updatedBy: Value(currentUser!)));
 
   // Users
   Future<List<User>> get allUserEntries => select(users).get();
 
   Future<int> createOrUpdateUser(UsersCompanion entry) =>
       into(users).insertOnConflictUpdate(entry);
+
+  Future<List<User>> getUserSortedById() =>
+      (select(users)..orderBy([(t) => OrderingTerm(expression: t.id)])).get();
 
   // Settings
   Future<int> createOrUpdateSetting(SettingsCompanion entry) =>
