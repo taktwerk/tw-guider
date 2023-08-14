@@ -10,7 +10,4 @@ _Framework: Flutter_
 
 ---
 
-
-
-
 © [taktwerk.ch](https://taktwerk.ch) | 2012-2023
