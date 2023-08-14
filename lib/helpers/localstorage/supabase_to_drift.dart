@@ -1,21 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:http/http.dart' as http;
 import 'package:drift/drift.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/main.dart';
-import 'package:guider/objects/category.dart';
-import 'package:guider/objects/feedback.dart';
-import 'package:guider/objects/setting.dart';
 import 'package:guider/objects/singleton.dart';
-import 'package:guider/objects/history.dart';
-import 'package:guider/objects/instruction.dart';
-import 'package:guider/objects/instruction_category.dart';
-import 'package:guider/objects/instruction_steps.dart';
-import 'package:guider/objects/user.dart';
 import 'package:path/path.dart';
 
 class SupabaseToDrift {
@@ -24,44 +16,44 @@ class SupabaseToDrift {
     final data = await supabase
         .from('instruction')
         .select("*")
-        .gt('updated_at', lastSynced);
-    var instructions =
-        instructionFromJson(jsonEncode(data)).instructionElements;
-    int len = instructions.length;
-    for (int i = 0; i < len; i++) {
-      var instr = instructions[i];
+        .gt('updated_at', lastSynced)
+        .order('id', ascending: true);
 
+    int len = data.length;
+    print("Instr len $len");
+    for (int i = 0; i < len; i++) {
+      var instruction = data[i];
       if (!kIsWeb) {
         //only downloads the first 10 images (not all 1000)
         if (i >= 0 && i <= 10) {
-          _downloadImages(instr);
+          _downloadImages(instruction);
         }
       }
-
       await Singleton()
           .getDatabase()
           .createOrUpdateInstruction(InstructionsCompanion.insert(
-            id: Value(instr.id),
-            title: instr.title,
-            shortTitle: instr.shortTitle,
-            image: instr.image,
-            description: instr.description,
-            createdAt: DateTime.parse(instr.createdAt),
-            createdBy: instr.createdBy,
-            updatedAt: DateTime.parse(instr.updatedAt),
-            updatedBy: instr.updatedBy,
-            deletedAt: Value(DateTime.tryParse(instr.deletedAt ?? "")),
-            deletedBy: Value(instr.deletedBy),
+            id: Value(instruction[Const.id.key]),
+            title: instruction[Const.title.key],
+            shortTitle: instruction[Const.shortTitle.key],
+            image: instruction[Const.image.key],
+            description: instruction[Const.description.key],
+            createdAt: DateTime.parse(instruction[Const.createdAt.key]),
+            createdBy: instruction[Const.createdBy.key],
+            updatedAt: DateTime.parse(instruction[Const.updatedAt.key]),
+            updatedBy: instruction[Const.updatedBy.key],
+            deletedAt: Value(
+                DateTime.tryParse(instruction[Const.deletedAt.key] ?? "")),
+            deletedBy: Value(instruction[Const.deletedBy.key]),
           ));
     }
   }
 
-  static void _downloadImages(InstructionElement instruction) async {
-    final response = await http.get(Uri.parse(instruction.image));
-    String folderInAppDocDir =
-        await AppUtil.createFolderInAppDocDir(instruction.id.toString());
-    final file =
-        File(join(folderInAppDocDir, AppUtil.getFileName(instruction.id)));
+  static void _downloadImages(instruction) async {
+    final response = await http.get(Uri.parse(instruction[Const.image.key]));
+    String folderInAppDocDir = await AppUtil.createFolderInAppDocDir(
+        instruction[Const.id.key].toString());
+    final file = File(join(
+        folderInAppDocDir, AppUtil.getFileName(instruction[Const.id.key])));
     if (!(await file.exists())) {
       file.writeAsBytesSync(response.bodyBytes);
     }
@@ -73,25 +65,24 @@ class SupabaseToDrift {
         .from('instruction_step')
         .select('*')
         .gt('updated_at', lastSynced);
-    var instructionSteps =
-        instructionStepsFromJson(jsonEncode(data)).instructionSteps;
-    int len = instructionSteps.length;
+    int len = data.length;
     for (int i = 0; i < len; i++) {
-      var step = instructionSteps[i];
+      var step = data[i];
       await Singleton()
           .getDatabase()
           .createOrUpdateInstructionStep(InstructionStepsCompanion.insert(
-            instructionId: step.instructionId,
-            stepNr: step.stepNr,
-            id: Value(step.id),
-            image: step.image,
-            description: step.description,
-            createdAt: DateTime.parse(step.createdAt),
-            createdBy: step.createdBy,
-            updatedAt: DateTime.parse(step.updatedAt),
-            updatedBy: step.updatedBy,
-            deletedAt: Value(DateTime.tryParse(step.deletedAt ?? "")),
-            deletedBy: Value(step.deletedBy),
+            instructionId: step[Const.instructionId.key],
+            stepNr: step[Const.stepNr.key],
+            id: Value(step[Const.id.key]),
+            image: step[Const.image.key],
+            description: step[Const.description.key],
+            createdAt: DateTime.parse(step[Const.createdAt.key]),
+            createdBy: step[Const.createdBy.key],
+            updatedAt: DateTime.parse(step[Const.updatedAt.key]),
+            updatedBy: step[Const.updatedBy.key],
+            deletedAt:
+                Value(DateTime.tryParse(step[Const.deletedAt.key] ?? "")),
+            deletedBy: Value(step[Const.deletedBy.key]),
           ));
     }
   }
@@ -102,20 +93,21 @@ class SupabaseToDrift {
         .from('category')
         .select('*')
         .gt('updated_at', lastSynced);
-    var categories = categoriesFromJson(jsonEncode(data)).categories;
-    int len = categories.length;
+    int len = data.length;
     for (int i = 0; i < len; i++) {
-      var category = categories[i];
+      //var category = categories[i];
+      var category = data[i];
       await Singleton().getDatabase().createOrUpdateCategory(
             CategoriesCompanion.insert(
-              id: Value(category.id),
-              name: category.name,
-              createdAt: DateTime.parse(category.createdAt),
-              createdBy: category.createdBy,
-              updatedAt: DateTime.parse(category.updatedAt),
-              updatedBy: category.updatedBy,
-              deletedAt: Value(DateTime.tryParse(category.deletedAt ?? "")),
-              deletedBy: Value(category.deletedBy),
+              id: Value(category[Const.id.key]),
+              name: category[Const.name.key],
+              createdAt: DateTime.parse(category[Const.createdAt.key]),
+              createdBy: category[Const.createdBy.key],
+              updatedAt: DateTime.parse(category[Const.updatedAt.key]),
+              updatedBy: category[Const.updatedBy.key],
+              deletedAt:
+                  Value(DateTime.tryParse(category[Const.deletedAt.key] ?? "")),
+              deletedBy: Value(category[Const.deletedBy.key]),
             ),
           );
     }
@@ -127,21 +119,21 @@ class SupabaseToDrift {
     final data =
         await supabase.from('history').select('*').gt('updated_at', lastSynced);
     print("Got history changes: $data");
-    var histories = historiesFromJson(jsonEncode(data)).histories;
-    int len = histories.length;
+    int len = data.length;
     for (int i = 0; i < len; i++) {
-      var history = histories[i];
+      var history = data[i];
       await Singleton().getDatabase().createOrUpdateHistory(
             HistoriesCompanion.insert(
-                instructionId: history.instructionId,
-                userId: history.userId,
-                createdAt: DateTime.parse(history.createdAt),
-                createdBy: history.createdBy,
-                updatedAt: DateTime.parse(history.updatedAt),
-                updatedBy: history.updatedBy,
-                deletedAt: Value(DateTime.tryParse(history.deletedAt ?? "")),
-                deletedBy: Value(history.deletedBy),
-                instructionStepId: Value(history.instructionStepId)),
+                instructionId: history[Const.instructionId.key],
+                userId: history[Const.userId.key],
+                createdAt: DateTime.parse(history[Const.createdAt.key]),
+                createdBy: history[Const.createdBy.key],
+                updatedAt: DateTime.parse(history[Const.updatedAt.key]),
+                updatedBy: history[Const.updatedBy.key],
+                deletedAt: Value(
+                    DateTime.tryParse(history[Const.deletedAt.key] ?? "")),
+                deletedBy: Value(history[Const.deletedBy.key]),
+                instructionStepId: Value(history[Const.instructionStepId.key])),
           );
     }
   }
@@ -153,22 +145,22 @@ class SupabaseToDrift {
         .from('instruction_category')
         .select('*')
         .gt('updated_at', lastSynced);
-    var instructionsCategories =
-        instructionsCategoriesFromJson(jsonEncode(data)).instructionsCategories;
-    int len = instructionsCategories.length;
+    int len = data.length;
     for (int i = 0; i < len; i++) {
-      var instructionCategory = instructionsCategories[i];
+      var instructionCategory = data[i];
       await Singleton().getDatabase().createOrUpdateInstructionCategory(
             InstructionsCategoriesCompanion.insert(
-              categoryId: instructionCategory.categoryId,
-              instructionId: instructionCategory.instructionId,
-              createdAt: DateTime.parse(instructionCategory.createdAt),
-              createdBy: instructionCategory.createdBy,
-              updatedAt: DateTime.parse(instructionCategory.updatedAt),
-              updatedBy: instructionCategory.updatedBy,
-              deletedAt:
-                  Value(DateTime.tryParse(instructionCategory.deletedAt ?? "")),
-              deletedBy: Value(instructionCategory.deletedBy),
+              categoryId: instructionCategory[Const.categoryId.key],
+              instructionId: instructionCategory[Const.instructionId.key],
+              createdAt:
+                  DateTime.parse(instructionCategory[Const.createdAt.key]),
+              createdBy: instructionCategory[Const.createdBy.key],
+              updatedAt:
+                  DateTime.parse(instructionCategory[Const.updatedAt.key]),
+              updatedBy: instructionCategory[Const.updatedBy.key],
+              deletedAt: Value(DateTime.tryParse(
+                  instructionCategory[Const.deletedAt.key] ?? "")),
+              deletedBy: Value(instructionCategory[Const.deletedBy.key]),
             ),
           );
     }
@@ -180,26 +172,25 @@ class SupabaseToDrift {
         .from('feedback')
         .select('*')
         .gt('updated_at', lastSynced);
-    var feedback = feedbackFromJson(jsonEncode(data)).feedbackelements;
-    int len = feedback.length;
+    int len = data.length;
     for (int i = 0; i < len; i++) {
-      var feedbackElement = feedback[i];
+      var feedbackElement = data[i];
       await Singleton()
           .getDatabase()
           .createOrUpdateFeedback(FeedbackCompanion.insert(
-            id: feedbackElement.id,
+            id: feedbackElement[Const.id.key],
             isSynced: true,
-            instructionId: feedbackElement.instructionId,
-            userId: feedbackElement.userId,
-            message: feedbackElement.message,
-            image: Value(feedbackElement.image),
-            createdAt: DateTime.parse(feedbackElement.createdAt),
-            createdBy: feedbackElement.createdBy,
-            updatedAt: DateTime.parse(feedbackElement.updatedAt),
-            updatedBy: feedbackElement.updatedBy,
-            deletedAt:
-                Value(DateTime.tryParse(feedbackElement.deletedAt ?? "")),
-            deletedBy: Value(feedbackElement.deletedBy),
+            instructionId: feedbackElement[Const.instructionId.key],
+            userId: feedbackElement[Const.userId.key],
+            message: feedbackElement[Const.message.key],
+            image: Value(feedbackElement[Const.image.key]),
+            createdAt: DateTime.parse(feedbackElement[Const.createdAt.key]),
+            createdBy: feedbackElement[Const.createdBy.key],
+            updatedAt: DateTime.parse(feedbackElement[Const.updatedAt.key]),
+            updatedBy: feedbackElement[Const.updatedBy.key],
+            deletedAt: Value(
+                DateTime.tryParse(feedbackElement[Const.deletedAt.key] ?? "")),
+            deletedBy: Value(feedbackElement[Const.deletedBy.key]),
           ));
     }
   }
@@ -208,43 +199,45 @@ class SupabaseToDrift {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.user.key);
     final data =
         await supabase.from('user').select('*').gt('updated_at', lastSynced);
-    var users = usersFromJson(jsonEncode(data)).users;
-    int len = users.length;
+    int len = data.length;
     for (int i = 0; i < len; i++) {
-      var user = users[i];
+      var user = data[i];
       await Singleton().getDatabase().createOrUpdateUser(UsersCompanion.insert(
-            id: Value(user.id),
-            username: user.username,
-            role: user.role,
-            createdAt: DateTime.parse(user.createdAt),
-            createdBy: user.createdBy,
-            updatedAt: DateTime.parse(user.updatedAt),
-            updatedBy: user.updatedBy,
-            deletedAt: Value(DateTime.tryParse(user.deletedAt ?? "")),
-            deletedBy: Value(user.deletedBy),
+            id: Value(user[Const.id.key]),
+            username: user[Const.username.key],
+            role: user[Const.role.key],
+            createdAt: DateTime.parse(user[Const.createdAt.key]),
+            createdBy: user[Const.createdBy.key],
+            updatedAt: DateTime.parse(user[Const.updatedAt.key]),
+            updatedBy: user[Const.updatedBy.key],
+            deletedAt:
+                Value(DateTime.tryParse(user[Const.deletedAt.key] ?? "")),
+            deletedBy: Value(user[Const.deletedBy.key]),
           ));
     }
   }
 
   static Future<void> getSettings() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.setting.key);
+    print("Settings last synced $lastSynced");
     final data =
         await supabase.from('setting').select('*').gt('updated_at', lastSynced);
-    var settings = settingsFromJson(jsonEncode(data)).settings;
-    int len = settings.length;
+    print("Settings data from supabase $data");
+    int len = data.length;
     for (int i = 0; i < len; i++) {
-      var setting = settings[i];
+      var setting = data[i];
       await Singleton()
           .getDatabase()
           .createOrUpdateSetting(SettingsCompanion.insert(
-            userId: Value(setting.userId),
-            language: setting.language,
-            createdAt: DateTime.parse(setting.createdAt),
-            createdBy: setting.createdBy,
-            updatedAt: DateTime.parse(setting.updatedAt),
-            updatedBy: setting.updatedBy,
-            deletedAt: Value(DateTime.tryParse(setting.deletedAt ?? "")),
-            deletedBy: Value(setting.deletedBy),
+            userId: Value(setting[Const.userId.key]),
+            language: setting[Const.language.key],
+            createdAt: DateTime.parse(setting[Const.createdAt.key]),
+            createdBy: setting[Const.createdBy.key],
+            updatedAt: DateTime.parse(setting[Const.updatedAt.key]),
+            updatedBy: setting[Const.updatedBy.key],
+            deletedAt:
+                Value(DateTime.tryParse(setting[Const.deletedAt.key] ?? "")),
+            deletedBy: Value(setting[Const.deletedBy.key]),
           ));
     }
   }
