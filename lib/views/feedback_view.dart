@@ -150,8 +150,8 @@ class _FeedbackViewState extends State<FeedbackView> {
                   createdBy: currentUser!,
                   updatedAt: DateTime.now().toUtc(),
                   updatedBy: currentUser!));
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Feedback saved successfully!")));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
 
               Navigator.pop(context);
             }

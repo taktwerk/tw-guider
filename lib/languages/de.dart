@@ -77,4 +77,22 @@ class LanguageDe extends Languages {
 
   @override
   String get search => "Suchen...";
+
+  @override
+  String get feedbackSaved => "Feedback erfolgreich gespeichert!";
+
+  @override
+  String get synchronize => "Synchronisieren";
+
+  @override
+  String get noInstructionsAvailable => "Keine Anleitungen verfügbar.";
+
+  @override
+  String get noHistoryAvailable => "Kein Verlauf verfügbar.";
+
+  @override
+  String get noImageAvailable => "Kein Bild verfügbar.";
+
+  @override
+  String get somethingWentWrong => "Etwas ist schiefgelaufen.";
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/history_view.dart';
@@ -17,12 +18,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
-  //TODO: add language specific text
-  final List<Tab> myTabs = <Tab>[
-    const Tab(text: 'Home', icon: Icon(Icons.home)),
-    const Tab(text: 'Settings', icon: Icon(Icons.settings)),
-    const Tab(text: "History", icon: Icon(Icons.history))
-  ];
   List<User>? users;
 
   @override
@@ -50,6 +45,12 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
+    final l = Languages.of(context);
+    final List<Tab> myTabs = <Tab>[
+      Tab(text: l?.homeTitle, icon: const Icon(Icons.home)),
+      Tab(text: l?.settingsTitle, icon: const Icon(Icons.settings)),
+      Tab(text: l?.historyTitle, icon: const Icon(Icons.history))
+    ];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,

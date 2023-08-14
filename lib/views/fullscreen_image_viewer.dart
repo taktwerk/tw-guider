@@ -3,12 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/languages/languages.dart';
 
 class FullScreenImageViewer extends StatelessWidget {
   const FullScreenImageViewer(this.instruction, {Key? key}) : super(key: key);
   final Instruction instruction;
   @override
   Widget build(BuildContext context) {
+    final l = Languages.of(context);
     return Scaffold(
       body: GestureDetector(
         child: SizedBox(
@@ -25,7 +27,7 @@ class FullScreenImageViewer extends StatelessWidget {
                     future: AppUtil.filePath(instruction.id),
                     builder: (_, snapshot) {
                       if (snapshot.hasError) {
-                        return const Text("Something went wrong");
+                        return Text(l!.somethingWentWrong);
                       }
                       if ((snapshot.connectionState ==
                           ConnectionState.waiting)) {
@@ -37,7 +39,7 @@ class FullScreenImageViewer extends StatelessWidget {
                           fit: BoxFit.contain,
                         );
                       }
-                      return const Text("No image available");
+                      return Text(l!.noImageAvailable);
                     }),
           ),
         ),

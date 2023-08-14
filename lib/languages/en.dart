@@ -77,4 +77,22 @@ class LanguageEn extends Languages {
 
   @override
   String get search => "Search...";
+
+  @override
+  String get feedbackSaved => "Feedback saved successfully!";
+
+  @override
+  String get synchronize => "Synchronize";
+
+  @override
+  String get noInstructionsAvailable => "No instructions available.";
+
+  @override
+  String get noHistoryAvailable => "No history available.";
+
+  @override
+  String get noImageAvailable => "No image available.";
+
+  @override
+  String get somethingWentWrong => "Something went wrong.";
 }

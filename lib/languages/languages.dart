@@ -19,6 +19,7 @@ abstract class Languages {
   String get instructionSteps;
   String get feedback;
   String get feedbackContent;
+  String get feedbackSaved;
   String get noImageSelected;
   String get imageSelected;
   String get chooseImage;
@@ -33,4 +34,9 @@ abstract class Languages {
   String get done;
   String get pleaseEnterValue;
   String get search;
+  String get synchronize;
+  String get noInstructionsAvailable;
+  String get somethingWentWrong;
+  String get noImageAvailable;
+  String get noHistoryAvailable;
 }

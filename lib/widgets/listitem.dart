@@ -64,7 +64,7 @@ class ListItem extends StatelessWidget {
                                   future: AppUtil.filePath(_instruction.id),
                                   builder: (_, snapshot) {
                                     if (snapshot.hasError) {
-                                      return const Text("Something went wrong");
+                                      return Text(l!.somethingWentWrong);
                                     }
                                     if ((snapshot.connectionState ==
                                         ConnectionState.waiting)) {
@@ -78,7 +78,7 @@ class ListItem extends StatelessWidget {
                                         fit: BoxFit.cover,
                                       );
                                     }
-                                    return const Text("No image available");
+                                    return Text(l!.noImageAvailable);
                                   }),
                         ))),
                 const Spacer(flex: 2),

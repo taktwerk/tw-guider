@@ -142,6 +142,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final l = Languages.of(context);
     super.build(context);
     return Scaffold(
       body: Column(
@@ -167,11 +168,11 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                   });
                 });
               },
-              child: const Text("Sync")),
+              child: Text(l!.synchronize)),
           loading ? const CircularProgressIndicator() : Container(),
           _filteredInstructions != null
               ? _filteredInstructions!.isEmpty
-                  ? const Text("No instructions available")
+                  ? Text(l.noInstructionsAvailable)
                   : Expanded(
                       child: Scrollbar(
                       controller: _scrollController,
