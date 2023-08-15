@@ -9,6 +9,7 @@ import 'package:guider/widgets/searchbar.dart';
 import 'package:guider/widgets/tag.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -158,6 +159,18 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
             ],
           ),
           getCategoryTag(),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: ElevatedButton.icon(
+                onPressed: () {
+                  final db =
+                      Singleton().getDatabase(); //This should be a singleton
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => DriftDbViewer(db)));
+                },
+                icon: const Icon(Icons.storage),
+                label: const Text("DB")),
+          ),
           ElevatedButton(
               onPressed: () {
                 setState(() {
