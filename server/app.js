@@ -34,5 +34,6 @@ app.get('/hello', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server started. Listening on port ${port} serving ${path}`)
+  console.log(`Open: http://127.0.0.1:${port}`)
 })
 
