@@ -17,7 +17,8 @@ Future<File> get databaseFile async {
 /// Obtains a database connection for running drift in a Dart VM.
 DatabaseConnection connect() {
   return DatabaseConnection.delayed(Future(() async {
-    return NativeDatabase.createBackgroundConnection(await databaseFile);
+    return NativeDatabase.createBackgroundConnection(await databaseFile,
+        logStatements: true);
   }));
 }
 
