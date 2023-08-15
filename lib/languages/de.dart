@@ -95,4 +95,16 @@ class LanguageDe extends Languages {
 
   @override
   String get somethingWentWrong => "Etwas ist schiefgelaufen.";
+
+  @override
+  String get user => "User";
+
+  @override
+  String get users => "Users";
+
+  @override
+  String get login => "Anmelden";
+
+  @override
+  String get languages => "Sprachen";
 }

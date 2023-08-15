@@ -39,4 +39,8 @@ abstract class Languages {
   String get somethingWentWrong;
   String get noImageAvailable;
   String get noHistoryAvailable;
+  String get user;
+  String get users;
+  String get login;
+  String get languages;
 }

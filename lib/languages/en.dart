@@ -95,4 +95,16 @@ class LanguageEn extends Languages {
 
   @override
   String get somethingWentWrong => "Something went wrong.";
+
+  @override
+  String get user => "User";
+
+  @override
+  String get users => "Users";
+
+  @override
+  String get login => "Login";
+
+  @override
+  String get languages => "Languages";
 }
