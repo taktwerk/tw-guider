@@ -13,7 +13,7 @@
             "name": "guider (debug port 5555)",
             "request": "launch",
             "type": "dart",
-            "args": "--web-port=5555"
+            "toolArgs": ["--web-port=5555"]
         },
         {
             "name": "guider (profile mode)",
