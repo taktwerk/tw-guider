@@ -42,7 +42,6 @@ class AppUtil {
     final path =
         '${getInstructionImagesFolderPath(appDocDir)}$instructionId/${getFileName(instructionId)}';
     if (await File(path).exists()) {
-      print("File (Instruction $instructionId) exists already.");
       return path;
     } else {
       return "";

@@ -22,16 +22,13 @@ class KeyValue {
   }
 
   static Future<void> setInitialUser() async {
-    String key = KeyValueEnum.currentUser.key;
-    var prefs = await Singleton().getPrefInstance();
-    int? value = prefs.getInt(key);
-    //print("User was: $value");
+    int? value = await getCurrentUser();
     if (value == null) {
       var users = await Singleton().getDatabase().getUserSortedById();
       var initialUser = users.firstOrNull;
       //print("New user set");
       if (initialUser != null) {
-        prefs.setInt(key, initialUser.id);
+        setNewUser(initialUser.id);
         currentUser = initialUser.id;
       }
     }

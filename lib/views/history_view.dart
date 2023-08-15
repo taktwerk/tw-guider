@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/widgets/listitem.dart';
@@ -38,23 +39,23 @@ class _HistoryViewState extends State<HistoryView> {
         body: Column(
       children: [
         _instructions != null
-            ? Expanded(
-                child: Scrollbar(
-                controller: _scrollController,
-                thumbVisibility: true,
-                child: ListView.builder(
-                  controller: _scrollController,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: _instructions!.length,
-                  itemBuilder: (context, index) {
-                    return ListItem(instruction: _instructions![index]);
-                  },
-                ),
-              ))
+            ? _instructions!.isNotEmpty
+                ? Expanded(
+                    child: Scrollbar(
+                    controller: _scrollController,
+                    thumbVisibility: true,
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: _instructions!.length,
+                      itemBuilder: (context, index) {
+                        return ListItem(instruction: _instructions![index]);
+                      },
+                    ),
+                  ))
+                : Text(Languages.of(context)!.noHistoryAvailable)
             : Center(
-                child: currentUser != null
-                    ? const CircularProgressIndicator()
-                    : const Text("No history available"),
+                child: Text(Languages.of(context)!.noHistoryAvailable),
               ),
       ],
     ));
