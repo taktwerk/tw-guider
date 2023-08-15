@@ -176,6 +176,24 @@ class AppDatabase extends _$AppDatabase {
   Future<int> createOrUpdateSetting(SettingsCompanion entry) =>
       into(settings).insertOnConflictUpdate(entry);
 
+  Future<List<Setting>> get allSettings => select(settings).get();
+
+  Future<int> updateUserSettings(int userId, String language) =>
+      (update(settings)..where((t) => t.userId.equals(userId))).write(
+          SettingsCompanion(
+              language: Value(language),
+              updatedAt: Value(DateTime.now().toUtc()),
+              updatedBy: Value(currentUser!)));
+
+  Future<List<Setting>> getSettings(int userId) =>
+      (select(settings)..where((t) => t.userId.equals(userId))).get();
+
+  Future<List<Setting>> notSyncedSettingsEntries(DateTime timestamp) {
+    return (select(settings)
+          ..where((t) => t.updatedAt.isBiggerThanValue(timestamp)))
+        .get();
+  }
+
   @override
   int get schemaVersion => 1;
 }

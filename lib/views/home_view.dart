@@ -33,8 +33,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   final ScrollController _scrollController = ScrollController();
 
   void getAllInstructions() async {
-    var inst = Singleton().getDatabase();
-    var data = await inst.allInstructionEntries;
+    var data = await Singleton().getDatabase().allInstructionEntries;
     setState(() {
       _filteredInstructions = data;
       _instructionsBySearch = data;
@@ -48,6 +47,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
       await DriftToSupabase.uploadFeedback();
 
       await DriftToSupabase.uploadHistory();
+
+      await DriftToSupabase.uploadSettings();
       await SupabaseToDrift.sync();
 
       //   print(
@@ -164,6 +165,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                 });
                 sync().then((value) {
                   setState(() {
+                    isVisible = false;
+                    chosenCategory = "";
                     loading = false;
                   });
                 });

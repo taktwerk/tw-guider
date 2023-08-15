@@ -49,4 +49,22 @@ class DriftToSupabase {
       }, onConflict: 'user_id,instruction_id').gt("updated_at", lastSynced);
     }
   }
+
+  static Future<void> uploadSettings() async {
+    var lastSynced = await KeyValue.getValue(KeyValueEnum.setting.key);
+    print("Last synced settings $lastSynced");
+    var settings = await Singleton()
+        .getDatabase()
+        .notSyncedSettingsEntries(DateTime.parse(lastSynced!));
+    print("Not synced settings $settings");
+    int len = settings.length;
+    for (int i = 0; i < len; i++) {
+      var settingsEntry = settings[i];
+      await supabase.from('setting').update({
+        'language': settingsEntry.language,
+        'updated_at': settingsEntry.updatedAt.toUtc().toIso8601String(),
+        'updated_by': settingsEntry.updatedBy
+      }).eq('user_id', settingsEntry.userId);
+    }
+  }
 }
