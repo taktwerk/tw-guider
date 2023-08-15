@@ -217,6 +217,14 @@ class SupabaseToDrift {
     }
   }
 
+  static Future<void> initializeUsers() async {
+    await SupabaseToDrift.getUsers().then(
+      (value) {
+        logger.i("Got users from supabase. (INIT)");
+      },
+    );
+  }
+
   static Future<void> getSettings() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.setting.key);
     print("Settings last synced $lastSynced");

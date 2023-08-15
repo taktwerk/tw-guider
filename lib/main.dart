@@ -3,9 +3,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
+import 'package:guider/objects/singleton.dart';
+import 'package:guider/views/homepage.dart';
+import 'package:guider/views/login.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:guider/languages/app_localizations.dart';
-import 'package:guider/views/homepage.dart';
 import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:guider/languages/supported_languages.dart';
@@ -20,7 +23,10 @@ void main() async {
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwb2hhcXZ6Zmd2ZGloeGN3dmZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkyMzM0OTgsImV4cCI6MjAwNDgwOTQ5OH0.vOlkfj8sLoDvmWV3rrbNWwpu0Iir0Z5V5P4MuUpI5oI");
   await KeyValue.initialize();
   currentUser = await KeyValue.getCurrentUser();
-  logger.i("Currentuser $currentUser");
+  if (currentUser == null) {
+    await SupabaseToDrift.initializeUsers();
+  }
+  logger.i("Currentuser $currentUser (main)");
   runApp(const GuiderApp());
 }
 
@@ -50,7 +56,7 @@ class GuiderApp extends StatefulWidget {
 }
 
 class _GuiderAppState extends State<GuiderApp> {
-  Locale _locale = const Locale.fromSubtags(languageCode: 'en');
+  Locale? _locale;
   late StreamSubscription<ConnectivityResult> subscription;
 
   void setLocale(Locale locale) {
@@ -69,6 +75,16 @@ class _GuiderAppState extends State<GuiderApp> {
       isDeviceConnected.value = await InternetConnectionChecker().hasConnection;
       logger.w("Internet status: $isDeviceConnected");
     });
+    setLanguage();
+  }
+
+  Future<void> setLanguage() async {
+    if (currentUser != null) {
+      var result = await Singleton().getDatabase().getSettings(currentUser!);
+      if (result.isNotEmpty) {
+        setLocale(Locale.fromSubtags(languageCode: result.first.language));
+      }
+    }
   }
 
   @override
@@ -104,7 +120,7 @@ class _GuiderAppState extends State<GuiderApp> {
             seedColor: const Color.fromARGB(255, 92, 172, 252)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: currentUser != null ? const MyHomePage() : const LoginPage(),
     );
   }
 }
