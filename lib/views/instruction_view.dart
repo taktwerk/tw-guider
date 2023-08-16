@@ -180,7 +180,7 @@ class _InstructionViewState extends State<InstructionView> {
                     fit: BoxFit.cover,
                   )
                 : FutureBuilder(
-                    future: AppUtil.filePath(widget.instruction.id),
+                    future: AppUtil.filePath(widget.instruction),
                     builder: (_, snapshot) {
                       if (snapshot.hasError) {
                         return Text(l!.somethingWentWrong);

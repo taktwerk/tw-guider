@@ -24,7 +24,7 @@ class FullScreenImageViewer extends StatelessWidget {
                     fit: BoxFit.contain,
                   )
                 : FutureBuilder(
-                    future: AppUtil.filePath(instruction.id),
+                    future: AppUtil.filePath(instruction),
                     builder: (_, snapshot) {
                       if (snapshot.hasError) {
                         return Text(l!.somethingWentWrong);

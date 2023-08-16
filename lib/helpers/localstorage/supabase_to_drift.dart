@@ -53,8 +53,11 @@ class SupabaseToDrift {
     String folderInAppDocDir = await AppUtil.createFolderInAppDocDir(
         instruction[Const.id.key].toString());
     final file = File(join(
-        folderInAppDocDir, AppUtil.getFileName(instruction[Const.id.key])));
+        folderInAppDocDir, AppUtil.getFileName(instruction[Const.image.key])));
     if (!(await file.exists())) {
+      if (folderInAppDocDir.isNotEmpty) {
+        await AppUtil.deleteFolderContent(folderInAppDocDir);
+      }
       file.writeAsBytesSync(response.bodyBytes);
     }
   }

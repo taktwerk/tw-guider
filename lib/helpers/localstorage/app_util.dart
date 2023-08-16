@@ -1,9 +1,19 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:crypto/crypto.dart';
 
 class AppUtil {
-  static String getFileName(int instructionId) =>
-      'Instruction_$instructionId.png';
+  static String getFileName(String url) {
+    if (url.contains(".jpg")) {
+      return "${md5.convert(utf8.encode(url))}.jpg";
+    } else if (url.contains(".png")) {
+      print("Was png");
+      return "${md5.convert(utf8.encode(url))}.png";
+    }
+    return "${md5.convert(utf8.encode(url))}.png";
+  }
 
   static String getInstructionImagesFolderPath(Directory directory) {
     //App Document Directory + folder name
@@ -37,10 +47,18 @@ class AppUtil {
     }
   }
 
-  static Future<String> filePath(int instructionId) async {
+  static Future<void> deleteFolderContent(String directory) async {
+    final List<FileSystemEntity> entities =
+        await Directory(directory).list().toList();
+    for (FileSystemEntity entity in entities) {
+      entity.delete();
+    }
+  }
+
+  static Future<String> filePath(Instruction instruction) async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();
     final path =
-        '${getInstructionImagesFolderPath(appDocDir)}$instructionId/${getFileName(instructionId)}';
+        '${getInstructionImagesFolderPath(appDocDir)}${instruction.id}/${getFileName(instruction.image)}';
     if (await File(path).exists()) {
       return path;
     } else {

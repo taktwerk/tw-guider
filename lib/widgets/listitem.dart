@@ -61,7 +61,7 @@ class ListItem extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 )
                               : FutureBuilder(
-                                  future: AppUtil.filePath(_instruction.id),
+                                  future: AppUtil.filePath(_instruction),
                                   builder: (_, snapshot) {
                                     if (snapshot.hasError) {
                                       return Text(l!.somethingWentWrong);
