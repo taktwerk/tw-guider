@@ -142,6 +142,19 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     );
   }
 
+  void _onSyncButtonClick() {
+    setState(() {
+      loading = true;
+    });
+    sync().then((value) {
+      setState(() {
+        isVisible = false;
+        chosenCategory = "";
+        loading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = Languages.of(context);
@@ -160,11 +173,10 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
           ),
           getCategoryTag(),
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(5),
             child: ElevatedButton.icon(
                 onPressed: () {
-                  final db =
-                      Singleton().getDatabase(); //This should be a singleton
+                  final db = Singleton().getDatabase();
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => DriftDbViewer(db)));
                 },
@@ -172,18 +184,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                 label: const Text("DB")),
           ),
           ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  loading = true;
-                });
-                sync().then((value) {
-                  setState(() {
-                    isVisible = false;
-                    chosenCategory = "";
-                    loading = false;
-                  });
-                });
-              },
+              onPressed: loading ? null : () => _onSyncButtonClick(),
               child: Text(l!.synchronize)),
           loading ? const CircularProgressIndicator() : Container(),
           _filteredInstructions != null
