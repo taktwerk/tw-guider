@@ -30,7 +30,8 @@ class AppDatabase extends _$AppDatabase {
 
 // Instruction
   Future<List<Instruction>> get allInstructionEntries =>
-      select(instructions).get();
+      (select(instructions)..orderBy([(t) => OrderingTerm(expression: t.id)]))
+          .get();
 
   Future<int> createOrUpdateInstruction(InstructionsCompanion entry) =>
       into(instructions).insertOnConflictUpdate(entry);
