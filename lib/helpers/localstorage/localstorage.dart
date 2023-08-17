@@ -29,9 +29,13 @@ class AppDatabase extends _$AppDatabase {
   // }
 
 // Instruction
-  Future<List<Instruction>> get allInstructionEntries =>
+  Stream<List<Instruction>> get allInstructionEntries =>
       (select(instructions)..orderBy([(t) => OrderingTerm(expression: t.id)]))
-          .get();
+          .watch();
+
+  Future<int> updateInstruction(String title, int id) =>
+      (update(instructions)..where((t) => t.id.equals(id)))
+          .write(InstructionsCompanion(title: Value(title)));
 
   Future<int> createOrUpdateInstruction(InstructionsCompanion entry) =>
       into(instructions).insertOnConflictUpdate(entry);
@@ -39,21 +43,47 @@ class AppDatabase extends _$AppDatabase {
   Future<int> addInstruction(InstructionsCompanion entry) =>
       into(instructions).insert(entry);
 
-  Future<List<Instruction>> getInstructionBySearch(String substring) =>
+  Stream<List<Instruction>> getInstructionBySearch(String substring) =>
       (select(instructions)
             ..where((t) =>
                 ((t.title.lower()).contains(substring.toLowerCase()) |
                     (t.shortTitle.lower()).contains(substring.toLowerCase()))))
-          .get();
+          .watch();
 
-  Future<List<Instruction>> getInstructionByCategory(int searchByCategoryId) {
+  Stream<List<Instruction>> combineCategoryAndSearch(
+      int searchByCategoryId, String substring) {
+    if (searchByCategoryId == -1 && substring.isEmpty) {
+      return allInstructionEntries;
+    } else if (searchByCategoryId == -1 && substring.isNotEmpty) {
+      return getInstructionBySearch(substring);
+    } else if (searchByCategoryId != -1 && substring.isEmpty) {
+      return getInstructionByCategory(searchByCategoryId);
+    } else {
+      return getInstructionByCategoryAndSearch(searchByCategoryId, substring);
+    }
+  }
+
+  Stream<List<Instruction>> getInstructionByCategoryAndSearch(
+      int searchByCategoryId, String substring) {
+    final query = select(instructions).join([
+      innerJoin(instructionsCategories,
+          instructions.id.equalsExp(instructionsCategories.instructionId),
+          useColumns: false)
+    ])
+      ..where((instructionsCategories.categoryId).equals(searchByCategoryId))
+      ..where(((instructions.title).contains(substring.toLowerCase()) |
+          (instructions.shortTitle.lower()).contains(substring.toLowerCase())));
+    return query.map((row) => row.readTable(instructions)).watch();
+  }
+
+  Stream<List<Instruction>> getInstructionByCategory(int searchByCategoryId) {
     final query = select(instructions).join([
       innerJoin(instructionsCategories,
           instructions.id.equalsExp(instructionsCategories.instructionId),
           useColumns: false)
     ])
       ..where((instructionsCategories.categoryId).equals(searchByCategoryId));
-    return query.map((row) => row.readTable(instructions)).get();
+    return query.map((row) => row.readTable(instructions)).watch();
   }
 
   Future<Instruction> getInstructionById(int id) =>

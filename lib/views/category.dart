@@ -38,14 +38,11 @@ class _CategoryPopupState extends State<CategoryPopup> {
   }
 
   void search(category) async {
-    var val =
-        await Singleton().getDatabase().getInstructionByCategory(category);
-    widget.updateCategoryInstructions(val);
+    widget.updateCategoryInstructions(category);
   }
 
   void clear() async {
-    var val = await Singleton().getDatabase().allInstructionEntries;
-    widget.updateCategoryInstructions(val);
+    widget.updateCategoryInstructions(-1);
   }
 
   @override

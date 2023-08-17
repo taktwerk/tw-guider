@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:guider/languages/languages.dart';
-import 'package:guider/objects/singleton.dart';
 
 class SearchBarWidget extends StatefulWidget {
   final Function updateInstructions;
@@ -33,14 +32,12 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
   }
 
   Future<void> search(value) async {
-    var val = await Singleton().getDatabase().getInstructionBySearch(value);
-    widget.updateInstructions(val);
+    widget.updateInstructions(value);
   }
 
   void clear() async {
     _searchController.clear();
-    var val = await Singleton().getDatabase().allInstructionEntries;
-    widget.updateInstructions(val);
+    widget.updateInstructions("");
   }
 
   @override
