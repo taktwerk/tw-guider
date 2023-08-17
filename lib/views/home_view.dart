@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
@@ -11,37 +12,22 @@ import 'package:guider/objects/singleton.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 
-class Home extends StatefulWidget {
+class Home extends ConsumerStatefulWidget {
   const Home({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  ConsumerState<Home> createState() => _HomeState();
 }
 
-class ListOfInstructions extends ChangeNotifier {
-  var list = [];
-}
-
-class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
-  List<Instruction>? _filteredInstructions;
-  List<Instruction>? _instructionsBySearch;
-  List<Instruction>? _instructionsByCategory;
-  List<Instruction>? _allInstructions;
+class _HomeState extends ConsumerState<Home>
+    with AutomaticKeepAliveClientMixin<Home> {
+  String searchWord = "";
+  int category = -1;
   String chosenCategory = "";
   bool isVisible = false;
   bool loaded = false;
   bool loading = false;
   final ScrollController _scrollController = ScrollController();
-
-  void getAllInstructions() async {
-    var data = await Singleton().getDatabase().allInstructionEntries;
-    setState(() {
-      _filteredInstructions = data;
-      _instructionsBySearch = data;
-      _instructionsByCategory = data;
-      _allInstructions = data;
-    });
-  }
 
   Future<void> sync() async {
     try {
@@ -61,8 +47,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
       //     .getDatabase()
       //     .notSyncedHistoryEntries(DateTime.parse(lastSynced!));
       // print("Not synced history: $history");
-
-      getAllInstructions();
     } catch (e) {
       setState(() {
         loading = false;
@@ -77,37 +61,21 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   bool get wantKeepAlive => true;
 
   @override
-  void initState() {
-    super.initState();
-    getAllInstructions();
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
-  Future<void> updateSearchInstructions(newInstructions) async {
+  Future<void> updateSearchInstructions(word) async {
     setState(() {
-      _instructionsBySearch = newInstructions;
+      searchWord = word;
     });
-    await combineCategoryAndSearch();
   }
 
-  Future<void> updateCategoryInstructions(newInstructions) async {
+  Future<void> updateCategoryInstructions(cat) async {
     setState(() {
-      _instructionsByCategory = newInstructions;
+      category = cat;
     });
-    await combineCategoryAndSearch();
-  }
-
-  Future<void> combineCategoryAndSearch() async {
-    final selectedIds =
-        _instructionsBySearch!.map((component) => component.id).toList();
-    final filtered = _instructionsByCategory!
-        .where((element) => selectedIds.contains(element.id))
-        .toList();
-    logger.d("Filtered $filtered");
-    setState(
-      () {
-        _filteredInstructions = filtered;
-      },
-    );
   }
 
   void showCategories(BuildContext context) async {
@@ -150,6 +118,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
       setState(() {
         isVisible = false;
         chosenCategory = "";
+        category = -1;
         loading = false;
       });
     });
@@ -157,6 +126,11 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final database = ref.watch(todoDBProvider);
+
+    var filteredInstructions =
+        database.combineCategoryAndSearch(category, searchWord);
+
     final l = Languages.of(context);
     super.build(context);
     return Scaffold(
@@ -187,25 +161,52 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
               onPressed: loading ? null : () => _onSyncButtonClick(),
               child: Text(l!.synchronize)),
           loading ? const CircularProgressIndicator() : Container(),
-          _filteredInstructions != null
-              ? _filteredInstructions!.isEmpty
-                  ? Text(l.noInstructionsAvailable)
-                  : Expanded(
-                      child: Scrollbar(
-                      controller: _scrollController,
-                      thumbVisibility: true,
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: _filteredInstructions?.length,
-                        itemBuilder: (context, index) {
-                          return ListItem(
-                              instruction: _filteredInstructions![index]);
-                        },
-                      ),
-                    ))
-              : const CircularProgressIndicator(),
+          StreamBuilder(
+              stream: filteredInstructions,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Instruction>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.connectionState == ConnectionState.active ||
+                    snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return errorOrLoadingCard('🚨 Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    return Expanded(
+                        child: Scrollbar(
+                            controller: _scrollController,
+                            thumbVisibility: true,
+                            child: ListView.builder(
+                              itemCount: snapshot.data?.length,
+                              controller: _scrollController,
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return ListItem(
+                                    instruction: snapshot.data![index]);
+                              },
+                            )));
+                  } else {
+                    return const Text("Empty data");
+                  }
+                } else {
+                  return Text('State: ${snapshot.connectionState}');
+                }
+              })
         ],
+      ),
+    );
+  }
+
+  Widget errorOrLoadingCard(input) {
+    return InkWell(
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Card(
+          elevation: 4,
+          child: Center(
+            child: Text(input),
+          ),
+        ),
       ),
     );
   }
@@ -247,8 +248,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
               setState(() {
                 isVisible = false;
                 chosenCategory = "";
-                _filteredInstructions = _instructionsBySearch;
-                _instructionsByCategory = _allInstructions;
+                category = -1;
               });
             },
             icon: const Icon(
