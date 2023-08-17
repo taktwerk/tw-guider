@@ -55,6 +55,7 @@ dependencies:
   http: ^1.1.0
   drift_db_viewer: ^2.0.0
   crypto: ^3.0.3
+  flutter_riverpod: ^2.3.7
   
 dev_dependencies:
   flutter_test:
