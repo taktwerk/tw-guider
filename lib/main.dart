@@ -12,6 +12,7 @@ import 'package:guider/languages/app_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:guider/languages/supported_languages.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as provider;
 
 ValueNotifier<bool> isDeviceConnected = ValueNotifier(false);
 
@@ -27,9 +28,11 @@ void main() async {
     await SupabaseToDrift.initializeUsers();
   }
   logger.i("Currentuser $currentUser (main)");
-  runApp(const GuiderApp());
+  runApp(const provider.ProviderScope(child: GuiderApp()));
 }
 
+final todoDBProvider =
+    provider.Provider.autoDispose((ref) => Singleton().getDatabase());
 final supabase = Supabase.instance.client;
 int? currentUser;
 
@@ -80,10 +83,12 @@ class _GuiderAppState extends State<GuiderApp> {
 
   Future<void> setLanguage() async {
     if (currentUser != null) {
-      var result = await Singleton().getDatabase().getSettings(currentUser!);
-      if (result.isNotEmpty) {
-        setLocale(Locale.fromSubtags(languageCode: result.first.language));
-      }
+      var result = Singleton().getDatabase().getSettings(currentUser!);
+      result.listen((event) {
+        if (event.isNotEmpty) {
+          setLocale(Locale.fromSubtags(languageCode: event.first.language));
+        }
+      });
     }
   }
 
