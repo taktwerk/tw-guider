@@ -6,13 +6,13 @@ import 'package:crypto/crypto.dart';
 
 class AppUtil {
   static String getFileName(String url) {
+    String hash = "${md5.convert(utf8.encode(url))}";
     if (url.contains(".jpg")) {
-      return "${md5.convert(utf8.encode(url))}.jpg";
+      return "$hash.jpg";
     } else if (url.contains(".png")) {
-      print("Was png");
-      return "${md5.convert(utf8.encode(url))}.png";
+      return "$hash.png";
     }
-    return "${md5.convert(utf8.encode(url))}.png";
+    return "$hash.png";
   }
 
   static String getInstructionImagesFolderPath(Directory directory) {
