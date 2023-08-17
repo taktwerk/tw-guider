@@ -138,14 +138,14 @@ class AppDatabase extends _$AppDatabase {
   Future<int> createOrUpdateHistory(HistoriesCompanion entry) =>
       into(histories).insertOnConflictUpdate(entry);
 
-  Future<List<Instruction>> getUserHistoryAsInstructions(int givenUserId) {
+  Stream<List<Instruction>> getUserHistoryAsInstructions(int givenUserId) {
     final query = select(instructions).join([
       innerJoin(histories, instructions.id.equalsExp(histories.instructionId),
           useColumns: false)
     ])
       ..orderBy([OrderingTerm.desc(histories.updatedAt)])
       ..where((histories.userId).equals(givenUserId));
-    return query.map((row) => row.readTable(instructions)).get();
+    return query.map((row) => row.readTable(instructions)).watch();
   }
 
   Future<List<History>> getUserHistory(int givenUserId) =>
@@ -216,8 +216,8 @@ class AppDatabase extends _$AppDatabase {
               updatedAt: Value(DateTime.now().toUtc()),
               updatedBy: Value(currentUser!)));
 
-  Future<List<Setting>> getSettings(int userId) =>
-      (select(settings)..where((t) => t.userId.equals(userId))).get();
+  Stream<List<Setting>> getSettings(int userId) =>
+      (select(settings)..where((t) => t.userId.equals(userId))).watch();
 
   Future<List<Setting>> notSyncedSettingsEntries(DateTime timestamp) {
     return (select(settings)
