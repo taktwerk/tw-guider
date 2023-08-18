@@ -136,7 +136,10 @@ class AppDatabase extends _$AppDatabase {
   Future<List<History>> get allHistoryEntries => select(histories).get();
 
   Future<int> createOrUpdateHistory(HistoriesCompanion entry) =>
-      into(histories).insertOnConflictUpdate(entry);
+      into(histories).insert(entry,
+          onConflict: DoUpdate.withExcluded((old, excluded) => entry,
+              where: (old, excluded) =>
+                  old.updatedAt.isSmallerThan(excluded.updatedAt)));
 
   Stream<List<Instruction>> getUserHistoryAsInstructions(int givenUserId) {
     final query = select(instructions).join([
@@ -182,7 +185,10 @@ class AppDatabase extends _$AppDatabase {
       (select(feedback)..where((t) => t.isSynced.equals(false))).get();
 
   Future<int> createOrUpdateFeedback(FeedbackCompanion entry) =>
-      into(feedback).insertOnConflictUpdate(entry);
+      into(feedback).insert(entry,
+          onConflict: DoUpdate.withExcluded((old, excluded) => entry,
+              where: (old, excluded) =>
+                  old.updatedAt.isSmallerThan(excluded.updatedAt)));
 
   Future<int> insertFeedback(FeedbackCompanion entry) =>
       into(feedback).insert(entry);
@@ -205,7 +211,10 @@ class AppDatabase extends _$AppDatabase {
 
   // Settings
   Future<int> createOrUpdateSetting(SettingsCompanion entry) =>
-      into(settings).insertOnConflictUpdate(entry);
+      into(settings).insert(entry,
+          onConflict: DoUpdate.withExcluded((old, excluded) => entry,
+              where: (old, excluded) =>
+                  old.updatedAt.isSmallerThan(excluded.updatedAt)));
 
   Future<List<Setting>> get allSettings => select(settings).get();
 

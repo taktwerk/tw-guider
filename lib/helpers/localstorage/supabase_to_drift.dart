@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
+import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
 import 'package:http/http.dart' as http;
 import 'package:drift/drift.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
@@ -11,16 +12,17 @@ import 'package:guider/objects/singleton.dart';
 import 'package:path/path.dart';
 
 class SupabaseToDrift {
-  static Future<void> getAllInstructions() async {
+  static Future<String> getAllInstructions() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.instruction.key);
+    var newLastSynced = lastSynced;
     final data = await supabase
         .from('instruction')
         .select("*")
         .gt('updated_at', lastSynced)
         .order('id', ascending: true);
+    newLastSynced = DateTime.now().toUtc().toIso8601String();
 
     int len = data.length;
-    print("Instr len $len");
     for (int i = 0; i < len; i++) {
       var instruction = data[i];
       if (!kIsWeb) {
@@ -29,7 +31,7 @@ class SupabaseToDrift {
           _downloadImages(instruction);
         }
       }
-      await Singleton()
+      Singleton()
           .getDatabase()
           .createOrUpdateInstruction(InstructionsCompanion.insert(
             id: Value(instruction[Const.id.key]),
@@ -46,6 +48,7 @@ class SupabaseToDrift {
             deletedBy: Value(instruction[Const.deletedBy.key]),
           ));
     }
+    return newLastSynced;
   }
 
   static void _downloadImages(instruction) async {
@@ -62,12 +65,16 @@ class SupabaseToDrift {
     }
   }
 
-  static Future<void> getAllInstructionSteps() async {
+  static Future<String> getAllInstructionSteps() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.steps.key);
+    var newLastSynced = lastSynced;
+
     final data = await supabase
         .from('instruction_step')
         .select('*')
         .gt('updated_at', lastSynced);
+    newLastSynced = DateTime.now().toUtc().toIso8601String();
+
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var step = data[i];
@@ -88,14 +95,19 @@ class SupabaseToDrift {
             deletedBy: Value(step[Const.deletedBy.key]),
           ));
     }
+    return newLastSynced;
   }
 
-  static Future<void> getAllCategories() async {
+  static Future<String> getAllCategories() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.category.key);
+    var newLastSynced = lastSynced;
     final data = await supabase
         .from('category')
         .select('*')
         .gt('updated_at', lastSynced);
+
+    newLastSynced = DateTime.now().toUtc().toIso8601String();
+
     int len = data.length;
     for (int i = 0; i < len; i++) {
       //var category = categories[i];
@@ -114,13 +126,17 @@ class SupabaseToDrift {
             ),
           );
     }
+    return newLastSynced;
   }
 
-  static Future<void> getHistory() async {
+  static Future<String> getHistory() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.history.key);
+    var newLastSynced = lastSynced;
     print("Last synced history: $lastSynced");
     final data =
         await supabase.from('history').select('*').gt('updated_at', lastSynced);
+    newLastSynced = DateTime.now().toUtc().toIso8601String();
+
     print("Got history changes: $data");
     int len = data.length;
     for (int i = 0; i < len; i++) {
@@ -139,15 +155,19 @@ class SupabaseToDrift {
                 instructionStepId: Value(history[Const.instructionStepId.key])),
           );
     }
+    return newLastSynced;
   }
 
-  static Future<void> getInstructionsCategories() async {
+  static Future<String> getInstructionsCategories() async {
     var lastSynced =
         await KeyValue.getValue(KeyValueEnum.instructionCategory.key);
+    var newLastSynced = lastSynced;
     final data = await supabase
         .from('instruction_category')
         .select('*')
         .gt('updated_at', lastSynced);
+    newLastSynced = DateTime.now().toUtc().toIso8601String();
+
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var instructionCategory = data[i];
@@ -167,14 +187,18 @@ class SupabaseToDrift {
             ),
           );
     }
+    return newLastSynced;
   }
 
-  static Future<void> getFeedback() async {
+  static Future<String> getFeedback() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.feedback.key);
+    var newLastSynced = lastSynced;
     final data = await supabase
         .from('feedback')
         .select('*')
         .gt('updated_at', lastSynced);
+    newLastSynced = DateTime.now().toUtc().toIso8601String();
+
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var feedbackElement = data[i];
@@ -196,12 +220,16 @@ class SupabaseToDrift {
             deletedBy: Value(feedbackElement[Const.deletedBy.key]),
           ));
     }
+    return newLastSynced;
   }
 
-  static Future<void> getUsers() async {
+  static Future<String> getUsers() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.user.key);
+    var newLastSynced = lastSynced;
     final data =
         await supabase.from('user').select('*').gt('updated_at', lastSynced);
+    newLastSynced = DateTime.now().toUtc().toIso8601String();
+
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var user = data[i];
@@ -218,21 +246,26 @@ class SupabaseToDrift {
             deletedBy: Value(user[Const.deletedBy.key]),
           ));
     }
+    return newLastSynced;
   }
 
   static Future<void> initializeUsers() async {
     await SupabaseToDrift.getUsers().then(
-      (value) {
+      (value) async {
         logger.i("Got users from supabase. (INIT)");
+        KeyValue.setNewValue(KeyValueEnum.user.key, value);
       },
     );
   }
 
-  static Future<void> getSettings() async {
+  static Future<String> getSettings() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.setting.key);
+    var newLastSynced = lastSynced;
     print("Settings last synced $lastSynced");
     final data =
         await supabase.from('setting').select('*').gt('updated_at', lastSynced);
+    newLastSynced = DateTime.now().toUtc().toIso8601String();
+
     print("Settings data from supabase $data");
     int len = data.length;
     for (int i = 0; i < len; i++) {
@@ -251,56 +284,52 @@ class SupabaseToDrift {
             deletedBy: Value(setting[Const.deletedBy.key]),
           ));
     }
+    return newLastSynced;
   }
 
   static Future<void> sync() async {
     await SupabaseToDrift.getAllInstructions().then((value) {
       logger.i("Got instructions from supabase.");
-      KeyValue.setNewValue(KeyValueEnum.instruction.key,
-          DateTime.now().toUtc().toIso8601String());
+      KeyValue.setNewValue(KeyValueEnum.instruction.key, value);
     });
 
     await SupabaseToDrift.getAllInstructionSteps().then((value) {
       logger.i("Got instructionsteps from supabase.");
-      KeyValue.setNewValue(
-          KeyValueEnum.steps.key, DateTime.now().toUtc().toIso8601String());
+      KeyValue.setNewValue(KeyValueEnum.steps.key, value);
     });
 
     await SupabaseToDrift.getAllCategories().then((value) {
       logger.i("Got categories from supabase.");
-      KeyValue.setNewValue(
-          KeyValueEnum.category.key, DateTime.now().toUtc().toIso8601String());
+      KeyValue.setNewValue(KeyValueEnum.category.key, value);
     });
 
-    await SupabaseToDrift.getHistory().then((value) {
+    await SupabaseToDrift.getHistory().then((value) async {
       logger.i("Got history from supabase.");
-      KeyValue.setNewValue(
-          KeyValueEnum.history.key, DateTime.now().toUtc().toIso8601String());
+      await DriftToSupabase.uploadHistory();
+      KeyValue.setNewValue(KeyValueEnum.history.key, value);
     });
 
     await SupabaseToDrift.getInstructionsCategories().then((value) {
       logger.i("Got instructions-categories from supabase.");
-      KeyValue.setNewValue(KeyValueEnum.instructionCategory.key,
-          DateTime.now().toUtc().toIso8601String());
+      KeyValue.setNewValue(KeyValueEnum.instructionCategory.key, value);
     });
 
-    await SupabaseToDrift.getFeedback().then((value) {
+    await SupabaseToDrift.getFeedback().then((value) async {
       logger.i("Got feedback from supabase.");
-      KeyValue.setNewValue(
-          KeyValueEnum.feedback.key, DateTime.now().toUtc().toIso8601String());
+      await DriftToSupabase.uploadFeedback();
+      KeyValue.setNewValue(KeyValueEnum.feedback.key, value);
     });
 
     await SupabaseToDrift.getUsers().then((value) {
       logger.i("Got users from supabase.");
-      KeyValue.setNewValue(
-          KeyValueEnum.user.key, DateTime.now().toUtc().toIso8601String());
+      KeyValue.setNewValue(KeyValueEnum.user.key, value);
       KeyValue.setInitialUser();
     });
 
-    await SupabaseToDrift.getSettings().then((value) {
+    await SupabaseToDrift.getSettings().then((value) async {
       logger.i("Got settings from supabase.");
-      KeyValue.setNewValue(
-          KeyValueEnum.setting.key, DateTime.now().toUtc().toIso8601String());
+      await DriftToSupabase.uploadSettings();
+      KeyValue.setNewValue(KeyValueEnum.setting.key, value);
     });
   }
 }

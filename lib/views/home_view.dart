@@ -31,13 +31,7 @@ class _HomeState extends ConsumerState<Home>
 
   Future<void> sync() async {
     try {
-      await DriftToSupabase.uploadFeedback();
-
-      await DriftToSupabase.uploadHistory();
-
-      await DriftToSupabase.uploadSettings();
       await SupabaseToDrift.sync();
-
       //   print(
       //       "All history entries: ${await Singleton().getDatabase().allHistoryEntries}");
 
