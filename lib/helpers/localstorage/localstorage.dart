@@ -116,7 +116,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   // Category
-  Future<List<Category>> get allCategoryEntries => select(categories).get();
+  Stream<List<Category>> get allCategoryEntries => select(categories).watch();
 
   Future<int> createOrUpdateCategory(CategoriesCompanion entry) =>
       into(categories).insertOnConflictUpdate(entry);

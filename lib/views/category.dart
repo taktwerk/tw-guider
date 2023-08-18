@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
-import 'package:guider/objects/singleton.dart';
+import 'package:guider/main.dart';
 
-class CategoryPopup extends StatefulWidget {
+class CategoryPopup extends ConsumerStatefulWidget {
   const CategoryPopup(
       {Key? key,
       required this.chosenCategory,
@@ -13,29 +14,11 @@ class CategoryPopup extends StatefulWidget {
   final Function updateCategoryInstructions;
 
   @override
-  State<CategoryPopup> createState() => _CategoryPopupState();
+  ConsumerState<CategoryPopup> createState() => _CategoryPopupState();
 }
 
-class _CategoryPopupState extends State<CategoryPopup> {
-  // Initial Selected Value
-  int _selectedIndex = -1;
-  List<Category>? _categories;
+class _CategoryPopupState extends ConsumerState<CategoryPopup> {
   final ScrollController _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    getCategories();
-  }
-
-  Future getCategories() async {
-    var result = await Singleton().getDatabase().allCategoryEntries;
-    setState(() {
-      _categories = result;
-    });
-    _selectedIndex = _categories!
-        .indexWhere((category) => category.name == widget.chosenCategory);
-  }
 
   void search(category) async {
     widget.updateCategoryInstructions(category);
@@ -47,6 +30,8 @@ class _CategoryPopupState extends State<CategoryPopup> {
 
   @override
   Widget build(BuildContext context) {
+    final database = ref.watch(todoDBProvider);
+    var categories = database.allCategoryEntries;
     final l = Languages.of(context);
     return SizedBox(
       width: double.minPositive,
@@ -59,50 +44,50 @@ class _CategoryPopupState extends State<CategoryPopup> {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Flexible(
-            child: _categories != null
-                ? Scrollbar(
-                    controller: _scrollController,
-                    thumbVisibility: true,
-                    child: ListView.builder(
+          StreamBuilder(
+              stream: categories,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Category>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.connectionState == ConnectionState.active ||
+                    snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Text('🚨 Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    final list = snapshot.data!;
+                    var selectedIndex = list.indexWhere(
+                        (category) => category.name == widget.chosenCategory);
+                    return Flexible(
+                        child: Scrollbar(
                       controller: _scrollController,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: _categories!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          selectedTileColor: Colors.blue,
-                          title: Center(child: Text(_categories![index].name)),
-                          selected: index == _selectedIndex,
-                          onTap: () {
-                            setState(
-                              () {
-                                if (_selectedIndex == index) {
-                                  _selectedIndex = -1;
-                                } else {
-                                  _selectedIndex = index;
-                                }
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  )
-                : const CircularProgressIndicator(),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              if (_selectedIndex == -1) {
-                Navigator.of(context).pop("");
-                clear();
-              } else {
-                Navigator.of(context).pop(_categories![_selectedIndex].name);
-                search(_categories![_selectedIndex].id);
-              }
-            },
-            child: Text(l.done),
-          )
+                      thumbVisibility: true,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                            selectedTileColor: Colors.blue,
+                            title:
+                                Center(child: Text(snapshot.data![index].name)),
+                            selected: index == selectedIndex,
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pop(snapshot.data![index].name);
+                              search(snapshot.data![index].id);
+                            },
+                          );
+                        },
+                      ),
+                    ));
+                  } else {
+                    return const Text("Empty data");
+                  }
+                } else {
+                  return Text('State: ${snapshot.connectionState}');
+                }
+              }),
         ],
       ),
     );
