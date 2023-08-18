@@ -97,10 +97,10 @@ class _InstructionViewState extends State<InstructionView> {
 
   Widget buildButtons() => Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [getCategoryButton(), buildStepButton()],
+        children: [getFeedbackButton(), buildStepButton()],
       );
 
-  Widget getCategoryButton() => TextButton(
+  Widget getFeedbackButton() => TextButton(
         onPressed: () {
           showDialog(
               context: context,
