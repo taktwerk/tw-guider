@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/languages/supported_languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 
-class SettingsView extends StatefulWidget {
+class SettingsView extends ConsumerStatefulWidget {
   const SettingsView({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SettingsViewState();
+  ConsumerState<SettingsView> createState() => _SettingsViewState();
 }
 
-class _SettingsViewState extends State<SettingsView> {
+class _SettingsViewState extends ConsumerState<SettingsView> {
   Locale? selectedItem;
   List<Locale> languages = SupportedLanguages.all;
   List<Setting> settings = [];
 
   @override
   Widget build(BuildContext context) {
-    var settingsStream = Singleton().getDatabase().getSettings(currentUser!);
+    final database = ref.watch(todoDBProvider);
+    var settingsStream = database.getSettings(currentUser!);
     final l = Languages.of(context);
     return Container(
       padding: const EdgeInsets.all(20),
@@ -46,11 +48,7 @@ class _SettingsViewState extends State<SettingsView> {
                             child: Text(item.languageCode),
                           ))
                       .toList(),
-                  onChanged: (item) => setState(
-                    () {
-                      onClick(item);
-                    },
-                  ),
+                  onChanged: (item) => onClick(item),
                   decoration: InputDecoration(
                     labelText: l!.languages,
                     prefixIcon: const Icon(Icons.format_list_numbered),
