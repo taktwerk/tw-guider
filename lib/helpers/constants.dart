@@ -19,7 +19,9 @@ enum Const {
   role("role"),
   message("message"),
   instructionStepId("instruction_step_id"),
-  language("language");
+  language("language"),
+  instructionStepsImagesFolderName("instructionStepsImages"),
+  instructionImagesFolderName("instructionImages");
 
   const Const(this.key);
   final String key;
