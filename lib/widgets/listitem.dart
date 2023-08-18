@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
@@ -61,7 +62,8 @@ class ListItem extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 )
                               : FutureBuilder(
-                                  future: AppUtil.filePath(_instruction),
+                                  future: AppUtil.filePath(_instruction,
+                                      Const.instructionImagesFolderName.key),
                                   builder: (_, snapshot) {
                                     if (snapshot.hasError) {
                                       return Text(l!.somethingWentWrong);

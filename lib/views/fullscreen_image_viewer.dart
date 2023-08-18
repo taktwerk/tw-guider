@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
@@ -24,7 +25,8 @@ class FullScreenImageViewer extends StatelessWidget {
                     fit: BoxFit.contain,
                   )
                 : FutureBuilder(
-                    future: AppUtil.filePath(instruction),
+                    future: AppUtil.filePath(
+                        instruction, Const.instructionImagesFolderName.key),
                     builder: (_, snapshot) {
                       if (snapshot.hasError) {
                         return Text(l!.somethingWentWrong);

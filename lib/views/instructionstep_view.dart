@@ -1,7 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/constants.dart';
+import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:flutter/foundation.dart' as foundation;
 
 class InstructionStepView extends StatefulWidget {
   const InstructionStepView(
@@ -30,7 +34,36 @@ class _InstructionStepViewState extends State<InstructionStepView> {
         HtmlWidget(
           widget.instructionStep.description,
         ),
-        Text("${l!.step} ${widget.instructionStep.stepNr}")
+        Text("${l!.step} ${widget.instructionStep.stepNr}"),
+        GestureDetector(
+          child: Hero(
+            tag: "stepHero",
+            child: (foundation.kIsWeb)
+                ? Image.network(
+                    widget.instructionStep.image,
+                    fit: BoxFit.cover,
+                  )
+                : FutureBuilder(
+                    future: AppUtil.filePath(widget.instructionStep,
+                        Const.instructionStepsImagesFolderName.key),
+                    builder: (_, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text(l!.somethingWentWrong);
+                      }
+                      if ((snapshot.connectionState ==
+                          ConnectionState.waiting)) {
+                        return const CircularProgressIndicator();
+                      }
+                      if (snapshot.data!.isNotEmpty) {
+                        return Image.file(
+                          File(snapshot.data!),
+                          fit: BoxFit.cover,
+                        );
+                      }
+                      return Text(l!.noImageAvailable);
+                    }),
+          ),
+        )
       ],
     );
   }

@@ -28,7 +28,7 @@ class SupabaseToDrift {
       if (!kIsWeb) {
         //only downloads the first 10 images (not all 1000)
         if (i >= 0 && i <= 10) {
-          _downloadImages(instruction);
+          _downloadImages(instruction, Const.instructionImagesFolderName.key);
         }
       }
       Singleton()
@@ -51,12 +51,12 @@ class SupabaseToDrift {
     return newLastSynced;
   }
 
-  static void _downloadImages(instruction) async {
-    final response = await http.get(Uri.parse(instruction[Const.image.key]));
+  static void _downloadImages(entry, foldername) async {
+    final response = await http.get(Uri.parse(entry[Const.image.key]));
     String folderInAppDocDir = await AppUtil.createFolderInAppDocDir(
-        instruction[Const.id.key].toString());
-    final file = File(join(
-        folderInAppDocDir, AppUtil.getFileName(instruction[Const.image.key])));
+        entry[Const.id.key].toString(), foldername);
+    final file = File(
+        join(folderInAppDocDir, AppUtil.getFileName(entry[Const.image.key])));
     if (!(await file.exists())) {
       if (folderInAppDocDir.isNotEmpty) {
         await AppUtil.deleteFolderContent(folderInAppDocDir);
@@ -78,6 +78,13 @@ class SupabaseToDrift {
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var step = data[i];
+
+      if (!kIsWeb) {
+        //only downloads the first 30 images (not all 1000)
+        if (i >= 0 && i <= 30) {
+          _downloadImages(step, Const.instructionStepsImagesFolderName.key);
+        }
+      }
       await Singleton()
           .getDatabase()
           .createOrUpdateInstructionStep(InstructionStepsCompanion.insert(
