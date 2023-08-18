@@ -127,6 +127,9 @@ class _InstructionViewState extends State<InstructionView> {
               );
             } else {
               logger.i("No instruction steps available.");
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content:
+                      Text(Languages.of(context)!.noInstructionsAvailable)));
             }
           },
           label: Text(Languages.of(context)!.instructionSteps),
