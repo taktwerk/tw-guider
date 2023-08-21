@@ -3862,6 +3862,200 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
   }
 }
 
+class Bytes extends Table with TableInfo<Bytes, Byte> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  Bytes(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _feedbackIdMeta =
+      const VerificationMeta('feedbackId');
+  late final GeneratedColumn<String> feedbackId = GeneratedColumn<String>(
+      'feedback_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _imageMeta = const VerificationMeta('image');
+  late final GeneratedColumn<String> image = GeneratedColumn<String>(
+      'image', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  @override
+  List<GeneratedColumn> get $columns => [feedbackId, image];
+  @override
+  String get aliasedName => _alias ?? 'bytes';
+  @override
+  String get actualTableName => 'bytes';
+  @override
+  VerificationContext validateIntegrity(Insertable<Byte> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('feedback_id')) {
+      context.handle(
+          _feedbackIdMeta,
+          feedbackId.isAcceptableOrUnknown(
+              data['feedback_id']!, _feedbackIdMeta));
+    } else if (isInserting) {
+      context.missing(_feedbackIdMeta);
+    }
+    if (data.containsKey('image')) {
+      context.handle(
+          _imageMeta, image.isAcceptableOrUnknown(data['image']!, _imageMeta));
+    } else if (isInserting) {
+      context.missing(_imageMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {feedbackId};
+  @override
+  Byte map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Byte(
+      feedbackId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}feedback_id'])!,
+      image: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}image'])!,
+    );
+  }
+
+  @override
+  Bytes createAlias(String alias) {
+    return Bytes(attachedDatabase, alias);
+  }
+
+  @override
+  List<String> get customConstraints => const [
+        'CONSTRAINT bytes_pkey PRIMARY KEY(feedback_id)',
+        'CONSTRAINT bytes_feedback_id_fkey FOREIGN KEY(feedback_id)REFERENCES feedback(id)ON DELETE CASCADE'
+      ];
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class Byte extends DataClass implements Insertable<Byte> {
+  final String feedbackId;
+  final String image;
+  const Byte({required this.feedbackId, required this.image});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['feedback_id'] = Variable<String>(feedbackId);
+    map['image'] = Variable<String>(image);
+    return map;
+  }
+
+  BytesCompanion toCompanion(bool nullToAbsent) {
+    return BytesCompanion(
+      feedbackId: Value(feedbackId),
+      image: Value(image),
+    );
+  }
+
+  factory Byte.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Byte(
+      feedbackId: serializer.fromJson<String>(json['feedback_id']),
+      image: serializer.fromJson<String>(json['image']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'feedback_id': serializer.toJson<String>(feedbackId),
+      'image': serializer.toJson<String>(image),
+    };
+  }
+
+  Byte copyWith({String? feedbackId, String? image}) => Byte(
+        feedbackId: feedbackId ?? this.feedbackId,
+        image: image ?? this.image,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Byte(')
+          ..write('feedbackId: $feedbackId, ')
+          ..write('image: $image')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(feedbackId, image);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Byte &&
+          other.feedbackId == this.feedbackId &&
+          other.image == this.image);
+}
+
+class BytesCompanion extends UpdateCompanion<Byte> {
+  final Value<String> feedbackId;
+  final Value<String> image;
+  final Value<int> rowid;
+  const BytesCompanion({
+    this.feedbackId = const Value.absent(),
+    this.image = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BytesCompanion.insert({
+    required String feedbackId,
+    required String image,
+    this.rowid = const Value.absent(),
+  })  : feedbackId = Value(feedbackId),
+        image = Value(image);
+  static Insertable<Byte> custom({
+    Expression<String>? feedbackId,
+    Expression<String>? image,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (feedbackId != null) 'feedback_id': feedbackId,
+      if (image != null) 'image': image,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BytesCompanion copyWith(
+      {Value<String>? feedbackId, Value<String>? image, Value<int>? rowid}) {
+    return BytesCompanion(
+      feedbackId: feedbackId ?? this.feedbackId,
+      image: image ?? this.image,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (feedbackId.present) {
+      map['feedback_id'] = Variable<String>(feedbackId.value);
+    }
+    if (image.present) {
+      map['image'] = Variable<String>(image.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BytesCompanion(')
+          ..write('feedbackId: $feedbackId, ')
+          ..write('image: $image, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final Categories categories = Categories(this);
@@ -3873,6 +4067,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final InstructionsCategories instructionsCategories =
       InstructionsCategories(this);
   late final Settings settings = Settings(this);
+  late final Bytes bytes = Bytes(this);
   Future<int> updateHistoryEntry(int instructionId, DateTime updatedAt,
       int userId, int createdBy, DateTime createdAt, int updatedBy) {
     return customInsert(
@@ -3901,7 +4096,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         users,
         histories,
         instructionsCategories,
-        settings
+        settings,
+        bytes
       ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
@@ -3953,6 +4149,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('settings', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('feedback',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('bytes', kind: UpdateKind.delete),
             ],
           ),
         ],
