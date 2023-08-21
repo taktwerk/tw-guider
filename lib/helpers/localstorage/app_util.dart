@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:crypto/crypto.dart';
 
@@ -15,27 +14,25 @@ class AppUtil {
     return "$hash.png";
   }
 
-  static String getInstructionImagesFolderPath(
-      Directory directory, String foldername) {
+  static String getImagesFolderPath(Directory directory, String foldername) {
     //App Document Directory + folder name
     return '${directory.path}/$foldername/';
   }
 
   static Future<String> createFolderInAppDocDir(
-      String folderNameOfInstruction, String folderName) async {
+      String folderNameOfFile, String folderName) async {
     //Get Guider's Document Directory
     final Directory appDocDir = await getApplicationDocumentsDirectory();
 
-    String path = getInstructionImagesFolderPath(appDocDir, folderName);
+    String path = getImagesFolderPath(appDocDir, folderName);
 
-    final Directory instructionsFolder = Directory(path);
-    if (!(await instructionsFolder.exists())) {
+    final Directory folder = Directory(path);
+    if (!(await folder.exists())) {
       // Create the instructionsImages folder if it does not exist
-      await instructionsFolder.create(recursive: true);
+      await folder.create(recursive: true);
     }
     // Folder where image will be saved
-    final Directory appDocDirFolder =
-        Directory('$path/$folderNameOfInstruction/');
+    final Directory appDocDirFolder = Directory('$path/$folderNameOfFile/');
 
     if (await appDocDirFolder.exists()) {
       //if folder already exists return path
@@ -59,7 +56,7 @@ class AppUtil {
   static Future<String> filePath(entity, String foldername) async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();
     final path =
-        '${getInstructionImagesFolderPath(appDocDir, foldername)}${entity.id}/${getFileName(entity.image)}';
+        '${getImagesFolderPath(appDocDir, foldername)}${entity.id}/${getFileName(entity.image)}';
     if (await File(path).exists()) {
       return path;
     } else {

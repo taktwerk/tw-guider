@@ -209,9 +209,13 @@ class SupabaseToDrift {
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var feedbackElement = data[i];
-      await Singleton()
-          .getDatabase()
-          .createOrUpdateFeedback(FeedbackCompanion.insert(
+
+      if (!kIsWeb) {
+        if (feedbackElement[Const.image.key] != null) {
+          _downloadImages(feedbackElement, Const.feedbackImagesFolderName.key);
+        }
+      }
+      Singleton().getDatabase().createOrUpdateFeedback(FeedbackCompanion.insert(
             id: feedbackElement[Const.id.key],
             isSynced: true,
             instructionId: feedbackElement[Const.instructionId.key],
@@ -320,6 +324,8 @@ class SupabaseToDrift {
       logger.i("Got instructions-categories from supabase.");
       KeyValue.setNewValue(KeyValueEnum.instructionCategory.key, value);
     });
+
+    await DriftToSupabase.uploadFeedbackImages();
 
     await SupabaseToDrift.getFeedback().then((value) async {
       logger.i("Got feedback from supabase.");

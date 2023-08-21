@@ -122,6 +122,14 @@ create table
     constraint setting_user_id_fkey foreign key (user_id) references users (id) on delete cascade
   );
 
+  create table
+  bytes (
+    feedback_id char(20) not null,
+    image character not null,
+    constraint bytes_pkey primary key (feedback_id),
+    constraint bytes_feedback_id_fkey foreign key (feedback_id) references feedback (id) on delete cascade
+  );
+
 
 updateHistoryEntry(REQUIRED :instruction_id as int, REQUIRED :updated_at as datetime): WITH new_id AS (SELECT :instruction_id AS instruction_id, :updated_at as updated_at)
 INSERT INTO histories (user_id, instruction_id, created_by, created_at, updated_at, updated_by, instruction_step_id)

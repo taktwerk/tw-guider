@@ -193,12 +193,26 @@ class AppDatabase extends _$AppDatabase {
   Future<int> insertFeedback(FeedbackCompanion entry) =>
       into(feedback).insert(entry);
 
-  Future<int> updateFeedback(Feedback entry) =>
+  Future<int> updateFeedbackAfterSync(Feedback entry) =>
       (update(feedback)..where((t) => t.id.equals(entry.id))).write(
           FeedbackCompanion(
               isSynced: const Value(true),
               updatedAt: Value(DateTime.now().toUtc()),
               updatedBy: Value(currentUser!)));
+
+  Future<int> updateFeedbackWithImageURL(
+          {required String url, required String id}) =>
+      (update(feedback)..where((t) => t.id.equals(id)))
+          .write(FeedbackCompanion(image: Value(url)));
+
+  // Bytes
+  Future<List<Byte>> get allBytesEntries => select(bytes).get();
+
+  Future<int> insertFeedbackImageBytes(BytesCompanion entry) =>
+      into(bytes).insert(entry);
+
+  Future deleteBytesEntry(String id) =>
+      (delete(bytes)..where((t) => t.feedbackId.equals(id))).go();
 
   // Users
   Future<List<User>> get allUserEntries => select(users).get();

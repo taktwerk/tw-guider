@@ -21,7 +21,8 @@ enum Const {
   instructionStepId("instruction_step_id"),
   language("language"),
   instructionStepsImagesFolderName("instructionStepsImages"),
-  instructionImagesFolderName("instructionImages");
+  instructionImagesFolderName("instructionImages"),
+  feedbackImagesFolderName("feedbackImages");
 
   const Const(this.key);
   final String key;
