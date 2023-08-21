@@ -78,18 +78,6 @@ class _GuiderAppState extends State<GuiderApp> {
       isDeviceConnected.value = await InternetConnectionChecker().hasConnection;
       logger.w("Internet status: $isDeviceConnected");
     });
-    setLanguage();
-  }
-
-  Future<void> setLanguage() async {
-    if (currentUser != null) {
-      var result = Singleton().getDatabase().getSettings(currentUser!);
-      result.listen((event) {
-        if (event.isNotEmpty) {
-          setLocale(Locale.fromSubtags(languageCode: event.first.language));
-        }
-      });
-    }
   }
 
   @override

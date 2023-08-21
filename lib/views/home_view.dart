@@ -28,6 +28,25 @@ class _HomeState extends ConsumerState<Home>
   bool loaded = false;
   bool loading = false;
   final ScrollController _scrollController = ScrollController();
+  Future<void> setLanguage() async {
+    logger.i("Set language");
+
+    if (currentUser != null) {
+      logger.i("Settings listen");
+      Singleton().getDatabase().getSettings(currentUser!).listen((event) {
+        if (event.isNotEmpty) {
+          GuiderApp.setLocale(
+              context, Locale.fromSubtags(languageCode: event.first.language));
+        }
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setLanguage();
+  }
 
   Future<void> sync() async {
     try {
