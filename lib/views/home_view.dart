@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/views/category.dart';
@@ -28,6 +28,15 @@ class _HomeState extends ConsumerState<Home>
   bool loaded = false;
   bool loading = false;
   final ScrollController _scrollController = ScrollController();
+  //final instructionStream = Realtime.getInstructionStream();
+  // final categoryStream = Realtime.getCategoryStream();
+  // final feedbackStream = Realtime.getFeedbackStream();
+  // final historyStream = Realtime.getHistoryStream();
+  // final instructionCategoryStream = Realtime.getInstructionCategoryStream();
+  // final instructionStepStream = Realtime.getInstructionStepStream();
+  // final settingStream = Realtime.getSettingStream();
+  // final userStream = Realtime.getUserStream();
+
   Future<void> setLanguage() async {
     logger.i("Set language");
 
@@ -75,6 +84,14 @@ class _HomeState extends ConsumerState<Home>
 
   @override
   void dispose() {
+    //instructionStream.cancel();
+    // categoryStream.cancel();
+    // feedbackStream.cancel();
+    // historyStream.cancel();
+    // instructionCategoryStream.cancel();
+    // instructionStepStream.cancel();
+    // settingStream.cancel();
+    // userStream.cancel();
     _scrollController.dispose();
     super.dispose();
   }
