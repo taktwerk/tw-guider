@@ -3880,8 +3880,15 @@ class Bytes extends Table with TableInfo<Bytes, Byte> {
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  static const VerificationMeta _imageXidMeta =
+      const VerificationMeta('imageXid');
+  late final GeneratedColumn<String> imageXid = GeneratedColumn<String>(
+      'imageXid', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns => [feedbackId, image];
+  List<GeneratedColumn> get $columns => [feedbackId, image, imageXid];
   @override
   String get aliasedName => _alias ?? 'bytes';
   @override
@@ -3905,6 +3912,12 @@ class Bytes extends Table with TableInfo<Bytes, Byte> {
     } else if (isInserting) {
       context.missing(_imageMeta);
     }
+    if (data.containsKey('imageXid')) {
+      context.handle(_imageXidMeta,
+          imageXid.isAcceptableOrUnknown(data['imageXid']!, _imageXidMeta));
+    } else if (isInserting) {
+      context.missing(_imageXidMeta);
+    }
     return context;
   }
 
@@ -3918,6 +3931,8 @@ class Bytes extends Table with TableInfo<Bytes, Byte> {
           .read(DriftSqlType.string, data['${effectivePrefix}feedback_id'])!,
       image: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image'])!,
+      imageXid: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}imageXid'])!,
     );
   }
 
@@ -3938,12 +3953,15 @@ class Bytes extends Table with TableInfo<Bytes, Byte> {
 class Byte extends DataClass implements Insertable<Byte> {
   final String feedbackId;
   final String image;
-  const Byte({required this.feedbackId, required this.image});
+  final String imageXid;
+  const Byte(
+      {required this.feedbackId, required this.image, required this.imageXid});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['feedback_id'] = Variable<String>(feedbackId);
     map['image'] = Variable<String>(image);
+    map['imageXid'] = Variable<String>(imageXid);
     return map;
   }
 
@@ -3951,6 +3969,7 @@ class Byte extends DataClass implements Insertable<Byte> {
     return BytesCompanion(
       feedbackId: Value(feedbackId),
       image: Value(image),
+      imageXid: Value(imageXid),
     );
   }
 
@@ -3960,6 +3979,7 @@ class Byte extends DataClass implements Insertable<Byte> {
     return Byte(
       feedbackId: serializer.fromJson<String>(json['feedback_id']),
       image: serializer.fromJson<String>(json['image']),
+      imageXid: serializer.fromJson<String>(json['imageXid']),
     );
   }
   @override
@@ -3968,64 +3988,78 @@ class Byte extends DataClass implements Insertable<Byte> {
     return <String, dynamic>{
       'feedback_id': serializer.toJson<String>(feedbackId),
       'image': serializer.toJson<String>(image),
+      'imageXid': serializer.toJson<String>(imageXid),
     };
   }
 
-  Byte copyWith({String? feedbackId, String? image}) => Byte(
+  Byte copyWith({String? feedbackId, String? image, String? imageXid}) => Byte(
         feedbackId: feedbackId ?? this.feedbackId,
         image: image ?? this.image,
+        imageXid: imageXid ?? this.imageXid,
       );
   @override
   String toString() {
     return (StringBuffer('Byte(')
           ..write('feedbackId: $feedbackId, ')
-          ..write('image: $image')
+          ..write('image: $image, ')
+          ..write('imageXid: $imageXid')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(feedbackId, image);
+  int get hashCode => Object.hash(feedbackId, image, imageXid);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Byte &&
           other.feedbackId == this.feedbackId &&
-          other.image == this.image);
+          other.image == this.image &&
+          other.imageXid == this.imageXid);
 }
 
 class BytesCompanion extends UpdateCompanion<Byte> {
   final Value<String> feedbackId;
   final Value<String> image;
+  final Value<String> imageXid;
   final Value<int> rowid;
   const BytesCompanion({
     this.feedbackId = const Value.absent(),
     this.image = const Value.absent(),
+    this.imageXid = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BytesCompanion.insert({
     required String feedbackId,
     required String image,
+    required String imageXid,
     this.rowid = const Value.absent(),
   })  : feedbackId = Value(feedbackId),
-        image = Value(image);
+        image = Value(image),
+        imageXid = Value(imageXid);
   static Insertable<Byte> custom({
     Expression<String>? feedbackId,
     Expression<String>? image,
+    Expression<String>? imageXid,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (feedbackId != null) 'feedback_id': feedbackId,
       if (image != null) 'image': image,
+      if (imageXid != null) 'imageXid': imageXid,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   BytesCompanion copyWith(
-      {Value<String>? feedbackId, Value<String>? image, Value<int>? rowid}) {
+      {Value<String>? feedbackId,
+      Value<String>? image,
+      Value<String>? imageXid,
+      Value<int>? rowid}) {
     return BytesCompanion(
       feedbackId: feedbackId ?? this.feedbackId,
       image: image ?? this.image,
+      imageXid: imageXid ?? this.imageXid,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4039,6 +4073,9 @@ class BytesCompanion extends UpdateCompanion<Byte> {
     if (image.present) {
       map['image'] = Variable<String>(image.value);
     }
+    if (imageXid.present) {
+      map['imageXid'] = Variable<String>(imageXid.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4050,6 +4087,7 @@ class BytesCompanion extends UpdateCompanion<Byte> {
     return (StringBuffer('BytesCompanion(')
           ..write('feedbackId: $feedbackId, ')
           ..write('image: $image, ')
+          ..write('imageXid: $imageXid, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
