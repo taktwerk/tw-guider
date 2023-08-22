@@ -85,7 +85,7 @@ class SupabaseToDrift {
           _downloadImages(step, Const.instructionStepsImagesFolderName.key);
         }
       }
-      await Singleton()
+      Singleton()
           .getDatabase()
           .createOrUpdateInstructionStep(InstructionStepsCompanion.insert(
             instructionId: step[Const.instructionId.key],
@@ -119,7 +119,7 @@ class SupabaseToDrift {
     for (int i = 0; i < len; i++) {
       //var category = categories[i];
       var category = data[i];
-      await Singleton().getDatabase().createOrUpdateCategory(
+      Singleton().getDatabase().createOrUpdateCategory(
             CategoriesCompanion.insert(
               id: Value(category[Const.id.key]),
               name: category[Const.name.key],
@@ -148,7 +148,7 @@ class SupabaseToDrift {
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var history = data[i];
-      await Singleton().getDatabase().createOrUpdateHistory(
+      Singleton().getDatabase().createOrUpdateHistory(
             HistoriesCompanion.insert(
                 instructionId: history[Const.instructionId.key],
                 userId: history[Const.userId.key],
@@ -178,7 +178,7 @@ class SupabaseToDrift {
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var instructionCategory = data[i];
-      await Singleton().getDatabase().createOrUpdateInstructionCategory(
+      Singleton().getDatabase().createOrUpdateInstructionCategory(
             InstructionsCategoriesCompanion.insert(
               categoryId: instructionCategory[Const.categoryId.key],
               instructionId: instructionCategory[Const.instructionId.key],
@@ -244,7 +244,7 @@ class SupabaseToDrift {
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var user = data[i];
-      await Singleton().getDatabase().createOrUpdateUser(UsersCompanion.insert(
+      Singleton().getDatabase().createOrUpdateUser(UsersCompanion.insert(
             id: Value(user[Const.id.key]),
             username: user[Const.username.key],
             role: user[Const.role.key],
@@ -281,9 +281,7 @@ class SupabaseToDrift {
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var setting = data[i];
-      await Singleton()
-          .getDatabase()
-          .createOrUpdateSetting(SettingsCompanion.insert(
+      Singleton().getDatabase().createOrUpdateSetting(SettingsCompanion.insert(
             userId: Value(setting[Const.userId.key]),
             language: setting[Const.language.key],
             createdAt: DateTime.parse(setting[Const.createdAt.key]),
