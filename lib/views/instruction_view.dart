@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
@@ -14,16 +13,16 @@ import 'package:guider/views/instructionstep_overview.dart';
 import 'package:guider/widgets/tag.dart';
 import 'package:guider/views/feedback_view.dart';
 
-class InstructionView extends ConsumerStatefulWidget {
+class InstructionView extends StatefulWidget {
   const InstructionView({super.key, required this.instruction});
 
   final Instruction instruction;
 
   @override
-  ConsumerState<InstructionView> createState() => _InstructionViewState();
+  State<InstructionView> createState() => _InstructionViewState();
 }
 
-class _InstructionViewState extends ConsumerState<InstructionView> {
+class _InstructionViewState extends State<InstructionView> {
   List<InstructionStep>? _steps;
   List<Category>? _categories;
   final ScrollController _scrollController = ScrollController();
@@ -59,8 +58,8 @@ class _InstructionViewState extends ConsumerState<InstructionView> {
 
   @override
   Widget build(BuildContext context) {
-    final database = ref.watch(todoDBProvider);
-    final instruction = database.getInstructionById(widget.instruction.id);
+    final instruction =
+        Singleton().getDatabase().getInstructionById(widget.instruction.id);
     final l = Languages.of(context);
     return Scaffold(
         appBar: AppBar(

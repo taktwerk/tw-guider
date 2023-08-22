@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
-import 'package:guider/main.dart';
+import 'package:guider/objects/singleton.dart';
 
-class CategoryPopup extends ConsumerStatefulWidget {
+class CategoryPopup extends StatefulWidget {
   const CategoryPopup(
       {Key? key,
       required this.chosenCategory,
@@ -14,10 +13,10 @@ class CategoryPopup extends ConsumerStatefulWidget {
   final Function updateCategoryInstructions;
 
   @override
-  ConsumerState<CategoryPopup> createState() => _CategoryPopupState();
+  State<CategoryPopup> createState() => _CategoryPopupState();
 }
 
-class _CategoryPopupState extends ConsumerState<CategoryPopup> {
+class _CategoryPopupState extends State<CategoryPopup> {
   final ScrollController _scrollController = ScrollController();
 
   void search(category) async {
@@ -30,8 +29,7 @@ class _CategoryPopupState extends ConsumerState<CategoryPopup> {
 
   @override
   Widget build(BuildContext context) {
-    final database = ref.watch(todoDBProvider);
-    var categories = database.allCategoryEntries;
+    var categories = Singleton().getDatabase().allCategoryEntries;
     final l = Languages.of(context);
     return SizedBox(
       width: double.minPositive,

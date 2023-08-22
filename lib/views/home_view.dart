@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/languages/languages.dart';
@@ -12,15 +11,14 @@ import 'package:guider/objects/singleton.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 
-class Home extends ConsumerStatefulWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
-  ConsumerState<Home> createState() => _HomeState();
+  State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends ConsumerState<Home>
-    with AutomaticKeepAliveClientMixin<Home> {
+class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   String searchWord = "";
   int category = -1;
   String chosenCategory = "";
@@ -156,10 +154,9 @@ class _HomeState extends ConsumerState<Home>
 
   @override
   Widget build(BuildContext context) {
-    final database = ref.watch(todoDBProvider);
-
-    var filteredInstructions =
-        database.combineCategoryAndSearch(category, searchWord);
+    var filteredInstructions = Singleton()
+        .getDatabase()
+        .combineCategoryAndSearch(category, searchWord);
 
     final l = Languages.of(context);
     super.build(context);

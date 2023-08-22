@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/main.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:guider/widgets/listitem.dart';
 
-class HistoryView extends ConsumerStatefulWidget {
+class HistoryView extends StatefulWidget {
   const HistoryView({super.key});
 
   @override
-  ConsumerState<HistoryView> createState() => _HistoryViewState();
+  State<HistoryView> createState() => _HistoryViewState();
 }
 
-class _HistoryViewState extends ConsumerState<HistoryView>
-    with AutomaticKeepAliveClientMixin<HistoryView> {
+class _HistoryViewState extends State<HistoryView> {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -21,15 +20,15 @@ class _HistoryViewState extends ConsumerState<HistoryView>
     super.dispose();
   }
 
-  @override
-  bool get wantKeepAlive => true;
+  // @override
+  // bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    final database = ref.watch(todoDBProvider);
+    //super.build(context);
 
-    var historyEntries = database.getUserHistoryAsInstructions(currentUser!);
+    var historyEntries =
+        Singleton().getDatabase().getUserHistoryAsInstructions(currentUser!);
     return Scaffold(
         body: Column(
       children: [

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
-import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/homepage.dart';
 import 'package:guider/views/login.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -12,7 +11,6 @@ import 'package:guider/languages/app_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:guider/languages/supported_languages.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as provider;
 
 ValueNotifier<bool> isDeviceConnected = ValueNotifier(false);
 
@@ -28,11 +26,9 @@ void main() async {
     await SupabaseToDrift.initializeUsers();
   }
   logger.i("Currentuser $currentUser (main)");
-  runApp(const provider.ProviderScope(child: GuiderApp()));
+  runApp(const GuiderApp());
 }
 
-final todoDBProvider =
-    provider.Provider.autoDispose((ref) => Singleton().getDatabase());
 final supabase = Supabase.instance.client;
 int? currentUser;
 
