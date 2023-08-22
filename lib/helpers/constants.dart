@@ -22,7 +22,9 @@ enum Const {
   language("language"),
   instructionStepsImagesFolderName("instructionStepsImages"),
   instructionImagesFolderName("instructionImages"),
-  feedbackImagesFolderName("feedbackImages");
+  feedbackImagesFolderName("feedbackImages"),
+  supabaseBucketUrl(
+      "https://spohaqvzfgvdihxcwvff.supabase.co/storage/v1/object/public/feedback_images/");
 
   const Const(this.key);
   final String key;

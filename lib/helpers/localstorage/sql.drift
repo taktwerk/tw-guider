@@ -126,6 +126,7 @@ create table
   bytes (
     feedback_id char(20) not null,
     image character not null,
+    imageXid char(20) not null,
     constraint bytes_pkey primary key (feedback_id),
     constraint bytes_feedback_id_fkey foreign key (feedback_id) references feedback (id) on delete cascade
   );

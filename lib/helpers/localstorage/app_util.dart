@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:guider/helpers/constants.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:crypto/crypto.dart';
 
@@ -42,6 +45,19 @@ class AppUtil {
       final Directory appDocDirNewFolder =
           await appDocDirFolder.create(recursive: true);
       return appDocDirNewFolder.path;
+    }
+  }
+
+  static Future<void> saveFeedbackImage(
+      Uint8List image, String xid, String url) async {
+    String folderInAppDocDir = await AppUtil.createFolderInAppDocDir(
+        xid, Const.feedbackImagesFolderName.key);
+    final file = File(join(folderInAppDocDir, AppUtil.getFileName(url)));
+    if (!(await file.exists())) {
+      if (folderInAppDocDir.isNotEmpty) {
+        await AppUtil.deleteFolderContent(folderInAppDocDir);
+      }
+      file.writeAsBytesSync(image);
     }
   }
 

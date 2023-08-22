@@ -4,6 +4,8 @@ import 'package:drift/drift.dart' as drift;
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/constants.dart';
+import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
@@ -26,6 +28,7 @@ class _FeedbackViewState extends State<FeedbackView> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   Image? selectedImage;
   String? _imagesBytes;
+  drift.Uint8List? image;
 
   @override
   void dispose() {
@@ -50,8 +53,10 @@ class _FeedbackViewState extends State<FeedbackView> {
 
         if (kIsWeb) {
           selectedImage = Image.network(pickedFile.path);
+          image = await pickedFile.readAsBytes();
         } else {
           selectedImage = Image.file(File(pickedFile.path));
+          image = await pickedFile.readAsBytes();
         }
       } else {
         logger.i("No image chosen.");
@@ -70,6 +75,7 @@ class _FeedbackViewState extends State<FeedbackView> {
       if (pickedFile != null) {
         _imagesBytes = base64Encode(await pickedFile.readAsBytes());
         selectedImage = Image.file(File(pickedFile.path));
+        image = await pickedFile.readAsBytes();
       }
       setState(() {});
     }
@@ -84,6 +90,8 @@ class _FeedbackViewState extends State<FeedbackView> {
         _imagesBytes = base64Encode(await takenImage.readAsBytes());
 
         selectedImage = Image.file(File(takenImage.path));
+        image = await takenImage.readAsBytes();
+
         setState(() {});
       } else {
         logger.i("No image selected");
@@ -140,22 +148,32 @@ class _FeedbackViewState extends State<FeedbackView> {
           onPressed: () async {
             if (_formKey.currentState!.validate() && currentUser != null) {
               String xid = Xid().toString();
+              String? url;
+              if (_imagesBytes != null) {
+                String xidImage = Xid().toString();
+                logger.i("xidImage $xidImage");
+                url =
+                    "${Const.supabaseBucketUrl.key}$xidImage.png"; // TODO: png
+                Singleton().getDatabase().insertFeedbackImageBytes(
+                    BytesCompanion.insert(
+                        feedbackId: xid,
+                        image: _imagesBytes!,
+                        imageXid: xidImage));
+                if (!kIsWeb) {
+                  AppUtil.saveFeedbackImage(image!, xid, url);
+                }
+              }
               Singleton().getDatabase().insertFeedback(FeedbackCompanion.insert(
                   id: xid,
                   isSynced: false,
                   instructionId: widget.instruction.id,
                   userId: currentUser!,
                   message: _controller.text,
+                  image: drift.Value(url),
                   createdAt: DateTime.now().toUtc(),
                   createdBy: currentUser!,
                   updatedAt: DateTime.now().toUtc(),
                   updatedBy: currentUser!));
-              if (_imagesBytes != null) {
-                Singleton().getDatabase().insertFeedbackImageBytes(
-                    BytesCompanion.insert(
-                        feedbackId: xid, image: _imagesBytes!));
-
-              }
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
 

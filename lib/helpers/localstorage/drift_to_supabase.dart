@@ -30,24 +30,15 @@ class DriftToSupabase {
 
   static Future<void> uploadFeedbackImages() async {
     var images = await Singleton().getDatabase().allBytesEntries;
-    logger.i("Images ${images.length}");
     int len = images.length;
     for (int i = 0; i < len; i++) {
       var image = images[i];
       final String path = await supabase.storage
           .from('feedback_images')
-          .uploadBinary("${image.feedbackId}.png", base64.decode(image.image),
+          .uploadBinary("${image.imageXid}.png", base64.decode(image.image),
               fileOptions:
                   const FileOptions(cacheControl: '3600', upsert: false));
       logger.i("Path of uploaded image: $path");
-
-      final String publicUrl = supabase.storage
-          .from('feedback_images')
-          .getPublicUrl("${image.feedbackId}.png");
-
-      await Singleton()
-          .getDatabase()
-          .updateFeedbackWithImageURL(url: publicUrl, id: image.feedbackId);
 
       await Singleton().getDatabase().deleteBytesEntry(image.feedbackId);
     }
