@@ -86,8 +86,8 @@ class AppDatabase extends _$AppDatabase {
     return query.map((row) => row.readTable(instructions)).watch();
   }
 
-  Future<Instruction> getInstructionById(int id) =>
-      (select(instructions)..where((t) => t.id.equals(id))).getSingle();
+  Stream<Instruction> getInstructionById(int id) =>
+      (select(instructions)..where((t) => t.id.equals(id))).watchSingle();
 
 // InstructionStep
   Future<List<InstructionStep>> get allInstructionStepEntries =>

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
@@ -13,16 +14,16 @@ import 'package:guider/views/instructionstep_overview.dart';
 import 'package:guider/widgets/tag.dart';
 import 'package:guider/views/feedback_view.dart';
 
-class InstructionView extends StatefulWidget {
+class InstructionView extends ConsumerStatefulWidget {
   const InstructionView({super.key, required this.instruction});
 
   final Instruction instruction;
 
   @override
-  State<InstructionView> createState() => _InstructionViewState();
+  ConsumerState<InstructionView> createState() => _InstructionViewState();
 }
 
-class _InstructionViewState extends State<InstructionView> {
+class _InstructionViewState extends ConsumerState<InstructionView> {
   List<InstructionStep>? _steps;
   List<Category>? _categories;
   final ScrollController _scrollController = ScrollController();
@@ -58,60 +59,96 @@ class _InstructionViewState extends State<InstructionView> {
 
   @override
   Widget build(BuildContext context) {
+    final database = ref.watch(todoDBProvider);
+    final instruction = database.getInstructionById(widget.instruction.id);
     final l = Languages.of(context);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.instruction.title),
-      ),
-      body: _steps != null
-          ? Container(
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
-              child: Center(
-                child: Column(
-                  children: [
-                    Text("${l!.categorieButtonText}:"),
-                    _categories!.isEmpty
-                        ? const Text("---")
-                        : Wrap(
-                            children: List.generate(
-                                _categories!.length,
-                                (index) => TagContainer(
-                                    child: getTagContent(
-                                        _categories![index].name))),
-                          ),
-                    Text("${l.shortTitle}: ${widget.instruction.shortTitle}"),
-                    const SizedBox(height: 10),
-                    Text(l.description),
-                    buildDesc(),
-                    buildImage(),
-                    const SizedBox(height: 10),
-                    buildButtons(),
-                  ],
-                ),
-              ))
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
-    );
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: StreamBuilder(
+              stream: instruction,
+              builder:
+                  (BuildContext context, AsyncSnapshot<Instruction> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.connectionState == ConnectionState.active ||
+                    snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Text('🚨 Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    return Text(snapshot.data!.title);
+                  } else {
+                    return const Text("Empty data");
+                  }
+                } else {
+                  return Text('State: ${snapshot.connectionState}');
+                }
+              }),
+        ),
+        body: StreamBuilder(
+            stream: instruction,
+            builder:
+                (BuildContext context, AsyncSnapshot<Instruction> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.connectionState == ConnectionState.active ||
+                  snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Text('🚨 Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  return Container(
+                      padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Text("${l!.categorieButtonText}:"),
+                            _categories!.isEmpty
+                                ? const Text("---")
+                                : Wrap(
+                                    children: List.generate(
+                                        _categories!.length,
+                                        (index) => TagContainer(
+                                            child: getTagContent(
+                                                _categories![index].name))),
+                                  ),
+                            Text(
+                                "${l.shortTitle}: ${snapshot.data!.shortTitle}"),
+                            const SizedBox(height: 10),
+                            Text(l.description),
+                            buildDesc(snapshot.data!),
+                            buildImage(snapshot.data!),
+                            const SizedBox(height: 10),
+                            buildButtons(snapshot.data!),
+                          ],
+                        ),
+                      ));
+                } else {
+                  return const Text("Empty data");
+                }
+              } else {
+                return Text('State: ${snapshot.connectionState}');
+              }
+            }));
   }
 
-  Widget buildButtons() => Row(
+  Widget buildButtons(instruction) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [getFeedbackButton(), buildStepButton()],
+        children: [
+          getFeedbackButton(instruction),
+          buildStepButton(instruction)
+        ],
       );
 
-  Widget getFeedbackButton() => TextButton(
+  Widget getFeedbackButton(instruction) => TextButton(
         onPressed: () {
           showDialog(
               context: context,
-              builder: (context) =>
-                  FeedbackView(instruction: widget.instruction));
+              builder: (context) => FeedbackView(instruction: instruction));
         },
         child: Text(Languages.of(context)!.feedback),
       );
 
-  Widget buildStepButton() => Directionality(
+  Widget buildStepButton(instruction) => Directionality(
         textDirection: TextDirection.rtl,
         child: ElevatedButton.icon(
           icon: const Icon(Icons.arrow_back_ios),
@@ -121,7 +158,7 @@ class _InstructionViewState extends State<InstructionView> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => InstructionStepOverview(
-                    instruction: widget.instruction,
+                    instruction: instruction,
                     steps: _steps!,
                   ),
                 ),
@@ -137,7 +174,7 @@ class _InstructionViewState extends State<InstructionView> {
         ),
       );
 
-  Widget buildDesc() => Expanded(
+  Widget buildDesc(instruction) => Expanded(
       flex: 1,
       child: Container(
         margin: const EdgeInsets.all(5),
@@ -164,14 +201,14 @@ class _InstructionViewState extends State<InstructionView> {
             controller: _scrollController,
             scrollDirection: Axis.vertical,
             child: Text(
-              widget.instruction.description,
+              instruction.description,
               textAlign: TextAlign.center,
             ),
           ),
         ),
       ));
 
-  Widget buildImage() {
+  Widget buildImage(instruction) {
     final l = Languages.of(context);
     return Expanded(
       flex: 1,
@@ -180,12 +217,12 @@ class _InstructionViewState extends State<InstructionView> {
             tag: "imageHero",
             child: (foundation.kIsWeb)
                 ? Image.network(
-                    widget.instruction.image,
+                    instruction.image,
                     fit: BoxFit.cover,
                   )
                 : FutureBuilder(
-                    future: AppUtil.filePath(widget.instruction,
-                        Const.instructionImagesFolderName.key),
+                    future: AppUtil.filePath(
+                        instruction, Const.instructionImagesFolderName.key),
                     builder: (_, snapshot) {
                       if (snapshot.hasError) {
                         return Text(l!.somethingWentWrong);
@@ -206,8 +243,7 @@ class _InstructionViewState extends State<InstructionView> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    FullScreenImageViewer(widget.instruction)),
+                builder: (context) => FullScreenImageViewer(instruction)),
           );
         },
       ),
