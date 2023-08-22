@@ -96,14 +96,14 @@ class AppDatabase extends _$AppDatabase {
   Future<int> createOrUpdateInstructionStep(InstructionStepsCompanion entry) =>
       into(instructionSteps).insertOnConflictUpdate(entry);
 
-  Future<List<InstructionStep>> getInstructionStepsByInstructionId(
+  Stream<List<InstructionStep>> getInstructionStepsByInstructionId(
           int instructionId) =>
       (select(instructionSteps)
             ..where((step) => ((step.instructionId).equals(instructionId)))
             ..orderBy([(t) => OrderingTerm(expression: t.stepNr)]))
-          .get();
+          .watch();
 
-  Future<InstructionStep> getLastVisitedStep(
+  Stream<InstructionStep> getLastVisitedStep(
       {required int instructionId, required int userId}) {
     final query = select(instructionSteps).join([
       innerJoin(
@@ -112,7 +112,7 @@ class AppDatabase extends _$AppDatabase {
     ])
       ..where((histories.userId).equals(userId))
       ..where((histories.instructionId).equals(instructionId));
-    return query.map((t) => t.readTable(instructionSteps)).getSingle();
+    return query.map((t) => t.readTable(instructionSteps)).watchSingle();
   }
 
   // Category
@@ -161,8 +161,9 @@ class AppDatabase extends _$AppDatabase {
       (update(histories)
             ..where((t) => t.instructionId.equals(instructionId))
             ..where((t) => t.userId.equals(userId)))
-          .write(
-              HistoriesCompanion(instructionStepId: Value(instructionStepId)));
+          .write(HistoriesCompanion(
+              instructionStepId: Value(instructionStepId),
+              updatedAt: Value(DateTime.now().toUtc())));
 
   Future<List<History>> notSyncedHistoryEntries(DateTime timestamp) {
     return (select(histories)

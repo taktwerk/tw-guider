@@ -23,7 +23,6 @@ class InstructionView extends StatefulWidget {
 }
 
 class _InstructionViewState extends State<InstructionView> {
-  List<InstructionStep>? _steps;
   List<Category>? _categories;
   final ScrollController _scrollController = ScrollController();
 
@@ -35,7 +34,6 @@ class _InstructionViewState extends State<InstructionView> {
 
   Future getData() async {
     await getCategories();
-    await getSteps();
   }
 
   Future<void> getCategories() async {
@@ -44,15 +42,6 @@ class _InstructionViewState extends State<InstructionView> {
         .getCategoriesOfInstruction(widget.instruction.id);
     setState(() {
       _categories = categories;
-    });
-  }
-
-  Future<void> getSteps() async {
-    var steps = await Singleton()
-        .getDatabase()
-        .getInstructionStepsByInstructionId(widget.instruction.id);
-    setState(() {
-      _steps = steps;
     });
   }
 
@@ -147,31 +136,54 @@ class _InstructionViewState extends State<InstructionView> {
         child: Text(Languages.of(context)!.feedback),
       );
 
-  Widget buildStepButton(instruction) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            if (_steps!.isNotEmpty) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => InstructionStepOverview(
-                    instruction: instruction,
-                    steps: _steps!,
-                  ),
+  Widget buildStepButton(instruction) {
+    final steps = Singleton()
+        .getDatabase()
+        .getInstructionStepsByInstructionId(instruction.id);
+    return StreamBuilder(
+        stream: steps,
+        builder: (BuildContext context,
+            AsyncSnapshot<List<InstructionStep>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.connectionState == ConnectionState.active ||
+              snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Text('🚨 Error: ${snapshot.error}');
+            } else if (snapshot.hasData) {
+              return Directionality(
+                textDirection: TextDirection.rtl,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    if (snapshot.data!.isNotEmpty) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InstructionStepOverview(
+                            instruction: instruction,
+                            steps: snapshot.data!,
+                          ),
+                        ),
+                      );
+                    } else {
+                      logger.i("No instruction steps available.");
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              Languages.of(context)!.noInstructionsAvailable)));
+                    }
+                  },
+                  label: Text(Languages.of(context)!.instructionSteps),
                 ),
               );
             } else {
-              logger.i("No instruction steps available.");
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content:
-                      Text(Languages.of(context)!.noInstructionsAvailable)));
+              return const Text("Empty data");
             }
-          },
-          label: Text(Languages.of(context)!.instructionSteps),
-        ),
-      );
+          } else {
+            return Text('State: ${snapshot.connectionState}');
+          }
+        });
+  }
 
   Widget buildDesc(instruction) => Expanded(
       flex: 1,
