@@ -28,7 +28,8 @@ class SupabaseToDrift {
       if (!kIsWeb) {
         //only downloads the first 10 images (not all 1000)
         if (i >= 0 && i <= 10) {
-          _downloadImages(instruction, Const.instructionImagesFolderName.key);
+          await _downloadImages(
+              instruction, Const.instructionImagesFolderName.key);
         }
       }
       Singleton()
@@ -51,7 +52,8 @@ class SupabaseToDrift {
     return newLastSynced;
   }
 
-  static void _downloadImages(entry, foldername) async {
+  static Future<void> _downloadImages(entry, foldername) async {
+    print(entry[Const.image.key]);
     final response = await http.get(Uri.parse(entry[Const.image.key]));
     String folderInAppDocDir = await AppUtil.createFolderInAppDocDir(
         entry[Const.id.key].toString(), foldername);
@@ -82,7 +84,8 @@ class SupabaseToDrift {
       if (!kIsWeb) {
         //only downloads the first 30 images (not all 1000)
         if (i >= 0 && i <= 30) {
-          _downloadImages(step, Const.instructionStepsImagesFolderName.key);
+          await _downloadImages(
+              step, Const.instructionStepsImagesFolderName.key);
         }
       }
       Singleton()
@@ -212,7 +215,8 @@ class SupabaseToDrift {
 
       if (!kIsWeb) {
         if (feedbackElement[Const.image.key] != null) {
-          _downloadImages(feedbackElement, Const.feedbackImagesFolderName.key);
+          await _downloadImages(
+              feedbackElement, Const.feedbackImagesFolderName.key);
         }
       }
       Singleton().getDatabase().createOrUpdateFeedback(FeedbackCompanion.insert(
