@@ -61,6 +61,7 @@ class GuiderApp extends StatefulWidget {
 class _GuiderAppState extends State<GuiderApp> {
   Locale? _locale;
   late StreamSubscription<ConnectivityResult> subscription;
+  bool _isLoading = false;
 
   void setLocale(Locale locale) {
     setState(() {
@@ -78,6 +79,13 @@ class _GuiderAppState extends State<GuiderApp> {
       isDeviceConnected.value = await InternetConnectionChecker().hasConnection;
       logger.w("Internet status: $isDeviceConnected");
     });
+  }
+
+  void _onSyncButtonClick() async {
+    setState(() => _isLoading = true);
+
+    await SupabaseToDrift.sync()
+        .then((value) => setState(() => _isLoading = false));
   }
 
   @override
@@ -114,6 +122,40 @@ class _GuiderAppState extends State<GuiderApp> {
         useMaterial3: true,
       ),
       home: currentUser != null ? const MyHomePage() : const LoginPage(),
+      builder: (context, child) {
+        return Scaffold(
+          body: Stack(
+            children: [
+              child!,
+              Positioned(
+                  right: 120,
+                  top: 0,
+                  child: FloatingActionButton(
+                    onPressed: () => _onSyncButtonClick(),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Row(
+                      children: [
+                        _isLoading
+                            ? Container(
+                                width: 24,
+                                height: 24,
+                                padding: const EdgeInsets.all(2.0),
+                                child: const CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 3,
+                                ),
+                              )
+                            : const Icon(Icons.sync),
+                        const Text("Sync"),
+                      ],
+                    ),
+                  )),
+            ],
+          ),
+        );
+      },
     );
   }
 }
