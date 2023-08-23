@@ -5,6 +5,7 @@ import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/history_view.dart';
+import 'package:guider/views/login.dart';
 import 'package:guider/views/settings_view.dart';
 import 'package:guider/views/home_view.dart';
 
@@ -70,18 +71,40 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Widget getUserPopup() => PopupMenuButton(
-      itemBuilder: (context) => users != null
-          ? List.generate(
-              users!.length,
-              (index) => PopupMenuItem(
-                    onTap: () {
-                      setState(() {
-                        currentUser = users![index].id;
-                        KeyValue.setNewUser(users![index].id);
-                      });
-                      logger.i("Selected user $currentUser");
-                    },
-                    child: Text("User ${users![index].id}"),
-                  ))
-          : [const PopupMenuItem(child: CircularProgressIndicator())]);
+        itemBuilder: (context) => users != null
+            ? List.generate(
+                users!.length + 1,
+                (index) => index != users!.length
+                    ? PopupMenuItem(
+                        onTap: () {
+                          setState(() {
+                            currentUser = users![index].id;
+                            KeyValue.setNewUser(users![index].id);
+                          });
+                          logger.i("Selected user $currentUser");
+                        },
+                        child: Text("User ${users![index].id}"),
+                      )
+                    : PopupMenuItem(
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Logout'),
+                            Icon(Icons.logout),
+                          ],
+                        ),
+                        onTap: () async {
+                          logger.i("Logged out");
+                          await KeyValue.saveLogin(false)
+                              .then((value) => Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginPage()),
+                                  ));
+                        },
+                      ))
+            : [const PopupMenuItem(child: CircularProgressIndicator())],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      );
 }

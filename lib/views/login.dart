@@ -76,8 +76,9 @@ class _LoginPageState extends State<LoginPage> {
           ElevatedButton(
               onPressed: () {
                 KeyValue.setNewUser(selectedItem!.id);
+                KeyValue.saveLogin(true);
                 currentUser = selectedItem!.id;
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const MyHomePage()),
                 );

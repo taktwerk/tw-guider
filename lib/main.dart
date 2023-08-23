@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
+import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/homepage.dart';
 import 'package:guider/views/login.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -58,6 +59,7 @@ class _GuiderAppState extends State<GuiderApp> {
   Locale? _locale;
   late StreamSubscription<ConnectivityResult> subscription;
   bool _isLoading = false;
+  bool? islogin;
 
   void setLocale(Locale locale) {
     setState(() {
@@ -68,12 +70,21 @@ class _GuiderAppState extends State<GuiderApp> {
   @override
   void initState() {
     super.initState();
-
+    checkUserLoginState();
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) async {
       isDeviceConnected.value = await InternetConnectionChecker().hasConnection;
       logger.w("Internet status: $isDeviceConnected");
+    });
+  }
+
+  checkUserLoginState() async {
+    await KeyValue.getLogin().then((value) {
+      logger.i("Login was $value");
+      setState(() {
+        islogin = value;
+      });
     });
   }
 
@@ -117,32 +128,37 @@ class _GuiderAppState extends State<GuiderApp> {
             seedColor: const Color.fromARGB(255, 92, 172, 252)),
         useMaterial3: true,
       ),
-      home: currentUser != null ? const MyHomePage() : const LoginPage(),
+      home: islogin != null
+          ? islogin!
+              ? const MyHomePage()
+              : const LoginPage()
+          : const LoginPage(),
       builder: (context, child) {
         return Scaffold(
           body: Stack(
             children: [
               child!,
               Positioned(
-                  right: 120,
-                  top: 0,
-                  child: FloatingActionButton(
-                    onPressed: () => _onSyncButtonClick(),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: _isLoading
-                        ? Container(
-                            width: 24,
-                            height: 24,
-                            padding: const EdgeInsets.all(2.0),
-                            child: const CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 3,
-                            ),
-                          )
-                        : const Icon(Icons.sync),
-                  )),
+                bottom: 10,
+                right: 10,
+                child: FloatingActionButton(
+                  onPressed: () => _onSyncButtonClick(),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: _isLoading
+                      ? Container(
+                          width: 24,
+                          height: 24,
+                          padding: const EdgeInsets.all(2.0),
+                          child: const CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 3,
+                          ),
+                        )
+                      : const Icon(Icons.sync),
+                ),
+              ),
             ],
           ),
         );

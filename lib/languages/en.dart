@@ -107,4 +107,7 @@ class LanguageEn extends Languages {
 
   @override
   String get languages => "Languages";
+
+  @override
+  String get logout => "Logout";
 }
