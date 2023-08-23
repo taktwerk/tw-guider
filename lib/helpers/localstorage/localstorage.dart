@@ -28,30 +28,6 @@ class AppDatabase extends _$AppDatabase {
   //   );
   // }
 
-// Helper Functions
-  // Future<int> updateInstruction(String title, int id) =>
-  //     (update(instructions)..where((t) => t.id.equals(id)))
-  //         .write(InstructionsCompanion(title: Value(title)));
-
-  // Future<int> addInstruction(InstructionsCompanion entry) =>
-  //     into(instructions).insert(entry);
-
-  // Future<List<InstructionStep>> get allInstructionStepEntries =>
-  //     select(instructionSteps).get();
-
-  // Future<List<History>> get allHistoryEntries => (select(histories)..where((t) => t.deletedAt.isNull())).get();
-
-  // Future<List<History>> getUserHistory(int givenUserId) =>
-  //     (select(histories)..where((t) => t.userId.equals(givenUserId))).get();
-
-  // Instruction-Category
-  // Future<List<InstructionCategory>> get allInstructionCategoryEntries =>
-  //     select(instructionsCategories).get();
-
-  // Future<List<Feedback>> get allFeedbackEntries => select(feedback).get();
-
-  // Future<List<Setting>> get allSettings => select(settings).get();
-
 // TABLE: Instruction
   Stream<List<Instruction>> get allInstructionEntries => (select(instructions)
         ..orderBy([(t) => OrderingTerm(expression: t.id)])
