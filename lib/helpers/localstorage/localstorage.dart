@@ -34,8 +34,14 @@ class AppDatabase extends _$AppDatabase {
         ..where((t) => t.deletedAt.isNull()))
       .watch();
 
-  Future<int> createOrUpdateInstruction(InstructionsCompanion entry) =>
-      into(instructions).insertOnConflictUpdate(entry);
+  Future<void> insertMultipleInstructions(
+      List<Insertable<Instruction>> list) async {
+    await batch((batch) {
+      batch.insertAllOnConflictUpdate(instructions, list);
+    });
+  }
+  // Future<int> createOrUpdateInstruction(InstructionsCompanion entry) =>
+  //     into(instructions).insertOnConflictUpdate(entry);
 
   Stream<List<Instruction>> getInstructionBySearch(String substring) =>
       (select(instructions)
@@ -90,8 +96,15 @@ class AppDatabase extends _$AppDatabase {
       (select(instructions)..where((t) => t.id.equals(id))).watchSingle();
 
 // TABLE: InstructionStep
-  Future<int> createOrUpdateInstructionStep(InstructionStepsCompanion entry) =>
-      into(instructionSteps).insertOnConflictUpdate(entry);
+  // Future<int> createOrUpdateInstructionStep(InstructionStepsCompanion entry) =>
+  //     into(instructionSteps).insertOnConflictUpdate(entry);
+
+  Future<void> insertMultipleInstructionSteps(
+      List<Insertable<InstructionStep>> list) async {
+    await batch((batch) {
+      batch.insertAllOnConflictUpdate(instructionSteps, list);
+    });
+  }
 
   Stream<List<InstructionStep>> getInstructionStepsByInstructionId(
           int instructionId) =>
@@ -117,8 +130,14 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<Category>> get allCategoryEntries =>
       (select(categories)..where((t) => t.deletedAt.isNull())).watch();
 
-  Future<int> createOrUpdateCategory(CategoriesCompanion entry) =>
-      into(categories).insertOnConflictUpdate(entry);
+  // Future<int> createOrUpdateCategory(CategoriesCompanion entry) =>
+  //     into(categories).insertOnConflictUpdate(entry);
+
+  Future<void> insertMultipleCategories(List<Insertable<Category>> list) async {
+    await batch((batch) {
+      batch.insertAllOnConflictUpdate(categories, list);
+    });
+  }
 
   Future<List<Category>> getCategoriesOfInstruction(int givenInstructionId) {
     final query = (select(categories)..where((t) => t.deletedAt.isNull()))
@@ -133,6 +152,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   // TABLE: History
+  // NOTE: change to batch once I figure out how to to insertAll with the custom onConflict
   Future<int> createOrUpdateHistory(HistoriesCompanion entry) =>
       into(histories).insert(entry,
           onConflict: DoUpdate.withExcluded((old, excluded) => entry,
@@ -167,14 +187,23 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
-  Future<int> createOrUpdateInstructionCategory(
-          InstructionsCategoriesCompanion entry) =>
-      into(instructionsCategories).insertOnConflictUpdate(entry);
+  // TABLE: Instruction_Category
+  // Future<int> createOrUpdateInstructionCategory(
+  //         InstructionsCategoriesCompanion entry) =>
+  //     into(instructionsCategories).insertOnConflictUpdate(entry);
+
+  Future<void> insertMultipleInstructionCategories(
+      List<Insertable<InstructionCategory>> list) async {
+    await batch((batch) {
+      batch.insertAllOnConflictUpdate(instructionsCategories, list);
+    });
+  }
 
   // TABLE: Feedback
   Future<List<Feedback>> get notSyncedFeedbackEntries =>
       (select(feedback)..where((t) => t.isSynced.equals(false))).get();
 
+  // NOTE: change to batch once I figure out how to to insertAll with the custom onConflict
   Future<int> createOrUpdateFeedback(FeedbackCompanion entry) =>
       into(feedback).insert(entry,
           onConflict: DoUpdate.withExcluded((old, excluded) => entry,
@@ -209,8 +238,14 @@ class AppDatabase extends _$AppDatabase {
   Future<List<User>> get allUserEntries =>
       (select(users)..where((t) => t.deletedAt.isNull())).get();
 
-  Future<int> createOrUpdateUser(UsersCompanion entry) =>
-      into(users).insertOnConflictUpdate(entry);
+  // Future<int> createOrUpdateUser(UsersCompanion entry) =>
+  //     into(users).insertOnConflictUpdate(entry);
+
+  Future<void> insertMultipleUsers(List<Insertable<User>> list) async {
+    await batch((batch) {
+      batch.insertAllOnConflictUpdate(users, list);
+    });
+  }
 
   Future<List<User>> getUserSortedById() => (select(users)
         ..where((t) => t.deletedAt.isNull())
@@ -218,6 +253,7 @@ class AppDatabase extends _$AppDatabase {
       .get();
 
   // TABLE: Settings
+  // NOTE: change to batch once I figure out how to to insertAll with the custom onConflict
   Future<int> createOrUpdateSetting(SettingsCompanion entry) =>
       into(settings).insert(entry,
           onConflict: DoUpdate.withExcluded((old, excluded) => entry,

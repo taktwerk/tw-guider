@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
@@ -21,39 +21,39 @@ class SupabaseToDrift {
         .gt('updated_at', lastSynced)
         .order('id', ascending: true);
     newLastSynced = DateTime.now().toUtc().toIso8601String();
-
     int len = data.length;
+    List<Insertable<Instruction>> instructionBatch = [];
     for (int i = 0; i < len; i++) {
       var instruction = data[i];
-      if (!kIsWeb) {
+      if (!foundation.kIsWeb) {
         //only downloads the first 10 images (not all 1000)
         if (i >= 0 && i <= 10) {
           await _downloadImages(
               instruction, Const.instructionImagesFolderName.key);
         }
       }
-      Singleton()
-          .getDatabase()
-          .createOrUpdateInstruction(InstructionsCompanion.insert(
-            id: Value(instruction[Const.id.key]),
-            title: instruction[Const.title.key],
-            shortTitle: instruction[Const.shortTitle.key],
-            image: instruction[Const.image.key],
-            description: instruction[Const.description.key],
-            createdAt: DateTime.parse(instruction[Const.createdAt.key]),
-            createdBy: instruction[Const.createdBy.key],
-            updatedAt: DateTime.parse(instruction[Const.updatedAt.key]),
-            updatedBy: instruction[Const.updatedBy.key],
-            deletedAt: Value(
-                DateTime.tryParse(instruction[Const.deletedAt.key] ?? "")),
-            deletedBy: Value(instruction[Const.deletedBy.key]),
-          ));
+      instructionBatch.add(InstructionsCompanion.insert(
+        id: Value(instruction[Const.id.key]),
+        title: instruction[Const.title.key],
+        shortTitle: instruction[Const.shortTitle.key],
+        image: instruction[Const.image.key],
+        description: instruction[Const.description.key],
+        createdAt: DateTime.parse(instruction[Const.createdAt.key]),
+        createdBy: instruction[Const.createdBy.key],
+        updatedAt: DateTime.parse(instruction[Const.updatedAt.key]),
+        updatedBy: instruction[Const.updatedBy.key],
+        deletedAt:
+            Value(DateTime.tryParse(instruction[Const.deletedAt.key] ?? "")),
+        deletedBy: Value(instruction[Const.deletedBy.key]),
+      ));
     }
+    await Singleton()
+        .getDatabase()
+        .insertMultipleInstructions(instructionBatch);
     return newLastSynced;
   }
 
   static Future<void> _downloadImages(entry, foldername) async {
-    print(entry[Const.image.key]);
     final response = await http.get(Uri.parse(entry[Const.image.key]));
     String folderInAppDocDir = await AppUtil.createFolderInAppDocDir(
         entry[Const.id.key].toString(), foldername);
@@ -76,35 +76,35 @@ class SupabaseToDrift {
         .select('*')
         .gt('updated_at', lastSynced);
     newLastSynced = DateTime.now().toUtc().toIso8601String();
-
     int len = data.length;
+    List<Insertable<InstructionStep>> instructionStepBatch = [];
     for (int i = 0; i < len; i++) {
       var step = data[i];
 
-      if (!kIsWeb) {
+      if (!foundation.kIsWeb) {
         //only downloads the first 30 images (not all 1000)
         if (i >= 0 && i <= 30) {
           await _downloadImages(
               step, Const.instructionStepsImagesFolderName.key);
         }
       }
-      Singleton()
-          .getDatabase()
-          .createOrUpdateInstructionStep(InstructionStepsCompanion.insert(
-            instructionId: step[Const.instructionId.key],
-            stepNr: step[Const.stepNr.key],
-            id: Value(step[Const.id.key]),
-            image: step[Const.image.key],
-            description: step[Const.description.key],
-            createdAt: DateTime.parse(step[Const.createdAt.key]),
-            createdBy: step[Const.createdBy.key],
-            updatedAt: DateTime.parse(step[Const.updatedAt.key]),
-            updatedBy: step[Const.updatedBy.key],
-            deletedAt:
-                Value(DateTime.tryParse(step[Const.deletedAt.key] ?? "")),
-            deletedBy: Value(step[Const.deletedBy.key]),
-          ));
+      instructionStepBatch.add(InstructionStepsCompanion.insert(
+        instructionId: step[Const.instructionId.key],
+        stepNr: step[Const.stepNr.key],
+        id: Value(step[Const.id.key]),
+        image: step[Const.image.key],
+        description: step[Const.description.key],
+        createdAt: DateTime.parse(step[Const.createdAt.key]),
+        createdBy: step[Const.createdBy.key],
+        updatedAt: DateTime.parse(step[Const.updatedAt.key]),
+        updatedBy: step[Const.updatedBy.key],
+        deletedAt: Value(DateTime.tryParse(step[Const.deletedAt.key] ?? "")),
+        deletedBy: Value(step[Const.deletedBy.key]),
+      ));
     }
+    await Singleton()
+        .getDatabase()
+        .insertMultipleInstructionSteps(instructionStepBatch);
     return newLastSynced;
   }
 
@@ -117,37 +117,33 @@ class SupabaseToDrift {
         .gt('updated_at', lastSynced);
 
     newLastSynced = DateTime.now().toUtc().toIso8601String();
-
+    List<Insertable<Category>> categoryBatch = [];
     int len = data.length;
     for (int i = 0; i < len; i++) {
       //var category = categories[i];
       var category = data[i];
-      Singleton().getDatabase().createOrUpdateCategory(
-            CategoriesCompanion.insert(
-              id: Value(category[Const.id.key]),
-              name: category[Const.name.key],
-              createdAt: DateTime.parse(category[Const.createdAt.key]),
-              createdBy: category[Const.createdBy.key],
-              updatedAt: DateTime.parse(category[Const.updatedAt.key]),
-              updatedBy: category[Const.updatedBy.key],
-              deletedAt:
-                  Value(DateTime.tryParse(category[Const.deletedAt.key] ?? "")),
-              deletedBy: Value(category[Const.deletedBy.key]),
-            ),
-          );
+      categoryBatch.add(CategoriesCompanion.insert(
+        id: Value(category[Const.id.key]),
+        name: category[Const.name.key],
+        createdAt: DateTime.parse(category[Const.createdAt.key]),
+        createdBy: category[Const.createdBy.key],
+        updatedAt: DateTime.parse(category[Const.updatedAt.key]),
+        updatedBy: category[Const.updatedBy.key],
+        deletedAt:
+            Value(DateTime.tryParse(category[Const.deletedAt.key] ?? "")),
+        deletedBy: Value(category[Const.deletedBy.key]),
+      ));
     }
+    await Singleton().getDatabase().insertMultipleCategories(categoryBatch);
     return newLastSynced;
   }
 
   static Future<String> getHistory() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.history.key);
     var newLastSynced = lastSynced;
-    print("Last synced history: $lastSynced");
     final data =
         await supabase.from('history').select('*').gt('updated_at', lastSynced);
     newLastSynced = DateTime.now().toUtc().toIso8601String();
-
-    print("Got history changes: $data");
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var history = data[i];
@@ -179,24 +175,25 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
 
     int len = data.length;
+    List<Insertable<InstructionCategory>> instructionCategoryBatch = [];
+
     for (int i = 0; i < len; i++) {
       var instructionCategory = data[i];
-      Singleton().getDatabase().createOrUpdateInstructionCategory(
-            InstructionsCategoriesCompanion.insert(
-              categoryId: instructionCategory[Const.categoryId.key],
-              instructionId: instructionCategory[Const.instructionId.key],
-              createdAt:
-                  DateTime.parse(instructionCategory[Const.createdAt.key]),
-              createdBy: instructionCategory[Const.createdBy.key],
-              updatedAt:
-                  DateTime.parse(instructionCategory[Const.updatedAt.key]),
-              updatedBy: instructionCategory[Const.updatedBy.key],
-              deletedAt: Value(DateTime.tryParse(
-                  instructionCategory[Const.deletedAt.key] ?? "")),
-              deletedBy: Value(instructionCategory[Const.deletedBy.key]),
-            ),
-          );
+      instructionCategoryBatch.add(InstructionsCategoriesCompanion.insert(
+        categoryId: instructionCategory[Const.categoryId.key],
+        instructionId: instructionCategory[Const.instructionId.key],
+        createdAt: DateTime.parse(instructionCategory[Const.createdAt.key]),
+        createdBy: instructionCategory[Const.createdBy.key],
+        updatedAt: DateTime.parse(instructionCategory[Const.updatedAt.key]),
+        updatedBy: instructionCategory[Const.updatedBy.key],
+        deletedAt: Value(
+            DateTime.tryParse(instructionCategory[Const.deletedAt.key] ?? "")),
+        deletedBy: Value(instructionCategory[Const.deletedBy.key]),
+      ));
     }
+    await Singleton()
+        .getDatabase()
+        .insertMultipleInstructionCategories(instructionCategoryBatch);
     return newLastSynced;
   }
 
@@ -213,7 +210,7 @@ class SupabaseToDrift {
     for (int i = 0; i < len; i++) {
       var feedbackElement = data[i];
 
-      if (!kIsWeb) {
+      if (!foundation.kIsWeb) {
         if (feedbackElement[Const.image.key] != null) {
           await _downloadImages(
               feedbackElement, Const.feedbackImagesFolderName.key);
@@ -246,21 +243,23 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
 
     int len = data.length;
+    List<Insertable<User>> usersBatch = [];
+
     for (int i = 0; i < len; i++) {
       var user = data[i];
-      Singleton().getDatabase().createOrUpdateUser(UsersCompanion.insert(
-            id: Value(user[Const.id.key]),
-            username: user[Const.username.key],
-            role: user[Const.role.key],
-            createdAt: DateTime.parse(user[Const.createdAt.key]),
-            createdBy: user[Const.createdBy.key],
-            updatedAt: DateTime.parse(user[Const.updatedAt.key]),
-            updatedBy: user[Const.updatedBy.key],
-            deletedAt:
-                Value(DateTime.tryParse(user[Const.deletedAt.key] ?? "")),
-            deletedBy: Value(user[Const.deletedBy.key]),
-          ));
+      usersBatch.add(UsersCompanion.insert(
+        id: Value(user[Const.id.key]),
+        username: user[Const.username.key],
+        role: user[Const.role.key],
+        createdAt: DateTime.parse(user[Const.createdAt.key]),
+        createdBy: user[Const.createdBy.key],
+        updatedAt: DateTime.parse(user[Const.updatedAt.key]),
+        updatedBy: user[Const.updatedBy.key],
+        deletedAt: Value(DateTime.tryParse(user[Const.deletedAt.key] ?? "")),
+        deletedBy: Value(user[Const.deletedBy.key]),
+      ));
     }
+    await Singleton().getDatabase().insertMultipleUsers(usersBatch);
     return newLastSynced;
   }
 
@@ -276,12 +275,10 @@ class SupabaseToDrift {
   static Future<String> getSettings() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.setting.key);
     var newLastSynced = lastSynced;
-    print("Settings last synced $lastSynced");
     final data =
         await supabase.from('setting').select('*').gt('updated_at', lastSynced);
     newLastSynced = DateTime.now().toUtc().toIso8601String();
 
-    print("Settings data from supabase $data");
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var setting = data[i];
@@ -301,6 +298,12 @@ class SupabaseToDrift {
   }
 
   static Future<void> sync() async {
+    await SupabaseToDrift.getUsers().then((value) {
+      logger.i("Got users from supabase.");
+      KeyValue.setNewValue(KeyValueEnum.user.key, value);
+      KeyValue.setInitialUser();
+    });
+
     await SupabaseToDrift.getAllInstructions().then((value) {
       logger.i("Got instructions from supabase.");
       KeyValue.setNewValue(KeyValueEnum.instruction.key, value);
@@ -333,12 +336,6 @@ class SupabaseToDrift {
       logger.i("Got feedback from supabase.");
       await DriftToSupabase.uploadFeedback();
       KeyValue.setNewValue(KeyValueEnum.feedback.key, value);
-    });
-
-    await SupabaseToDrift.getUsers().then((value) {
-      logger.i("Got users from supabase.");
-      KeyValue.setNewValue(KeyValueEnum.user.key, value);
-      KeyValue.setInitialUser();
     });
 
     await SupabaseToDrift.getSettings().then((value) async {
