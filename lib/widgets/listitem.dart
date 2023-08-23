@@ -33,8 +33,6 @@ class ListItem extends StatelessWidget {
               currentUser!,
               DateTime.now().toUtc(),
               currentUser!);
-          logger.w("Ok, history");
-
           Navigator.push(
             context,
             MaterialPageRoute(

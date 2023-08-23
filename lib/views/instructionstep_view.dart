@@ -48,7 +48,7 @@ class _InstructionStepViewState extends State<InstructionStepView> {
                         Const.instructionStepsImagesFolderName.key),
                     builder: (_, snapshot) {
                       if (snapshot.hasError) {
-                        return Text(l!.somethingWentWrong);
+                        return Text(l.somethingWentWrong);
                       }
                       if ((snapshot.connectionState ==
                           ConnectionState.waiting)) {
@@ -60,7 +60,7 @@ class _InstructionStepViewState extends State<InstructionStepView> {
                           fit: BoxFit.cover,
                         );
                       }
-                      return Text(l!.noImageAvailable);
+                      return Text(l.noImageAvailable);
                     }),
           ),
         )
