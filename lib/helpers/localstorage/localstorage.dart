@@ -40,8 +40,6 @@ class AppDatabase extends _$AppDatabase {
       batch.insertAllOnConflictUpdate(instructions, list);
     });
   }
-  // Future<int> createOrUpdateInstruction(InstructionsCompanion entry) =>
-  //     into(instructions).insertOnConflictUpdate(entry);
 
   Stream<List<Instruction>> getInstructionBySearch(String substring) =>
       (select(instructions)
@@ -95,10 +93,7 @@ class AppDatabase extends _$AppDatabase {
   Stream<Instruction> getInstructionById(int id) =>
       (select(instructions)..where((t) => t.id.equals(id))).watchSingle();
 
-// TABLE: InstructionStep
-  // Future<int> createOrUpdateInstructionStep(InstructionStepsCompanion entry) =>
-  //     into(instructionSteps).insertOnConflictUpdate(entry);
-
+  // TABLE: InstructionStep
   Future<void> insertMultipleInstructionSteps(
       List<Insertable<InstructionStep>> list) async {
     await batch((batch) {
@@ -129,9 +124,6 @@ class AppDatabase extends _$AppDatabase {
   // TABLE: Category
   Stream<List<Category>> get allCategoryEntries =>
       (select(categories)..where((t) => t.deletedAt.isNull())).watch();
-
-  // Future<int> createOrUpdateCategory(CategoriesCompanion entry) =>
-  //     into(categories).insertOnConflictUpdate(entry);
 
   Future<void> insertMultipleCategories(List<Insertable<Category>> list) async {
     await batch((batch) {
@@ -188,10 +180,6 @@ class AppDatabase extends _$AppDatabase {
   }
 
   // TABLE: Instruction_Category
-  // Future<int> createOrUpdateInstructionCategory(
-  //         InstructionsCategoriesCompanion entry) =>
-  //     into(instructionsCategories).insertOnConflictUpdate(entry);
-
   Future<void> insertMultipleInstructionCategories(
       List<Insertable<InstructionCategory>> list) async {
     await batch((batch) {
@@ -237,9 +225,6 @@ class AppDatabase extends _$AppDatabase {
   // TABLE: Users
   Future<List<User>> get allUserEntries =>
       (select(users)..where((t) => t.deletedAt.isNull())).get();
-
-  // Future<int> createOrUpdateUser(UsersCompanion entry) =>
-  //     into(users).insertOnConflictUpdate(entry);
 
   Future<void> insertMultipleUsers(List<Insertable<User>> list) async {
     await batch((batch) {
