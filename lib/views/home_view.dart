@@ -73,7 +73,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
       });
       //handleError(e);
       logger.e("Error log ${e.toString()}");
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$e")));
+      CustomSnackBar.buildErrorSnackbar(context, "$e");
     }
   }
 
