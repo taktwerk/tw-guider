@@ -83,15 +83,17 @@ class _MyHomePageState extends State<MyHomePage>
                           });
                           logger.i("Selected user $currentUser");
                         },
-                        child: Text("User ${users![index].id}"),
+                        child: Center(child: Text("User ${users![index].id}")),
                       )
                     : PopupMenuItem(
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Logout'),
-                            Icon(Icons.logout),
-                          ],
+                        child: Center(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(Languages.of(context)!.logout),
+                              const Icon(Icons.logout),
+                            ],
+                          ),
                         ),
                         onTap: () async {
                           logger.i("Logged out");
