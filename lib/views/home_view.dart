@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
@@ -6,6 +7,7 @@ import 'package:guider/main.dart';
 import 'package:guider/views/category.dart';
 import 'package:guider/widgets/listitem.dart';
 import 'package:guider/widgets/searchbar.dart';
+import 'package:guider/widgets/snackbar.dart';
 import 'package:guider/widgets/tag.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
@@ -26,7 +28,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   bool loaded = false;
   bool loading = false;
   final ScrollController _scrollController = ScrollController();
-  //final instructionStream = Realtime.getInstructionStream();
+  StreamSubscription? languageSubscription;
+  // final instructionStream = Realtime.getInstructionStream();
   // final categoryStream = Realtime.getCategoryStream();
   // final feedbackStream = Realtime.getFeedbackStream();
   // final historyStream = Realtime.getHistoryStream();
@@ -40,7 +43,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
 
     if (currentUser != null) {
       logger.i("Settings listen");
-      Singleton().getDatabase().getSettings(currentUser!).listen((event) {
+      languageSubscription =
+          Singleton().getDatabase().getSettings(currentUser!).listen((event) {
         if (event.isNotEmpty) {
           GuiderApp.setLocale(
               context, Locale.fromSubtags(languageCode: event.first.language));
@@ -90,6 +94,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     // instructionStepStream.cancel();
     // settingStream.cancel();
     // userStream.cancel();
+    languageSubscription?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -144,9 +149,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     });
     sync().then((value) {
       setState(() {
-        isVisible = false;
-        chosenCategory = "";
-        category = -1;
         loading = false;
       });
     });
