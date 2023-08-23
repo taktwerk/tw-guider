@@ -135,7 +135,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
     final l = Languages.of(context);
     return selectedItem != null
         ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               steps.indexOf(selectedItem!) != 0
                   ? ElevatedButton.icon(
