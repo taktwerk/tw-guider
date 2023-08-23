@@ -3,6 +3,463 @@
 part of 'localstorage.dart';
 
 // ignore_for_file: type=lint
+class Users extends Table with TableInfo<Users, User> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  Users(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _usernameMeta =
+      const VerificationMeta('username');
+  late final GeneratedColumn<String> username = GeneratedColumn<String>(
+      'username', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+      'role', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdByMeta =
+      const VerificationMeta('createdBy');
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+      'created_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedByMeta =
+      const VerificationMeta('updatedBy');
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+      'updated_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _deletedByMeta =
+      const VerificationMeta('deletedBy');
+  late final GeneratedColumn<int> deletedBy = GeneratedColumn<int>(
+      'deleted_by', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        username,
+        role,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
+        deletedAt,
+        deletedBy
+      ];
+  @override
+  String get aliasedName => _alias ?? 'users';
+  @override
+  String get actualTableName => 'users';
+  @override
+  VerificationContext validateIntegrity(Insertable<User> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('username')) {
+      context.handle(_usernameMeta,
+          username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
+    } else if (isInserting) {
+      context.missing(_usernameMeta);
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+          _roleMeta, role.isAcceptableOrUnknown(data['role']!, _roleMeta));
+    } else if (isInserting) {
+      context.missing(_roleMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(_createdByMeta,
+          createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
+    } else if (isInserting) {
+      context.missing(_createdByMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(_updatedByMeta,
+          updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta));
+    } else if (isInserting) {
+      context.missing(_updatedByMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('deleted_by')) {
+      context.handle(_deletedByMeta,
+          deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  User map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return User(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      username: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
+      role: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}role'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      createdBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_by'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      updatedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_by'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      deletedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
+    );
+  }
+
+  @override
+  Users createAlias(String alias) {
+    return Users(attachedDatabase, alias);
+  }
+
+  @override
+  List<String> get customConstraints => const [
+        'CONSTRAINT user_pkey PRIMARY KEY(id)',
+        'CONSTRAINT user_created_by_fkey FOREIGN KEY(created_by)REFERENCES users(id)',
+        'CONSTRAINT user_deleted_by_fkey FOREIGN KEY(deleted_by)REFERENCES users(id)',
+        'CONSTRAINT user_updated_by_fkey FOREIGN KEY(updated_by)REFERENCES users(id)'
+      ];
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class User extends DataClass implements Insertable<User> {
+  final int id;
+  final String username;
+  final String role;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  const User(
+      {required this.id,
+      required this.username,
+      required this.role,
+      required this.createdAt,
+      required this.createdBy,
+      required this.updatedAt,
+      required this.updatedBy,
+      this.deletedAt,
+      this.deletedBy});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['username'] = Variable<String>(username);
+    map['role'] = Variable<String>(role);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['created_by'] = Variable<int>(createdBy);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['updated_by'] = Variable<int>(updatedBy);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || deletedBy != null) {
+      map['deleted_by'] = Variable<int>(deletedBy);
+    }
+    return map;
+  }
+
+  UsersCompanion toCompanion(bool nullToAbsent) {
+    return UsersCompanion(
+      id: Value(id),
+      username: Value(username),
+      role: Value(role),
+      createdAt: Value(createdAt),
+      createdBy: Value(createdBy),
+      updatedAt: Value(updatedAt),
+      updatedBy: Value(updatedBy),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deletedBy: deletedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedBy),
+    );
+  }
+
+  factory User.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return User(
+      id: serializer.fromJson<int>(json['id']),
+      username: serializer.fromJson<String>(json['username']),
+      role: serializer.fromJson<String>(json['role']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      createdBy: serializer.fromJson<int>(json['created_by']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
+      updatedBy: serializer.fromJson<int>(json['updated_by']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
+      deletedBy: serializer.fromJson<int?>(json['deleted_by']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'username': serializer.toJson<String>(username),
+      'role': serializer.toJson<String>(role),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'created_by': serializer.toJson<int>(createdBy),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
+      'updated_by': serializer.toJson<int>(updatedBy),
+      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
+      'deleted_by': serializer.toJson<int?>(deletedBy),
+    };
+  }
+
+  User copyWith(
+          {int? id,
+          String? username,
+          String? role,
+          DateTime? createdAt,
+          int? createdBy,
+          DateTime? updatedAt,
+          int? updatedBy,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          Value<int?> deletedBy = const Value.absent()}) =>
+      User(
+        id: id ?? this.id,
+        username: username ?? this.username,
+        role: role ?? this.role,
+        createdAt: createdAt ?? this.createdAt,
+        createdBy: createdBy ?? this.createdBy,
+        updatedAt: updatedAt ?? this.updatedAt,
+        updatedBy: updatedBy ?? this.updatedBy,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('User(')
+          ..write('id: $id, ')
+          ..write('username: $username, ')
+          ..write('role: $role, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, username, role, createdAt, createdBy,
+      updatedAt, updatedBy, deletedAt, deletedBy);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is User &&
+          other.id == this.id &&
+          other.username == this.username &&
+          other.role == this.role &&
+          other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
+          other.updatedAt == this.updatedAt &&
+          other.updatedBy == this.updatedBy &&
+          other.deletedAt == this.deletedAt &&
+          other.deletedBy == this.deletedBy);
+}
+
+class UsersCompanion extends UpdateCompanion<User> {
+  final Value<int> id;
+  final Value<String> username;
+  final Value<String> role;
+  final Value<DateTime> createdAt;
+  final Value<int> createdBy;
+  final Value<DateTime> updatedAt;
+  final Value<int> updatedBy;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> deletedBy;
+  const UsersCompanion({
+    this.id = const Value.absent(),
+    this.username = const Value.absent(),
+    this.role = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+  });
+  UsersCompanion.insert({
+    this.id = const Value.absent(),
+    required String username,
+    required String role,
+    required DateTime createdAt,
+    required int createdBy,
+    required DateTime updatedAt,
+    required int updatedBy,
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+  })  : username = Value(username),
+        role = Value(role),
+        createdAt = Value(createdAt),
+        createdBy = Value(createdBy),
+        updatedAt = Value(updatedAt),
+        updatedBy = Value(updatedBy);
+  static Insertable<User> custom({
+    Expression<int>? id,
+    Expression<String>? username,
+    Expression<String>? role,
+    Expression<DateTime>? createdAt,
+    Expression<int>? createdBy,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? updatedBy,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? deletedBy,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (username != null) 'username': username,
+      if (role != null) 'role': role,
+      if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deletedBy != null) 'deleted_by': deletedBy,
+    });
+  }
+
+  UsersCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? username,
+      Value<String>? role,
+      Value<DateTime>? createdAt,
+      Value<int>? createdBy,
+      Value<DateTime>? updatedAt,
+      Value<int>? updatedBy,
+      Value<DateTime?>? deletedAt,
+      Value<int?>? deletedBy}) {
+    return UsersCompanion(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      role: role ?? this.role,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deletedBy: deletedBy ?? this.deletedBy,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (username.present) {
+      map['username'] = Variable<String>(username.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (deletedBy.present) {
+      map['deleted_by'] = Variable<int>(deletedBy.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UsersCompanion(')
+          ..write('id: $id, ')
+          ..write('username: $username, ')
+          ..write('role: $role, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class Categories extends Table with TableInfo<Categories, Category> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -157,8 +614,12 @@ class Categories extends Table with TableInfo<Categories, Category> {
   }
 
   @override
-  List<String> get customConstraints =>
-      const ['CONSTRAINT category_pkey PRIMARY KEY(id)'];
+  List<String> get customConstraints => const [
+        'CONSTRAINT category_pkey PRIMARY KEY(id)',
+        'CONSTRAINT category_created_by_fkey FOREIGN KEY(created_by)REFERENCES users(id)',
+        'CONSTRAINT category_deleted_by_fkey FOREIGN KEY(deleted_by)REFERENCES users(id)',
+        'CONSTRAINT category_updated_by_fkey FOREIGN KEY(updated_by)REFERENCES users(id)'
+      ];
   @override
   bool get dontWriteConstraints => true;
 }
@@ -623,8 +1084,12 @@ class Instructions extends Table with TableInfo<Instructions, Instruction> {
   }
 
   @override
-  List<String> get customConstraints =>
-      const ['CONSTRAINT instruction_pkey PRIMARY KEY(id)'];
+  List<String> get customConstraints => const [
+        'CONSTRAINT instruction_pkey PRIMARY KEY(id)',
+        'CONSTRAINT instruction_created_by_fkey FOREIGN KEY(created_by)REFERENCES users(id)',
+        'CONSTRAINT instruction_deleted_by_fkey FOREIGN KEY(deleted_by)REFERENCES users(id)',
+        'CONSTRAINT instruction_updated_by_fkey FOREIGN KEY(updated_by)REFERENCES users(id)'
+      ];
   @override
   bool get dontWriteConstraints => true;
 }
@@ -1169,8 +1634,14 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
   }
 
   @override
-  List<String> get customConstraints =>
-      const ['CONSTRAINT feedback_pkey PRIMARY KEY(id)'];
+  List<String> get customConstraints => const [
+        'CONSTRAINT feedback_pkey PRIMARY KEY(id)',
+        'CONSTRAINT feedback_created_by_fkey FOREIGN KEY(created_by)REFERENCES users(id)',
+        'CONSTRAINT feedback_deleted_by_fkey FOREIGN KEY(deleted_by)REFERENCES users(id)',
+        'CONSTRAINT feedback_instruction_id_fkey FOREIGN KEY(instruction_id)REFERENCES instructions(id)',
+        'CONSTRAINT feedback_updated_by_fkey FOREIGN KEY(updated_by)REFERENCES users(id)',
+        'CONSTRAINT feedback_user_id_fkey FOREIGN KEY(user_id)REFERENCES users(id)'
+      ];
   @override
   bool get dontWriteConstraints => true;
 }
@@ -1740,7 +2211,10 @@ class InstructionSteps extends Table
   @override
   List<String> get customConstraints => const [
         'CONSTRAINT instruction_steps_pkey PRIMARY KEY(id)',
-        'CONSTRAINT instruction_step_instruction_id_fkey FOREIGN KEY(instruction_id)REFERENCES instructions(id)ON DELETE CASCADE'
+        'CONSTRAINT instruction_step_instruction_id_fkey FOREIGN KEY(instruction_id)REFERENCES instructions(id)ON DELETE CASCADE',
+        'CONSTRAINT instruction_step_created_by_fkey FOREIGN KEY(created_by)REFERENCES users(id)',
+        'CONSTRAINT instruction_step_deleted_by_fkey FOREIGN KEY(deleted_by)REFERENCES users(id)',
+        'CONSTRAINT instruction_step_updated_by_fkey FOREIGN KEY(updated_by)REFERENCES users(id)'
       ];
   @override
   bool get dontWriteConstraints => true;
@@ -2067,459 +2541,6 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
   }
 }
 
-class Users extends Table with TableInfo<Users, User> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  Users(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  static const VerificationMeta _usernameMeta =
-      const VerificationMeta('username');
-  late final GeneratedColumn<String> username = GeneratedColumn<String>(
-      'username', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  static const VerificationMeta _roleMeta = const VerificationMeta('role');
-  late final GeneratedColumn<String> role = GeneratedColumn<String>(
-      'role', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  static const VerificationMeta _createdByMeta =
-      const VerificationMeta('createdBy');
-  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
-      'created_by', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  static const VerificationMeta _updatedAtMeta =
-      const VerificationMeta('updatedAt');
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  static const VerificationMeta _updatedByMeta =
-      const VerificationMeta('updatedBy');
-  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
-      'updated_by', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  static const VerificationMeta _deletedAtMeta =
-      const VerificationMeta('deletedAt');
-  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
-      'deleted_at', aliasedName, true,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  static const VerificationMeta _deletedByMeta =
-      const VerificationMeta('deletedBy');
-  late final GeneratedColumn<int> deletedBy = GeneratedColumn<int>(
-      'deleted_by', aliasedName, true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        username,
-        role,
-        createdAt,
-        createdBy,
-        updatedAt,
-        updatedBy,
-        deletedAt,
-        deletedBy
-      ];
-  @override
-  String get aliasedName => _alias ?? 'users';
-  @override
-  String get actualTableName => 'users';
-  @override
-  VerificationContext validateIntegrity(Insertable<User> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('username')) {
-      context.handle(_usernameMeta,
-          username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
-    } else if (isInserting) {
-      context.missing(_usernameMeta);
-    }
-    if (data.containsKey('role')) {
-      context.handle(
-          _roleMeta, role.isAcceptableOrUnknown(data['role']!, _roleMeta));
-    } else if (isInserting) {
-      context.missing(_roleMeta);
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
-    }
-    if (data.containsKey('created_by')) {
-      context.handle(_createdByMeta,
-          createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
-    } else if (isInserting) {
-      context.missing(_createdByMeta);
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(_updatedAtMeta,
-          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
-    }
-    if (data.containsKey('updated_by')) {
-      context.handle(_updatedByMeta,
-          updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta));
-    } else if (isInserting) {
-      context.missing(_updatedByMeta);
-    }
-    if (data.containsKey('deleted_at')) {
-      context.handle(_deletedAtMeta,
-          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
-    }
-    if (data.containsKey('deleted_by')) {
-      context.handle(_deletedByMeta,
-          deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  User map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return User(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      username: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
-      role: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}role'])!,
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      createdBy: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}created_by'])!,
-      updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
-      updatedBy: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}updated_by'])!,
-      deletedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
-      deletedBy: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
-    );
-  }
-
-  @override
-  Users createAlias(String alias) {
-    return Users(attachedDatabase, alias);
-  }
-
-  @override
-  List<String> get customConstraints =>
-      const ['CONSTRAINT user_pkey PRIMARY KEY(id)'];
-  @override
-  bool get dontWriteConstraints => true;
-}
-
-class User extends DataClass implements Insertable<User> {
-  final int id;
-  final String username;
-  final String role;
-  final DateTime createdAt;
-  final int createdBy;
-  final DateTime updatedAt;
-  final int updatedBy;
-  final DateTime? deletedAt;
-  final int? deletedBy;
-  const User(
-      {required this.id,
-      required this.username,
-      required this.role,
-      required this.createdAt,
-      required this.createdBy,
-      required this.updatedAt,
-      required this.updatedBy,
-      this.deletedAt,
-      this.deletedBy});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['username'] = Variable<String>(username);
-    map['role'] = Variable<String>(role);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['created_by'] = Variable<int>(createdBy);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    map['updated_by'] = Variable<int>(updatedBy);
-    if (!nullToAbsent || deletedAt != null) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt);
-    }
-    if (!nullToAbsent || deletedBy != null) {
-      map['deleted_by'] = Variable<int>(deletedBy);
-    }
-    return map;
-  }
-
-  UsersCompanion toCompanion(bool nullToAbsent) {
-    return UsersCompanion(
-      id: Value(id),
-      username: Value(username),
-      role: Value(role),
-      createdAt: Value(createdAt),
-      createdBy: Value(createdBy),
-      updatedAt: Value(updatedAt),
-      updatedBy: Value(updatedBy),
-      deletedAt: deletedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(deletedAt),
-      deletedBy: deletedBy == null && nullToAbsent
-          ? const Value.absent()
-          : Value(deletedBy),
-    );
-  }
-
-  factory User.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return User(
-      id: serializer.fromJson<int>(json['id']),
-      username: serializer.fromJson<String>(json['username']),
-      role: serializer.fromJson<String>(json['role']),
-      createdAt: serializer.fromJson<DateTime>(json['created_at']),
-      createdBy: serializer.fromJson<int>(json['created_by']),
-      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
-      updatedBy: serializer.fromJson<int>(json['updated_by']),
-      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
-      deletedBy: serializer.fromJson<int?>(json['deleted_by']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'username': serializer.toJson<String>(username),
-      'role': serializer.toJson<String>(role),
-      'created_at': serializer.toJson<DateTime>(createdAt),
-      'created_by': serializer.toJson<int>(createdBy),
-      'updated_at': serializer.toJson<DateTime>(updatedAt),
-      'updated_by': serializer.toJson<int>(updatedBy),
-      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
-      'deleted_by': serializer.toJson<int?>(deletedBy),
-    };
-  }
-
-  User copyWith(
-          {int? id,
-          String? username,
-          String? role,
-          DateTime? createdAt,
-          int? createdBy,
-          DateTime? updatedAt,
-          int? updatedBy,
-          Value<DateTime?> deletedAt = const Value.absent(),
-          Value<int?> deletedBy = const Value.absent()}) =>
-      User(
-        id: id ?? this.id,
-        username: username ?? this.username,
-        role: role ?? this.role,
-        createdAt: createdAt ?? this.createdAt,
-        createdBy: createdBy ?? this.createdBy,
-        updatedAt: updatedAt ?? this.updatedAt,
-        updatedBy: updatedBy ?? this.updatedBy,
-        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
-        deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('User(')
-          ..write('id: $id, ')
-          ..write('username: $username, ')
-          ..write('role: $role, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('createdBy: $createdBy, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('updatedBy: $updatedBy, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('deletedBy: $deletedBy')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, username, role, createdAt, createdBy,
-      updatedAt, updatedBy, deletedAt, deletedBy);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is User &&
-          other.id == this.id &&
-          other.username == this.username &&
-          other.role == this.role &&
-          other.createdAt == this.createdAt &&
-          other.createdBy == this.createdBy &&
-          other.updatedAt == this.updatedAt &&
-          other.updatedBy == this.updatedBy &&
-          other.deletedAt == this.deletedAt &&
-          other.deletedBy == this.deletedBy);
-}
-
-class UsersCompanion extends UpdateCompanion<User> {
-  final Value<int> id;
-  final Value<String> username;
-  final Value<String> role;
-  final Value<DateTime> createdAt;
-  final Value<int> createdBy;
-  final Value<DateTime> updatedAt;
-  final Value<int> updatedBy;
-  final Value<DateTime?> deletedAt;
-  final Value<int?> deletedBy;
-  const UsersCompanion({
-    this.id = const Value.absent(),
-    this.username = const Value.absent(),
-    this.role = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.createdBy = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.updatedBy = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.deletedBy = const Value.absent(),
-  });
-  UsersCompanion.insert({
-    this.id = const Value.absent(),
-    required String username,
-    required String role,
-    required DateTime createdAt,
-    required int createdBy,
-    required DateTime updatedAt,
-    required int updatedBy,
-    this.deletedAt = const Value.absent(),
-    this.deletedBy = const Value.absent(),
-  })  : username = Value(username),
-        role = Value(role),
-        createdAt = Value(createdAt),
-        createdBy = Value(createdBy),
-        updatedAt = Value(updatedAt),
-        updatedBy = Value(updatedBy);
-  static Insertable<User> custom({
-    Expression<int>? id,
-    Expression<String>? username,
-    Expression<String>? role,
-    Expression<DateTime>? createdAt,
-    Expression<int>? createdBy,
-    Expression<DateTime>? updatedAt,
-    Expression<int>? updatedBy,
-    Expression<DateTime>? deletedAt,
-    Expression<int>? deletedBy,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (username != null) 'username': username,
-      if (role != null) 'role': role,
-      if (createdAt != null) 'created_at': createdAt,
-      if (createdBy != null) 'created_by': createdBy,
-      if (updatedAt != null) 'updated_at': updatedAt,
-      if (updatedBy != null) 'updated_by': updatedBy,
-      if (deletedAt != null) 'deleted_at': deletedAt,
-      if (deletedBy != null) 'deleted_by': deletedBy,
-    });
-  }
-
-  UsersCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? username,
-      Value<String>? role,
-      Value<DateTime>? createdAt,
-      Value<int>? createdBy,
-      Value<DateTime>? updatedAt,
-      Value<int>? updatedBy,
-      Value<DateTime?>? deletedAt,
-      Value<int?>? deletedBy}) {
-    return UsersCompanion(
-      id: id ?? this.id,
-      username: username ?? this.username,
-      role: role ?? this.role,
-      createdAt: createdAt ?? this.createdAt,
-      createdBy: createdBy ?? this.createdBy,
-      updatedAt: updatedAt ?? this.updatedAt,
-      updatedBy: updatedBy ?? this.updatedBy,
-      deletedAt: deletedAt ?? this.deletedAt,
-      deletedBy: deletedBy ?? this.deletedBy,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (username.present) {
-      map['username'] = Variable<String>(username.value);
-    }
-    if (role.present) {
-      map['role'] = Variable<String>(role.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (createdBy.present) {
-      map['created_by'] = Variable<int>(createdBy.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
-    }
-    if (updatedBy.present) {
-      map['updated_by'] = Variable<int>(updatedBy.value);
-    }
-    if (deletedAt.present) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
-    }
-    if (deletedBy.present) {
-      map['deleted_by'] = Variable<int>(deletedBy.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('UsersCompanion(')
-          ..write('id: $id, ')
-          ..write('username: $username, ')
-          ..write('role: $role, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('createdBy: $createdBy, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('updatedBy: $updatedBy, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('deletedBy: $deletedBy')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class Histories extends Table with TableInfo<Histories, History> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -2700,7 +2721,10 @@ class Histories extends Table with TableInfo<Histories, History> {
         'CONSTRAINT history_pkey PRIMARY KEY(user_id, instruction_id)',
         'CONSTRAINT history_instruction_id_fkey FOREIGN KEY(instruction_id)REFERENCES instructions(id)ON DELETE CASCADE',
         'CONSTRAINT history_instruction_step_id_fkey FOREIGN KEY(instruction_step_id)REFERENCES instruction_steps(id)ON DELETE CASCADE',
-        'CONSTRAINT history_user_id_fkey FOREIGN KEY(user_id)REFERENCES users(id)ON DELETE CASCADE'
+        'CONSTRAINT history_user_id_fkey FOREIGN KEY(user_id)REFERENCES users(id)ON DELETE CASCADE',
+        'CONSTRAINT history_deleted_by_fkey FOREIGN KEY(deleted_by)REFERENCES users(id)',
+        'CONSTRAINT history_created_by_fkey FOREIGN KEY(created_by)REFERENCES users(id)',
+        'CONSTRAINT history_updated_by_fkey FOREIGN KEY(updated_by)REFERENCES users(id)'
       ];
   @override
   bool get dontWriteConstraints => true;
@@ -3168,7 +3192,10 @@ class InstructionsCategories extends Table
   List<String> get customConstraints => const [
         'CONSTRAINT instruction_category_pkey PRIMARY KEY(category_id, instruction_id)',
         'CONSTRAINT instruction_category_category_id_fkey FOREIGN KEY(category_id)REFERENCES categories(id)ON DELETE CASCADE',
-        'CONSTRAINT instruction_category_instruction_id_fkey FOREIGN KEY(instruction_id)REFERENCES instructions(id)ON DELETE CASCADE'
+        'CONSTRAINT instruction_category_instruction_id_fkey FOREIGN KEY(instruction_id)REFERENCES instructions(id)ON DELETE CASCADE',
+        'CONSTRAINT instruction_category_created_by_fkey FOREIGN KEY(created_by)REFERENCES users(id)',
+        'CONSTRAINT instruction_category_deleted_by_fkey FOREIGN KEY(deleted_by)REFERENCES users(id)',
+        'CONSTRAINT instruction_category_updated_by_fkey FOREIGN KEY(updated_by)REFERENCES users(id)'
       ];
   @override
   bool get dontWriteConstraints => true;
@@ -3601,7 +3628,10 @@ class Settings extends Table with TableInfo<Settings, Setting> {
   @override
   List<String> get customConstraints => const [
         'CONSTRAINT setting_pkey PRIMARY KEY(user_id)',
-        'CONSTRAINT setting_user_id_fkey FOREIGN KEY(user_id)REFERENCES users(id)ON DELETE CASCADE'
+        'CONSTRAINT setting_user_id_fkey FOREIGN KEY(user_id)REFERENCES users(id)ON DELETE CASCADE',
+        'CONSTRAINT setting_created_by_fkey FOREIGN KEY(created_by)REFERENCES users(id)',
+        'CONSTRAINT setting_deleted_by_fkey FOREIGN KEY(deleted_by)REFERENCES users(id)',
+        'CONSTRAINT setting_updated_by_fkey FOREIGN KEY(updated_by)REFERENCES users(id)'
       ];
   @override
   bool get dontWriteConstraints => true;
@@ -4096,11 +4126,11 @@ class BytesCompanion extends UpdateCompanion<Byte> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
+  late final Users users = Users(this);
   late final Categories categories = Categories(this);
   late final Instructions instructions = Instructions(this);
   late final FeedbackTable feedback = FeedbackTable(this);
   late final InstructionSteps instructionSteps = InstructionSteps(this);
-  late final Users users = Users(this);
   late final Histories histories = Histories(this);
   late final InstructionsCategories instructionsCategories =
       InstructionsCategories(this);
@@ -4127,11 +4157,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+        users,
         categories,
         instructions,
         feedback,
         instructionSteps,
-        users,
         histories,
         instructionsCategories,
         settings,
