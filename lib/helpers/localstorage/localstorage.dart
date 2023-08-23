@@ -226,6 +226,9 @@ class AppDatabase extends _$AppDatabase {
   Future<List<User>> get allUserEntries =>
       (select(users)..where((t) => t.deletedAt.isNull())).get();
 
+  Stream<List<User>> get allUserEntriesAsStream =>
+      (select(users)..where((t) => t.deletedAt.isNull())).watch();
+
   Future<void> insertMultipleUsers(List<Insertable<User>> list) async {
     await batch((batch) {
       batch.insertAllOnConflictUpdate(users, list);

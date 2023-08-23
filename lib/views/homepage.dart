@@ -20,6 +20,7 @@ class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   List<User>? users;
+  final usersStream = Singleton().getDatabase().allUserEntriesAsStream;
 
   @override
   void initState() {
@@ -70,43 +71,63 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 
-  Widget getUserPopup() => PopupMenuButton(
-        itemBuilder: (context) => users != null
-            ? List.generate(
-                users!.length + 1,
-                (index) => index != users!.length
-                    ? PopupMenuItem(
-                        onTap: () {
-                          setState(() {
-                            currentUser = users![index].id;
-                            KeyValue.setNewUser(users![index].id);
-                          });
-                          logger.i("Selected user $currentUser");
-                        },
-                        child: Center(child: Text("User ${users![index].id}")),
-                      )
-                    : PopupMenuItem(
-                        child: Center(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(Languages.of(context)!.logout),
-                              const Icon(Icons.logout),
-                            ],
-                          ),
-                        ),
-                        onTap: () async {
-                          logger.i("Logged out");
-                          await KeyValue.saveLogin(false)
-                              .then((value) => Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginPage()),
-                                  ));
-                        },
-                      ))
-            : [const PopupMenuItem(child: CircularProgressIndicator())],
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      );
+  Widget getUserPopup() {
+    return StreamBuilder(
+        stream: usersStream,
+        builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.connectionState == ConnectionState.active ||
+              snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Text('🚨 Error: ${snapshot.error}');
+            } else if (snapshot.hasData) {
+              return PopupMenuButton(
+                itemBuilder: (context) => List.generate(
+                    snapshot.data!.length + 1,
+                    (index) => index != snapshot.data!.length
+                        ? PopupMenuItem(
+                            onTap: () {
+                              setState(() {
+                                currentUser = snapshot.data![index].id;
+                                KeyValue.setNewUser(snapshot.data![index].id);
+                              });
+                              logger.i("Selected user $currentUser");
+                            },
+                            child: Center(
+                                child:
+                                    Text("User ${snapshot.data![index].id}")),
+                          )
+                        : PopupMenuItem(
+                            child: Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(Languages.of(context)!.logout),
+                                  const Icon(Icons.logout),
+                                ],
+                              ),
+                            ),
+                            onTap: () async {
+                              logger.i("Logged out");
+                              await KeyValue.saveLogin(false)
+                                  .then((value) => Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const LoginPage()),
+                                      ));
+                            },
+                          )),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+              );
+            } else {
+              return const Text("Empty data");
+            }
+          } else {
+            return Text('State: ${snapshot.connectionState}');
+          }
+        });
+  }
 }
