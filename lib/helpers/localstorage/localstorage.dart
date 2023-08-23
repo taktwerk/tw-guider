@@ -28,26 +28,45 @@ class AppDatabase extends _$AppDatabase {
   //   );
   // }
 
-// Instruction
-  Stream<List<Instruction>> get allInstructionEntries =>
-      (select(instructions)..orderBy([(t) => OrderingTerm(expression: t.id)]))
-          .watch();
+// Helper Functions
+  // Future<int> updateInstruction(String title, int id) =>
+  //     (update(instructions)..where((t) => t.id.equals(id)))
+  //         .write(InstructionsCompanion(title: Value(title)));
 
-  Future<int> updateInstruction(String title, int id) =>
-      (update(instructions)..where((t) => t.id.equals(id)))
-          .write(InstructionsCompanion(title: Value(title)));
+  // Future<int> addInstruction(InstructionsCompanion entry) =>
+  //     into(instructions).insert(entry);
+
+  // Future<List<InstructionStep>> get allInstructionStepEntries =>
+  //     select(instructionSteps).get();
+
+  // Future<List<History>> get allHistoryEntries => (select(histories)..where((t) => t.deletedAt.isNull())).get();
+
+  // Future<List<History>> getUserHistory(int givenUserId) =>
+  //     (select(histories)..where((t) => t.userId.equals(givenUserId))).get();
+
+  // Instruction-Category
+  // Future<List<InstructionCategory>> get allInstructionCategoryEntries =>
+  //     select(instructionsCategories).get();
+
+  // Future<List<Feedback>> get allFeedbackEntries => select(feedback).get();
+
+  // Future<List<Setting>> get allSettings => select(settings).get();
+
+// TABLE: Instruction
+  Stream<List<Instruction>> get allInstructionEntries => (select(instructions)
+        ..orderBy([(t) => OrderingTerm(expression: t.id)])
+        ..where((t) => t.deletedAt.isNull()))
+      .watch();
 
   Future<int> createOrUpdateInstruction(InstructionsCompanion entry) =>
       into(instructions).insertOnConflictUpdate(entry);
-
-  Future<int> addInstruction(InstructionsCompanion entry) =>
-      into(instructions).insert(entry);
 
   Stream<List<Instruction>> getInstructionBySearch(String substring) =>
       (select(instructions)
             ..where((t) =>
                 ((t.title.lower()).contains(substring.toLowerCase()) |
-                    (t.shortTitle.lower()).contains(substring.toLowerCase()))))
+                    (t.shortTitle.lower()).contains(substring.toLowerCase())))
+            ..where((t) => t.deletedAt.isNull()))
           .watch();
 
   Stream<List<Instruction>> combineCategoryAndSearch(
@@ -65,34 +84,36 @@ class AppDatabase extends _$AppDatabase {
 
   Stream<List<Instruction>> getInstructionByCategoryAndSearch(
       int searchByCategoryId, String substring) {
-    final query = select(instructions).join([
+    final query = (select(instructions)
+          ..where((t) => instructions.deletedAt.isNull()))
+        .join([
       innerJoin(instructionsCategories,
           instructions.id.equalsExp(instructionsCategories.instructionId),
           useColumns: false)
     ])
       ..where((instructionsCategories.categoryId).equals(searchByCategoryId))
       ..where(((instructions.title).contains(substring.toLowerCase()) |
-          (instructions.shortTitle.lower()).contains(substring.toLowerCase())));
+          (instructions.shortTitle.lower()).contains(substring.toLowerCase())))
+      ..where(instructionsCategories.deletedAt.isNull());
     return query.map((row) => row.readTable(instructions)).watch();
   }
 
   Stream<List<Instruction>> getInstructionByCategory(int searchByCategoryId) {
-    final query = select(instructions).join([
+    final query = (select(instructions)..where((t) => t.deletedAt.isNull()))
+        .join([
       innerJoin(instructionsCategories,
           instructions.id.equalsExp(instructionsCategories.instructionId),
           useColumns: false)
     ])
-      ..where((instructionsCategories.categoryId).equals(searchByCategoryId));
+      ..where((instructionsCategories.categoryId).equals(searchByCategoryId))
+      ..where(instructionsCategories.deletedAt.isNull());
     return query.map((row) => row.readTable(instructions)).watch();
   }
 
   Stream<Instruction> getInstructionById(int id) =>
       (select(instructions)..where((t) => t.id.equals(id))).watchSingle();
 
-// InstructionStep
-  Future<List<InstructionStep>> get allInstructionStepEntries =>
-      select(instructionSteps).get();
-
+// TABLE: InstructionStep
   Future<int> createOrUpdateInstructionStep(InstructionStepsCompanion entry) =>
       into(instructionSteps).insertOnConflictUpdate(entry);
 
@@ -100,7 +121,8 @@ class AppDatabase extends _$AppDatabase {
           int instructionId) =>
       (select(instructionSteps)
             ..where((step) => ((step.instructionId).equals(instructionId)))
-            ..orderBy([(t) => OrderingTerm(expression: t.stepNr)]))
+            ..orderBy([(t) => OrderingTerm(expression: t.stepNr)])
+            ..where((t) => t.deletedAt.isNull()))
           .watch();
 
   Stream<InstructionStep> getLastVisitedStep(
@@ -115,26 +137,26 @@ class AppDatabase extends _$AppDatabase {
     return query.map((t) => t.readTable(instructionSteps)).watchSingle();
   }
 
-  // Category
-  Stream<List<Category>> get allCategoryEntries => select(categories).watch();
+  // TABLE: Category
+  Stream<List<Category>> get allCategoryEntries =>
+      (select(categories)..where((t) => t.deletedAt.isNull())).watch();
 
   Future<int> createOrUpdateCategory(CategoriesCompanion entry) =>
       into(categories).insertOnConflictUpdate(entry);
 
   Future<List<Category>> getCategoriesOfInstruction(int givenInstructionId) {
-    final query = select(categories).join([
+    final query = (select(categories)..where((t) => t.deletedAt.isNull()))
+        .join([
       innerJoin(instructionsCategories,
           categories.id.equalsExp(instructionsCategories.categoryId),
           useColumns: false)
     ])
-      ..where(
-          (instructionsCategories.instructionId).equals(givenInstructionId));
+      ..where((instructionsCategories.instructionId).equals(givenInstructionId))
+      ..where(instructionsCategories.deletedAt.isNull());
     return query.map((row) => row.readTable(categories)).get();
   }
 
-  // History
-  Future<List<History>> get allHistoryEntries => select(histories).get();
-
+  // TABLE: History
   Future<int> createOrUpdateHistory(HistoriesCompanion entry) =>
       into(histories).insert(entry,
           onConflict: DoUpdate.withExcluded((old, excluded) => entry,
@@ -142,17 +164,15 @@ class AppDatabase extends _$AppDatabase {
                   old.updatedAt.isSmallerThan(excluded.updatedAt)));
 
   Stream<List<Instruction>> getUserHistoryAsInstructions(int givenUserId) {
-    final query = select(instructions).join([
+    final query =
+        (select(instructions)..where((t) => t.deletedAt.isNull())).join([
       innerJoin(histories, instructions.id.equalsExp(histories.instructionId),
           useColumns: false)
     ])
-      ..orderBy([OrderingTerm.desc(histories.updatedAt)])
-      ..where((histories.userId).equals(givenUserId));
+          ..orderBy([OrderingTerm.desc(histories.updatedAt)])
+          ..where((histories.userId).equals(givenUserId));
     return query.map((row) => row.readTable(instructions)).watch();
   }
-
-  Future<List<History>> getUserHistory(int givenUserId) =>
-      (select(histories)..where((t) => t.userId.equals(givenUserId))).get();
 
   Future<int> setNewStep(
           {required int userId,
@@ -171,17 +191,11 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
-  // Instruction-Category
-  Future<List<InstructionCategory>> get allInstructionCategoryEntries =>
-      select(instructionsCategories).get();
-
   Future<int> createOrUpdateInstructionCategory(
           InstructionsCategoriesCompanion entry) =>
       into(instructionsCategories).insertOnConflictUpdate(entry);
 
-  // Feedback
-  Future<List<Feedback>> get allFeedbackEntries => select(feedback).get();
-
+  // TABLE: Feedback
   Future<List<Feedback>> get notSyncedFeedbackEntries =>
       (select(feedback)..where((t) => t.isSynced.equals(false))).get();
 
@@ -206,7 +220,7 @@ class AppDatabase extends _$AppDatabase {
       (update(feedback)..where((t) => t.id.equals(id)))
           .write(FeedbackCompanion(image: Value(url)));
 
-  // Bytes
+  // TABLE: Bytes
   Future<List<Byte>> get allBytesEntries => select(bytes).get();
 
   Future<int> insertFeedbackImageBytes(BytesCompanion entry) =>
@@ -215,23 +229,24 @@ class AppDatabase extends _$AppDatabase {
   Future deleteBytesEntry(String id) =>
       (delete(bytes)..where((t) => t.feedbackId.equals(id))).go();
 
-  // Users
-  Future<List<User>> get allUserEntries => select(users).get();
+  // TABLE: Users
+  Future<List<User>> get allUserEntries =>
+      (select(users)..where((t) => t.deletedAt.isNull())).get();
 
   Future<int> createOrUpdateUser(UsersCompanion entry) =>
       into(users).insertOnConflictUpdate(entry);
 
-  Future<List<User>> getUserSortedById() =>
-      (select(users)..orderBy([(t) => OrderingTerm(expression: t.id)])).get();
+  Future<List<User>> getUserSortedById() => (select(users)
+        ..where((t) => t.deletedAt.isNull())
+        ..orderBy([(t) => OrderingTerm(expression: t.id)]))
+      .get();
 
-  // Settings
+  // TABLE: Settings
   Future<int> createOrUpdateSetting(SettingsCompanion entry) =>
       into(settings).insert(entry,
           onConflict: DoUpdate.withExcluded((old, excluded) => entry,
               where: (old, excluded) =>
                   old.updatedAt.isSmallerThan(excluded.updatedAt)));
-
-  Future<List<Setting>> get allSettings => select(settings).get();
 
   Future<int> updateUserSettings(int userId, String language) =>
       (update(settings)..where((t) => t.userId.equals(userId))).write(
