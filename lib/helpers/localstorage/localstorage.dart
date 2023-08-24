@@ -28,6 +28,19 @@ class AppDatabase extends _$AppDatabase {
   //   );
   // }
 
+  Future<void> deleteEverything() async {
+    await customStatement('PRAGMA foreign_keys = OFF');
+    try {
+      transaction(() async {
+        for (final table in allTables) {
+          await delete(table).go();
+        }
+      });
+    } finally {
+      await customStatement('PRAGMA foreign_keys = OFF');
+    }
+  }
+
 // TABLE: Instruction
   Stream<List<Instruction>> get allInstructionEntries => (select(instructions)
         ..orderBy([(t) => OrderingTerm(expression: t.id)])

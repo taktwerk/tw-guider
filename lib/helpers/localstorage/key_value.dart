@@ -21,6 +21,12 @@ class KeyValue {
     }
   }
 
+  static Future<void> resetKeyValues() async {
+    var prefs = await Singleton().getPrefInstance();
+    await prefs.clear();
+    await initialize();
+  }
+
   static Future<void> setInitialUser() async {
     int? value = await getCurrentUser();
     if (value == null) {

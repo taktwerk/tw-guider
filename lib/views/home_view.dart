@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/languages/languages.dart';
@@ -175,6 +176,18 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
             ],
           ),
           getCategoryTag(),
+          Padding(
+            padding: const EdgeInsets.all(5),
+            // TODO: reset keyvalue timestamps
+            child: ElevatedButton.icon(
+                onPressed: () async {
+                  await Singleton().getDatabase().deleteEverything();
+                  await KeyValue.resetKeyValues();
+                  logger.w("Deleted everything");
+                },
+                icon: const Icon(Icons.delete),
+                label: const Text("DB")),
+          ),
           Padding(
             padding: const EdgeInsets.all(5),
             child: ElevatedButton.icon(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -14,7 +15,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  List<User> users = [];
+  List<User>? users;
   User? selectedItem;
 
   @override
@@ -24,10 +25,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> getUsers() async {
+    await SupabaseToDrift.initializeUsers();
+
     var result = await Singleton().getDatabase().allUserEntries;
     setState(() {
       users = result;
-      selectedItem = result[0];
+      selectedItem = result.firstOrNull;
     });
   }
 
@@ -47,41 +50,48 @@ class _LoginPageState extends State<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          users.isNotEmpty
-              ? SizedBox(
-                  width: 300,
-                  child: DropdownButtonFormField(
-                    isExpanded: true,
-                    icon: const Icon(Icons.arrow_drop_down_circle),
-                    value: selectedItem,
-                    items: users
-                        .map((item) => DropdownMenuItem<User>(
-                              value: item,
-                              child: Text("${l!.user} ${item.id}"),
-                            ))
-                        .toList(),
-                    onChanged: (item) => setState(
-                      () {
-                        selectedItem = item;
-                      },
-                    ),
-                    decoration: InputDecoration(
-                      labelText: l!.users,
-                      prefixIcon: const Icon(Icons.format_list_numbered),
-                      border: const OutlineInputBorder(),
-                    ),
-                  ),
-                )
+          users != null
+              ? users!.isNotEmpty
+                  ? SizedBox(
+                      width: 300,
+                      child: DropdownButtonFormField(
+                        isExpanded: true,
+                        icon: const Icon(Icons.arrow_drop_down_circle),
+                        value: selectedItem,
+                        items: users!
+                            .map((item) => DropdownMenuItem<User>(
+                                  value: item,
+                                  child: Text("${l!.user} ${item.id}"),
+                                ))
+                            .toList(),
+                        onChanged: (item) => setState(
+                          () {
+                            selectedItem = item;
+                          },
+                        ),
+                        decoration: InputDecoration(
+                          labelText: l!.users,
+                          prefixIcon: const Icon(Icons.format_list_numbered),
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                    )
+                  : const Text("No users available")
               : const CircularProgressIndicator(),
           ElevatedButton(
               onPressed: () {
-                KeyValue.setNewUser(selectedItem!.id);
-                KeyValue.saveLogin(true);
-                currentUser = selectedItem!.id;
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyHomePage()),
-                );
+                if (users != null) {
+                  if (users!.isNotEmpty) {
+                    KeyValue.setNewUser(selectedItem!.id);
+                    KeyValue.saveLogin(true);
+                    currentUser = selectedItem!.id;
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyHomePage()),
+                    );
+                  }
+                }
               },
               child: Text(l!.login))
         ],
