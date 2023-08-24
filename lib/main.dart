@@ -89,10 +89,17 @@ class _GuiderAppState extends State<GuiderApp> {
   }
 
   void _onSyncButtonClick() async {
-    setState(() => _isLoading = true);
-
-    await SupabaseToDrift.sync()
-        .then((value) => setState(() => _isLoading = false));
+    if (!Singleton.syncing) {
+      setState(() => _isLoading = true);
+      try {
+        await SupabaseToDrift.sync()
+            .then((value) => setState(() => _isLoading = false));
+      } catch (e) {
+        setState(() => _isLoading = true);
+        await Singleton().setSyncing(newSyncing: false);
+        logger.e("Exception: $e");
+      }
+    }
   }
 
   @override

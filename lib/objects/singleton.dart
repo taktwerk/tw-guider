@@ -5,6 +5,7 @@ class Singleton {
   static final Singleton _singleton = Singleton._internal();
   final _database = AppDatabase();
   static SharedPreferences? _prefsInstance;
+  static bool syncing = false;
   Singleton._internal();
 
   factory Singleton() {
@@ -14,4 +15,9 @@ class Singleton {
   AppDatabase getDatabase() => _database;
   Future<SharedPreferences> getPrefInstance() async =>
       _prefsInstance ?? await SharedPreferences.getInstance();
+  bool getSyncing() => syncing;
+
+  setSyncing({required bool newSyncing}) {
+    syncing = newSyncing;
+  }
 }

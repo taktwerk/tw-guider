@@ -76,6 +76,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
       setState(() {
         loading = false;
       });
+      await Singleton().setSyncing(newSyncing: false);
       //handleError(e);
       logger.e("Error log ${e.toString()}");
       CustomSnackBar.buildErrorSnackbar(context, "$e");
@@ -145,14 +146,14 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   }
 
   void _onSyncButtonClick() {
-    setState(() {
-      loading = true;
-    });
-    sync().then((value) {
-      setState(() {
-        loading = false;
+    if (!Singleton.syncing) {
+      setState(() => loading = true);
+      sync().then((value) {
+        setState(() {
+          loading = false;
+        });
       });
-    });
+    }
   }
 
   @override
