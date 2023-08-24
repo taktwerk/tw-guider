@@ -55,8 +55,8 @@ class _InstructionViewState extends State<InstructionView> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: StreamBuilder(
               stream: instruction,
-              builder:
-                  (BuildContext context, AsyncSnapshot<Instruction> snapshot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Instruction>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (snapshot.connectionState == ConnectionState.active ||
@@ -64,9 +64,9 @@ class _InstructionViewState extends State<InstructionView> {
                   if (snapshot.hasError) {
                     return Text('🚨 Error: ${snapshot.error}');
                   } else if (snapshot.hasData) {
-                    return Text(snapshot.data!.title);
+                    return Text(snapshot.data!.first.title);
                   } else {
-                    return const Text("Empty data");
+                    return const Text("Empty data TITLE");
                   }
                 } else {
                   return Text('State: ${snapshot.connectionState}');
@@ -75,8 +75,8 @@ class _InstructionViewState extends State<InstructionView> {
         ),
         body: StreamBuilder(
             stream: instruction,
-            builder:
-                (BuildContext context, AsyncSnapshot<Instruction> snapshot) {
+            builder: (BuildContext context,
+                AsyncSnapshot<List<Instruction>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.connectionState == ConnectionState.active ||
@@ -100,18 +100,18 @@ class _InstructionViewState extends State<InstructionView> {
                                                 _categories![index].name))),
                                   ),
                             Text(
-                                "${l.shortTitle}: ${snapshot.data!.shortTitle}"),
+                                "${l.shortTitle}: ${snapshot.data!.first.shortTitle}"),
                             const SizedBox(height: 10),
                             Text(l.description),
-                            buildDesc(snapshot.data!),
-                            buildImage(snapshot.data!),
+                            buildDesc(snapshot.data!.first),
+                            buildImage(snapshot.data!.first),
                             const SizedBox(height: 10),
-                            buildButtons(snapshot.data!),
+                            buildButtons(snapshot.data!.first),
                           ],
                         ),
                       ));
                 } else {
-                  return const Text("Empty data");
+                  return const Text("Empty data INSTRUCTION");
                 }
               } else {
                 return Text('State: ${snapshot.connectionState}');
@@ -177,7 +177,7 @@ class _InstructionViewState extends State<InstructionView> {
                 ),
               );
             } else {
-              return const Text("Empty data");
+              return const Text("Empty data STEPS");
             }
           } else {
             return Text('State: ${snapshot.connectionState}');

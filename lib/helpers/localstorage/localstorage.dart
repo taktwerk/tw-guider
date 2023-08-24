@@ -103,8 +103,8 @@ class AppDatabase extends _$AppDatabase {
     return query.map((row) => row.readTable(instructions)).watch();
   }
 
-  Stream<Instruction> getInstructionById(int id) =>
-      (select(instructions)..where((t) => t.id.equals(id))).watchSingle();
+  Stream<List<Instruction>> getInstructionById(int id) =>
+      (select(instructions)..where((t) => t.id.equals(id))).watch();
 
   // TABLE: InstructionStep
   Future<void> insertMultipleInstructionSteps(
@@ -122,8 +122,9 @@ class AppDatabase extends _$AppDatabase {
             ..where((t) => t.deletedAt.isNull()))
           .watch();
 
-  Stream<InstructionStep> getLastVisitedStep(
+  Stream<List<InstructionStep>> getLastVisitedStep(
       {required int instructionId, required int userId}) {
+    logger.w("Instruction Id $instructionId, UserID $userId");
     final query = select(instructionSteps).join([
       innerJoin(
           histories, instructionSteps.id.equalsExp(histories.instructionStepId),
@@ -131,7 +132,7 @@ class AppDatabase extends _$AppDatabase {
     ])
       ..where((histories.userId).equals(userId))
       ..where((histories.instructionId).equals(instructionId));
-    return query.map((t) => t.readTable(instructionSteps)).watchSingle();
+    return query.map((t) => t.readTable(instructionSteps)).watch();
   }
 
   // TABLE: Category

@@ -34,13 +34,14 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
             instructionId: widget.instruction.id, userId: currentUser!)
         .listen((event) {
       setState(() {
-        selectedItem = event;
+        selectedItem = event.firstOrNull;
       });
     });
   }
 
   @override
   void dispose() {
+    logger.w("DISPOSED");
     _subscription?.cancel();
     super.dispose();
   }
@@ -82,6 +83,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
               if (snapshot.hasError) {
                 return Text('🚨 Error: ${snapshot.error}');
               } else if (snapshot.hasData && selectedItem != null) {
+                print("SELECTED ITEM $selectedItem");
                 return Container(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -101,8 +103,10 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                               .toList(),
                           onChanged: (item) => setState(
                             () {
-                              setNewStep(item?.id);
-                              selectedItem = item;
+                              if (item != null) {
+                                setNewStep(item.id);
+                                selectedItem = item;
+                              }
                             },
                           ),
                           decoration: InputDecoration(
@@ -122,7 +126,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                   ),
                 );
               } else {
-                return const Text("Empty data");
+                return const Text("Empty data OVERVIEW");
               }
             } else {
               return Text('State: ${snapshot.connectionState}');
