@@ -130,7 +130,7 @@ class _FeedbackViewState extends State<FeedbackView> {
             ),
             Container(
                 margin: const EdgeInsets.all(10),
-                //TODO: show file name here
+                // TODO: Show file name
                 child: selectedImage == null
                     ? Text(l.noImageSelected)
                     : Text(l.imageSelected)),

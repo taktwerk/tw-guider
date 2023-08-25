@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> getUsers() async {
+    // TODO: check connectivity
     await SupabaseToDrift.initializeUsers();
 
     var result = await Singleton().getDatabase().allUserEntries;

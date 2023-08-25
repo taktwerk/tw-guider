@@ -24,6 +24,7 @@ void main() async {
   await KeyValue.initialize();
   currentUser = await KeyValue.getCurrentUser();
   if (currentUser == null) {
+    // TODO: check connectivity
     await SupabaseToDrift.initializeUsers();
   }
   logger.i("Currentuser $currentUser (main)");
