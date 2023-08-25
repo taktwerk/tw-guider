@@ -8,10 +8,7 @@ create table
     updated_by bigint not null,
     deleted_at dateTime null,
     deleted_by bigint null,
-    constraint category_pkey primary key (id),
-    constraint category_created_by_fkey foreign key (created_by) references users (id),
-    constraint category_deleted_by_fkey foreign key (deleted_by) references users (id),
-    constraint category_updated_by_fkey foreign key (updated_by) references users (id)
+    constraint category_pkey primary key (id)
   ) as Category;
 
 
@@ -28,10 +25,7 @@ create table
     updated_by bigint not null,
     deleted_at dateTime null,
     deleted_by bigint null,
-    constraint instruction_pkey primary key (id),
-    constraint instruction_created_by_fkey foreign key (created_by) references users (id),
-    constraint instruction_deleted_by_fkey foreign key (deleted_by) references users (id),
-    constraint instruction_updated_by_fkey foreign key (updated_by) references users (id)
+    constraint instruction_pkey primary key (id)
   );
 
   create table
@@ -49,10 +43,7 @@ create table
     deleted_at datetime null,
     deleted_by bigint null,
     constraint feedback_pkey primary key (id),
-    constraint feedback_created_by_fkey foreign key (created_by) references users (id),
-    constraint feedback_deleted_by_fkey foreign key (deleted_by) references users (id),
     constraint feedback_instruction_id_fkey foreign key (instruction_id) references instructions (id),
-    constraint feedback_updated_by_fkey foreign key (updated_by) references users (id),
     constraint feedback_user_id_fkey foreign key (user_id) references users (id)
   ) as Feedback;
 
@@ -70,10 +61,7 @@ create table
     constraint history_pkey primary key (user_id, instruction_id),
     constraint history_instruction_id_fkey foreign key (instruction_id) references instructions (id) on delete cascade,
     constraint history_instruction_step_id_fkey foreign key (instruction_step_id) references instruction_steps (id) on delete cascade,
-    constraint history_user_id_fkey foreign key (user_id) references users (id) on delete cascade,
-    constraint history_deleted_by_fkey foreign key (deleted_by) references users (id),
-    constraint history_created_by_fkey foreign key (created_by) references users (id),
-    constraint history_updated_by_fkey foreign key (updated_by) references users (id)
+    constraint history_user_id_fkey foreign key (user_id) references users (id) on delete cascade
   ) as History;
 
   create table
@@ -87,10 +75,7 @@ create table
     updated_by bigint not null,
     deleted_at datetime null,
     deleted_by bigint null,
-    constraint user_pkey primary key (id),
-    constraint user_created_by_fkey foreign key (created_by) references users (id),
-    constraint user_deleted_by_fkey foreign key (deleted_by) references users (id),
-    constraint user_updated_by_fkey foreign key (updated_by) references users (id)
+    constraint user_pkey primary key (id)
   );
 
   create table
@@ -107,11 +92,7 @@ create table
     deleted_at datetime null,
     deleted_by bigint null,
     constraint instruction_steps_pkey primary key (id),
-    constraint instruction_step_instruction_id_fkey foreign key (instruction_id) references instructions (id) on delete cascade,
-    constraint instruction_step_created_by_fkey foreign key (created_by) references users (id),
-    constraint instruction_step_deleted_by_fkey foreign key (deleted_by) references users (id),
-    constraint instruction_step_updated_by_fkey foreign key (updated_by) references users (id)
-
+    constraint instruction_step_instruction_id_fkey foreign key (instruction_id) references instructions (id) on delete cascade
   );
 
   create table
@@ -126,10 +107,7 @@ create table
     deleted_by bigint null,
     constraint instruction_category_pkey primary key (category_id, instruction_id),
     constraint instruction_category_category_id_fkey foreign key (category_id) references categories (id) on delete cascade,
-    constraint instruction_category_instruction_id_fkey foreign key (instruction_id) references instructions (id) on delete cascade,
-    constraint instruction_category_created_by_fkey foreign key (created_by) references users (id),
-    constraint instruction_category_deleted_by_fkey foreign key (deleted_by) references users (id),
-    constraint instruction_category_updated_by_fkey foreign key (updated_by) references users (id)
+    constraint instruction_category_instruction_id_fkey foreign key (instruction_id) references instructions (id) on delete cascade
   ) as InstructionCategory;
 
   create table
@@ -143,10 +121,7 @@ create table
     deleted_at datetime null,
     deleted_by bigint null,
     constraint setting_pkey primary key (user_id),
-    constraint setting_user_id_fkey foreign key (user_id) references users (id) on delete cascade,
-    constraint setting_created_by_fkey foreign key (created_by) references users (id),
-    constraint setting_deleted_by_fkey foreign key (deleted_by) references users (id),
-    constraint setting_updated_by_fkey foreign key (updated_by) references users (id)
+    constraint setting_user_id_fkey foreign key (user_id) references users (id) on delete cascade
   );
 
   create table
