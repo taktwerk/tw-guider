@@ -46,11 +46,9 @@ class DriftToSupabase {
 
   static Future<void> uploadHistory() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.history.key);
-    print("Last synced $lastSynced");
     var history = await Singleton()
         .getDatabase()
         .notSyncedHistoryEntries(DateTime.parse(lastSynced!));
-    print("Not synced history: $history");
     int len = history.length;
     for (int i = 0; i < len; i++) {
       var historyEntry = history[i];
@@ -70,11 +68,9 @@ class DriftToSupabase {
 
   static Future<void> uploadSettings() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.setting.key);
-    print("Last synced settings $lastSynced");
     var settings = await Singleton()
         .getDatabase()
         .notSyncedSettingsEntries(DateTime.parse(lastSynced!));
-    print("Not synced settings $settings");
     int len = settings.length;
     for (int i = 0; i < len; i++) {
       var settingsEntry = settings[i];

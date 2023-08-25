@@ -32,7 +32,6 @@ class KeyValue {
     if (value == null) {
       var users = await Singleton().getDatabase().getUserSortedById();
       var initialUser = users.firstOrNull;
-      //print("New user set");
       if (initialUser != null) {
         setNewUser(initialUser.id);
         currentUser = initialUser.id;
