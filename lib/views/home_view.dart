@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
@@ -79,7 +80,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
       await Singleton().setSyncing(newSyncing: false);
       //handleError(e);
       logger.e("Error log ${e.toString()}");
-      CustomSnackBar.buildErrorSnackbar(context, "$e");
+      if (mounted) {
+        CustomSnackBar.buildErrorSnackbar(context, "$e");
+      }
     }
   }
 
@@ -145,17 +148,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     );
   }
 
-  void _onSyncButtonClick() {
-    if (!Singleton.syncing) {
-      setState(() => loading = true);
-      sync().then((value) {
-        setState(() {
-          loading = false;
-        });
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var filteredInstructions = Singleton()
@@ -177,33 +169,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
             ],
           ),
           getCategoryTag(),
-          Padding(
-            padding: const EdgeInsets.all(5),
-            // TODO: reset keyvalue timestamps
-            child: ElevatedButton.icon(
-                onPressed: () async {
-                  await Singleton().getDatabase().deleteEverything();
-                  await KeyValue.resetKeyValues();
-                  logger.w("Deleted everything");
-                },
-                icon: const Icon(Icons.delete),
-                label: const Text("DB")),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(5),
-            child: ElevatedButton.icon(
-                onPressed: () {
-                  final db = Singleton().getDatabase();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => DriftDbViewer(db)));
-                },
-                icon: const Icon(Icons.storage),
-                label: const Text("DB")),
-          ),
-          ElevatedButton(
-              onPressed: loading ? null : () => _onSyncButtonClick(),
-              child: Text(l!.synchronize)),
-          loading ? const CircularProgressIndicator() : Container(),
           StreamBuilder(
               stream: filteredInstructions,
               builder: (BuildContext context,
