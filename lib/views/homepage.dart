@@ -110,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage>
                             ),
                             onTap: () async {
                               logger.i("Logged out");
+                              currentUser = null;
                               await KeyValue.saveLogin(false)
                                   .then((value) => Navigator.pushReplacement(
                                         context,
