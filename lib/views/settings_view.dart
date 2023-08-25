@@ -19,6 +19,17 @@ class _SettingsViewState extends State<SettingsView> {
   Locale? selectedItem;
   List<Locale> languages = SupportedLanguages.all;
   List<Setting> settings = [];
+  bool realtime = false;
+
+  final MaterialStateProperty<Icon?> thumbIcon =
+      MaterialStateProperty.resolveWith<Icon?>(
+    (Set<MaterialState> states) {
+      if (states.contains(MaterialState.selected)) {
+        return const Icon(Icons.check);
+      }
+      return const Icon(Icons.close);
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +68,17 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
                 ),
               );
+            },
+          ),
+          SwitchListTile(
+            title: const Text("Realtime"),
+            subtitle: const Text("Get changes directly in app when online"),
+            thumbIcon: thumbIcon,
+            value: realtime,
+            onChanged: (bool value) {
+              setState(() {
+                realtime = value;
+              });
             },
           ),
           Padding(
