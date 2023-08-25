@@ -23,6 +23,16 @@ class FullScreenImageViewer extends StatelessWidget {
                 ? Image.network(
                     instruction.image,
                     fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.red,
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'No image',
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      );
+                    },
                   )
                 : FutureBuilder(
                     future: AppUtil.filePath(

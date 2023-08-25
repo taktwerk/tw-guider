@@ -230,6 +230,16 @@ class _InstructionViewState extends State<InstructionView> {
                 ? Image.network(
                     instruction.image,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.red,
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'No image',
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      );
+                    },
                   )
                 : FutureBuilder(
                     future: AppUtil.filePath(
