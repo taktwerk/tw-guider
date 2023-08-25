@@ -61,11 +61,17 @@ class AppUtil {
     }
   }
 
+  static Future<void> deleteAllImages() async {
+    final Directory appDocDir = await getApplicationDocumentsDirectory();
+    String path = getImagesFolderPath(appDocDir, Const.imagesFolderName.key);
+    await deleteFolderContent(path);
+  }
+
   static Future<void> deleteFolderContent(String directory) async {
     final List<FileSystemEntity> entities =
         await Directory(directory).list().toList();
     for (FileSystemEntity entity in entities) {
-      entity.delete();
+      entity.deleteSync(recursive: true);
     }
   }
 

@@ -20,9 +20,10 @@ enum Const {
   message("message"),
   instructionStepId("instruction_step_id"),
   language("language"),
-  instructionStepsImagesFolderName("instructionStepsImages"),
-  instructionImagesFolderName("instructionImages"),
-  feedbackImagesFolderName("feedbackImages"),
+  imagesFolderName("images"),
+  instructionStepsImagesFolderName("images/instructionStepsImages"),
+  instructionImagesFolderName("images/instructionImages"),
+  feedbackImagesFolderName("images/feedbackImages"),
   supabaseBucketUrl(
       "https://spohaqvzfgvdihxcwvff.supabase.co/storage/v1/object/public/feedback_images/");
 
