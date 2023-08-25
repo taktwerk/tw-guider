@@ -58,7 +58,6 @@ class GuiderApp extends StatefulWidget {
 class _GuiderAppState extends State<GuiderApp> {
   Locale? _locale;
   late StreamSubscription<ConnectivityResult> subscription;
-  bool _isLoading = false;
   bool? islogin;
 
   void setLocale(Locale locale) {
@@ -71,12 +70,12 @@ class _GuiderAppState extends State<GuiderApp> {
   void initState() {
     super.initState();
     checkUserLoginState();
-    subscription = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) async {
-      isDeviceConnected.value = await InternetConnectionChecker().hasConnection;
-      logger.w("Internet status: $isDeviceConnected");
-    });
+    // subscription = Connectivity()
+    //     .onConnectivityChanged
+    //     .listen((ConnectivityResult result) async {
+    //   isDeviceConnected.value = await InternetConnectionChecker().hasConnection;
+    //   logger.w("Internet status: $isDeviceConnected");
+    // });
   }
 
   checkUserLoginState() async {
@@ -89,13 +88,10 @@ class _GuiderAppState extends State<GuiderApp> {
   }
 
   void _onSyncButtonClick() async {
-    if (!Singleton.syncing) {
-      setState(() => _isLoading = true);
+    if (!Singleton().getSyncing()) {
       try {
-        await SupabaseToDrift.sync()
-            .then((value) => setState(() => _isLoading = false));
+        await SupabaseToDrift.sync();
       } catch (e) {
-        setState(() => _isLoading = true);
         await Singleton().setSyncing(newSyncing: false);
         logger.e("Exception: $e");
       }
@@ -142,30 +138,65 @@ class _GuiderAppState extends State<GuiderApp> {
           : const LoginPage(),
       builder: (context, child) {
         return Scaffold(
+          floatingActionButton: FloatingActionButton(
+              onPressed: () => _onSyncButtonClick(),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: ValueListenableBuilder<bool>(
+                  valueListenable: Singleton().getValueNotifierSyncing(),
+                  builder: ((context, value, child) {
+                    return value
+                        ? Container(
+                            width: 24,
+                            height: 24,
+                            padding: const EdgeInsets.all(2.0),
+                            child: const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 3,
+                            ),
+                          )
+                        : const Icon(Icons.sync);
+                  }))),
           body: Stack(
             children: [
               child!,
-              Positioned(
-                bottom: 10,
-                right: 10,
-                child: FloatingActionButton(
-                  onPressed: () => _onSyncButtonClick(),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: _isLoading
-                      ? Container(
-                          width: 24,
-                          height: 24,
-                          padding: const EdgeInsets.all(2.0),
-                          child: const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 3,
-                          ),
-                        )
-                      : const Icon(Icons.sync),
-                ),
-              ),
+              // Positioned(
+              //   bottom: 10,
+              //   right: 70,
+              //   child: FloatingActionButton(
+              //       onPressed: () {
+              //         print("DB");
+              //         final db = Singleton().getDatabase();
+              //         Navigator.of(context).push(MaterialPageRoute(
+              //             builder: (context) => DriftDbViewer(db)));
+              //       },
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(18),
+              //       ),
+              //       child: const Icon(Icons.storage)),
+              // ),
+              // Positioned(
+              //   bottom: 10,
+              //   right: 10,
+              //   child: FloatingActionButton(
+              //     onPressed: () => _onSyncButtonClick(),
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(18),
+              //     ),
+              //     child: _isLoading
+              //         ? Container(
+              //             width: 24,
+              //             height: 24,
+              //             padding: const EdgeInsets.all(2.0),
+              //             child: const CircularProgressIndicator(
+              //               color: Colors.white,
+              //               strokeWidth: 3,
+              //             ),
+              //           )
+              //         : const Icon(Icons.sync),
+              //   ),
+              // ),
             ],
           ),
         );

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart' as foundation;
+import 'package:flutter/widgets.dart';
 import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
@@ -298,8 +299,8 @@ class SupabaseToDrift {
   }
 
   static Future<void> sync() async {
-    logger.w("Syncing is: ${Singleton.syncing}");
-    if (!Singleton.syncing) {
+    logger.w("Syncing is: ${Singleton().getSyncing()}");
+    if (!Singleton().getSyncing()) {
       await Singleton().setSyncing(newSyncing: true);
       await SupabaseToDrift.getUsers().then((value) {
         logger.i("Got users from supabase.");

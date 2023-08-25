@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -5,8 +7,8 @@ class Singleton {
   static final Singleton _singleton = Singleton._internal();
   final _database = AppDatabase();
   static SharedPreferences? _prefsInstance;
-  static bool syncing = false;
   Singleton._internal();
+  static final ValueNotifier<bool> _syncing = ValueNotifier<bool>(false);
 
   factory Singleton() {
     return _singleton;
@@ -15,9 +17,10 @@ class Singleton {
   AppDatabase getDatabase() => _database;
   Future<SharedPreferences> getPrefInstance() async =>
       _prefsInstance ?? await SharedPreferences.getInstance();
-  bool getSyncing() => syncing;
+  bool getSyncing() => _syncing.value;
+  ValueNotifier<bool> getValueNotifierSyncing() => _syncing;
 
   setSyncing({required bool newSyncing}) {
-    syncing = newSyncing;
+    _syncing.value = newSyncing;
   }
 }
