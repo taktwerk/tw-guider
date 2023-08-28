@@ -2,17 +2,44 @@ import 'dart:async';
 
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/main.dart';
+import 'package:guider/objects/singleton.dart';
 
 class Realtime {
+  static List<StreamSubscription> init() {
+    List<StreamSubscription> list = [];
+    list.add(getInstructionStream());
+    list.add(getCategoryStream());
+    list.add(getFeedbackStream());
+    list.add(getHistoryStream());
+    list.add(getInstructionStepStream());
+    list.add(getInstructionCategoryStream());
+    list.add(getSettingStream());
+    list.add(getUserStream());
+    return list;
+  }
+
+  static Future<void> sync() async {
+    try {
+      if (currentUser != null) {
+        var setting = await Singleton().getDatabase().getRealtime(currentUser!);
+        var realtime = setting.firstOrNull?.realtime;
+        if (realtime != null && realtime) {
+          await SupabaseToDrift.sync();
+        }
+      }
+    } catch (e) {
+      logger.e("Realtime EXCEPTION $e");
+    }
+  }
+
   static StreamSubscription getInstructionStream() {
     final sup =
         supabase.from('instruction').stream(primaryKey: ['id']).limit(1).listen(
               (event) async {
-                print("instruction event ${event.length}");
-                await SupabaseToDrift.sync();
+                sync();
               },
               onError: (e, s) {
-                logger.e('realtime 1 error: $e \ns:$s');
+                // logger.e('realtime 1 error: $e \ns:$s');
                 if (e.toString() == '' || e.toString() == '{}') return;
               },
             );
@@ -23,11 +50,10 @@ class Realtime {
     final sup =
         supabase.from('category').stream(primaryKey: ['id']).limit(1).listen(
               (event) async {
-                print("category event ${event.length}");
-                await SupabaseToDrift.sync();
+                sync();
               },
               onError: (e, s) {
-                logger.e('realtime 1 error: $e \ns:$s');
+                //logger.e('realtime 1 error: $e \ns:$s');
                 if (e.toString() == '' || e.toString() == '{}') return;
               },
             );
@@ -38,11 +64,10 @@ class Realtime {
     final sup =
         supabase.from('feedback').stream(primaryKey: ['id']).limit(1).listen(
               (event) async {
-                print("feedback event ${event.length}");
-                await SupabaseToDrift.sync();
+                sync();
               },
               onError: (e, s) {
-                logger.e('realtime 1 error: $e \ns:$s');
+                //logger.e('realtime 1 error: $e \ns:$s');
                 if (e.toString() == '' || e.toString() == '{}') return;
               },
             );
@@ -56,11 +81,10 @@ class Realtime {
         .limit(1)
         .listen(
           (event) async {
-            print("history event ${event.length}");
-            await SupabaseToDrift.sync();
+            sync();
           },
           onError: (e, s) {
-            logger.e('realtime 1 error: $e \ns:$s');
+            //logger.e('realtime 1 error: $e \ns:$s');
             if (e.toString() == '' || e.toString() == '{}') return;
           },
         );
@@ -74,11 +98,10 @@ class Realtime {
         .limit(1)
         .listen(
           (event) async {
-            print("instruction_category event ${event.length}");
-            await SupabaseToDrift.sync();
+            sync();
           },
           onError: (e, s) {
-            logger.e('realtime 1 error: $e \ns:$s');
+            //logger.e('realtime 1 error: $e \ns:$s');
             if (e.toString() == '' || e.toString() == '{}') return;
           },
         );
@@ -92,11 +115,10 @@ class Realtime {
         .limit(1)
         .listen(
           (event) async {
-            print("instruction_step event ${event.length}");
-            await SupabaseToDrift.sync();
+            sync();
           },
           onError: (e, s) {
-            logger.e('realtime 1 error: $e \ns:$s');
+            //logger.e('realtime 1 error: $e \ns:$s');
             if (e.toString() == '' || e.toString() == '{}') return;
           },
         );
@@ -110,11 +132,10 @@ class Realtime {
         .limit(1)
         .listen(
           (event) async {
-            print("setting event ${event.length}");
-            await SupabaseToDrift.sync();
+            sync();
           },
           onError: (e, s) {
-            logger.e('realtime 1 error: $e \ns:$s');
+            //logger.e('realtime 1 error: $e \ns:$s');
             if (e.toString() == '' || e.toString() == '{}') return;
           },
         );
@@ -125,11 +146,10 @@ class Realtime {
     final sup =
         supabase.from('user').stream(primaryKey: ['id']).limit(1).listen(
               (event) async {
-                print("user event ${event.length}");
-                await SupabaseToDrift.sync();
+                sync();
               },
               onError: (e, s) {
-                logger.e('realtime 1 error: $e \ns:$s');
+                //logger.e('realtime 1 error: $e \ns:$s');
                 if (e.toString() == '' || e.toString() == '{}') return;
               },
             );
