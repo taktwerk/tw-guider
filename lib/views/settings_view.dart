@@ -1,4 +1,5 @@
 import 'package:drift_db_viewer/drift_db_viewer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
@@ -49,7 +50,7 @@ class _SettingsViewState extends State<SettingsView> {
                   snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError) {
                   return Text('🚨 Error: ${snapshot.error}');
-                } else if (snapshot.hasData) {
+                } else if (snapshot.hasData && snapshot.data != null) {
                   return Column(
                     children: [
                       SizedBox(
@@ -84,9 +85,13 @@ class _SettingsViewState extends State<SettingsView> {
                         title: Text(l.realtime),
                         subtitle: Text(l.realtimeText),
                         thumbIcon: thumbIcon,
-                        value: snapshot.data!.first.realtime,
+                        value: snapshot.data!.isEmpty
+                            ? false
+                            : snapshot.data!.first.realtime,
                         onChanged: (bool value) {
-                          onRealtimeChange(value);
+                          if (snapshot.data!.isNotEmpty) {
+                            onRealtimeChange(value);
+                          }
                         },
                       ),
                     ],
@@ -103,7 +108,9 @@ class _SettingsViewState extends State<SettingsView> {
             padding: const EdgeInsets.all(5),
             child: ElevatedButton.icon(
                 onPressed: () async {
-                  await AppUtil.deleteAllImages();
+                  if (!kIsWeb) {
+                    await AppUtil.deleteAllImages();
+                  }
                   await Singleton().getDatabase().deleteEverything();
                   await KeyValue.resetKeyValues();
                   logger.w("Deleted everything");
