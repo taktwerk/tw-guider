@@ -83,7 +83,6 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
               if (snapshot.hasError) {
                 return Text('🚨 Error: ${snapshot.error}');
               } else if (snapshot.hasData && selectedItem != null) {
-                print("SELECTED ITEM $selectedItem");
                 return Container(
                   padding: const EdgeInsets.all(20),
                   child: Column(

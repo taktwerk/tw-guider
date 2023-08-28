@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
-import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/languages/supported_languages.dart';
 import 'package:guider/main.dart';
@@ -88,9 +87,6 @@ class _SettingsViewState extends State<SettingsView> {
                         value: snapshot.data!.first.realtime,
                         onChanged: (bool value) {
                           onRealtimeChange(value);
-                          // setState(() {
-                          //   realtime = value;
-                          // });
                         },
                       ),
                     ],
@@ -105,7 +101,6 @@ class _SettingsViewState extends State<SettingsView> {
           ),
           Padding(
             padding: const EdgeInsets.all(5),
-            // TODO: reset keyvalue timestamps
             child: ElevatedButton.icon(
                 onPressed: () async {
                   await AppUtil.deleteAllImages();

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
-import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/views/category.dart';
@@ -133,8 +132,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     var filteredInstructions = Singleton()
         .getDatabase()
         .combineCategoryAndSearch(category, searchWord);
-
-    final l = Languages.of(context);
     super.build(context);
     return Scaffold(
       body: Column(
