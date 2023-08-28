@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/localstorage/app_util.dart';
-import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/languages/languages.dart';
@@ -13,7 +11,6 @@ import 'package:guider/widgets/snackbar.dart';
 import 'package:guider/widgets/tag.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
-import 'package:drift_db_viewer/drift_db_viewer.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -31,20 +28,11 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   bool loading = false;
   final ScrollController _scrollController = ScrollController();
   StreamSubscription? languageSubscription;
-  // final instructionStream = Realtime.getInstructionStream();
-  // final categoryStream = Realtime.getCategoryStream();
-  // final feedbackStream = Realtime.getFeedbackStream();
-  // final historyStream = Realtime.getHistoryStream();
-  // final instructionCategoryStream = Realtime.getInstructionCategoryStream();
-  // final instructionStepStream = Realtime.getInstructionStepStream();
-  // final settingStream = Realtime.getSettingStream();
-  // final userStream = Realtime.getUserStream();
 
   Future<void> setLanguage() async {
     logger.i("Set language");
 
     if (currentUser != null) {
-      logger.i("Settings listen");
       languageSubscription =
           Singleton().getDatabase().getSettings(currentUser!).listen((event) {
         if (event.isNotEmpty) {
@@ -91,14 +79,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
 
   @override
   void dispose() {
-    //instructionStream.cancel();
-    // categoryStream.cancel();
-    // feedbackStream.cancel();
-    // historyStream.cancel();
-    // instructionCategoryStream.cancel();
-    // instructionStepStream.cancel();
-    // settingStream.cancel();
-    // userStream.cancel();
     languageSubscription?.cancel();
     _scrollController.dispose();
     super.dispose();

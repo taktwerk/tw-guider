@@ -60,6 +60,7 @@ class _GuiderAppState extends State<GuiderApp> {
   Locale? _locale;
   late StreamSubscription<ConnectivityResult> subscription;
   bool? islogin;
+  List<StreamSubscription> list = Realtime.init();
 
   void setLocale(Locale locale) {
     setState(() {
