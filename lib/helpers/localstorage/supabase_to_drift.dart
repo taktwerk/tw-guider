@@ -273,6 +273,15 @@ class SupabaseToDrift {
     );
   }
 
+  static Future<void> initializeSettings() async {
+    await SupabaseToDrift.getSettings().then(
+      (value) async {
+        logger.i("Got settings from supabase. (INIT)");
+        KeyValue.setNewValue(KeyValueEnum.setting.key, value);
+      },
+    );
+  }
+
   static Future<String> getSettings() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.setting.key);
     var newLastSynced = lastSynced;
