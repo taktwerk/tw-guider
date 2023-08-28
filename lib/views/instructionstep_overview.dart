@@ -7,11 +7,9 @@ import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/instructionstep_view.dart';
 
 class InstructionStepOverview extends StatefulWidget {
-  const InstructionStepOverview(
-      {super.key, required this.instruction, required this.steps});
+  const InstructionStepOverview({super.key, required this.instruction});
 
   final Instruction instruction;
-  final List<InstructionStep> steps;
 
   @override
   State<StatefulWidget> createState() => _InstructionStepViewState();

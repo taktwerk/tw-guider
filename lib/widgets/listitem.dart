@@ -25,14 +25,7 @@ class ListItem extends StatelessWidget {
       margin: const EdgeInsets.all(10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       child: InkWell(
-        onTap: () async {
-          Singleton().getDatabase().updateHistoryEntry(
-              _instruction.id,
-              DateTime.now().toUtc(),
-              currentUser!,
-              currentUser!,
-              DateTime.now().toUtc(),
-              currentUser!);
+        onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(

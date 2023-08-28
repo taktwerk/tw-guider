@@ -157,12 +157,18 @@ class _InstructionViewState extends State<InstructionView> {
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
                     if (snapshot.data!.isNotEmpty) {
+                      Singleton().getDatabase().updateHistoryEntry(
+                          instruction.id,
+                          DateTime.now().toUtc(),
+                          currentUser!,
+                          currentUser!,
+                          DateTime.now().toUtc(),
+                          currentUser!);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => InstructionStepOverview(
                             instruction: instruction,
-                            steps: snapshot.data!,
                           ),
                         ),
                       );
