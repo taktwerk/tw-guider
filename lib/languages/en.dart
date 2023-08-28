@@ -110,4 +110,10 @@ class LanguageEn extends Languages {
 
   @override
   String get logout => "Logout";
+
+  @override
+  String get realtime => "Realtime";
+
+  @override
+  String get realtimeText => "Get changes directly in app when online";
 }

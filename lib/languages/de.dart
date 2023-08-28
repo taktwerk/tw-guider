@@ -110,4 +110,11 @@ class LanguageDe extends Languages {
 
   @override
   String get logout => "Abmelden";
+
+  @override
+  String get realtime => "Realtime";
+
+  @override
+  String get realtimeText =>
+      "Erhalten Sie Änderungen direkt in der App, wenn Sie online sind.";
 }

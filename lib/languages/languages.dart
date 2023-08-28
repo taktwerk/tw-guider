@@ -44,4 +44,6 @@ abstract class Languages {
   String get login;
   String get languages;
   String get logout;
+  String get realtime;
+  String get realtimeText;
 }
