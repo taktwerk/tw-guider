@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
+import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/homepage.dart';

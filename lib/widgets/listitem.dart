@@ -60,11 +60,12 @@ class ListItem extends StatelessWidget {
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Container(
+                                      height: 150,
+                                      width: 250,
                                       color: Colors.red,
                                       alignment: Alignment.center,
                                       child: const Text(
                                         'No image',
-                                        style: TextStyle(fontSize: 30),
                                       ),
                                     );
                                   },

@@ -96,7 +96,7 @@ class _SettingsViewState extends State<SettingsView> {
                     ],
                   );
                 } else {
-                  return const Text("Empty data TITLE");
+                  return const Text("Empty data");
                 }
               } else {
                 return Text('State: ${snapshot.connectionState}');

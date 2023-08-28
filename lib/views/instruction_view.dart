@@ -232,6 +232,7 @@ class _InstructionViewState extends State<InstructionView> {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
+                        width: 250,
                         color: Colors.red,
                         alignment: Alignment.center,
                         child: const Text(
