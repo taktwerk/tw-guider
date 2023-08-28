@@ -77,7 +77,8 @@ class DriftToSupabase {
       await supabase.from('setting').update({
         'language': settingsEntry.language,
         'updated_at': settingsEntry.updatedAt.toUtc().toIso8601String(),
-        'updated_by': settingsEntry.updatedBy
+        'updated_by': settingsEntry.updatedBy,
+        'realtime': settingsEntry.realtime,
       }).eq('user_id', settingsEntry.userId);
     }
   }

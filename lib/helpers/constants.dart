@@ -6,6 +6,7 @@ enum Const {
   createdBy("created_by"),
   deletedAt("deleted_at"),
   deletedBy("deleted_by"),
+  realtime("realtime"),
   userId("user_id"),
   instructionId("instruction_id"),
   stepNr("step_nr"),

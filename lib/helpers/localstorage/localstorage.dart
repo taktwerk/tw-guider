@@ -262,15 +262,25 @@ class AppDatabase extends _$AppDatabase {
               where: (old, excluded) =>
                   old.updatedAt.isSmallerThan(excluded.updatedAt)));
 
-  Future<int> updateUserSettings(int userId, String language) =>
+  Future<int> updateUserLanguage(int userId, String language) =>
       (update(settings)..where((t) => t.userId.equals(userId))).write(
           SettingsCompanion(
               language: Value(language),
               updatedAt: Value(DateTime.now().toUtc()),
               updatedBy: Value(currentUser!)));
 
+  Future<int> updateUserRealtime(int userId, bool realtime) =>
+      (update(settings)..where((t) => t.userId.equals(userId))).write(
+          SettingsCompanion(
+              realtime: Value(realtime),
+              updatedAt: Value(DateTime.now().toUtc()),
+              updatedBy: Value(currentUser!)));
+
   Stream<List<Setting>> getSettings(int userId) =>
       (select(settings)..where((t) => t.userId.equals(userId))).watch();
+
+  Future<List<Setting>> getRealtime(int userId) =>
+      (select(settings)..where((t) => t.userId.equals(userId))).get();
 
   Future<List<Setting>> notSyncedSettingsEntries(DateTime timestamp) {
     return (select(settings)

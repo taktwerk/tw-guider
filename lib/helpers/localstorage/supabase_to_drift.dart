@@ -284,16 +284,16 @@ class SupabaseToDrift {
     for (int i = 0; i < len; i++) {
       var setting = data[i];
       Singleton().getDatabase().createOrUpdateSetting(SettingsCompanion.insert(
-            userId: Value(setting[Const.userId.key]),
-            language: setting[Const.language.key],
-            createdAt: DateTime.parse(setting[Const.createdAt.key]),
-            createdBy: setting[Const.createdBy.key],
-            updatedAt: DateTime.parse(setting[Const.updatedAt.key]),
-            updatedBy: setting[Const.updatedBy.key],
-            deletedAt:
-                Value(DateTime.tryParse(setting[Const.deletedAt.key] ?? "")),
-            deletedBy: Value(setting[Const.deletedBy.key]),
-          ));
+          userId: Value(setting[Const.userId.key]),
+          language: setting[Const.language.key],
+          createdAt: DateTime.parse(setting[Const.createdAt.key]),
+          createdBy: setting[Const.createdBy.key],
+          updatedAt: DateTime.parse(setting[Const.updatedAt.key]),
+          updatedBy: setting[Const.updatedBy.key],
+          deletedAt:
+              Value(DateTime.tryParse(setting[Const.deletedAt.key] ?? "")),
+          deletedBy: Value(setting[Const.deletedBy.key]),
+          realtime: setting[Const.realtime.key]));
     }
     return newLastSynced;
   }
