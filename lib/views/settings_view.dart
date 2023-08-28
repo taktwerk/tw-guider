@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/languages/supported_languages.dart';
 import 'package:guider/main.dart';
@@ -19,7 +20,6 @@ class _SettingsViewState extends State<SettingsView> {
   Locale? selectedItem;
   List<Locale> languages = SupportedLanguages.all;
   List<Setting> settings = [];
-  bool realtime = false;
 
   final MaterialStateProperty<Icon?> thumbIcon =
       MaterialStateProperty.resolveWith<Icon?>(
@@ -39,46 +39,68 @@ class _SettingsViewState extends State<SettingsView> {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
+          Text("User $currentUser"),
           StreamBuilder(
             stream: settingsStream,
             builder:
                 (BuildContext context, AsyncSnapshot<List<Setting>> snapshot) {
-              return SizedBox(
-                width: 300,
-                child: DropdownButtonFormField(
-                  isExpanded: true,
-                  icon: const Icon(Icons.arrow_drop_down_circle),
-                  value: snapshot.hasData
-                      ? snapshot.data!.isEmpty
-                          ? Locale.fromSubtags(languageCode: l!.languageCode)
-                          : Locale.fromSubtags(
-                              languageCode: snapshot.data!.first.language)
-                      : Locale.fromSubtags(languageCode: l!.languageCode),
-                  items: languages
-                      .map((item) => DropdownMenuItem<Locale>(
-                            value: item,
-                            child: Text(item.languageCode),
-                          ))
-                      .toList(),
-                  onChanged: (item) => onClick(item),
-                  decoration: InputDecoration(
-                    labelText: l!.languages,
-                    prefixIcon: const Icon(Icons.format_list_numbered),
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
-              );
-            },
-          ),
-          SwitchListTile(
-            title: const Text("Realtime"),
-            subtitle: const Text("Get changes directly in app when online"),
-            thumbIcon: thumbIcon,
-            value: realtime,
-            onChanged: (bool value) {
-              setState(() {
-                realtime = value;
-              });
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.connectionState == ConnectionState.active ||
+                  snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Text('🚨 Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        width: 300,
+                        child: DropdownButtonFormField(
+                          isExpanded: true,
+                          icon: const Icon(Icons.arrow_drop_down_circle),
+                          value: snapshot.hasData
+                              ? snapshot.data!.isEmpty
+                                  ? Locale.fromSubtags(
+                                      languageCode: l!.languageCode)
+                                  : Locale.fromSubtags(
+                                      languageCode:
+                                          snapshot.data!.first.language)
+                              : Locale.fromSubtags(
+                                  languageCode: l!.languageCode),
+                          items: languages
+                              .map((item) => DropdownMenuItem<Locale>(
+                                    value: item,
+                                    child: Text(item.languageCode),
+                                  ))
+                              .toList(),
+                          onChanged: (item) => onLanguageChange(item),
+                          decoration: InputDecoration(
+                            labelText: l!.languages,
+                            prefixIcon: const Icon(Icons.format_list_numbered),
+                            border: const OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      SwitchListTile(
+                        title: Text(l.realtime),
+                        subtitle: Text(l.realtimeText),
+                        thumbIcon: thumbIcon,
+                        value: snapshot.data!.first.realtime,
+                        onChanged: (bool value) {
+                          onRealtimeChange(value);
+                          // setState(() {
+                          //   realtime = value;
+                          // });
+                        },
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Text("Empty data TITLE");
+                }
+              } else {
+                return Text('State: ${snapshot.connectionState}');
+              }
             },
           ),
           Padding(
@@ -110,13 +132,21 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  void onClick(lang) async {
+  void onLanguageChange(lang) async {
     GuiderApp.setLocale(
         context, Locale.fromSubtags(languageCode: lang.languageCode));
     if (currentUser != null) {
       await Singleton()
           .getDatabase()
-          .updateUserSettings(currentUser!, lang.languageCode);
+          .updateUserLanguage(currentUser!, lang.languageCode);
+    }
+  }
+
+  Future<void> onRealtimeChange(realtime) async {
+    if (currentUser != null) {
+      await Singleton()
+          .getDatabase()
+          .updateUserRealtime(currentUser!, realtime);
     }
   }
 }
