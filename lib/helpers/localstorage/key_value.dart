@@ -33,7 +33,7 @@ class KeyValue {
       var users = await Singleton().getDatabase().getUserSortedById();
       var initialUser = users.firstOrNull;
       if (initialUser != null) {
-        setNewUser(initialUser.id);
+        setCurrentUser(initialUser.id);
         currentUser = initialUser.id;
       }
     }
@@ -49,7 +49,7 @@ class KeyValue {
     return prefs.getString(key);
   }
 
-  static Future<void> setNewUser(value) async {
+  static Future<void> setCurrentUser(value) async {
     var prefs = await Singleton().getPrefInstance();
     prefs.setInt(KeyValueEnum.currentUser.key, value);
   }
