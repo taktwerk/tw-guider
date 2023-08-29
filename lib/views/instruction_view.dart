@@ -14,9 +14,11 @@ import 'package:guider/widgets/tag.dart';
 import 'package:guider/views/feedback_view.dart';
 
 class InstructionView extends StatefulWidget {
-  const InstructionView({super.key, required this.instruction});
+  const InstructionView(
+      {super.key, required this.instruction, required this.open});
 
   final Instruction instruction;
+  final bool open;
 
   @override
   State<InstructionView> createState() => _InstructionViewState();
@@ -52,6 +54,14 @@ class _InstructionViewState extends State<InstructionView> {
     final l = Languages.of(context);
     return Scaffold(
         appBar: AppBar(
+          leading: widget.open
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  icon: const Icon(Icons.close),
+                )
+              : null,
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: StreamBuilder(
               stream: instruction,
@@ -90,15 +100,17 @@ class _InstructionViewState extends State<InstructionView> {
                         child: Column(
                           children: [
                             Text("${l!.categorieButtonText}:"),
-                            _categories!.isEmpty
-                                ? const Text("---")
-                                : Wrap(
-                                    children: List.generate(
-                                        _categories!.length,
-                                        (index) => TagContainer(
-                                            child: getTagContent(
-                                                _categories![index].name))),
-                                  ),
+                            _categories != null
+                                ? _categories!.isEmpty
+                                    ? const Text("---")
+                                    : Wrap(
+                                        children: List.generate(
+                                            _categories!.length,
+                                            (index) => TagContainer(
+                                                child: getTagContent(
+                                                    _categories![index].name))),
+                                      )
+                                : const CircularProgressIndicator(),
                             Text(
                                 "${l.shortTitle}: ${snapshot.data!.first.shortTitle}"),
                             const SizedBox(height: 10),

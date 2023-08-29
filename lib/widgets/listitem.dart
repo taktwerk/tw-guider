@@ -5,8 +5,6 @@ import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
-import 'package:guider/main.dart';
-import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/instruction_view.dart';
 
 class ListItem extends StatelessWidget {
@@ -29,8 +27,10 @@ class ListItem extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    InstructionView(instruction: _instruction)),
+                builder: (context) => InstructionView(
+                      instruction: _instruction,
+                      open: false,
+                    )),
           );
         },
         child: SizedBox(
