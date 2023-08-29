@@ -2590,6 +2590,12 @@ class Histories extends Table with TableInfo<Histories, History> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: '');
+  static const VerificationMeta _openMeta = const VerificationMeta('open');
+  late final GeneratedColumn<bool> open = GeneratedColumn<bool>(
+      'open', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
   List<GeneratedColumn> get $columns => [
         userId,
@@ -2600,7 +2606,8 @@ class Histories extends Table with TableInfo<Histories, History> {
         updatedBy,
         deletedAt,
         deletedBy,
-        instructionStepId
+        instructionStepId,
+        open
       ];
   @override
   String get aliasedName => _alias ?? 'histories';
@@ -2663,6 +2670,12 @@ class Histories extends Table with TableInfo<Histories, History> {
           instructionStepId.isAcceptableOrUnknown(
               data['instruction_step_id']!, _instructionStepIdMeta));
     }
+    if (data.containsKey('open')) {
+      context.handle(
+          _openMeta, open.isAcceptableOrUnknown(data['open']!, _openMeta));
+    } else if (isInserting) {
+      context.missing(_openMeta);
+    }
     return context;
   }
 
@@ -2690,6 +2703,8 @@ class Histories extends Table with TableInfo<Histories, History> {
           .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
       instructionStepId: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}instruction_step_id']),
+      open: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}open'])!,
     );
   }
 
@@ -2719,6 +2734,7 @@ class History extends DataClass implements Insertable<History> {
   final DateTime? deletedAt;
   final int? deletedBy;
   final int? instructionStepId;
+  final bool open;
   const History(
       {required this.userId,
       required this.instructionId,
@@ -2728,7 +2744,8 @@ class History extends DataClass implements Insertable<History> {
       required this.updatedBy,
       this.deletedAt,
       this.deletedBy,
-      this.instructionStepId});
+      this.instructionStepId,
+      required this.open});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2747,6 +2764,7 @@ class History extends DataClass implements Insertable<History> {
     if (!nullToAbsent || instructionStepId != null) {
       map['instruction_step_id'] = Variable<int>(instructionStepId);
     }
+    map['open'] = Variable<bool>(open);
     return map;
   }
 
@@ -2767,6 +2785,7 @@ class History extends DataClass implements Insertable<History> {
       instructionStepId: instructionStepId == null && nullToAbsent
           ? const Value.absent()
           : Value(instructionStepId),
+      open: Value(open),
     );
   }
 
@@ -2783,6 +2802,7 @@ class History extends DataClass implements Insertable<History> {
       deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
       deletedBy: serializer.fromJson<int?>(json['deleted_by']),
       instructionStepId: serializer.fromJson<int?>(json['instruction_step_id']),
+      open: serializer.fromJson<bool>(json['open']),
     );
   }
   @override
@@ -2798,6 +2818,7 @@ class History extends DataClass implements Insertable<History> {
       'deleted_at': serializer.toJson<DateTime?>(deletedAt),
       'deleted_by': serializer.toJson<int?>(deletedBy),
       'instruction_step_id': serializer.toJson<int?>(instructionStepId),
+      'open': serializer.toJson<bool>(open),
     };
   }
 
@@ -2810,7 +2831,8 @@ class History extends DataClass implements Insertable<History> {
           int? updatedBy,
           Value<DateTime?> deletedAt = const Value.absent(),
           Value<int?> deletedBy = const Value.absent(),
-          Value<int?> instructionStepId = const Value.absent()}) =>
+          Value<int?> instructionStepId = const Value.absent(),
+          bool? open}) =>
       History(
         userId: userId ?? this.userId,
         instructionId: instructionId ?? this.instructionId,
@@ -2823,6 +2845,7 @@ class History extends DataClass implements Insertable<History> {
         instructionStepId: instructionStepId.present
             ? instructionStepId.value
             : this.instructionStepId,
+        open: open ?? this.open,
       );
   @override
   String toString() {
@@ -2835,14 +2858,15 @@ class History extends DataClass implements Insertable<History> {
           ..write('updatedBy: $updatedBy, ')
           ..write('deletedAt: $deletedAt, ')
           ..write('deletedBy: $deletedBy, ')
-          ..write('instructionStepId: $instructionStepId')
+          ..write('instructionStepId: $instructionStepId, ')
+          ..write('open: $open')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(userId, instructionId, createdAt, createdBy,
-      updatedAt, updatedBy, deletedAt, deletedBy, instructionStepId);
+      updatedAt, updatedBy, deletedAt, deletedBy, instructionStepId, open);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2855,7 +2879,8 @@ class History extends DataClass implements Insertable<History> {
           other.updatedBy == this.updatedBy &&
           other.deletedAt == this.deletedAt &&
           other.deletedBy == this.deletedBy &&
-          other.instructionStepId == this.instructionStepId);
+          other.instructionStepId == this.instructionStepId &&
+          other.open == this.open);
 }
 
 class HistoriesCompanion extends UpdateCompanion<History> {
@@ -2868,6 +2893,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
   final Value<DateTime?> deletedAt;
   final Value<int?> deletedBy;
   final Value<int?> instructionStepId;
+  final Value<bool> open;
   final Value<int> rowid;
   const HistoriesCompanion({
     this.userId = const Value.absent(),
@@ -2879,6 +2905,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
     this.deletedAt = const Value.absent(),
     this.deletedBy = const Value.absent(),
     this.instructionStepId = const Value.absent(),
+    this.open = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HistoriesCompanion.insert({
@@ -2891,13 +2918,15 @@ class HistoriesCompanion extends UpdateCompanion<History> {
     this.deletedAt = const Value.absent(),
     this.deletedBy = const Value.absent(),
     this.instructionStepId = const Value.absent(),
+    required bool open,
     this.rowid = const Value.absent(),
   })  : userId = Value(userId),
         instructionId = Value(instructionId),
         createdAt = Value(createdAt),
         createdBy = Value(createdBy),
         updatedAt = Value(updatedAt),
-        updatedBy = Value(updatedBy);
+        updatedBy = Value(updatedBy),
+        open = Value(open);
   static Insertable<History> custom({
     Expression<int>? userId,
     Expression<int>? instructionId,
@@ -2908,6 +2937,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
     Expression<DateTime>? deletedAt,
     Expression<int>? deletedBy,
     Expression<int>? instructionStepId,
+    Expression<bool>? open,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2920,6 +2950,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
       if (deletedAt != null) 'deleted_at': deletedAt,
       if (deletedBy != null) 'deleted_by': deletedBy,
       if (instructionStepId != null) 'instruction_step_id': instructionStepId,
+      if (open != null) 'open': open,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2934,6 +2965,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
       Value<DateTime?>? deletedAt,
       Value<int?>? deletedBy,
       Value<int?>? instructionStepId,
+      Value<bool>? open,
       Value<int>? rowid}) {
     return HistoriesCompanion(
       userId: userId ?? this.userId,
@@ -2945,6 +2977,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
       deletedAt: deletedAt ?? this.deletedAt,
       deletedBy: deletedBy ?? this.deletedBy,
       instructionStepId: instructionStepId ?? this.instructionStepId,
+      open: open ?? this.open,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2979,6 +3012,9 @@ class HistoriesCompanion extends UpdateCompanion<History> {
     if (instructionStepId.present) {
       map['instruction_step_id'] = Variable<int>(instructionStepId.value);
     }
+    if (open.present) {
+      map['open'] = Variable<bool>(open.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2997,6 +3033,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
           ..write('deletedAt: $deletedAt, ')
           ..write('deletedBy: $deletedBy, ')
           ..write('instructionStepId: $instructionStepId, ')
+          ..write('open: $open, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4150,7 +4187,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   Future<int> updateHistoryEntry(int instructionId, DateTime updatedAt,
       int userId, int createdBy, DateTime createdAt, int updatedBy) {
     return customInsert(
-      'WITH new_id AS (SELECT ?1 AS instruction_id, ?2 AS updated_at) INSERT INTO histories (user_id, instruction_id, created_by, created_at, updated_at, updated_by, instruction_step_id) VALUES (?3, (SELECT instruction_id FROM new_id), ?4, ?5, ?2, ?6, (SELECT i.id FROM instruction_steps AS i WHERE i.step_nr = (SELECT MIN(j.step_nr) FROM instruction_steps AS j WHERE j.instruction_id = (SELECT instruction_id FROM new_id)) AND i.instruction_id = (SELECT instruction_id FROM new_id))) ON CONFLICT (user_id, instruction_id) DO UPDATE SET updated_at = (SELECT updated_at FROM new_id)',
+      'WITH new_id AS (SELECT ?1 AS instruction_id, ?2 AS updated_at) INSERT INTO histories (user_id, instruction_id, created_by, created_at, updated_at, updated_by, instruction_step_id, open) VALUES (?3, (SELECT instruction_id FROM new_id), ?4, ?5, ?2, ?6, (SELECT i.id FROM instruction_steps AS i WHERE i.step_nr = (SELECT MIN(j.step_nr) FROM instruction_steps AS j WHERE j.instruction_id = (SELECT instruction_id FROM new_id)) AND i.instruction_id = (SELECT instruction_id FROM new_id)), FALSE) ON CONFLICT (user_id, instruction_id) DO UPDATE SET updated_at = (SELECT updated_at FROM new_id)',
       variables: [
         Variable<int>(instructionId),
         Variable<DateTime>(updatedAt),
@@ -4161,6 +4198,42 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       ],
       updates: {histories},
     );
+  }
+
+  Selectable<OpenInstructionResult> openInstruction(int userId) {
+    return customSelect(
+        'SELECT * FROM instructions INNER JOIN histories ON instructions.id = histories.instruction_id WHERE histories.user_id = ?1 AND histories.updated_at = (SELECT MAX(updated_at) FROM histories WHERE user_id = ?1) AND instructions.deleted_at IS NULL AND histories.open = TRUE',
+        variables: [
+          Variable<int>(userId)
+        ],
+        readsFrom: {
+          instructions,
+          histories,
+        }).map((QueryRow row) {
+      return OpenInstructionResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        userId: row.read<int>('user_id'),
+        instructionId: row.read<int>('instruction_id'),
+        createdAt1: row.read<DateTime>('created_at'),
+        createdBy1: row.read<int>('created_by'),
+        updatedAt1: row.read<DateTime>('updated_at'),
+        updatedBy1: row.read<int>('updated_by'),
+        deletedAt1: row.readNullable<DateTime>('deleted_at'),
+        deletedBy1: row.readNullable<int>('deleted_by'),
+        instructionStepId: row.readNullable<int>('instruction_step_id'),
+        open: row.read<bool>('open'),
+      );
+    });
   }
 
   @override
@@ -4239,4 +4312,51 @@ abstract class _$AppDatabase extends GeneratedDatabase {
           ),
         ],
       );
+}
+
+class OpenInstructionResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int userId;
+  final int instructionId;
+  final DateTime createdAt1;
+  final int createdBy1;
+  final DateTime updatedAt1;
+  final int updatedBy1;
+  final DateTime? deletedAt1;
+  final int? deletedBy1;
+  final int? instructionStepId;
+  final bool open;
+  OpenInstructionResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.userId,
+    required this.instructionId,
+    required this.createdAt1,
+    required this.createdBy1,
+    required this.updatedAt1,
+    required this.updatedBy1,
+    this.deletedAt1,
+    this.deletedBy1,
+    this.instructionStepId,
+    required this.open,
+  });
 }
