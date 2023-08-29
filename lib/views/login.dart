@@ -39,10 +39,12 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     var result = await Singleton().getDatabase().allUserEntries;
-    setState(() {
-      users = result;
-      selectedItem = result.firstOrNull;
-    });
+    if (mounted) {
+      setState(() {
+        users = result;
+        selectedItem = result.firstOrNull;
+      });
+    }
   }
 
   @override
@@ -93,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 if (users != null) {
                   if (users!.isNotEmpty) {
-                    KeyValue.setNewUser(selectedItem!.id);
+                    KeyValue.setCurrentUser(selectedItem!.id);
                     KeyValue.saveLogin(true);
                     currentUser = selectedItem!.id;
                     Navigator.pushReplacement(
