@@ -144,6 +144,8 @@ class SupabaseToDrift {
     final data =
         await supabase.from('history').select('*').gt('updated_at', lastSynced);
     newLastSynced = DateTime.now().toUtc().toIso8601String();
+
+    await DriftToSupabase.uploadHistory(data);
     int len = data.length;
     for (int i = 0; i < len; i++) {
       var history = data[i];
@@ -158,7 +160,8 @@ class SupabaseToDrift {
                 deletedAt: Value(
                     DateTime.tryParse(history[Const.deletedAt.key] ?? "")),
                 deletedBy: Value(history[Const.deletedBy.key]),
-                instructionStepId: Value(history[Const.instructionStepId.key])),
+                instructionStepId: Value(history[Const.instructionStepId.key]),
+                open: history[Const.open.key]),
           );
     }
     return newLastSynced;
@@ -307,7 +310,7 @@ class SupabaseToDrift {
   }
 
   static Future<void> sync() async {
-    logger.w("Syncing is: ${Singleton().getSyncing()}");
+    // logger.w("Syncing is: ${Singleton().getSyncing()}");
     if (!Singleton().getSyncing()) {
       await Singleton().setSyncing(newSyncing: true);
       await SupabaseToDrift.getUsers().then((value) {
@@ -333,7 +336,7 @@ class SupabaseToDrift {
 
       await SupabaseToDrift.getHistory().then((value) async {
         logger.i("Got history from supabase.");
-        await DriftToSupabase.uploadHistory();
+        // await DriftToSupabase.uploadHistory();
         KeyValue.setNewValue(KeyValueEnum.history.key, value);
       });
 

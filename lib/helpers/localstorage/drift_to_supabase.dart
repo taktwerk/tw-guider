@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -44,14 +45,39 @@ class DriftToSupabase {
     }
   }
 
-  static Future<void> uploadHistory() async {
+  static Future<void> uploadHistory(data) async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.history.key);
     var history = await Singleton()
         .getDatabase()
         .notSyncedHistoryEntries(DateTime.parse(lastSynced!));
-    int len = history.length;
+    logger.w("LOCAL HISTORY $history");
+
+    var filteredHistory = [];
+    for (int i = 0; i < history.length; i++) {
+      var localEntry = history[i];
+      if (data.isNotEmpty) {
+        for (int j = 0; j < data.length; j++) {
+          var entryFromSupabase = data[j];
+          if (entryFromSupabase[Const.userId.key] == localEntry.userId &&
+              entryFromSupabase[Const.instructionId.key] ==
+                  localEntry.instructionId) {
+            if (DateTime.parse(entryFromSupabase[Const.updatedAt.key])
+                    .compareTo(localEntry.updatedAt.toUtc()) <
+                0) {
+              filteredHistory.add(localEntry);
+            }
+          } else {
+            filteredHistory.add(localEntry);
+          }
+        }
+      } else {
+        filteredHistory.add(localEntry);
+      }
+    }
+    logger.w("TO BE UPLOADED $filteredHistory");
+    int len = filteredHistory.length;
     for (int i = 0; i < len; i++) {
-      var historyEntry = history[i];
+      var historyEntry = filteredHistory[i];
       await supabase.from('history').upsert({
         'user_id': historyEntry.userId,
         'instruction_id': historyEntry.instructionId,

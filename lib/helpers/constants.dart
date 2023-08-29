@@ -20,6 +20,7 @@ enum Const {
   role("role"),
   message("message"),
   instructionStepId("instruction_step_id"),
+  open("open"),
   language("language"),
   imagesFolderName("images"),
   instructionStepsImagesFolderName("images/instructionStepsImages"),
