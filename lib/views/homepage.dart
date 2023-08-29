@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/history_view.dart';
+import 'package:guider/views/instruction_view.dart';
 import 'package:guider/views/login.dart';
 import 'package:guider/views/settings_view.dart';
 import 'package:guider/views/home_view.dart';
@@ -21,6 +23,16 @@ class _MyHomePageState extends State<MyHomePage>
   late TabController tabController;
   List<User>? users;
   final usersStream = Singleton().getDatabase().allUserEntriesAsStream;
+  Stream histStream = Realtime.getHistoryStream();
+  List<Instruction>? openHistory;
+  BuildContext? oldDialogContext;
+
+  onDismiss() {
+    if (oldDialogContext != null) {
+      Navigator.of(oldDialogContext!).pop();
+    }
+    oldDialogContext = null;
+  }
 
   @override
   void initState() {
@@ -33,6 +45,41 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Future getUsers() async {
+    histStream.listen(
+      (event) async {
+        await Realtime.sync();
+        if (currentUser != null) {
+          var newestMostRecent = await Singleton()
+              .getDatabase()
+              .getInstructionToOpen(currentUser!);
+          logger.w("GOT EVENT");
+
+          if (mounted) {
+            if (newestMostRecent.isNotEmpty) {
+              if (oldDialogContext != null) {
+                onDismiss();
+              }
+              logger.w("EVENT $newestMostRecent");
+              bool? results =
+                  await Navigator.of(context).push(MaterialPageRoute<bool>(
+                      builder: (BuildContext dialogContext) {
+                        oldDialogContext = dialogContext;
+                        return InstructionView(
+                            instruction: newestMostRecent.first, open: true);
+                      },
+                      fullscreenDialog: true));
+              if (results != null && !results) {
+                oldDialogContext = null;
+              }
+            }
+          }
+        }
+      },
+      onError: (e, s) {
+        //logger.e('realtime 1 error: $e \ns:$s');
+        if (e.toString() == '' || e.toString() == '{}') return;
+      },
+    );
     var result = await Singleton().getDatabase().allUserEntries;
     setState(() {
       users = result;
@@ -90,7 +137,8 @@ class _MyHomePageState extends State<MyHomePage>
                             onTap: () {
                               setState(() {
                                 currentUser = snapshot.data![index].id;
-                                KeyValue.setNewUser(snapshot.data![index].id);
+                                KeyValue.setCurrentUser(
+                                    snapshot.data![index].id);
                               });
                               logger.i("Selected user $currentUser");
                             },
@@ -111,6 +159,8 @@ class _MyHomePageState extends State<MyHomePage>
                             onTap: () async {
                               logger.i("Logged out");
                               currentUser = null;
+                              var prefs = await Singleton().getPrefInstance();
+                              prefs.remove(KeyValueEnum.currentUser.key);
                               await KeyValue.saveLogin(false)
                                   .then((value) => Navigator.pushReplacement(
                                         context,

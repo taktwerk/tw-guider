@@ -10,7 +10,6 @@ class Realtime {
     list.add(getInstructionStream());
     list.add(getCategoryStream());
     list.add(getFeedbackStream());
-    list.add(getHistoryStream());
     list.add(getInstructionStepStream());
     list.add(getInstructionCategoryStream());
     list.add(getSettingStream());
@@ -20,6 +19,7 @@ class Realtime {
 
   static Future<void> sync() async {
     try {
+      //logger.w("User was $currentUser REALTIME");
       if (currentUser != null) {
         var setting = await Singleton().getDatabase().getRealtime(currentUser!);
         var realtime = setting.firstOrNull?.realtime;
@@ -39,7 +39,7 @@ class Realtime {
                 sync();
               },
               onError: (e, s) {
-                // logger.e('realtime 1 error: $e \ns:$s');
+                //logger.e('realtime 1 error: $e \ns:$s');
                 if (e.toString() == '' || e.toString() == '{}') return;
               },
             );
@@ -74,20 +74,13 @@ class Realtime {
     return sup;
   }
 
-  static StreamSubscription getHistoryStream() {
+  static Stream getHistoryStream() {
     final sup = supabase
         .from('history')
         .stream(primaryKey: ['user_id', 'instruction_id'])
         .limit(1)
-        .listen(
-          (event) async {
-            sync();
-          },
-          onError: (e, s) {
-            //logger.e('realtime 1 error: $e \ns:$s');
-            if (e.toString() == '' || e.toString() == '{}') return;
-          },
-        );
+        .eq('user_id', currentUser);
+
     return sup;
   }
 
