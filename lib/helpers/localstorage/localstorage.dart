@@ -193,6 +193,21 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
+  Future<List<Instruction>> getInstructionToOpen(int userId) {
+    return openInstruction(userId)
+        .map((p) => Instruction(
+            id: p.id,
+            title: p.title,
+            shortTitle: p.shortTitle,
+            image: p.image,
+            description: p.description,
+            createdAt: p.createdAt,
+            createdBy: p.createdBy,
+            updatedAt: p.updatedAt,
+            updatedBy: p.updatedBy))
+        .get();
+  }
+
   // TABLE: Instruction_Category
   Future<void> insertMultipleInstructionCategories(
       List<Insertable<InstructionCategory>> list) async {
