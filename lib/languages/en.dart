@@ -85,7 +85,7 @@ class LanguageEn extends Languages {
   String get synchronize => "Synchronize";
 
   @override
-  String get noInstructionsAvailable => "No instructions available.";
+  String get noInstructionsAvailable => "No instructionsteps available.";
 
   @override
   String get noHistoryAvailable => "No history available.";

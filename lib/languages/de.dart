@@ -85,7 +85,7 @@ class LanguageDe extends Languages {
   String get synchronize => "Synchronisieren";
 
   @override
-  String get noInstructionsAvailable => "Keine Anleitungen verfügbar.";
+  String get noInstructionsAvailable => "Keine Anleitungsschritte verfügbar.";
 
   @override
   String get noHistoryAvailable => "Kein Verlauf verfügbar.";
