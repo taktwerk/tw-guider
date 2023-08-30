@@ -64,8 +64,6 @@ class _FeedbackViewState extends State<FeedbackView> {
 
       setState(() {});
     } else {
-      logger.i("Desktop image.");
-
       const XTypeGroup typeGroup = XTypeGroup(
         label: 'images',
         extensions: <String>['jpg', 'png'],
@@ -151,7 +149,6 @@ class _FeedbackViewState extends State<FeedbackView> {
               String? url;
               if (_imagesBytes != null) {
                 String xidImage = Xid().toString();
-                logger.i("xidImage $xidImage");
                 url =
                     "${Const.supabaseBucketUrl.key}$xidImage.png"; // TODO: png
                 Singleton().getDatabase().insertFeedbackImageBytes(

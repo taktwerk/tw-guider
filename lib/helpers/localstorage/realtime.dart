@@ -19,7 +19,6 @@ class Realtime {
 
   static Future<void> sync() async {
     try {
-      //logger.w("User was $currentUser REALTIME");
       if (currentUser != null) {
         var setting = await Singleton().getDatabase().getRealtime(currentUser!);
         var realtime = setting.firstOrNull?.realtime;
@@ -39,7 +38,6 @@ class Realtime {
                 sync();
               },
               onError: (e, s) {
-                //logger.e('realtime 1 error: $e \ns:$s');
                 if (e.toString() == '' || e.toString() == '{}') return;
               },
             );
@@ -53,7 +51,6 @@ class Realtime {
                 sync();
               },
               onError: (e, s) {
-                //logger.e('realtime 1 error: $e \ns:$s');
                 if (e.toString() == '' || e.toString() == '{}') return;
               },
             );
@@ -67,7 +64,6 @@ class Realtime {
                 sync();
               },
               onError: (e, s) {
-                //logger.e('realtime 1 error: $e \ns:$s');
                 if (e.toString() == '' || e.toString() == '{}') return;
               },
             );
@@ -94,7 +90,6 @@ class Realtime {
             sync();
           },
           onError: (e, s) {
-            //logger.e('realtime 1 error: $e \ns:$s');
             if (e.toString() == '' || e.toString() == '{}') return;
           },
         );
@@ -111,7 +106,6 @@ class Realtime {
             sync();
           },
           onError: (e, s) {
-            //logger.e('realtime 1 error: $e \ns:$s');
             if (e.toString() == '' || e.toString() == '{}') return;
           },
         );
@@ -128,7 +122,6 @@ class Realtime {
             sync();
           },
           onError: (e, s) {
-            //logger.e('realtime 1 error: $e \ns:$s');
             if (e.toString() == '' || e.toString() == '{}') return;
           },
         );
@@ -142,7 +135,6 @@ class Realtime {
                 sync();
               },
               onError: (e, s) {
-                //logger.e('realtime 1 error: $e \ns:$s');
                 if (e.toString() == '' || e.toString() == '{}') return;
               },
             );

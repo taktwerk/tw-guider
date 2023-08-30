@@ -16,10 +16,8 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<Languages> {
   static Future<Languages> _load(Locale locale) async {
     switch (locale.languageCode) {
       case 'en':
-        logger.i("changed to EN");
         return LanguageEn();
       case 'de':
-        logger.i("changed to DE");
         return LanguageDe();
       default:
         return LanguageEn();

@@ -29,8 +29,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   StreamSubscription? languageSubscription;
 
   Future<void> setInitSettings() async {
-    logger.i("Set language");
-
     if (currentUser != null) {
       languageSubscription =
           Singleton().getDatabase().getSettings(currentUser!).listen((event) {

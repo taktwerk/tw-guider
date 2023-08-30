@@ -60,8 +60,6 @@ class _MyHomePageState extends State<MyHomePage>
           var newestMostRecent = await Singleton()
               .getDatabase()
               .getInstructionToOpen(currentUser!);
-          logger.w("GOT EVENT");
-
           if (mounted) {
             if (newestMostRecent.isNotEmpty) {
               if (oldDialogContext != null) {
@@ -92,7 +90,6 @@ class _MyHomePageState extends State<MyHomePage>
         }
       },
       onError: (e, s) {
-        //logger.e('realtime 1 error: $e \ns:$s');
         if (e.toString() == '' || e.toString() == '{}') return;
       },
     );
@@ -152,7 +149,6 @@ class _MyHomePageState extends State<MyHomePage>
                                 KeyValue.setCurrentUser(
                                     snapshot.data![index].id);
                               });
-                              logger.i("Selected user $currentUser");
                             },
                             child: Center(
                                 child:

@@ -124,7 +124,6 @@ class AppDatabase extends _$AppDatabase {
 
   Stream<List<InstructionStep>> getLastVisitedStep(
       {required int instructionId, required int userId}) {
-    logger.w("Instruction Id $instructionId, UserID $userId");
     final query = select(instructionSteps).join([
       innerJoin(
           histories, instructionSteps.id.equalsExp(histories.instructionStepId),

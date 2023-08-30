@@ -88,8 +88,6 @@ class Search {
     for (final value in data) {
       instructions.add(value['instruction']);
     }
-    logger.d(instructions);
-    logger.d("History: ${_mapToInstructions(instructions)}");
     return _mapToInstructions(instructions);
   }
 
@@ -103,7 +101,6 @@ class Search {
     final steps = [data[0]['instruction_step']];
     final List<InstructionStep> instructionSteps =
         _mapToInstructionSteps(steps);
-    logger.d("Last visited step: $instructionSteps");
     return instructionSteps[0];
   }
 

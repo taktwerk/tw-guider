@@ -39,8 +39,6 @@ class DriftToSupabase {
           .uploadBinary("${image.imageXid}.png", base64.decode(image.image),
               fileOptions:
                   const FileOptions(cacheControl: '3600', upsert: false));
-      logger.i("Path of uploaded image: $path");
-
       await Singleton().getDatabase().deleteBytesEntry(image.feedbackId);
     }
   }
@@ -50,8 +48,6 @@ class DriftToSupabase {
     var history = await Singleton()
         .getDatabase()
         .notSyncedHistoryEntries(DateTime.parse(lastSynced!));
-    logger.w("LOCAL HISTORY $history");
-
     var filteredHistory = [];
     for (int i = 0; i < history.length; i++) {
       var localEntry = history[i];
@@ -74,7 +70,6 @@ class DriftToSupabase {
         filteredHistory.add(localEntry);
       }
     }
-    logger.w("TO BE UPLOADED $filteredHistory");
     int len = filteredHistory.length;
     for (int i = 0; i < len; i++) {
       var historyEntry = filteredHistory[i];

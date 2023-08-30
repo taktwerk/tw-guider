@@ -39,7 +39,6 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
 
   @override
   void dispose() {
-    logger.w("DISPOSED");
     _subscription?.cancel();
     super.dispose();
   }

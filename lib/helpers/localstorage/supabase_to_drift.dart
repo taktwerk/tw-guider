@@ -272,7 +272,6 @@ class SupabaseToDrift {
   static Future<void> initializeUsers() async {
     await SupabaseToDrift.getUsers().then(
       (value) async {
-        logger.i("Got users from supabase. (INIT)");
         KeyValue.setNewValue(KeyValueEnum.user.key, value);
       },
     );
@@ -281,7 +280,6 @@ class SupabaseToDrift {
   static Future<void> initializeSettings() async {
     await SupabaseToDrift.getSettings().then(
       (value) async {
-        logger.i("Got settings from supabase. (INIT)");
         KeyValue.setNewValue(KeyValueEnum.setting.key, value);
       },
     );
@@ -314,57 +312,45 @@ class SupabaseToDrift {
   }
 
   static Future<void> sync() async {
-    // logger.w("Syncing is: ${Singleton().getSyncing()}");
     if (!Singleton().getSyncing()) {
       await Singleton().setSyncing(newSyncing: true);
       await SupabaseToDrift.getUsers().then((value) {
-        logger.i("Got users from supabase.");
         KeyValue.setNewValue(KeyValueEnum.user.key, value);
         KeyValue.setInitialUser();
       });
 
       await SupabaseToDrift.getAllInstructions().then((value) {
-        logger.i("Got instructions from supabase.");
         KeyValue.setNewValue(KeyValueEnum.instruction.key, value);
       });
 
       await SupabaseToDrift.getAllInstructionSteps().then((value) {
-        logger.i("Got instructionsteps from supabase.");
         KeyValue.setNewValue(KeyValueEnum.steps.key, value);
       });
 
       await SupabaseToDrift.getAllCategories().then((value) {
-        logger.i("Got categories from supabase.");
         KeyValue.setNewValue(KeyValueEnum.category.key, value);
       });
 
       await SupabaseToDrift.getHistory().then((value) async {
-        logger.i("Got history from supabase.");
-        // await DriftToSupabase.uploadHistory();
         KeyValue.setNewValue(KeyValueEnum.history.key, value);
       });
 
       await SupabaseToDrift.getInstructionsCategories().then((value) {
-        logger.i("Got instructions-categories from supabase.");
         KeyValue.setNewValue(KeyValueEnum.instructionCategory.key, value);
       });
 
       await DriftToSupabase.uploadFeedbackImages();
 
       await SupabaseToDrift.getFeedback().then((value) async {
-        logger.i("Got feedback from supabase.");
         await DriftToSupabase.uploadFeedback();
         KeyValue.setNewValue(KeyValueEnum.feedback.key, value);
       });
 
       await SupabaseToDrift.getSettings().then((value) async {
-        logger.i("Got settings from supabase.");
         await DriftToSupabase.uploadSettings();
         KeyValue.setNewValue(KeyValueEnum.setting.key, value);
       });
       await Singleton().setSyncing(newSyncing: false);
-    } else {
-      logger.w("ALREADY SYNCING");
     }
   }
 }

@@ -95,7 +95,6 @@ class _GuiderAppState extends State<GuiderApp> {
 
   checkUserLoginState() async {
     await KeyValue.getLogin().then((value) {
-      logger.i("Login was $value");
       setState(() {
         islogin = value;
       });
