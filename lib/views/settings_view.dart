@@ -8,6 +8,7 @@ import 'package:guider/languages/languages.dart';
 import 'package:guider/languages/supported_languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
+import 'package:guider/views/login.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -150,6 +151,27 @@ class _SettingsViewState extends State<SettingsView> {
                 },
                 icon: const Icon(Icons.storage),
                 label: const Text("DB")),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5),
+            child: ElevatedButton.icon(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll<Color>(Colors.red)),
+                onPressed: () async {
+                  logger.i("Logged out");
+                  currentUser = null;
+                  var prefs = await Singleton().getPrefInstance();
+                  prefs.remove(KeyValueEnum.currentUser.key);
+                  await KeyValue.saveLogin(false)
+                      .then((value) => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()),
+                          ));
+                },
+                icon: const Icon(Icons.logout),
+                label: const Text("Logout")),
           ),
         ],
       ),
