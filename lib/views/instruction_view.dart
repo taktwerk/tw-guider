@@ -118,7 +118,7 @@ class _InstructionViewState extends State<InstructionView> {
                                       )
                                 : const CircularProgressIndicator(),
                             Text("${l.shortTitle}: ${data.shortTitle}"),
-                            widget.open
+                            widget.open && widget.additionalData != "null"
                                 ? buildTable(widget.additionalData)
                                 : Container(),
                             Text(l.description),
