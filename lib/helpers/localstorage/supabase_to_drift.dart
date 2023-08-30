@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:guider/helpers/constants.dart';
@@ -33,19 +34,20 @@ class SupabaseToDrift {
         }
       }
       instructionBatch.add(InstructionsCompanion.insert(
-        id: Value(instruction[Const.id.key]),
-        title: instruction[Const.title.key],
-        shortTitle: instruction[Const.shortTitle.key],
-        image: instruction[Const.image.key],
-        description: instruction[Const.description.key],
-        createdAt: DateTime.parse(instruction[Const.createdAt.key]),
-        createdBy: instruction[Const.createdBy.key],
-        updatedAt: DateTime.parse(instruction[Const.updatedAt.key]),
-        updatedBy: instruction[Const.updatedBy.key],
-        deletedAt:
-            Value(DateTime.tryParse(instruction[Const.deletedAt.key] ?? "")),
-        deletedBy: Value(instruction[Const.deletedBy.key]),
-      ));
+          id: Value(instruction[Const.id.key]),
+          title: instruction[Const.title.key],
+          shortTitle: instruction[Const.shortTitle.key],
+          image: instruction[Const.image.key],
+          description: instruction[Const.description.key],
+          createdAt: DateTime.parse(instruction[Const.createdAt.key]),
+          createdBy: instruction[Const.createdBy.key],
+          updatedAt: DateTime.parse(instruction[Const.updatedAt.key]),
+          updatedBy: instruction[Const.updatedBy.key],
+          deletedAt:
+              Value(DateTime.tryParse(instruction[Const.deletedAt.key] ?? "")),
+          deletedBy: Value(instruction[Const.deletedBy.key]),
+          additionalData:
+              Value(jsonEncode(instruction[Const.additionalData.key]))));
     }
     await Singleton()
         .getDatabase()

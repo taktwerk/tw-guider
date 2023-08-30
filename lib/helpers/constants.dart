@@ -7,6 +7,7 @@ enum Const {
   deletedAt("deleted_at"),
   deletedBy("deleted_by"),
   realtime("realtime"),
+  additionalData("additional_data"),
   userId("user_id"),
   instructionId("instruction_id"),
   stepNr("step_nr"),
