@@ -111,10 +111,9 @@ class _MyHomePageState extends State<MyHomePage>
     ];
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("${myTabs[tabController.index].text}"),
         bottom: TabBar(controller: tabController, tabs: myTabs),
-        actions: [getUserPopup()],
+        // actions: [getUserPopup()],
       ),
       body: TabBarView(
         controller: tabController,

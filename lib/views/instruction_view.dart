@@ -67,7 +67,6 @@ class _InstructionViewState extends State<InstructionView> {
                   icon: const Icon(Icons.close),
                 )
               : null,
-          // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: StreamBuilder(
               stream: instruction,
               builder: (BuildContext context,
