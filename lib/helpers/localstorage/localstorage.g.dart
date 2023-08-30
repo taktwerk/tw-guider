@@ -3602,6 +3602,13 @@ class Settings extends Table with TableInfo<Settings, Setting> {
       type: DriftSqlType.bool,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  static const VerificationMeta _lightmodeMeta =
+      const VerificationMeta('lightmode');
+  late final GeneratedColumn<bool> lightmode = GeneratedColumn<bool>(
+      'lightmode', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
   List<GeneratedColumn> get $columns => [
         userId,
@@ -3612,7 +3619,8 @@ class Settings extends Table with TableInfo<Settings, Setting> {
         updatedBy,
         deletedAt,
         deletedBy,
-        realtime
+        realtime,
+        lightmode
       ];
   @override
   String get aliasedName => _alias ?? 'settings';
@@ -3671,6 +3679,12 @@ class Settings extends Table with TableInfo<Settings, Setting> {
     } else if (isInserting) {
       context.missing(_realtimeMeta);
     }
+    if (data.containsKey('lightmode')) {
+      context.handle(_lightmodeMeta,
+          lightmode.isAcceptableOrUnknown(data['lightmode']!, _lightmodeMeta));
+    } else if (isInserting) {
+      context.missing(_lightmodeMeta);
+    }
     return context;
   }
 
@@ -3698,6 +3712,8 @@ class Settings extends Table with TableInfo<Settings, Setting> {
           .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
       realtime: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}realtime'])!,
+      lightmode: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}lightmode'])!,
     );
   }
 
@@ -3725,6 +3741,7 @@ class Setting extends DataClass implements Insertable<Setting> {
   final DateTime? deletedAt;
   final int? deletedBy;
   final bool realtime;
+  final bool lightmode;
   const Setting(
       {required this.userId,
       required this.language,
@@ -3734,7 +3751,8 @@ class Setting extends DataClass implements Insertable<Setting> {
       required this.updatedBy,
       this.deletedAt,
       this.deletedBy,
-      required this.realtime});
+      required this.realtime,
+      required this.lightmode});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3751,6 +3769,7 @@ class Setting extends DataClass implements Insertable<Setting> {
       map['deleted_by'] = Variable<int>(deletedBy);
     }
     map['realtime'] = Variable<bool>(realtime);
+    map['lightmode'] = Variable<bool>(lightmode);
     return map;
   }
 
@@ -3769,6 +3788,7 @@ class Setting extends DataClass implements Insertable<Setting> {
           ? const Value.absent()
           : Value(deletedBy),
       realtime: Value(realtime),
+      lightmode: Value(lightmode),
     );
   }
 
@@ -3785,6 +3805,7 @@ class Setting extends DataClass implements Insertable<Setting> {
       deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
       deletedBy: serializer.fromJson<int?>(json['deleted_by']),
       realtime: serializer.fromJson<bool>(json['realtime']),
+      lightmode: serializer.fromJson<bool>(json['lightmode']),
     );
   }
   @override
@@ -3800,6 +3821,7 @@ class Setting extends DataClass implements Insertable<Setting> {
       'deleted_at': serializer.toJson<DateTime?>(deletedAt),
       'deleted_by': serializer.toJson<int?>(deletedBy),
       'realtime': serializer.toJson<bool>(realtime),
+      'lightmode': serializer.toJson<bool>(lightmode),
     };
   }
 
@@ -3812,7 +3834,8 @@ class Setting extends DataClass implements Insertable<Setting> {
           int? updatedBy,
           Value<DateTime?> deletedAt = const Value.absent(),
           Value<int?> deletedBy = const Value.absent(),
-          bool? realtime}) =>
+          bool? realtime,
+          bool? lightmode}) =>
       Setting(
         userId: userId ?? this.userId,
         language: language ?? this.language,
@@ -3823,6 +3846,7 @@ class Setting extends DataClass implements Insertable<Setting> {
         deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
         deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
         realtime: realtime ?? this.realtime,
+        lightmode: lightmode ?? this.lightmode,
       );
   @override
   String toString() {
@@ -3835,14 +3859,15 @@ class Setting extends DataClass implements Insertable<Setting> {
           ..write('updatedBy: $updatedBy, ')
           ..write('deletedAt: $deletedAt, ')
           ..write('deletedBy: $deletedBy, ')
-          ..write('realtime: $realtime')
+          ..write('realtime: $realtime, ')
+          ..write('lightmode: $lightmode')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(userId, language, createdAt, createdBy,
-      updatedAt, updatedBy, deletedAt, deletedBy, realtime);
+      updatedAt, updatedBy, deletedAt, deletedBy, realtime, lightmode);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3855,7 +3880,8 @@ class Setting extends DataClass implements Insertable<Setting> {
           other.updatedBy == this.updatedBy &&
           other.deletedAt == this.deletedAt &&
           other.deletedBy == this.deletedBy &&
-          other.realtime == this.realtime);
+          other.realtime == this.realtime &&
+          other.lightmode == this.lightmode);
 }
 
 class SettingsCompanion extends UpdateCompanion<Setting> {
@@ -3868,6 +3894,7 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
   final Value<DateTime?> deletedAt;
   final Value<int?> deletedBy;
   final Value<bool> realtime;
+  final Value<bool> lightmode;
   const SettingsCompanion({
     this.userId = const Value.absent(),
     this.language = const Value.absent(),
@@ -3878,6 +3905,7 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     this.deletedAt = const Value.absent(),
     this.deletedBy = const Value.absent(),
     this.realtime = const Value.absent(),
+    this.lightmode = const Value.absent(),
   });
   SettingsCompanion.insert({
     this.userId = const Value.absent(),
@@ -3889,12 +3917,14 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     this.deletedAt = const Value.absent(),
     this.deletedBy = const Value.absent(),
     required bool realtime,
+    required bool lightmode,
   })  : language = Value(language),
         createdAt = Value(createdAt),
         createdBy = Value(createdBy),
         updatedAt = Value(updatedAt),
         updatedBy = Value(updatedBy),
-        realtime = Value(realtime);
+        realtime = Value(realtime),
+        lightmode = Value(lightmode);
   static Insertable<Setting> custom({
     Expression<int>? userId,
     Expression<String>? language,
@@ -3905,6 +3935,7 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     Expression<DateTime>? deletedAt,
     Expression<int>? deletedBy,
     Expression<bool>? realtime,
+    Expression<bool>? lightmode,
   }) {
     return RawValuesInsertable({
       if (userId != null) 'user_id': userId,
@@ -3916,6 +3947,7 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
       if (deletedAt != null) 'deleted_at': deletedAt,
       if (deletedBy != null) 'deleted_by': deletedBy,
       if (realtime != null) 'realtime': realtime,
+      if (lightmode != null) 'lightmode': lightmode,
     });
   }
 
@@ -3928,7 +3960,8 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
       Value<int>? updatedBy,
       Value<DateTime?>? deletedAt,
       Value<int?>? deletedBy,
-      Value<bool>? realtime}) {
+      Value<bool>? realtime,
+      Value<bool>? lightmode}) {
     return SettingsCompanion(
       userId: userId ?? this.userId,
       language: language ?? this.language,
@@ -3939,6 +3972,7 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
       deletedAt: deletedAt ?? this.deletedAt,
       deletedBy: deletedBy ?? this.deletedBy,
       realtime: realtime ?? this.realtime,
+      lightmode: lightmode ?? this.lightmode,
     );
   }
 
@@ -3972,6 +4006,9 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     if (realtime.present) {
       map['realtime'] = Variable<bool>(realtime.value);
     }
+    if (lightmode.present) {
+      map['lightmode'] = Variable<bool>(lightmode.value);
+    }
     return map;
   }
 
@@ -3986,7 +4023,8 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
           ..write('updatedBy: $updatedBy, ')
           ..write('deletedAt: $deletedAt, ')
           ..write('deletedBy: $deletedBy, ')
-          ..write('realtime: $realtime')
+          ..write('realtime: $realtime, ')
+          ..write('lightmode: $lightmode')
           ..write(')'))
         .toString();
   }
