@@ -42,9 +42,17 @@ class _MyHomePageState extends State<MyHomePage>
       setState(() {});
     });
     getUsers();
+    initHistoryStream();
   }
 
   Future getUsers() async {
+    var result = await Singleton().getDatabase().allUserEntries;
+    setState(() {
+      users = result;
+    });
+  }
+
+  void initHistoryStream() {
     histStream.listen(
       (event) async {
         await Realtime.sync();
@@ -63,18 +71,21 @@ class _MyHomePageState extends State<MyHomePage>
                   .getDatabase()
                   .getUserHistory(currentUser!, newestMostRecent.first.id);
               logger.w("EVENT $newestMostRecent");
-              bool? results =
-                  await Navigator.of(context).push(MaterialPageRoute<bool>(
-                      builder: (BuildContext dialogContext) {
-                        oldDialogContext = dialogContext;
-                        return InstructionView(
-                            instruction: newestMostRecent.first,
-                            open: true,
-                            additionalData: historyEntry.first.additionalData);
-                      },
-                      fullscreenDialog: true));
-              if (results != null && !results) {
-                oldDialogContext = null;
+              if (mounted) {
+                bool? results =
+                    await Navigator.of(context).push(MaterialPageRoute<bool>(
+                        builder: (BuildContext dialogContext) {
+                          oldDialogContext = dialogContext;
+                          return InstructionView(
+                              instruction: newestMostRecent.first,
+                              open: true,
+                              additionalData:
+                                  historyEntry.first.additionalData);
+                        },
+                        fullscreenDialog: true));
+                if (results != null && !results) {
+                  oldDialogContext = null;
+                }
               }
             }
           }
@@ -85,10 +96,6 @@ class _MyHomePageState extends State<MyHomePage>
         if (e.toString() == '' || e.toString() == '{}') return;
       },
     );
-    var result = await Singleton().getDatabase().allUserEntries;
-    setState(() {
-      users = result;
-    });
   }
 
   @override
