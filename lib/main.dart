@@ -53,12 +53,18 @@ class GuiderApp extends StatefulWidget {
     state!.setLocale(newLocale);
   }
 
+  static void setTheme(BuildContext context, ThemeMode theme) {
+    var state = context.findAncestorStateOfType<_GuiderAppState>();
+    state!.setTheme(theme);
+  }
+
   @override
   State<StatefulWidget> createState() => _GuiderAppState();
 }
 
 class _GuiderAppState extends State<GuiderApp> {
   Locale? _locale;
+  ThemeMode? _theme;
   late StreamSubscription<ConnectivityResult> subscription;
   bool? islogin;
   List<StreamSubscription> list = Realtime.init();
@@ -66,6 +72,12 @@ class _GuiderAppState extends State<GuiderApp> {
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
+    });
+  }
+
+  void setTheme(ThemeMode theme) {
+    setState(() {
+      _theme = theme;
     });
   }
 
@@ -129,7 +141,10 @@ class _GuiderAppState extends State<GuiderApp> {
       },
       debugShowCheckedModeBanner: false,
       title: 'Guider',
+      darkTheme: ThemeData(brightness: Brightness.dark, useMaterial3: true),
+      themeMode: _theme ?? ThemeMode.system,
       theme: ThemeData(
+        brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 92, 172, 252)),
         useMaterial3: true,

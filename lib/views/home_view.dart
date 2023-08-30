@@ -28,7 +28,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription? languageSubscription;
 
-  Future<void> setLanguage() async {
+  Future<void> setInitSettings() async {
     logger.i("Set language");
 
     if (currentUser != null) {
@@ -37,6 +37,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
         if (event.isNotEmpty) {
           GuiderApp.setLocale(
               context, Locale.fromSubtags(languageCode: event.first.language));
+          GuiderApp.setTheme(context,
+              event.first.lightmode ? ThemeMode.light : ThemeMode.dark);
         }
       });
     }
@@ -45,7 +47,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   @override
   void initState() {
     super.initState();
-    setLanguage();
+    setInitSettings();
   }
 
   Future<void> sync() async {
