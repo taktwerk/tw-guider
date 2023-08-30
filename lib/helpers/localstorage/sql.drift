@@ -25,7 +25,6 @@ create table
     updated_by bigint not null,
     deleted_at dateTime null,
     deleted_by bigint null,
-    additional_data character null,
     constraint instruction_pkey primary key (id)
   );
 
@@ -60,6 +59,7 @@ create table
     deleted_by bigint null,
     instruction_step_id bigint null,
     open bool not null,
+    additional_data character null,
     constraint history_pkey primary key (user_id, instruction_id),
     constraint history_instruction_id_fkey foreign key (instruction_id) references instructions (id) on delete cascade,
     constraint history_instruction_step_id_fkey foreign key (instruction_step_id) references instruction_steps (id) on delete cascade,

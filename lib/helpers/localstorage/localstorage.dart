@@ -176,6 +176,12 @@ class AppDatabase extends _$AppDatabase {
     return query.map((row) => row.readTable(instructions)).watch();
   }
 
+  Future<List<History>> getUserHistory(int givenUserId, int instructionId) =>
+      (select(histories)
+            ..where((t) => t.userId.equals(givenUserId))
+            ..where((t) => t.instructionId.equals(instructionId)))
+          .get();
+
   Future<int> setNewStep(
           {required int userId,
           required int instructionId,

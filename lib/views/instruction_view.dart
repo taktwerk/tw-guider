@@ -16,10 +16,14 @@ import 'package:guider/views/feedback_view.dart';
 
 class InstructionView extends StatefulWidget {
   const InstructionView(
-      {super.key, required this.instruction, required this.open});
+      {super.key,
+      required this.instruction,
+      required this.open,
+      required this.additionalData});
 
   final Instruction instruction;
   final bool open;
+  final String? additionalData;
 
   @override
   State<InstructionView> createState() => _InstructionViewState();
@@ -63,7 +67,7 @@ class _InstructionViewState extends State<InstructionView> {
                   icon: const Icon(Icons.close),
                 )
               : null,
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: StreamBuilder(
               stream: instruction,
               builder: (BuildContext context,
@@ -114,8 +118,8 @@ class _InstructionViewState extends State<InstructionView> {
                                       )
                                 : const CircularProgressIndicator(),
                             Text("${l.shortTitle}: ${data.shortTitle}"),
-                            data.additionalData != "null"
-                                ? buildTable(data)
+                            widget.open
+                                ? buildTable(widget.additionalData)
                                 : Container(),
                             Text(l.description),
                             buildDesc(data),
@@ -135,7 +139,7 @@ class _InstructionViewState extends State<InstructionView> {
   }
 
   Widget buildTable(data) {
-    Map<String, dynamic> keyvalue = jsonDecode(data.additionalData);
+    Map<String, dynamic> keyvalue = jsonDecode(data);
     return Expanded(
         flex: 1,
         child: ListView(
@@ -242,7 +246,7 @@ class _InstructionViewState extends State<InstructionView> {
       child: Container(
         margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: Colors.white,
+          // color: Colors.white,
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),

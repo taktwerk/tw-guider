@@ -30,6 +30,7 @@ class ListItem extends StatelessWidget {
                 builder: (context) => InstructionView(
                       instruction: _instruction,
                       open: false,
+                      additionalData: null,
                     )),
           );
         },

@@ -59,13 +59,18 @@ class _MyHomePageState extends State<MyHomePage>
               if (oldDialogContext != null) {
                 onDismiss();
               }
+              var historyEntry = await Singleton()
+                  .getDatabase()
+                  .getUserHistory(currentUser!, newestMostRecent.first.id);
               logger.w("EVENT $newestMostRecent");
               bool? results =
                   await Navigator.of(context).push(MaterialPageRoute<bool>(
                       builder: (BuildContext dialogContext) {
                         oldDialogContext = dialogContext;
                         return InstructionView(
-                            instruction: newestMostRecent.first, open: true);
+                            instruction: newestMostRecent.first,
+                            open: true,
+                            additionalData: historyEntry.first.additionalData);
                       },
                       fullscreenDialog: true));
               if (results != null && !results) {
@@ -102,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage>
     ];
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("${myTabs[tabController.index].text}"),
         bottom: TabBar(controller: tabController, tabs: myTabs),
         actions: [getUserPopup()],

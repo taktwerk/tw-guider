@@ -34,20 +34,19 @@ class SupabaseToDrift {
         }
       }
       instructionBatch.add(InstructionsCompanion.insert(
-          id: Value(instruction[Const.id.key]),
-          title: instruction[Const.title.key],
-          shortTitle: instruction[Const.shortTitle.key],
-          image: instruction[Const.image.key],
-          description: instruction[Const.description.key],
-          createdAt: DateTime.parse(instruction[Const.createdAt.key]),
-          createdBy: instruction[Const.createdBy.key],
-          updatedAt: DateTime.parse(instruction[Const.updatedAt.key]),
-          updatedBy: instruction[Const.updatedBy.key],
-          deletedAt:
-              Value(DateTime.tryParse(instruction[Const.deletedAt.key] ?? "")),
-          deletedBy: Value(instruction[Const.deletedBy.key]),
-          additionalData:
-              Value(jsonEncode(instruction[Const.additionalData.key]))));
+        id: Value(instruction[Const.id.key]),
+        title: instruction[Const.title.key],
+        shortTitle: instruction[Const.shortTitle.key],
+        image: instruction[Const.image.key],
+        description: instruction[Const.description.key],
+        createdAt: DateTime.parse(instruction[Const.createdAt.key]),
+        createdBy: instruction[Const.createdBy.key],
+        updatedAt: DateTime.parse(instruction[Const.updatedAt.key]),
+        updatedBy: instruction[Const.updatedBy.key],
+        deletedAt:
+            Value(DateTime.tryParse(instruction[Const.deletedAt.key] ?? "")),
+        deletedBy: Value(instruction[Const.deletedBy.key]),
+      ));
     }
     await Singleton()
         .getDatabase()
@@ -163,7 +162,9 @@ class SupabaseToDrift {
                     DateTime.tryParse(history[Const.deletedAt.key] ?? "")),
                 deletedBy: Value(history[Const.deletedBy.key]),
                 instructionStepId: Value(history[Const.instructionStepId.key]),
-                open: history[Const.open.key]),
+                open: history[Const.open.key],
+                additionalData:
+                    Value(jsonEncode(history[Const.additionalData.key]))),
           );
     }
     return newLastSynced;
