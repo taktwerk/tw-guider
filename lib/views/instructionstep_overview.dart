@@ -67,7 +67,6 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
         .getInstructionStepsByInstructionId(widget.instruction.id);
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(widget.instruction.title),
         ),
         body: StreamBuilder(
