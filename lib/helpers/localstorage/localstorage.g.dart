@@ -497,13 +497,6 @@ class Instructions extends Table with TableInfo<Instructions, Instruction> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: '');
-  static const VerificationMeta _additionalDataMeta =
-      const VerificationMeta('additionalData');
-  late final GeneratedColumn<String> additionalData = GeneratedColumn<String>(
-      'additional_data', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      $customConstraints: '');
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -516,8 +509,7 @@ class Instructions extends Table with TableInfo<Instructions, Instruction> {
         updatedAt,
         updatedBy,
         deletedAt,
-        deletedBy,
-        additionalData
+        deletedBy
       ];
   @override
   String get aliasedName => _alias ?? 'instructions';
@@ -591,12 +583,6 @@ class Instructions extends Table with TableInfo<Instructions, Instruction> {
       context.handle(_deletedByMeta,
           deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
     }
-    if (data.containsKey('additional_data')) {
-      context.handle(
-          _additionalDataMeta,
-          additionalData.isAcceptableOrUnknown(
-              data['additional_data']!, _additionalDataMeta));
-    }
     return context;
   }
 
@@ -628,8 +614,6 @@ class Instructions extends Table with TableInfo<Instructions, Instruction> {
           .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
       deletedBy: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
-      additionalData: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}additional_data']),
     );
   }
 
@@ -657,7 +641,6 @@ class Instruction extends DataClass implements Insertable<Instruction> {
   final int updatedBy;
   final DateTime? deletedAt;
   final int? deletedBy;
-  final String? additionalData;
   const Instruction(
       {required this.id,
       required this.title,
@@ -669,8 +652,7 @@ class Instruction extends DataClass implements Insertable<Instruction> {
       required this.updatedAt,
       required this.updatedBy,
       this.deletedAt,
-      this.deletedBy,
-      this.additionalData});
+      this.deletedBy});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -688,9 +670,6 @@ class Instruction extends DataClass implements Insertable<Instruction> {
     }
     if (!nullToAbsent || deletedBy != null) {
       map['deleted_by'] = Variable<int>(deletedBy);
-    }
-    if (!nullToAbsent || additionalData != null) {
-      map['additional_data'] = Variable<String>(additionalData);
     }
     return map;
   }
@@ -712,9 +691,6 @@ class Instruction extends DataClass implements Insertable<Instruction> {
       deletedBy: deletedBy == null && nullToAbsent
           ? const Value.absent()
           : Value(deletedBy),
-      additionalData: additionalData == null && nullToAbsent
-          ? const Value.absent()
-          : Value(additionalData),
     );
   }
 
@@ -733,7 +709,6 @@ class Instruction extends DataClass implements Insertable<Instruction> {
       updatedBy: serializer.fromJson<int>(json['updated_by']),
       deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
       deletedBy: serializer.fromJson<int?>(json['deleted_by']),
-      additionalData: serializer.fromJson<String?>(json['additional_data']),
     );
   }
   @override
@@ -751,7 +726,6 @@ class Instruction extends DataClass implements Insertable<Instruction> {
       'updated_by': serializer.toJson<int>(updatedBy),
       'deleted_at': serializer.toJson<DateTime?>(deletedAt),
       'deleted_by': serializer.toJson<int?>(deletedBy),
-      'additional_data': serializer.toJson<String?>(additionalData),
     };
   }
 
@@ -766,8 +740,7 @@ class Instruction extends DataClass implements Insertable<Instruction> {
           DateTime? updatedAt,
           int? updatedBy,
           Value<DateTime?> deletedAt = const Value.absent(),
-          Value<int?> deletedBy = const Value.absent(),
-          Value<String?> additionalData = const Value.absent()}) =>
+          Value<int?> deletedBy = const Value.absent()}) =>
       Instruction(
         id: id ?? this.id,
         title: title ?? this.title,
@@ -780,8 +753,6 @@ class Instruction extends DataClass implements Insertable<Instruction> {
         updatedBy: updatedBy ?? this.updatedBy,
         deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
         deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
-        additionalData:
-            additionalData.present ? additionalData.value : this.additionalData,
       );
   @override
   String toString() {
@@ -796,26 +767,14 @@ class Instruction extends DataClass implements Insertable<Instruction> {
           ..write('updatedAt: $updatedAt, ')
           ..write('updatedBy: $updatedBy, ')
           ..write('deletedAt: $deletedAt, ')
-          ..write('deletedBy: $deletedBy, ')
-          ..write('additionalData: $additionalData')
+          ..write('deletedBy: $deletedBy')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      title,
-      shortTitle,
-      image,
-      description,
-      createdAt,
-      createdBy,
-      updatedAt,
-      updatedBy,
-      deletedAt,
-      deletedBy,
-      additionalData);
+  int get hashCode => Object.hash(id, title, shortTitle, image, description,
+      createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -830,8 +789,7 @@ class Instruction extends DataClass implements Insertable<Instruction> {
           other.updatedAt == this.updatedAt &&
           other.updatedBy == this.updatedBy &&
           other.deletedAt == this.deletedAt &&
-          other.deletedBy == this.deletedBy &&
-          other.additionalData == this.additionalData);
+          other.deletedBy == this.deletedBy);
 }
 
 class InstructionsCompanion extends UpdateCompanion<Instruction> {
@@ -846,7 +804,6 @@ class InstructionsCompanion extends UpdateCompanion<Instruction> {
   final Value<int> updatedBy;
   final Value<DateTime?> deletedAt;
   final Value<int?> deletedBy;
-  final Value<String?> additionalData;
   const InstructionsCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -859,7 +816,6 @@ class InstructionsCompanion extends UpdateCompanion<Instruction> {
     this.updatedBy = const Value.absent(),
     this.deletedAt = const Value.absent(),
     this.deletedBy = const Value.absent(),
-    this.additionalData = const Value.absent(),
   });
   InstructionsCompanion.insert({
     this.id = const Value.absent(),
@@ -873,7 +829,6 @@ class InstructionsCompanion extends UpdateCompanion<Instruction> {
     required int updatedBy,
     this.deletedAt = const Value.absent(),
     this.deletedBy = const Value.absent(),
-    this.additionalData = const Value.absent(),
   })  : title = Value(title),
         shortTitle = Value(shortTitle),
         image = Value(image),
@@ -894,7 +849,6 @@ class InstructionsCompanion extends UpdateCompanion<Instruction> {
     Expression<int>? updatedBy,
     Expression<DateTime>? deletedAt,
     Expression<int>? deletedBy,
-    Expression<String>? additionalData,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -908,7 +862,6 @@ class InstructionsCompanion extends UpdateCompanion<Instruction> {
       if (updatedBy != null) 'updated_by': updatedBy,
       if (deletedAt != null) 'deleted_at': deletedAt,
       if (deletedBy != null) 'deleted_by': deletedBy,
-      if (additionalData != null) 'additional_data': additionalData,
     });
   }
 
@@ -923,8 +876,7 @@ class InstructionsCompanion extends UpdateCompanion<Instruction> {
       Value<DateTime>? updatedAt,
       Value<int>? updatedBy,
       Value<DateTime?>? deletedAt,
-      Value<int?>? deletedBy,
-      Value<String?>? additionalData}) {
+      Value<int?>? deletedBy}) {
     return InstructionsCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -937,7 +889,6 @@ class InstructionsCompanion extends UpdateCompanion<Instruction> {
       updatedBy: updatedBy ?? this.updatedBy,
       deletedAt: deletedAt ?? this.deletedAt,
       deletedBy: deletedBy ?? this.deletedBy,
-      additionalData: additionalData ?? this.additionalData,
     );
   }
 
@@ -977,9 +928,6 @@ class InstructionsCompanion extends UpdateCompanion<Instruction> {
     if (deletedBy.present) {
       map['deleted_by'] = Variable<int>(deletedBy.value);
     }
-    if (additionalData.present) {
-      map['additional_data'] = Variable<String>(additionalData.value);
-    }
     return map;
   }
 
@@ -996,8 +944,7 @@ class InstructionsCompanion extends UpdateCompanion<Instruction> {
           ..write('updatedAt: $updatedAt, ')
           ..write('updatedBy: $updatedBy, ')
           ..write('deletedAt: $deletedAt, ')
-          ..write('deletedBy: $deletedBy, ')
-          ..write('additionalData: $additionalData')
+          ..write('deletedBy: $deletedBy')
           ..write(')'))
         .toString();
   }
@@ -2649,6 +2596,13 @@ class Histories extends Table with TableInfo<Histories, History> {
       type: DriftSqlType.bool,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  static const VerificationMeta _additionalDataMeta =
+      const VerificationMeta('additionalData');
+  late final GeneratedColumn<String> additionalData = GeneratedColumn<String>(
+      'additional_data', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   @override
   List<GeneratedColumn> get $columns => [
         userId,
@@ -2660,7 +2614,8 @@ class Histories extends Table with TableInfo<Histories, History> {
         deletedAt,
         deletedBy,
         instructionStepId,
-        open
+        open,
+        additionalData
       ];
   @override
   String get aliasedName => _alias ?? 'histories';
@@ -2729,6 +2684,12 @@ class Histories extends Table with TableInfo<Histories, History> {
     } else if (isInserting) {
       context.missing(_openMeta);
     }
+    if (data.containsKey('additional_data')) {
+      context.handle(
+          _additionalDataMeta,
+          additionalData.isAcceptableOrUnknown(
+              data['additional_data']!, _additionalDataMeta));
+    }
     return context;
   }
 
@@ -2758,6 +2719,8 @@ class Histories extends Table with TableInfo<Histories, History> {
           DriftSqlType.int, data['${effectivePrefix}instruction_step_id']),
       open: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}open'])!,
+      additionalData: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}additional_data']),
     );
   }
 
@@ -2788,6 +2751,7 @@ class History extends DataClass implements Insertable<History> {
   final int? deletedBy;
   final int? instructionStepId;
   final bool open;
+  final String? additionalData;
   const History(
       {required this.userId,
       required this.instructionId,
@@ -2798,7 +2762,8 @@ class History extends DataClass implements Insertable<History> {
       this.deletedAt,
       this.deletedBy,
       this.instructionStepId,
-      required this.open});
+      required this.open,
+      this.additionalData});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2818,6 +2783,9 @@ class History extends DataClass implements Insertable<History> {
       map['instruction_step_id'] = Variable<int>(instructionStepId);
     }
     map['open'] = Variable<bool>(open);
+    if (!nullToAbsent || additionalData != null) {
+      map['additional_data'] = Variable<String>(additionalData);
+    }
     return map;
   }
 
@@ -2839,6 +2807,9 @@ class History extends DataClass implements Insertable<History> {
           ? const Value.absent()
           : Value(instructionStepId),
       open: Value(open),
+      additionalData: additionalData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(additionalData),
     );
   }
 
@@ -2856,6 +2827,7 @@ class History extends DataClass implements Insertable<History> {
       deletedBy: serializer.fromJson<int?>(json['deleted_by']),
       instructionStepId: serializer.fromJson<int?>(json['instruction_step_id']),
       open: serializer.fromJson<bool>(json['open']),
+      additionalData: serializer.fromJson<String?>(json['additional_data']),
     );
   }
   @override
@@ -2872,6 +2844,7 @@ class History extends DataClass implements Insertable<History> {
       'deleted_by': serializer.toJson<int?>(deletedBy),
       'instruction_step_id': serializer.toJson<int?>(instructionStepId),
       'open': serializer.toJson<bool>(open),
+      'additional_data': serializer.toJson<String?>(additionalData),
     };
   }
 
@@ -2885,7 +2858,8 @@ class History extends DataClass implements Insertable<History> {
           Value<DateTime?> deletedAt = const Value.absent(),
           Value<int?> deletedBy = const Value.absent(),
           Value<int?> instructionStepId = const Value.absent(),
-          bool? open}) =>
+          bool? open,
+          Value<String?> additionalData = const Value.absent()}) =>
       History(
         userId: userId ?? this.userId,
         instructionId: instructionId ?? this.instructionId,
@@ -2899,6 +2873,8 @@ class History extends DataClass implements Insertable<History> {
             ? instructionStepId.value
             : this.instructionStepId,
         open: open ?? this.open,
+        additionalData:
+            additionalData.present ? additionalData.value : this.additionalData,
       );
   @override
   String toString() {
@@ -2912,14 +2888,25 @@ class History extends DataClass implements Insertable<History> {
           ..write('deletedAt: $deletedAt, ')
           ..write('deletedBy: $deletedBy, ')
           ..write('instructionStepId: $instructionStepId, ')
-          ..write('open: $open')
+          ..write('open: $open, ')
+          ..write('additionalData: $additionalData')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(userId, instructionId, createdAt, createdBy,
-      updatedAt, updatedBy, deletedAt, deletedBy, instructionStepId, open);
+  int get hashCode => Object.hash(
+      userId,
+      instructionId,
+      createdAt,
+      createdBy,
+      updatedAt,
+      updatedBy,
+      deletedAt,
+      deletedBy,
+      instructionStepId,
+      open,
+      additionalData);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2933,7 +2920,8 @@ class History extends DataClass implements Insertable<History> {
           other.deletedAt == this.deletedAt &&
           other.deletedBy == this.deletedBy &&
           other.instructionStepId == this.instructionStepId &&
-          other.open == this.open);
+          other.open == this.open &&
+          other.additionalData == this.additionalData);
 }
 
 class HistoriesCompanion extends UpdateCompanion<History> {
@@ -2947,6 +2935,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
   final Value<int?> deletedBy;
   final Value<int?> instructionStepId;
   final Value<bool> open;
+  final Value<String?> additionalData;
   final Value<int> rowid;
   const HistoriesCompanion({
     this.userId = const Value.absent(),
@@ -2959,6 +2948,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
     this.deletedBy = const Value.absent(),
     this.instructionStepId = const Value.absent(),
     this.open = const Value.absent(),
+    this.additionalData = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HistoriesCompanion.insert({
@@ -2972,6 +2962,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
     this.deletedBy = const Value.absent(),
     this.instructionStepId = const Value.absent(),
     required bool open,
+    this.additionalData = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : userId = Value(userId),
         instructionId = Value(instructionId),
@@ -2991,6 +2982,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
     Expression<int>? deletedBy,
     Expression<int>? instructionStepId,
     Expression<bool>? open,
+    Expression<String>? additionalData,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3004,6 +2996,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
       if (deletedBy != null) 'deleted_by': deletedBy,
       if (instructionStepId != null) 'instruction_step_id': instructionStepId,
       if (open != null) 'open': open,
+      if (additionalData != null) 'additional_data': additionalData,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3019,6 +3012,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
       Value<int?>? deletedBy,
       Value<int?>? instructionStepId,
       Value<bool>? open,
+      Value<String?>? additionalData,
       Value<int>? rowid}) {
     return HistoriesCompanion(
       userId: userId ?? this.userId,
@@ -3031,6 +3025,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
       deletedBy: deletedBy ?? this.deletedBy,
       instructionStepId: instructionStepId ?? this.instructionStepId,
       open: open ?? this.open,
+      additionalData: additionalData ?? this.additionalData,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3068,6 +3063,9 @@ class HistoriesCompanion extends UpdateCompanion<History> {
     if (open.present) {
       map['open'] = Variable<bool>(open.value);
     }
+    if (additionalData.present) {
+      map['additional_data'] = Variable<String>(additionalData.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3087,6 +3085,7 @@ class HistoriesCompanion extends UpdateCompanion<History> {
           ..write('deletedBy: $deletedBy, ')
           ..write('instructionStepId: $instructionStepId, ')
           ..write('open: $open, ')
+          ..write('additionalData: $additionalData, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4275,7 +4274,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         updatedBy: row.read<int>('updated_by'),
         deletedAt: row.readNullable<DateTime>('deleted_at'),
         deletedBy: row.readNullable<int>('deleted_by'),
-        additionalData: row.readNullable<String>('additional_data'),
         userId: row.read<int>('user_id'),
         instructionId: row.read<int>('instruction_id'),
         createdAt1: row.read<DateTime>('created_at'),
@@ -4286,6 +4284,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         deletedBy1: row.readNullable<int>('deleted_by'),
         instructionStepId: row.readNullable<int>('instruction_step_id'),
         open: row.read<bool>('open'),
+        additionalData: row.readNullable<String>('additional_data'),
       );
     });
   }
@@ -4380,7 +4379,6 @@ class OpenInstructionResult {
   final int updatedBy;
   final DateTime? deletedAt;
   final int? deletedBy;
-  final String? additionalData;
   final int userId;
   final int instructionId;
   final DateTime createdAt1;
@@ -4391,6 +4389,7 @@ class OpenInstructionResult {
   final int? deletedBy1;
   final int? instructionStepId;
   final bool open;
+  final String? additionalData;
   OpenInstructionResult({
     required this.id,
     required this.title,
@@ -4403,7 +4402,6 @@ class OpenInstructionResult {
     required this.updatedBy,
     this.deletedAt,
     this.deletedBy,
-    this.additionalData,
     required this.userId,
     required this.instructionId,
     required this.createdAt1,
@@ -4414,5 +4412,6 @@ class OpenInstructionResult {
     this.deletedBy1,
     this.instructionStepId,
     required this.open,
+    this.additionalData,
   });
 }
