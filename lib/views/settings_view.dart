@@ -31,6 +31,16 @@ class _SettingsViewState extends State<SettingsView> {
     },
   );
 
+  final MaterialStateProperty<Icon?> themeIcon =
+      MaterialStateProperty.resolveWith<Icon?>(
+    (Set<MaterialState> states) {
+      if (states.contains(MaterialState.selected)) {
+        return const Icon(Icons.light_mode);
+      }
+      return const Icon(Icons.dark_mode);
+    },
+  );
+
   @override
   Widget build(BuildContext context) {
     var settingsStream = Singleton().getDatabase().getSettings(currentUser!);
@@ -94,6 +104,18 @@ class _SettingsViewState extends State<SettingsView> {
                           }
                         },
                       ),
+                      SwitchListTile(
+                        title: const Text("Lightmode/ Darkmode"),
+                        thumbIcon: themeIcon,
+                        value: snapshot.data!.isEmpty
+                            ? true
+                            : snapshot.data!.first.lightmode,
+                        onChanged: (bool value) {
+                          if (snapshot.data!.isNotEmpty) {
+                            onThemeChange(value);
+                          }
+                        },
+                      ),
                     ],
                   );
                 } else {
@@ -149,6 +171,14 @@ class _SettingsViewState extends State<SettingsView> {
       await Singleton()
           .getDatabase()
           .updateUserRealtime(currentUser!, realtime);
+    }
+  }
+
+  Future<void> onThemeChange(theme) async {
+    ThemeMode mode = theme ? ThemeMode.light : ThemeMode.dark;
+    GuiderApp.setTheme(context, mode);
+    if (currentUser != null) {
+      await Singleton().getDatabase().updateUserLightmode(currentUser!, theme);
     }
   }
 }
