@@ -307,7 +307,8 @@ class SupabaseToDrift {
           deletedAt:
               Value(DateTime.tryParse(setting[Const.deletedAt.key] ?? "")),
           deletedBy: Value(setting[Const.deletedBy.key]),
-          realtime: setting[Const.realtime.key]));
+          realtime: setting[Const.realtime.key],
+          lightmode: setting[Const.lightmode.key]));
     }
     return newLastSynced;
   }

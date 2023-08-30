@@ -105,6 +105,7 @@ class DriftToSupabase {
         'updated_at': settingsEntry.updatedAt.toUtc().toIso8601String(),
         'updated_by': settingsEntry.updatedBy,
         'realtime': settingsEntry.realtime,
+        'lightmode': settingsEntry.lightmode,
       }).eq('user_id', settingsEntry.userId);
     }
   }

@@ -22,6 +22,7 @@ enum Const {
   message("message"),
   instructionStepId("instruction_step_id"),
   open("open"),
+  lightmode("lightmode"),
   language("language"),
   imagesFolderName("images"),
   instructionStepsImagesFolderName("images/instructionStepsImages"),
