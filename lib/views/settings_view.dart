@@ -188,7 +188,7 @@ class _SettingsViewState extends State<SettingsView> {
                       flipX: true,
                       child: const Icon(Icons.logout),
                     ),
-                    label: const Text("Logout")),
+                    label: Text(Languages.of(context)!.logout)),
               ),
             ],
           ),
