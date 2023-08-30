@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart' as foundation;
@@ -94,6 +95,7 @@ class _InstructionViewState extends State<InstructionView> {
                 if (snapshot.hasError) {
                   return Text('🚨 Error: ${snapshot.error}');
                 } else if (snapshot.hasData) {
+                  var data = snapshot.data!.first;
                   return Container(
                       padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
                       child: Center(
@@ -111,14 +113,15 @@ class _InstructionViewState extends State<InstructionView> {
                                                     _categories![index].name))),
                                       )
                                 : const CircularProgressIndicator(),
-                            Text(
-                                "${l.shortTitle}: ${snapshot.data!.first.shortTitle}"),
-                            const SizedBox(height: 10),
+                            Text("${l.shortTitle}: ${data.shortTitle}"),
+                            data.additionalData != "null"
+                                ? buildTable(data)
+                                : Container(),
                             Text(l.description),
-                            buildDesc(snapshot.data!.first),
-                            buildImage(snapshot.data!.first),
+                            buildDesc(data),
+                            buildImage(data),
                             const SizedBox(height: 10),
-                            buildButtons(snapshot.data!.first),
+                            buildButtons(data),
                           ],
                         ),
                       ));
@@ -129,6 +132,37 @@ class _InstructionViewState extends State<InstructionView> {
                 return Text('State: ${snapshot.connectionState}');
               }
             }));
+  }
+
+  Widget buildTable(data) {
+    Map<String, dynamic> keyvalue = jsonDecode(data.additionalData);
+    return Expanded(
+        flex: 1,
+        child: ListView(
+          children: [
+            Center(
+              child: DataTable(
+                headingRowHeight: 0,
+                columns: const [
+                  DataColumn(
+                      label: Text(
+                    '',
+                  )),
+                  DataColumn(
+                      label: Text(
+                    '',
+                  )),
+                ],
+                rows: keyvalue.entries
+                    .map((e) => DataRow(cells: [
+                          DataCell(Text(e.key.toString())),
+                          DataCell(Text(e.value.toString()))
+                        ]))
+                    .toList(),
+              ),
+            )
+          ],
+        ));
   }
 
   Widget buildButtons(instruction) => Row(
