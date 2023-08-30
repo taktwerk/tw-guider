@@ -297,6 +297,13 @@ class AppDatabase extends _$AppDatabase {
               updatedAt: Value(DateTime.now().toUtc()),
               updatedBy: Value(currentUser!)));
 
+  Future<int> updateUserLightmode(int userId, bool lightmode) =>
+      (update(settings)..where((t) => t.userId.equals(userId))).write(
+          SettingsCompanion(
+              lightmode: Value(lightmode),
+              updatedAt: Value(DateTime.now().toUtc()),
+              updatedBy: Value(currentUser!)));
+
   Stream<List<Setting>> getSettings(int userId) =>
       (select(settings)..where((t) => t.userId.equals(userId))).watch();
 
