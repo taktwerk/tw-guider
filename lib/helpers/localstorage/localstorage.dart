@@ -247,6 +247,9 @@ class AppDatabase extends _$AppDatabase {
       (update(feedback)..where((t) => t.id.equals(id)))
           .write(FeedbackCompanion(image: Value(url)));
 
+  Stream<List<Feedback>> getUserFeedback(int givenUserId) =>
+      (select(feedback)..where((t) => t.userId.equals(givenUserId))).watch();
+
   // TABLE: Bytes
   Future<List<Byte>> get allBytesEntries => select(bytes).get();
 

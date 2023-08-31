@@ -11,6 +11,7 @@ import 'package:guider/views/instruction_view.dart';
 import 'package:guider/views/settings_view.dart';
 import 'package:guider/views/home_view.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
+import 'package:guider/views/user_feedback_view.dart';
 
 class SecondHomePage extends StatefulWidget {
   const SecondHomePage({super.key});
@@ -122,9 +123,12 @@ class _SecondHomePageState extends State<SecondHomePage>
         title: Text(myTabs2[_pageIndex]),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.feedback),
             tooltip: 'Search',
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const UserFeedbackView()));
+            },
           ),
           IconButton(
             icon: const Icon(Icons.storage),
