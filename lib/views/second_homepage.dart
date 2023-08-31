@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
@@ -25,6 +26,7 @@ class _SecondHomePageState extends State<SecondHomePage>
   Stream histStream = Realtime.getHistoryStream();
   List<Instruction>? openHistory;
   BuildContext? oldDialogContext;
+  StreamSubscription? subscription;
 
   @override
   void initState() {
@@ -48,37 +50,34 @@ class _SecondHomePageState extends State<SecondHomePage>
   }
 
   void initHistoryStream() {
-    histStream.listen(
+    subscription = histStream.listen(
       (event) async {
         await Realtime.sync();
         if (currentUser != null) {
           var newestMostRecent = await Singleton()
               .getDatabase()
               .getInstructionToOpen(currentUser!);
-          if (mounted) {
-            if (newestMostRecent.isNotEmpty) {
-              if (oldDialogContext != null) {
-                onDismiss();
-              }
-              var historyEntry = await Singleton()
-                  .getDatabase()
-                  .getUserHistory(currentUser!, newestMostRecent.first.id);
-              logger.w("EVENT $newestMostRecent");
-              if (mounted) {
-                bool? results =
-                    await Navigator.of(context).push(MaterialPageRoute<bool>(
-                  builder: (BuildContext dialogContext) {
-                    oldDialogContext = dialogContext;
-                    return InstructionView(
-                        instruction: newestMostRecent.first,
-                        open: true,
-                        additionalData: historyEntry.first.additionalData);
-                  },
-                  fullscreenDialog: true,
-                ));
-                if (results != null && !results) {
-                  oldDialogContext = null;
-                }
+          if (newestMostRecent.isNotEmpty) {
+            if (oldDialogContext != null) {
+              onDismiss();
+            }
+            var historyEntry = await Singleton()
+                .getDatabase()
+                .getUserHistory(currentUser!, newestMostRecent.first.id);
+            if (mounted) {
+              bool? results =
+                  await Navigator.of(context).push(MaterialPageRoute<bool>(
+                builder: (BuildContext dialogContext) {
+                  oldDialogContext = dialogContext;
+                  return InstructionView(
+                      instruction: newestMostRecent.first,
+                      open: true,
+                      additionalData: historyEntry.first.additionalData);
+                },
+                fullscreenDialog: true,
+              ));
+              if (results != null && !results) {
+                oldDialogContext = null;
               }
             }
           }
@@ -88,6 +87,12 @@ class _SecondHomePageState extends State<SecondHomePage>
         if (e.toString() == '' || e.toString() == '{}') return;
       },
     );
+  }
+
+  @override
+  void dispose() {
+    subscription?.cancel();
+    super.dispose();
   }
 
   void _onSyncButtonClick() async {
