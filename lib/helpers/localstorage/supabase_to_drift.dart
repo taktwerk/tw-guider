@@ -316,7 +316,6 @@ class SupabaseToDrift {
       await Singleton().setSyncing(newSyncing: true);
       await SupabaseToDrift.getUsers().then((value) {
         KeyValue.setNewValue(KeyValueEnum.user.key, value);
-        KeyValue.setInitialUser();
       });
 
       await SupabaseToDrift.getAllInstructions().then((value) {

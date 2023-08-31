@@ -24,20 +24,23 @@ class KeyValue {
   static Future<void> resetKeyValues() async {
     var prefs = await Singleton().getPrefInstance();
     await prefs.clear();
+    if (currentUser != null) {
+      prefs.setInt(KeyValueEnum.currentUser.key, currentUser!);
+    }
     await initialize();
   }
 
-  static Future<void> setInitialUser() async {
-    int? value = await getCurrentUser();
-    if (value == null) {
-      var users = await Singleton().getDatabase().getUserSortedById();
-      var initialUser = users.firstOrNull;
-      if (initialUser != null) {
-        setCurrentUser(initialUser.id);
-        currentUser = initialUser.id;
-      }
-    }
-  }
+  // static Future<void> setInitialUser() async {
+  //   int? value = await getCurrentUser();
+  //   if (value == null) {
+  //     var users = await Singleton().getDatabase().getUserSortedById();
+  //     var initialUser = users.firstOrNull;
+  //     if (initialUser != null) {
+  //       setCurrentUser(initialUser.id);
+  //       currentUser = initialUser.id;
+  //     }
+  //   }
+  // }
 
   static Future<void> setNewValue(key, value) async {
     var prefs = await Singleton().getPrefInstance();
