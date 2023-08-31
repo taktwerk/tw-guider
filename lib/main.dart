@@ -151,7 +151,7 @@ class _GuiderAppState extends State<GuiderApp> {
       ),
       home: islogin != null
           ? islogin!
-              ? const MyHomePage()
+              ? const SecondHomePage()
               : const LoginPage()
           : const LoginPage(),
       // builder: (context, child) {
