@@ -34,11 +34,9 @@ class DriftToSupabase {
     int len = images.length;
     for (int i = 0; i < len; i++) {
       var image = images[i];
-      final String path = await supabase.storage
-          .from('feedback_images')
-          .uploadBinary("${image.imageXid}.png", base64.decode(image.image),
-              fileOptions:
-                  const FileOptions(cacheControl: '3600', upsert: false));
+      await supabase.storage.from('feedback_images').uploadBinary(
+          "${image.imageXid}.png", base64.decode(image.image),
+          fileOptions: const FileOptions(cacheControl: '3600', upsert: false));
       await Singleton().getDatabase().deleteBytesEntry(image.feedbackId);
     }
   }

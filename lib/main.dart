@@ -154,30 +154,6 @@ class _GuiderAppState extends State<GuiderApp> {
               ? const SecondHomePage()
               : const LoginPage()
           : const LoginPage(),
-      // builder: (context, child) {
-      //   return Scaffold(
-      //     floatingActionButton: FloatingActionButton(
-      //         onPressed: () => _onSyncButtonClick(),
-      //         shape: RoundedRectangleBorder(
-      //           borderRadius: BorderRadius.circular(18),
-      //         ),
-      //         child: ValueListenableBuilder<bool>(
-      //             valueListenable: Singleton().getValueNotifierSyncing(),
-      //             builder: ((context, value, child) {
-      //               return value
-      //                   ? Container(
-      //                       width: 24,
-      //                       height: 24,
-      //                       padding: const EdgeInsets.all(2.0),
-      //                       child: const CircularProgressIndicator(
-      //                         color: Colors.white,
-      //                         strokeWidth: 3,
-      //                       ),
-      //                     )
-      //                   : const Icon(Icons.sync);
-      //             }))),
-      //   );
-      // },
     );
   }
 }

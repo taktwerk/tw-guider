@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:guider/languages/de.dart';
 import 'package:guider/languages/en.dart';
 import 'package:guider/languages/languages.dart';
-import 'package:guider/main.dart';
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<Languages> {
   const AppLocalizationsDelegate();
