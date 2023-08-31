@@ -177,12 +177,12 @@ class _SettingsViewState extends State<SettingsView> {
                       currentUser = null;
                       var prefs = await Singleton().getPrefInstance();
                       prefs.remove(KeyValueEnum.currentUser.key);
-                      await KeyValue.saveLogin(false)
-                          .then((value) => Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginPage()),
-                              ));
+                      await KeyValue.saveLogin(false).then((value) =>
+                          Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).pushReplacement(MaterialPageRoute(
+                              builder: (context) => const LoginPage())));
                     },
                     icon: Transform.flip(
                       flipX: true,
