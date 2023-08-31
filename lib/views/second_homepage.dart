@@ -124,7 +124,7 @@ class _SecondHomePageState extends State<SecondHomePage>
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.feedback),
-            tooltip: 'Search',
+            tooltip: 'Feedback',
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const UserFeedbackView()));
