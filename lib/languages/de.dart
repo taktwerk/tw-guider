@@ -7,6 +7,9 @@ class LanguageDe extends Languages {
   String get homeTitle => "Startseite";
 
   @override
+  String get instructionsTitle => "Anleitungen";
+
+  @override
   String get labelSelectLanguage => "Select Language";
 
   @override

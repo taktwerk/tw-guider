@@ -7,6 +7,9 @@ class LanguageEn extends Languages {
   String get homeTitle => "Home";
 
   @override
+  String get instructionsTitle => "Instructions";
+
+  @override
   String get labelSelectLanguage => "Select Language";
 
   @override

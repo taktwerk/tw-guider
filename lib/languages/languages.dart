@@ -9,6 +9,7 @@ abstract class Languages {
 
   String get languageCode;
   String get homeTitle;
+  String get instructionsTitle;
   String get settingsTitle;
   String get historyTitle;
   String get labelSelectLanguage;
