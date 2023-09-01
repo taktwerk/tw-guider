@@ -13,6 +13,7 @@ class FullScreenImageViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = Languages.of(context);
     return Scaffold(
+      appBar: AppBar(),
       body: GestureDetector(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
@@ -51,7 +52,9 @@ class FullScreenImageViewer extends StatelessWidget {
                           fit: BoxFit.contain,
                         );
                       }
-                      return Text(l!.noImageAvailable);
+                      return Center(
+                        child: Text(l!.noImageAvailable),
+                      );
                     }),
           ),
         ),
