@@ -99,8 +99,8 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
             ),
             ButtonBar(
               children: [
-                TextButton(
-                  child: const Text('Edit'),
+                IconButton(
+                  icon: const Icon(Icons.edit),
                   onPressed: () {
                     showDialog(
                         context: context,
