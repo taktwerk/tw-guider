@@ -52,6 +52,9 @@ class LanguageEn extends Languages {
   String get lastUpdate => "Last updated";
 
   @override
+  String get createdAt => "Created";
+
+  @override
   String get next => "Next";
 
   @override

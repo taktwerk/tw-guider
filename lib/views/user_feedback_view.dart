@@ -77,7 +77,7 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
     var heading = feedback.message;
     var subheading = feedback.id;
     var supportingText =
-        'Created at: ${feedback.createdAt}, Updated at: ${feedback.updatedAt}';
+        '${l!.createdAt}: ${feedback.createdAt}, ${l.lastUpdate}: ${feedback.updatedAt}';
     return Card(
         elevation: 4.0,
         child: Column(

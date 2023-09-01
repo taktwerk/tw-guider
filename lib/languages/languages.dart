@@ -17,6 +17,7 @@ abstract class Languages {
   String get steps;
   String get step;
   String get lastUpdate;
+  String get createdAt;
   String get instructionSteps;
   String get feedback;
   String get feedbackContent;

@@ -52,6 +52,9 @@ class LanguageDe extends Languages {
   String get lastUpdate => "Zuletzt geändert";
 
   @override
+  String get createdAt => "Erstellt";
+
+  @override
   String get next => "Weiter";
 
   @override
