@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/constants.dart';
+import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart' as local;
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
@@ -23,7 +27,6 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
 
   @override
   Widget build(BuildContext context) {
-    final l = Languages.of(context);
     final feedback = Singleton().getDatabase().getUserFeedback(currentUser!);
     return Scaffold(
         appBar: AppBar(
@@ -68,10 +71,9 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
   }
 
   Card buildCard(feedback) {
+    final l = Languages.of(context);
     var heading = feedback.message;
     var subheading = feedback.id;
-    NetworkImage? cardImage =
-        feedback.image != null ? NetworkImage(feedback.image) : null;
     var supportingText =
         'Created at: ${feedback.createdAt}, Updated at: ${feedback.updatedAt}';
     return Card(
@@ -83,13 +85,42 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
               subtitle: Text(subheading),
               trailing: const Icon(Icons.favorite_outline),
             ),
-            cardImage != null
+            feedback.image != null
                 ? Container(
-                    height: 200.0,
-                    child: Ink.image(
-                      image: cardImage,
-                      fit: BoxFit.cover,
-                    ),
+                    height: 300.0,
+                    child: (kIsWeb)
+                        ? Image.network(
+                            feedback.image,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.red,
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'No image',
+                                ),
+                              );
+                            },
+                          )
+                        : FutureBuilder(
+                            future: AppUtil.filePath(
+                                feedback, Const.feedbackImagesFolderName.key),
+                            builder: (_, snapshot) {
+                              if (snapshot.hasError) {
+                                return Text(l!.somethingWentWrong);
+                              }
+                              if ((snapshot.connectionState ==
+                                  ConnectionState.waiting)) {
+                                return const CircularProgressIndicator();
+                              }
+                              if (snapshot.data!.isNotEmpty) {
+                                return Image.file(
+                                  File(snapshot.data!),
+                                  fit: BoxFit.cover,
+                                );
+                              }
+                              return Text(l!.noImageAvailable);
+                            }),
                   )
                 : Container(),
             Container(
