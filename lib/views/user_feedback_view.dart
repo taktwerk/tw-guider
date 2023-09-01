@@ -10,6 +10,7 @@ import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/edit_feedback.dart';
+import 'package:intl/intl.dart';
 
 class UserFeedbackView extends StatefulWidget {
   const UserFeedbackView({super.key});
@@ -76,8 +77,9 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
     final l = Languages.of(context);
     var heading = feedback.message;
     var subheading = feedback.id;
+    final DateFormat formatter = DateFormat.yMd('de').add_Hms();
     var supportingText =
-        '${l!.createdAt}: ${feedback.createdAt}, ${l.lastUpdate}: ${feedback.updatedAt}';
+        '${l!.createdAt}: ${formatter.format(feedback.createdAt)} \n${l.lastUpdate}: ${formatter.format(feedback.updatedAt)}';
     return Card(
         elevation: 4.0,
         child: Column(
