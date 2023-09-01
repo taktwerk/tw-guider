@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart' as local;
+import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -131,6 +133,12 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
             ButtonBar(
               children: [
                 IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    _showDialog(context, feedback);
+                  },
+                ),
+                IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
                     showDialog(
@@ -142,5 +150,48 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
             )
           ],
         ));
+  }
+
+  void _showDialog(BuildContext context, feedback) {
+    final l = Languages.of(context);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(
+            l!.confirmFeedbackDelete,
+            style: const TextStyle(fontSize: 20),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FilledButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.grey)),
+                  child: Text(l.cancel),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FilledButton(
+                  child: Text(l.confirm),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    await Singleton().getDatabase().updateFeedback(
+                        FeedbackCompanion(
+                            id: drift.Value(feedback.id),
+                            updatedAt: drift.Value(DateTime.now().toUtc()),
+                            updatedBy: drift.Value(currentUser!),
+                            deletedAt: drift.Value(DateTime.now().toUtc()),
+                            deletedBy: drift.Value(currentUser!)));
+                  },
+                ),
+              ],
+            )
+          ],
+        );
+      },
+    );
   }
 }
