@@ -122,4 +122,11 @@ class LanguageEn extends Languages {
 
   @override
   String get save => "Save";
+
+  @override
+  String get confirmFeedbackDelete =>
+      "Are you sure you want to delete this feedback entry?";
+
+  @override
+  String get confirm => "Confirm";
 }

@@ -48,4 +48,6 @@ abstract class Languages {
   String get realtime;
   String get realtimeText;
   String get save;
+  String get confirmFeedbackDelete;
+  String get confirm;
 }

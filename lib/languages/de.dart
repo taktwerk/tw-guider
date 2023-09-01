@@ -123,4 +123,11 @@ class LanguageDe extends Languages {
 
   @override
   String get save => "Speichern";
+
+  @override
+  String get confirmFeedbackDelete =>
+      "Soll dieser Feedback-Eintrag definitiv gelöscht werden?";
+
+  @override
+  String get confirm => "Bestätigen";
 }
