@@ -71,7 +71,7 @@ class _EditFeedbackState extends State<EditFeedback> {
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
-          child: Text(l.send),
+          child: Text(l.save),
           onPressed: () async {
             if (_formKey.currentState!.validate() && currentUser != null) {
               await Singleton().getDatabase().updateFeedback(FeedbackCompanion(

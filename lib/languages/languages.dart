@@ -47,4 +47,5 @@ abstract class Languages {
   String get logout;
   String get realtime;
   String get realtimeText;
+  String get save;
 }

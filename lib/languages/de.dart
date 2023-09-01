@@ -120,4 +120,7 @@ class LanguageDe extends Languages {
   @override
   String get realtimeText =>
       "Erhalten Sie Änderungen direkt in der App, wenn Sie online sind.";
+
+  @override
+  String get save => "Speichern";
 }

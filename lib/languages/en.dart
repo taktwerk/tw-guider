@@ -119,4 +119,7 @@ class LanguageEn extends Languages {
 
   @override
   String get realtimeText => "Get changes directly in app when online";
+
+  @override
+  String get save => "Save";
 }
