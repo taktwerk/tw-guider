@@ -247,7 +247,8 @@ class AppDatabase extends _$AppDatabase {
 
   Stream<List<Feedback>> getUserFeedback(int givenUserId) => (select(feedback)
         ..where((t) => t.userId.equals(givenUserId))
-        ..where((t) => t.deletedAt.isNull()))
+        ..where((t) => t.deletedAt.isNull())
+        ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
       .watch();
 
   // TABLE: Bytes
