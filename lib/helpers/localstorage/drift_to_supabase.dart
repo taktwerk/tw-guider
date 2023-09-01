@@ -7,12 +7,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DriftToSupabase {
   static Future<void> uploadFeedback() async {
-    var feed = await Singleton().getDatabase().notSyncedFeedbackEntries;
+    var lastSynced = await KeyValue.getValue(KeyValueEnum.feedback.key);
+
+    var feed = await Singleton()
+        .getDatabase()
+        .notSyncedFeedbackEntries(DateTime.parse(lastSynced!));
     logger.i("Not synced feedback: $feed");
+
     int len = feed.length;
     for (int i = 0; i < len; i++) {
       var entry = feed[i];
-      await supabase.from('feedback').insert({
+      await supabase.from('feedback').upsert({
         'id': entry.id,
         'user_id': entry.userId,
         'message': entry.message,
@@ -24,8 +29,7 @@ class DriftToSupabase {
         'updated_by': entry.updatedBy,
         'deleted_at': entry.deletedAt,
         'deleted_by': entry.deletedBy,
-      });
-      await Singleton().getDatabase().updateFeedbackAfterSync(entry);
+      }, onConflict: 'id');
     }
   }
 

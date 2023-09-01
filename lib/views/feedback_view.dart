@@ -162,7 +162,6 @@ class _FeedbackViewState extends State<FeedbackView> {
               }
               Singleton().getDatabase().insertFeedback(FeedbackCompanion.insert(
                   id: xid,
-                  isSynced: false,
                   instructionId: widget.instruction.id,
                   userId: currentUser!,
                   message: _controller.text,

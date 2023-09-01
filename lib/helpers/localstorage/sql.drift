@@ -31,7 +31,6 @@ create table
   create table
   feedback (
     id char(20) not null,
-    is_synced bool not null,
     instruction_id bigint not null,
     user_id bigint not null,
     message character not null,

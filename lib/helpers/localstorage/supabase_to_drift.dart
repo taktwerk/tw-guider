@@ -224,7 +224,6 @@ class SupabaseToDrift {
       }
       Singleton().getDatabase().createOrUpdateFeedback(FeedbackCompanion.insert(
             id: feedbackElement[Const.id.key],
-            isSynced: true,
             instructionId: feedbackElement[Const.instructionId.key],
             userId: feedbackElement[Const.userId.key],
             message: feedbackElement[Const.message.key],

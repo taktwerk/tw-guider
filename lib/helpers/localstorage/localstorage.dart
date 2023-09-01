@@ -222,8 +222,9 @@ class AppDatabase extends _$AppDatabase {
   }
 
   // TABLE: Feedback
-  Future<List<Feedback>> get notSyncedFeedbackEntries =>
-      (select(feedback)..where((t) => t.isSynced.equals(false))).get();
+  Future<List<Feedback>> notSyncedFeedbackEntries(DateTime timestamp) =>
+      (select(feedback)..where((t) => t.updatedAt.isBiggerThanValue(timestamp)))
+          .get();
 
   // NOTE: change to batch once I figure out how to to insertAll with the custom onConflict
   Future<int> createOrUpdateFeedback(FeedbackCompanion entry) =>
@@ -234,13 +235,6 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> insertFeedback(FeedbackCompanion entry) =>
       into(feedback).insert(entry);
-
-  Future<int> updateFeedbackAfterSync(Feedback entry) =>
-      (update(feedback)..where((t) => t.id.equals(entry.id))).write(
-          FeedbackCompanion(
-              isSynced: const Value(true),
-              updatedAt: Value(DateTime.now().toUtc()),
-              updatedBy: Value(currentUser!)));
 
   Future<int> updateFeedbackWithImageURL(
           {required String url, required String id}) =>
