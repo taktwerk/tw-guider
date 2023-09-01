@@ -233,6 +233,10 @@ class AppDatabase extends _$AppDatabase {
               where: (old, excluded) =>
                   old.updatedAt.isSmallerThan(excluded.updatedAt)));
 
+  Future<int> updateFeedback(FeedbackCompanion entry) =>
+      (update(feedback)..where((t) => t.id.equals(entry.id.value)))
+          .write(entry);
+
   Future<int> insertFeedback(FeedbackCompanion entry) =>
       into(feedback).insert(entry);
 

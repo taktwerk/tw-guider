@@ -3,6 +3,7 @@ import 'package:guider/helpers/localstorage/localstorage.dart' as local;
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
+import 'package:guider/views/edit_feedback.dart';
 
 class UserFeedbackView extends StatefulWidget {
   const UserFeedbackView({super.key});
@@ -80,7 +81,7 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
             ListTile(
               title: Text(heading),
               subtitle: Text(subheading),
-              trailing: Icon(Icons.favorite_outline),
+              trailing: const Icon(Icons.favorite_outline),
             ),
             cardImage != null
                 ? Container(
@@ -100,7 +101,11 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
               children: [
                 TextButton(
                   child: const Text('Edit'),
-                  onPressed: () {/* ... */},
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) => EditFeedback(feedback: feedback));
+                  },
                 ),
               ],
             )
