@@ -31,10 +31,10 @@ class AppUtil {
 
     final Directory folder = Directory(path);
     if (!(await folder.exists())) {
-      // Create the instructionsImages folder if it does not exist
+      // Create a folder if it does not exist
       await folder.create(recursive: true);
     }
-    // Folder where image will be saved
+    // Folder (e.g. Instruction with ID = 1 will be saved in a folder named '1') where image will be saved
     final Directory appDocDirFolder = Directory('$path/$folderNameOfFile/');
 
     if (await appDocDirFolder.exists()) {
@@ -50,6 +50,7 @@ class AppUtil {
 
   static Future<void> saveFeedbackImage(
       Uint8List image, String xid, String url) async {
+    // get path of folder where feedback image will be saved
     String folderInAppDocDir = await AppUtil.createFolderInAppDocDir(
         xid, Const.feedbackImagesFolderName.key);
     final file = File(join(folderInAppDocDir, AppUtil.getFileName(url)));
