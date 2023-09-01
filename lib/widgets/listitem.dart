@@ -37,7 +37,7 @@ class ListItem extends StatelessWidget {
           );
         },
         child: SizedBox(
-          height: 150,
+          height: 160,
           child: Container(
             padding: const EdgeInsets.all(10),
             child: Row(
