@@ -1414,13 +1414,6 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-  static const VerificationMeta _isSyncedMeta =
-      const VerificationMeta('isSynced');
-  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
-      'is_synced', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
   static const VerificationMeta _instructionIdMeta =
       const VerificationMeta('instructionId');
   late final GeneratedColumn<int> instructionId = GeneratedColumn<int>(
@@ -1492,7 +1485,6 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        isSynced,
         instructionId,
         userId,
         message,
@@ -1517,12 +1509,6 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('is_synced')) {
-      context.handle(_isSyncedMeta,
-          isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta));
-    } else if (isInserting) {
-      context.missing(_isSyncedMeta);
     }
     if (data.containsKey('instruction_id')) {
       context.handle(
@@ -1591,8 +1577,6 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
     return Feedback(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      isSynced: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_synced'])!,
       instructionId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}instruction_id'])!,
       userId: attachedDatabase.typeMapping
@@ -1633,7 +1617,6 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
 
 class Feedback extends DataClass implements Insertable<Feedback> {
   final String id;
-  final bool isSynced;
   final int instructionId;
   final int userId;
   final String message;
@@ -1646,7 +1629,6 @@ class Feedback extends DataClass implements Insertable<Feedback> {
   final int? deletedBy;
   const Feedback(
       {required this.id,
-      required this.isSynced,
       required this.instructionId,
       required this.userId,
       required this.message,
@@ -1661,7 +1643,6 @@ class Feedback extends DataClass implements Insertable<Feedback> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['is_synced'] = Variable<bool>(isSynced);
     map['instruction_id'] = Variable<int>(instructionId);
     map['user_id'] = Variable<int>(userId);
     map['message'] = Variable<String>(message);
@@ -1684,7 +1665,6 @@ class Feedback extends DataClass implements Insertable<Feedback> {
   FeedbackCompanion toCompanion(bool nullToAbsent) {
     return FeedbackCompanion(
       id: Value(id),
-      isSynced: Value(isSynced),
       instructionId: Value(instructionId),
       userId: Value(userId),
       message: Value(message),
@@ -1708,7 +1688,6 @@ class Feedback extends DataClass implements Insertable<Feedback> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Feedback(
       id: serializer.fromJson<String>(json['id']),
-      isSynced: serializer.fromJson<bool>(json['is_synced']),
       instructionId: serializer.fromJson<int>(json['instruction_id']),
       userId: serializer.fromJson<int>(json['user_id']),
       message: serializer.fromJson<String>(json['message']),
@@ -1726,7 +1705,6 @@ class Feedback extends DataClass implements Insertable<Feedback> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'is_synced': serializer.toJson<bool>(isSynced),
       'instruction_id': serializer.toJson<int>(instructionId),
       'user_id': serializer.toJson<int>(userId),
       'message': serializer.toJson<String>(message),
@@ -1742,7 +1720,6 @@ class Feedback extends DataClass implements Insertable<Feedback> {
 
   Feedback copyWith(
           {String? id,
-          bool? isSynced,
           int? instructionId,
           int? userId,
           String? message,
@@ -1755,7 +1732,6 @@ class Feedback extends DataClass implements Insertable<Feedback> {
           Value<int?> deletedBy = const Value.absent()}) =>
       Feedback(
         id: id ?? this.id,
-        isSynced: isSynced ?? this.isSynced,
         instructionId: instructionId ?? this.instructionId,
         userId: userId ?? this.userId,
         message: message ?? this.message,
@@ -1771,7 +1747,6 @@ class Feedback extends DataClass implements Insertable<Feedback> {
   String toString() {
     return (StringBuffer('Feedback(')
           ..write('id: $id, ')
-          ..write('isSynced: $isSynced, ')
           ..write('instructionId: $instructionId, ')
           ..write('userId: $userId, ')
           ..write('message: $message, ')
@@ -1787,14 +1762,13 @@ class Feedback extends DataClass implements Insertable<Feedback> {
   }
 
   @override
-  int get hashCode => Object.hash(id, isSynced, instructionId, userId, message,
-      image, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
+  int get hashCode => Object.hash(id, instructionId, userId, message, image,
+      createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Feedback &&
           other.id == this.id &&
-          other.isSynced == this.isSynced &&
           other.instructionId == this.instructionId &&
           other.userId == this.userId &&
           other.message == this.message &&
@@ -1809,7 +1783,6 @@ class Feedback extends DataClass implements Insertable<Feedback> {
 
 class FeedbackCompanion extends UpdateCompanion<Feedback> {
   final Value<String> id;
-  final Value<bool> isSynced;
   final Value<int> instructionId;
   final Value<int> userId;
   final Value<String> message;
@@ -1823,7 +1796,6 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
   final Value<int> rowid;
   const FeedbackCompanion({
     this.id = const Value.absent(),
-    this.isSynced = const Value.absent(),
     this.instructionId = const Value.absent(),
     this.userId = const Value.absent(),
     this.message = const Value.absent(),
@@ -1838,7 +1810,6 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
   });
   FeedbackCompanion.insert({
     required String id,
-    required bool isSynced,
     required int instructionId,
     required int userId,
     required String message,
@@ -1851,7 +1822,6 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     this.deletedBy = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        isSynced = Value(isSynced),
         instructionId = Value(instructionId),
         userId = Value(userId),
         message = Value(message),
@@ -1861,7 +1831,6 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
         updatedBy = Value(updatedBy);
   static Insertable<Feedback> custom({
     Expression<String>? id,
-    Expression<bool>? isSynced,
     Expression<int>? instructionId,
     Expression<int>? userId,
     Expression<String>? message,
@@ -1876,7 +1845,6 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (isSynced != null) 'is_synced': isSynced,
       if (instructionId != null) 'instruction_id': instructionId,
       if (userId != null) 'user_id': userId,
       if (message != null) 'message': message,
@@ -1893,7 +1861,6 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
 
   FeedbackCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? isSynced,
       Value<int>? instructionId,
       Value<int>? userId,
       Value<String>? message,
@@ -1907,7 +1874,6 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
       Value<int>? rowid}) {
     return FeedbackCompanion(
       id: id ?? this.id,
-      isSynced: isSynced ?? this.isSynced,
       instructionId: instructionId ?? this.instructionId,
       userId: userId ?? this.userId,
       message: message ?? this.message,
@@ -1927,9 +1893,6 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (isSynced.present) {
-      map['is_synced'] = Variable<bool>(isSynced.value);
     }
     if (instructionId.present) {
       map['instruction_id'] = Variable<int>(instructionId.value);
@@ -1971,7 +1934,6 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
   String toString() {
     return (StringBuffer('FeedbackCompanion(')
           ..write('id: $id, ')
-          ..write('isSynced: $isSynced, ')
           ..write('instructionId: $instructionId, ')
           ..write('userId: $userId, ')
           ..write('message: $message, ')
