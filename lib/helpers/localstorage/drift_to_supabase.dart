@@ -27,7 +27,9 @@ class DriftToSupabase {
         'created_by': entry.createdBy,
         'updated_at': entry.updatedAt.toUtc().toIso8601String(),
         'updated_by': entry.updatedBy,
-        'deleted_at': entry.deletedAt,
+        'deleted_at': entry.deletedAt != null
+            ? entry.deletedAt!.toUtc().toIso8601String()
+            : entry.deletedAt,
         'deleted_by': entry.deletedBy,
       }, onConflict: 'id');
     }
@@ -82,7 +84,9 @@ class DriftToSupabase {
         "created_by": historyEntry.createdBy,
         "updated_at": historyEntry.updatedAt.toUtc().toIso8601String(),
         "updated_by": historyEntry.updatedBy,
-        'deleted_at': historyEntry.deletedAt,
+        'deleted_at': historyEntry.deletedAt != null
+            ? historyEntry.deletedAt!.toUtc().toIso8601String()
+            : historyEntry.deletedAt,
         'deleted_by': historyEntry.deletedBy,
         "instruction_step_id": historyEntry.instructionStepId,
       }, onConflict: 'user_id,instruction_id').gt("updated_at", lastSynced);
