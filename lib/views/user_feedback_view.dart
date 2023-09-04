@@ -111,7 +111,7 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
                                 feedback, Const.feedbackImagesFolderName.key),
                             builder: (_, snapshot) {
                               if (snapshot.hasError) {
-                                return Text(l!.somethingWentWrong);
+                                return Text(l.somethingWentWrong);
                               }
                               if ((snapshot.connectionState ==
                                   ConnectionState.waiting)) {
@@ -123,7 +123,7 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
                                   fit: BoxFit.cover,
                                 );
                               }
-                              return Text(l!.noImageAvailable);
+                              return Text(l.noImageAvailable);
                             }),
                   )
                 : Container(),
