@@ -89,6 +89,7 @@ class DriftToSupabase {
             : historyEntry.deletedAt,
         'deleted_by': historyEntry.deletedBy,
         "instruction_step_id": historyEntry.instructionStepId,
+        "open": historyEntry.open
       }, onConflict: 'user_id,instruction_id').gt("updated_at", lastSynced);
     }
   }
