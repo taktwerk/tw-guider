@@ -5,7 +5,6 @@ import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
-import 'package:guider/views/homepage.dart';
 import 'package:guider/views/second_homepage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -75,7 +74,8 @@ class _LoginPageState extends State<LoginPage> {
                         items: users!
                             .map((item) => DropdownMenuItem<User>(
                                   value: item,
-                                  child: Text("${l!.user} ${item.id}"),
+                                  child: Text(
+                                      "${item.username} (${item.role}, ID: ${item.id})"),
                                 ))
                             .toList(),
                         onChanged: (item) => setState(
