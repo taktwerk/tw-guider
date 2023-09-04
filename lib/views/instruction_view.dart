@@ -78,7 +78,12 @@ class _InstructionViewState extends State<InstructionView> {
                   if (snapshot.hasError) {
                     return Text('🚨 Error: ${snapshot.error}');
                   } else if (snapshot.hasData) {
-                    return Text(snapshot.data!.first.title);
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(
+                        snapshot.data!.first.title,
+                      ),
+                    );
                   } else {
                     return const Text("Empty data TITLE");
                   }

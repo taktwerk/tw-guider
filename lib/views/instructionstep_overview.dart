@@ -66,8 +66,12 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
         .getInstructionStepsByInstructionId(widget.instruction.id);
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.instruction.title),
-        ),
+            title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Text(
+            widget.instruction.title,
+          ),
+        )),
         body: StreamBuilder(
           stream: steps,
           builder: (BuildContext context,
