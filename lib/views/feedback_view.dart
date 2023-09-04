@@ -201,7 +201,13 @@ class _FeedbackViewState extends State<FeedbackView> {
 
   PopupMenuItem _buildPopupMenuItem(
       String title, IconData iconData, int position, Function function) {
+    final l = Languages.of(context);
     return PopupMenuItem(
+      enabled: (kIsWeb || isDesktop())
+          ? title == l!.takeImage
+              ? false
+              : true
+          : true,
       onTap: () {
         function();
       },
