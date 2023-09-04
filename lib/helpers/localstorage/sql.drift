@@ -142,7 +142,7 @@ INSERT INTO histories (user_id, instruction_id, created_by, created_at, updated_
 VALUES (:user_id,(SELECT instruction_id FROM new_id), :created_by, :created_at, :updated_at, :updated_by, (SELECT i.id FROM instruction_steps i
 WHERE i.step_nr = (SELECT MIN(j.step_nr) FROM instruction_steps j WHERE j.instruction_id = (SELECT instruction_id FROM new_id)) AND i.instruction_id = (SELECT instruction_id FROM new_id)), false)
 ON CONFLICT (user_id, instruction_id) DO UPDATE
-SET updated_at = (SELECT updated_at FROM new_id);
+SET updated_at = (SELECT updated_at FROM new_id), open = false;
 
 openInstruction(REQUIRED :user_id as int): SELECT * FROM instructions 
 INNER JOIN histories ON instructions.id = histories.instruction_id 
