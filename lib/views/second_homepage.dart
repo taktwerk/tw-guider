@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
@@ -28,12 +29,30 @@ class _SecondHomePageState extends State<SecondHomePage>
   List<Instruction>? openHistory;
   BuildContext? oldDialogContext;
   StreamSubscription? subscription;
+  StreamSubscription? syncedSubscription;
 
   @override
   void initState() {
     super.initState();
     getUsers();
     initHistoryStream();
+    initSyncedStream();
+  }
+
+  void initSyncedStream() async {
+    var lastSyncedSetting = await KeyValue.getValue(KeyValueEnum.setting.key);
+    var lastSyncedFeedback = await KeyValue.getValue(KeyValueEnum.feedback.key);
+    var lastSyncedHistory = await KeyValue.getValue(KeyValueEnum.history.key);
+    syncedSubscription = Singleton()
+        .getDatabase()
+        .areTablesSynched(
+            DateTime.parse(lastSyncedSetting!),
+            DateTime.parse(lastSyncedFeedback!),
+            DateTime.parse(lastSyncedHistory!))
+        .listen((event) {
+      logger.w("Was synced? $event");
+      Singleton().setIsSynced(newSyncing: event.first);
+    });
   }
 
   onDismiss() {
@@ -92,6 +111,7 @@ class _SecondHomePageState extends State<SecondHomePage>
 
   @override
   void dispose() {
+    syncedSubscription?.cancel();
     subscription?.cancel();
     super.dispose();
   }
@@ -144,22 +164,27 @@ class _SecondHomePageState extends State<SecondHomePage>
           ),
           ValueListenableBuilder<bool>(
               valueListenable: Singleton().getValueNotifierSyncing(),
-              builder: ((context, value, child) {
-                return value
-                    ? Container(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Transform.scale(
-                          scale: 0.5,
-                          child: const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 3,
-                          ),
-                        ))
-                    : IconButton(
-                        icon: const Icon(Icons.sync),
-                        tooltip: 'Sync',
-                        onPressed: () => _onSyncButtonClick(),
-                      );
+              builder: ((context, syncing, child) {
+                return ValueListenableBuilder(
+                    valueListenable: Singleton().getValueNotifierIsSynced(),
+                    builder: ((context, isSynced, child) {
+                      return syncing
+                          ? Container(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Transform.scale(
+                                scale: 0.5,
+                                child: CircularProgressIndicator(
+                                  color: isSynced ? Colors.white : Colors.red,
+                                  strokeWidth: 3,
+                                ),
+                              ))
+                          : IconButton(
+                              color: isSynced ? Colors.white : Colors.red,
+                              icon: const Icon(Icons.sync),
+                              tooltip: 'Sync',
+                              onPressed: () => _onSyncButtonClick(),
+                            );
+                    }));
               })),
         ],
       ),

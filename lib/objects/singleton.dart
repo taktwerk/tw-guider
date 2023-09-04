@@ -9,6 +9,7 @@ class Singleton {
   static SharedPreferences? _prefsInstance;
   Singleton._internal();
   static final ValueNotifier<bool> _syncing = ValueNotifier<bool>(false);
+  static final ValueNotifier<bool> _isSynced = ValueNotifier<bool>(false);
 
   factory Singleton() {
     return _singleton;
@@ -19,8 +20,13 @@ class Singleton {
       _prefsInstance ?? await SharedPreferences.getInstance();
   bool getSyncing() => _syncing.value;
   ValueNotifier<bool> getValueNotifierSyncing() => _syncing;
+  ValueNotifier<bool> getValueNotifierIsSynced() => _isSynced;
 
   setSyncing({required bool newSyncing}) {
     _syncing.value = newSyncing;
+  }
+
+  setIsSynced({required bool newSyncing}) {
+    _isSynced.value = newSyncing;
   }
 }

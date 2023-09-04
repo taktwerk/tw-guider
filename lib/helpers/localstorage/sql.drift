@@ -147,3 +147,5 @@ SET updated_at = (SELECT updated_at FROM new_id), open = false;
 openInstruction(REQUIRED :user_id as int): SELECT * FROM instructions 
 INNER JOIN histories ON instructions.id = histories.instruction_id 
 WHERE histories.user_id = :user_id and histories.updated_at = (SELECT MAX (updated_at) FROM histories WHERE user_id = :user_id) AND instructions.deleted_at is NULL and histories.open = true;
+
+isSynced(REQUIRED :timestampSettings as DateTime, REQUIRED :timestampFeedback as DateTime, REQUIRED :timestampHistory as DateTime): SELECT NOT(EXISTS(SELECT 1 FROM settings WHERE updated_at > :timestampSettings) or EXISTS(SELECT 1 FROM feedback WHERE updated_at > :timestampFeedback) or EXISTS(SELECT 1 FROM histories WHERE updated_at > :timestampHistory));

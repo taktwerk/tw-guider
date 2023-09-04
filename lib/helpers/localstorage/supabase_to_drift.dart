@@ -349,6 +349,7 @@ class SupabaseToDrift {
         KeyValue.setNewValue(KeyValueEnum.setting.key, value);
       });
       await Singleton().setSyncing(newSyncing: false);
+      await Singleton().setIsSynced(newSyncing: true);
     }
   }
 }

@@ -322,6 +322,11 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
+  Stream<List<bool>> areTablesSynched(
+      DateTime settings, DateTime feedback, DateTime history) {
+    return isSynced(settings, feedback, history).watch();
+  }
+
   @override
   int get schemaVersion => 1;
 }
