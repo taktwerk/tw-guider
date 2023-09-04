@@ -206,36 +206,38 @@ class _InstructionViewState extends State<InstructionView> {
               return Text('🚨 Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               return Directionality(
-                textDirection: TextDirection.rtl,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    if (snapshot.data!.isNotEmpty) {
-                      Singleton().getDatabase().updateHistoryEntry(
-                          instruction.id,
-                          DateTime.now().toUtc(),
-                          currentUser!,
-                          currentUser!,
-                          DateTime.now().toUtc(),
-                          currentUser!);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => InstructionStepOverview(
-                            instruction: instruction,
-                          ),
-                        ),
-                      );
-                    } else {
-                      logger.i("No instruction steps available.");
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              Languages.of(context)!.noInstructionsAvailable)));
-                    }
-                  },
-                  label: Text(Languages.of(context)!.instructionSteps),
-                ),
-              );
+                  textDirection: TextDirection.rtl,
+                  child: Visibility(
+                    visible: snapshot.data!.isNotEmpty,
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.arrow_back_ios),
+                      onPressed: () {
+                        if (snapshot.data!.isNotEmpty) {
+                          Singleton().getDatabase().updateHistoryEntry(
+                              instruction.id,
+                              DateTime.now().toUtc(),
+                              currentUser!,
+                              currentUser!,
+                              DateTime.now().toUtc(),
+                              currentUser!);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => InstructionStepOverview(
+                                instruction: instruction,
+                              ),
+                            ),
+                          );
+                        } else {
+                          logger.i("No instruction steps available.");
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(Languages.of(context)!
+                                  .noInstructionsAvailable)));
+                        }
+                      },
+                      label: Text(Languages.of(context)!.instructionSteps),
+                    ),
+                  ));
             } else {
               return const Text("Empty data STEPS");
             }
