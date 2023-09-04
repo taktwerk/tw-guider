@@ -4289,6 +4289,22 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     });
   }
 
+  Selectable<bool> isSynced(DateTime timestampSettings,
+      DateTime timestampFeedback, DateTime timestampHistory) {
+    return customSelect(
+        'SELECT NOT(EXISTS (SELECT 1 AS _c1 FROM settings WHERE updated_at > ?1) OR EXISTS (SELECT 1 AS _c2 FROM feedback WHERE updated_at > ?2) OR EXISTS (SELECT 1 AS _c3 FROM histories WHERE updated_at > ?3))AS _c0',
+        variables: [
+          Variable<DateTime>(timestampSettings),
+          Variable<DateTime>(timestampFeedback),
+          Variable<DateTime>(timestampHistory)
+        ],
+        readsFrom: {
+          settings,
+          feedback,
+          histories,
+        }).map((QueryRow row) => row.read<bool>('_c0'));
+  }
+
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
