@@ -22,7 +22,7 @@ class SecondHomePage extends StatefulWidget {
 
 class _SecondHomePageState extends State<SecondHomePage>
     with SingleTickerProviderStateMixin {
-  List<User>? users;
+  User? user;
   int _pageIndex = 0;
   Stream histStream = Realtime.getHistoryStream();
   List<Instruction>? openHistory;
@@ -44,9 +44,9 @@ class _SecondHomePageState extends State<SecondHomePage>
   }
 
   Future getUsers() async {
-    var result = await Singleton().getDatabase().allUserEntries;
+    var result = await Singleton().getDatabase().getUserById(currentUser!);
     setState(() {
-      users = result;
+      user = result.firstOrNull;
     });
   }
 
@@ -130,14 +130,17 @@ class _SecondHomePageState extends State<SecondHomePage>
                   builder: (context) => const UserFeedbackView()));
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.storage),
-            tooltip: 'DB',
-            onPressed: () {
-              final db = Singleton().getDatabase();
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => DriftDbViewer(db)));
-            },
+          Visibility(
+            visible: user != null ? user!.role == "admin" : false,
+            child: IconButton(
+              icon: const Icon(Icons.storage),
+              tooltip: 'DB',
+              onPressed: () {
+                final db = Singleton().getDatabase();
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => DriftDbViewer(db)));
+              },
+            ),
           ),
           ValueListenableBuilder<bool>(
               valueListenable: Singleton().getValueNotifierSyncing(),
