@@ -278,6 +278,9 @@ class AppDatabase extends _$AppDatabase {
         ..orderBy([(t) => OrderingTerm(expression: t.id)]))
       .get();
 
+  Future<List<User>> getUserById(int id) =>
+      (select(users)..where((t) => t.id.equals(id))).get();
+
   // TABLE: Settings
   // NOTE: change to batch once I figure out how to to insertAll with the custom onConflict
   Future<int> createOrUpdateSetting(SettingsCompanion entry) =>
