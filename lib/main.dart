@@ -5,8 +5,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
-import 'package:guider/objects/singleton.dart';
-import 'package:guider/views/homepage.dart';
 import 'package:guider/views/login.dart';
 import 'package:guider/views/second_homepage.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -66,7 +64,7 @@ class GuiderApp extends StatefulWidget {
 class _GuiderAppState extends State<GuiderApp> {
   Locale? _locale;
   ThemeMode? _theme;
-  late StreamSubscription<ConnectivityResult> subscription;
+  // StreamSubscription<ConnectivityResult>? subscription;
   bool? islogin;
   List<StreamSubscription> list = Realtime.init();
 
@@ -102,20 +100,12 @@ class _GuiderAppState extends State<GuiderApp> {
     });
   }
 
-  void _onSyncButtonClick() async {
-    if (!Singleton().getSyncing()) {
-      try {
-        await SupabaseToDrift.sync();
-      } catch (e) {
-        await Singleton().setSyncing(newSyncing: false);
-        logger.e("Exception: $e");
-      }
-    }
-  }
-
   @override
   void dispose() {
-    subscription.cancel();
+    // subscription.cancel();
+    for (StreamSubscription sub in list) {
+      sub.cancel();
+    }
     super.dispose();
   }
 
