@@ -5,6 +5,7 @@ import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart' as local;
+import 'package:guider/widgets/feedback_dialog.dart';
 
 class EditFeedback extends StatefulWidget {
   const EditFeedback({super.key, required this.feedback});
@@ -37,57 +38,38 @@ class _EditFeedbackState extends State<EditFeedback> {
   }
 
   Widget getEditableForm() {
-    final l = Languages.of(context);
-
-    return AlertDialog(
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _controller,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                hintText: l!.feedbackContent,
-                filled: true,
-              ),
-              maxLines: 5,
-              maxLength: 4096,
-              textInputAction: TextInputAction.done,
-              validator: (String? text) {
-                if (text == null || text.isEmpty) {
-                  return l.pleaseEnterValue;
-                }
-                return null;
-              },
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          child: Text(l.cancel),
-          onPressed: () => Navigator.pop(context),
-        ),
-        TextButton(
-          child: Text(l.save),
-          onPressed: () async {
-            if (_formKey.currentState!.validate() && currentUser != null) {
-              await Singleton().getDatabase().updateFeedback(FeedbackCompanion(
-                  id: drift.Value(widget.feedback.id),
-                  message: drift.Value(_controller.text),
-                  updatedAt: drift.Value(DateTime.now().toUtc()),
-                  updatedBy: drift.Value(currentUser!)));
-              if (mounted) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
-                Navigator.pop(context);
-              }
-            }
-          },
-        )
-      ],
+    return FeedbackDialog(
+      controller: _controller,
+      formKey: _formKey,
+      feedbackDialogActions: getFeedbackActions(),
+      additionalFeedbackContent: null,
     );
+  }
+
+  List<Widget> getFeedbackActions() {
+    final l = Languages.of(context);
+    return [
+      TextButton(
+        child: Text(l!.cancel),
+        onPressed: () => Navigator.pop(context),
+      ),
+      TextButton(
+        child: Text(l.save),
+        onPressed: () async {
+          if (_formKey.currentState!.validate() && currentUser != null) {
+            await Singleton().getDatabase().updateFeedback(FeedbackCompanion(
+                id: drift.Value(widget.feedback.id),
+                message: drift.Value(_controller.text),
+                updatedAt: drift.Value(DateTime.now().toUtc()),
+                updatedBy: drift.Value(currentUser!)));
+            if (mounted) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
+              Navigator.pop(context);
+            }
+          }
+        },
+      )
+    ];
   }
 }

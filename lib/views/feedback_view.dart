@@ -10,6 +10,7 @@ import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
+import 'package:guider/widgets/feedback_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xid/xid.dart';
 
@@ -102,81 +103,69 @@ class _FeedbackViewState extends State<FeedbackView> {
 
   @override
   Widget build(BuildContext context) {
-    final l = Languages.of(context);
-    return AlertDialog(
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _controller,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                hintText: l!.feedbackContent,
-                filled: true,
-              ),
-              maxLines: 5,
-              maxLength: 4096,
-              textInputAction: TextInputAction.done,
-              validator: (String? text) {
-                if (text == null || text.isEmpty) {
-                  return l.pleaseEnterValue;
-                }
-                return null;
-              },
-            ),
-            Container(
-                margin: const EdgeInsets.all(10),
-                // TODO: Show file name
-                child: selectedImage == null
-                    ? Text(l.noImageSelected)
-                    : Text(l.imageSelected)),
-            _getPopupMenuButton(),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          child: Text(l.cancel),
-          onPressed: () => Navigator.pop(context),
-        ),
-        TextButton(
-          child: Text(l.send),
-          onPressed: () async {
-            if (_formKey.currentState!.validate() && currentUser != null) {
-              String xid = Xid().toString();
-              String? url;
-              if (_imagesBytes != null) {
-                String xidImage = Xid().toString();
-                url =
-                    "${Const.supabaseBucketUrl.key}$xidImage.png"; // TODO: png
-                Singleton().getDatabase().insertFeedbackImageBytes(
-                    BytesCompanion.insert(
-                        feedbackId: xid,
-                        image: _imagesBytes!,
-                        imageXid: xidImage));
-                if (!kIsWeb) {
-                  AppUtil.saveFeedbackImage(image!, xid, url);
-                }
-              }
-              Singleton().getDatabase().insertFeedback(FeedbackCompanion.insert(
-                  id: xid,
-                  instructionId: widget.instruction.id,
-                  userId: currentUser!,
-                  message: _controller.text,
-                  image: drift.Value(url),
-                  createdAt: DateTime.now().toUtc(),
-                  createdBy: currentUser!,
-                  updatedAt: DateTime.now().toUtc(),
-                  updatedBy: currentUser!));
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
+    return FeedbackDialog(
+        controller: _controller,
+        formKey: _formKey,
+        feedbackDialogActions: getFeedbackActions(),
+        additionalFeedbackContent: additionalFeedbackContent());
+  }
 
-              Navigator.pop(context);
+  List<Widget> getFeedbackActions() {
+    final l = Languages.of(context);
+    return [
+      TextButton(
+        child: Text(l!.cancel),
+        onPressed: () => Navigator.pop(context),
+      ),
+      TextButton(
+        child: Text(l.send),
+        onPressed: () async {
+          if (_formKey.currentState!.validate() && currentUser != null) {
+            String xid = Xid().toString();
+            String? url;
+            if (_imagesBytes != null) {
+              String xidImage = Xid().toString();
+              url = "${Const.supabaseBucketUrl.key}$xidImage.png"; // TODO: png
+              Singleton().getDatabase().insertFeedbackImageBytes(
+                  BytesCompanion.insert(
+                      feedbackId: xid,
+                      image: _imagesBytes!,
+                      imageXid: xidImage));
+              if (!kIsWeb) {
+                AppUtil.saveFeedbackImage(image!, xid, url);
+              }
             }
-          },
-        )
+            Singleton().getDatabase().insertFeedback(FeedbackCompanion.insert(
+                id: xid,
+                instructionId: widget.instruction.id,
+                userId: currentUser!,
+                message: _controller.text,
+                image: drift.Value(url),
+                createdAt: DateTime.now().toUtc(),
+                createdBy: currentUser!,
+                updatedAt: DateTime.now().toUtc(),
+                updatedBy: currentUser!));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
+
+            Navigator.pop(context);
+          }
+        },
+      )
+    ];
+  }
+
+  Widget additionalFeedbackContent() {
+    final l = Languages.of(context);
+    return Column(
+      children: [
+        Container(
+            margin: const EdgeInsets.all(10),
+            // TODO: Show file name
+            child: selectedImage == null
+                ? Text(l!.noImageSelected)
+                : Text(l!.imageSelected)),
+        _getPopupMenuButton(),
       ],
     );
   }
