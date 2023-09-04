@@ -4239,7 +4239,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   Future<int> updateHistoryEntry(int instructionId, DateTime updatedAt,
       int userId, int createdBy, DateTime createdAt, int updatedBy) {
     return customInsert(
-      'WITH new_id AS (SELECT ?1 AS instruction_id, ?2 AS updated_at) INSERT INTO histories (user_id, instruction_id, created_by, created_at, updated_at, updated_by, instruction_step_id, open) VALUES (?3, (SELECT instruction_id FROM new_id), ?4, ?5, ?2, ?6, (SELECT i.id FROM instruction_steps AS i WHERE i.step_nr = (SELECT MIN(j.step_nr) FROM instruction_steps AS j WHERE j.instruction_id = (SELECT instruction_id FROM new_id)) AND i.instruction_id = (SELECT instruction_id FROM new_id)), FALSE) ON CONFLICT (user_id, instruction_id) DO UPDATE SET updated_at = (SELECT updated_at FROM new_id)',
+      'WITH new_id AS (SELECT ?1 AS instruction_id, ?2 AS updated_at) INSERT INTO histories (user_id, instruction_id, created_by, created_at, updated_at, updated_by, instruction_step_id, open) VALUES (?3, (SELECT instruction_id FROM new_id), ?4, ?5, ?2, ?6, (SELECT i.id FROM instruction_steps AS i WHERE i.step_nr = (SELECT MIN(j.step_nr) FROM instruction_steps AS j WHERE j.instruction_id = (SELECT instruction_id FROM new_id)) AND i.instruction_id = (SELECT instruction_id FROM new_id)), FALSE) ON CONFLICT (user_id, instruction_id) DO UPDATE SET updated_at = (SELECT updated_at FROM new_id), open = FALSE',
       variables: [
         Variable<int>(instructionId),
         Variable<DateTime>(updatedAt),
