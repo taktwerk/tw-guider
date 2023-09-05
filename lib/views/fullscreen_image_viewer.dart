@@ -7,8 +7,12 @@ import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 
 class FullScreenImageViewer extends StatelessWidget {
-  const FullScreenImageViewer(this.instruction, {Key? key}) : super(key: key);
-  final Instruction instruction;
+  const FullScreenImageViewer(this.object, this.folderName, this.tagName,
+      {Key? key})
+      : super(key: key);
+  final object;
+  final String folderName;
+  final String tagName;
   @override
   Widget build(BuildContext context) {
     final l = Languages.of(context);
@@ -19,10 +23,10 @@ class FullScreenImageViewer extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Hero(
-            tag: 'imageHero',
+            tag: tagName,
             child: (kIsWeb)
                 ? Image.network(
-                    instruction.image,
+                    object.image,
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
@@ -36,8 +40,7 @@ class FullScreenImageViewer extends StatelessWidget {
                     },
                   )
                 : FutureBuilder(
-                    future: AppUtil.filePath(
-                        instruction, Const.instructionImagesFolderName.key),
+                    future: AppUtil.filePath(object, folderName),
                     builder: (_, snapshot) {
                       if (snapshot.hasError) {
                         return Text(l!.somethingWentWrong);

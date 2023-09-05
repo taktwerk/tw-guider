@@ -32,6 +32,7 @@ class InstructionView extends StatefulWidget {
 class _InstructionViewState extends State<InstructionView> {
   List<Category>? _categories;
   final ScrollController _scrollController = ScrollController();
+  final String tagName = "instructionTag";
 
   @override
   void initState() {
@@ -271,7 +272,7 @@ class _InstructionViewState extends State<InstructionView> {
       flex: 1,
       child: GestureDetector(
         child: Hero(
-            tag: "imageHero",
+            tag: tagName,
             child: (foundation.kIsWeb)
                 ? Image.network(
                     instruction.image,
@@ -311,7 +312,8 @@ class _InstructionViewState extends State<InstructionView> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => FullScreenImageViewer(instruction)),
+                builder: (context) => FullScreenImageViewer(instruction,
+                    Const.instructionImagesFolderName.key, tagName)),
           );
         },
       ),

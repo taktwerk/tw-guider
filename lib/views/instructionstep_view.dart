@@ -6,6 +6,7 @@ import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:flutter/foundation.dart' as foundation;
+import 'package:guider/views/fullscreen_image_viewer.dart';
 
 class InstructionStepView extends StatefulWidget {
   const InstructionStepView(
@@ -21,6 +22,7 @@ class InstructionStepView extends StatefulWidget {
 }
 
 class _InstructionStepViewState extends State<InstructionStepView> {
+  final String tagName = "stepTag";
   @override
   void initState() {
     super.initState();
@@ -37,43 +39,57 @@ class _InstructionStepViewState extends State<InstructionStepView> {
         Text("${l!.step} ${widget.instructionStep.stepNr}"),
         GestureDetector(
           child: Hero(
-            tag: "stepHero",
-            child: (foundation.kIsWeb)
-                ? Image.network(
-                    widget.instructionStep.image,
-                    height: 300,
-                    width: 300,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.red,
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'No image',
-                        ),
-                      );
-                    },
-                  )
-                : FutureBuilder(
-                    future: AppUtil.filePath(widget.instructionStep,
-                        Const.instructionStepsImagesFolderName.key),
-                    builder: (_, snapshot) {
-                      if (snapshot.hasError) {
-                        return Text(l.somethingWentWrong);
-                      }
-                      if ((snapshot.connectionState ==
-                          ConnectionState.waiting)) {
-                        return const CircularProgressIndicator();
-                      }
-                      if (snapshot.data!.isNotEmpty) {
-                        return Image.file(
-                          File(snapshot.data!),
-                          fit: BoxFit.cover,
+            tag: tagName,
+            child: FractionallySizedBox(
+              widthFactor: 0.5,
+              child: (foundation.kIsWeb)
+                  ? Image.network(
+                      widget.instructionStep.image,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.red,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'No image',
+                          ),
                         );
-                      }
-                      return Text(l.noImageAvailable);
-                    }),
+                      },
+                    )
+                  : FutureBuilder(
+                      future: AppUtil.filePath(widget.instructionStep,
+                          Const.instructionStepsImagesFolderName.key),
+                      builder: (_, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(l.somethingWentWrong);
+                        }
+                        if ((snapshot.connectionState ==
+                            ConnectionState.waiting)) {
+                          return const CircularProgressIndicator();
+                        }
+                        if (snapshot.data!.isNotEmpty) {
+                          return Image.file(
+                            File(snapshot.data!),
+                            fit: BoxFit.cover,
+                          );
+                        }
+                        return Center(
+                          child: Text(l.noImageAvailable),
+                        );
+                      },
+                    ),
+            ),
           ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FullScreenImageViewer(
+                      widget.instructionStep,
+                      Const.instructionStepsImagesFolderName.key,
+                      tagName)),
+            );
+          },
         )
       ],
     );
