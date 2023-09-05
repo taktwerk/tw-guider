@@ -93,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                   : const Text("No users available")
               : const CircularProgressIndicator(),
           ElevatedButton(
+              key: const Key("Login"),
               onPressed: () {
                 if (users != null) {
                   if (users!.isNotEmpty) {
