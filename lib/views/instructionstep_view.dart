@@ -41,7 +41,18 @@ class _InstructionStepViewState extends State<InstructionStepView> {
             child: (foundation.kIsWeb)
                 ? Image.network(
                     widget.instructionStep.image,
+                    height: 300,
+                    width: 300,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.red,
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'No image',
+                        ),
+                      );
+                    },
                   )
                 : FutureBuilder(
                     future: AppUtil.filePath(widget.instructionStep,
