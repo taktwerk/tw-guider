@@ -11,6 +11,7 @@ import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/fullscreen_image_viewer.dart';
 import 'package:guider/views/instructionstep_overview.dart';
+import 'package:guider/widgets/streambuilder_widgets.dart';
 import 'package:guider/widgets/tag.dart';
 import 'package:guider/views/feedback_view.dart';
 
@@ -68,30 +69,7 @@ class _InstructionViewState extends State<InstructionView> {
                   icon: const Icon(Icons.close),
                 )
               : null,
-          title: StreamBuilder(
-              stream: instruction,
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<Instruction>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.connectionState == ConnectionState.active ||
-                    snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return Text('🚨 Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(
-                        snapshot.data!.first.title,
-                      ),
-                    );
-                  } else {
-                    return const Text("Empty data TITLE");
-                  }
-                } else {
-                  return Text('State: ${snapshot.connectionState}');
-                }
-              }),
+          title: getTitleStream(instruction),
         ),
         body: StreamBuilder(
             stream: instruction,

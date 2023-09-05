@@ -5,6 +5,7 @@ import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/instructionstep_view.dart';
+import 'package:guider/widgets/streambuilder_widgets.dart';
 
 class InstructionStepOverview extends StatefulWidget {
   const InstructionStepOverview({super.key, required this.instruction});
@@ -50,30 +51,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
         instructionId: widget.instruction.id, userId: currentUser!);
     return Scaffold(
         appBar: AppBar(
-          title: StreamBuilder(
-              stream: instruction,
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<Instruction>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.connectionState == ConnectionState.active ||
-                    snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return Text('🚨 Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(
-                        snapshot.data!.first.title,
-                      ),
-                    );
-                  } else {
-                    return const Text("Empty data TITLE");
-                  }
-                } else {
-                  return Text('State: ${snapshot.connectionState}');
-                }
-              }),
+          title: getTitleStream(instruction),
         ),
         body: StreamBuilder(
           stream: steps,
