@@ -41,6 +41,8 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
   @override
   Widget build(BuildContext context) {
     final l = Languages.of(context);
+    final instruction =
+        Singleton().getDatabase().getInstructionById(widget.instruction.id);
     final steps = Singleton()
         .getDatabase()
         .getInstructionStepsByInstructionId(widget.instruction.id);
@@ -48,12 +50,31 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
         instructionId: widget.instruction.id, userId: currentUser!);
     return Scaffold(
         appBar: AppBar(
-            title: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Text(
-            widget.instruction.title,
-          ),
-        )),
+          title: StreamBuilder(
+              stream: instruction,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Instruction>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.connectionState == ConnectionState.active ||
+                    snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Text('🚨 Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(
+                        snapshot.data!.first.title,
+                      ),
+                    );
+                  } else {
+                    return const Text("Empty data TITLE");
+                  }
+                } else {
+                  return Text('State: ${snapshot.connectionState}');
+                }
+              }),
+        ),
         body: StreamBuilder(
           stream: steps,
           builder: (BuildContext context,
