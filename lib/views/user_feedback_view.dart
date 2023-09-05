@@ -10,7 +10,9 @@ import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/edit_feedback.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class UserFeedbackView extends StatefulWidget {
   const UserFeedbackView({super.key});
@@ -78,6 +80,10 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
     var heading = feedback.message;
     var subheading = feedback.id;
     final DateFormat formatter = DateFormat.yMd('de').add_Hms();
+    Future<Response>? response;
+    if (feedback.image != null) {
+      response = http.get(Uri.parse(feedback.image));
+    }
     var supportingText =
         '${l!.createdAt}: ${formatter.format(feedback.createdAt)} \n${l.lastUpdate}: ${formatter.format(feedback.updatedAt)}';
     return Card(
@@ -91,19 +97,31 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
             ),
             feedback.image != null
                 ? Container(
-                    height: 300.0,
                     child: (kIsWeb)
-                        ? Image.network(
-                            feedback.image,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.red,
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  'No image',
-                                ),
-                              );
+                        ? FutureBuilder(
+                            future: response,
+                            builder: (BuildContext context,
+                                AsyncSnapshot<Response> snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data?.statusCode == 200) {
+                                  return Image.network(
+                                    feedback.image,
+                                    height: 300.0,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: Colors.red,
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          'No image',
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }
+                                return Text(l.feedbackImageError);
+                              }
+                              return const CircularProgressIndicator();
                             },
                           )
                         : FutureBuilder(

@@ -132,4 +132,8 @@ class LanguageEn extends Languages {
 
   @override
   String get confirm => "Confirm";
+
+  @override
+  String get feedbackImageError =>
+      "No image available. This feedback probably hasn't been synced yet or another error has occured.";
 }
