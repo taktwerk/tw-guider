@@ -75,6 +75,14 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
         ));
   }
 
+  void changeLikedFlag(id, liked) async {
+    await Singleton().getDatabase().updateFeedback(FeedbackCompanion(
+        id: drift.Value(id),
+        liked: drift.Value(liked),
+        updatedAt: drift.Value(DateTime.now().toUtc()),
+        updatedBy: drift.Value(currentUser!)));
+  }
+
   Card buildCard(feedback) {
     final l = Languages.of(context);
     var heading = feedback.message;
@@ -93,7 +101,16 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
             ListTile(
               title: Text(heading),
               subtitle: Text(subheading),
-              trailing: const Icon(Icons.favorite_outline),
+              trailing: feedback != null
+                  ? IconButton(
+                      icon: feedback.liked
+                          ? const Icon(Icons.favorite)
+                          : const Icon(Icons.favorite_outline),
+                      onPressed: () {
+                        changeLikedFlag(feedback.id, !feedback.liked);
+                      },
+                    )
+                  : const Icon(Icons.favorite_outline),
             ),
             feedback.image != null
                 ? Container(

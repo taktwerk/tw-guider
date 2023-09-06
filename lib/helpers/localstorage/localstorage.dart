@@ -245,11 +245,8 @@ class AppDatabase extends _$AppDatabase {
       (update(feedback)..where((t) => t.id.equals(id)))
           .write(FeedbackCompanion(image: Value(url)));
 
-  Stream<List<Feedback>> getUserFeedback(int givenUserId) => (select(feedback)
-        ..where((t) => t.userId.equals(givenUserId))
-        ..where((t) => t.deletedAt.isNull())
-        ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
-      .watch();
+  Stream<List<Feedback>> getUserFeedback(int givenUserId) =>
+      getFeedbackLiked(givenUserId).watch();
 
   // TABLE: Bytes
   Future<List<Byte>> get allBytesEntries => select(bytes).get();

@@ -41,6 +41,7 @@ create table
     updated_by bigint not null,
     deleted_at datetime null,
     deleted_by bigint null,
+    liked bool not null default false,
     constraint feedback_pkey primary key (id),
     constraint feedback_instruction_id_fkey foreign key (instruction_id) references instructions (id),
     constraint feedback_user_id_fkey foreign key (user_id) references users (id)
@@ -149,3 +150,5 @@ INNER JOIN histories ON instructions.id = histories.instruction_id
 WHERE histories.user_id = :user_id and histories.updated_at = (SELECT MAX (updated_at) FROM histories WHERE user_id = :user_id) AND instructions.deleted_at is NULL and histories.open = true;
 
 isSynced(REQUIRED :timestampSettings as DateTime, REQUIRED :timestampFeedback as DateTime, REQUIRED :timestampHistory as DateTime): SELECT NOT(EXISTS(SELECT 1 FROM settings WHERE updated_at > :timestampSettings) or EXISTS(SELECT 1 FROM feedback WHERE updated_at > :timestampFeedback) or EXISTS(SELECT 1 FROM histories WHERE updated_at > :timestampHistory));
+
+getFeedbackLiked(REQUIRED :user_id as int): SELECT * FROM feedback WHERE user_id = :user_id AND deleted_at is NULL ORDER BY liked DESC, created_at DESC;
