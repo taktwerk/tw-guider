@@ -1482,6 +1482,13 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: '');
+  static const VerificationMeta _likedMeta = const VerificationMeta('liked');
+  late final GeneratedColumn<bool> liked = GeneratedColumn<bool>(
+      'liked', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1494,7 +1501,8 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
         updatedAt,
         updatedBy,
         deletedAt,
-        deletedBy
+        deletedBy,
+        liked
       ];
   @override
   String get aliasedName => _alias ?? 'feedback';
@@ -1566,6 +1574,10 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
       context.handle(_deletedByMeta,
           deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
     }
+    if (data.containsKey('liked')) {
+      context.handle(
+          _likedMeta, liked.isAcceptableOrUnknown(data['liked']!, _likedMeta));
+    }
     return context;
   }
 
@@ -1597,6 +1609,8 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
           .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
       deletedBy: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
+      liked: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}liked'])!,
     );
   }
 
@@ -1627,6 +1641,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
   final int updatedBy;
   final DateTime? deletedAt;
   final int? deletedBy;
+  final bool liked;
   const Feedback(
       {required this.id,
       required this.instructionId,
@@ -1638,7 +1653,8 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       required this.updatedAt,
       required this.updatedBy,
       this.deletedAt,
-      this.deletedBy});
+      this.deletedBy,
+      required this.liked});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1659,6 +1675,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
     if (!nullToAbsent || deletedBy != null) {
       map['deleted_by'] = Variable<int>(deletedBy);
     }
+    map['liked'] = Variable<bool>(liked);
     return map;
   }
 
@@ -1680,6 +1697,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       deletedBy: deletedBy == null && nullToAbsent
           ? const Value.absent()
           : Value(deletedBy),
+      liked: Value(liked),
     );
   }
 
@@ -1698,6 +1716,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       updatedBy: serializer.fromJson<int>(json['updated_by']),
       deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
       deletedBy: serializer.fromJson<int?>(json['deleted_by']),
+      liked: serializer.fromJson<bool>(json['liked']),
     );
   }
   @override
@@ -1715,6 +1734,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       'updated_by': serializer.toJson<int>(updatedBy),
       'deleted_at': serializer.toJson<DateTime?>(deletedAt),
       'deleted_by': serializer.toJson<int?>(deletedBy),
+      'liked': serializer.toJson<bool>(liked),
     };
   }
 
@@ -1729,7 +1749,8 @@ class Feedback extends DataClass implements Insertable<Feedback> {
           DateTime? updatedAt,
           int? updatedBy,
           Value<DateTime?> deletedAt = const Value.absent(),
-          Value<int?> deletedBy = const Value.absent()}) =>
+          Value<int?> deletedBy = const Value.absent(),
+          bool? liked}) =>
       Feedback(
         id: id ?? this.id,
         instructionId: instructionId ?? this.instructionId,
@@ -1742,6 +1763,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
         updatedBy: updatedBy ?? this.updatedBy,
         deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
         deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
+        liked: liked ?? this.liked,
       );
   @override
   String toString() {
@@ -1756,14 +1778,15 @@ class Feedback extends DataClass implements Insertable<Feedback> {
           ..write('updatedAt: $updatedAt, ')
           ..write('updatedBy: $updatedBy, ')
           ..write('deletedAt: $deletedAt, ')
-          ..write('deletedBy: $deletedBy')
+          ..write('deletedBy: $deletedBy, ')
+          ..write('liked: $liked')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(id, instructionId, userId, message, image,
-      createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
+      createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, liked);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1778,7 +1801,8 @@ class Feedback extends DataClass implements Insertable<Feedback> {
           other.updatedAt == this.updatedAt &&
           other.updatedBy == this.updatedBy &&
           other.deletedAt == this.deletedAt &&
-          other.deletedBy == this.deletedBy);
+          other.deletedBy == this.deletedBy &&
+          other.liked == this.liked);
 }
 
 class FeedbackCompanion extends UpdateCompanion<Feedback> {
@@ -1793,6 +1817,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
   final Value<int> updatedBy;
   final Value<DateTime?> deletedAt;
   final Value<int?> deletedBy;
+  final Value<bool> liked;
   final Value<int> rowid;
   const FeedbackCompanion({
     this.id = const Value.absent(),
@@ -1806,6 +1831,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     this.updatedBy = const Value.absent(),
     this.deletedAt = const Value.absent(),
     this.deletedBy = const Value.absent(),
+    this.liked = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FeedbackCompanion.insert({
@@ -1820,6 +1846,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     required int updatedBy,
     this.deletedAt = const Value.absent(),
     this.deletedBy = const Value.absent(),
+    this.liked = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         instructionId = Value(instructionId),
@@ -1841,6 +1868,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     Expression<int>? updatedBy,
     Expression<DateTime>? deletedAt,
     Expression<int>? deletedBy,
+    Expression<bool>? liked,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1855,6 +1883,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
       if (updatedBy != null) 'updated_by': updatedBy,
       if (deletedAt != null) 'deleted_at': deletedAt,
       if (deletedBy != null) 'deleted_by': deletedBy,
+      if (liked != null) 'liked': liked,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1871,6 +1900,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
       Value<int>? updatedBy,
       Value<DateTime?>? deletedAt,
       Value<int?>? deletedBy,
+      Value<bool>? liked,
       Value<int>? rowid}) {
     return FeedbackCompanion(
       id: id ?? this.id,
@@ -1884,6 +1914,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
       updatedBy: updatedBy ?? this.updatedBy,
       deletedAt: deletedAt ?? this.deletedAt,
       deletedBy: deletedBy ?? this.deletedBy,
+      liked: liked ?? this.liked,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1924,6 +1955,9 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     if (deletedBy.present) {
       map['deleted_by'] = Variable<int>(deletedBy.value);
     }
+    if (liked.present) {
+      map['liked'] = Variable<bool>(liked.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1944,6 +1978,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
           ..write('updatedBy: $updatedBy, ')
           ..write('deletedAt: $deletedAt, ')
           ..write('deletedBy: $deletedBy, ')
+          ..write('liked: $liked, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4303,6 +4338,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
           feedback,
           histories,
         }).map((QueryRow row) => row.read<bool>('_c0'));
+  }
+
+  Selectable<Feedback> getFeedbackLiked(int userId) {
+    return customSelect(
+        'SELECT * FROM feedback WHERE user_id = ?1 AND deleted_at IS NULL ORDER BY liked DESC, created_at DESC',
+        variables: [
+          Variable<int>(userId)
+        ],
+        readsFrom: {
+          feedback,
+        }).asyncMap(feedback.mapFromRow);
   }
 
   @override
