@@ -162,11 +162,13 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                             controller: _scrollController,
                             thumbVisibility: true,
                             child: ListView.builder(
+                              key: const Key("listview"),
                               itemCount: snapshot.data?.length,
                               controller: _scrollController,
                               physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
                                 return ListItem(
+                                    key: Key("${snapshot.data![index].id}"),
                                     instruction: snapshot.data![index]);
                               },
                             )));
