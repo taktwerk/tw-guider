@@ -118,7 +118,7 @@ class _FeedbackViewState extends State<FeedbackView> {
         onPressed: () => Navigator.pop(context),
       ),
       TextButton(
-        child: Text(l.send),
+        child: Text(l.save),
         onPressed: () async {
           if (_formKey.currentState!.validate() && currentUser != null) {
             String xid = Xid().toString();

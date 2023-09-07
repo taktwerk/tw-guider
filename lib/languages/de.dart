@@ -61,9 +61,6 @@ class LanguageDe extends Languages {
   String get noImageSelected => "Kein Bild ausgewählt.";
 
   @override
-  String get send => "Senden";
-
-  @override
   String get settingsTitle => "Einstellungen";
 
   @override

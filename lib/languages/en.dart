@@ -61,9 +61,6 @@ class LanguageEn extends Languages {
   String get noImageSelected => "No Image selected.";
 
   @override
-  String get send => "Send";
-
-  @override
   String get settingsTitle => "Settings";
 
   @override
