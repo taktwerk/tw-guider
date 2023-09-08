@@ -1,4 +1,3 @@
-import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
@@ -153,17 +152,6 @@ class _SettingsViewState extends State<SettingsView> {
                       logger.w("Deleted everything");
                     },
                     icon: const Icon(Icons.delete),
-                    label: const Text("DB")),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: ElevatedButton.icon(
-                    onPressed: () {
-                      final db = Singleton().getDatabase();
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => DriftDbViewer(db)));
-                    },
-                    icon: const Icon(Icons.storage),
                     label: const Text("DB")),
               ),
               Padding(
