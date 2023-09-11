@@ -4351,6 +4351,147 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         }).asyncMap(feedback.mapFromRow);
   }
 
+  Selectable<HistoryEntriesOfUserAsInstructionsResult>
+      historyEntriesOfUserAsInstructions(int userId) {
+    return customSelect(
+        'SELECT instructions.*, coalesce(q.number_of_steps, 0) AS number_of_steps FROM instructions LEFT JOIN (SELECT instruction_id, COUNT(*) AS number_of_steps FROM instruction_steps WHERE deleted_at IS NULL GROUP BY instruction_id) AS q ON q.instruction_id = instructions.id INNER JOIN (SELECT * FROM histories WHERE user_id = ?1 AND deleted_at IS NULL) AS r ON r.instruction_id = instructions.id WHERE instructions.deleted_at IS NULL ORDER BY r.updated_at DESC',
+        variables: [
+          Variable<int>(userId)
+        ],
+        readsFrom: {
+          instructions,
+          instructionSteps,
+          histories,
+        }).map((QueryRow row) {
+      return HistoryEntriesOfUserAsInstructionsResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        numberOfSteps: row.read<int>('number_of_steps'),
+      );
+    });
+  }
+
+  Selectable<AllInstructionsResult> allInstructions() {
+    return customSelect(
+        'SELECT instructions.*, coalesce(q.number_of_steps, 0) AS number_of_steps FROM instructions LEFT JOIN (SELECT instruction_id, COUNT(*) AS number_of_steps FROM instruction_steps WHERE deleted_at IS NULL GROUP BY instruction_id) AS q ON q.instruction_id = instructions.id WHERE instructions.deleted_at IS NULL ORDER BY id',
+        variables: [],
+        readsFrom: {
+          instructions,
+          instructionSteps,
+        }).map((QueryRow row) {
+      return AllInstructionsResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        numberOfSteps: row.read<int>('number_of_steps'),
+      );
+    });
+  }
+
+  Selectable<AllInstructionsBySearchResult> allInstructionsBySearch(
+      String word) {
+    return customSelect(
+        'SELECT instructions.*, coalesce(q.number_of_steps, 0) AS number_of_steps FROM instructions LEFT JOIN (SELECT instruction_id, COUNT(*) AS number_of_steps FROM instruction_steps WHERE deleted_at IS NULL GROUP BY instruction_id) AS q ON q.instruction_id = instructions.id WHERE instructions.deleted_at IS NULL AND(title LIKE \'%\' || ?1 || \'%\' OR short_title LIKE \'%\' || ?1 || \'%\')ORDER BY id',
+        variables: [
+          Variable<String>(word)
+        ],
+        readsFrom: {
+          instructions,
+          instructionSteps,
+        }).map((QueryRow row) {
+      return AllInstructionsBySearchResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        numberOfSteps: row.read<int>('number_of_steps'),
+      );
+    });
+  }
+
+  Selectable<AllInstructionsByCategoryAndSearchResult>
+      allInstructionsByCategoryAndSearch(int categoryId, String word) {
+    return customSelect(
+        'SELECT instructions.*, coalesce(q.number_of_steps, 0) AS number_of_steps FROM instructions LEFT JOIN (SELECT instruction_id, COUNT(*) AS number_of_steps FROM instruction_steps WHERE deleted_at IS NULL GROUP BY instruction_id) AS q ON q.instruction_id = instructions.id INNER JOIN (SELECT * FROM InstructionsCategories WHERE category_id = ?1 AND deleted_at IS NULL) AS r ON r.instruction_id = instructions.id WHERE instructions.deleted_at IS NULL AND(title LIKE \'%\' || ?2 || \'%\' OR short_title LIKE \'%\' || ?2 || \'%\')ORDER BY id',
+        variables: [
+          Variable<int>(categoryId),
+          Variable<String>(word)
+        ],
+        readsFrom: {
+          instructions,
+          instructionSteps,
+          instructionsCategories,
+        }).map((QueryRow row) {
+      return AllInstructionsByCategoryAndSearchResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        numberOfSteps: row.read<int>('number_of_steps'),
+      );
+    });
+  }
+
+  Selectable<AllInstructionsByCategoryResult> allInstructionsByCategory(
+      int categoryId) {
+    return customSelect(
+        'SELECT instructions.*, coalesce(q.number_of_steps, 0) AS number_of_steps FROM instructions LEFT JOIN (SELECT instruction_id, COUNT(*) AS number_of_steps FROM instruction_steps WHERE deleted_at IS NULL GROUP BY instruction_id) AS q ON q.instruction_id = instructions.id INNER JOIN (SELECT * FROM InstructionsCategories WHERE category_id = ?1 AND deleted_at IS NULL) AS r ON r.instruction_id = instructions.id WHERE instructions.deleted_at IS NULL ORDER BY id',
+        variables: [
+          Variable<int>(categoryId)
+        ],
+        readsFrom: {
+          instructions,
+          instructionSteps,
+          instructionsCategories,
+        }).map((QueryRow row) {
+      return AllInstructionsByCategoryResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        numberOfSteps: row.read<int>('number_of_steps'),
+      );
+    });
+  }
+
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4475,5 +4616,150 @@ class OpenInstructionResult {
     this.instructionStepId,
     required this.open,
     this.additionalData,
+  });
+}
+
+class HistoryEntriesOfUserAsInstructionsResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int numberOfSteps;
+  HistoryEntriesOfUserAsInstructionsResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.numberOfSteps,
+  });
+}
+
+class AllInstructionsResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int numberOfSteps;
+  AllInstructionsResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.numberOfSteps,
+  });
+}
+
+class AllInstructionsBySearchResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int numberOfSteps;
+  AllInstructionsBySearchResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.numberOfSteps,
+  });
+}
+
+class AllInstructionsByCategoryAndSearchResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int numberOfSteps;
+  AllInstructionsByCategoryAndSearchResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.numberOfSteps,
+  });
+}
+
+class AllInstructionsByCategoryResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int numberOfSteps;
+  AllInstructionsByCategoryResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.numberOfSteps,
   });
 }
