@@ -24,10 +24,10 @@ enum Const {
   open("open"),
   lightmode("lightmode"),
   language("language"),
-  imagesFolderName("images"),
-  instructionStepsImagesFolderName("images/instructionStepsImages"),
-  instructionImagesFolderName("images/instructionImages"),
-  feedbackImagesFolderName("images/feedbackImages"),
+  imagesFolderName("guider/images"),
+  instructionStepsImagesFolderName("guider/images/instructionStepsImages"),
+  instructionImagesFolderName("guider/images/instructionImages"),
+  feedbackImagesFolderName("guider/images/feedbackImages"),
   supabaseBucketUrl(
       "https://spohaqvzfgvdihxcwvff.supabase.co/storage/v1/object/public/feedback_images/");
 
