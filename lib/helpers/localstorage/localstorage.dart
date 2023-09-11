@@ -4,6 +4,13 @@ import 'connection/connection.dart' as impl;
 
 part 'localstorage.g.dart';
 
+class InstructionWithCount {
+  InstructionWithCount(this.instruction, this.count);
+
+  final Instruction instruction;
+  final int count;
+}
+
 @DriftDatabase(tables: [], include: {'sql.drift'})
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(impl.connect());
@@ -42,10 +49,22 @@ class AppDatabase extends _$AppDatabase {
   }
 
 // TABLE: Instruction
-  Stream<List<Instruction>> get allInstructionEntries => (select(instructions)
-        ..orderBy([(t) => OrderingTerm(expression: t.id)])
-        ..where((t) => t.deletedAt.isNull()))
-      .watch();
+  Stream<List<InstructionWithCount>> getAllInstructions() {
+    return allInstructions()
+        .map((p) => InstructionWithCount(
+            Instruction(
+                id: p.id,
+                title: p.title,
+                shortTitle: p.shortTitle,
+                image: p.image,
+                description: p.description,
+                createdAt: p.createdAt,
+                createdBy: p.createdBy,
+                updatedAt: p.updatedAt,
+                updatedBy: p.updatedBy),
+            p.numberOfSteps))
+        .watch();
+  }
 
   Future<void> insertMultipleInstructions(
       List<Insertable<Instruction>> list) async {
@@ -54,18 +73,27 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  Stream<List<Instruction>> getInstructionBySearch(String substring) =>
-      (select(instructions)
-            ..where((t) =>
-                ((t.title.lower()).contains(substring.toLowerCase()) |
-                    (t.shortTitle.lower()).contains(substring.toLowerCase())))
-            ..where((t) => t.deletedAt.isNull()))
-          .watch();
+  Stream<List<InstructionWithCount>> getInstructionBySearch(String searchWord) {
+    return allInstructionsBySearch(searchWord)
+        .map((p) => InstructionWithCount(
+            Instruction(
+                id: p.id,
+                title: p.title,
+                shortTitle: p.shortTitle,
+                image: p.image,
+                description: p.description,
+                createdAt: p.createdAt,
+                createdBy: p.createdBy,
+                updatedAt: p.updatedAt,
+                updatedBy: p.updatedBy),
+            p.numberOfSteps))
+        .watch();
+  }
 
-  Stream<List<Instruction>> combineCategoryAndSearch(
+  Stream<List<InstructionWithCount>> combineCategoryAndSearch(
       int searchByCategoryId, String substring) {
     if (searchByCategoryId == -1 && substring.isEmpty) {
-      return allInstructionEntries;
+      return getAllInstructions();
     } else if (searchByCategoryId == -1 && substring.isNotEmpty) {
       return getInstructionBySearch(substring);
     } else if (searchByCategoryId != -1 && substring.isEmpty) {
@@ -75,32 +103,39 @@ class AppDatabase extends _$AppDatabase {
     }
   }
 
-  Stream<List<Instruction>> getInstructionByCategoryAndSearch(
-      int searchByCategoryId, String substring) {
-    final query = (select(instructions)
-          ..where((t) => instructions.deletedAt.isNull()))
-        .join([
-      innerJoin(instructionsCategories,
-          instructions.id.equalsExp(instructionsCategories.instructionId),
-          useColumns: false)
-    ])
-      ..where((instructionsCategories.categoryId).equals(searchByCategoryId))
-      ..where(((instructions.title).contains(substring.toLowerCase()) |
-          (instructions.shortTitle.lower()).contains(substring.toLowerCase())))
-      ..where(instructionsCategories.deletedAt.isNull());
-    return query.map((row) => row.readTable(instructions)).watch();
+  Stream<List<InstructionWithCount>> getInstructionByCategoryAndSearch(
+      int categoryId, String searchWord) {
+    return allInstructionsByCategoryAndSearch(categoryId, searchWord)
+        .map((p) => InstructionWithCount(
+            Instruction(
+                id: p.id,
+                title: p.title,
+                shortTitle: p.shortTitle,
+                image: p.image,
+                description: p.description,
+                createdAt: p.createdAt,
+                createdBy: p.createdBy,
+                updatedAt: p.updatedAt,
+                updatedBy: p.updatedBy),
+            p.numberOfSteps))
+        .watch();
   }
 
-  Stream<List<Instruction>> getInstructionByCategory(int searchByCategoryId) {
-    final query = (select(instructions)..where((t) => t.deletedAt.isNull()))
-        .join([
-      innerJoin(instructionsCategories,
-          instructions.id.equalsExp(instructionsCategories.instructionId),
-          useColumns: false)
-    ])
-      ..where((instructionsCategories.categoryId).equals(searchByCategoryId))
-      ..where(instructionsCategories.deletedAt.isNull());
-    return query.map((row) => row.readTable(instructions)).watch();
+  Stream<List<InstructionWithCount>> getInstructionByCategory(int categoryId) {
+    return allInstructionsByCategory(categoryId)
+        .map((p) => InstructionWithCount(
+            Instruction(
+                id: p.id,
+                title: p.title,
+                shortTitle: p.shortTitle,
+                image: p.image,
+                description: p.description,
+                createdAt: p.createdAt,
+                createdBy: p.createdBy,
+                updatedAt: p.updatedAt,
+                updatedBy: p.updatedBy),
+            p.numberOfSteps))
+        .watch();
   }
 
   Stream<List<Instruction>> getInstructionById(int id) =>
@@ -157,22 +192,28 @@ class AppDatabase extends _$AppDatabase {
   }
 
   // TABLE: History
-  // NOTE: change to batch once I figure out how to to insertAll with the custom onConflict
   Future<int> createOrUpdateHistory(HistoriesCompanion entry) =>
       into(histories).insert(entry,
           onConflict: DoUpdate.withExcluded((old, excluded) => entry,
               where: (old, excluded) =>
                   old.updatedAt.isSmallerThan(excluded.updatedAt)));
 
-  Stream<List<Instruction>> getUserHistoryAsInstructions(int givenUserId) {
-    final query =
-        (select(instructions)..where((t) => t.deletedAt.isNull())).join([
-      innerJoin(histories, instructions.id.equalsExp(histories.instructionId),
-          useColumns: false)
-    ])
-          ..orderBy([OrderingTerm.desc(histories.updatedAt)])
-          ..where((histories.userId).equals(givenUserId));
-    return query.map((row) => row.readTable(instructions)).watch();
+  Stream<List<InstructionWithCount>> getUserHistoryAsInstructions(
+      int givenUserId) {
+    return historyEntriesOfUserAsInstructions(givenUserId)
+        .map((p) => InstructionWithCount(
+            Instruction(
+                id: p.id,
+                title: p.title,
+                shortTitle: p.shortTitle,
+                image: p.image,
+                description: p.description,
+                createdAt: p.createdAt,
+                createdBy: p.createdBy,
+                updatedAt: p.updatedAt,
+                updatedBy: p.updatedBy),
+            p.numberOfSteps))
+        .watch();
   }
 
   Future<List<History>> getUserHistory(int givenUserId, int instructionId) =>
@@ -226,7 +267,6 @@ class AppDatabase extends _$AppDatabase {
       (select(feedback)..where((t) => t.updatedAt.isBiggerThanValue(timestamp)))
           .get();
 
-  // NOTE: change to batch once I figure out how to to insertAll with the custom onConflict
   Future<int> createOrUpdateFeedback(FeedbackCompanion entry) =>
       into(feedback).insert(entry,
           onConflict: DoUpdate.withExcluded((old, excluded) => entry,
@@ -279,7 +319,6 @@ class AppDatabase extends _$AppDatabase {
       (select(users)..where((t) => t.id.equals(id))).get();
 
   // TABLE: Settings
-  // NOTE: change to batch once I figure out how to to insertAll with the custom onConflict
   Future<int> createOrUpdateSetting(SettingsCompanion entry) =>
       into(settings).insert(entry,
           onConflict: DoUpdate.withExcluded((old, excluded) => entry,

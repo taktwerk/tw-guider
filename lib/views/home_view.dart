@@ -149,7 +149,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
           StreamBuilder(
               stream: filteredInstructions,
               builder: (BuildContext context,
-                  AsyncSnapshot<List<Instruction>> snapshot) {
+                  AsyncSnapshot<List<InstructionWithCount>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (snapshot.connectionState == ConnectionState.active ||
@@ -168,8 +168,12 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                               physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
                                 return ListItem(
-                                    key: Key("${snapshot.data![index].id}"),
-                                    instruction: snapshot.data![index]);
+                                  key: Key(
+                                      "${snapshot.data![index].instruction.id}"),
+                                  instruction:
+                                      snapshot.data![index].instruction,
+                                  count: snapshot.data![index].count,
+                                );
                               },
                             )));
                   } else {

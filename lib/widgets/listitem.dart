@@ -9,12 +9,13 @@ import 'package:guider/views/instruction_view.dart';
 import 'package:intl/intl.dart';
 
 class ListItem extends StatelessWidget {
-  const ListItem({
-    super.key,
-    required Instruction instruction,
-  }) : _instruction = instruction;
+  const ListItem(
+      {super.key, required Instruction instruction, required int count})
+      : _instruction = instruction,
+        _count = count;
 
   final Instruction _instruction;
+  final int _count;
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +124,7 @@ class ListItem extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.bottomLeft,
                           child: Text(
-                            '${l!.steps}: ? | ${l.lastUpdate}: ${formatter.format(_instruction.updatedAt)}',
+                            '${l!.steps}: $_count | ${l.lastUpdate}: ${formatter.format(_instruction.updatedAt)}',
                             style: const TextStyle(color: Colors.grey),
                           ),
                         ),

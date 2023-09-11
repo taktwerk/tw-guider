@@ -20,13 +20,8 @@ class _HistoryViewState extends State<HistoryView> {
     super.dispose();
   }
 
-  // @override
-  // bool get wantKeepAlive => true;
-
   @override
   Widget build(BuildContext context) {
-    //super.build(context);
-
     var historyEntries =
         Singleton().getDatabase().getUserHistoryAsInstructions(currentUser!);
     return Scaffold(
@@ -35,7 +30,7 @@ class _HistoryViewState extends State<HistoryView> {
         StreamBuilder(
             stream: historyEntries,
             builder: (BuildContext context,
-                AsyncSnapshot<List<Instruction>> snapshot) {
+                AsyncSnapshot<List<InstructionWithCount>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.connectionState == ConnectionState.active ||
@@ -52,7 +47,9 @@ class _HistoryViewState extends State<HistoryView> {
                       physics: const BouncingScrollPhysics(),
                       itemCount: snapshot.data?.length,
                       itemBuilder: (context, index) {
-                        return ListItem(instruction: snapshot.data![index]);
+                        return ListItem(
+                            instruction: snapshot.data![index].instruction,
+                            count: snapshot.data![index].count);
                       },
                     ),
                   ));

@@ -152,3 +152,41 @@ WHERE histories.user_id = :user_id and histories.updated_at = (SELECT MAX (updat
 isSynced(REQUIRED :timestampSettings as DateTime, REQUIRED :timestampFeedback as DateTime, REQUIRED :timestampHistory as DateTime): SELECT NOT(EXISTS(SELECT 1 FROM settings WHERE updated_at > :timestampSettings) or EXISTS(SELECT 1 FROM feedback WHERE updated_at > :timestampFeedback) or EXISTS(SELECT 1 FROM histories WHERE updated_at > :timestampHistory));
 
 getFeedbackLiked(REQUIRED :user_id as int): SELECT * FROM feedback WHERE user_id = :user_id AND deleted_at is NULL ORDER BY liked DESC, created_at DESC;
+
+historyEntriesOfUserAsInstructions(REQUIRED :user_id as int): SELECT instructions.*, coalesce(q.number_of_steps, 0) as number_of_steps FROM instructions
+LEFT JOIN (SELECT instruction_id, COUNT(*) as number_of_steps FROM instruction_steps WHERE deleted_at is NULL GROUP BY instruction_id) q
+ON q.instruction_id = instructions.id
+INNER JOIN (SELECT * FROM histories WHERE user_id = :user_id and deleted_at is NULL) r
+ON r.instruction_id = instructions.id
+WHERE instructions.deleted_at is NULL
+ORDER BY r.updated_at DESC;
+
+allInstructions: SELECT instructions.*, coalesce(q.number_of_steps, 0) as number_of_steps FROM instructions
+LEFT JOIN (SELECT instruction_id, COUNT(*) as number_of_steps FROM instruction_steps WHERE deleted_at is NULL GROUP BY instruction_id) q
+ON q.instruction_id = instructions.id
+WHERE instructions.deleted_at is NULL
+ORDER BY id;
+
+allInstructionsBySearch(REQUIRED :word as char): SELECT instructions.*, coalesce(q.number_of_steps, 0) as number_of_steps FROM instructions
+LEFT JOIN (SELECT instruction_id, COUNT(*) as number_of_steps FROM instruction_steps WHERE deleted_at is NULL GROUP BY instruction_id) q
+ON q.instruction_id = instructions.id
+WHERE instructions.deleted_at is NULL and (title LIKE '%' || :word || '%' or short_title LIKE '%' || :word || '%')
+ORDER BY id;
+
+allInstructionsByCategoryAndSearch( REQUIRED :category_id as int, REQUIRED :word as char): SELECT instructions.*, coalesce(q.number_of_steps, 0) as number_of_steps 
+FROM instructions
+LEFT JOIN (SELECT instruction_id, COUNT(*) as number_of_steps FROM instruction_steps WHERE deleted_at is NULL GROUP BY instruction_id) q
+ON q.instruction_id = instructions.id
+INNER JOIN (SELECT * FROM InstructionsCategories WHERE category_id = :category_id and deleted_at is NULL) r
+ON r.instruction_id = instructions.id
+WHERE instructions.deleted_at is NULL and (title LIKE '%' || :word || '%' or short_title LIKE '%' || :word || '%')
+ORDER BY id;
+
+allInstructionsByCategory(REQUIRED :category_id as int): SELECT instructions.*, coalesce(q.number_of_steps, 0) as number_of_steps 
+FROM instructions
+LEFT JOIN (SELECT instruction_id, COUNT(*) as number_of_steps FROM instruction_steps WHERE deleted_at is NULL GROUP BY instruction_id) q
+ON q.instruction_id = instructions.id
+INNER JOIN (SELECT * FROM InstructionsCategories WHERE category_id = :category_id and deleted_at is NULL) r
+ON r.instruction_id = instructions.id
+WHERE instructions.deleted_at is NULL
+ORDER BY id;
