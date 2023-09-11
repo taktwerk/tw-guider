@@ -132,7 +132,9 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                           ),
                         );
                       } else {
-                        return const Text("Empty data LASTVISITEDSTEP");
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
                     } else {
                       return Text('State: ${snapshot.connectionState}');
