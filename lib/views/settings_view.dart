@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/languages/supported_languages.dart';
 import 'package:guider/main.dart';
@@ -185,6 +186,14 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
+  void sync() async {
+    try {
+      await SupabaseToDrift.sync();
+    } catch (e) {
+      logger.w("Could not sync (settings view)");
+    }
+  }
+
   void onLanguageChange(lang) async {
     GuiderApp.setLocale(
         context, Locale.fromSubtags(languageCode: lang.languageCode));
@@ -192,6 +201,7 @@ class _SettingsViewState extends State<SettingsView> {
       await Singleton()
           .getDatabase()
           .updateUserLanguage(currentUser!, lang.languageCode);
+      sync();
     }
   }
 
@@ -200,6 +210,7 @@ class _SettingsViewState extends State<SettingsView> {
       await Singleton()
           .getDatabase()
           .updateUserRealtime(currentUser!, realtime);
+      sync();
     }
   }
 
@@ -208,6 +219,7 @@ class _SettingsViewState extends State<SettingsView> {
     GuiderApp.setTheme(context, mode);
     if (currentUser != null) {
       await Singleton().getDatabase().updateUserLightmode(currentUser!, theme);
+      sync();
     }
   }
 }

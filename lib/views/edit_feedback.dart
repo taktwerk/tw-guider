@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -30,6 +31,14 @@ class _EditFeedbackState extends State<EditFeedback> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void sync() async {
+    try {
+      await SupabaseToDrift.sync();
+    } catch (e) {
+      logger.w("Could not sync (edit feedback view)");
+    }
   }
 
   @override
@@ -67,6 +76,7 @@ class _EditFeedbackState extends State<EditFeedback> {
                   .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
               Navigator.pop(context);
             }
+            sync();
           }
         },
       )

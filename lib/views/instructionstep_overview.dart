@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -25,6 +26,14 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
     super.dispose();
   }
 
+  void sync() async {
+    try {
+      await SupabaseToDrift.sync();
+    } catch (e) {
+      logger.w("Could not sync (instructionstep overview)");
+    }
+  }
+
   _renderWidget(step) {
     return step != null
         ? InstructionStepView(
@@ -37,6 +46,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
         userId: currentUser!,
         instructionId: widget.instruction.id,
         instructionStepId: id);
+    sync();
   }
 
   @override

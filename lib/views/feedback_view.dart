@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -35,6 +36,14 @@ class _FeedbackViewState extends State<FeedbackView> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void sync() async {
+    try {
+      await SupabaseToDrift.sync();
+    } catch (e) {
+      logger.w("Could not sync (feedback view)");
+    }
   }
 
   bool isDevice() {
@@ -135,20 +144,24 @@ class _FeedbackViewState extends State<FeedbackView> {
                 AppUtil.saveFeedbackImage(image!, xid, url);
               }
             }
-            Singleton().getDatabase().insertFeedback(FeedbackCompanion.insert(
-                id: xid,
-                instructionId: widget.instruction.id,
-                userId: currentUser!,
-                message: _controller.text,
-                image: drift.Value(url),
-                createdAt: DateTime.now().toUtc(),
-                createdBy: currentUser!,
-                updatedAt: DateTime.now().toUtc(),
-                updatedBy: currentUser!));
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
+            await Singleton().getDatabase().insertFeedback(
+                FeedbackCompanion.insert(
+                    id: xid,
+                    instructionId: widget.instruction.id,
+                    userId: currentUser!,
+                    message: _controller.text,
+                    image: drift.Value(url),
+                    createdAt: DateTime.now().toUtc(),
+                    createdBy: currentUser!,
+                    updatedAt: DateTime.now().toUtc(),
+                    updatedBy: currentUser!));
+            if (mounted) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
 
-            Navigator.pop(context);
+              Navigator.pop(context);
+            }
+            sync();
           }
         },
       )

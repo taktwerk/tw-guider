@@ -6,6 +6,7 @@ import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart' as local;
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -28,6 +29,14 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void sync() async {
+    try {
+      await SupabaseToDrift.sync();
+    } catch (e) {
+      logger.w("Could not sync (user feedback view)");
+    }
   }
 
   @override
@@ -81,6 +90,7 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
         liked: drift.Value(liked),
         updatedAt: drift.Value(DateTime.now().toUtc()),
         updatedBy: drift.Value(currentUser!)));
+    sync();
   }
 
   Card buildCard(feedback) {
@@ -222,6 +232,7 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
                             updatedBy: drift.Value(currentUser!),
                             deletedAt: drift.Value(DateTime.now().toUtc()),
                             deletedBy: drift.Value(currentUser!)));
+                    sync();
                   },
                 ),
               ],

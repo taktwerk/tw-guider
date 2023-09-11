@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -52,6 +53,14 @@ class _InstructionViewState extends State<InstructionView> {
     setState(() {
       _categories = categories;
     });
+  }
+
+  void sync() async {
+    try {
+      await SupabaseToDrift.sync();
+    } catch (e) {
+      logger.w("Could not sync (instruction view)");
+    }
   }
 
   @override
@@ -190,23 +199,26 @@ class _InstructionViewState extends State<InstructionView> {
                     visible: snapshot.data!.isNotEmpty,
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () {
+                      onPressed: () async {
                         if (snapshot.data!.isNotEmpty) {
-                          Singleton().getDatabase().updateHistoryEntry(
+                          await Singleton().getDatabase().updateHistoryEntry(
                               instruction.id,
                               DateTime.now().toUtc(),
                               currentUser!,
                               currentUser!,
                               DateTime.now().toUtc(),
                               currentUser!);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => InstructionStepOverview(
-                                instruction: instruction,
+                          if (mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => InstructionStepOverview(
+                                  instruction: instruction,
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
+                          sync();
                         } else {
                           logger.i("No instruction steps available.");
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
