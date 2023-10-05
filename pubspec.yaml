@@ -55,6 +55,7 @@ dependencies:
   drift_db_viewer: ^2.0.0
   crypto: ^3.0.3
   intl: ^0.18.0
+  grouped_list: ^5.1.2
   
 dev_dependencies:
   flutter_test:

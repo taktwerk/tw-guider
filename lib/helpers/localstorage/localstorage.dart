@@ -371,6 +371,17 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
+  Stream<List<Asset>> getAssetsOfInstruction(int givenInstructionId) {
+    final query = (select(assets)..where((t) => t.deletedAt.isNull())).join([
+      innerJoin(
+          instructionsAssets, assets.id.equalsExp(instructionsAssets.assetId),
+          useColumns: false)
+    ])
+      ..where((instructionsAssets.instructionId).equals(givenInstructionId))
+      ..where(instructionsAssets.deletedAt.isNull());
+    return query.map((row) => row.readTable(assets)).watch();
+  }
+
   // TABLE: Instruction_Asset
   Future<void> insertMultipleInstructionsAssets(
       List<Insertable<InstructionAsset>> list) async {
