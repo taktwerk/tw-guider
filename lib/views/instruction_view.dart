@@ -314,9 +314,10 @@ class _InstructionViewState extends State<InstructionView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            constraints: const BoxConstraints(maxWidth: 200),
+            alignment: Alignment.center,
             child: Padding(
-              padding: const EdgeInsets.only(left: 10),
+              padding:
+                  const EdgeInsets.only(left: 10, right: 10, bottom: 5, top: 5),
               child: Text(
                 category,
                 style: const TextStyle(
@@ -325,10 +326,6 @@ class _InstructionViewState extends State<InstructionView> {
                 ),
               ),
             ),
-          ),
-          const Icon(
-            Icons.close,
-            color: Color.fromARGB(255, 146, 146, 146),
           ),
         ],
       );
