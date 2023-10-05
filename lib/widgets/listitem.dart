@@ -117,6 +117,8 @@ class ListItem extends StatelessWidget {
                         child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(_instruction.title,
+                                key: const Key(
+                                    "listitem_title"), //included for integration test purposes
                                 style: const TextStyle(fontSize: 23))),
                       ),
                       Expanded(
