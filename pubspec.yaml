@@ -41,7 +41,6 @@ dependencies:
   file_selector: ^1.0.0
   flutter_localizations:
     sdk: flutter 
-  connectivity_plus: ^4.0.2
   internet_connection_checker: ^1.0.0+1
   drift: ^2.10.0
   # The following adds the Cupertino Icons font to your application.
