@@ -66,6 +66,8 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
                               controller: _scrollController,
                               thumbVisibility: true,
                               child: ListView.builder(
+                                key: const Key(
+                                    "listview_feedback"), //included for integration test purposes
                                 itemCount: snapshot.data?.length,
                                 controller: _scrollController,
                                 physics: const BouncingScrollPhysics(),

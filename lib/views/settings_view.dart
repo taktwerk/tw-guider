@@ -80,6 +80,8 @@ class _SettingsViewState extends State<SettingsView> {
                           SizedBox(
                             width: 300,
                             child: DropdownButtonFormField(
+                              key: const Key(
+                                  "dropdown"), //included for integration test purposes
                               isExpanded: true,
                               icon: const Icon(Icons.arrow_drop_down_circle),
                               value: snapshot.hasData
