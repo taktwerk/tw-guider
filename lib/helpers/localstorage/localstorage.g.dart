@@ -4259,6 +4259,975 @@ class BytesCompanion extends UpdateCompanion<Byte> {
   }
 }
 
+class Assets extends Table with TableInfo<Assets, Asset> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  Assets(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  late final GeneratedColumnWithTypeConverter<ContentType, String> type =
+      GeneratedColumn<String>('type', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: true,
+              $customConstraints: 'NOT NULL')
+          .withConverter<ContentType>(Assets.$convertertype);
+  static const VerificationMeta _fileMeta = const VerificationMeta('file');
+  late final GeneratedColumn<String> file = GeneratedColumn<String>(
+      'file', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _textfieldMeta =
+      const VerificationMeta('textfield');
+  late final GeneratedColumn<String> textfield = GeneratedColumn<String>(
+      'textfield', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdByMeta =
+      const VerificationMeta('createdBy');
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+      'created_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedByMeta =
+      const VerificationMeta('updatedBy');
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+      'updated_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _deletedByMeta =
+      const VerificationMeta('deletedBy');
+  late final GeneratedColumn<int> deletedBy = GeneratedColumn<int>(
+      'deleted_by', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        type,
+        file,
+        textfield,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
+        deletedAt,
+        deletedBy
+      ];
+  @override
+  String get aliasedName => _alias ?? 'assets';
+  @override
+  String get actualTableName => 'assets';
+  @override
+  VerificationContext validateIntegrity(Insertable<Asset> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    context.handle(_typeMeta, const VerificationResult.success());
+    if (data.containsKey('file')) {
+      context.handle(
+          _fileMeta, file.isAcceptableOrUnknown(data['file']!, _fileMeta));
+    }
+    if (data.containsKey('textfield')) {
+      context.handle(_textfieldMeta,
+          textfield.isAcceptableOrUnknown(data['textfield']!, _textfieldMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(_createdByMeta,
+          createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
+    } else if (isInserting) {
+      context.missing(_createdByMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(_updatedByMeta,
+          updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta));
+    } else if (isInserting) {
+      context.missing(_updatedByMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('deleted_by')) {
+      context.handle(_deletedByMeta,
+          deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Asset map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Asset(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      type: Assets.$convertertype.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!),
+      file: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}file']),
+      textfield: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}textfield']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      createdBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_by'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      updatedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_by'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      deletedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
+    );
+  }
+
+  @override
+  Assets createAlias(String alias) {
+    return Assets(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ContentType, String, String> $convertertype =
+      const EnumNameConverter<ContentType>(ContentType.values);
+  @override
+  List<String> get customConstraints =>
+      const ['CONSTRAINT asset_pkey PRIMARY KEY(id)'];
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class Asset extends DataClass implements Insertable<Asset> {
+  final int id;
+  final String name;
+  final ContentType type;
+  final String? file;
+  final String? textfield;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  const Asset(
+      {required this.id,
+      required this.name,
+      required this.type,
+      this.file,
+      this.textfield,
+      required this.createdAt,
+      required this.createdBy,
+      required this.updatedAt,
+      required this.updatedBy,
+      this.deletedAt,
+      this.deletedBy});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    {
+      final converter = Assets.$convertertype;
+      map['type'] = Variable<String>(converter.toSql(type));
+    }
+    if (!nullToAbsent || file != null) {
+      map['file'] = Variable<String>(file);
+    }
+    if (!nullToAbsent || textfield != null) {
+      map['textfield'] = Variable<String>(textfield);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['created_by'] = Variable<int>(createdBy);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['updated_by'] = Variable<int>(updatedBy);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || deletedBy != null) {
+      map['deleted_by'] = Variable<int>(deletedBy);
+    }
+    return map;
+  }
+
+  AssetsCompanion toCompanion(bool nullToAbsent) {
+    return AssetsCompanion(
+      id: Value(id),
+      name: Value(name),
+      type: Value(type),
+      file: file == null && nullToAbsent ? const Value.absent() : Value(file),
+      textfield: textfield == null && nullToAbsent
+          ? const Value.absent()
+          : Value(textfield),
+      createdAt: Value(createdAt),
+      createdBy: Value(createdBy),
+      updatedAt: Value(updatedAt),
+      updatedBy: Value(updatedBy),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deletedBy: deletedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedBy),
+    );
+  }
+
+  factory Asset.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Asset(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      type: Assets.$convertertype
+          .fromJson(serializer.fromJson<String>(json['type'])),
+      file: serializer.fromJson<String?>(json['file']),
+      textfield: serializer.fromJson<String?>(json['textfield']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      createdBy: serializer.fromJson<int>(json['created_by']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
+      updatedBy: serializer.fromJson<int>(json['updated_by']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
+      deletedBy: serializer.fromJson<int?>(json['deleted_by']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(Assets.$convertertype.toJson(type)),
+      'file': serializer.toJson<String?>(file),
+      'textfield': serializer.toJson<String?>(textfield),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'created_by': serializer.toJson<int>(createdBy),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
+      'updated_by': serializer.toJson<int>(updatedBy),
+      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
+      'deleted_by': serializer.toJson<int?>(deletedBy),
+    };
+  }
+
+  Asset copyWith(
+          {int? id,
+          String? name,
+          ContentType? type,
+          Value<String?> file = const Value.absent(),
+          Value<String?> textfield = const Value.absent(),
+          DateTime? createdAt,
+          int? createdBy,
+          DateTime? updatedAt,
+          int? updatedBy,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          Value<int?> deletedBy = const Value.absent()}) =>
+      Asset(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        type: type ?? this.type,
+        file: file.present ? file.value : this.file,
+        textfield: textfield.present ? textfield.value : this.textfield,
+        createdAt: createdAt ?? this.createdAt,
+        createdBy: createdBy ?? this.createdBy,
+        updatedAt: updatedAt ?? this.updatedAt,
+        updatedBy: updatedBy ?? this.updatedBy,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Asset(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('file: $file, ')
+          ..write('textfield: $textfield, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, type, file, textfield, createdAt,
+      createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Asset &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.type == this.type &&
+          other.file == this.file &&
+          other.textfield == this.textfield &&
+          other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
+          other.updatedAt == this.updatedAt &&
+          other.updatedBy == this.updatedBy &&
+          other.deletedAt == this.deletedAt &&
+          other.deletedBy == this.deletedBy);
+}
+
+class AssetsCompanion extends UpdateCompanion<Asset> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<ContentType> type;
+  final Value<String?> file;
+  final Value<String?> textfield;
+  final Value<DateTime> createdAt;
+  final Value<int> createdBy;
+  final Value<DateTime> updatedAt;
+  final Value<int> updatedBy;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> deletedBy;
+  const AssetsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.type = const Value.absent(),
+    this.file = const Value.absent(),
+    this.textfield = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+  });
+  AssetsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required ContentType type,
+    this.file = const Value.absent(),
+    this.textfield = const Value.absent(),
+    required DateTime createdAt,
+    required int createdBy,
+    required DateTime updatedAt,
+    required int updatedBy,
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+  })  : name = Value(name),
+        type = Value(type),
+        createdAt = Value(createdAt),
+        createdBy = Value(createdBy),
+        updatedAt = Value(updatedAt),
+        updatedBy = Value(updatedBy);
+  static Insertable<Asset> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? type,
+    Expression<String>? file,
+    Expression<String>? textfield,
+    Expression<DateTime>? createdAt,
+    Expression<int>? createdBy,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? updatedBy,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? deletedBy,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (type != null) 'type': type,
+      if (file != null) 'file': file,
+      if (textfield != null) 'textfield': textfield,
+      if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deletedBy != null) 'deleted_by': deletedBy,
+    });
+  }
+
+  AssetsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<ContentType>? type,
+      Value<String?>? file,
+      Value<String?>? textfield,
+      Value<DateTime>? createdAt,
+      Value<int>? createdBy,
+      Value<DateTime>? updatedAt,
+      Value<int>? updatedBy,
+      Value<DateTime?>? deletedAt,
+      Value<int?>? deletedBy}) {
+    return AssetsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      file: file ?? this.file,
+      textfield: textfield ?? this.textfield,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deletedBy: deletedBy ?? this.deletedBy,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (type.present) {
+      final converter = Assets.$convertertype;
+      map['type'] = Variable<String>(converter.toSql(type.value));
+    }
+    if (file.present) {
+      map['file'] = Variable<String>(file.value);
+    }
+    if (textfield.present) {
+      map['textfield'] = Variable<String>(textfield.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (deletedBy.present) {
+      map['deleted_by'] = Variable<int>(deletedBy.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AssetsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('file: $file, ')
+          ..write('textfield: $textfield, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class InstructionsAssets extends Table
+    with TableInfo<InstructionsAssets, InstructionAsset> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  InstructionsAssets(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _instructionIdMeta =
+      const VerificationMeta('instructionId');
+  late final GeneratedColumn<int> instructionId = GeneratedColumn<int>(
+      'instruction_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _assetIdMeta =
+      const VerificationMeta('assetId');
+  late final GeneratedColumn<int> assetId = GeneratedColumn<int>(
+      'asset_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdByMeta =
+      const VerificationMeta('createdBy');
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+      'created_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedByMeta =
+      const VerificationMeta('updatedBy');
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+      'updated_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _deletedByMeta =
+      const VerificationMeta('deletedBy');
+  late final GeneratedColumn<int> deletedBy = GeneratedColumn<int>(
+      'deleted_by', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  @override
+  List<GeneratedColumn> get $columns => [
+        instructionId,
+        assetId,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
+        deletedAt,
+        deletedBy
+      ];
+  @override
+  String get aliasedName => _alias ?? 'InstructionsAssets';
+  @override
+  String get actualTableName => 'InstructionsAssets';
+  @override
+  VerificationContext validateIntegrity(Insertable<InstructionAsset> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('instruction_id')) {
+      context.handle(
+          _instructionIdMeta,
+          instructionId.isAcceptableOrUnknown(
+              data['instruction_id']!, _instructionIdMeta));
+    } else if (isInserting) {
+      context.missing(_instructionIdMeta);
+    }
+    if (data.containsKey('asset_id')) {
+      context.handle(_assetIdMeta,
+          assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta));
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(_createdByMeta,
+          createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
+    } else if (isInserting) {
+      context.missing(_createdByMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(_updatedByMeta,
+          updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta));
+    } else if (isInserting) {
+      context.missing(_updatedByMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('deleted_by')) {
+      context.handle(_deletedByMeta,
+          deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {instructionId, assetId};
+  @override
+  InstructionAsset map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InstructionAsset(
+      instructionId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}instruction_id'])!,
+      assetId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}asset_id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      createdBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_by'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      updatedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_by'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      deletedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
+    );
+  }
+
+  @override
+  InstructionsAssets createAlias(String alias) {
+    return InstructionsAssets(attachedDatabase, alias);
+  }
+
+  @override
+  List<String> get customConstraints => const [
+        'CONSTRAINT instruction_asset_pkey PRIMARY KEY(instruction_id, asset_id)',
+        'CONSTRAINT instruction_asset_asset_id_fkey FOREIGN KEY(asset_id)REFERENCES assets(id)ON UPDATE CASCADE ON DELETE CASCADE',
+        'CONSTRAINT instruction_asset_instruction_id_fkey FOREIGN KEY(instruction_id)REFERENCES instructions(id)ON UPDATE CASCADE ON DELETE CASCADE'
+      ];
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class InstructionAsset extends DataClass
+    implements Insertable<InstructionAsset> {
+  final int instructionId;
+  final int assetId;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  const InstructionAsset(
+      {required this.instructionId,
+      required this.assetId,
+      required this.createdAt,
+      required this.createdBy,
+      required this.updatedAt,
+      required this.updatedBy,
+      this.deletedAt,
+      this.deletedBy});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['instruction_id'] = Variable<int>(instructionId);
+    map['asset_id'] = Variable<int>(assetId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['created_by'] = Variable<int>(createdBy);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['updated_by'] = Variable<int>(updatedBy);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || deletedBy != null) {
+      map['deleted_by'] = Variable<int>(deletedBy);
+    }
+    return map;
+  }
+
+  InstructionsAssetsCompanion toCompanion(bool nullToAbsent) {
+    return InstructionsAssetsCompanion(
+      instructionId: Value(instructionId),
+      assetId: Value(assetId),
+      createdAt: Value(createdAt),
+      createdBy: Value(createdBy),
+      updatedAt: Value(updatedAt),
+      updatedBy: Value(updatedBy),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deletedBy: deletedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedBy),
+    );
+  }
+
+  factory InstructionAsset.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InstructionAsset(
+      instructionId: serializer.fromJson<int>(json['instruction_id']),
+      assetId: serializer.fromJson<int>(json['asset_id']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      createdBy: serializer.fromJson<int>(json['created_by']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
+      updatedBy: serializer.fromJson<int>(json['updated_by']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
+      deletedBy: serializer.fromJson<int?>(json['deleted_by']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'instruction_id': serializer.toJson<int>(instructionId),
+      'asset_id': serializer.toJson<int>(assetId),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'created_by': serializer.toJson<int>(createdBy),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
+      'updated_by': serializer.toJson<int>(updatedBy),
+      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
+      'deleted_by': serializer.toJson<int?>(deletedBy),
+    };
+  }
+
+  InstructionAsset copyWith(
+          {int? instructionId,
+          int? assetId,
+          DateTime? createdAt,
+          int? createdBy,
+          DateTime? updatedAt,
+          int? updatedBy,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          Value<int?> deletedBy = const Value.absent()}) =>
+      InstructionAsset(
+        instructionId: instructionId ?? this.instructionId,
+        assetId: assetId ?? this.assetId,
+        createdAt: createdAt ?? this.createdAt,
+        createdBy: createdBy ?? this.createdBy,
+        updatedAt: updatedAt ?? this.updatedAt,
+        updatedBy: updatedBy ?? this.updatedBy,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('InstructionAsset(')
+          ..write('instructionId: $instructionId, ')
+          ..write('assetId: $assetId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(instructionId, assetId, createdAt, createdBy,
+      updatedAt, updatedBy, deletedAt, deletedBy);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InstructionAsset &&
+          other.instructionId == this.instructionId &&
+          other.assetId == this.assetId &&
+          other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
+          other.updatedAt == this.updatedAt &&
+          other.updatedBy == this.updatedBy &&
+          other.deletedAt == this.deletedAt &&
+          other.deletedBy == this.deletedBy);
+}
+
+class InstructionsAssetsCompanion extends UpdateCompanion<InstructionAsset> {
+  final Value<int> instructionId;
+  final Value<int> assetId;
+  final Value<DateTime> createdAt;
+  final Value<int> createdBy;
+  final Value<DateTime> updatedAt;
+  final Value<int> updatedBy;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> deletedBy;
+  final Value<int> rowid;
+  const InstructionsAssetsCompanion({
+    this.instructionId = const Value.absent(),
+    this.assetId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  InstructionsAssetsCompanion.insert({
+    required int instructionId,
+    required int assetId,
+    required DateTime createdAt,
+    required int createdBy,
+    required DateTime updatedAt,
+    required int updatedBy,
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : instructionId = Value(instructionId),
+        assetId = Value(assetId),
+        createdAt = Value(createdAt),
+        createdBy = Value(createdBy),
+        updatedAt = Value(updatedAt),
+        updatedBy = Value(updatedBy);
+  static Insertable<InstructionAsset> custom({
+    Expression<int>? instructionId,
+    Expression<int>? assetId,
+    Expression<DateTime>? createdAt,
+    Expression<int>? createdBy,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? updatedBy,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? deletedBy,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (instructionId != null) 'instruction_id': instructionId,
+      if (assetId != null) 'asset_id': assetId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deletedBy != null) 'deleted_by': deletedBy,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  InstructionsAssetsCompanion copyWith(
+      {Value<int>? instructionId,
+      Value<int>? assetId,
+      Value<DateTime>? createdAt,
+      Value<int>? createdBy,
+      Value<DateTime>? updatedAt,
+      Value<int>? updatedBy,
+      Value<DateTime?>? deletedAt,
+      Value<int?>? deletedBy,
+      Value<int>? rowid}) {
+    return InstructionsAssetsCompanion(
+      instructionId: instructionId ?? this.instructionId,
+      assetId: assetId ?? this.assetId,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deletedBy: deletedBy ?? this.deletedBy,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (instructionId.present) {
+      map['instruction_id'] = Variable<int>(instructionId.value);
+    }
+    if (assetId.present) {
+      map['asset_id'] = Variable<int>(assetId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (deletedBy.present) {
+      map['deleted_by'] = Variable<int>(deletedBy.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InstructionsAssetsCompanion(')
+          ..write('instructionId: $instructionId, ')
+          ..write('assetId: $assetId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final Categories categories = Categories(this);
@@ -4271,6 +5240,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       InstructionsCategories(this);
   late final Settings settings = Settings(this);
   late final Bytes bytes = Bytes(this);
+  late final Assets assets = Assets(this);
+  late final InstructionsAssets instructionsAssets = InstructionsAssets(this);
   Future<int> updateHistoryEntry(int instructionId, DateTime updatedAt,
       int userId, int createdBy, DateTime createdAt, int updatedBy) {
     return customInsert(
@@ -4505,7 +5476,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         histories,
         instructionsCategories,
         settings,
-        bytes
+        bytes,
+        assets,
+        instructionsAssets
       ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
@@ -4564,6 +5537,34 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('bytes', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('assets',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('InstructionsAssets', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('assets',
+                limitUpdateKind: UpdateKind.update),
+            result: [
+              TableUpdate('InstructionsAssets', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('instructions',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('InstructionsAssets', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('instructions',
+                limitUpdateKind: UpdateKind.update),
+            result: [
+              TableUpdate('InstructionsAssets', kind: UpdateKind.update),
             ],
           ),
         ],
