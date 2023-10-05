@@ -11,6 +11,7 @@ import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:path/path.dart';
+import 'package:guider/helpers/content_type_enum.dart';
 
 class SupabaseToDrift {
   static Future<String> getAllInstructions() async {
@@ -310,6 +311,70 @@ class SupabaseToDrift {
     return newLastSynced;
   }
 
+  static Future<String> getAssets() async {
+    var lastSynced = await KeyValue.getValue(KeyValueEnum.asset.key);
+    var newLastSynced = lastSynced;
+    final data =
+        await supabase.from('asset').select('*').gt('updated_at', lastSynced);
+    logger.i(data);
+    newLastSynced = DateTime.now().toUtc().toIso8601String();
+
+    int len = data.length;
+    List<Insertable<Asset>> assetsBatch = [];
+
+    for (int i = 0; i < len; i++) {
+      var asset = data[i];
+      assetsBatch.add(AssetsCompanion.insert(
+        id: Value(asset[Const.id.key]),
+        name: asset[Const.name.key],
+        type: ContentType.values.byName(asset[Const.type.key]),
+        file: Value(asset[Const.file.key]),
+        textfield: Value(asset[Const.textfield.key]),
+        createdAt: DateTime.parse(asset[Const.createdAt.key]),
+        createdBy: asset[Const.createdBy.key],
+        updatedAt: DateTime.parse(asset[Const.updatedAt.key]),
+        updatedBy: asset[Const.updatedBy.key],
+        deletedAt: Value(DateTime.tryParse(asset[Const.deletedAt.key] ?? "")),
+        deletedBy: Value(asset[Const.deletedBy.key]),
+      ));
+    }
+    await Singleton().getDatabase().insertMultipleAssets(assetsBatch);
+    return newLastSynced;
+  }
+
+  static Future<String> getInstructionAsset() async {
+    var lastSynced = await KeyValue.getValue(KeyValueEnum.instructionAsset.key);
+    var newLastSynced = lastSynced;
+    final data = await supabase
+        .from('instruction_asset')
+        .select('*')
+        .gt('updated_at', lastSynced);
+    logger.i(data);
+    newLastSynced = DateTime.now().toUtc().toIso8601String();
+
+    int len = data.length;
+    List<Insertable<InstructionAsset>> instructionAssetBatch = [];
+
+    for (int i = 0; i < len; i++) {
+      var instructionAsset = data[i];
+      instructionAssetBatch.add(InstructionsAssetsCompanion.insert(
+        instructionId: instructionAsset[Const.instructionId.key],
+        assetId: instructionAsset[Const.assetId.key],
+        createdAt: DateTime.parse(instructionAsset[Const.createdAt.key]),
+        createdBy: instructionAsset[Const.createdBy.key],
+        updatedAt: DateTime.parse(instructionAsset[Const.updatedAt.key]),
+        updatedBy: instructionAsset[Const.updatedBy.key],
+        deletedAt: Value(
+            DateTime.tryParse(instructionAsset[Const.deletedAt.key] ?? "")),
+        deletedBy: Value(instructionAsset[Const.deletedBy.key]),
+      ));
+    }
+    await Singleton()
+        .getDatabase()
+        .insertMultipleInstructionsAssets(instructionAssetBatch);
+    return newLastSynced;
+  }
+
   static Future<void> sync() async {
     if (!Singleton().getSyncing()) {
       await Singleton().setSyncing(newSyncing: true);
@@ -348,6 +413,15 @@ class SupabaseToDrift {
         await DriftToSupabase.uploadSettings();
         KeyValue.setNewValue(KeyValueEnum.setting.key, value);
       });
+
+      await SupabaseToDrift.getAssets().then((value) async {
+        KeyValue.setNewValue(KeyValueEnum.asset.key, value);
+      });
+
+      await SupabaseToDrift.getInstructionAsset().then((value) async {
+        KeyValue.setNewValue(KeyValueEnum.instructionAsset.key, value);
+      });
+
       await Singleton().setSyncing(newSyncing: false);
       await Singleton().setIsSynced(newSyncing: true);
     }

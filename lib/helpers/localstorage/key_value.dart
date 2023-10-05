@@ -11,6 +11,8 @@ class KeyValue {
     _setInitialValue(KeyValueEnum.category.key);
     _setInitialValue(KeyValueEnum.instructionCategory.key);
     _setInitialValue(KeyValueEnum.setting.key);
+    _setInitialValue(KeyValueEnum.asset.key);
+    _setInitialValue(KeyValueEnum.instructionAsset.key);
   }
 
   static Future<void> _setInitialValue(key) async {
@@ -83,7 +85,9 @@ enum KeyValueEnum {
   instructionCategory("sync_instruction_category"),
   feedback("sync_feedback"),
   currentUser("current_user"),
-  login("login");
+  login("login"),
+  asset("sync_asset"),
+  instructionAsset("sync_instruction_asset");
 
   const KeyValueEnum(this.key);
   final String key;

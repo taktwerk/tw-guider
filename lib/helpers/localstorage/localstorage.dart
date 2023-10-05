@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:guider/helpers/content_type_enum.dart';
 import 'package:guider/main.dart';
 import 'connection/connection.dart' as impl;
 
@@ -361,6 +362,21 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<bool>> areTablesSynched(
       DateTime settings, DateTime feedback, DateTime history) {
     return isSynced(settings, feedback, history).watch();
+  }
+
+  // TABLE: Assets
+  Future<void> insertMultipleAssets(List<Insertable<Asset>> list) async {
+    await batch((batch) {
+      batch.insertAllOnConflictUpdate(assets, list);
+    });
+  }
+
+  // TABLE: Instruction_Asset
+  Future<void> insertMultipleInstructionsAssets(
+      List<Insertable<InstructionAsset>> list) async {
+    await batch((batch) {
+      batch.insertAllOnConflictUpdate(instructionsAssets, list);
+    });
   }
 
   @override
