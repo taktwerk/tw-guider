@@ -241,3 +241,30 @@ class _AudioFileWidgetState extends _FileWidgetState {
     );
   }
 }
+
+class TextWidget extends FileWidget {
+  const TextWidget({super.key, required Asset asset}) : super(asset: asset);
+
+  @override
+  State<FileWidget> createState() => _TextWidgetState();
+}
+
+class _TextWidgetState extends _FileWidgetState {
+  final ScrollController _scrollController = ScrollController();
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+            child: Scrollbar(
+          thumbVisibility: true,
+          controller: _scrollController,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Text.rich(TextSpan(text: widget.asset.textfield ?? '')),
+          ),
+        ))
+      ],
+    );
+  }
+}
