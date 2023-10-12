@@ -70,6 +70,58 @@ class _VideoFileWidgetState extends _FileWidgetState {
     );
   }
 }
+
+class ImageFileWidget extends FileWidget {
+  const ImageFileWidget({super.key, required Asset asset})
+      : super(asset: asset);
+
+  @override
+  State<FileWidget> createState() => _ImageFileWidgetState();
+}
+
+class _ImageFileWidgetState extends _FileWidgetState {
+  // final _instruction = Instruction(
+  //     id: 1,
+  //     title: "Big Top Pee-Wee 12352837182761827681 5513ef",
+  //     shortTitle: "51079-458",
+  //     image: "https://dummyimage.com/2380x2166.png/5513ef/000000",
+  //     description: "Test",
+  //     createdAt: DateTime.now(),
+  //     createdBy: 1,
+  //     updatedAt: DateTime.now(),
+  //     updatedBy: 1);
+
+  @override
+  Widget build(BuildContext context) {
+    final l = Languages.of(context);
+
+    return Image.network(
+      widget.asset.file!,
+    );
+
+    // return FutureBuilder(
+    //     future: AppUtil.filePath(
+    //         _instruction, Const.instructionImagesFolderName.key),
+    //     builder: (_, snapshot) {
+    //       if (snapshot.hasError) {
+    //         return Text(l!.somethingWentWrong);
+    //       }
+    //       if ((snapshot.connectionState == ConnectionState.waiting)) {
+    //         return const CircularProgressIndicator();
+    //       }
+    //       if (snapshot.data!.isNotEmpty) {
+    //         return Image.file(
+    //           File(snapshot.data!),
+    //           height: 150,
+    //           width: 250,
+    //           fit: BoxFit.cover,
+    //         );
+    //       }
+    //       return Text(l!.noImageAvailable);
+    //     });
+  }
+}
+
 class PdfFileWidget extends FileWidget {
   const PdfFileWidget({super.key, required Asset asset}) : super(asset: asset);
 
