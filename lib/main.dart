@@ -9,6 +9,7 @@ import 'package:guider/views/second_homepage.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:guider/languages/app_localizations.dart';
 import 'package:logger/logger.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:guider/languages/supported_languages.dart';
 
@@ -16,6 +17,7 @@ ValueNotifier<bool> isDeviceConnected = ValueNotifier(false);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
   await Supabase.initialize(
       url: "https://spohaqvzfgvdihxcwvff.supabase.co",
       anonKey:

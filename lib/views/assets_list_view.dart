@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
+import 'package:guider/views/assets_view.dart';
 
 class AssetsListView extends StatefulWidget {
   const AssetsListView({super.key, required this.instructionId});
@@ -53,9 +55,17 @@ class _AssetsListViewState extends State<AssetsListView> {
                         itemBuilder: (context, element) => Card(
                           elevation: 4,
                           child: ListTile(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => AssetsView(
+                                    asset: element,
+                                  ),
+                                ),
+                              );
+                            },
                             contentPadding: const EdgeInsets.all(12),
-                            leading: element.type
-                                .icon, // TODO: this will be changed to the "own definition of the icon type"
+                            leading: element.type.icon,
                             title: Text(element.name),
                           ),
                         ),
