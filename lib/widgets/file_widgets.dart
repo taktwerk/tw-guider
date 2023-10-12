@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 Map<String, Function> fileTypeToWidget = {
   // 'jpg', 'png', 'jpeg', 'webp'
@@ -33,5 +34,18 @@ class _FileWidgetState extends State<FileWidget> {
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+}
+class PdfFileWidget extends FileWidget {
+  const PdfFileWidget({super.key, required Asset asset}) : super(asset: asset);
+
+  @override
+  State<FileWidget> createState() => _PdfFileWidgetState();
+}
+
+class _PdfFileWidgetState extends _FileWidgetState {
+  @override
+  Widget build(BuildContext context) {
+    return SfPdfViewer.network(widget.asset.file ?? "");
   }
 }
