@@ -14,9 +14,6 @@ class _AssetsViewState extends State<AssetsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Asset of type ${widget.asset.type.key}"),
-      ),
       body:
           Center(child: fileTypeToWidget[widget.asset.type.key]!(widget.asset)),
     );

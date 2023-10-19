@@ -66,8 +66,11 @@ class _VideoFileWidgetState extends _FileWidgetState {
       controller: controller,
     );
 
-    return Center(
-      child: video,
+    return Scaffold(
+      appBar: AppBar(title: Text("Video Viewer")),
+      body: Center(
+        child: video,
+      ),
     );
   }
 }
@@ -96,9 +99,15 @@ class _ImageFileWidgetState extends _FileWidgetState {
   Widget build(BuildContext context) {
     final l = Languages.of(context);
 
-    return Image.network(
-      widget.asset.file!,
-    );
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Image Viewer"),
+        ),
+        body: Center(
+          child: Image.network(
+            widget.asset.file!,
+          ),
+        ));
 
     // return FutureBuilder(
     //     future: AppUtil.filePath(
@@ -293,41 +302,44 @@ class _AudioFileWidgetState extends _FileWidgetState {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          IconButton(
-            icon: _playing
-                ? const Icon(Icons.pause)
-                : const Icon(Icons.play_arrow),
-            onPressed: () {
-              player.playOrPause();
-            },
-          ),
-          Slider(
-            value: _position.inSeconds.toDouble(),
-            min: 0,
-            max: _totalDuration.inSeconds.toDouble(),
-            onChanged: (value) {
-              setState(() {
-                _position = Duration(seconds: value.toInt());
-              });
-            },
-            onChangeStart: (value) {
-              setState(() {
-                currentlyChangingSlider = true;
-              });
-            },
-            onChangeEnd: (value) {
-              setState(() {
-                currentlyChangingSlider = false;
-              });
-              player.seek(Duration(seconds: value.toInt()));
-            },
-          ),
-          Text(
-              '${_printDuration(_position)} / ${_printDuration(_totalDuration)}'),
-        ],
+    return Scaffold(
+      appBar: AppBar(title: Text("Audio Listener")),
+      body: Center(
+        child: Column(
+          children: [
+            IconButton(
+              icon: _playing
+                  ? const Icon(Icons.pause)
+                  : const Icon(Icons.play_arrow),
+              onPressed: () {
+                player.playOrPause();
+              },
+            ),
+            Slider(
+              value: _position.inSeconds.toDouble(),
+              min: 0,
+              max: _totalDuration.inSeconds.toDouble(),
+              onChanged: (value) {
+                setState(() {
+                  _position = Duration(seconds: value.toInt());
+                });
+              },
+              onChangeStart: (value) {
+                setState(() {
+                  currentlyChangingSlider = true;
+                });
+              },
+              onChangeEnd: (value) {
+                setState(() {
+                  currentlyChangingSlider = false;
+                });
+                player.seek(Duration(seconds: value.toInt()));
+              },
+            ),
+            Text(
+                '${_printDuration(_position)} / ${_printDuration(_totalDuration)}'),
+          ],
+        ),
       ),
     );
   }
@@ -344,18 +356,23 @@ class _TextWidgetState extends _FileWidgetState {
   final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-            child: Scrollbar(
-          thumbVisibility: true,
-          controller: _scrollController,
-          child: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Text Viewer"),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+              child: Scrollbar(
+            thumbVisibility: true,
             controller: _scrollController,
-            child: Text.rich(TextSpan(text: widget.asset.textfield ?? '')),
-          ),
-        ))
-      ],
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Text.rich(TextSpan(text: widget.asset.textfield ?? '')),
+            ),
+          ))
+        ],
+      ),
     );
   }
 }
