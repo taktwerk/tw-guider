@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
@@ -6,6 +7,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io' show Platform;
 
 Map<String, Function> fileTypeToWidget = {
   // 'jpg', 'png', 'jpeg', 'webp'
@@ -51,6 +53,7 @@ class _VideoFileWidgetState extends _FileWidgetState {
   late final player = Player();
   // Create a [VideoController] to handle video output from [Player].
   late final controller = VideoController(player);
+  Duration skip = const Duration(seconds: 5);
 
   @override
   void dispose() {
@@ -69,9 +72,130 @@ class _VideoFileWidgetState extends _FileWidgetState {
     return Scaffold(
       appBar: AppBar(title: Text("Video Viewer")),
       body: Center(
+        child: kIsWeb
+            ? video
+            : (Platform.isIOS || Platform.isAndroid)
+                ? getDeviceVideoControls(video)
+                : (Platform.isWindows || Platform.isMacOS || Platform.isLinux)
+                    ? getDesktopVideoControls(video)
+                    : video,
+      ),
+    );
+  }
+
+  Duration getNewPosition(Duration time) {
+    // set current position to 0 seconds if player.state.position - skip is under 0 seconds.
+    if (time.compareTo(const Duration(seconds: 0)) <= 0) {
+      return const Duration(seconds: 0);
+    }
+    // set current position to 'duration' seconds if player.state.position + skip is over 'duration' seconds
+    if (time.compareTo(player.state.duration) > 0) {
+      return player.state.duration;
+    } else {
+      return time;
+    }
+  }
+
+  Widget getDesktopVideoControls(video) {
+    return MaterialDesktopVideoControlsTheme(
+      child: video,
+      normal: MaterialDesktopVideoControlsThemeData(
+        bottomButtonBar: getBottomBarDesktop(),
+        topButtonBar: [
+          const Spacer(),
+          MaterialDesktopCustomButton(
+            onPressed: () {
+              debugPrint('Custom "Settings" button pressed.');
+            },
+            icon: const Icon(Icons.settings),
+          ),
+        ],
+      ),
+      fullscreen: MaterialDesktopVideoControlsThemeData(
+          controlsHoverDuration: const Duration(seconds: 1),
+          primaryButtonBar: getPrimaryBarDesktop(),
+          bottomButtonBar: getBottomBarDesktop()),
+    );
+  }
+
+  Widget getDeviceVideoControls(video) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: MaterialVideoControlsTheme(
+        normal: MaterialVideoControlsThemeData(
+          primaryButtonBar: getPrimaryBarDevice(),
+          topButtonBar: [
+            const Spacer(),
+            MaterialDesktopCustomButton(
+              onPressed: () {
+                debugPrint('Custom "Settings" button pressed.');
+              },
+              icon: const Icon(Icons.settings),
+            ),
+          ],
+        ),
+        fullscreen: MaterialVideoControlsThemeData(
+            primaryButtonBar: getPrimaryBarDevice()),
         child: video,
       ),
     );
+  }
+
+  List<Widget> getBottomBarDesktop() {
+    return [
+      const MaterialDesktopPlayOrPauseButton(),
+      const MaterialDesktopVolumeButton(),
+      const MaterialDesktopPositionIndicator(),
+      MaterialDesktopCustomButton(
+          icon: const Icon(Icons.replay_5),
+          onPressed: () {
+            player.seek(
+              getNewPosition(player.state.position - skip),
+            );
+          }),
+      MaterialDesktopCustomButton(
+          icon: const Icon(Icons.forward_5),
+          onPressed: () =>
+              player.seek(getNewPosition(player.state.position + skip))),
+      const Spacer(),
+      const MaterialDesktopFullscreenButton(),
+    ];
+  }
+
+  List<Widget> getPrimaryBarDesktop() {
+    return [
+      const Spacer(flex: 2),
+      MaterialDesktopCustomButton(
+          icon: const Icon(Icons.replay_5),
+          onPressed: () =>
+              player.seek(getNewPosition(player.state.position - skip))),
+      const Spacer(),
+      const MaterialDesktopPlayOrPauseButton(iconSize: 48.0),
+      const Spacer(),
+      MaterialDesktopCustomButton(
+          icon: const Icon(Icons.forward_5),
+          onPressed: () =>
+              player.seek(getNewPosition(player.state.position + skip))),
+      const Spacer(flex: 2)
+    ];
+  }
+
+  List<Widget> getPrimaryBarDevice() {
+    return [
+      const Spacer(flex: 2),
+      MaterialCustomButton(
+          icon: const Icon(Icons.replay_5),
+          onPressed: () =>
+              player.seek(getNewPosition(player.state.position - skip))),
+      const Spacer(),
+      const MaterialPlayOrPauseButton(iconSize: 48.0),
+      const Spacer(),
+      MaterialCustomButton(
+          icon: const Icon(Icons.forward_5),
+          onPressed: () =>
+              player.seek(getNewPosition(player.state.position + skip))),
+      const Spacer(flex: 2)
+    ];
   }
 }
 
