@@ -4,7 +4,8 @@ import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:pdfx/pdfx.dart';
+import 'package:http/http.dart' as http;
 
 Map<String, Function> fileTypeToWidget = {
   // 'jpg', 'png', 'jpeg', 'webp'
@@ -130,9 +131,99 @@ class PdfFileWidget extends FileWidget {
 }
 
 class _PdfFileWidgetState extends _FileWidgetState {
+  PdfControllerPinch? _pdfController;
+  final int _initialPage = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDocument();
+  }
+
+  Future<void> _loadDocument() async {
+    var response = await http.get(Uri.parse(widget.asset.file!));
+    setState(() {
+      _pdfController = PdfControllerPinch(
+        document: PdfDocument.openData(response.bodyBytes),
+        initialPage: _initialPage,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _pdfController?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SfPdfViewer.network(widget.asset.file ?? "");
+    Widget loaderWidget = const Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+      ),
+    );
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("PDF Viewer"),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.navigate_before),
+              onPressed: () {
+                _pdfController!.previousPage(
+                  curve: Curves.ease,
+                  duration: const Duration(milliseconds: 100),
+                );
+              },
+            ),
+            _pdfController != null
+                ? PdfPageNumber(
+                    controller: _pdfController!,
+                    builder: (_, loadingState, page, pagesCount) => Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        '$page/${pagesCount ?? 0}',
+                        style: const TextStyle(fontSize: 22),
+                      ),
+                    ),
+                  )
+                : const CircularProgressIndicator(),
+            IconButton(
+              icon: const Icon(Icons.navigate_next),
+              onPressed: () {
+                _pdfController!.nextPage(
+                  curve: Curves.ease,
+                  duration: const Duration(milliseconds: 100),
+                );
+              },
+            ),
+          ],
+        ),
+        body: _pdfController == null
+            ? const Center(child: CircularProgressIndicator())
+            : Center(
+                child: SafeArea(
+                  child: Container(
+                    color: Colors.grey,
+                    height: MediaQuery.of(context).size.height,
+                    child: _pdfController == null
+                        ? loaderWidget
+                        : PdfViewPinch(
+                            builders:
+                                PdfViewPinchBuilders<DefaultBuilderOptions>(
+                              options: const DefaultBuilderOptions(),
+                              documentLoaderBuilder: (_) => const Center(
+                                  child: CircularProgressIndicator()),
+                              pageLoaderBuilder: (_) => const Center(
+                                  child: CircularProgressIndicator()),
+                              errorBuilder: (_, error) =>
+                                  Center(child: Text(error.toString())),
+                            ),
+                            controller: _pdfController!,
+                          ),
+                  ),
+                ),
+              ));
   }
 }
 
