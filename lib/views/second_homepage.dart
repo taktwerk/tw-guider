@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
@@ -128,6 +130,10 @@ class _SecondHomePageState extends State<SecondHomePage>
     }
   }
 
+  bool isDevice() {
+    return Platform.isAndroid || Platform.isIOS;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = Languages.of(context);
@@ -143,13 +149,16 @@ class _SecondHomePageState extends State<SecondHomePage>
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(myTabs2[_pageIndex]),
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.qr_code_scanner),
-            tooltip: 'Scanner',
-            onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => Scanner()));
-            },
+          Visibility(
+            visible: !kIsWeb && isDevice() ? true : false,
+            child: IconButton(
+              icon: const Icon(Icons.qr_code_scanner),
+              tooltip: 'Scanner',
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => Scanner()));
+              },
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.feedback),
