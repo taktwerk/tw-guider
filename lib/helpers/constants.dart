@@ -16,6 +16,7 @@ enum Const {
   categoryId("category_id"),
   name("name"),
   type("type"),
+  text("text"),
   file("file"),
   textfield("textfield"),
   assetId("asset_id"),

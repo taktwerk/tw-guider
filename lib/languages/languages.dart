@@ -51,4 +51,5 @@ abstract class Languages {
   String get confirmFeedbackDelete;
   String get confirm;
   String get feedbackImageError;
+  String get noContentAvailable;
 }

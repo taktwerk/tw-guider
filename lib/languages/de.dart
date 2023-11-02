@@ -134,4 +134,8 @@ class LanguageDe extends Languages {
   @override
   String get feedbackImageError =>
       "Kein Bild verfügbar. Dieses Feedback wurde noch nicht synchronisiert oder es ist anderweitig ein Fehler aufgetreten.";
+
+  @override
+  String get noContentAvailable =>
+      "Kein Inhalt verfügbar. Versuchen Sie es später nochmal.";
 }
