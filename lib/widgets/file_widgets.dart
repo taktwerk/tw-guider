@@ -18,6 +18,7 @@ Map<String, Function> fileTypeToWidget = {
   // 'mp4'
   for (var ext in ['video']) ext: (file) => VideoFileWidget(asset: file),
   for (var ext in ['text']) ext: (file) => TextWidget(asset: file),
+  for (var ext in ['threeD']) ext: (file) => ThreeDWidget(asset: file),
 };
 
 abstract class FileWidget extends StatefulWidget {
@@ -498,5 +499,59 @@ class _TextWidgetState extends _FileWidgetState {
         ],
       ),
     );
+  }
+}
+
+class ThreeDWidget extends FileWidget {
+  const ThreeDWidget({super.key, required Asset asset}) : super(asset: asset);
+
+  @override
+  State<FileWidget> createState() => _ThreeDWidgetState();
+}
+
+class _ThreeDWidgetState extends _FileWidgetState {
+  String? path;
+
+  @override
+  void initState() {
+    super.initState();
+    getFilePath();
+  }
+
+  bool isDevice() {
+    return Platform.isAndroid || Platform.isIOS;
+  }
+
+  bool isDesktop() {
+    return Platform.isMacOS || Platform.isLinux || Platform.isWindows;
+  }
+
+  Future<void> getFilePath() async {
+    // the 3D model only works on the device (the package webview that is used is only supported on devices)
+    if (isDevice()) {
+      path =
+          "file://${await AppUtil.filePath(widget.asset.id, widget.asset.file, Const.assetsImagesFolderName.key)}";
+    } else {
+      path = "";
+    }
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("3D Viewer"),
+        ),
+        body: path != null
+            ? path!.isEmpty
+                ? Center(child: Text(Languages.of(context)!.noContentAvailable))
+                : ModelViewer(
+                    backgroundColor: Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),
+                    src: path!,
+                    alt: 'A 3D Model',
+                    autoRotate: true,
+                  )
+            : const CircularProgressIndicator());
   }
 }
