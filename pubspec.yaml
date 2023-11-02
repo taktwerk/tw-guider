@@ -61,6 +61,7 @@ dependencies:
   media_kit_libs_video: ^1.0.3                   # Native video dependencies.
   pdfx: ^2.4.0
   model_viewer_plus: ^1.7.0
+  mobile_scanner: ^3.5.2
   
 dev_dependencies:
   flutter_test:

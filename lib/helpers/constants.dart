@@ -35,7 +35,11 @@ enum Const {
   feedbackImagesFolderName("guider/images/feedbackImages"),
   assetsImagesFolderName("guider/assets"),
   supabaseBucketUrl(
-      "https://spohaqvzfgvdihxcwvff.supabase.co/storage/v1/object/public/feedback_images/");
+      "https://spohaqvzfgvdihxcwvff.supabase.co/storage/v1/object/public/feedback_images/"),
+  // for the JSON stored in the QR Code
+  app("app"),
+  client("client"),
+  host("host");
 
   const Const(this.key);
   final String key;

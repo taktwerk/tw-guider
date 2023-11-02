@@ -9,6 +9,7 @@ import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/history_view.dart';
 import 'package:guider/views/instruction_view.dart';
+import 'package:guider/views/scanner.dart';
 import 'package:guider/views/settings_view.dart';
 import 'package:guider/views/home_view.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
@@ -142,6 +143,14 @@ class _SecondHomePageState extends State<SecondHomePage>
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(myTabs2[_pageIndex]),
         actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.qr_code_scanner),
+            tooltip: 'Scanner',
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => Scanner()));
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.feedback),
             tooltip: 'Feedback',
