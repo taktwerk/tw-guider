@@ -31,7 +31,9 @@ class SupabaseToDrift {
         //only downloads the first 10 images (not all 1000)
         if (i >= 0 && i <= 10) {
           await _downloadImages(
-              instruction, Const.instructionImagesFolderName.key);
+              id: instruction[Const.id.key],
+              url: instruction[Const.image.key],
+              folderName: Const.instructionImagesFolderName.key);
         }
       }
       instructionBatch.add(InstructionsCompanion.insert(
@@ -55,12 +57,13 @@ class SupabaseToDrift {
     return newLastSynced;
   }
 
-  static Future<void> _downloadImages(entry, foldername) async {
-    final response = await http.get(Uri.parse(entry[Const.image.key]));
-    String folderInAppDocDir = await AppUtil.createFolderInAppDocDir(
-        entry[Const.id.key].toString(), foldername);
-    final file = File(
-        join(folderInAppDocDir, AppUtil.getFileName(entry[Const.image.key])));
+  // TODO: create object containing id and image url (for assets and other images)
+  static Future<void> _downloadImages(
+      {required id, required url, required folderName}) async {
+    final response = await http.get(Uri.parse(url));
+    String folderInAppDocDir =
+        await AppUtil.createFolderInAppDocDir(id.toString(), folderName);
+    final file = File(join(folderInAppDocDir, AppUtil.getFileName(url)));
     if (!(await file.exists())) {
       if (folderInAppDocDir.isNotEmpty) {
         await AppUtil.deleteFolderContent(folderInAppDocDir);
@@ -87,7 +90,9 @@ class SupabaseToDrift {
         //only downloads the first 30 images (not all 1000)
         if (i >= 0 && i <= 30) {
           await _downloadImages(
-              step, Const.instructionStepsImagesFolderName.key);
+              id: step[Const.id.key],
+              url: step[Const.image.key],
+              folderName: Const.instructionStepsImagesFolderName.key);
         }
       }
       instructionStepBatch.add(InstructionStepsCompanion.insert(
@@ -220,7 +225,9 @@ class SupabaseToDrift {
       if (!foundation.kIsWeb) {
         if (feedbackElement[Const.image.key] != null) {
           await _downloadImages(
-              feedbackElement, Const.feedbackImagesFolderName.key);
+              id: feedbackElement[Const.id.key],
+              url: feedbackElement[Const.image.key],
+              folderName: Const.feedbackImagesFolderName.key);
         }
       }
       Singleton().getDatabase().createOrUpdateFeedback(FeedbackCompanion.insert(
@@ -324,6 +331,15 @@ class SupabaseToDrift {
 
     for (int i = 0; i < len; i++) {
       var asset = data[i];
+
+      if (!foundation.kIsWeb) {
+        if (asset[Const.type.key] != Const.text.key) {
+          await _downloadImages(
+              id: asset[Const.id.key],
+              url: asset[Const.file.key],
+              folderName: Const.assetsImagesFolderName.key);
+        }
+      }
       assetsBatch.add(AssetsCompanion.insert(
         id: Value(asset[Const.id.key]),
         name: asset[Const.name.key],

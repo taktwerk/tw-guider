@@ -32,6 +32,7 @@ enum Const {
   instructionStepsImagesFolderName("guider/images/instructionStepsImages"),
   instructionImagesFolderName("guider/images/instructionImages"),
   feedbackImagesFolderName("guider/images/feedbackImages"),
+  assetsImagesFolderName("guider/assets"),
   supabaseBucketUrl(
       "https://spohaqvzfgvdihxcwvff.supabase.co/storage/v1/object/public/feedback_images/");
 

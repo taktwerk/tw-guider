@@ -13,6 +13,20 @@ class AppUtil {
       return "$hash.jpg";
     } else if (url.contains(".png")) {
       return "$hash.png";
+    } else if (url.contains(".wav")) {
+      return "$hash.wav";
+    } else if (url.contains(".mp3")) {
+      return "$hash.mp3";
+    } else if (url.contains(".pdf")) {
+      return "$hash.pdf";
+    } else if (url.contains(".gltf")) {
+      return "$hash.gltf";
+    } else if (url.contains(".glb")) {
+      return "$hash.glb";
+    } else if (url.contains(".webp")) {
+      return "$hash.webp";
+    } else if (url.contains(".mp4")) {
+      return "$hash.mp4";
     }
     return "$hash.png";
   }
@@ -76,10 +90,10 @@ class AppUtil {
     }
   }
 
-  static Future<String> filePath(entity, String foldername) async {
+  static Future<String> filePath(id, image, String foldername) async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();
     final path =
-        '${getImagesFolderPath(appDocDir, foldername)}${entity.id}/${getFileName(entity.image)}';
+        '${getImagesFolderPath(appDocDir, foldername)}$id/${getFileName(image)}';
     if (await File(path).exists()) {
       return path;
     } else {
