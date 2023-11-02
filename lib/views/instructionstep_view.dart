@@ -57,7 +57,9 @@ class _InstructionStepViewState extends State<InstructionStepView> {
                       },
                     )
                   : FutureBuilder(
-                      future: AppUtil.filePath(widget.instructionStep,
+                      future: AppUtil.filePath(
+                          widget.instructionStep.id,
+                          widget.instructionStep.image,
                           Const.instructionStepsImagesFolderName.key),
                       builder: (_, snapshot) {
                         if (snapshot.hasError) {
@@ -85,9 +87,10 @@ class _InstructionStepViewState extends State<InstructionStepView> {
               context,
               MaterialPageRoute(
                   builder: (context) => FullScreenImageViewer(
-                      widget.instructionStep,
-                      Const.instructionStepsImagesFolderName.key,
-                      tagName)),
+                      id: widget.instructionStep.id,
+                      url: widget.instructionStep.image,
+                      folderName: Const.instructionStepsImagesFolderName.key,
+                      tagName: tagName)),
             );
           },
         )

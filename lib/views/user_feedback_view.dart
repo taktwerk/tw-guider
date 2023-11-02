@@ -155,7 +155,9 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
                           )
                         : FutureBuilder(
                             future: AppUtil.filePath(
-                                feedback, Const.feedbackImagesFolderName.key),
+                                feedback.id,
+                                feedback.image,
+                                Const.feedbackImagesFolderName.key),
                             builder: (_, snapshot) {
                               if (snapshot.hasError) {
                                 return Text(l.somethingWentWrong);

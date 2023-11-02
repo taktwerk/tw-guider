@@ -68,7 +68,9 @@ class ListItem extends StatelessWidget {
                                   },
                                 )
                               : FutureBuilder(
-                                  future: AppUtil.filePath(_instruction,
+                                  future: AppUtil.filePath(
+                                      _instruction.id,
+                                      _instruction.image,
                                       Const.instructionImagesFolderName.key),
                                   builder: (_, snapshot) {
                                     if (snapshot.hasError) {

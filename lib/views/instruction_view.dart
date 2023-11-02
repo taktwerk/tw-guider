@@ -280,8 +280,8 @@ class _InstructionViewState extends State<InstructionView> {
                     },
                   )
                 : FutureBuilder(
-                    future: AppUtil.filePath(
-                        instruction, Const.instructionImagesFolderName.key),
+                    future: AppUtil.filePath(instruction.id, instruction.image,
+                        Const.instructionImagesFolderName.key),
                     builder: (_, snapshot) {
                       if (snapshot.hasError) {
                         return Text(l!.somethingWentWrong);
@@ -302,8 +302,11 @@ class _InstructionViewState extends State<InstructionView> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => FullScreenImageViewer(instruction,
-                    Const.instructionImagesFolderName.key, tagName)),
+                builder: (context) => FullScreenImageViewer(
+                    id: instruction.id,
+                    url: instruction.image,
+                    folderName: Const.instructionImagesFolderName.key,
+                    tagName: tagName)),
           );
         },
       ),

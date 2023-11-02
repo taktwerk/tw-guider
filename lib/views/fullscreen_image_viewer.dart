@@ -5,10 +5,15 @@ import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/languages/languages.dart';
 
 class FullScreenImageViewer extends StatefulWidget {
-  const FullScreenImageViewer(this.object, this.folderName, this.tagName,
-      {Key? key})
-      : super(key: key);
-  final object;
+  const FullScreenImageViewer({
+    Key? key,
+    required this.id,
+    required this.url,
+    required this.folderName,
+    required this.tagName,
+  }) : super(key: key);
+  final int id;
+  final String url;
   final String folderName;
   final String tagName;
 
@@ -52,7 +57,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                 maxScale: 5,
                 child: (kIsWeb)
                     ? Image.network(
-                        widget.object.image,
+                        widget.url,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
@@ -66,8 +71,8 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                         },
                       )
                     : FutureBuilder(
-                        future:
-                            AppUtil.filePath(widget.object, widget.folderName),
+                        future: AppUtil.filePath(
+                            widget.id, widget.url, widget.folderName),
                         builder: (_, snapshot) {
                           if (snapshot.hasError) {
                             return Text(l!.somethingWentWrong);
