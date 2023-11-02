@@ -1,13 +1,18 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/constants.dart';
+import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
+import 'package:guider/views/fullscreen_image_viewer.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:http/http.dart' as http;
-import 'dart:io' show Platform;
+import 'dart:io' show File, Platform;
+import 'package:model_viewer_plus/model_viewer_plus.dart';
+import 'package:flutter/foundation.dart' as foundation;
 
 Map<String, Function> fileTypeToWidget = {
   // 'jpg', 'png', 'jpeg', 'webp'
@@ -55,6 +60,13 @@ class _VideoFileWidgetState extends _FileWidgetState {
   // Create a [VideoController] to handle video output from [Player].
   late final controller = VideoController(player);
   Duration skip = const Duration(seconds: 5);
+  String? path;
+
+  @override
+  void initState() {
+    super.initState();
+    getFilePath();
+  }
 
   @override
   void dispose() {
@@ -62,16 +74,28 @@ class _VideoFileWidgetState extends _FileWidgetState {
     super.dispose();
   }
 
+  void getFilePath() async {
+    if (!kIsWeb) {
+      path = await AppUtil.filePath(
+          widget.asset.id, widget.asset.file, Const.assetsImagesFolderName.key);
+    } else {
+      //TODO: make sure that the video file (url) exists
+      path = widget.asset.file;
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    //TODO: make sure that the video file (url) exists
-    player.open(Media(widget.asset.file!));
+    if (path != null && path!.isNotEmpty) {
+      player.open(Media(path!));
+    }
     final video = Video(
       controller: controller,
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text("Video Viewer")),
+      appBar: AppBar(title: const Text("Video Viewer")),
       body: Center(
         child: kIsWeb
             ? video
@@ -209,51 +233,75 @@ class ImageFileWidget extends FileWidget {
 }
 
 class _ImageFileWidgetState extends _FileWidgetState {
-  // final _instruction = Instruction(
-  //     id: 1,
-  //     title: "Big Top Pee-Wee 12352837182761827681 5513ef",
-  //     shortTitle: "51079-458",
-  //     image: "https://dummyimage.com/2380x2166.png/5513ef/000000",
-  //     description: "Test",
-  //     createdAt: DateTime.now(),
-  //     createdBy: 1,
-  //     updatedAt: DateTime.now(),
-  //     updatedBy: 1);
+  final String tagName =
+      "assetTag"; //to make the fullscreen viewer work it needs a reference tag
 
   @override
   Widget build(BuildContext context) {
     final l = Languages.of(context);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Image Viewer"),
-        ),
-        body: Center(
-          child: Image.network(
-            widget.asset.file!,
+      appBar: AppBar(
+        title: const Text("Image Viewer"),
+      ),
+      body: Center(
+        child: GestureDetector(
+          child: Hero(
+            tag: tagName,
+            child: FractionallySizedBox(
+              widthFactor: 0.75,
+              child: (foundation.kIsWeb)
+                  ? Image.network(
+                      widget.asset.file!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.red,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'No image',
+                          ),
+                        );
+                      },
+                    )
+                  : FutureBuilder(
+                      future: AppUtil.filePath(widget.asset.id,
+                          widget.asset.file, Const.assetsImagesFolderName.key),
+                      builder: (_, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(l!.somethingWentWrong);
+                        }
+                        if ((snapshot.connectionState ==
+                            ConnectionState.waiting)) {
+                          return const CircularProgressIndicator();
+                        }
+                        if (snapshot.data!.isNotEmpty) {
+                          return Image.file(
+                            File(snapshot.data!),
+                            fit: BoxFit.cover,
+                          );
+                        }
+                        return Center(
+                          child: Text(l!.noImageAvailable),
+                        );
+                      },
+                    ),
+            ),
           ),
-        ));
-
-    // return FutureBuilder(
-    //     future: AppUtil.filePath(
-    //         _instruction, Const.instructionImagesFolderName.key),
-    //     builder: (_, snapshot) {
-    //       if (snapshot.hasError) {
-    //         return Text(l!.somethingWentWrong);
-    //       }
-    //       if ((snapshot.connectionState == ConnectionState.waiting)) {
-    //         return const CircularProgressIndicator();
-    //       }
-    //       if (snapshot.data!.isNotEmpty) {
-    //         return Image.file(
-    //           File(snapshot.data!),
-    //           height: 150,
-    //           width: 250,
-    //           fit: BoxFit.cover,
-    //         );
-    //       }
-    //       return Text(l!.noImageAvailable);
-    //     });
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FullScreenImageViewer(
+                      id: widget.asset.id,
+                      url: widget.asset.file!,
+                      folderName: Const.assetsImagesFolderName.key,
+                      tagName: tagName)),
+            );
+          },
+        ),
+      ),
+    );
   }
 }
 
@@ -267,25 +315,50 @@ class PdfFileWidget extends FileWidget {
 class _PdfFileWidgetState extends _FileWidgetState {
   PdfControllerPinch? _pdfController;
   final int _initialPage = 1;
+  bool loading = true;
+  Timer? timer;
 
   @override
   void initState() {
     super.initState();
     _loadDocument();
+
+    // show "No PDF available." if nothing has been loaded after 5 seconds
+    timer = Timer(const Duration(seconds: 5), () {
+      setState(() {
+        loading = false;
+      });
+    });
   }
 
   Future<void> _loadDocument() async {
-    var response = await http.get(Uri.parse(widget.asset.file!));
-    setState(() {
-      _pdfController = PdfControllerPinch(
-        document: PdfDocument.openData(response.bodyBytes),
-        initialPage: _initialPage,
-      );
-    });
+    if (kIsWeb) {
+      var response = await http.get(Uri.parse(widget.asset.file!));
+      setState(() {
+        _pdfController = PdfControllerPinch(
+          document: PdfDocument.openData(response.bodyBytes),
+          initialPage: _initialPage,
+        );
+      });
+    } else {
+      final path = await AppUtil.filePath(
+          widget.asset.id, widget.asset.file, Const.assetsImagesFolderName.key);
+
+      if (path.isNotEmpty) {
+        final document = PdfDocument.openFile(path);
+        setState(() {
+          _pdfController = PdfControllerPinch(
+            document: document,
+            initialPage: _initialPage,
+          );
+        });
+      }
+    }
   }
 
   @override
   void dispose() {
+    timer?.cancel();
     _pdfController?.dispose();
     super.dispose();
   }
@@ -299,7 +372,7 @@ class _PdfFileWidgetState extends _FileWidgetState {
     );
     return Scaffold(
         appBar: AppBar(
-          title: Text("PDF Viewer"),
+          title: const Text("PDF Viewer"),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.navigate_before),
@@ -321,7 +394,12 @@ class _PdfFileWidgetState extends _FileWidgetState {
                       ),
                     ),
                   )
-                : const CircularProgressIndicator(),
+                : loading
+                    ? const CircularProgressIndicator()
+                    : const Icon(
+                        Icons.cancel,
+                        color: Colors.redAccent,
+                      ),
             IconButton(
               icon: const Icon(Icons.navigate_next),
               onPressed: () {
@@ -334,7 +412,9 @@ class _PdfFileWidgetState extends _FileWidgetState {
           ],
         ),
         body: _pdfController == null
-            ? const Center(child: CircularProgressIndicator())
+            ? loading
+                ? const Center(child: CircularProgressIndicator())
+                : Center(child: Text(Languages.of(context)!.noContentAvailable))
             : Center(
                 child: SafeArea(
                   child: Container(
@@ -370,13 +450,14 @@ class AudioFileWidget extends FileWidget {
 }
 
 class _AudioFileWidgetState extends _FileWidgetState {
-  late final player = Player();
+  final player = Player();
   Duration _position = Duration.zero;
   Duration _totalDuration = Duration.zero;
   bool _playing = false;
   StreamSubscription<Duration>? _positionStream;
   StreamSubscription<Duration>? _durationStream;
   bool currentlyChangingSlider = false;
+  bool? audioAvailable;
 
   StreamSubscription<bool>? _isPlayingStream;
 
@@ -404,25 +485,42 @@ class _AudioFileWidgetState extends _FileWidgetState {
 
   Future<void> initializeAudio() async {
     //TODO: make sure that the audio file (url) exists
-    await player.open(Media(widget.asset.file!), play: false);
-    _positionStream = player.stream.position.listen((e) {
-      //only change position of slider when the user is not actively using the slider
-      if (!currentlyChangingSlider) {
+    String path;
+
+    if (!kIsWeb) {
+      path = await AppUtil.filePath(
+          widget.asset.id, widget.asset.file, Const.assetsImagesFolderName.key);
+    } else {
+      //TODO: make sure that the video file (url) exists
+      path = widget.asset.file!;
+    }
+
+    if (path.isNotEmpty) {
+      audioAvailable = true;
+      await player.open(Media(path), play: false);
+      _positionStream = player.stream.position.listen((e) {
+        //only change position of slider when the user is not actively using the slider
+        if (!currentlyChangingSlider) {
+          setState(() {
+            _position = e;
+          });
+        }
+      });
+      _durationStream = player.stream.duration.listen((e) {
         setState(() {
-          _position = e;
+          _totalDuration = e;
         });
-      }
-    });
-    _durationStream = player.stream.duration.listen((e) {
-      setState(() {
-        _totalDuration = e;
       });
-    });
-    _isPlayingStream = player.stream.playing.listen((e) {
-      setState(() {
-        _playing = e;
+      _isPlayingStream = player.stream.playing.listen((e) {
+        setState(() {
+          _playing = e;
+        });
       });
-    });
+    } else {
+      setState(() {
+        audioAvailable = false;
+      });
+    }
   }
 
   @override
@@ -430,41 +528,45 @@ class _AudioFileWidgetState extends _FileWidgetState {
     return Scaffold(
       appBar: AppBar(title: Text("Audio Listener")),
       body: Center(
-        child: Column(
-          children: [
-            IconButton(
-              icon: _playing
-                  ? const Icon(Icons.pause)
-                  : const Icon(Icons.play_arrow),
-              onPressed: () {
-                player.playOrPause();
-              },
-            ),
-            Slider(
-              value: _position.inSeconds.toDouble(),
-              min: 0,
-              max: _totalDuration.inSeconds.toDouble(),
-              onChanged: (value) {
-                setState(() {
-                  _position = Duration(seconds: value.toInt());
-                });
-              },
-              onChangeStart: (value) {
-                setState(() {
-                  currentlyChangingSlider = true;
-                });
-              },
-              onChangeEnd: (value) {
-                setState(() {
-                  currentlyChangingSlider = false;
-                });
-                player.seek(Duration(seconds: value.toInt()));
-              },
-            ),
-            Text(
-                '${_printDuration(_position)} / ${_printDuration(_totalDuration)}'),
-          ],
-        ),
+        child: audioAvailable == null
+            ? const CircularProgressIndicator()
+            : audioAvailable!
+                ? Column(
+                    children: [
+                      IconButton(
+                        icon: _playing
+                            ? const Icon(Icons.pause)
+                            : const Icon(Icons.play_arrow),
+                        onPressed: () {
+                          player.playOrPause();
+                        },
+                      ),
+                      Slider(
+                        value: _position.inSeconds.toDouble(),
+                        min: 0,
+                        max: _totalDuration.inSeconds.toDouble(),
+                        onChanged: (value) {
+                          setState(() {
+                            _position = Duration(seconds: value.toInt());
+                          });
+                        },
+                        onChangeStart: (value) {
+                          setState(() {
+                            currentlyChangingSlider = true;
+                          });
+                        },
+                        onChangeEnd: (value) {
+                          setState(() {
+                            currentlyChangingSlider = false;
+                          });
+                          player.seek(Duration(seconds: value.toInt()));
+                        },
+                      ),
+                      Text(
+                          '${_printDuration(_position)} / ${_printDuration(_totalDuration)}'),
+                    ],
+                  )
+                : Text(Languages.of(context)!.noContentAvailable),
       ),
     );
   }
@@ -483,7 +585,7 @@ class _TextWidgetState extends _FileWidgetState {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Text Viewer"),
+        title: const Text("Text Viewer"),
       ),
       body: Column(
         children: [
@@ -493,7 +595,9 @@ class _TextWidgetState extends _FileWidgetState {
             controller: _scrollController,
             child: SingleChildScrollView(
               controller: _scrollController,
-              child: Text.rich(TextSpan(text: widget.asset.textfield ?? '')),
+              child: Text.rich(TextSpan(
+                  text: widget.asset.textfield ??
+                      Languages.of(context)!.noContentAvailable)),
             ),
           ))
         ],
