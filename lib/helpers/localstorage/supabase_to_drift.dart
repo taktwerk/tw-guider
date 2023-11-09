@@ -101,6 +101,7 @@ class SupabaseToDrift {
         id: Value(step[Const.id.key]),
         image: step[Const.image.key],
         description: step[Const.description.key],
+        type: ContentType.values.byName(step[Const.type.key]),
         createdAt: DateTime.parse(step[Const.createdAt.key]),
         createdBy: step[Const.createdBy.key],
         updatedAt: DateTime.parse(step[Const.updatedAt.key]),
