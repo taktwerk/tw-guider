@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
-import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/assets_view.dart';
+import 'package:guider/widgets/file_widgets.dart';
 
 class AssetsListView extends StatefulWidget {
   const AssetsListView({super.key, required this.instructionId});
@@ -59,7 +60,13 @@ class _AssetsListViewState extends State<AssetsListView> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => AssetsView(
-                                    asset: element,
+                                    fileObject: FileObject(
+                                        id: element.id,
+                                        url: element.file,
+                                        textfield: element.textfield,
+                                        type: element.type,
+                                        folderName:
+                                            Const.assetsImagesFolderName.key),
                                   ),
                                 ),
                               );

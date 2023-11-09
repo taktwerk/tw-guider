@@ -14,22 +14,36 @@ import 'dart:io' show File, Platform;
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:flutter/foundation.dart' as foundation;
 
+class FileObject {
+  final int id;
+  final String? url;
+  final ContentType type;
+  final String? textfield;
+  final String folderName;
+  FileObject(
+      {required this.id,
+      required this.url,
+      required this.type,
+      required this.textfield,
+      required this.folderName});
+}
+
 Map<String, Function> fileTypeToWidget = {
   // 'jpg', 'png', 'jpeg', 'webp'
-  for (var ext in ['image']) ext: (file) => ImageFileWidget(asset: file),
-  for (var ext in ['pdf']) ext: (file) => PdfFileWidget(asset: file),
+  for (var ext in ['image']) ext: (file) => ImageFileWidget(fileObject: file),
+  for (var ext in ['pdf']) ext: (file) => PdfFileWidget(fileObject: file),
   // 'mp3', 'wav'
-  for (var ext in ['audio']) ext: (file) => AudioFileWidget(asset: file),
+  for (var ext in ['audio']) ext: (file) => AudioFileWidget(fileObject: file),
   // 'mp4'
-  for (var ext in ['video']) ext: (file) => VideoFileWidget(asset: file),
-  for (var ext in ['text']) ext: (file) => TextWidget(asset: file),
-  for (var ext in ['threeD']) ext: (file) => ThreeDWidget(asset: file),
+  for (var ext in ['video']) ext: (file) => VideoFileWidget(fileObject: file),
+  for (var ext in ['text']) ext: (file) => TextWidget(fileObject: file),
+  for (var ext in ['threeD']) ext: (file) => ThreeDWidget(fileObject: file),
 };
 
 abstract class FileWidget extends StatefulWidget {
-  final Asset asset;
+  final FileObject fileObject;
 
-  const FileWidget({super.key, required this.asset});
+  const FileWidget({super.key, required this.fileObject});
 
   @override
   State<FileWidget> createState() => _FileWidgetState();
@@ -48,8 +62,8 @@ class _FileWidgetState extends State<FileWidget> {
 }
 
 class VideoFileWidget extends FileWidget {
-  const VideoFileWidget({super.key, required Asset asset})
-      : super(asset: asset);
+  const VideoFileWidget({super.key, required FileObject fileObject})
+      : super(fileObject: fileObject);
 
   @override
   State<FileWidget> createState() => _VideoFileWidgetState();
@@ -76,11 +90,11 @@ class _VideoFileWidgetState extends _FileWidgetState {
 
   void getFilePath() async {
     if (!kIsWeb) {
-      path = await AppUtil.filePath(
-          widget.asset.id, widget.asset.file, Const.assetsImagesFolderName.key);
+      path = await AppUtil.filePath(widget.fileObject.id, widget.fileObject.url,
+          widget.fileObject.folderName);
     } else {
       //TODO: make sure that the video file (url) exists
-      path = widget.asset.file;
+      path = widget.fileObject.url ?? "";
     }
     setState(() {});
   }
@@ -225,8 +239,8 @@ class _VideoFileWidgetState extends _FileWidgetState {
 }
 
 class ImageFileWidget extends FileWidget {
-  const ImageFileWidget({super.key, required Asset asset})
-      : super(asset: asset);
+  const ImageFileWidget({super.key, required FileObject fileObject})
+      : super(fileObject: fileObject);
 
   @override
   State<FileWidget> createState() => _ImageFileWidgetState();
@@ -306,7 +320,8 @@ class _ImageFileWidgetState extends _FileWidgetState {
 }
 
 class PdfFileWidget extends FileWidget {
-  const PdfFileWidget({super.key, required Asset asset}) : super(asset: asset);
+  const PdfFileWidget({super.key, required FileObject fileObject})
+      : super(fileObject: fileObject);
 
   @override
   State<FileWidget> createState() => _PdfFileWidgetState();
@@ -333,7 +348,7 @@ class _PdfFileWidgetState extends _FileWidgetState {
 
   Future<void> _loadDocument() async {
     if (kIsWeb) {
-      var response = await http.get(Uri.parse(widget.asset.file!));
+      var response = await http.get(Uri.parse(widget.fileObject.url!));
       setState(() {
         _pdfController = PdfControllerPinch(
           document: PdfDocument.openData(response.bodyBytes),
@@ -341,8 +356,8 @@ class _PdfFileWidgetState extends _FileWidgetState {
         );
       });
     } else {
-      final path = await AppUtil.filePath(
-          widget.asset.id, widget.asset.file, Const.assetsImagesFolderName.key);
+      final path = await AppUtil.filePath(widget.fileObject.id,
+          widget.fileObject.url, widget.fileObject.folderName);
 
       if (path.isNotEmpty) {
         final document = PdfDocument.openFile(path);
@@ -442,8 +457,8 @@ class _PdfFileWidgetState extends _FileWidgetState {
 }
 
 class AudioFileWidget extends FileWidget {
-  const AudioFileWidget({super.key, required Asset asset})
-      : super(asset: asset);
+  const AudioFileWidget({super.key, required FileObject fileObject})
+      : super(fileObject: fileObject);
 
   @override
   State<FileWidget> createState() => _AudioFileWidgetState();
@@ -488,11 +503,10 @@ class _AudioFileWidgetState extends _FileWidgetState {
     String path;
 
     if (!kIsWeb) {
-      path = await AppUtil.filePath(
-          widget.asset.id, widget.asset.file, Const.assetsImagesFolderName.key);
+      path = await AppUtil.filePath(widget.fileObject.id, widget.fileObject.url,
+          widget.fileObject.folderName);
     } else {
-      //TODO: make sure that the video file (url) exists
-      path = widget.asset.file!;
+      path = widget.fileObject.url ?? "";
     }
 
     if (path.isNotEmpty) {
@@ -573,7 +587,8 @@ class _AudioFileWidgetState extends _FileWidgetState {
 }
 
 class TextWidget extends FileWidget {
-  const TextWidget({super.key, required Asset asset}) : super(asset: asset);
+  const TextWidget({super.key, required FileObject fileObject})
+      : super(fileObject: fileObject);
 
   @override
   State<FileWidget> createState() => _TextWidgetState();
@@ -607,7 +622,8 @@ class _TextWidgetState extends _FileWidgetState {
 }
 
 class ThreeDWidget extends FileWidget {
-  const ThreeDWidget({super.key, required Asset asset}) : super(asset: asset);
+  const ThreeDWidget({super.key, required FileObject fileObject})
+      : super(fileObject: fileObject);
 
   @override
   State<FileWidget> createState() => _ThreeDWidgetState();
@@ -632,9 +648,14 @@ class _ThreeDWidgetState extends _FileWidgetState {
 
   Future<void> getFilePath() async {
     // the 3D model only works on the device (the package webview that is used is only supported on devices)
-    if (isDevice()) {
-      path =
-          "file://${await AppUtil.filePath(widget.asset.id, widget.asset.file, Const.assetsImagesFolderName.key)}";
+    if (!kIsWeb && isDevice()) {
+      String fileName = await AppUtil.filePath(widget.fileObject.id,
+          widget.fileObject.url, widget.fileObject.folderName);
+      if (fileName.isNotEmpty) {
+        path = "file://$fileName";
+      } else {
+        path = "";
+      }
     } else {
       path = "";
     }
