@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/constants.dart';
+import 'package:guider/helpers/content_type_enum.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
-import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/views/fullscreen_image_viewer.dart';
 import 'package:media_kit/media_kit.dart';
@@ -108,17 +108,14 @@ class _VideoFileWidgetState extends _FileWidgetState {
       controller: controller,
     );
 
-    return Scaffold(
-      appBar: AppBar(title: const Text("Video Viewer")),
-      body: Center(
-        child: kIsWeb
-            ? video
-            : (Platform.isIOS || Platform.isAndroid)
-                ? getDeviceVideoControls(video)
-                : (Platform.isWindows || Platform.isMacOS || Platform.isLinux)
-                    ? getDesktopVideoControls(video)
-                    : video,
-      ),
+    return Center(
+      child: kIsWeb
+          ? video
+          : (Platform.isIOS || Platform.isAndroid)
+              ? getDeviceVideoControls(video)
+              : (Platform.isWindows || Platform.isMacOS || Platform.isLinux)
+                  ? getDesktopVideoControls(video)
+                  : video,
     );
   }
 
@@ -254,66 +251,61 @@ class _ImageFileWidgetState extends _FileWidgetState {
   Widget build(BuildContext context) {
     final l = Languages.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Image Viewer"),
-      ),
-      body: Center(
-        child: GestureDetector(
-          child: Hero(
-            tag: tagName,
-            child: FractionallySizedBox(
-              widthFactor: 0.75,
-              child: (foundation.kIsWeb)
-                  ? Image.network(
-                      widget.asset.file!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.red,
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'No image',
-                          ),
+    return Center(
+      child: GestureDetector(
+        child: Hero(
+          tag: tagName,
+          child: FractionallySizedBox(
+            widthFactor: 0.75,
+            child: (foundation.kIsWeb)
+                ? Image.network(
+                    widget.fileObject.url!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.red,
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'No image',
+                        ),
+                      );
+                    },
+                  )
+                : FutureBuilder(
+                    future: AppUtil.filePath(widget.fileObject.id,
+                        widget.fileObject.url, widget.fileObject.folderName),
+                    builder: (_, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text(l!.somethingWentWrong);
+                      }
+                      if ((snapshot.connectionState ==
+                          ConnectionState.waiting)) {
+                        return const CircularProgressIndicator();
+                      }
+                      if (snapshot.data!.isNotEmpty) {
+                        return Image.file(
+                          File(snapshot.data!),
+                          fit: BoxFit.cover,
                         );
-                      },
-                    )
-                  : FutureBuilder(
-                      future: AppUtil.filePath(widget.asset.id,
-                          widget.asset.file, Const.assetsImagesFolderName.key),
-                      builder: (_, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text(l!.somethingWentWrong);
-                        }
-                        if ((snapshot.connectionState ==
-                            ConnectionState.waiting)) {
-                          return const CircularProgressIndicator();
-                        }
-                        if (snapshot.data!.isNotEmpty) {
-                          return Image.file(
-                            File(snapshot.data!),
-                            fit: BoxFit.cover,
-                          );
-                        }
-                        return Center(
-                          child: Text(l!.noImageAvailable),
-                        );
-                      },
-                    ),
-            ),
+                      }
+                      return Center(
+                        child: Text(l!.noImageAvailable),
+                      );
+                    },
+                  ),
           ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => FullScreenImageViewer(
-                      id: widget.asset.id,
-                      url: widget.asset.file!,
-                      folderName: Const.assetsImagesFolderName.key,
-                      tagName: tagName)),
-            );
-          },
         ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FullScreenImageViewer(
+                    id: widget.fileObject.id,
+                    url: widget.fileObject.url!,
+                    folderName: widget.fileObject.folderName,
+                    tagName: tagName)),
+          );
+        },
       ),
     );
   }
@@ -385,48 +377,45 @@ class _PdfFileWidgetState extends _FileWidgetState {
         valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
       ),
     );
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("PDF Viewer"),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.navigate_before),
-              onPressed: () {
-                _pdfController!.previousPage(
-                  curve: Curves.ease,
-                  duration: const Duration(milliseconds: 100),
-                );
-              },
-            ),
-            _pdfController != null
-                ? PdfPageNumber(
-                    controller: _pdfController!,
-                    builder: (_, loadingState, page, pagesCount) => Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        '$page/${pagesCount ?? 0}',
-                        style: const TextStyle(fontSize: 22),
-                      ),
-                    ),
-                  )
-                : loading
-                    ? const CircularProgressIndicator()
-                    : const Icon(
-                        Icons.cancel,
-                        color: Colors.redAccent,
-                      ),
-            IconButton(
-              icon: const Icon(Icons.navigate_next),
-              onPressed: () {
-                _pdfController!.nextPage(
-                  curve: Curves.ease,
-                  duration: const Duration(milliseconds: 100),
-                );
-              },
-            ),
-          ],
-        ),
-        body: _pdfController == null
+    return
+        // actions: <Widget>[
+        //   IconButton(
+        //     icon: const Icon(Icons.navigate_before),
+        //     onPressed: () {
+        //       _pdfController!.previousPage(
+        //         curve: Curves.ease,
+        //         duration: const Duration(milliseconds: 100),
+        //       );
+        //     },
+        //   ),
+        //   _pdfController != null
+        //       ? PdfPageNumber(
+        //           controller: _pdfController!,
+        //           builder: (_, loadingState, page, pagesCount) => Container(
+        //             alignment: Alignment.center,
+        //             child: Text(
+        //               '$page/${pagesCount ?? 0}',
+        //               style: const TextStyle(fontSize: 22),
+        //             ),
+        //           ),
+        //         )
+        //       : loading
+        //           ? const CircularProgressIndicator()
+        //           : const Icon(
+        //               Icons.cancel,
+        //               color: Colors.redAccent,
+        //             ),
+        //   IconButton(
+        //     icon: const Icon(Icons.navigate_next),
+        //     onPressed: () {
+        //       _pdfController!.nextPage(
+        //         curve: Curves.ease,
+        //         duration: const Duration(milliseconds: 100),
+        //       );
+        //     },
+        //   ),
+        // ],
+        _pdfController == null
             ? loading
                 ? const Center(child: CircularProgressIndicator())
                 : Center(child: Text(Languages.of(context)!.noContentAvailable))
@@ -452,7 +441,7 @@ class _PdfFileWidgetState extends _FileWidgetState {
                           ),
                   ),
                 ),
-              ));
+              );
   }
 }
 
@@ -539,49 +528,46 @@ class _AudioFileWidgetState extends _FileWidgetState {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Audio Listener")),
-      body: Center(
-        child: audioAvailable == null
-            ? const CircularProgressIndicator()
-            : audioAvailable!
-                ? Column(
-                    children: [
-                      IconButton(
-                        icon: _playing
-                            ? const Icon(Icons.pause)
-                            : const Icon(Icons.play_arrow),
-                        onPressed: () {
-                          player.playOrPause();
-                        },
-                      ),
-                      Slider(
-                        value: _position.inSeconds.toDouble(),
-                        min: 0,
-                        max: _totalDuration.inSeconds.toDouble(),
-                        onChanged: (value) {
-                          setState(() {
-                            _position = Duration(seconds: value.toInt());
-                          });
-                        },
-                        onChangeStart: (value) {
-                          setState(() {
-                            currentlyChangingSlider = true;
-                          });
-                        },
-                        onChangeEnd: (value) {
-                          setState(() {
-                            currentlyChangingSlider = false;
-                          });
-                          player.seek(Duration(seconds: value.toInt()));
-                        },
-                      ),
-                      Text(
-                          '${_printDuration(_position)} / ${_printDuration(_totalDuration)}'),
-                    ],
-                  )
-                : Text(Languages.of(context)!.noContentAvailable),
-      ),
+    return Center(
+      child: audioAvailable == null
+          ? const CircularProgressIndicator()
+          : audioAvailable!
+              ? Column(
+                  children: [
+                    IconButton(
+                      icon: _playing
+                          ? const Icon(Icons.pause)
+                          : const Icon(Icons.play_arrow),
+                      onPressed: () {
+                        player.playOrPause();
+                      },
+                    ),
+                    Slider(
+                      value: _position.inSeconds.toDouble(),
+                      min: 0,
+                      max: _totalDuration.inSeconds.toDouble(),
+                      onChanged: (value) {
+                        setState(() {
+                          _position = Duration(seconds: value.toInt());
+                        });
+                      },
+                      onChangeStart: (value) {
+                        setState(() {
+                          currentlyChangingSlider = true;
+                        });
+                      },
+                      onChangeEnd: (value) {
+                        setState(() {
+                          currentlyChangingSlider = false;
+                        });
+                        player.seek(Duration(seconds: value.toInt()));
+                      },
+                    ),
+                    Text(
+                        '${_printDuration(_position)} / ${_printDuration(_totalDuration)}'),
+                  ],
+                )
+              : Text(Languages.of(context)!.noContentAvailable),
     );
   }
 }
@@ -598,25 +584,20 @@ class _TextWidgetState extends _FileWidgetState {
   final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Text Viewer"),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-              child: Scrollbar(
-            thumbVisibility: true,
+    return Column(
+      children: [
+        Expanded(
+            child: Scrollbar(
+          thumbVisibility: true,
+          controller: _scrollController,
+          child: SingleChildScrollView(
             controller: _scrollController,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Text.rich(TextSpan(
-                  text: widget.asset.textfield ??
-                      Languages.of(context)!.noContentAvailable)),
-            ),
-          ))
-        ],
-      ),
+            child: Text.rich(TextSpan(
+                text: widget.fileObject.textfield ??
+                    Languages.of(context)!.noContentAvailable)),
+          ),
+        ))
+      ],
     );
   }
 }
@@ -664,19 +645,15 @@ class _ThreeDWidgetState extends _FileWidgetState {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("3D Viewer"),
-        ),
-        body: path != null
-            ? path!.isEmpty
-                ? Center(child: Text(Languages.of(context)!.noContentAvailable))
-                : ModelViewer(
-                    backgroundColor: Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),
-                    src: path!,
-                    alt: 'A 3D Model',
-                    autoRotate: true,
-                  )
-            : const CircularProgressIndicator());
+    return path != null
+        ? path!.isEmpty
+            ? Center(child: Text(Languages.of(context)!.noContentAvailable))
+            : ModelViewer(
+                backgroundColor: Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),
+                src: path!,
+                alt: 'A 3D Model',
+                autoRotate: true,
+              )
+        : const CircularProgressIndicator();
   }
 }
