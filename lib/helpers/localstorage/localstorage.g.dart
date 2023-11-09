@@ -2023,6 +2023,13 @@ class InstructionSteps extends Table
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  late final GeneratedColumnWithTypeConverter<ContentType, String> type =
+      GeneratedColumn<String>('type', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: true,
+              $customConstraints: 'NOT NULL')
+          .withConverter<ContentType>(InstructionSteps.$convertertype);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
@@ -2072,6 +2079,7 @@ class InstructionSteps extends Table
         stepNr,
         description,
         image,
+        type,
         createdAt,
         createdBy,
         updatedAt,
@@ -2119,6 +2127,7 @@ class InstructionSteps extends Table
     } else if (isInserting) {
       context.missing(_imageMeta);
     }
+    context.handle(_typeMeta, const VerificationResult.success());
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -2170,6 +2179,8 @@ class InstructionSteps extends Table
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       image: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image'])!,
+      type: InstructionSteps.$convertertype.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       createdBy: attachedDatabase.typeMapping
@@ -2190,6 +2201,8 @@ class InstructionSteps extends Table
     return InstructionSteps(attachedDatabase, alias);
   }
 
+  static JsonTypeConverter2<ContentType, String, String> $convertertype =
+      const EnumNameConverter<ContentType>(ContentType.values);
   @override
   List<String> get customConstraints => const [
         'CONSTRAINT instruction_steps_pkey PRIMARY KEY(id)',
@@ -2205,6 +2218,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
   final int stepNr;
   final String description;
   final String image;
+  final ContentType type;
   final DateTime createdAt;
   final int createdBy;
   final DateTime updatedAt;
@@ -2217,6 +2231,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
       required this.stepNr,
       required this.description,
       required this.image,
+      required this.type,
       required this.createdAt,
       required this.createdBy,
       required this.updatedAt,
@@ -2231,6 +2246,10 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
     map['step_nr'] = Variable<int>(stepNr);
     map['description'] = Variable<String>(description);
     map['image'] = Variable<String>(image);
+    {
+      final converter = InstructionSteps.$convertertype;
+      map['type'] = Variable<String>(converter.toSql(type));
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['created_by'] = Variable<int>(createdBy);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -2251,6 +2270,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
       stepNr: Value(stepNr),
       description: Value(description),
       image: Value(image),
+      type: Value(type),
       createdAt: Value(createdAt),
       createdBy: Value(createdBy),
       updatedAt: Value(updatedAt),
@@ -2273,6 +2293,8 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
       stepNr: serializer.fromJson<int>(json['step_nr']),
       description: serializer.fromJson<String>(json['description']),
       image: serializer.fromJson<String>(json['image']),
+      type: InstructionSteps.$convertertype
+          .fromJson(serializer.fromJson<String>(json['type'])),
       createdAt: serializer.fromJson<DateTime>(json['created_at']),
       createdBy: serializer.fromJson<int>(json['created_by']),
       updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
@@ -2290,6 +2312,8 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
       'step_nr': serializer.toJson<int>(stepNr),
       'description': serializer.toJson<String>(description),
       'image': serializer.toJson<String>(image),
+      'type': serializer
+          .toJson<String>(InstructionSteps.$convertertype.toJson(type)),
       'created_at': serializer.toJson<DateTime>(createdAt),
       'created_by': serializer.toJson<int>(createdBy),
       'updated_at': serializer.toJson<DateTime>(updatedAt),
@@ -2305,6 +2329,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
           int? stepNr,
           String? description,
           String? image,
+          ContentType? type,
           DateTime? createdAt,
           int? createdBy,
           DateTime? updatedAt,
@@ -2317,6 +2342,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
         stepNr: stepNr ?? this.stepNr,
         description: description ?? this.description,
         image: image ?? this.image,
+        type: type ?? this.type,
         createdAt: createdAt ?? this.createdAt,
         createdBy: createdBy ?? this.createdBy,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -2332,6 +2358,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
           ..write('stepNr: $stepNr, ')
           ..write('description: $description, ')
           ..write('image: $image, ')
+          ..write('type: $type, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdBy: $createdBy, ')
           ..write('updatedAt: $updatedAt, ')
@@ -2344,7 +2371,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
 
   @override
   int get hashCode => Object.hash(id, instructionId, stepNr, description, image,
-      createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
+      type, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2354,6 +2381,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
           other.stepNr == this.stepNr &&
           other.description == this.description &&
           other.image == this.image &&
+          other.type == this.type &&
           other.createdAt == this.createdAt &&
           other.createdBy == this.createdBy &&
           other.updatedAt == this.updatedAt &&
@@ -2368,6 +2396,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
   final Value<int> stepNr;
   final Value<String> description;
   final Value<String> image;
+  final Value<ContentType> type;
   final Value<DateTime> createdAt;
   final Value<int> createdBy;
   final Value<DateTime> updatedAt;
@@ -2380,6 +2409,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
     this.stepNr = const Value.absent(),
     this.description = const Value.absent(),
     this.image = const Value.absent(),
+    this.type = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.createdBy = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -2393,6 +2423,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
     required int stepNr,
     required String description,
     required String image,
+    required ContentType type,
     required DateTime createdAt,
     required int createdBy,
     required DateTime updatedAt,
@@ -2403,6 +2434,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
         stepNr = Value(stepNr),
         description = Value(description),
         image = Value(image),
+        type = Value(type),
         createdAt = Value(createdAt),
         createdBy = Value(createdBy),
         updatedAt = Value(updatedAt),
@@ -2413,6 +2445,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
     Expression<int>? stepNr,
     Expression<String>? description,
     Expression<String>? image,
+    Expression<String>? type,
     Expression<DateTime>? createdAt,
     Expression<int>? createdBy,
     Expression<DateTime>? updatedAt,
@@ -2426,6 +2459,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
       if (stepNr != null) 'step_nr': stepNr,
       if (description != null) 'description': description,
       if (image != null) 'image': image,
+      if (type != null) 'type': type,
       if (createdAt != null) 'created_at': createdAt,
       if (createdBy != null) 'created_by': createdBy,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -2441,6 +2475,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
       Value<int>? stepNr,
       Value<String>? description,
       Value<String>? image,
+      Value<ContentType>? type,
       Value<DateTime>? createdAt,
       Value<int>? createdBy,
       Value<DateTime>? updatedAt,
@@ -2453,6 +2488,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
       stepNr: stepNr ?? this.stepNr,
       description: description ?? this.description,
       image: image ?? this.image,
+      type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       createdBy: createdBy ?? this.createdBy,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -2479,6 +2515,10 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
     }
     if (image.present) {
       map['image'] = Variable<String>(image.value);
+    }
+    if (type.present) {
+      final converter = InstructionSteps.$convertertype;
+      map['type'] = Variable<String>(converter.toSql(type.value));
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -2509,6 +2549,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
           ..write('stepNr: $stepNr, ')
           ..write('description: $description, ')
           ..write('image: $image, ')
+          ..write('type: $type, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdBy: $createdBy, ')
           ..write('updatedAt: $updatedAt, ')
