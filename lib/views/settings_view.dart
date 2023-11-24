@@ -9,6 +9,7 @@ import 'package:guider/languages/supported_languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/login.dart';
+import 'package:guider/views/registration.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -168,12 +169,22 @@ class _SettingsViewState extends State<SettingsView> {
                       currentUser = null;
                       var prefs = await Singleton().getPrefInstance();
                       prefs.remove(KeyValueEnum.currentUser.key);
-                      await KeyValue.saveLogin(false).then((value) =>
+                      String? client = await KeyValue.getClient();
+                      await KeyValue.saveLogin(false).then((value) {
+                        if (client != null) {
                           Navigator.of(
                             context,
                             rootNavigator: true,
                           ).pushReplacement(MaterialPageRoute(
-                              builder: (context) => const LoginPage())));
+                              builder: (context) => const LoginPage()));
+                        } else {
+                          Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).pushReplacement(MaterialPageRoute(
+                              builder: (context) => const RegistrationPage()));
+                        }
+                      });
                     },
                     icon: Transform.flip(
                       flipX: true,
