@@ -302,6 +302,9 @@ class AppDatabase extends _$AppDatabase {
   Future<List<User>> get allUserEntries =>
       (select(users)..where((t) => t.deletedAt.isNull())).get();
 
+  Future<List<User>> userEntriesByClient(String client) =>
+      (select(users)..where((t) => t.client.equals(client))).get();
+
   Stream<List<User>> get allUserEntriesAsStream =>
       (select(users)..where((t) => t.deletedAt.isNull())).watch();
 
