@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:guider/helpers/constants.dart';
+import 'package:guider/helpers/environment.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
 import 'package:http/http.dart' as http;
@@ -45,8 +46,8 @@ class SupabaseToDrift {
     for (int i = 0; i < len; i++) {
       var instruction = data[i];
       if (!foundation.kIsWeb) {
-        //only downloads the first 10 images (not all 1000)
-        if (i >= 0 && i <= 10) {
+        //only downloads the first numberOfInstructionImagesToDownload images (not all 1000)
+        if (i >= 0 && i <= Environment.numberOfInstructionImagesToDownload) {
           await _downloadImages(
               id: instruction[Const.id.key],
               url: instruction[Const.image.key],
@@ -104,8 +105,10 @@ class SupabaseToDrift {
       var step = data[i];
 
       if (!foundation.kIsWeb) {
-        //only downloads the first 30 images (not all 1000)
-        if (i >= 0 && i <= 30) {
+        //only downloads the first numberOfStepContentTypesToDownload images (not all 1000)
+        if (step[Const.id.key] >= 0 &&
+            step[Const.id.key] <=
+                Environment.numberOfStepContentTypesToDownload) {
           await _downloadImages(
               id: step[Const.id.key],
               url: step[Const.image.key],

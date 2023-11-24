@@ -5,4 +5,10 @@ class Environment {
   static const String supabaseClientURL = String.fromEnvironment(
       'supabaseClientURL',
       defaultValue: "https://spohaqvzfgvdihxcwvff.supabase.co");
+  static const int numberOfInstructionImagesToDownload = int.fromEnvironment(
+      'numberOfInstructionImagesToDownload',
+      defaultValue: 10);
+  static const int numberOfStepContentTypesToDownload = int.fromEnvironment(
+      'numberOfStepContentTypesToDownload',
+      defaultValue: 60);
 }
