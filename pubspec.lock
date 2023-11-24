@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.2"
+  android_id:
+    dependency: "direct main"
+    description:
+      name: android_id
+      sha256: f417b2fe86f93a1184662eaae582082c02c57d50c5a1048e5a66e09b2bdf87db
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   android_intent_plus:
     dependency: transitive
     description:
@@ -274,7 +282,7 @@ packages:
     source: hosted
     version: "0.7.8"
   device_info_plus:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: device_info_plus
       sha256: "7035152271ff67b072a211152846e9f1259cf1be41e34cd3e0b5463d2d6b8419"
