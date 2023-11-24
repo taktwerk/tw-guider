@@ -974,6 +974,12 @@ class Users extends Table with TableInfo<Users, User> {
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  static const VerificationMeta _clientMeta = const VerificationMeta('client');
+  late final GeneratedColumn<String> client = GeneratedColumn<String>(
+      'client', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
@@ -1021,6 +1027,7 @@ class Users extends Table with TableInfo<Users, User> {
         id,
         username,
         role,
+        client,
         createdAt,
         createdBy,
         updatedAt,
@@ -1051,6 +1058,12 @@ class Users extends Table with TableInfo<Users, User> {
           _roleMeta, role.isAcceptableOrUnknown(data['role']!, _roleMeta));
     } else if (isInserting) {
       context.missing(_roleMeta);
+    }
+    if (data.containsKey('client')) {
+      context.handle(_clientMeta,
+          client.isAcceptableOrUnknown(data['client']!, _clientMeta));
+    } else if (isInserting) {
+      context.missing(_clientMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -1099,6 +1112,8 @@ class Users extends Table with TableInfo<Users, User> {
           .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
       role: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}role'])!,
+      client: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}client'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       createdBy: attachedDatabase.typeMapping
@@ -1130,6 +1145,7 @@ class User extends DataClass implements Insertable<User> {
   final int id;
   final String username;
   final String role;
+  final String client;
   final DateTime createdAt;
   final int createdBy;
   final DateTime updatedAt;
@@ -1140,6 +1156,7 @@ class User extends DataClass implements Insertable<User> {
       {required this.id,
       required this.username,
       required this.role,
+      required this.client,
       required this.createdAt,
       required this.createdBy,
       required this.updatedAt,
@@ -1152,6 +1169,7 @@ class User extends DataClass implements Insertable<User> {
     map['id'] = Variable<int>(id);
     map['username'] = Variable<String>(username);
     map['role'] = Variable<String>(role);
+    map['client'] = Variable<String>(client);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['created_by'] = Variable<int>(createdBy);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -1170,6 +1188,7 @@ class User extends DataClass implements Insertable<User> {
       id: Value(id),
       username: Value(username),
       role: Value(role),
+      client: Value(client),
       createdAt: Value(createdAt),
       createdBy: Value(createdBy),
       updatedAt: Value(updatedAt),
@@ -1190,6 +1209,7 @@ class User extends DataClass implements Insertable<User> {
       id: serializer.fromJson<int>(json['id']),
       username: serializer.fromJson<String>(json['username']),
       role: serializer.fromJson<String>(json['role']),
+      client: serializer.fromJson<String>(json['client']),
       createdAt: serializer.fromJson<DateTime>(json['created_at']),
       createdBy: serializer.fromJson<int>(json['created_by']),
       updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
@@ -1205,6 +1225,7 @@ class User extends DataClass implements Insertable<User> {
       'id': serializer.toJson<int>(id),
       'username': serializer.toJson<String>(username),
       'role': serializer.toJson<String>(role),
+      'client': serializer.toJson<String>(client),
       'created_at': serializer.toJson<DateTime>(createdAt),
       'created_by': serializer.toJson<int>(createdBy),
       'updated_at': serializer.toJson<DateTime>(updatedAt),
@@ -1218,6 +1239,7 @@ class User extends DataClass implements Insertable<User> {
           {int? id,
           String? username,
           String? role,
+          String? client,
           DateTime? createdAt,
           int? createdBy,
           DateTime? updatedAt,
@@ -1228,6 +1250,7 @@ class User extends DataClass implements Insertable<User> {
         id: id ?? this.id,
         username: username ?? this.username,
         role: role ?? this.role,
+        client: client ?? this.client,
         createdAt: createdAt ?? this.createdAt,
         createdBy: createdBy ?? this.createdBy,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -1241,6 +1264,7 @@ class User extends DataClass implements Insertable<User> {
           ..write('id: $id, ')
           ..write('username: $username, ')
           ..write('role: $role, ')
+          ..write('client: $client, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdBy: $createdBy, ')
           ..write('updatedAt: $updatedAt, ')
@@ -1252,8 +1276,8 @@ class User extends DataClass implements Insertable<User> {
   }
 
   @override
-  int get hashCode => Object.hash(id, username, role, createdAt, createdBy,
-      updatedAt, updatedBy, deletedAt, deletedBy);
+  int get hashCode => Object.hash(id, username, role, client, createdAt,
+      createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1261,6 +1285,7 @@ class User extends DataClass implements Insertable<User> {
           other.id == this.id &&
           other.username == this.username &&
           other.role == this.role &&
+          other.client == this.client &&
           other.createdAt == this.createdAt &&
           other.createdBy == this.createdBy &&
           other.updatedAt == this.updatedAt &&
@@ -1273,6 +1298,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<int> id;
   final Value<String> username;
   final Value<String> role;
+  final Value<String> client;
   final Value<DateTime> createdAt;
   final Value<int> createdBy;
   final Value<DateTime> updatedAt;
@@ -1283,6 +1309,7 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.id = const Value.absent(),
     this.username = const Value.absent(),
     this.role = const Value.absent(),
+    this.client = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.createdBy = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1294,6 +1321,7 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.id = const Value.absent(),
     required String username,
     required String role,
+    required String client,
     required DateTime createdAt,
     required int createdBy,
     required DateTime updatedAt,
@@ -1302,6 +1330,7 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.deletedBy = const Value.absent(),
   })  : username = Value(username),
         role = Value(role),
+        client = Value(client),
         createdAt = Value(createdAt),
         createdBy = Value(createdBy),
         updatedAt = Value(updatedAt),
@@ -1310,6 +1339,7 @@ class UsersCompanion extends UpdateCompanion<User> {
     Expression<int>? id,
     Expression<String>? username,
     Expression<String>? role,
+    Expression<String>? client,
     Expression<DateTime>? createdAt,
     Expression<int>? createdBy,
     Expression<DateTime>? updatedAt,
@@ -1321,6 +1351,7 @@ class UsersCompanion extends UpdateCompanion<User> {
       if (id != null) 'id': id,
       if (username != null) 'username': username,
       if (role != null) 'role': role,
+      if (client != null) 'client': client,
       if (createdAt != null) 'created_at': createdAt,
       if (createdBy != null) 'created_by': createdBy,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1334,6 +1365,7 @@ class UsersCompanion extends UpdateCompanion<User> {
       {Value<int>? id,
       Value<String>? username,
       Value<String>? role,
+      Value<String>? client,
       Value<DateTime>? createdAt,
       Value<int>? createdBy,
       Value<DateTime>? updatedAt,
@@ -1344,6 +1376,7 @@ class UsersCompanion extends UpdateCompanion<User> {
       id: id ?? this.id,
       username: username ?? this.username,
       role: role ?? this.role,
+      client: client ?? this.client,
       createdAt: createdAt ?? this.createdAt,
       createdBy: createdBy ?? this.createdBy,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1364,6 +1397,9 @@ class UsersCompanion extends UpdateCompanion<User> {
     }
     if (role.present) {
       map['role'] = Variable<String>(role.value);
+    }
+    if (client.present) {
+      map['client'] = Variable<String>(client.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -1392,6 +1428,7 @@ class UsersCompanion extends UpdateCompanion<User> {
           ..write('id: $id, ')
           ..write('username: $username, ')
           ..write('role: $role, ')
+          ..write('client: $client, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdBy: $createdBy, ')
           ..write('updatedAt: $updatedAt, ')
