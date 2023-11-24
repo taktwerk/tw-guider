@@ -12,8 +12,25 @@ import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:path/path.dart';
 import 'package:guider/helpers/content_type_enum.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as s;
 
 class SupabaseToDrift {
+  static Future<bool> isDeviceRegistrated(String deviceId) async {
+    final data = await supabase
+        .from('device')
+        .select('*', const s.FetchOptions(count: s.CountOption.exact))
+        .eq('device_id', deviceId);
+    return data.count == 1;
+  }
+
+  static Future<bool> clientUsersAvailable(String client) async {
+    final data = await supabase
+        .from('user')
+        .select('*', const s.FetchOptions(count: s.CountOption.exact))
+        .eq('client', client);
+    return data.count > 0;
+  }
+
   static Future<String> getAllInstructions() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.instruction.key);
     var newLastSynced = lastSynced;

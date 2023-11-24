@@ -4,6 +4,19 @@ import 'package:guider/helpers/constants.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'dart:convert';
 
+class InputFields {
+  final String app;
+  final String client;
+  final String host;
+
+  InputFields({required this.app, required this.client, required this.host});
+
+  @override
+  String toString() {
+    return "APP: $app, CLIENT: $client, HOST: $host";
+  }
+}
+
 class Scanner extends StatefulWidget {
   const Scanner({super.key});
 
@@ -68,9 +81,10 @@ class _ScannerState extends State<Scanner> {
             if (image != null) {
               try {
                 Map<String, dynamic> response = json.decode(barcode.rawValue!);
-                if (response[Const.app.key] == null ||
-                    response[Const.host.key] == null ||
-                    response[Const.client.key] == null) {
+                String? app = response[Const.app.key];
+                String? host = response[Const.host.key];
+                String? client = response[Const.client.key];
+                if (app == null || host == null || client == null) {
                   throw Exception();
                 }
                 showDialog(
@@ -97,10 +111,11 @@ class _ScannerState extends State<Scanner> {
                             ],
                           ),
                         ));
-                Future.delayed(const Duration(seconds: 3), () {
+                Future.delayed(const Duration(seconds: 1), () {
                   if (mounted) {
                     Navigator.pop(context);
-                    Navigator.pop(context);
+                    Navigator.pop(context,
+                        InputFields(app: app, client: client, host: host));
                   }
                 });
               } catch (e) {

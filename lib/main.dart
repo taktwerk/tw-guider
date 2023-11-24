@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:guider/helpers/environment.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/views/login.dart';
+import 'package:guider/views/registration.dart';
 import 'package:guider/views/second_homepage.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:guider/languages/app_localizations.dart';
@@ -149,11 +153,13 @@ class _GuiderAppState extends State<GuiderApp> {
             seedColor: const Color.fromARGB(255, 92, 172, 252)),
         useMaterial3: true,
       ),
-      home: islogin != null
-          ? islogin!
-              ? const SecondHomePage()
+      home: client != null
+          ? islogin != null
+              ? islogin!
+                  ? const SecondHomePage()
+                  : const LoginPage()
               : const LoginPage()
-          : const LoginPage(),
+          : const RegistrationPage(),
     );
   }
 }

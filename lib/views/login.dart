@@ -5,6 +5,7 @@ import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
+import 'package:guider/views/registration.dart';
 import 'package:guider/views/second_homepage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -30,26 +31,27 @@ class _LoginPageState extends State<LoginPage> {
       await SupabaseToDrift.initializeUsers();
       await SupabaseToDrift.initializeSettings();
     } catch (e) {
-      String? client = await KeyValue.getClient();
-      if (client != null) {
-        var usersResult = await Singleton().getDatabase().allUserEntries;
-
-        setState(() {
-          users = usersResult;
-          selectedItem = usersResult.firstOrNull;
-        });
-      }
+      getUserList();
     }
-    String? client = await KeyValue.getClient();
+    getUserList();
+  }
 
+  Future<void> getUserList() async {
+    String? client = await KeyValue.getClient();
     if (client != null) {
-      var result = await Singleton().getDatabase().allUserEntries;
-      if (mounted) {
-        setState(() {
-          users = result;
-          selectedItem = result.firstOrNull;
-        });
-      }
+      var usersResult =
+          await Singleton().getDatabase().userEntriesByClient(client);
+
+      setState(() {
+        users = usersResult;
+        selectedItem = usersResult.firstOrNull;
+      });
+    }
+    // In case the client value would be null at this point => "No users available"
+    else {
+      setState(() {
+        users = [];
+      });
     }
   }
 
@@ -71,35 +73,43 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           users != null
               ? users!.isNotEmpty
-                  ? SizedBox(
-                      width: 300,
-                      child: DropdownButtonFormField(
-                        isExpanded: true,
-                        icon: const Icon(Icons.arrow_drop_down_circle),
-                        value: selectedItem,
-                        items: users!
-                            .map((item) => DropdownMenuItem<User>(
-                                  value: item,
-                                  child: Text(
-                                      "${item.username} (${item.role}, ID: ${item.id})"),
-                                ))
-                            .toList(),
-                        onChanged: (item) => setState(
-                          () {
-                            selectedItem = item;
-                          },
-                        ),
-                        decoration: InputDecoration(
-                          labelText: l!.users,
-                          prefixIcon: const Icon(Icons.format_list_numbered),
-                          border: const OutlineInputBorder(),
+                  ? Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: SizedBox(
+                        width: 300,
+                        child: DropdownButtonFormField(
+                          isExpanded: true,
+                          icon: const Icon(Icons.arrow_drop_down_circle),
+                          value: selectedItem,
+                          items: users!
+                              .map((item) => DropdownMenuItem<User>(
+                                    value: item,
+                                    child: Text(
+                                        "${item.username} (${item.role}, ID: ${item.id})"),
+                                  ))
+                              .toList(),
+                          onChanged: (item) => setState(
+                            () {
+                              selectedItem = item;
+                            },
+                          ),
+                          decoration: InputDecoration(
+                            labelText: l!.users,
+                            prefixIcon: const Icon(Icons.format_list_numbered),
+                            border: const OutlineInputBorder(),
+                          ),
                         ),
                       ),
                     )
                   : const Text("No users available")
               : const CircularProgressIndicator(),
-          ElevatedButton(
+          Padding(
+            padding: const EdgeInsets.all(5),
+            child: ElevatedButton(
               key: const Key("Login"),
+              style: ElevatedButton.styleFrom(
+                side: const BorderSide(color: Colors.white),
+              ),
               onPressed: () {
                 if (users != null) {
                   if (users!.isNotEmpty) {
@@ -114,7 +124,33 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 }
               },
-              child: Text(l!.login))
+              child: Text(l!.login),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5),
+            child: ElevatedButton.icon(
+              key: const Key("Back to Registration Page"),
+              style: ElevatedButton.styleFrom(
+                elevation: 0.0,
+              ),
+              onPressed: () async {
+                var prefs = await Singleton().getPrefInstance();
+                prefs
+                    .remove(KeyValueEnum.currentUser.key)
+                    .then((value) => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegistrationPage()),
+                        ));
+              },
+              icon: Transform.flip(
+                flipX: true,
+                child: const Icon(Icons.arrow_forward),
+              ),
+              label: const Text("Back to Registration Page"),
+            ),
+          ),
         ],
       ),
     ));
