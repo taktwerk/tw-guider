@@ -265,6 +265,7 @@ class SupabaseToDrift {
         id: Value(user[Const.id.key]),
         username: user[Const.username.key],
         role: user[Const.role.key],
+        client: user[Const.client.key],
         createdAt: DateTime.parse(user[Const.createdAt.key]),
         createdBy: user[Const.createdBy.key],
         updatedAt: DateTime.parse(user[Const.updatedAt.key]),

@@ -30,20 +30,26 @@ class _LoginPageState extends State<LoginPage> {
       await SupabaseToDrift.initializeUsers();
       await SupabaseToDrift.initializeSettings();
     } catch (e) {
-      var usersResult = await Singleton().getDatabase().allUserEntries;
+      String? client = await KeyValue.getClient();
+      if (client != null) {
+        var usersResult = await Singleton().getDatabase().allUserEntries;
 
-      setState(() {
-        users = usersResult;
-        selectedItem = usersResult.firstOrNull;
-      });
+        setState(() {
+          users = usersResult;
+          selectedItem = usersResult.firstOrNull;
+        });
+      }
     }
+    String? client = await KeyValue.getClient();
 
-    var result = await Singleton().getDatabase().allUserEntries;
-    if (mounted) {
-      setState(() {
-        users = result;
-        selectedItem = result.firstOrNull;
-      });
+    if (client != null) {
+      var result = await Singleton().getDatabase().allUserEntries;
+      if (mounted) {
+        setState(() {
+          users = result;
+          selectedItem = result.firstOrNull;
+        });
+      }
     }
   }
 

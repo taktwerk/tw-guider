@@ -73,6 +73,16 @@ class KeyValue {
     var prefs = await Singleton().getPrefInstance();
     return prefs.getBool(KeyValueEnum.login.key);
   }
+
+  static Future<bool> saveClient(client) async {
+    var prefs = await Singleton().getPrefInstance();
+    return await prefs.setString(KeyValueEnum.client.key, client);
+  }
+
+  static Future getClient() async {
+    var prefs = await Singleton().getPrefInstance();
+    return prefs.getString(KeyValueEnum.client.key);
+  }
 }
 
 enum KeyValueEnum {
@@ -87,7 +97,8 @@ enum KeyValueEnum {
   currentUser("current_user"),
   login("login"),
   asset("sync_asset"),
-  instructionAsset("sync_instruction_asset");
+  instructionAsset("sync_instruction_asset"),
+  client("client");
 
   const KeyValueEnum(this.key);
   final String key;

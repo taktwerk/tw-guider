@@ -66,11 +66,20 @@ class _GuiderAppState extends State<GuiderApp> {
   ThemeMode? _theme;
   // StreamSubscription<ConnectivityResult>? subscription;
   bool? islogin;
+  String? client;
   List<StreamSubscription> list = Realtime.init();
 
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
+    });
+  }
+
+  Future<void> checkDevice() async {
+    await KeyValue.getClient().then((value) {
+      setState(() {
+        client = value;
+      });
     });
   }
 
@@ -84,6 +93,7 @@ class _GuiderAppState extends State<GuiderApp> {
   void initState() {
     super.initState();
     checkUserLoginState();
+    checkDevice();
     // subscription = Connectivity()
     //     .onConnectivityChanged
     //     .listen((ConnectivityResult result) async {

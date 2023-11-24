@@ -73,6 +73,7 @@ create table
     id bigint,
     username character not null,
     role character not null,
+    client character not null,
     created_at datetime not null,
     created_by bigint not null,
     updated_at datetime not null,
