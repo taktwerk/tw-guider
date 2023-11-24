@@ -30,11 +30,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  getwidget: ^3.1.1
+  getwidget: ^4.0.0
   atomsbox: ^0.4.0
   provider: ^6.0.5  
-  flutter_widget_from_html_core: ^0.10.3
-  logger: ^1.4.0
+  flutter_widget_from_html_core: ^0.14.7
+  logger: ^2.0.2+1
   supabase_flutter: ^1.10.10
   image_picker: ^1.0.1
   path: ^1.8.3
@@ -59,11 +59,15 @@ dependencies:
   media_kit: ^1.1.8                              # Primary package.
   media_kit_video: ^1.2.1                        # For video rendering.
   media_kit_libs_video: ^1.0.3                   # Native video dependencies.
-  pdfx: ^2.4.0
+  pdfx: 
+    git:
+      url: 'https://github.com/ScerIO/packages.flutter' 
+      ref: '4be9de9ffed5398fd7d5f44bbb07dcd3d3f1711b'  
+      path: packages/pdfx
   model_viewer_plus: ^1.7.0
   mobile_scanner: ^3.5.2
   device_info_plus: ^9.1.0
-  android_id: ^0.2.0
+  android_id: ^0.3.6
   
 dev_dependencies:
   flutter_test:
@@ -76,7 +80,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
   build_runner: ^2.4.6
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
