@@ -134,7 +134,8 @@ class _FeedbackViewState extends State<FeedbackView> {
             String? url;
             if (_imagesBytes != null) {
               String xidImage = Xid().toString();
-              url = "${Const.supabaseBucketUrl.key}$xidImage.png"; // TODO: png
+              url =
+                  "${Const.supabaseFeedbackImagesBucketUrl}$xidImage.png"; // TODO: png
               Singleton().getDatabase().insertFeedbackImageBytes(
                   BytesCompanion.insert(
                       feedbackId: xid,

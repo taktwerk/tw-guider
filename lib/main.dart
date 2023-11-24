@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:guider/helpers/environment.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
@@ -19,9 +20,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   await Supabase.initialize(
-      url: "https://spohaqvzfgvdihxcwvff.supabase.co",
-      anonKey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwb2hhcXZ6Zmd2ZGloeGN3dmZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkyMzM0OTgsImV4cCI6MjAwNDgwOTQ5OH0.vOlkfj8sLoDvmWV3rrbNWwpu0Iir0Z5V5P4MuUpI5oI");
+      url: Environment.supabaseClientURL, anonKey: Environment.anonKey);
   await KeyValue.initialize();
   currentUser = await KeyValue.getCurrentUser();
   if (currentUser == null) {

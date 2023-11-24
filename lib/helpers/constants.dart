@@ -1,3 +1,5 @@
+import 'package:guider/helpers/environment.dart';
+
 enum Const {
   id("id"),
   updatedAt("updated_at"),
@@ -34,8 +36,8 @@ enum Const {
   instructionImagesFolderName("guider/images/instructionImages"),
   feedbackImagesFolderName("guider/images/feedbackImages"),
   assetsImagesFolderName("guider/assets"),
-  supabaseBucketUrl(
-      "https://spohaqvzfgvdihxcwvff.supabase.co/storage/v1/object/public/feedback_images/"),
+  supabaseFeedbackImagesBucketUrl(
+      "${Environment.supabaseClientURL}/storage/v1/object/public/feedback_images/"),
   // for the JSON stored in the QR Code
   app("app"),
   client("client"),
