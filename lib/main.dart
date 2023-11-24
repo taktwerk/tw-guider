@@ -17,6 +17,8 @@ import 'package:logger/logger.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:guider/languages/supported_languages.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:android_id/android_id.dart';
 
 ValueNotifier<bool> isDeviceConnected = ValueNotifier(false);
 
@@ -33,6 +35,45 @@ void main() async {
   }
   logger.i("Currentuser $currentUser (main)");
   runApp(const GuiderApp());
+}
+
+Future<String?> getDeviceId() async {
+  String? deviceId;
+
+  try {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    if (kIsWeb) {
+      final webBrowserInfo = await deviceInfo.webBrowserInfo;
+
+      deviceId =
+          '${webBrowserInfo.vendor ?? '-'} + ${webBrowserInfo.userAgent ?? '-'} + ${webBrowserInfo.hardwareConcurrency.toString()}';
+    } else if (Platform.isAndroid) {
+      const androidId = AndroidId();
+
+      deviceId = await androidId.getId();
+    } else if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+
+      deviceId = iosInfo.identifierForVendor;
+    } else if (Platform.isLinux) {
+      final linuxInfo = await deviceInfo.linuxInfo;
+
+      deviceId = linuxInfo.machineId;
+    } else if (Platform.isWindows) {
+      final windowsInfo = await deviceInfo.windowsInfo;
+
+      deviceId = windowsInfo.deviceId;
+    } else if (Platform.isMacOS) {
+      final macOsInfo = await deviceInfo.macOsInfo;
+
+      deviceId = macOsInfo.systemGUID;
+    }
+  } on PlatformException {
+    logger.e('Error: Failed to get platform version.');
+  }
+  logger.i("DEVICE ID: $deviceId");
+  return deviceId;
 }
 
 final supabase = Supabase.instance.client;
