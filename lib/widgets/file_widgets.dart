@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/content_type_enum.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/languages/languages.dart';
@@ -62,8 +61,7 @@ class _FileWidgetState extends State<FileWidget> {
 }
 
 class VideoFileWidget extends FileWidget {
-  const VideoFileWidget({super.key, required FileObject fileObject})
-      : super(fileObject: fileObject);
+  const VideoFileWidget({super.key, required super.fileObject});
 
   @override
   State<FileWidget> createState() => _VideoFileWidgetState();
@@ -236,8 +234,7 @@ class _VideoFileWidgetState extends _FileWidgetState {
 }
 
 class ImageFileWidget extends FileWidget {
-  const ImageFileWidget({super.key, required FileObject fileObject})
-      : super(fileObject: fileObject);
+  const ImageFileWidget({super.key, required super.fileObject});
 
   @override
   State<FileWidget> createState() => _ImageFileWidgetState();
@@ -312,8 +309,7 @@ class _ImageFileWidgetState extends _FileWidgetState {
 }
 
 class PdfFileWidget extends FileWidget {
-  const PdfFileWidget({super.key, required FileObject fileObject})
-      : super(fileObject: fileObject);
+  const PdfFileWidget({super.key, required super.fileObject});
 
   @override
   State<FileWidget> createState() => _PdfFileWidgetState();
@@ -446,8 +442,7 @@ class _PdfFileWidgetState extends _FileWidgetState {
 }
 
 class AudioFileWidget extends FileWidget {
-  const AudioFileWidget({super.key, required FileObject fileObject})
-      : super(fileObject: fileObject);
+  const AudioFileWidget({super.key, required super.fileObject});
 
   @override
   State<FileWidget> createState() => _AudioFileWidgetState();
@@ -573,8 +568,7 @@ class _AudioFileWidgetState extends _FileWidgetState {
 }
 
 class TextWidget extends FileWidget {
-  const TextWidget({super.key, required FileObject fileObject})
-      : super(fileObject: fileObject);
+  const TextWidget({super.key, required super.fileObject});
 
   @override
   State<FileWidget> createState() => _TextWidgetState();
@@ -603,8 +597,7 @@ class _TextWidgetState extends _FileWidgetState {
 }
 
 class ThreeDWidget extends FileWidget {
-  const ThreeDWidget({super.key, required FileObject fileObject})
-      : super(fileObject: fileObject);
+  const ThreeDWidget({super.key, required super.fileObject});
 
   @override
   State<FileWidget> createState() => _ThreeDWidgetState();
@@ -649,7 +642,7 @@ class _ThreeDWidgetState extends _FileWidgetState {
         ? path!.isEmpty
             ? Center(child: Text(Languages.of(context)!.noContentAvailable))
             : ModelViewer(
-                backgroundColor: Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),
+                backgroundColor: const Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),
                 src: path!,
                 alt: 'A 3D Model',
                 autoRotate: true,

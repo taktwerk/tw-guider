@@ -6,12 +6,12 @@ import 'package:guider/languages/languages.dart';
 
 class FullScreenImageViewer extends StatefulWidget {
   const FullScreenImageViewer({
-    Key? key,
+    super.key,
     required this.id,
     required this.url,
     required this.folderName,
     required this.tagName,
-  }) : super(key: key);
+  });
   final int id;
   final String url;
   final String folderName;

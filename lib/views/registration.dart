@@ -71,7 +71,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Registration Page")),
+        appBar: AppBar(title: const Text("Registration Page")),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -109,7 +109,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
                 child: ElevatedButton(
                     onPressed: () {
                       validateForm();
@@ -117,7 +117,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: Text("Register")),
               ),
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
                 child: Visibility(
                   visible: !kIsWeb && isDevice() ? true : false,
                   child: IconButton(
@@ -125,7 +125,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     tooltip: 'Scanner',
                     onPressed: () async {
                       scannerResponse = await Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => Scanner()));
+                          MaterialPageRoute(
+                              builder: (context) => const Scanner()));
                       setState(() {
                         if (scannerResponse != null) {
                           appController.text = scannerResponse!.app;
@@ -133,7 +134,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           hostController.text = scannerResponse!.host;
                           validateForm();
                         }
-                        print("Scanner response: $scannerResponse");
+                        logger.i("Scanner response: $scannerResponse");
                       });
                     },
                   ),

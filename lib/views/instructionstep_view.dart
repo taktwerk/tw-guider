@@ -1,13 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/constants.dart';
-import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
-import 'package:guider/languages/languages.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:flutter/foundation.dart' as foundation;
 import 'package:guider/views/assets_view.dart';
-import 'package:guider/views/fullscreen_image_viewer.dart';
 import 'package:guider/widgets/file_widgets.dart';
 import 'package:guider/helpers/content_type_enum.dart';
 
@@ -77,7 +72,6 @@ class _InstructionStepViewState extends State<InstructionStepView> {
 
   @override
   Widget build(BuildContext context) {
-    final l = Languages.of(context);
     return Column(
       children: [
         HtmlWidget(

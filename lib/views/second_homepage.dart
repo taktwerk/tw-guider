@@ -155,8 +155,8 @@ class _SecondHomePageState extends State<SecondHomePage>
               icon: const Icon(Icons.qr_code_scanner),
               tooltip: 'Scanner',
               onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => Scanner()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const Scanner()));
               },
             ),
           ),
