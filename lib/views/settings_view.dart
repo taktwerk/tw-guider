@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/app_info.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
@@ -22,6 +23,13 @@ class _SettingsViewState extends State<SettingsView> {
   Locale? selectedItem;
   List<Locale> languages = SupportedLanguages.all;
   List<Setting> settings = [];
+  AppInfo? appInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    getAppInfo();
+  }
 
   final MaterialStateProperty<Icon?> thumbIcon =
       MaterialStateProperty.resolveWith<Icon?>(
@@ -192,6 +200,13 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                     label: Text(Languages.of(context)!.logout)),
               ),
+              appInfo != null
+                  ? AppInformationWidget(
+                      deviceId: appInfo!.deviceID,
+                      name: appInfo!.name,
+                      version: appInfo!.version,
+                    )
+                  : Container()
             ],
           ),
         )
@@ -234,5 +249,51 @@ class _SettingsViewState extends State<SettingsView> {
       await Singleton().getDatabase().updateUserLightmode(currentUser!, theme);
       sync();
     }
+  }
+
+  Future<void> getAppInfo() async {
+    AppInfo? result = await appInformation();
+    setState(() {
+      appInfo = result;
+    });
+  }
+}
+
+class AppInformationWidget extends StatelessWidget {
+  final String version;
+  final String name;
+  final String deviceId;
+  const AppInformationWidget(
+      {super.key,
+      required this.version,
+      required this.name,
+      required this.deviceId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Table(
+        children: <TableRow>[
+          // TableRow(
+          //   children: <Widget>[
+          //     Center(child: Text("App name:")),
+          //     Center(child: Text(name)),
+          //   ],
+          // ),
+          TableRow(
+            children: <Widget>[
+              const Center(child: Text("Device ID")),
+              Center(child: Text(deviceId)),
+            ],
+          ),
+          TableRow(
+            children: <Widget>[
+              const Center(child: Text('Version')),
+              Center(child: Text(version)),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
