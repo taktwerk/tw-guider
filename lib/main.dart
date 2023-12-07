@@ -124,6 +124,19 @@ class _GuiderAppState extends State<GuiderApp> {
 
   @override
   Widget build(BuildContext context) {
+    if (DeviceInfo.isLargeScreen(context)) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+
     return MaterialApp(
       locale: _locale,
       supportedLocales: SupportedLanguages.all,
