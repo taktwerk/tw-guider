@@ -1,11 +1,11 @@
 import 'package:flutter/services.dart';
-import 'package:guider/main.dart';
 import 'package:yaml/yaml.dart';
+import 'package:guider/helpers/device_info.dart';
 
 Future<AppInfo> appInformation() async {
   final yamlString = await rootBundle.loadString("pubspec.yaml");
   final parsedYaml = loadYaml(yamlString);
-  final deviceID = await getDeviceId();
+  final deviceID = await DeviceInfo.getDeviceId();
   return AppInfo(
       version: parsedYaml['version'],
       name: parsedYaml['name'],
