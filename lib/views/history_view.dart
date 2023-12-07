@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/device_info.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
+import 'package:guider/views/instruction_view.dart';
+import 'package:guider/widgets/instruction_overview_widget.dart';
 import 'package:guider/widgets/listitem.dart';
 
 class HistoryView extends StatefulWidget {
@@ -13,6 +17,7 @@ class HistoryView extends StatefulWidget {
 
 class _HistoryViewState extends State<HistoryView> {
   final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<Instruction?> _instruction = ValueNotifier(null);
 
   @override
   void dispose() {
@@ -20,8 +25,7 @@ class _HistoryViewState extends State<HistoryView> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _listing(ValueChanged<Instruction> itemSelectedCallback) {
     var historyEntries =
         Singleton().getDatabase().getUserHistoryAsInstructions(currentUser!);
     return Scaffold(
@@ -48,6 +52,7 @@ class _HistoryViewState extends State<HistoryView> {
                       itemCount: snapshot.data?.length,
                       itemBuilder: (context, index) {
                         return ListItem(
+                            itemSelectedCallback: itemSelectedCallback,
                             instruction: snapshot.data![index].instruction,
                             count: snapshot.data![index].count);
                       },
@@ -62,6 +67,70 @@ class _HistoryViewState extends State<HistoryView> {
             })
       ],
     ));
+  }
+
+  Widget _buildMobileLayout() {
+    return _listing(mobileCallback);
+  }
+
+  void mobileCallback(Instruction instruction) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => InstructionView(
+                instruction: instruction,
+                open: false,
+                additionalData: null,
+              )),
+    );
+  }
+
+  void tabletCallback(Instruction instruction) {
+    _instruction.value = instruction;
+  }
+
+  Widget _buildTabletLayout() {
+    return Row(
+      children: <Widget>[
+        Expanded(child: _listing(tabletCallback)),
+        ValueListenableBuilder(
+            valueListenable: _instruction,
+            builder: (_, instruction, __) {
+              return instruction != null
+                  ? Expanded(
+                      child: InstructionOverviewWidget(
+                        instruction: instruction,
+                        additionalData: null,
+                        open: false,
+                      ),
+                    )
+                  : const Expanded(
+                      child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('No history entry selected!'),
+                      ],
+                    ));
+            })
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          if (kIsWeb ||
+              (orientation == Orientation.landscape &&
+                  DeviceInfo.landscapeAllowed(context))) {
+            return _buildTabletLayout();
+          } else {
+            return _buildMobileLayout();
+          }
+        },
+      ),
+    );
   }
 
   Widget errorOrLoadingCard(input) {
