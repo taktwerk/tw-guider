@@ -5,38 +5,32 @@ import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
-import 'package:guider/views/instruction_view.dart';
 import 'package:intl/intl.dart';
 
 class ListItem extends StatelessWidget {
   const ListItem(
-      {super.key, required Instruction instruction, required int count})
+      {super.key,
+      required Instruction instruction,
+      required int count,
+      required this.itemSelectedCallback})
       : _instruction = instruction,
         _count = count;
 
   final Instruction _instruction;
   final int _count;
+  final Function itemSelectedCallback;
 
   @override
   Widget build(BuildContext context) {
     final DateFormat formatter = DateFormat.yMd('de').add_Hms();
     final l = Languages.of(context);
+
     return Card(
       elevation: 4,
       margin: const EdgeInsets.all(10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => InstructionView(
-                      instruction: _instruction,
-                      open: false,
-                      additionalData: null,
-                    )),
-          );
-        },
+        onTap: () => itemSelectedCallback(_instruction),
         child: SizedBox(
           height: 160,
           child: Container(

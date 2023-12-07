@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/device_info.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/views/category.dart';
+import 'package:guider/views/instruction_view.dart';
+import 'package:guider/widgets/instruction_overview_widget.dart';
 import 'package:guider/widgets/listitem.dart';
 import 'package:guider/widgets/searchbar.dart';
 import 'package:guider/widgets/snackbar.dart';
@@ -27,6 +31,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   bool loading = false;
   final ScrollController _scrollController = ScrollController();
   StreamSubscription? languageSubscription;
+
+  Instruction? selectedInstruction;
+  final ValueNotifier<Instruction?> _instruction = ValueNotifier(null);
 
   Future<void> setInitSettings() async {
     if (currentUser != null) {
@@ -127,63 +134,124 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _listing(ValueChanged<Instruction> itemSelectedCallback) {
     var filteredInstructions = Singleton()
         .getDatabase()
         .combineCategoryAndSearch(category, searchWord);
+    return Column(
+      children: [
+        Row(
+          children: [
+            getCategoryButton(),
+            Expanded(
+              child:
+                  SearchBarWidget(updateInstructions: updateSearchInstructions),
+            ),
+          ],
+        ),
+        getCategoryTag(),
+        StreamBuilder(
+            stream: filteredInstructions,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<InstructionWithCount>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.connectionState == ConnectionState.active ||
+                  snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return errorOrLoadingCard('🚨 Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  return Expanded(
+                      child: Scrollbar(
+                          controller: _scrollController,
+                          thumbVisibility: true,
+                          child: ListView.builder(
+                            key: const Key("listview"),
+                            itemCount: snapshot.data?.length,
+                            controller: _scrollController,
+                            physics: const BouncingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return ListItem(
+                                itemSelectedCallback: itemSelectedCallback,
+                                key: Key(
+                                    "${snapshot.data![index].instruction.id}"),
+                                instruction: snapshot.data![index].instruction,
+                                count: snapshot.data![index].count,
+                              );
+                            },
+                          )));
+                } else {
+                  return const Text("Empty data");
+                }
+              } else {
+                return Text('State: ${snapshot.connectionState}');
+              }
+            })
+      ],
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return _listing(mobileCallback);
+  }
+
+  void mobileCallback(Instruction instruction) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => InstructionView(
+                instruction: instruction,
+                open: false,
+                additionalData: null,
+              )),
+    );
+  }
+
+  void tabletCallback(Instruction instruction) {
+    _instruction.value = instruction;
+  }
+
+  Widget _buildTabletLayout() {
+    return Row(
+      children: <Widget>[
+        Expanded(child: _listing(tabletCallback)),
+        ValueListenableBuilder(
+            valueListenable: _instruction,
+            builder: (_, instruction, __) {
+              return instruction != null
+                  ? Expanded(
+                      child: InstructionOverviewWidget(
+                        instruction: instruction,
+                        additionalData: null,
+                        open: false,
+                      ),
+                    )
+                  : const Expanded(
+                      child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('No instruction selected!'),
+                      ],
+                    ));
+            })
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      body: Column(
-        children: [
-          Row(
-            children: [
-              getCategoryButton(),
-              Expanded(
-                child: SearchBarWidget(
-                    updateInstructions: updateSearchInstructions),
-              ),
-            ],
-          ),
-          getCategoryTag(),
-          StreamBuilder(
-              stream: filteredInstructions,
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<InstructionWithCount>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.connectionState == ConnectionState.active ||
-                    snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return errorOrLoadingCard('🚨 Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    return Expanded(
-                        child: Scrollbar(
-                            controller: _scrollController,
-                            thumbVisibility: true,
-                            child: ListView.builder(
-                              key: const Key("listview"),
-                              itemCount: snapshot.data?.length,
-                              controller: _scrollController,
-                              physics: const BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return ListItem(
-                                  key: Key(
-                                      "${snapshot.data![index].instruction.id}"),
-                                  instruction:
-                                      snapshot.data![index].instruction,
-                                  count: snapshot.data![index].count,
-                                );
-                              },
-                            )));
-                  } else {
-                    return const Text("Empty data");
-                  }
-                } else {
-                  return Text('State: ${snapshot.connectionState}');
-                }
-              })
-        ],
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          if (kIsWeb ||
+              (orientation == Orientation.landscape &&
+                  DeviceInfo.landscapeAllowed(context))) {
+            return _buildTabletLayout();
+          } else {
+            return _buildMobileLayout();
+          }
+        },
       ),
     );
   }
