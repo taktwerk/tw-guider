@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/app_info.dart';
 import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
@@ -38,12 +39,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
       String app = appController.text;
       String client = clientController.text;
       String host = hostController.text;
-      if (app == "guider" &&
+      AppInfo appInfo = await appInformation();
+      if (app == appInfo.name &&
           await SupabaseToDrift.clientUsersAvailable(client)) {
-        String? deviceId = await getDeviceId();
-        if (deviceId != null) {
+        if (appInfo.deviceID != "") {
           await KeyValue.saveClient(client);
-          await DriftToSupabase.registerDevice(deviceId);
+          await DriftToSupabase.registerDevice(appInfo.deviceID);
           if (!mounted) return;
           Navigator.pushReplacement(
             context,
