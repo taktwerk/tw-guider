@@ -16,7 +16,15 @@ class DeviceInfo {
   }
 
   static bool landscapeAllowed(context) {
-    if (kIsWeb || isLargeScreen(context)) {
+    if (isLargeScreen(context)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static bool inTabletLayout(context, orientation) {
+    if (landscapeAllowed(context) && orientation == Orientation.landscape) {
       return true;
     } else {
       return false;

@@ -196,6 +196,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   }
 
   void mobileCallback(Instruction instruction) {
+    _instruction.value = instruction;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -244,9 +245,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     return Scaffold(
       body: OrientationBuilder(
         builder: (context, orientation) {
-          if (kIsWeb ||
-              (orientation == Orientation.landscape &&
-                  DeviceInfo.landscapeAllowed(context))) {
+          if (DeviceInfo.inTabletLayout(context, orientation)) {
             return _buildTabletLayout();
           } else {
             return _buildMobileLayout();
