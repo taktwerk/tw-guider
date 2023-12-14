@@ -121,11 +121,13 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                               ),
                               const SizedBox(height: 5.0),
                               Expanded(
-                                  child: ListView(
-                                children: [
-                                  _renderWidget(stepSnapshot.data!.first)
-                                ],
-                              )),
+                                child: _renderWidget(stepSnapshot.data!.first),
+                                // child: ListView(
+                                //   children: [
+                                //     _renderWidget(stepSnapshot.data!.first)
+                                //   ],
+                                // ),
+                              ),
                               backAndForthButtons(
                                   snapshot.data, stepSnapshot.data!.first),
                             ],

@@ -107,6 +107,9 @@ class _VideoFileWidgetState extends _FileWidgetState {
     );
 
     return Center(
+        child: SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.width * 9.0 / 16.0,
       child: kIsWeb
           ? video
           : (Platform.isIOS || Platform.isAndroid)
@@ -114,7 +117,7 @@ class _VideoFileWidgetState extends _FileWidgetState {
               : (Platform.isWindows || Platform.isMacOS || Platform.isLinux)
                   ? getDesktopVideoControls(video)
                   : video,
-    );
+    ));
   }
 
   Duration getNewPosition(Duration time) {
