@@ -52,7 +52,6 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
               tag: widget.tagName,
               child: InteractiveViewer(
                 transformationController: _transformationController,
-                boundaryMargin: const EdgeInsets.all(20.0),
                 minScale: 1,
                 maxScale: 5,
                 child: (kIsWeb)
