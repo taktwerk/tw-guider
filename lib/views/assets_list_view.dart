@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:guider/helpers/constants.dart';
+import 'package:guider/helpers/content_type_enum.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/assets_view.dart';
+import 'package:guider/views/fullscreen_image_viewer.dart';
 import 'package:guider/widgets/file_widgets.dart';
 
 class AssetsListView extends StatefulWidget {
@@ -57,20 +59,34 @@ class _AssetsListViewState extends State<AssetsListView> {
                           elevation: 4,
                           child: ListTile(
                             onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => AssetsView(
-                                    title: element.name,
-                                    fileObject: FileObject(
-                                        id: element.id,
-                                        url: element.file,
-                                        textfield: element.textfield,
-                                        type: element.type,
-                                        folderName:
-                                            Const.assetsImagesFolderName.key),
+                              if (element.type == ContentType.image) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          FullScreenImageViewer(
+                                              id: element.id,
+                                              url: element.file!,
+                                              folderName: Const
+                                                  .assetsImagesFolderName.key,
+                                              tagName: "Image_Asset")),
+                                );
+                              } else {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => AssetsView(
+                                      title: element.name,
+                                      fileObject: FileObject(
+                                          id: element.id,
+                                          url: element.file,
+                                          textfield: element.textfield,
+                                          type: element.type,
+                                          folderName:
+                                              Const.assetsImagesFolderName.key),
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              }
                             },
                             contentPadding: const EdgeInsets.all(12),
                             leading: element.type.icon,
