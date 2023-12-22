@@ -16,19 +16,9 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _searchController.addListener(_latestInputValue);
-  }
-
-  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
-  }
-
-  void _latestInputValue() {
-    // print("Latest text ${_searchController.text}");
   }
 
   Future<void> search(value) async {
