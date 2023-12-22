@@ -634,7 +634,11 @@ class _ThreeDWidgetState extends _FileWidgetState {
         path = "";
       }
     } else {
-      path = "";
+      if (kIsWeb) {
+        path = widget.fileObject.url;
+      } else {
+        path = "";
+      }
     }
     setState(() {});
   }
@@ -643,7 +647,9 @@ class _ThreeDWidgetState extends _FileWidgetState {
   Widget build(BuildContext context) {
     return path != null
         ? path!.isEmpty
-            ? Center(child: Text(Languages.of(context)!.noContentAvailable))
+            ? Center(
+                child: Text(
+                    "${Languages.of(context)!.noContentAvailable} (${Languages.of(context)!.onlyOnIosAndroidWeb})"))
             : ModelViewer(
                 backgroundColor: const Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),
                 src: path!,

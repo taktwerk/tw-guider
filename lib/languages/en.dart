@@ -135,5 +135,9 @@ class LanguageEn extends Languages {
       "No image available. This feedback probably hasn't been synced yet or another error has occured.";
 
   @override
-  String get noContentAvailable => "No content available. Try again later.";
+  String get noContentAvailable => "No content available.";
+
+  @override
+  String get onlyOnIosAndroidWeb =>
+      "This is only on IOS, Android and Web available.";
 }

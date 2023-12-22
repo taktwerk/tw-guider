@@ -52,4 +52,5 @@ abstract class Languages {
   String get confirm;
   String get feedbackImageError;
   String get noContentAvailable;
+  String get onlyOnIosAndroidWeb;
 }
