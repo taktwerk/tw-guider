@@ -60,6 +60,7 @@ class _AssetsListViewState extends State<AssetsListView> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => AssetsView(
+                                    title: element.name,
                                     fileObject: FileObject(
                                         id: element.id,
                                         url: element.file,

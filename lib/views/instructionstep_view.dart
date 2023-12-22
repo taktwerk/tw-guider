@@ -51,6 +51,7 @@ class _InstructionStepViewState extends State<InstructionStepView> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => AssetsView(
+                    title: "PDF (Instr. Step ${widget.instructionStep.stepNr})",
                     fileObject: fileObject,
                   ),
                 ),
@@ -71,6 +72,7 @@ class _InstructionStepViewState extends State<InstructionStepView> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => AssetsView(
+                    title: "3D (Instr. Step ${widget.instructionStep.stepNr})",
                     fileObject: fileObject,
                   ),
                 ),
