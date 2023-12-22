@@ -297,6 +297,8 @@ class _InstructionOverviewWidgetState extends State<InstructionOverviewWidget> {
             context,
             MaterialPageRoute(
                 builder: (context) => FullScreenImageViewer(
+                    title:
+                        "Overview Image of Instruction with ID: ${instruction.id}",
                     id: instruction.id,
                     url: instruction.image,
                     folderName: Const.instructionImagesFolderName.key,

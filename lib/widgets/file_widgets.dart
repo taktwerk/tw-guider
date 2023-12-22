@@ -300,6 +300,8 @@ class _ImageFileWidgetState extends _FileWidgetState {
             context,
             MaterialPageRoute(
                 builder: (context) => FullScreenImageViewer(
+                    title:
+                        "Image (Instr. Step with ID: ${widget.fileObject.id})",
                     id: widget.fileObject.id,
                     url: widget.fileObject.url!,
                     folderName: widget.fileObject.folderName,

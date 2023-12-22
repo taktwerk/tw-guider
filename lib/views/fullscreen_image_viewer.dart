@@ -5,17 +5,18 @@ import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/languages/languages.dart';
 
 class FullScreenImageViewer extends StatefulWidget {
-  const FullScreenImageViewer({
-    super.key,
-    required this.id,
-    required this.url,
-    required this.folderName,
-    required this.tagName,
-  });
+  const FullScreenImageViewer(
+      {super.key,
+      required this.id,
+      required this.url,
+      required this.folderName,
+      required this.tagName,
+      required this.title});
   final int id;
   final String url;
   final String folderName;
   final String tagName;
+  final String title;
 
   @override
   State<FullScreenImageViewer> createState() => _FullScreenImageViewerState();
@@ -41,7 +42,9 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
   Widget build(BuildContext context) {
     final l = Languages.of(context);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
       body: GestureDetector(
         onDoubleTapDown: (d) => _doubleTapDetails = d,
         onDoubleTap: _handleDoubleTap,

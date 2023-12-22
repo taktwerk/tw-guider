@@ -65,6 +65,7 @@ class _AssetsListViewState extends State<AssetsListView> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           FullScreenImageViewer(
+                                              title: element.name,
                                               id: element.id,
                                               url: element.file!,
                                               folderName: Const
