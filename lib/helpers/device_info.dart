@@ -8,7 +8,7 @@ import 'package:guider/main.dart';
 
 class DeviceInfo {
   static bool isLargeScreen(context) {
-    if (MediaQuery.of(context).size.shortestSide > 600) {
+    if (MediaQuery.sizeOf(context).shortestSide > 600) {
       return true;
     } else {
       return false;
@@ -23,8 +23,9 @@ class DeviceInfo {
     }
   }
 
-  static bool inTabletLayout(context, orientation) {
-    if (landscapeAllowed(context) && orientation == Orientation.landscape) {
+  static bool inTabletLayout(context) {
+    if (landscapeAllowed(context) &&
+        MediaQuery.orientationOf(context) == Orientation.landscape) {
       return true;
     } else {
       return false;

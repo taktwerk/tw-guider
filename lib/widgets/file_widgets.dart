@@ -108,8 +108,8 @@ class _VideoFileWidgetState extends _FileWidgetState {
 
     return Center(
         child: SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width * 9.0 / 16.0,
+      width: MediaQuery.sizeOf(context).width,
+      height: MediaQuery.sizeOf(context).width * 9.0 / 16.0,
       child: kIsWeb
           ? video
           : (Platform.isIOS || Platform.isAndroid)
@@ -422,7 +422,7 @@ class _PdfFileWidgetState extends _FileWidgetState {
                 child: SafeArea(
                   child: Container(
                     color: Colors.grey,
-                    height: MediaQuery.of(context).size.height,
+                    height: MediaQuery.sizeOf(context).height,
                     child: _pdfController == null
                         ? loaderWidget
                         : PdfViewPinch(

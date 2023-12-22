@@ -88,8 +88,8 @@ class _InstructionStepViewState extends State<InstructionStepView> {
 
   Widget _buildTabletLayout() {
     return SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.sizeOf(context).height,
+        width: MediaQuery.sizeOf(context).width,
         child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Flexible(
             flex: 1,
@@ -136,7 +136,7 @@ class _InstructionStepViewState extends State<InstructionStepView> {
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (context, orientation) {
-        if (DeviceInfo.inTabletLayout(context, orientation)) {
+        if (DeviceInfo.inTabletLayout(context)) {
           return _buildTabletLayout();
         } else {
           return _buildMobileLayout();

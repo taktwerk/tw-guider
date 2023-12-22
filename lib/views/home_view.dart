@@ -134,67 +134,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     );
   }
 
-  Widget _listing(ValueChanged<Instruction> itemSelectedCallback) {
-    var filteredInstructions = Singleton()
-        .getDatabase()
-        .combineCategoryAndSearch(category, searchWord);
-    return Column(
-      children: [
-        Row(
-          children: [
-            getCategoryButton(),
-            Expanded(
-              child:
-                  SearchBarWidget(updateInstructions: updateSearchInstructions),
-            ),
-          ],
-        ),
-        getCategoryTag(),
-        StreamBuilder(
-            stream: filteredInstructions,
-            builder: (BuildContext context,
-                AsyncSnapshot<List<InstructionWithCount>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.connectionState == ConnectionState.active ||
-                  snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return errorOrLoadingCard('🚨 Error: ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  return Expanded(
-                      child: Scrollbar(
-                          controller: _scrollController,
-                          thumbVisibility: true,
-                          child: ListView.builder(
-                            key: const Key("listview"),
-                            itemCount: snapshot.data?.length,
-                            controller: _scrollController,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return ListItem(
-                                itemSelectedCallback: itemSelectedCallback,
-                                key: Key(
-                                    "${snapshot.data![index].instruction.id}"),
-                                instruction: snapshot.data![index].instruction,
-                                count: snapshot.data![index].count,
-                              );
-                            },
-                          )));
-                } else {
-                  return const Text("Empty data");
-                }
-              } else {
-                return Text('State: ${snapshot.connectionState}');
-              }
-            })
-      ],
-    );
-  }
-
-  Widget _buildMobileLayout() {
-    return _listing(mobileCallback);
-  }
-
   void mobileCallback(Instruction instruction) {
     _instruction.value = instruction;
     Navigator.push(
@@ -212,47 +151,59 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     _instruction.value = instruction;
   }
 
-  Widget _buildTabletLayout() {
-    return Row(
-      children: <Widget>[
-        Expanded(child: _listing(tabletCallback)),
-        ValueListenableBuilder(
-            valueListenable: _instruction,
-            builder: (_, instruction, __) {
-              return instruction != null
-                  ? Expanded(
-                      child: InstructionOverviewWidget(
-                        instruction: instruction,
-                        additionalData: null,
-                        open: false,
-                      ),
-                    )
-                  : const Expanded(
-                      child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('No instruction selected!'),
-                      ],
-                    ));
-            })
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    bool tabletLayout = DeviceInfo.inTabletLayout(context) ? true : false;
     super.build(context);
     return Scaffold(
-      body: OrientationBuilder(
-        builder: (context, orientation) {
-          if (DeviceInfo.inTabletLayout(context, orientation)) {
-            return _buildTabletLayout();
-          } else {
-            return _buildMobileLayout();
-          }
-        },
-      ),
-    );
+        body: Row(
+      children: <Widget>[
+        Expanded(
+            flex: 1,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    getCategoryButton(),
+                    Expanded(
+                      child: SearchBarWidget(
+                          updateInstructions: updateSearchInstructions),
+                    ),
+                  ],
+                ),
+                getCategoryTag(),
+                Listing(
+                  callback: tabletLayout ? tabletCallback : mobileCallback,
+                  category: category,
+                  searchWord: searchWord,
+                )
+              ],
+            )),
+        Visibility(
+            visible: tabletLayout,
+            child: ValueListenableBuilder(
+                valueListenable: _instruction,
+                builder: (_, instruction, __) {
+                  return instruction != null
+                      ? Expanded(
+                          flex: tabletLayout ? 1 : 0,
+                          child: InstructionOverviewWidget(
+                            instruction: instruction,
+                            additionalData: null,
+                            open: false,
+                          ),
+                        )
+                      : Expanded(
+                          flex: tabletLayout ? 1 : 0,
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('No instruction selected!'),
+                            ],
+                          ));
+                }))
+      ],
+    ));
   }
 
   Widget errorOrLoadingCard(input) {
@@ -316,4 +267,81 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
           )
         ],
       );
+}
+
+class Listing extends StatefulWidget {
+  final Function callback;
+  final int category;
+  final String searchWord;
+
+  const Listing({
+    super.key,
+    required this.callback,
+    required this.category,
+    required this.searchWord,
+  });
+
+  @override
+  State<Listing> createState() => _ListingState();
+}
+
+class _ListingState extends State<Listing> {
+  final ScrollController _scrollController = ScrollController();
+  Widget errorOrLoadingCard(input) {
+    return InkWell(
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Card(
+          elevation: 4,
+          child: Center(
+            child: Text(input),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var filteredInstructions = Singleton()
+        .getDatabase()
+        .combineCategoryAndSearch(widget.category, widget.searchWord);
+    return StreamBuilder(
+        stream: filteredInstructions,
+        builder: (BuildContext context,
+            AsyncSnapshot<List<InstructionWithCount>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.connectionState == ConnectionState.active ||
+              snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return errorOrLoadingCard('🚨 Error: ${snapshot.error}');
+            } else if (snapshot.hasData) {
+              logger.w("SNAPSHOT HAS DATA");
+              return Expanded(
+                  child: Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: true,
+                      child: ListView.builder(
+                        key: const Key("listview"),
+                        itemCount: snapshot.data?.length,
+                        controller: _scrollController,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return ListItem(
+                            itemSelectedCallback: widget.callback,
+                            key: Key("${snapshot.data![index].instruction.id}"),
+                            instruction: snapshot.data![index].instruction,
+                            count: snapshot.data![index].count,
+                          );
+                        },
+                      )));
+            } else {
+              return const Text("Empty data");
+            }
+          } else {
+            return Text('State: ${snapshot.connectionState}');
+          }
+        });
+  }
 }
