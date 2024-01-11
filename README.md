@@ -37,7 +37,7 @@ Or in Android Studio (Build > Flutter > ... )
 ---  
 ##  Troubleshoot
 
-User the following commands to troubleshoot run/build issues
+Use the following commands to troubleshoot run/build issues
 
     flutter clean
     flutter doctor
