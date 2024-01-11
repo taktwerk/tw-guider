@@ -11,14 +11,13 @@ _Framework: Flutter_
 
 Create a key with the following command. Don't define a personal password, as it needs to be stored plaintext in config file. You can use your own path.
 
-    keytool -genkey -v -keystore ~/google-play-upload-keystore.jks -keyalg RSA \
-            -keysize 2048 -validity 10000 -alias upload
+    keytool -genkey -v -keystore ~/google-play-upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
 
 Create a file `./android/key.properties` with the following content.
 
-    storePassword=defined-password  
-    keyPassword=defined-password  
-    keyAlias=upload  
+    storePassword=defined-password
+    keyPassword=defined-password
+    keyAlias=upload
     storeFile=/absolute/path/to/google-play-upload-keystore.jks
 
 Reference:
@@ -49,4 +48,4 @@ Use the following commands to troubleshoot run/build issues
 ---  
 
 © [taktwerk.ch](https://taktwerk.ch) | 2012-2024
-	
+
