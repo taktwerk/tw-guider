@@ -35,13 +35,17 @@ Build a bundle to upload into the store or an apk to deploy directly over file t
 Or in Android Studio (Build > Flutter > ... )
 
 ---  
-###  Troubleshoot
+##  Troubleshoot
 
 User the following commands to troubleshoot run/build issues
 
     flutter clean
     flutter doctor
     
+	cd android
+	./gradlew assembleDebug --stacktrace
+	./gradlew assembleRelease --stacktrace
+
 ---  
 
 © [taktwerk.ch](https://taktwerk.ch) | 2012-2024
