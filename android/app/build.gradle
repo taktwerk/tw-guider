@@ -1,3 +1,11 @@
+def defaultProperties = new Properties()
+def defaultPropertiesFile = rootProject.file('default.properties')
+if (defaultPropertiesFile.exists()) {
+    defaultPropertiesFile.withReader('UTF-8') { reader ->
+        defaultProperties.load(reader)
+    }
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -21,6 +29,21 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def flutterMinSdkVersion = defaultProperties.getProperty('flutter.minSdkVersion')
+if (flutterMinSdkVersion == null) {
+    throw new GradleException("minSdkVersion not found. Define with flutter.minSdkVersion in the default.properties file.")
+}
+
+def flutterTargetSdkVersion = defaultProperties.getProperty('flutter.targetSdkVersion')
+if (flutterTargetSdkVersion == null) {
+    throw new GradleException("targetSdkVersion not found. Define with flutter.targetSdkVersion in the default.properties file.")
+}
+
+def flutterCompileSdkVersion = defaultProperties.getProperty('flutter.compileSdkVersion')
+if (flutterCompileSdkVersion == null) {
+    flutterCompileSdkVersion = flutterTargetSdkVersion
+}
+
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
@@ -32,9 +55,8 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    namespace "com.example.guider"
-    //compileSdkVersion flutter.compileSdkVersion
-    compileSdkVersion 34
+    namespace "com.taktwerk.guider"
+    compileSdkVersion flutterCompileSdkVersion.toInteger()
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -55,8 +77,8 @@ android {
         applicationId "com.taktwerk.guider"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion localProperties.getProperty('flutter.minSdkVersion').toInteger()
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion flutterMinSdkVersion.toInteger()
+        targetSdkVersion flutterTargetSdkVersion.toInteger()
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
