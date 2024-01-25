@@ -35,6 +35,9 @@ class AppDatabase extends _$AppDatabase {
   //     },
   //   );
   // }
+  int getNumberOfTables() {
+    return allTables.length;
+  }
 
   Future<void> deleteEverything() async {
     await customStatement('PRAGMA foreign_keys = OFF');

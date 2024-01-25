@@ -71,7 +71,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
       setState(() {
         loading = false;
       });
-      await Singleton().setSyncing(newSyncing: false);
+      Singleton().setSyncing(newSyncing: false);
       //handleError(e);
       logger.e("Error log ${e.toString()}");
       if (mounted) {
