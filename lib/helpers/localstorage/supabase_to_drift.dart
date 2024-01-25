@@ -42,6 +42,10 @@ class SupabaseToDrift {
         .order('id', ascending: true);
     newLastSynced = DateTime.now().toUtc().toIso8601String();
     int len = data.length;
+
+    ProgressFraction progress = ProgressFraction(0, len);
+    Singleton().addAndUpdate(progress);
+
     List<Insertable<Instruction>> instructionBatch = [];
     for (int i = 0; i < len; i++) {
       var instruction = data[i];
@@ -68,6 +72,9 @@ class SupabaseToDrift {
             Value(DateTime.tryParse(instruction[Const.deletedAt.key] ?? "")),
         deletedBy: Value(instruction[Const.deletedBy.key]),
       ));
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
     }
     await Singleton()
         .getDatabase()
@@ -75,7 +82,6 @@ class SupabaseToDrift {
     return newLastSynced;
   }
 
-  // TODO: create object containing id and image url (for assets and other images)
   static Future<void> _downloadImages(
       {required id, required url, required folderName}) async {
     final response = await http.get(Uri.parse(url));
@@ -100,6 +106,10 @@ class SupabaseToDrift {
         .gt('updated_at', lastSynced);
     newLastSynced = DateTime.now().toUtc().toIso8601String();
     int len = data.length;
+
+    ProgressFraction progress = ProgressFraction(0, len);
+    Singleton().addAndUpdate(progress);
+
     List<Insertable<InstructionStep>> instructionStepBatch = [];
     for (int i = 0; i < len; i++) {
       var step = data[i];
@@ -129,6 +139,9 @@ class SupabaseToDrift {
         deletedAt: Value(DateTime.tryParse(step[Const.deletedAt.key] ?? "")),
         deletedBy: Value(step[Const.deletedBy.key]),
       ));
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
     }
     await Singleton()
         .getDatabase()
@@ -147,6 +160,10 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
     List<Insertable<Category>> categoryBatch = [];
     int len = data.length;
+
+    ProgressFraction progress = ProgressFraction(0, len);
+    Singleton().addAndUpdate(progress);
+
     for (int i = 0; i < len; i++) {
       //var category = categories[i];
       var category = data[i];
@@ -161,6 +178,9 @@ class SupabaseToDrift {
             Value(DateTime.tryParse(category[Const.deletedAt.key] ?? "")),
         deletedBy: Value(category[Const.deletedBy.key]),
       ));
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
     }
     await Singleton().getDatabase().insertMultipleCategories(categoryBatch);
     return newLastSynced;
@@ -175,6 +195,10 @@ class SupabaseToDrift {
 
     await DriftToSupabase.uploadHistory(data);
     int len = data.length;
+
+    ProgressFraction progress = ProgressFraction(0, len);
+    Singleton().addAndUpdate(progress);
+
     for (int i = 0; i < len; i++) {
       var history = data[i];
       Singleton().getDatabase().createOrUpdateHistory(
@@ -193,6 +217,9 @@ class SupabaseToDrift {
                 additionalData:
                     Value(jsonEncode(history[Const.additionalData.key]))),
           );
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
     }
     return newLastSynced;
   }
@@ -208,6 +235,10 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
 
     int len = data.length;
+
+    ProgressFraction progress = ProgressFraction(0, len);
+    Singleton().addAndUpdate(progress);
+
     List<Insertable<InstructionCategory>> instructionCategoryBatch = [];
 
     for (int i = 0; i < len; i++) {
@@ -223,6 +254,9 @@ class SupabaseToDrift {
             DateTime.tryParse(instructionCategory[Const.deletedAt.key] ?? "")),
         deletedBy: Value(instructionCategory[Const.deletedBy.key]),
       ));
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
     }
     await Singleton()
         .getDatabase()
@@ -240,6 +274,10 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
 
     int len = data.length;
+
+    ProgressFraction progress = ProgressFraction(0, len);
+    Singleton().addAndUpdate(progress);
+
     for (int i = 0; i < len; i++) {
       var feedbackElement = data[i];
 
@@ -265,6 +303,9 @@ class SupabaseToDrift {
                 DateTime.tryParse(feedbackElement[Const.deletedAt.key] ?? "")),
             deletedBy: Value(feedbackElement[Const.deletedBy.key]),
           ));
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
     }
     return newLastSynced;
   }
@@ -277,6 +318,10 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
 
     int len = data.length;
+
+    ProgressFraction progress = ProgressFraction(0, len);
+    Singleton().addAndUpdate(progress);
+
     List<Insertable<User>> usersBatch = [];
 
     for (int i = 0; i < len; i++) {
@@ -293,6 +338,9 @@ class SupabaseToDrift {
         deletedAt: Value(DateTime.tryParse(user[Const.deletedAt.key] ?? "")),
         deletedBy: Value(user[Const.deletedBy.key]),
       ));
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
     }
     await Singleton().getDatabase().insertMultipleUsers(usersBatch);
     return newLastSynced;
@@ -322,6 +370,10 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
 
     int len = data.length;
+
+    ProgressFraction progress = ProgressFraction(0, len);
+    Singleton().addAndUpdate(progress);
+
     for (int i = 0; i < len; i++) {
       var setting = data[i];
       Singleton().getDatabase().createOrUpdateSetting(SettingsCompanion.insert(
@@ -336,6 +388,9 @@ class SupabaseToDrift {
           deletedBy: Value(setting[Const.deletedBy.key]),
           realtime: setting[Const.realtime.key],
           lightmode: setting[Const.lightmode.key]));
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
     }
     return newLastSynced;
   }
@@ -349,6 +404,10 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
 
     int len = data.length;
+
+    ProgressFraction progress = ProgressFraction(0, len);
+    Singleton().addAndUpdate(progress);
+
     List<Insertable<Asset>> assetsBatch = [];
 
     for (int i = 0; i < len; i++) {
@@ -375,6 +434,9 @@ class SupabaseToDrift {
         deletedAt: Value(DateTime.tryParse(asset[Const.deletedAt.key] ?? "")),
         deletedBy: Value(asset[Const.deletedBy.key]),
       ));
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
     }
     await Singleton().getDatabase().insertMultipleAssets(assetsBatch);
     return newLastSynced;
@@ -391,6 +453,10 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
 
     int len = data.length;
+
+    ProgressFraction progress = ProgressFraction(0, len);
+    Singleton().addAndUpdate(progress);
+
     List<Insertable<InstructionAsset>> instructionAssetBatch = [];
 
     for (int i = 0; i < len; i++) {
@@ -406,6 +472,9 @@ class SupabaseToDrift {
             DateTime.tryParse(instructionAsset[Const.deletedAt.key] ?? "")),
         deletedBy: Value(instructionAsset[Const.deletedBy.key]),
       ));
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
     }
     await Singleton()
         .getDatabase()
@@ -413,55 +482,71 @@ class SupabaseToDrift {
     return newLastSynced;
   }
 
+  // Number of calls to Singleton().incrementNumberOfSyncedTables() has to be equal to Singleton().getDatabase().getNumberOfTables()
   static Future<void> sync() async {
     if (!Singleton().getSyncing()) {
-      await Singleton().setSyncing(newSyncing: true);
+      Singleton().setSyncing(newSyncing: true);
+      Singleton().setIsSynced(newSyncing: false);
+      Singleton().resetNumberOfSyncedTables();
+      Singleton().resetPercentageOfSyncedEntries();
+
       await SupabaseToDrift.getUsers().then((value) {
         KeyValue.setNewValue(KeyValueEnum.user.key, value);
       });
+      Singleton().incrementNumberOfSyncedTables();
 
       await SupabaseToDrift.getAllInstructions().then((value) {
         KeyValue.setNewValue(KeyValueEnum.instruction.key, value);
       });
+      Singleton().incrementNumberOfSyncedTables();
 
       await SupabaseToDrift.getAllInstructionSteps().then((value) {
         KeyValue.setNewValue(KeyValueEnum.steps.key, value);
       });
+      Singleton().incrementNumberOfSyncedTables();
 
       await SupabaseToDrift.getAllCategories().then((value) {
         KeyValue.setNewValue(KeyValueEnum.category.key, value);
       });
+      Singleton().incrementNumberOfSyncedTables();
 
       await SupabaseToDrift.getHistory().then((value) async {
         KeyValue.setNewValue(KeyValueEnum.history.key, value);
       });
+      Singleton().incrementNumberOfSyncedTables();
 
       await SupabaseToDrift.getInstructionsCategories().then((value) {
         KeyValue.setNewValue(KeyValueEnum.instructionCategory.key, value);
       });
+      Singleton().incrementNumberOfSyncedTables();
 
       await DriftToSupabase.uploadFeedbackImages();
+      Singleton().incrementNumberOfSyncedTables();
 
       await SupabaseToDrift.getFeedback().then((value) async {
         await DriftToSupabase.uploadFeedback();
         KeyValue.setNewValue(KeyValueEnum.feedback.key, value);
       });
+      Singleton().incrementNumberOfSyncedTables();
 
       await SupabaseToDrift.getSettings().then((value) async {
         await DriftToSupabase.uploadSettings();
         KeyValue.setNewValue(KeyValueEnum.setting.key, value);
       });
+      Singleton().incrementNumberOfSyncedTables();
 
       await SupabaseToDrift.getAssets().then((value) async {
         KeyValue.setNewValue(KeyValueEnum.asset.key, value);
       });
+      Singleton().incrementNumberOfSyncedTables();
 
       await SupabaseToDrift.getInstructionAsset().then((value) async {
         KeyValue.setNewValue(KeyValueEnum.instructionAsset.key, value);
       });
+      Singleton().incrementNumberOfSyncedTables();
 
-      await Singleton().setSyncing(newSyncing: false);
-      await Singleton().setIsSynced(newSyncing: true);
+      Singleton().setIsSynced(newSyncing: true);
+      Singleton().setSyncing(newSyncing: false);
     }
   }
 }

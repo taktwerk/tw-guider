@@ -14,6 +14,7 @@ import 'package:guider/views/settings_view.dart';
 import 'package:guider/views/home_view.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:guider/views/user_feedback_view.dart';
+import 'package:guider/views/syncing_status.dart';
 
 class SecondHomePage extends StatefulWidget {
   const SecondHomePage({super.key});
@@ -118,14 +119,17 @@ class _SecondHomePageState extends State<SecondHomePage>
   }
 
   void _onSyncButtonClick() async {
-    if (!Singleton().getSyncing()) {
-      try {
-        await SupabaseToDrift.sync();
-      } catch (e) {
-        await Singleton().setSyncing(newSyncing: false);
-        logger.e("Exception: $e");
-      }
-    }
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => SyncingStatus()),
+    );
+    // if (!Singleton().getSyncing()) {
+    //   try {
+    //     await SupabaseToDrift.sync();
+    //   } catch (e) {
+    //     await Singleton().setSyncing(newSyncing: false);
+    //     logger.e("Exception: $e");
+    //   }
+    // }
   }
 
   bool isDevice() {
@@ -174,15 +178,19 @@ class _SecondHomePageState extends State<SecondHomePage>
                     valueListenable: Singleton().getValueNotifierIsSynced(),
                     builder: ((context, isSynced, child) {
                       return syncing
-                          ? Container(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Transform.scale(
-                                scale: 0.5,
-                                child: CircularProgressIndicator(
-                                  color: isSynced ? Colors.white : Colors.red,
-                                  strokeWidth: 3,
-                                ),
-                              ))
+                          ? InkWell(
+                              onTap: () => _onSyncButtonClick(),
+                              child: Container(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Transform.scale(
+                                    scale: 0.5,
+                                    child: CircularProgressIndicator(
+                                      color:
+                                          isSynced ? Colors.white : Colors.red,
+                                      strokeWidth: 3,
+                                    ),
+                                  )),
+                            )
                           : IconButton(
                               color: isSynced ? Colors.white : Colors.red,
                               icon: const Icon(Icons.sync),
