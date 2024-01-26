@@ -38,14 +38,6 @@ class _FeedbackViewState extends State<FeedbackView> {
     super.dispose();
   }
 
-  void sync() async {
-    try {
-      await SupabaseToDrift.sync();
-    } catch (e) {
-      logger.w("Could not sync (feedback view)");
-    }
-  }
-
   bool isDevice() {
     return Platform.isAndroid || Platform.isIOS;
   }
@@ -162,7 +154,7 @@ class _FeedbackViewState extends State<FeedbackView> {
 
               Navigator.pop(context);
             }
-            sync();
+            SupabaseToDrift.sync();
           }
         },
       )

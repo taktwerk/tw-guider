@@ -23,10 +23,11 @@ class Realtime {
         var setting = await Singleton().getDatabase().getRealtime(currentUser!);
         var realtime = setting.firstOrNull?.realtime;
         if (realtime != null && realtime) {
-          await SupabaseToDrift.sync();
+          SupabaseToDrift.sync();
         }
       }
     } catch (e) {
+      // SYNC TODO:
       logger.e("Realtime EXCEPTION $e");
     }
   }

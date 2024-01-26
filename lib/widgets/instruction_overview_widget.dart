@@ -42,14 +42,6 @@ class _InstructionOverviewWidgetState extends State<InstructionOverviewWidget> {
     return categories;
   }
 
-  void sync() async {
-    try {
-      await SupabaseToDrift.sync();
-    } catch (e) {
-      logger.w("Could not sync (instruction view)");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final instruction =
@@ -212,7 +204,7 @@ class _InstructionOverviewWidgetState extends State<InstructionOverviewWidget> {
                               ),
                             );
                           }
-                          sync();
+                          SupabaseToDrift.sync();
                         } else {
                           logger.i("No instruction steps available.");
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
