@@ -66,11 +66,12 @@ class Singleton {
 class ProgressFraction {
   int synced;
   int total;
+  String tablename;
 
-  ProgressFraction(this.synced, this.total);
+  ProgressFraction(this.synced, this.total, this.tablename);
 
   @override
   String toString() {
-    return "$synced/$total";
+    return "$synced/$total, $tablename";
   }
 }
