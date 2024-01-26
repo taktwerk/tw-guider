@@ -31,14 +31,6 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
     super.dispose();
   }
 
-  void sync() async {
-    try {
-      await SupabaseToDrift.sync();
-    } catch (e) {
-      logger.w("Could not sync (user feedback view)");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final feedback = Singleton().getDatabase().getUserFeedback(currentUser!);
@@ -92,7 +84,7 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
         liked: drift.Value(liked),
         updatedAt: drift.Value(DateTime.now().toUtc()),
         updatedBy: drift.Value(currentUser!)));
-    sync();
+    SupabaseToDrift.sync();
   }
 
   Card buildCard(feedback) {
@@ -236,7 +228,8 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
                             updatedBy: drift.Value(currentUser!),
                             deletedAt: drift.Value(DateTime.now().toUtc()),
                             deletedBy: drift.Value(currentUser!)));
-                    sync();
+
+                    SupabaseToDrift.sync();
                   },
                 ),
               ],

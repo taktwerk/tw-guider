@@ -483,8 +483,17 @@ class SupabaseToDrift {
     return newLastSynced;
   }
 
+  static void sync() async {
+    try {
+      await syncAll();
+    } catch (e) {
+      Singleton().setSyncing(newSyncing: false);
+      logger.w("Could not sync");
+    }
+  }
+
   // Number of calls to Singleton().incrementNumberOfSyncedTables() has to be equal to Singleton().getDatabase().getNumberOfTables()
-  static Future<void> sync() async {
+  static Future<void> syncAll() async {
     if (!Singleton().getSyncing()) {
       Singleton().setSyncing(newSyncing: true);
       Singleton().setIsSynced(newSyncing: false);

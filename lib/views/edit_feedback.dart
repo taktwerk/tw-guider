@@ -33,14 +33,6 @@ class _EditFeedbackState extends State<EditFeedback> {
     super.dispose();
   }
 
-  void sync() async {
-    try {
-      await SupabaseToDrift.sync();
-    } catch (e) {
-      logger.w("Could not sync (edit feedback view)");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return getEditableForm();
@@ -76,7 +68,7 @@ class _EditFeedbackState extends State<EditFeedback> {
                   .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
               Navigator.pop(context);
             }
-            sync();
+            SupabaseToDrift.sync();
           }
         },
       )

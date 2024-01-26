@@ -26,14 +26,6 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
     super.dispose();
   }
 
-  void sync() async {
-    try {
-      await SupabaseToDrift.sync();
-    } catch (e) {
-      logger.w("Could not sync (instructionstep overview)");
-    }
-  }
-
   _renderWidget(step) {
     return step != null
         ? InstructionStepView(
@@ -46,7 +38,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
         userId: currentUser!,
         instructionId: widget.instruction.id,
         instructionStepId: id);
-    sync();
+    SupabaseToDrift.sync();
   }
 
   @override

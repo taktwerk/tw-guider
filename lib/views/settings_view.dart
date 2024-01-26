@@ -214,14 +214,6 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  void sync() async {
-    try {
-      await SupabaseToDrift.sync();
-    } catch (e) {
-      logger.w("Could not sync (settings view)");
-    }
-  }
-
   void onLanguageChange(lang) async {
     GuiderApp.setLocale(
         context, Locale.fromSubtags(languageCode: lang.languageCode));
@@ -229,7 +221,7 @@ class _SettingsViewState extends State<SettingsView> {
       await Singleton()
           .getDatabase()
           .updateUserLanguage(currentUser!, lang.languageCode);
-      sync();
+      SupabaseToDrift.sync();
     }
   }
 
@@ -238,7 +230,7 @@ class _SettingsViewState extends State<SettingsView> {
       await Singleton()
           .getDatabase()
           .updateUserRealtime(currentUser!, realtime);
-      sync();
+      SupabaseToDrift.sync();
     }
   }
 
@@ -247,7 +239,7 @@ class _SettingsViewState extends State<SettingsView> {
     GuiderApp.setTheme(context, mode);
     if (currentUser != null) {
       await Singleton().getDatabase().updateUserLightmode(currentUser!, theme);
-      sync();
+      SupabaseToDrift.sync();
     }
   }
 
