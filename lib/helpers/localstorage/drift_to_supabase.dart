@@ -46,7 +46,8 @@ class DriftToSupabase {
     var images = await Singleton().getDatabase().allBytesEntries;
     int len = images.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress =
+        ProgressFraction(0, len, "Upload Feedback-Images");
     Singleton().addAndUpdate(progress);
 
     for (int i = 0; i < len; i++) {

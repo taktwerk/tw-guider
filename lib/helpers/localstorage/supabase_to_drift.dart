@@ -43,7 +43,7 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
     int len = data.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress = ProgressFraction(0, len, "Instructions");
     Singleton().addAndUpdate(progress);
 
     List<Insertable<Instruction>> instructionBatch = [];
@@ -107,7 +107,7 @@ class SupabaseToDrift {
     newLastSynced = DateTime.now().toUtc().toIso8601String();
     int len = data.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress = ProgressFraction(0, len, "Instruction steps");
     Singleton().addAndUpdate(progress);
 
     List<Insertable<InstructionStep>> instructionStepBatch = [];
@@ -161,7 +161,7 @@ class SupabaseToDrift {
     List<Insertable<Category>> categoryBatch = [];
     int len = data.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress = ProgressFraction(0, len, "Categories");
     Singleton().addAndUpdate(progress);
 
     for (int i = 0; i < len; i++) {
@@ -196,7 +196,7 @@ class SupabaseToDrift {
     await DriftToSupabase.uploadHistory(data);
     int len = data.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress = ProgressFraction(0, len, "History");
     Singleton().addAndUpdate(progress);
 
     for (int i = 0; i < len; i++) {
@@ -236,7 +236,8 @@ class SupabaseToDrift {
 
     int len = data.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress =
+        ProgressFraction(0, len, "Instruction-Category");
     Singleton().addAndUpdate(progress);
 
     List<Insertable<InstructionCategory>> instructionCategoryBatch = [];
@@ -275,7 +276,7 @@ class SupabaseToDrift {
 
     int len = data.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress = ProgressFraction(0, len, "Feedback");
     Singleton().addAndUpdate(progress);
 
     for (int i = 0; i < len; i++) {
@@ -319,7 +320,7 @@ class SupabaseToDrift {
 
     int len = data.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress = ProgressFraction(0, len, "Users");
     Singleton().addAndUpdate(progress);
 
     List<Insertable<User>> usersBatch = [];
@@ -371,7 +372,7 @@ class SupabaseToDrift {
 
     int len = data.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress = ProgressFraction(0, len, "Settings");
     Singleton().addAndUpdate(progress);
 
     for (int i = 0; i < len; i++) {
@@ -405,7 +406,7 @@ class SupabaseToDrift {
 
     int len = data.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress = ProgressFraction(0, len, "Assets");
     Singleton().addAndUpdate(progress);
 
     List<Insertable<Asset>> assetsBatch = [];
@@ -454,7 +455,7 @@ class SupabaseToDrift {
 
     int len = data.length;
 
-    ProgressFraction progress = ProgressFraction(0, len);
+    ProgressFraction progress = ProgressFraction(0, len, "Instruction-Assets");
     Singleton().addAndUpdate(progress);
 
     List<Insertable<InstructionAsset>> instructionAssetBatch = [];
