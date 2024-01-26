@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/device_info.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
@@ -10,10 +9,8 @@ import 'package:guider/views/instruction_view.dart';
 import 'package:guider/widgets/instruction_overview_widget.dart';
 import 'package:guider/widgets/listitem.dart';
 import 'package:guider/widgets/searchbar.dart';
-import 'package:guider/widgets/snackbar.dart';
 import 'package:guider/widgets/tag.dart';
 import 'package:guider/objects/singleton.dart';
-import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -27,12 +24,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   int category = -1;
   String chosenCategory = "";
   bool isVisible = false;
-  bool loaded = false;
-  bool loading = false;
   final ScrollController _scrollController = ScrollController();
   StreamSubscription? languageSubscription;
 
-  Instruction? selectedInstruction;
   final ValueNotifier<Instruction?> _instruction = ValueNotifier(null);
 
   Future<void> setInitSettings() async {
@@ -53,31 +47,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   void initState() {
     super.initState();
     setInitSettings();
-  }
-
-  Future<void> sync() async {
-    try {
-      await SupabaseToDrift.sync();
-      //   print(
-      //       "All history entries: ${await Singleton().getDatabase().allHistoryEntries}");
-
-      // var lastSynced = await KeyValue.getValue(KeyValueEnum.feedback.key);
-
-      //           var history = await Singleton()
-      //     .getDatabase()
-      //     .notSyncedHistoryEntries(DateTime.parse(lastSynced!));
-      // print("Not synced history: $history");
-    } catch (e) {
-      setState(() {
-        loading = false;
-      });
-      Singleton().setSyncing(newSyncing: false);
-      //handleError(e);
-      logger.e("Error log ${e.toString()}");
-      if (mounted) {
-        CustomSnackBar.buildErrorSnackbar(context, "$e");
-      }
-    }
   }
 
   @override
