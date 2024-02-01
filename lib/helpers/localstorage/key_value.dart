@@ -27,13 +27,11 @@ class KeyValue {
 
   static Future<void> _setInitialSyncStatus() async {
     SyncStatus? value = await getSyncStatus();
-
     // in case the app gets closed while syncing, set the SyncStatus to pending to be able to start the sync manually again
     if (value == SyncStatus.runningSync) {
       value = SyncStatus.pendingSync;
     }
     saveSyncStatus(value ?? SyncStatus.neverSynced);
-    }
   }
 
   static Future<void> resetKeyValues() async {
