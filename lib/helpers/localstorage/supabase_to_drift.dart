@@ -5,6 +5,7 @@ import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/environment.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
+import 'package:guider/objects/cancellation.dart';
 import 'package:http/http.dart' as http;
 import 'package:drift/drift.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
@@ -75,6 +76,8 @@ class SupabaseToDrift {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      checkCancellation();
     }
     await Singleton()
         .getDatabase()
@@ -142,6 +145,8 @@ class SupabaseToDrift {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      checkCancellation();
     }
     await Singleton()
         .getDatabase()
@@ -181,6 +186,8 @@ class SupabaseToDrift {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      checkCancellation();
     }
     await Singleton().getDatabase().insertMultipleCategories(categoryBatch);
     return newLastSynced;
@@ -220,6 +227,8 @@ class SupabaseToDrift {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      checkCancellation();
     }
     return newLastSynced;
   }
@@ -258,6 +267,8 @@ class SupabaseToDrift {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      checkCancellation();
     }
     await Singleton()
         .getDatabase()
@@ -307,6 +318,8 @@ class SupabaseToDrift {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      checkCancellation();
     }
     return newLastSynced;
   }
@@ -342,6 +355,8 @@ class SupabaseToDrift {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      checkCancellation();
     }
     await Singleton().getDatabase().insertMultipleUsers(usersBatch);
     return newLastSynced;
@@ -392,6 +407,8 @@ class SupabaseToDrift {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      checkCancellation();
     }
     return newLastSynced;
   }
@@ -438,6 +455,8 @@ class SupabaseToDrift {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      checkCancellation();
     }
     await Singleton().getDatabase().insertMultipleAssets(assetsBatch);
     return newLastSynced;
@@ -476,6 +495,8 @@ class SupabaseToDrift {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      checkCancellation();
     }
     await Singleton()
         .getDatabase()
@@ -487,18 +508,29 @@ class SupabaseToDrift {
     try {
       await syncAll();
     } catch (e) {
-      Singleton().setSyncing(newSyncing: false);
-      logger.w("Could not sync");
+      if (!Singleton().getCancelToken().isCancellationRequested) {
+        // Handle operation error
+        KeyValue.saveSyncStatus(SyncStatus.cancelledSync);
+        print('Operation failed: $e');
+      } else {
+        // Handle operation cancellation
+        KeyValue.saveSyncStatus(SyncStatus.cancelledSync);
+        Singleton().getCancelToken().reset();
+        print('Operation was cancelled');
+      }
     }
+  }
+
+  static void checkCancellation() {
+    Singleton().getCancelToken().throwIfCancellationRequested();
   }
 
   // Number of calls to Singleton().incrementNumberOfSyncedTables() has to be equal to Singleton().getDatabase().getNumberOfTables()
   static Future<void> syncAll() async {
     if (!Singleton().getSyncing()) {
-      Singleton().setSyncing(newSyncing: true);
-      Singleton().setIsSynced(newSyncing: false);
       Singleton().resetNumberOfSyncedTables();
       Singleton().resetPercentageOfSyncedEntries();
+      KeyValue.saveSyncStatus(SyncStatus.runningSync);
 
       await SupabaseToDrift.getUsers().then((value) {
         KeyValue.setNewValue(KeyValueEnum.user.key, value);
@@ -555,8 +587,7 @@ class SupabaseToDrift {
       });
       Singleton().incrementNumberOfSyncedTables();
 
-      Singleton().setIsSynced(newSyncing: true);
-      Singleton().setSyncing(newSyncing: false);
+      KeyValue.saveSyncStatus(SyncStatus.fullSync);
     }
   }
 }

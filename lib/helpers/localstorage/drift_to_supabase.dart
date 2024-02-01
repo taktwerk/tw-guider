@@ -59,6 +59,8 @@ class DriftToSupabase {
 
       progress.synced += 1;
       Singleton().updateNotifier();
+
+      SupabaseToDrift.checkCancellation();
     }
   }
 

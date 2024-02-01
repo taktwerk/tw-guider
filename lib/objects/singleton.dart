@@ -1,18 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/objects/cancellation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Singleton {
   static final Singleton _singleton = Singleton._internal();
   final _database = AppDatabase();
   static SharedPreferences? _prefsInstance;
+  static final CancellationToken _cancellationToken = CancellationToken();
   Singleton._internal();
-  static final ValueNotifier<bool> _syncing = ValueNotifier<bool>(false);
-  static final ValueNotifier<bool> _isSynced = ValueNotifier<bool>(false);
   static final ValueNotifier<int> _numberOfSyncedTables = ValueNotifier<int>(0);
   static final ValueNotifier<List<ProgressFraction>>
       _percentageOfSyncedEntries = ValueNotifier<List<ProgressFraction>>([]);
+  static final ValueNotifier<SyncStatus> _syncStatus =
+      ValueNotifier<SyncStatus>(SyncStatus.neverSynced);
 
   factory Singleton() {
     return _singleton;
@@ -21,19 +23,18 @@ class Singleton {
   AppDatabase getDatabase() => _database;
   Future<SharedPreferences> getPrefInstance() async =>
       _prefsInstance ?? await SharedPreferences.getInstance();
-  bool getSyncing() => _syncing.value;
-  ValueNotifier<bool> getValueNotifierSyncing() => _syncing;
-  ValueNotifier<bool> getValueNotifierIsSynced() => _isSynced;
+
+  bool getSyncing() => _syncStatus.value == SyncStatus.runningSync;
+  SyncStatus getSyncStatus() => _syncStatus.value;
   ValueNotifier<int> getNumberofSynchedTables() => _numberOfSyncedTables;
   ValueNotifier<List<ProgressFraction>> getPercentageOfSyncedEntries() =>
       _percentageOfSyncedEntries;
+  ValueNotifier<SyncStatus> getValueNotifierSyncStatus() => _syncStatus;
 
-  void setSyncing({required bool newSyncing}) {
-    _syncing.value = newSyncing;
-  }
+  CancellationToken getCancelToken() => _cancellationToken;
 
-  void setIsSynced({required bool newSyncing}) {
-    _isSynced.value = newSyncing;
+  void setSyncStatus({required SyncStatus newStatus}) {
+    _syncStatus.value = newStatus;
   }
 
   void setNumberOfSyncedTables({required int numberOfSyncedTables}) {
