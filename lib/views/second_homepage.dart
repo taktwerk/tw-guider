@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
-import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
+import 'package:guider/objects/cancellation.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/history_view.dart';
 import 'package:guider/views/instruction_view.dart';
@@ -53,7 +53,10 @@ class _SecondHomePageState extends State<SecondHomePage>
             DateTime.parse(lastSyncedHistory!))
         .listen((event) {
       logger.w("Was synced? $event");
-      Singleton().setIsSynced(newSyncing: event.first);
+      // set syncStatus to pending when currently not syncing and the database has returned a valid value of "false"
+      if (!Singleton().getSyncing() && event.isNotEmpty && !event.first) {
+        Singleton().setSyncStatus(newStatus: SyncStatus.pendingSync);
+      }
     });
   }
 
@@ -171,34 +174,30 @@ class _SecondHomePageState extends State<SecondHomePage>
               },
             ),
           ),
-          ValueListenableBuilder<bool>(
-              valueListenable: Singleton().getValueNotifierSyncing(),
-              builder: ((context, syncing, child) {
-                return ValueListenableBuilder(
-                    valueListenable: Singleton().getValueNotifierIsSynced(),
-                    builder: ((context, isSynced, child) {
-                      return syncing
-                          ? InkWell(
-                              onTap: () => _onSyncButtonClick(),
-                              child: Container(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Transform.scale(
-                                    scale: 0.5,
-                                    child: CircularProgressIndicator(
-                                      color:
-                                          isSynced ? Colors.white : Colors.red,
-                                      strokeWidth: 3,
-                                    ),
-                                  )),
-                            )
-                          : IconButton(
-                              color: isSynced ? Colors.white : Colors.red,
-                              icon: const Icon(Icons.sync),
-                              tooltip: 'Sync',
-                              onPressed: () => _onSyncButtonClick(),
-                            );
-                    }));
-              })),
+          ValueListenableBuilder(
+              valueListenable: Singleton().getValueNotifierSyncStatus(),
+              builder: ((context, syncStatus, child) {
+                return syncStatus == SyncStatus.runningSync
+                    ? InkWell(
+                        onTap: () => _onSyncButtonClick(),
+                        child: Container(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Transform.scale(
+                              scale: 0.5,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 3,
+                              ),
+                            )),
+                      )
+                    : IconButton(
+                        color: syncStatus == SyncStatus.pendingSync
+                            ? Colors.red
+                            : Colors.white,
+                        icon: const Icon(Icons.sync),
+                        tooltip: 'Sync',
+                        onPressed: () => _onSyncButtonClick(),
+                      );
+              }))
         ],
       ),
       body: SafeArea(

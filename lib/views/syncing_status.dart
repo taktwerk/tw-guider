@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guider/objects/singleton.dart';
+import 'package:guider/widgets/sync_cancel_button.dart';
+import 'package:guider/widgets/syncstatus_button.dart';
 
 class SyncingStatus extends StatefulWidget {
   const SyncingStatus({super.key});
@@ -15,35 +17,14 @@ class _SyncingStatusState extends State<SyncingStatus> {
       appBar: AppBar(),
       body: Column(
         children: [
-          ValueListenableBuilder<bool>(
-              valueListenable: Singleton().getValueNotifierIsSynced(),
-              builder: ((context, isSynced, child) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      isSynced ? Icons.check_circle : Icons.sync_problem,
-                      color: isSynced ? Colors.green : Colors.red,
-                    ),
-                    const SizedBox(
-                        width:
-                            8.0), // Add some spacing between the icon and the text
-                    Text(
-                      isSynced
-                          ? 'App is synced up'
-                          : 'Local changes detected, sync needed',
-                      style: TextStyle(
-                          color: isSynced ? Colors.green : Colors.red),
-                    ),
-                  ],
-                );
-              })),
+          const CancelSyncButton(),
+          const SyncStatusIndicator(),
           const SizedBox(
             height: 20,
           ),
           Center(
             child: Table(
-              defaultColumnWidth: IntrinsicColumnWidth(),
+              defaultColumnWidth: const IntrinsicColumnWidth(),
               children: [
                 TableRow(
                   children: [
