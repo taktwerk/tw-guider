@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
@@ -7,7 +8,9 @@ import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/cancellation.dart';
+import 'package:guider/objects/scanner.dart';
 import 'package:guider/objects/singleton.dart';
+import 'package:guider/views/code_scanner.dart';
 import 'package:guider/views/history_view.dart';
 import 'package:guider/views/instruction_view.dart';
 import 'package:guider/views/settings_view.dart';
@@ -15,6 +18,7 @@ import 'package:guider/views/home_view.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:guider/views/user_feedback_view.dart';
 import 'package:guider/views/syncing_status.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class SecondHomePage extends StatefulWidget {
   const SecondHomePage({super.key});
@@ -32,6 +36,8 @@ class _SecondHomePageState extends State<SecondHomePage>
   BuildContext? oldDialogContext;
   StreamSubscription? subscription;
   StreamSubscription? syncedSubscription;
+  String? scannerResponse;
+  final ScanModel _scanModel = ScanModel();
 
   @override
   void initState() {
@@ -154,6 +160,74 @@ class _SecondHomePageState extends State<SecondHomePage>
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(myTabs2[_pageIndex]),
         actions: <Widget>[
+          Visibility(
+            visible: !kIsWeb && isDevice() ? true : false,
+            child: IconButton(
+              icon: const Icon(Icons.qr_code_scanner),
+              tooltip: 'Scanner',
+              onPressed: () async {
+                scannerResponse =
+                    await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => CodeScanner(
+                              onDetect: (capture) {
+                                final List<Barcode> barcodes = capture.barcodes;
+                                final Uint8List? image = capture.image;
+                                final barcode = barcodes.firstOrNull;
+                                if (barcode != null) {
+                                  debugPrint(
+                                      'Barcode found! ${barcode.rawValue}');
+                                  if (image != null) {
+                                    try {
+                                      String response = barcode.rawValue ?? "";
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => Scaffold(
+                                                body: Column(
+                                                  children: [
+                                                    Text(
+                                                      "Entry: $response",
+                                                      style: const TextStyle(
+                                                          color: Colors
+                                                              .greenAccent,
+                                                          fontSize: 16),
+                                                    ),
+                                                    Image(
+                                                        image:
+                                                            MemoryImage(image))
+                                                  ],
+                                                ),
+                                              ));
+                                      Future.delayed(const Duration(seconds: 1),
+                                          () {
+                                        if (mounted) {
+                                          Navigator.pop(context);
+                                          Navigator.pop(context, response);
+                                        }
+                                      });
+                                    } catch (e) {
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    "SOME INFO MISSING OR NOT A VALID JSON")));
+
+                                        Navigator.pop(context);
+                                      }
+                                    }
+                                  }
+                                } else {
+                                  logger.w('No barcodes found.');
+                                }
+                              },
+                            )));
+                setState(() {
+                  if (scannerResponse != null) {
+                    _scanModel.updateText(scannerResponse!);
+                  }
+                });
+              },
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.feedback),
             tooltip: 'Feedback',
@@ -203,14 +277,16 @@ class _SecondHomePageState extends State<SecondHomePage>
       body: SafeArea(
         child: IndexedStack(
           index: _pageIndex,
-          children: const <Widget>[
+          children: <Widget>[
             NavigatorPage(
-              child: Home(),
+              child: Home(
+                scanNotifier: _scanModel,
+              ),
             ),
-            NavigatorPage(
+            const NavigatorPage(
               child: HistoryView(),
             ),
-            NavigatorPage(
+            const NavigatorPage(
               child: SettingsView(),
             ),
           ],

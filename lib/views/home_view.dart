@@ -4,6 +4,7 @@ import 'package:guider/helpers/device_info.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
+import 'package:guider/objects/scanner.dart';
 import 'package:guider/views/category.dart';
 import 'package:guider/views/instruction_view.dart';
 import 'package:guider/widgets/instruction_overview_widget.dart';
@@ -13,7 +14,9 @@ import 'package:guider/widgets/tag.dart';
 import 'package:guider/objects/singleton.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({super.key, required this.scanNotifier});
+
+  final ScanModel scanNotifier;
 
   @override
   State<Home> createState() => _HomeState();
@@ -136,8 +139,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                     getCategoryButton(),
                     Expanded(
                       child: SearchBarWidget(
-                          updateInstructions: updateSearchInstructions),
-                    ),
+                            updateInstructions: updateSearchInstructions,
+                            scanModel: widget.scanNotifier)),
                   ],
                 ),
                 getCategoryTag(),
