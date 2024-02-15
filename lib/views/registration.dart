@@ -1,14 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/app_info.dart';
+import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/main.dart';
+import 'package:guider/views/code_scanner.dart';
 import 'package:guider/views/login.dart';
 import 'dart:io' show Platform;
 
-import 'package:guider/views/scanner.dart';
+import 'package:guider/objects/registration_input.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -115,7 +120,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     onPressed: () {
                       validateForm();
                     },
-                    child: Text("Register")),
+                    child: const Text("Register")),
               ),
               Padding(
                 padding: const EdgeInsets.all(5),
@@ -125,9 +130,95 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     icon: const Icon(Icons.qr_code_scanner),
                     tooltip: 'Scanner',
                     onPressed: () async {
-                      scannerResponse = await Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => const Scanner()));
+                      scannerResponse =
+                          await Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CodeScanner(
+                                    onDetect: (capture) {
+                                      final List<Barcode> barcodes =
+                                          capture.barcodes;
+                                      final Uint8List? image = capture.image;
+                                      final barcode = barcodes.firstOrNull;
+                                      if (barcode != null) {
+                                        debugPrint(
+                                            'Barcode found! (REGISTRATION) ${barcode.rawValue}');
+                                        if (image != null) {
+                                          try {
+                                            Map<String, dynamic> response =
+                                                json.decode(barcode.rawValue!);
+                                            String? app =
+                                                response[Const.app.key];
+                                            String? host =
+                                                response[Const.host.key];
+                                            String? client =
+                                                response[Const.client.key];
+                                            if (app == null ||
+                                                host == null ||
+                                                client == null) {
+                                              throw Exception();
+                                            }
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) => Scaffold(
+                                                      body: Column(
+                                                        children: [
+                                                          Text(
+                                                            "App: ${response[Const.app.key]}",
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .greenAccent,
+                                                                fontSize: 16),
+                                                          ),
+                                                          Text(
+                                                            "Client: ${response[Const.client.key]}",
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .greenAccent,
+                                                                fontSize: 16),
+                                                          ),
+                                                          Text(
+                                                            "Host: ${response[Const.host.key]}",
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .greenAccent,
+                                                                fontSize: 16),
+                                                          ),
+                                                          Image(
+                                                              image:
+                                                                  MemoryImage(
+                                                                      image))
+                                                        ],
+                                                      ),
+                                                    ));
+                                            Future.delayed(
+                                                const Duration(seconds: 1), () {
+                                              if (mounted) {
+                                                Navigator.pop(context);
+                                                Navigator.pop(
+                                                    context,
+                                                    InputFields(
+                                                        app: app,
+                                                        client: client,
+                                                        host: host));
+                                              }
+                                            });
+                                          } catch (e) {
+                                            if (mounted) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
+                                                      content: Text(
+                                                          "SOME INFO MISSING OR NOT A VALID JSON")));
+
+                                              Navigator.pop(context);
+                                            }
+                                          }
+                                        }
+                                      } else {
+                                        logger.w('No barcodes found.');
+                                      }
+
+                                      //}
+                                    },
+                                  )));
                       setState(() {
                         if (scannerResponse != null) {
                           appController.text = scannerResponse!.app;

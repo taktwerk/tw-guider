@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage>
       body: TabBarView(
         controller: tabController,
         children: const [
-          Home(),
+          //Home(),
           SettingsView(),
           HistoryView(),
         ],
