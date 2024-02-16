@@ -39,7 +39,7 @@ class _SecondHomePageState extends State<SecondHomePage>
   StreamSubscription? subscription;
   StreamSubscription? syncedSubscription;
   String? scannerResponse;
-  final ScanModel _scanModel = ScanModel();
+  bool scanning = false;
 
   @override
   void initState() {
@@ -172,40 +172,19 @@ class _SecondHomePageState extends State<SecondHomePage>
                     await Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => CodeScanner(
                               onDetect: (capture) {
-                                final List<Barcode> barcodes = capture.barcodes;
-                                final Uint8List? image = capture.image;
+                                if (!scanning) {
+                                  scanning = true;
+                                  final List<Barcode> barcodes =
+                                      capture.barcodes;
                                   final barcode = barcodes.firstOrNull;
                                   if (barcode != null) {
                                     debugPrint(
                                         'Barcode found! ${barcode.rawValue}');
-                                  if (image != null) {
                                     try {
                                       String response = barcode.rawValue ?? "";
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) => Scaffold(
-                                                body: Column(
-                                                  children: [
-                                                    Text(
-                                                      "Entry: $response",
-                                                      style: const TextStyle(
-                                                          color: Colors
-                                                              .greenAccent,
-                                                          fontSize: 16),
-                                                    ),
-                                                    Image(
-                                                        image:
-                                                            MemoryImage(image))
-                                                  ],
-                                                ),
-                                              ));
-                                      Future.delayed(const Duration(seconds: 1),
-                                          () {
                                       if (mounted) {
-                                          Navigator.pop(context);
                                         Navigator.pop(context, response);
                                       }
-                                      });
                                     } catch (e) {
                                       if (mounted) {
                                         ScaffoldMessenger.of(context)
@@ -216,9 +195,9 @@ class _SecondHomePageState extends State<SecondHomePage>
                                         Navigator.pop(context);
                                       }
                                     }
+                                  } else {
+                                    logger.w('No barcodes found.');
                                   }
-                                } else {
-                                  logger.w('No barcodes found.');
                                 }
                               },
                             )));
@@ -226,6 +205,10 @@ class _SecondHomePageState extends State<SecondHomePage>
                   if (scannerResponse != null) {
                     scanModel.updateText(scannerResponse!);
                   }
+
+                  Future.delayed(const Duration(seconds: 3), () {
+                    scanning = false;
+                  });
                 });
               },
             ),
