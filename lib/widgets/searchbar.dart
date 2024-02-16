@@ -31,6 +31,8 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
   @override
   void dispose() {
     _searchController.dispose();
+    widget.scanModel.removeListener(_updateControllerText);
+
     super.dispose();
   }
 

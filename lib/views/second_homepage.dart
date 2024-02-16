@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/device_info.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
@@ -19,6 +20,7 @@ import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:guider/views/user_feedback_view.dart';
 import 'package:guider/views/syncing_status.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:provider/provider.dart';
 
 class SecondHomePage extends StatefulWidget {
   const SecondHomePage({super.key});
@@ -148,7 +150,7 @@ class _SecondHomePageState extends State<SecondHomePage>
   @override
   Widget build(BuildContext context) {
     final l = Languages.of(context);
-
+    final scanModel = Provider.of<ScanModel>(context, listen: false);
     final List<String> myTabs2 = <String>[
       l?.instructionsTitle ?? '',
       l?.historyTitle ?? '',
@@ -172,10 +174,10 @@ class _SecondHomePageState extends State<SecondHomePage>
                               onDetect: (capture) {
                                 final List<Barcode> barcodes = capture.barcodes;
                                 final Uint8List? image = capture.image;
-                                final barcode = barcodes.firstOrNull;
-                                if (barcode != null) {
-                                  debugPrint(
-                                      'Barcode found! ${barcode.rawValue}');
+                                  final barcode = barcodes.firstOrNull;
+                                  if (barcode != null) {
+                                    debugPrint(
+                                        'Barcode found! ${barcode.rawValue}');
                                   if (image != null) {
                                     try {
                                       String response = barcode.rawValue ?? "";
@@ -199,10 +201,10 @@ class _SecondHomePageState extends State<SecondHomePage>
                                               ));
                                       Future.delayed(const Duration(seconds: 1),
                                           () {
-                                        if (mounted) {
+                                      if (mounted) {
                                           Navigator.pop(context);
-                                          Navigator.pop(context, response);
-                                        }
+                                        Navigator.pop(context, response);
+                                      }
                                       });
                                     } catch (e) {
                                       if (mounted) {
@@ -222,7 +224,7 @@ class _SecondHomePageState extends State<SecondHomePage>
                             )));
                 setState(() {
                   if (scannerResponse != null) {
-                    _scanModel.updateText(scannerResponse!);
+                    scanModel.updateText(scannerResponse!);
                   }
                 });
               },
@@ -280,7 +282,7 @@ class _SecondHomePageState extends State<SecondHomePage>
           children: <Widget>[
             NavigatorPage(
               child: Home(
-                scanNotifier: _scanModel,
+                scanNotifier: scanModel,
               ),
             ),
             const NavigatorPage(

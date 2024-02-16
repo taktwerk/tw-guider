@@ -33,7 +33,13 @@ class InstructionOverviewWidget extends StatefulWidget {
 
 class _InstructionOverviewWidgetState extends State<InstructionOverviewWidget> {
   final ScrollController _scrollController = ScrollController();
-  final String tagName = "instructionTag";
+  late final String tagName;
+
+  @override
+  void initState() {
+    super.initState();
+    tagName = "instructionTag${widget.instruction.id}";
+  }
 
   Future<List<Category>> categories() async {
     var categories = await Singleton()

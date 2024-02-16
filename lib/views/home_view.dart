@@ -12,6 +12,7 @@ import 'package:guider/widgets/listitem.dart';
 import 'package:guider/widgets/searchbar.dart';
 import 'package:guider/widgets/tag.dart';
 import 'package:guider/objects/singleton.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key, required this.scanNotifier});
@@ -29,6 +30,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   bool isVisible = false;
   final ScrollController _scrollController = ScrollController();
   StreamSubscription? languageSubscription;
+  Completer<Instruction?> _completer = Completer<Instruction?>();
 
   final ValueNotifier<Instruction?> _instruction = ValueNotifier(null);
 
@@ -50,6 +52,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   void initState() {
     super.initState();
     setInitSettings();
+    widget.scanNotifier.addListener(scanCallback);
   }
 
   @override
@@ -59,6 +62,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   void dispose() {
     languageSubscription?.cancel();
     _scrollController.dispose();
+    widget.scanNotifier.removeListener(scanCallback);
     super.dispose();
   }
 
@@ -106,6 +110,35 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     );
   }
 
+  void scanCallback() async {
+    _completer = Completer<Instruction?>();
+
+    bool tabletLayout = DeviceInfo.inTabletLayout(context) ? true : false;
+    if (tabletLayout) {
+    } else {
+      final instruction = await _completer.future;
+      if (instruction != null && _instruction.value != null) {
+        if (mounted) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => InstructionView(
+                      instruction: _instruction.value!,
+                      open: false,
+                      additionalData: null,
+                    )),
+          );
+        }
+      } else {
+        if (mounted) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
+      }
+    }
+  }
+
   void mobileCallback(Instruction instruction) {
     _instruction.value = instruction;
     Navigator.push(
@@ -123,6 +156,14 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     _instruction.value = instruction;
   }
 
+  void setInstruction(Instruction? instruction) {
+    _instruction.value = instruction;
+    if (!_completer.isCompleted) {
+      // If not, complete the completer
+      _completer.complete(instruction);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool tabletLayout = DeviceInfo.inTabletLayout(context) ? true : false;
@@ -138,13 +179,14 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                   children: [
                     getCategoryButton(),
                     Expanded(
-                      child: SearchBarWidget(
+                        child: SearchBarWidget(
                             updateInstructions: updateSearchInstructions,
                             scanModel: widget.scanNotifier)),
                   ],
                 ),
                 getCategoryTag(),
                 Listing(
+                  setInstruction: setInstruction,
                   callback: tabletLayout ? tabletCallback : mobileCallback,
                   category: category,
                   searchWord: searchWord,
@@ -245,13 +287,14 @@ class Listing extends StatefulWidget {
   final Function callback;
   final int category;
   final String searchWord;
+  final Function setInstruction;
 
-  const Listing({
-    super.key,
-    required this.callback,
-    required this.category,
-    required this.searchWord,
-  });
+  const Listing(
+      {super.key,
+      required this.callback,
+      required this.category,
+      required this.searchWord,
+      required this.setInstruction});
 
   @override
   State<Listing> createState() => _ListingState();
@@ -290,6 +333,15 @@ class _ListingState extends State<Listing> {
               return errorOrLoadingCard('🚨 Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               logger.w("SNAPSHOT HAS DATA");
+              Future.delayed(Duration.zero, () async {
+                if (snapshot.data!.firstOrNull != null &&
+                    snapshot.data!.length == 1) {
+                  widget
+                      .setInstruction(snapshot.data!.firstOrNull?.instruction);
+                } else {
+                  widget.setInstruction(null);
+                }
+              });
               return Expanded(
                   child: Scrollbar(
                       controller: _scrollController,
