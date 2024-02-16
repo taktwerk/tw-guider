@@ -5,6 +5,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/constants.dart';
+import 'package:guider/helpers/device_info.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
@@ -38,16 +39,8 @@ class _FeedbackViewState extends State<FeedbackView> {
     super.dispose();
   }
 
-  bool isDevice() {
-    return Platform.isAndroid || Platform.isIOS;
-  }
-
-  bool isDesktop() {
-    return Platform.isMacOS || Platform.isLinux || Platform.isWindows;
-  }
-
   selectImage() async {
-    if (kIsWeb || isDevice()) {
+    if (kIsWeb || DeviceInfo.isDevice()) {
       XFile? pickedFile =
           await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
@@ -82,7 +75,7 @@ class _FeedbackViewState extends State<FeedbackView> {
   }
 
   takeImage() async {
-    if (!kIsWeb && !isDesktop()) {
+    if (!kIsWeb && !DeviceInfo.isDesktop()) {
       XFile? takenImage =
           await ImagePicker().pickImage(source: ImageSource.camera);
 
@@ -121,6 +114,7 @@ class _FeedbackViewState extends State<FeedbackView> {
       TextButton(
         child: Text(l.save),
         onPressed: () async {
+          // SYNC NOTE:
           if (_formKey.currentState!.validate() && currentUser != null) {
             String xid = Xid().toString();
             String? url;
@@ -198,7 +192,7 @@ class _FeedbackViewState extends State<FeedbackView> {
       String title, IconData iconData, int position, Function function) {
     final l = Languages.of(context);
     return PopupMenuItem(
-      enabled: (kIsWeb || isDesktop())
+      enabled: (kIsWeb || DeviceInfo.isDesktop())
           ? title == l!.takeImage
               ? false
               : true

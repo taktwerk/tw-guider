@@ -7,6 +7,18 @@ import 'package:flutter/services.dart';
 import 'package:guider/main.dart';
 
 class DeviceInfo {
+  static bool isDevice() {
+    return Platform.isAndroid || Platform.isIOS;
+  }
+
+  static bool isDesktop() {
+    return Platform.isMacOS || Platform.isLinux || Platform.isWindows;
+  }
+
+  static bool isMacOS() {
+    return Platform.isMacOS;
+  }
+
   static bool isLargeScreen(context) {
     if (MediaQuery.sizeOf(context).shortestSide > 600) {
       return true;

@@ -504,7 +504,7 @@ class SupabaseToDrift {
     return newLastSynced;
   }
 
-  static void sync() async {
+  static Future<void> sync() async {
     try {
       await syncAll();
     } catch (e) {

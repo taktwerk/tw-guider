@@ -7,6 +7,7 @@ import 'package:guider/helpers/environment.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
+import 'package:guider/objects/scanner.dart';
 import 'package:guider/views/login.dart';
 import 'package:guider/views/registration.dart';
 import 'package:guider/views/second_homepage.dart';
@@ -14,6 +15,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:guider/languages/app_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:guider/languages/supported_languages.dart';
 
@@ -31,7 +33,12 @@ void main() async {
     await SupabaseToDrift.initializeUsers();
   }
   logger.i("Currentuser $currentUser (main)");
-  runApp(const GuiderApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ScanModel(),
+      child: const GuiderApp(),
+    ),
+  );
 }
 
 final supabase = Supabase.instance.client;

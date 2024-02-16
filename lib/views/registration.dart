@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/app_info.dart';
 import 'package:guider/helpers/constants.dart';
+import 'package:guider/helpers/device_info.dart';
 import 'package:guider/helpers/localstorage/drift_to_supabase.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
@@ -27,16 +28,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final clientController = TextEditingController();
   final hostController = TextEditingController();
   InputFields? scannerResponse;
+  bool scanning = false;
   @override
   void initState() {
     super.initState();
   }
 
   Future<void> getUsers() async {}
-
-  bool isDevice() {
-    return Platform.isAndroid || Platform.isIOS;
-  }
 
   Future<void> validateForm() async {
     // NOTE: check if combination exists in supabase. If yes, save client locally, register device on supabase and push to login page with users
@@ -125,7 +123,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: Visibility(
-                  visible: !kIsWeb && isDevice() ? true : false,
+                  visible:
+                      (kIsWeb || DeviceInfo.isDevice() || DeviceInfo.isMacOS())
+                          ? true
+                          : false,
                   child: IconButton(
                     icon: const Icon(Icons.qr_code_scanner),
                     tooltip: 'Scanner',
@@ -134,14 +135,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           await Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => CodeScanner(
                                     onDetect: (capture) {
-                                      final List<Barcode> barcodes =
-                                          capture.barcodes;
-                                      final Uint8List? image = capture.image;
-                                      final barcode = barcodes.firstOrNull;
-                                      if (barcode != null) {
-                                        debugPrint(
-                                            'Barcode found! (REGISTRATION) ${barcode.rawValue}');
-                                        if (image != null) {
+                                      if (!scanning) {
+                                        scanning = true;
+                                        final List<Barcode> barcodes =
+                                            capture.barcodes;
+                                        final barcode = barcodes.firstOrNull;
+                                        if (barcode != null) {
+                                          debugPrint(
+                                              'Barcode found! (REGISTRATION) ${barcode.rawValue}');
                                           try {
                                             Map<String, dynamic> response =
                                                 json.decode(barcode.rawValue!);
@@ -156,51 +157,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                                 client == null) {
                                               throw Exception();
                                             }
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) => Scaffold(
-                                                      body: Column(
-                                                        children: [
-                                                          Text(
-                                                            "App: ${response[Const.app.key]}",
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .greenAccent,
-                                                                fontSize: 16),
-                                                          ),
-                                                          Text(
-                                                            "Client: ${response[Const.client.key]}",
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .greenAccent,
-                                                                fontSize: 16),
-                                                          ),
-                                                          Text(
-                                                            "Host: ${response[Const.host.key]}",
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .greenAccent,
-                                                                fontSize: 16),
-                                                          ),
-                                                          Image(
-                                                              image:
-                                                                  MemoryImage(
-                                                                      image))
-                                                        ],
-                                                      ),
-                                                    ));
-                                            Future.delayed(
-                                                const Duration(seconds: 1), () {
-                                              if (mounted) {
-                                                Navigator.pop(context);
-                                                Navigator.pop(
-                                                    context,
-                                                    InputFields(
-                                                        app: app,
-                                                        client: client,
-                                                        host: host));
-                                              }
-                                            });
+
+                                            if (mounted) {
+                                              Navigator.pop(
+                                                  context,
+                                                  InputFields(
+                                                      app: app,
+                                                      client: client,
+                                                      host: host));
+                                            }
                                           } catch (e) {
                                             if (mounted) {
                                               ScaffoldMessenger.of(context)
@@ -211,12 +176,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                               Navigator.pop(context);
                                             }
                                           }
+                                        } else {
+                                          logger.w('No barcodes found.');
                                         }
-                                      } else {
-                                        logger.w('No barcodes found.');
                                       }
-
-                                      //}
                                     },
                                   )));
                       setState(() {
@@ -226,6 +189,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           hostController.text = scannerResponse!.host;
                           validateForm();
                         }
+                        Future.delayed(const Duration(seconds: 3), () {
+                          scanning = false;
+                        });
+
                         logger.i("Scanner response: $scannerResponse");
                       });
                     },

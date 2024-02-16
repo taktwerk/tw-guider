@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/content_type_enum.dart';
+import 'package:guider/helpers/device_info.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/views/fullscreen_image_viewer.dart';
@@ -617,17 +618,9 @@ class _ThreeDWidgetState extends _FileWidgetState {
     getFilePath();
   }
 
-  bool isDevice() {
-    return Platform.isAndroid || Platform.isIOS;
-  }
-
-  bool isDesktop() {
-    return Platform.isMacOS || Platform.isLinux || Platform.isWindows;
-  }
-
   Future<void> getFilePath() async {
     // the 3D model only works on the device (the package webview that is used is only supported on devices)
-    if (!kIsWeb && isDevice()) {
+    if (!kIsWeb && DeviceInfo.isDevice()) {
       String fileName = await AppUtil.filePath(widget.fileObject.id,
           widget.fileObject.url, widget.fileObject.folderName);
       if (fileName.isNotEmpty) {
