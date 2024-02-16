@@ -36,10 +36,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Future<void> getUsers() async {}
 
-  bool isDevice() {
-    return Platform.isAndroid || Platform.isIOS;
-  }
-
   Future<void> validateForm() async {
     // NOTE: check if combination exists in supabase. If yes, save client locally, register device on supabase and push to login page with users
     try {
@@ -127,7 +123,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: Visibility(
-                  visible: !kIsWeb && isDevice() ? true : false,
+                  visible:
+                      (kIsWeb || DeviceInfo.isDevice() || DeviceInfo.isMacOS())
+                          ? true
+                          : false,
                   child: IconButton(
                     icon: const Icon(Icons.qr_code_scanner),
                     tooltip: 'Scanner',

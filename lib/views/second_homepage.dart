@@ -143,10 +143,6 @@ class _SecondHomePageState extends State<SecondHomePage>
     // }
   }
 
-  bool isDevice() {
-    return Platform.isAndroid || Platform.isIOS;
-  }
-
   @override
   Widget build(BuildContext context) {
     final l = Languages.of(context);
@@ -163,7 +159,9 @@ class _SecondHomePageState extends State<SecondHomePage>
         title: Text(myTabs2[_pageIndex]),
         actions: <Widget>[
           Visibility(
-            visible: !kIsWeb && isDevice() ? true : false,
+            visible: (kIsWeb || DeviceInfo.isDevice() || DeviceInfo.isMacOS())
+                ? true
+                : false,
             child: IconButton(
               icon: const Icon(Icons.qr_code_scanner),
               tooltip: 'Scanner',
