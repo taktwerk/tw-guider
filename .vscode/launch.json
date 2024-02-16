@@ -7,25 +7,37 @@
         {
             "name": "guider (debug default)",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define-from-file=.env/dev.json"
+            ]
         },
         {
             "name": "guider (debug port 5555)",
             "request": "launch",
             "type": "dart",
-            "toolArgs": ["--web-port=5555"]
+            "toolArgs": [
+                "--web-port=5555",
+                "--dart-define-from-file=.env/dev.json"
+            ]
         },
         {
             "name": "guider (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "toolArgs": [
+                "--dart-define-from-file=.env/dev.json"
+            ]
         },
         {
             "name": "guider (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "toolArgs": [
+                "--dart-define-from-file=.env/dev.json"
+            ]
         }
     ]
 }

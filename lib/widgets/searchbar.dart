@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:guider/languages/languages.dart';
+import 'package:guider/objects/scanner.dart';
 
 class SearchBarWidget extends StatefulWidget {
   final Function updateInstructions;
-  const SearchBarWidget({super.key, required this.updateInstructions});
+
+  final ScanModel scanModel;
+  const SearchBarWidget(
+      {super.key, required this.updateInstructions, required this.scanModel});
 
   @override
   State<SearchBarWidget> createState() => _SearchBarWidgetState();
 }
 
 class _SearchBarWidgetState extends State<SearchBarWidget> {
-  _SearchBarWidgetState();
-
   // This controller will store the value of the search bar
   final TextEditingController _searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_latestInputValue);
+    widget.scanModel.addListener(_updateControllerText);
   }
+
+  void _updateControllerText() {
+    _searchController.text = widget.scanModel.text;
+    search(widget.scanModel.text);
+  }
+
 
   @override
   void dispose() {
     _searchController.dispose();
-    super.dispose();
-  }
+    widget.scanModel.removeListener(_updateControllerText);
 
-  void _latestInputValue() {
-    // print("Latest text ${_searchController.text}");
+    super.dispose();
   }
 
   Future<void> search(value) async {

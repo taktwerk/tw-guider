@@ -26,7 +26,6 @@ abstract class Languages {
   String get imageSelected;
   String get chooseImage;
   String get cancel;
-  String get send;
   String get fromGallery;
   String get takeImage;
   String get description;
@@ -52,4 +51,6 @@ abstract class Languages {
   String get confirmFeedbackDelete;
   String get confirm;
   String get feedbackImageError;
+  String get noContentAvailable;
+  String get onlyOnIosAndroidWeb;
 }

@@ -27,6 +27,7 @@ class Realtime {
         }
       }
     } catch (e) {
+      // SYNC TODO:
       logger.e("Realtime EXCEPTION $e");
     }
   }

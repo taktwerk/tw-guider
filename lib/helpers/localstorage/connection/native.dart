@@ -10,15 +10,16 @@ import 'package:path/path.dart' as p;
 Future<File> get databaseFile async {
   // find a suitable path to store our data in.
   final appDir = await getApplicationDocumentsDirectory();
-  final dbPath = p.join(appDir.path, 'guider.db');
+  final dbPath = p.join(appDir.path, 'guider/guider.db');
   return File(dbPath);
 }
 
 /// Obtains a database connection for running drift in a Dart VM.
 DatabaseConnection connect() {
   return DatabaseConnection.delayed(Future(() async {
-    return NativeDatabase.createBackgroundConnection(await databaseFile,
-        logStatements: true);
+    return NativeDatabase.createBackgroundConnection(
+      await databaseFile, /*logStatements: true*/
+    );
   }));
 }
 

@@ -1,11 +1,18 @@
 import 'dart:convert';
 import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DriftToSupabase {
+  static Future<void> registerDevice(String deviceId) async {
+    if (!await SupabaseToDrift.isDeviceRegistrated(deviceId)) {
+      await supabase.from('device').insert({"device_id": deviceId});
+    }
+  }
+
   static Future<void> uploadFeedback() async {
     var lastSynced = await KeyValue.getValue(KeyValueEnum.feedback.key);
 
@@ -38,12 +45,22 @@ class DriftToSupabase {
   static Future<void> uploadFeedbackImages() async {
     var images = await Singleton().getDatabase().allBytesEntries;
     int len = images.length;
+
+    ProgressFraction progress =
+        ProgressFraction(0, len, "Upload Feedback-Images");
+    Singleton().addAndUpdate(progress);
+
     for (int i = 0; i < len; i++) {
       var image = images[i];
       await supabase.storage.from('feedback_images').uploadBinary(
           "${image.imageXid}.png", base64.decode(image.image),
           fileOptions: const FileOptions(cacheControl: '3600', upsert: false));
       await Singleton().getDatabase().deleteBytesEntry(image.feedbackId);
+
+      progress.synced += 1;
+      Singleton().updateNotifier();
+
+      SupabaseToDrift.checkCancellation();
     }
   }
 

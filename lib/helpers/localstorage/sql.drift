@@ -1,3 +1,5 @@
+import 'package:guider/helpers/content_type_enum.dart';
+
 create table
   categories (
     id bigint not null,
@@ -41,6 +43,7 @@ create table
     updated_by bigint not null,
     deleted_at datetime null,
     deleted_by bigint null,
+    liked bool not null default false,
     constraint feedback_pkey primary key (id),
     constraint feedback_instruction_id_fkey foreign key (instruction_id) references instructions (id),
     constraint feedback_user_id_fkey foreign key (user_id) references users (id)
@@ -70,6 +73,7 @@ create table
     id bigint,
     username character not null,
     role character not null,
+    client character not null,
     created_at datetime not null,
     created_by bigint not null,
     updated_at datetime not null,
@@ -86,6 +90,7 @@ create table
     step_nr bigint not null,
     description character not null,
     image character not null,
+    type ENUMNAME(ContentType) not null,
     created_at datetime not null,
     created_by bigint not null,
     updated_at datetime not null,
@@ -136,6 +141,38 @@ create table
     constraint bytes_feedback_id_fkey foreign key (feedback_id) references feedback (id) on delete cascade
   );
 
+  create table
+  assets (
+    id bigint,
+    name character not null,
+    type ENUMNAME(ContentType) not null,
+    file character null,
+    textfield character null,
+    created_at datetime not null,
+    created_by bigint not null,
+    updated_at datetime not null,
+    updated_by bigint not null,
+    deleted_at datetime null,
+    deleted_by bigint null,
+    constraint asset_pkey primary key (id)
+  );
+
+
+  create table
+  InstructionsAssets (
+    instruction_id bigint not null,
+    asset_id bigint not null,
+    created_at datetime not null,
+    created_by bigint not null,
+    updated_at datetime not null,
+    updated_by bigint not null,
+    deleted_at datetime null,
+    deleted_by bigint null,
+    constraint instruction_asset_pkey primary key (instruction_id, asset_id),
+    constraint instruction_asset_asset_id_fkey foreign key (asset_id) references assets (id) on update cascade on delete cascade,
+    constraint instruction_asset_instruction_id_fkey foreign key (instruction_id) references instructions (id) on update cascade on delete cascade
+  ) as InstructionAsset;
+
 
 updateHistoryEntry(REQUIRED :instruction_id as int, REQUIRED :updated_at as datetime): WITH new_id AS (SELECT :instruction_id AS instruction_id, :updated_at as updated_at)
 INSERT INTO histories (user_id, instruction_id, created_by, created_at, updated_at, updated_by, instruction_step_id, open)
@@ -149,3 +186,43 @@ INNER JOIN histories ON instructions.id = histories.instruction_id
 WHERE histories.user_id = :user_id and histories.updated_at = (SELECT MAX (updated_at) FROM histories WHERE user_id = :user_id) AND instructions.deleted_at is NULL and histories.open = true;
 
 isSynced(REQUIRED :timestampSettings as DateTime, REQUIRED :timestampFeedback as DateTime, REQUIRED :timestampHistory as DateTime): SELECT NOT(EXISTS(SELECT 1 FROM settings WHERE updated_at > :timestampSettings) or EXISTS(SELECT 1 FROM feedback WHERE updated_at > :timestampFeedback) or EXISTS(SELECT 1 FROM histories WHERE updated_at > :timestampHistory));
+
+getFeedbackLiked(REQUIRED :user_id as int): SELECT * FROM feedback WHERE user_id = :user_id AND deleted_at is NULL ORDER BY liked DESC, created_at DESC;
+
+historyEntriesOfUserAsInstructions(REQUIRED :user_id as int): SELECT instructions.*, coalesce(q.number_of_steps, 0) as number_of_steps FROM instructions
+LEFT JOIN (SELECT instruction_id, COUNT(*) as number_of_steps FROM instruction_steps WHERE deleted_at is NULL GROUP BY instruction_id) q
+ON q.instruction_id = instructions.id
+INNER JOIN (SELECT * FROM histories WHERE user_id = :user_id and deleted_at is NULL) r
+ON r.instruction_id = instructions.id
+WHERE instructions.deleted_at is NULL
+ORDER BY r.updated_at DESC;
+
+allInstructions: SELECT instructions.*, coalesce(q.number_of_steps, 0) as number_of_steps FROM instructions
+LEFT JOIN (SELECT instruction_id, COUNT(*) as number_of_steps FROM instruction_steps WHERE deleted_at is NULL GROUP BY instruction_id) q
+ON q.instruction_id = instructions.id
+WHERE instructions.deleted_at is NULL
+ORDER BY id;
+
+allInstructionsBySearch(REQUIRED :word as char): SELECT instructions.*, coalesce(q.number_of_steps, 0) as number_of_steps FROM instructions
+LEFT JOIN (SELECT instruction_id, COUNT(*) as number_of_steps FROM instruction_steps WHERE deleted_at is NULL GROUP BY instruction_id) q
+ON q.instruction_id = instructions.id
+WHERE instructions.deleted_at is NULL and (title LIKE '%' || :word || '%' or short_title LIKE '%' || :word || '%')
+ORDER BY id;
+
+allInstructionsByCategoryAndSearch( REQUIRED :category_id as int, REQUIRED :word as char): SELECT instructions.*, coalesce(q.number_of_steps, 0) as number_of_steps 
+FROM instructions
+LEFT JOIN (SELECT instruction_id, COUNT(*) as number_of_steps FROM instruction_steps WHERE deleted_at is NULL GROUP BY instruction_id) q
+ON q.instruction_id = instructions.id
+INNER JOIN (SELECT * FROM InstructionsCategories WHERE category_id = :category_id and deleted_at is NULL) r
+ON r.instruction_id = instructions.id
+WHERE instructions.deleted_at is NULL and (title LIKE '%' || :word || '%' or short_title LIKE '%' || :word || '%')
+ORDER BY id;
+
+allInstructionsByCategory(REQUIRED :category_id as int): SELECT instructions.*, coalesce(q.number_of_steps, 0) as number_of_steps 
+FROM instructions
+LEFT JOIN (SELECT instruction_id, COUNT(*) as number_of_steps FROM instruction_steps WHERE deleted_at is NULL GROUP BY instruction_id) q
+ON q.instruction_id = instructions.id
+INNER JOIN (SELECT * FROM InstructionsCategories WHERE category_id = :category_id and deleted_at is NULL) r
+ON r.instruction_id = instructions.id
+WHERE instructions.deleted_at is NULL
+ORDER BY id;

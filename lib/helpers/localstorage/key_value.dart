@@ -1,4 +1,5 @@
 import 'package:guider/main.dart';
+import 'package:guider/objects/cancellation.dart';
 import 'package:guider/objects/singleton.dart';
 
 class KeyValue {
@@ -11,6 +12,9 @@ class KeyValue {
     _setInitialValue(KeyValueEnum.category.key);
     _setInitialValue(KeyValueEnum.instructionCategory.key);
     _setInitialValue(KeyValueEnum.setting.key);
+    _setInitialValue(KeyValueEnum.asset.key);
+    _setInitialValue(KeyValueEnum.instructionAsset.key);
+    _setInitialSyncStatus();
   }
 
   static Future<void> _setInitialValue(key) async {
@@ -19,6 +23,15 @@ class KeyValue {
       value = DateTime(1900, 3, 1).toIso8601String();
       setNewValue(key, value);
     }
+  }
+
+  static Future<void> _setInitialSyncStatus() async {
+    SyncStatus? value = await getSyncStatus();
+    // in case the app gets closed while syncing, set the SyncStatus to pending to be able to start the sync manually again
+    if (value == SyncStatus.runningSync) {
+      value = SyncStatus.pendingSync;
+    }
+    saveSyncStatus(value ?? SyncStatus.neverSynced);
   }
 
   static Future<void> resetKeyValues() async {
@@ -71,6 +84,28 @@ class KeyValue {
     var prefs = await Singleton().getPrefInstance();
     return prefs.getBool(KeyValueEnum.login.key);
   }
+
+  static Future<bool> saveClient(client) async {
+    var prefs = await Singleton().getPrefInstance();
+    return await prefs.setString(KeyValueEnum.client.key, client);
+  }
+
+  static Future getClient() async {
+    var prefs = await Singleton().getPrefInstance();
+    return prefs.getString(KeyValueEnum.client.key);
+  }
+
+  static Future<void> saveSyncStatus(SyncStatus status) async {
+    var prefs = await Singleton().getPrefInstance();
+    prefs.setInt(KeyValueEnum.syncStatus.key, status.index);
+    Singleton().setSyncStatus(newStatus: status);
+  }
+
+  static Future<SyncStatus?> getSyncStatus() async {
+    var prefs = await Singleton().getPrefInstance();
+    final statusIndex = prefs.getInt(KeyValueEnum.syncStatus.key);
+    return statusIndex != null ? SyncStatus.values[statusIndex] : null;
+  }
 }
 
 enum KeyValueEnum {
@@ -83,7 +118,11 @@ enum KeyValueEnum {
   instructionCategory("sync_instruction_category"),
   feedback("sync_feedback"),
   currentUser("current_user"),
-  login("login");
+  login("login"),
+  asset("sync_asset"),
+  instructionAsset("sync_instruction_asset"),
+  client("client"),
+  syncStatus("sync_status");
 
   const KeyValueEnum(this.key);
   final String key;

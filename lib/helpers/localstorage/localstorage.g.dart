@@ -974,6 +974,12 @@ class Users extends Table with TableInfo<Users, User> {
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  static const VerificationMeta _clientMeta = const VerificationMeta('client');
+  late final GeneratedColumn<String> client = GeneratedColumn<String>(
+      'client', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
@@ -1021,6 +1027,7 @@ class Users extends Table with TableInfo<Users, User> {
         id,
         username,
         role,
+        client,
         createdAt,
         createdBy,
         updatedAt,
@@ -1051,6 +1058,12 @@ class Users extends Table with TableInfo<Users, User> {
           _roleMeta, role.isAcceptableOrUnknown(data['role']!, _roleMeta));
     } else if (isInserting) {
       context.missing(_roleMeta);
+    }
+    if (data.containsKey('client')) {
+      context.handle(_clientMeta,
+          client.isAcceptableOrUnknown(data['client']!, _clientMeta));
+    } else if (isInserting) {
+      context.missing(_clientMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -1099,6 +1112,8 @@ class Users extends Table with TableInfo<Users, User> {
           .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
       role: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}role'])!,
+      client: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}client'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       createdBy: attachedDatabase.typeMapping
@@ -1130,6 +1145,7 @@ class User extends DataClass implements Insertable<User> {
   final int id;
   final String username;
   final String role;
+  final String client;
   final DateTime createdAt;
   final int createdBy;
   final DateTime updatedAt;
@@ -1140,6 +1156,7 @@ class User extends DataClass implements Insertable<User> {
       {required this.id,
       required this.username,
       required this.role,
+      required this.client,
       required this.createdAt,
       required this.createdBy,
       required this.updatedAt,
@@ -1152,6 +1169,7 @@ class User extends DataClass implements Insertable<User> {
     map['id'] = Variable<int>(id);
     map['username'] = Variable<String>(username);
     map['role'] = Variable<String>(role);
+    map['client'] = Variable<String>(client);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['created_by'] = Variable<int>(createdBy);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -1170,6 +1188,7 @@ class User extends DataClass implements Insertable<User> {
       id: Value(id),
       username: Value(username),
       role: Value(role),
+      client: Value(client),
       createdAt: Value(createdAt),
       createdBy: Value(createdBy),
       updatedAt: Value(updatedAt),
@@ -1190,6 +1209,7 @@ class User extends DataClass implements Insertable<User> {
       id: serializer.fromJson<int>(json['id']),
       username: serializer.fromJson<String>(json['username']),
       role: serializer.fromJson<String>(json['role']),
+      client: serializer.fromJson<String>(json['client']),
       createdAt: serializer.fromJson<DateTime>(json['created_at']),
       createdBy: serializer.fromJson<int>(json['created_by']),
       updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
@@ -1205,6 +1225,7 @@ class User extends DataClass implements Insertable<User> {
       'id': serializer.toJson<int>(id),
       'username': serializer.toJson<String>(username),
       'role': serializer.toJson<String>(role),
+      'client': serializer.toJson<String>(client),
       'created_at': serializer.toJson<DateTime>(createdAt),
       'created_by': serializer.toJson<int>(createdBy),
       'updated_at': serializer.toJson<DateTime>(updatedAt),
@@ -1218,6 +1239,7 @@ class User extends DataClass implements Insertable<User> {
           {int? id,
           String? username,
           String? role,
+          String? client,
           DateTime? createdAt,
           int? createdBy,
           DateTime? updatedAt,
@@ -1228,6 +1250,7 @@ class User extends DataClass implements Insertable<User> {
         id: id ?? this.id,
         username: username ?? this.username,
         role: role ?? this.role,
+        client: client ?? this.client,
         createdAt: createdAt ?? this.createdAt,
         createdBy: createdBy ?? this.createdBy,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -1241,6 +1264,7 @@ class User extends DataClass implements Insertable<User> {
           ..write('id: $id, ')
           ..write('username: $username, ')
           ..write('role: $role, ')
+          ..write('client: $client, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdBy: $createdBy, ')
           ..write('updatedAt: $updatedAt, ')
@@ -1252,8 +1276,8 @@ class User extends DataClass implements Insertable<User> {
   }
 
   @override
-  int get hashCode => Object.hash(id, username, role, createdAt, createdBy,
-      updatedAt, updatedBy, deletedAt, deletedBy);
+  int get hashCode => Object.hash(id, username, role, client, createdAt,
+      createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1261,6 +1285,7 @@ class User extends DataClass implements Insertable<User> {
           other.id == this.id &&
           other.username == this.username &&
           other.role == this.role &&
+          other.client == this.client &&
           other.createdAt == this.createdAt &&
           other.createdBy == this.createdBy &&
           other.updatedAt == this.updatedAt &&
@@ -1273,6 +1298,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<int> id;
   final Value<String> username;
   final Value<String> role;
+  final Value<String> client;
   final Value<DateTime> createdAt;
   final Value<int> createdBy;
   final Value<DateTime> updatedAt;
@@ -1283,6 +1309,7 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.id = const Value.absent(),
     this.username = const Value.absent(),
     this.role = const Value.absent(),
+    this.client = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.createdBy = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1294,6 +1321,7 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.id = const Value.absent(),
     required String username,
     required String role,
+    required String client,
     required DateTime createdAt,
     required int createdBy,
     required DateTime updatedAt,
@@ -1302,6 +1330,7 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.deletedBy = const Value.absent(),
   })  : username = Value(username),
         role = Value(role),
+        client = Value(client),
         createdAt = Value(createdAt),
         createdBy = Value(createdBy),
         updatedAt = Value(updatedAt),
@@ -1310,6 +1339,7 @@ class UsersCompanion extends UpdateCompanion<User> {
     Expression<int>? id,
     Expression<String>? username,
     Expression<String>? role,
+    Expression<String>? client,
     Expression<DateTime>? createdAt,
     Expression<int>? createdBy,
     Expression<DateTime>? updatedAt,
@@ -1321,6 +1351,7 @@ class UsersCompanion extends UpdateCompanion<User> {
       if (id != null) 'id': id,
       if (username != null) 'username': username,
       if (role != null) 'role': role,
+      if (client != null) 'client': client,
       if (createdAt != null) 'created_at': createdAt,
       if (createdBy != null) 'created_by': createdBy,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1334,6 +1365,7 @@ class UsersCompanion extends UpdateCompanion<User> {
       {Value<int>? id,
       Value<String>? username,
       Value<String>? role,
+      Value<String>? client,
       Value<DateTime>? createdAt,
       Value<int>? createdBy,
       Value<DateTime>? updatedAt,
@@ -1344,6 +1376,7 @@ class UsersCompanion extends UpdateCompanion<User> {
       id: id ?? this.id,
       username: username ?? this.username,
       role: role ?? this.role,
+      client: client ?? this.client,
       createdAt: createdAt ?? this.createdAt,
       createdBy: createdBy ?? this.createdBy,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1364,6 +1397,9 @@ class UsersCompanion extends UpdateCompanion<User> {
     }
     if (role.present) {
       map['role'] = Variable<String>(role.value);
+    }
+    if (client.present) {
+      map['client'] = Variable<String>(client.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -1392,6 +1428,7 @@ class UsersCompanion extends UpdateCompanion<User> {
           ..write('id: $id, ')
           ..write('username: $username, ')
           ..write('role: $role, ')
+          ..write('client: $client, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdBy: $createdBy, ')
           ..write('updatedAt: $updatedAt, ')
@@ -1482,6 +1519,13 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: '');
+  static const VerificationMeta _likedMeta = const VerificationMeta('liked');
+  late final GeneratedColumn<bool> liked = GeneratedColumn<bool>(
+      'liked', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1494,7 +1538,8 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
         updatedAt,
         updatedBy,
         deletedAt,
-        deletedBy
+        deletedBy,
+        liked
       ];
   @override
   String get aliasedName => _alias ?? 'feedback';
@@ -1566,6 +1611,10 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
       context.handle(_deletedByMeta,
           deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
     }
+    if (data.containsKey('liked')) {
+      context.handle(
+          _likedMeta, liked.isAcceptableOrUnknown(data['liked']!, _likedMeta));
+    }
     return context;
   }
 
@@ -1597,6 +1646,8 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
           .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
       deletedBy: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
+      liked: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}liked'])!,
     );
   }
 
@@ -1627,6 +1678,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
   final int updatedBy;
   final DateTime? deletedAt;
   final int? deletedBy;
+  final bool liked;
   const Feedback(
       {required this.id,
       required this.instructionId,
@@ -1638,7 +1690,8 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       required this.updatedAt,
       required this.updatedBy,
       this.deletedAt,
-      this.deletedBy});
+      this.deletedBy,
+      required this.liked});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1659,6 +1712,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
     if (!nullToAbsent || deletedBy != null) {
       map['deleted_by'] = Variable<int>(deletedBy);
     }
+    map['liked'] = Variable<bool>(liked);
     return map;
   }
 
@@ -1680,6 +1734,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       deletedBy: deletedBy == null && nullToAbsent
           ? const Value.absent()
           : Value(deletedBy),
+      liked: Value(liked),
     );
   }
 
@@ -1698,6 +1753,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       updatedBy: serializer.fromJson<int>(json['updated_by']),
       deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
       deletedBy: serializer.fromJson<int?>(json['deleted_by']),
+      liked: serializer.fromJson<bool>(json['liked']),
     );
   }
   @override
@@ -1715,6 +1771,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       'updated_by': serializer.toJson<int>(updatedBy),
       'deleted_at': serializer.toJson<DateTime?>(deletedAt),
       'deleted_by': serializer.toJson<int?>(deletedBy),
+      'liked': serializer.toJson<bool>(liked),
     };
   }
 
@@ -1729,7 +1786,8 @@ class Feedback extends DataClass implements Insertable<Feedback> {
           DateTime? updatedAt,
           int? updatedBy,
           Value<DateTime?> deletedAt = const Value.absent(),
-          Value<int?> deletedBy = const Value.absent()}) =>
+          Value<int?> deletedBy = const Value.absent(),
+          bool? liked}) =>
       Feedback(
         id: id ?? this.id,
         instructionId: instructionId ?? this.instructionId,
@@ -1742,6 +1800,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
         updatedBy: updatedBy ?? this.updatedBy,
         deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
         deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
+        liked: liked ?? this.liked,
       );
   @override
   String toString() {
@@ -1756,14 +1815,15 @@ class Feedback extends DataClass implements Insertable<Feedback> {
           ..write('updatedAt: $updatedAt, ')
           ..write('updatedBy: $updatedBy, ')
           ..write('deletedAt: $deletedAt, ')
-          ..write('deletedBy: $deletedBy')
+          ..write('deletedBy: $deletedBy, ')
+          ..write('liked: $liked')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(id, instructionId, userId, message, image,
-      createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
+      createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, liked);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1778,7 +1838,8 @@ class Feedback extends DataClass implements Insertable<Feedback> {
           other.updatedAt == this.updatedAt &&
           other.updatedBy == this.updatedBy &&
           other.deletedAt == this.deletedAt &&
-          other.deletedBy == this.deletedBy);
+          other.deletedBy == this.deletedBy &&
+          other.liked == this.liked);
 }
 
 class FeedbackCompanion extends UpdateCompanion<Feedback> {
@@ -1793,6 +1854,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
   final Value<int> updatedBy;
   final Value<DateTime?> deletedAt;
   final Value<int?> deletedBy;
+  final Value<bool> liked;
   final Value<int> rowid;
   const FeedbackCompanion({
     this.id = const Value.absent(),
@@ -1806,6 +1868,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     this.updatedBy = const Value.absent(),
     this.deletedAt = const Value.absent(),
     this.deletedBy = const Value.absent(),
+    this.liked = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FeedbackCompanion.insert({
@@ -1820,6 +1883,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     required int updatedBy,
     this.deletedAt = const Value.absent(),
     this.deletedBy = const Value.absent(),
+    this.liked = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         instructionId = Value(instructionId),
@@ -1841,6 +1905,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     Expression<int>? updatedBy,
     Expression<DateTime>? deletedAt,
     Expression<int>? deletedBy,
+    Expression<bool>? liked,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1855,6 +1920,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
       if (updatedBy != null) 'updated_by': updatedBy,
       if (deletedAt != null) 'deleted_at': deletedAt,
       if (deletedBy != null) 'deleted_by': deletedBy,
+      if (liked != null) 'liked': liked,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1871,6 +1937,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
       Value<int>? updatedBy,
       Value<DateTime?>? deletedAt,
       Value<int?>? deletedBy,
+      Value<bool>? liked,
       Value<int>? rowid}) {
     return FeedbackCompanion(
       id: id ?? this.id,
@@ -1884,6 +1951,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
       updatedBy: updatedBy ?? this.updatedBy,
       deletedAt: deletedAt ?? this.deletedAt,
       deletedBy: deletedBy ?? this.deletedBy,
+      liked: liked ?? this.liked,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1924,6 +1992,9 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
     if (deletedBy.present) {
       map['deleted_by'] = Variable<int>(deletedBy.value);
     }
+    if (liked.present) {
+      map['liked'] = Variable<bool>(liked.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1944,6 +2015,7 @@ class FeedbackCompanion extends UpdateCompanion<Feedback> {
           ..write('updatedBy: $updatedBy, ')
           ..write('deletedAt: $deletedAt, ')
           ..write('deletedBy: $deletedBy, ')
+          ..write('liked: $liked, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1988,6 +2060,13 @@ class InstructionSteps extends Table
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  late final GeneratedColumnWithTypeConverter<ContentType, String> type =
+      GeneratedColumn<String>('type', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: true,
+              $customConstraints: 'NOT NULL')
+          .withConverter<ContentType>(InstructionSteps.$convertertype);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
@@ -2037,6 +2116,7 @@ class InstructionSteps extends Table
         stepNr,
         description,
         image,
+        type,
         createdAt,
         createdBy,
         updatedAt,
@@ -2084,6 +2164,7 @@ class InstructionSteps extends Table
     } else if (isInserting) {
       context.missing(_imageMeta);
     }
+    context.handle(_typeMeta, const VerificationResult.success());
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -2135,6 +2216,8 @@ class InstructionSteps extends Table
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       image: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image'])!,
+      type: InstructionSteps.$convertertype.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       createdBy: attachedDatabase.typeMapping
@@ -2155,6 +2238,8 @@ class InstructionSteps extends Table
     return InstructionSteps(attachedDatabase, alias);
   }
 
+  static JsonTypeConverter2<ContentType, String, String> $convertertype =
+      const EnumNameConverter<ContentType>(ContentType.values);
   @override
   List<String> get customConstraints => const [
         'CONSTRAINT instruction_steps_pkey PRIMARY KEY(id)',
@@ -2170,6 +2255,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
   final int stepNr;
   final String description;
   final String image;
+  final ContentType type;
   final DateTime createdAt;
   final int createdBy;
   final DateTime updatedAt;
@@ -2182,6 +2268,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
       required this.stepNr,
       required this.description,
       required this.image,
+      required this.type,
       required this.createdAt,
       required this.createdBy,
       required this.updatedAt,
@@ -2196,6 +2283,10 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
     map['step_nr'] = Variable<int>(stepNr);
     map['description'] = Variable<String>(description);
     map['image'] = Variable<String>(image);
+    {
+      final converter = InstructionSteps.$convertertype;
+      map['type'] = Variable<String>(converter.toSql(type));
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['created_by'] = Variable<int>(createdBy);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -2216,6 +2307,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
       stepNr: Value(stepNr),
       description: Value(description),
       image: Value(image),
+      type: Value(type),
       createdAt: Value(createdAt),
       createdBy: Value(createdBy),
       updatedAt: Value(updatedAt),
@@ -2238,6 +2330,8 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
       stepNr: serializer.fromJson<int>(json['step_nr']),
       description: serializer.fromJson<String>(json['description']),
       image: serializer.fromJson<String>(json['image']),
+      type: InstructionSteps.$convertertype
+          .fromJson(serializer.fromJson<String>(json['type'])),
       createdAt: serializer.fromJson<DateTime>(json['created_at']),
       createdBy: serializer.fromJson<int>(json['created_by']),
       updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
@@ -2255,6 +2349,8 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
       'step_nr': serializer.toJson<int>(stepNr),
       'description': serializer.toJson<String>(description),
       'image': serializer.toJson<String>(image),
+      'type': serializer
+          .toJson<String>(InstructionSteps.$convertertype.toJson(type)),
       'created_at': serializer.toJson<DateTime>(createdAt),
       'created_by': serializer.toJson<int>(createdBy),
       'updated_at': serializer.toJson<DateTime>(updatedAt),
@@ -2270,6 +2366,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
           int? stepNr,
           String? description,
           String? image,
+          ContentType? type,
           DateTime? createdAt,
           int? createdBy,
           DateTime? updatedAt,
@@ -2282,6 +2379,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
         stepNr: stepNr ?? this.stepNr,
         description: description ?? this.description,
         image: image ?? this.image,
+        type: type ?? this.type,
         createdAt: createdAt ?? this.createdAt,
         createdBy: createdBy ?? this.createdBy,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -2297,6 +2395,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
           ..write('stepNr: $stepNr, ')
           ..write('description: $description, ')
           ..write('image: $image, ')
+          ..write('type: $type, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdBy: $createdBy, ')
           ..write('updatedAt: $updatedAt, ')
@@ -2309,7 +2408,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
 
   @override
   int get hashCode => Object.hash(id, instructionId, stepNr, description, image,
-      createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
+      type, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2319,6 +2418,7 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
           other.stepNr == this.stepNr &&
           other.description == this.description &&
           other.image == this.image &&
+          other.type == this.type &&
           other.createdAt == this.createdAt &&
           other.createdBy == this.createdBy &&
           other.updatedAt == this.updatedAt &&
@@ -2333,6 +2433,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
   final Value<int> stepNr;
   final Value<String> description;
   final Value<String> image;
+  final Value<ContentType> type;
   final Value<DateTime> createdAt;
   final Value<int> createdBy;
   final Value<DateTime> updatedAt;
@@ -2345,6 +2446,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
     this.stepNr = const Value.absent(),
     this.description = const Value.absent(),
     this.image = const Value.absent(),
+    this.type = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.createdBy = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -2358,6 +2460,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
     required int stepNr,
     required String description,
     required String image,
+    required ContentType type,
     required DateTime createdAt,
     required int createdBy,
     required DateTime updatedAt,
@@ -2368,6 +2471,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
         stepNr = Value(stepNr),
         description = Value(description),
         image = Value(image),
+        type = Value(type),
         createdAt = Value(createdAt),
         createdBy = Value(createdBy),
         updatedAt = Value(updatedAt),
@@ -2378,6 +2482,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
     Expression<int>? stepNr,
     Expression<String>? description,
     Expression<String>? image,
+    Expression<String>? type,
     Expression<DateTime>? createdAt,
     Expression<int>? createdBy,
     Expression<DateTime>? updatedAt,
@@ -2391,6 +2496,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
       if (stepNr != null) 'step_nr': stepNr,
       if (description != null) 'description': description,
       if (image != null) 'image': image,
+      if (type != null) 'type': type,
       if (createdAt != null) 'created_at': createdAt,
       if (createdBy != null) 'created_by': createdBy,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -2406,6 +2512,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
       Value<int>? stepNr,
       Value<String>? description,
       Value<String>? image,
+      Value<ContentType>? type,
       Value<DateTime>? createdAt,
       Value<int>? createdBy,
       Value<DateTime>? updatedAt,
@@ -2418,6 +2525,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
       stepNr: stepNr ?? this.stepNr,
       description: description ?? this.description,
       image: image ?? this.image,
+      type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       createdBy: createdBy ?? this.createdBy,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -2444,6 +2552,10 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
     }
     if (image.present) {
       map['image'] = Variable<String>(image.value);
+    }
+    if (type.present) {
+      final converter = InstructionSteps.$convertertype;
+      map['type'] = Variable<String>(converter.toSql(type.value));
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -2474,6 +2586,7 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
           ..write('stepNr: $stepNr, ')
           ..write('description: $description, ')
           ..write('image: $image, ')
+          ..write('type: $type, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdBy: $createdBy, ')
           ..write('updatedAt: $updatedAt, ')
@@ -4224,6 +4337,975 @@ class BytesCompanion extends UpdateCompanion<Byte> {
   }
 }
 
+class Assets extends Table with TableInfo<Assets, Asset> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  Assets(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  late final GeneratedColumnWithTypeConverter<ContentType, String> type =
+      GeneratedColumn<String>('type', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: true,
+              $customConstraints: 'NOT NULL')
+          .withConverter<ContentType>(Assets.$convertertype);
+  static const VerificationMeta _fileMeta = const VerificationMeta('file');
+  late final GeneratedColumn<String> file = GeneratedColumn<String>(
+      'file', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _textfieldMeta =
+      const VerificationMeta('textfield');
+  late final GeneratedColumn<String> textfield = GeneratedColumn<String>(
+      'textfield', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdByMeta =
+      const VerificationMeta('createdBy');
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+      'created_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedByMeta =
+      const VerificationMeta('updatedBy');
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+      'updated_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _deletedByMeta =
+      const VerificationMeta('deletedBy');
+  late final GeneratedColumn<int> deletedBy = GeneratedColumn<int>(
+      'deleted_by', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        type,
+        file,
+        textfield,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
+        deletedAt,
+        deletedBy
+      ];
+  @override
+  String get aliasedName => _alias ?? 'assets';
+  @override
+  String get actualTableName => 'assets';
+  @override
+  VerificationContext validateIntegrity(Insertable<Asset> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    context.handle(_typeMeta, const VerificationResult.success());
+    if (data.containsKey('file')) {
+      context.handle(
+          _fileMeta, file.isAcceptableOrUnknown(data['file']!, _fileMeta));
+    }
+    if (data.containsKey('textfield')) {
+      context.handle(_textfieldMeta,
+          textfield.isAcceptableOrUnknown(data['textfield']!, _textfieldMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(_createdByMeta,
+          createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
+    } else if (isInserting) {
+      context.missing(_createdByMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(_updatedByMeta,
+          updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta));
+    } else if (isInserting) {
+      context.missing(_updatedByMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('deleted_by')) {
+      context.handle(_deletedByMeta,
+          deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Asset map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Asset(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      type: Assets.$convertertype.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!),
+      file: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}file']),
+      textfield: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}textfield']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      createdBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_by'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      updatedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_by'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      deletedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
+    );
+  }
+
+  @override
+  Assets createAlias(String alias) {
+    return Assets(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ContentType, String, String> $convertertype =
+      const EnumNameConverter<ContentType>(ContentType.values);
+  @override
+  List<String> get customConstraints =>
+      const ['CONSTRAINT asset_pkey PRIMARY KEY(id)'];
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class Asset extends DataClass implements Insertable<Asset> {
+  final int id;
+  final String name;
+  final ContentType type;
+  final String? file;
+  final String? textfield;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  const Asset(
+      {required this.id,
+      required this.name,
+      required this.type,
+      this.file,
+      this.textfield,
+      required this.createdAt,
+      required this.createdBy,
+      required this.updatedAt,
+      required this.updatedBy,
+      this.deletedAt,
+      this.deletedBy});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    {
+      final converter = Assets.$convertertype;
+      map['type'] = Variable<String>(converter.toSql(type));
+    }
+    if (!nullToAbsent || file != null) {
+      map['file'] = Variable<String>(file);
+    }
+    if (!nullToAbsent || textfield != null) {
+      map['textfield'] = Variable<String>(textfield);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['created_by'] = Variable<int>(createdBy);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['updated_by'] = Variable<int>(updatedBy);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || deletedBy != null) {
+      map['deleted_by'] = Variable<int>(deletedBy);
+    }
+    return map;
+  }
+
+  AssetsCompanion toCompanion(bool nullToAbsent) {
+    return AssetsCompanion(
+      id: Value(id),
+      name: Value(name),
+      type: Value(type),
+      file: file == null && nullToAbsent ? const Value.absent() : Value(file),
+      textfield: textfield == null && nullToAbsent
+          ? const Value.absent()
+          : Value(textfield),
+      createdAt: Value(createdAt),
+      createdBy: Value(createdBy),
+      updatedAt: Value(updatedAt),
+      updatedBy: Value(updatedBy),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deletedBy: deletedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedBy),
+    );
+  }
+
+  factory Asset.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Asset(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      type: Assets.$convertertype
+          .fromJson(serializer.fromJson<String>(json['type'])),
+      file: serializer.fromJson<String?>(json['file']),
+      textfield: serializer.fromJson<String?>(json['textfield']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      createdBy: serializer.fromJson<int>(json['created_by']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
+      updatedBy: serializer.fromJson<int>(json['updated_by']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
+      deletedBy: serializer.fromJson<int?>(json['deleted_by']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(Assets.$convertertype.toJson(type)),
+      'file': serializer.toJson<String?>(file),
+      'textfield': serializer.toJson<String?>(textfield),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'created_by': serializer.toJson<int>(createdBy),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
+      'updated_by': serializer.toJson<int>(updatedBy),
+      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
+      'deleted_by': serializer.toJson<int?>(deletedBy),
+    };
+  }
+
+  Asset copyWith(
+          {int? id,
+          String? name,
+          ContentType? type,
+          Value<String?> file = const Value.absent(),
+          Value<String?> textfield = const Value.absent(),
+          DateTime? createdAt,
+          int? createdBy,
+          DateTime? updatedAt,
+          int? updatedBy,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          Value<int?> deletedBy = const Value.absent()}) =>
+      Asset(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        type: type ?? this.type,
+        file: file.present ? file.value : this.file,
+        textfield: textfield.present ? textfield.value : this.textfield,
+        createdAt: createdAt ?? this.createdAt,
+        createdBy: createdBy ?? this.createdBy,
+        updatedAt: updatedAt ?? this.updatedAt,
+        updatedBy: updatedBy ?? this.updatedBy,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Asset(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('file: $file, ')
+          ..write('textfield: $textfield, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, type, file, textfield, createdAt,
+      createdBy, updatedAt, updatedBy, deletedAt, deletedBy);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Asset &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.type == this.type &&
+          other.file == this.file &&
+          other.textfield == this.textfield &&
+          other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
+          other.updatedAt == this.updatedAt &&
+          other.updatedBy == this.updatedBy &&
+          other.deletedAt == this.deletedAt &&
+          other.deletedBy == this.deletedBy);
+}
+
+class AssetsCompanion extends UpdateCompanion<Asset> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<ContentType> type;
+  final Value<String?> file;
+  final Value<String?> textfield;
+  final Value<DateTime> createdAt;
+  final Value<int> createdBy;
+  final Value<DateTime> updatedAt;
+  final Value<int> updatedBy;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> deletedBy;
+  const AssetsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.type = const Value.absent(),
+    this.file = const Value.absent(),
+    this.textfield = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+  });
+  AssetsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required ContentType type,
+    this.file = const Value.absent(),
+    this.textfield = const Value.absent(),
+    required DateTime createdAt,
+    required int createdBy,
+    required DateTime updatedAt,
+    required int updatedBy,
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+  })  : name = Value(name),
+        type = Value(type),
+        createdAt = Value(createdAt),
+        createdBy = Value(createdBy),
+        updatedAt = Value(updatedAt),
+        updatedBy = Value(updatedBy);
+  static Insertable<Asset> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? type,
+    Expression<String>? file,
+    Expression<String>? textfield,
+    Expression<DateTime>? createdAt,
+    Expression<int>? createdBy,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? updatedBy,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? deletedBy,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (type != null) 'type': type,
+      if (file != null) 'file': file,
+      if (textfield != null) 'textfield': textfield,
+      if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deletedBy != null) 'deleted_by': deletedBy,
+    });
+  }
+
+  AssetsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<ContentType>? type,
+      Value<String?>? file,
+      Value<String?>? textfield,
+      Value<DateTime>? createdAt,
+      Value<int>? createdBy,
+      Value<DateTime>? updatedAt,
+      Value<int>? updatedBy,
+      Value<DateTime?>? deletedAt,
+      Value<int?>? deletedBy}) {
+    return AssetsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      file: file ?? this.file,
+      textfield: textfield ?? this.textfield,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deletedBy: deletedBy ?? this.deletedBy,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (type.present) {
+      final converter = Assets.$convertertype;
+      map['type'] = Variable<String>(converter.toSql(type.value));
+    }
+    if (file.present) {
+      map['file'] = Variable<String>(file.value);
+    }
+    if (textfield.present) {
+      map['textfield'] = Variable<String>(textfield.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (deletedBy.present) {
+      map['deleted_by'] = Variable<int>(deletedBy.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AssetsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('file: $file, ')
+          ..write('textfield: $textfield, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class InstructionsAssets extends Table
+    with TableInfo<InstructionsAssets, InstructionAsset> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  InstructionsAssets(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _instructionIdMeta =
+      const VerificationMeta('instructionId');
+  late final GeneratedColumn<int> instructionId = GeneratedColumn<int>(
+      'instruction_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _assetIdMeta =
+      const VerificationMeta('assetId');
+  late final GeneratedColumn<int> assetId = GeneratedColumn<int>(
+      'asset_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _createdByMeta =
+      const VerificationMeta('createdBy');
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+      'created_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _updatedByMeta =
+      const VerificationMeta('updatedBy');
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+      'updated_by', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _deletedByMeta =
+      const VerificationMeta('deletedBy');
+  late final GeneratedColumn<int> deletedBy = GeneratedColumn<int>(
+      'deleted_by', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  @override
+  List<GeneratedColumn> get $columns => [
+        instructionId,
+        assetId,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
+        deletedAt,
+        deletedBy
+      ];
+  @override
+  String get aliasedName => _alias ?? 'InstructionsAssets';
+  @override
+  String get actualTableName => 'InstructionsAssets';
+  @override
+  VerificationContext validateIntegrity(Insertable<InstructionAsset> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('instruction_id')) {
+      context.handle(
+          _instructionIdMeta,
+          instructionId.isAcceptableOrUnknown(
+              data['instruction_id']!, _instructionIdMeta));
+    } else if (isInserting) {
+      context.missing(_instructionIdMeta);
+    }
+    if (data.containsKey('asset_id')) {
+      context.handle(_assetIdMeta,
+          assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta));
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(_createdByMeta,
+          createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
+    } else if (isInserting) {
+      context.missing(_createdByMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(_updatedByMeta,
+          updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta));
+    } else if (isInserting) {
+      context.missing(_updatedByMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('deleted_by')) {
+      context.handle(_deletedByMeta,
+          deletedBy.isAcceptableOrUnknown(data['deleted_by']!, _deletedByMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {instructionId, assetId};
+  @override
+  InstructionAsset map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InstructionAsset(
+      instructionId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}instruction_id'])!,
+      assetId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}asset_id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      createdBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_by'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      updatedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_by'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      deletedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_by']),
+    );
+  }
+
+  @override
+  InstructionsAssets createAlias(String alias) {
+    return InstructionsAssets(attachedDatabase, alias);
+  }
+
+  @override
+  List<String> get customConstraints => const [
+        'CONSTRAINT instruction_asset_pkey PRIMARY KEY(instruction_id, asset_id)',
+        'CONSTRAINT instruction_asset_asset_id_fkey FOREIGN KEY(asset_id)REFERENCES assets(id)ON UPDATE CASCADE ON DELETE CASCADE',
+        'CONSTRAINT instruction_asset_instruction_id_fkey FOREIGN KEY(instruction_id)REFERENCES instructions(id)ON UPDATE CASCADE ON DELETE CASCADE'
+      ];
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class InstructionAsset extends DataClass
+    implements Insertable<InstructionAsset> {
+  final int instructionId;
+  final int assetId;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  const InstructionAsset(
+      {required this.instructionId,
+      required this.assetId,
+      required this.createdAt,
+      required this.createdBy,
+      required this.updatedAt,
+      required this.updatedBy,
+      this.deletedAt,
+      this.deletedBy});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['instruction_id'] = Variable<int>(instructionId);
+    map['asset_id'] = Variable<int>(assetId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['created_by'] = Variable<int>(createdBy);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['updated_by'] = Variable<int>(updatedBy);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || deletedBy != null) {
+      map['deleted_by'] = Variable<int>(deletedBy);
+    }
+    return map;
+  }
+
+  InstructionsAssetsCompanion toCompanion(bool nullToAbsent) {
+    return InstructionsAssetsCompanion(
+      instructionId: Value(instructionId),
+      assetId: Value(assetId),
+      createdAt: Value(createdAt),
+      createdBy: Value(createdBy),
+      updatedAt: Value(updatedAt),
+      updatedBy: Value(updatedBy),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deletedBy: deletedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedBy),
+    );
+  }
+
+  factory InstructionAsset.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InstructionAsset(
+      instructionId: serializer.fromJson<int>(json['instruction_id']),
+      assetId: serializer.fromJson<int>(json['asset_id']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      createdBy: serializer.fromJson<int>(json['created_by']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
+      updatedBy: serializer.fromJson<int>(json['updated_by']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
+      deletedBy: serializer.fromJson<int?>(json['deleted_by']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'instruction_id': serializer.toJson<int>(instructionId),
+      'asset_id': serializer.toJson<int>(assetId),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'created_by': serializer.toJson<int>(createdBy),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
+      'updated_by': serializer.toJson<int>(updatedBy),
+      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
+      'deleted_by': serializer.toJson<int?>(deletedBy),
+    };
+  }
+
+  InstructionAsset copyWith(
+          {int? instructionId,
+          int? assetId,
+          DateTime? createdAt,
+          int? createdBy,
+          DateTime? updatedAt,
+          int? updatedBy,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          Value<int?> deletedBy = const Value.absent()}) =>
+      InstructionAsset(
+        instructionId: instructionId ?? this.instructionId,
+        assetId: assetId ?? this.assetId,
+        createdAt: createdAt ?? this.createdAt,
+        createdBy: createdBy ?? this.createdBy,
+        updatedAt: updatedAt ?? this.updatedAt,
+        updatedBy: updatedBy ?? this.updatedBy,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deletedBy: deletedBy.present ? deletedBy.value : this.deletedBy,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('InstructionAsset(')
+          ..write('instructionId: $instructionId, ')
+          ..write('assetId: $assetId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(instructionId, assetId, createdAt, createdBy,
+      updatedAt, updatedBy, deletedAt, deletedBy);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InstructionAsset &&
+          other.instructionId == this.instructionId &&
+          other.assetId == this.assetId &&
+          other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
+          other.updatedAt == this.updatedAt &&
+          other.updatedBy == this.updatedBy &&
+          other.deletedAt == this.deletedAt &&
+          other.deletedBy == this.deletedBy);
+}
+
+class InstructionsAssetsCompanion extends UpdateCompanion<InstructionAsset> {
+  final Value<int> instructionId;
+  final Value<int> assetId;
+  final Value<DateTime> createdAt;
+  final Value<int> createdBy;
+  final Value<DateTime> updatedAt;
+  final Value<int> updatedBy;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> deletedBy;
+  final Value<int> rowid;
+  const InstructionsAssetsCompanion({
+    this.instructionId = const Value.absent(),
+    this.assetId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  InstructionsAssetsCompanion.insert({
+    required int instructionId,
+    required int assetId,
+    required DateTime createdAt,
+    required int createdBy,
+    required DateTime updatedAt,
+    required int updatedBy,
+    this.deletedAt = const Value.absent(),
+    this.deletedBy = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : instructionId = Value(instructionId),
+        assetId = Value(assetId),
+        createdAt = Value(createdAt),
+        createdBy = Value(createdBy),
+        updatedAt = Value(updatedAt),
+        updatedBy = Value(updatedBy);
+  static Insertable<InstructionAsset> custom({
+    Expression<int>? instructionId,
+    Expression<int>? assetId,
+    Expression<DateTime>? createdAt,
+    Expression<int>? createdBy,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? updatedBy,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? deletedBy,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (instructionId != null) 'instruction_id': instructionId,
+      if (assetId != null) 'asset_id': assetId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deletedBy != null) 'deleted_by': deletedBy,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  InstructionsAssetsCompanion copyWith(
+      {Value<int>? instructionId,
+      Value<int>? assetId,
+      Value<DateTime>? createdAt,
+      Value<int>? createdBy,
+      Value<DateTime>? updatedAt,
+      Value<int>? updatedBy,
+      Value<DateTime?>? deletedAt,
+      Value<int?>? deletedBy,
+      Value<int>? rowid}) {
+    return InstructionsAssetsCompanion(
+      instructionId: instructionId ?? this.instructionId,
+      assetId: assetId ?? this.assetId,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deletedBy: deletedBy ?? this.deletedBy,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (instructionId.present) {
+      map['instruction_id'] = Variable<int>(instructionId.value);
+    }
+    if (assetId.present) {
+      map['asset_id'] = Variable<int>(assetId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (deletedBy.present) {
+      map['deleted_by'] = Variable<int>(deletedBy.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InstructionsAssetsCompanion(')
+          ..write('instructionId: $instructionId, ')
+          ..write('assetId: $assetId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deletedBy: $deletedBy, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final Categories categories = Categories(this);
@@ -4236,6 +5318,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       InstructionsCategories(this);
   late final Settings settings = Settings(this);
   late final Bytes bytes = Bytes(this);
+  late final Assets assets = Assets(this);
+  late final InstructionsAssets instructionsAssets = InstructionsAssets(this);
   Future<int> updateHistoryEntry(int instructionId, DateTime updatedAt,
       int userId, int createdBy, DateTime createdAt, int updatedBy) {
     return customInsert(
@@ -4305,6 +5389,158 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         }).map((QueryRow row) => row.read<bool>('_c0'));
   }
 
+  Selectable<Feedback> getFeedbackLiked(int userId) {
+    return customSelect(
+        'SELECT * FROM feedback WHERE user_id = ?1 AND deleted_at IS NULL ORDER BY liked DESC, created_at DESC',
+        variables: [
+          Variable<int>(userId)
+        ],
+        readsFrom: {
+          feedback,
+        }).asyncMap(feedback.mapFromRow);
+  }
+
+  Selectable<HistoryEntriesOfUserAsInstructionsResult>
+      historyEntriesOfUserAsInstructions(int userId) {
+    return customSelect(
+        'SELECT instructions.*, coalesce(q.number_of_steps, 0) AS number_of_steps FROM instructions LEFT JOIN (SELECT instruction_id, COUNT(*) AS number_of_steps FROM instruction_steps WHERE deleted_at IS NULL GROUP BY instruction_id) AS q ON q.instruction_id = instructions.id INNER JOIN (SELECT * FROM histories WHERE user_id = ?1 AND deleted_at IS NULL) AS r ON r.instruction_id = instructions.id WHERE instructions.deleted_at IS NULL ORDER BY r.updated_at DESC',
+        variables: [
+          Variable<int>(userId)
+        ],
+        readsFrom: {
+          instructions,
+          instructionSteps,
+          histories,
+        }).map((QueryRow row) {
+      return HistoryEntriesOfUserAsInstructionsResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        numberOfSteps: row.read<int>('number_of_steps'),
+      );
+    });
+  }
+
+  Selectable<AllInstructionsResult> allInstructions() {
+    return customSelect(
+        'SELECT instructions.*, coalesce(q.number_of_steps, 0) AS number_of_steps FROM instructions LEFT JOIN (SELECT instruction_id, COUNT(*) AS number_of_steps FROM instruction_steps WHERE deleted_at IS NULL GROUP BY instruction_id) AS q ON q.instruction_id = instructions.id WHERE instructions.deleted_at IS NULL ORDER BY id',
+        variables: [],
+        readsFrom: {
+          instructions,
+          instructionSteps,
+        }).map((QueryRow row) {
+      return AllInstructionsResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        numberOfSteps: row.read<int>('number_of_steps'),
+      );
+    });
+  }
+
+  Selectable<AllInstructionsBySearchResult> allInstructionsBySearch(
+      String word) {
+    return customSelect(
+        'SELECT instructions.*, coalesce(q.number_of_steps, 0) AS number_of_steps FROM instructions LEFT JOIN (SELECT instruction_id, COUNT(*) AS number_of_steps FROM instruction_steps WHERE deleted_at IS NULL GROUP BY instruction_id) AS q ON q.instruction_id = instructions.id WHERE instructions.deleted_at IS NULL AND(title LIKE \'%\' || ?1 || \'%\' OR short_title LIKE \'%\' || ?1 || \'%\')ORDER BY id',
+        variables: [
+          Variable<String>(word)
+        ],
+        readsFrom: {
+          instructions,
+          instructionSteps,
+        }).map((QueryRow row) {
+      return AllInstructionsBySearchResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        numberOfSteps: row.read<int>('number_of_steps'),
+      );
+    });
+  }
+
+  Selectable<AllInstructionsByCategoryAndSearchResult>
+      allInstructionsByCategoryAndSearch(int categoryId, String word) {
+    return customSelect(
+        'SELECT instructions.*, coalesce(q.number_of_steps, 0) AS number_of_steps FROM instructions LEFT JOIN (SELECT instruction_id, COUNT(*) AS number_of_steps FROM instruction_steps WHERE deleted_at IS NULL GROUP BY instruction_id) AS q ON q.instruction_id = instructions.id INNER JOIN (SELECT * FROM InstructionsCategories WHERE category_id = ?1 AND deleted_at IS NULL) AS r ON r.instruction_id = instructions.id WHERE instructions.deleted_at IS NULL AND(title LIKE \'%\' || ?2 || \'%\' OR short_title LIKE \'%\' || ?2 || \'%\')ORDER BY id',
+        variables: [
+          Variable<int>(categoryId),
+          Variable<String>(word)
+        ],
+        readsFrom: {
+          instructions,
+          instructionSteps,
+          instructionsCategories,
+        }).map((QueryRow row) {
+      return AllInstructionsByCategoryAndSearchResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        numberOfSteps: row.read<int>('number_of_steps'),
+      );
+    });
+  }
+
+  Selectable<AllInstructionsByCategoryResult> allInstructionsByCategory(
+      int categoryId) {
+    return customSelect(
+        'SELECT instructions.*, coalesce(q.number_of_steps, 0) AS number_of_steps FROM instructions LEFT JOIN (SELECT instruction_id, COUNT(*) AS number_of_steps FROM instruction_steps WHERE deleted_at IS NULL GROUP BY instruction_id) AS q ON q.instruction_id = instructions.id INNER JOIN (SELECT * FROM InstructionsCategories WHERE category_id = ?1 AND deleted_at IS NULL) AS r ON r.instruction_id = instructions.id WHERE instructions.deleted_at IS NULL ORDER BY id',
+        variables: [
+          Variable<int>(categoryId)
+        ],
+        readsFrom: {
+          instructions,
+          instructionSteps,
+          instructionsCategories,
+        }).map((QueryRow row) {
+      return AllInstructionsByCategoryResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        shortTitle: row.read<String>('short_title'),
+        image: row.read<String>('image'),
+        description: row.read<String>('description'),
+        createdAt: row.read<DateTime>('created_at'),
+        createdBy: row.read<int>('created_by'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        updatedBy: row.read<int>('updated_by'),
+        deletedAt: row.readNullable<DateTime>('deleted_at'),
+        deletedBy: row.readNullable<int>('deleted_by'),
+        numberOfSteps: row.read<int>('number_of_steps'),
+      );
+    });
+  }
+
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4318,7 +5554,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         histories,
         instructionsCategories,
         settings,
-        bytes
+        bytes,
+        assets,
+        instructionsAssets
       ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
@@ -4379,6 +5617,34 @@ abstract class _$AppDatabase extends GeneratedDatabase {
               TableUpdate('bytes', kind: UpdateKind.delete),
             ],
           ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('assets',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('InstructionsAssets', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('assets',
+                limitUpdateKind: UpdateKind.update),
+            result: [
+              TableUpdate('InstructionsAssets', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('instructions',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('InstructionsAssets', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('instructions',
+                limitUpdateKind: UpdateKind.update),
+            result: [
+              TableUpdate('InstructionsAssets', kind: UpdateKind.update),
+            ],
+          ),
         ],
       );
 }
@@ -4429,5 +5695,150 @@ class OpenInstructionResult {
     this.instructionStepId,
     required this.open,
     this.additionalData,
+  });
+}
+
+class HistoryEntriesOfUserAsInstructionsResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int numberOfSteps;
+  HistoryEntriesOfUserAsInstructionsResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.numberOfSteps,
+  });
+}
+
+class AllInstructionsResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int numberOfSteps;
+  AllInstructionsResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.numberOfSteps,
+  });
+}
+
+class AllInstructionsBySearchResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int numberOfSteps;
+  AllInstructionsBySearchResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.numberOfSteps,
+  });
+}
+
+class AllInstructionsByCategoryAndSearchResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int numberOfSteps;
+  AllInstructionsByCategoryAndSearchResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.numberOfSteps,
+  });
+}
+
+class AllInstructionsByCategoryResult {
+  final int id;
+  final String title;
+  final String shortTitle;
+  final String image;
+  final String description;
+  final DateTime createdAt;
+  final int createdBy;
+  final DateTime updatedAt;
+  final int updatedBy;
+  final DateTime? deletedAt;
+  final int? deletedBy;
+  final int numberOfSteps;
+  AllInstructionsByCategoryResult({
+    required this.id,
+    required this.title,
+    required this.shortTitle,
+    required this.image,
+    required this.description,
+    required this.createdAt,
+    required this.createdBy,
+    required this.updatedAt,
+    required this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+    required this.numberOfSteps,
   });
 }

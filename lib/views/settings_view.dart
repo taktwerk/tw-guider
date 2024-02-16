@@ -1,14 +1,16 @@
-import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/app_info.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/languages/supported_languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
 import 'package:guider/views/login.dart';
+import 'package:guider/views/registration.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -21,6 +23,13 @@ class _SettingsViewState extends State<SettingsView> {
   Locale? selectedItem;
   List<Locale> languages = SupportedLanguages.all;
   List<Setting> settings = [];
+  AppInfo? appInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    getAppInfo();
+  }
 
   final MaterialStateProperty<Icon?> thumbIcon =
       MaterialStateProperty.resolveWith<Icon?>(
@@ -80,6 +89,8 @@ class _SettingsViewState extends State<SettingsView> {
                           SizedBox(
                             width: 300,
                             child: DropdownButtonFormField(
+                              key: const Key(
+                                  "dropdown"), //included for integration test purposes
                               isExpanded: true,
                               icon: const Icon(Icons.arrow_drop_down_circle),
                               value: snapshot.hasData
@@ -158,17 +169,6 @@ class _SettingsViewState extends State<SettingsView> {
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: ElevatedButton.icon(
-                    onPressed: () {
-                      final db = Singleton().getDatabase();
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => DriftDbViewer(db)));
-                    },
-                    icon: const Icon(Icons.storage),
-                    label: const Text("DB")),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: ElevatedButton.icon(
                     style: const ButtonStyle(
                         backgroundColor:
                             MaterialStatePropertyAll<Color>(Colors.red)),
@@ -177,12 +177,22 @@ class _SettingsViewState extends State<SettingsView> {
                       currentUser = null;
                       var prefs = await Singleton().getPrefInstance();
                       prefs.remove(KeyValueEnum.currentUser.key);
-                      await KeyValue.saveLogin(false).then((value) =>
+                      String? client = await KeyValue.getClient();
+                      await KeyValue.saveLogin(false).then((value) {
+                        if (client != null) {
                           Navigator.of(
                             context,
                             rootNavigator: true,
                           ).pushReplacement(MaterialPageRoute(
-                              builder: (context) => const LoginPage())));
+                              builder: (context) => const LoginPage()));
+                        } else {
+                          Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).pushReplacement(MaterialPageRoute(
+                              builder: (context) => const RegistrationPage()));
+                        }
+                      });
                     },
                     icon: Transform.flip(
                       flipX: true,
@@ -190,6 +200,13 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                     label: Text(Languages.of(context)!.logout)),
               ),
+              appInfo != null
+                  ? AppInformationWidget(
+                      deviceId: appInfo!.deviceID,
+                      name: appInfo!.name,
+                      version: appInfo!.version,
+                    )
+                  : Container()
             ],
           ),
         )
@@ -204,6 +221,7 @@ class _SettingsViewState extends State<SettingsView> {
       await Singleton()
           .getDatabase()
           .updateUserLanguage(currentUser!, lang.languageCode);
+      SupabaseToDrift.sync();
     }
   }
 
@@ -212,6 +230,7 @@ class _SettingsViewState extends State<SettingsView> {
       await Singleton()
           .getDatabase()
           .updateUserRealtime(currentUser!, realtime);
+      SupabaseToDrift.sync();
     }
   }
 
@@ -220,6 +239,53 @@ class _SettingsViewState extends State<SettingsView> {
     GuiderApp.setTheme(context, mode);
     if (currentUser != null) {
       await Singleton().getDatabase().updateUserLightmode(currentUser!, theme);
+      SupabaseToDrift.sync();
     }
+  }
+
+  Future<void> getAppInfo() async {
+    AppInfo? result = await appInformation();
+    setState(() {
+      appInfo = result;
+    });
+  }
+}
+
+class AppInformationWidget extends StatelessWidget {
+  final String version;
+  final String name;
+  final String deviceId;
+  const AppInformationWidget(
+      {super.key,
+      required this.version,
+      required this.name,
+      required this.deviceId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Table(
+        children: <TableRow>[
+          // TableRow(
+          //   children: <Widget>[
+          //     Center(child: Text("App name:")),
+          //     Center(child: Text(name)),
+          //   ],
+          // ),
+          TableRow(
+            children: <Widget>[
+              const Center(child: Text("Device ID")),
+              Center(child: Text(deviceId)),
+            ],
+          ),
+          TableRow(
+            children: <Widget>[
+              const Center(child: Text('Version')),
+              Center(child: Text(version)),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

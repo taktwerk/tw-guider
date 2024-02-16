@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -37,6 +38,7 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
         userId: currentUser!,
         instructionId: widget.instruction.id,
         instructionStepId: id);
+    SupabaseToDrift.sync();
   }
 
   @override
@@ -111,18 +113,22 @@ class _InstructionStepViewState extends State<InstructionStepOverview> {
                               ),
                               const SizedBox(height: 5.0),
                               Expanded(
-                                  child: ListView(
-                                children: [
-                                  _renderWidget(stepSnapshot.data!.first)
-                                ],
-                              )),
+                                child: _renderWidget(stepSnapshot.data!.first),
+                                // child: ListView(
+                                //   children: [
+                                //     _renderWidget(stepSnapshot.data!.first)
+                                //   ],
+                                // ),
+                              ),
                               backAndForthButtons(
                                   snapshot.data, stepSnapshot.data!.first),
                             ],
                           ),
                         );
                       } else {
-                        return const Text("Empty data LASTVISITEDSTEP");
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
                     } else {
                       return Text('State: ${snapshot.connectionState}');

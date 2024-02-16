@@ -1,18 +1,26 @@
 import 'dart:async';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guider/helpers/device_info.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
-import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
+import 'package:guider/objects/cancellation.dart';
+import 'package:guider/objects/scanner.dart';
 import 'package:guider/objects/singleton.dart';
+import 'package:guider/views/code_scanner.dart';
 import 'package:guider/views/history_view.dart';
 import 'package:guider/views/instruction_view.dart';
 import 'package:guider/views/settings_view.dart';
 import 'package:guider/views/home_view.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:guider/views/user_feedback_view.dart';
+import 'package:guider/views/syncing_status.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:provider/provider.dart';
 
 class SecondHomePage extends StatefulWidget {
   const SecondHomePage({super.key});
@@ -30,6 +38,8 @@ class _SecondHomePageState extends State<SecondHomePage>
   BuildContext? oldDialogContext;
   StreamSubscription? subscription;
   StreamSubscription? syncedSubscription;
+  String? scannerResponse;
+  bool scanning = false;
 
   @override
   void initState() {
@@ -51,7 +61,10 @@ class _SecondHomePageState extends State<SecondHomePage>
             DateTime.parse(lastSyncedHistory!))
         .listen((event) {
       logger.w("Was synced? $event");
-      Singleton().setIsSynced(newSyncing: event.first);
+      // set syncStatus to pending when currently not syncing and the database has returned a valid value of "false"
+      if (!Singleton().getSyncing() && event.isNotEmpty && !event.first) {
+        Singleton().setSyncStatus(newStatus: SyncStatus.pendingSync);
+      }
     });
   }
 
@@ -117,20 +130,23 @@ class _SecondHomePageState extends State<SecondHomePage>
   }
 
   void _onSyncButtonClick() async {
-    if (!Singleton().getSyncing()) {
-      try {
-        await SupabaseToDrift.sync();
-      } catch (e) {
-        await Singleton().setSyncing(newSyncing: false);
-        logger.e("Exception: $e");
-      }
-    }
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => SyncingStatus()),
+    );
+    // if (!Singleton().getSyncing()) {
+    //   try {
+    //     await SupabaseToDrift.sync();
+    //   } catch (e) {
+    //     await Singleton().setSyncing(newSyncing: false);
+    //     logger.e("Exception: $e");
+    //   }
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
     final l = Languages.of(context);
-
+    final scanModel = Provider.of<ScanModel>(context, listen: false);
     final List<String> myTabs2 = <String>[
       l?.instructionsTitle ?? '',
       l?.historyTitle ?? '',
@@ -142,6 +158,59 @@ class _SecondHomePageState extends State<SecondHomePage>
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(myTabs2[_pageIndex]),
         actions: <Widget>[
+          Visibility(
+            visible: (kIsWeb || DeviceInfo.isDevice() || DeviceInfo.isMacOS())
+                ? true
+                : false,
+            child: IconButton(
+              icon: const Icon(Icons.qr_code_scanner),
+              tooltip: 'Scanner',
+              onPressed: () async {
+                scannerResponse =
+                    await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => CodeScanner(
+                              onDetect: (capture) {
+                                if (!scanning) {
+                                  scanning = true;
+                                  final List<Barcode> barcodes =
+                                      capture.barcodes;
+                                  final barcode = barcodes.firstOrNull;
+                                  if (barcode != null) {
+                                    debugPrint(
+                                        'Barcode found! ${barcode.rawValue}');
+                                    try {
+                                      String response = barcode.rawValue ?? "";
+                                      if (mounted) {
+                                        Navigator.pop(context, response);
+                                      }
+                                    } catch (e) {
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    "SOME INFO MISSING OR NOT A VALID JSON")));
+
+                                        Navigator.pop(context);
+                                      }
+                                    }
+                                  } else {
+                                    logger.w('No barcodes found.');
+                                  }
+                                }
+                              },
+                            )));
+                setState(() {
+                  if (scannerResponse != null) {
+                    scanModel.updateText(scannerResponse!);
+                  }
+
+                  Future.delayed(const Duration(seconds: 3), () {
+                    scanning = false;
+                  });
+                });
+              },
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.feedback),
             tooltip: 'Feedback',
@@ -162,43 +231,45 @@ class _SecondHomePageState extends State<SecondHomePage>
               },
             ),
           ),
-          ValueListenableBuilder<bool>(
-              valueListenable: Singleton().getValueNotifierSyncing(),
-              builder: ((context, syncing, child) {
-                return ValueListenableBuilder(
-                    valueListenable: Singleton().getValueNotifierIsSynced(),
-                    builder: ((context, isSynced, child) {
-                      return syncing
-                          ? Container(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Transform.scale(
-                                scale: 0.5,
-                                child: CircularProgressIndicator(
-                                  color: isSynced ? Colors.white : Colors.red,
-                                  strokeWidth: 3,
-                                ),
-                              ))
-                          : IconButton(
-                              color: isSynced ? Colors.white : Colors.red,
-                              icon: const Icon(Icons.sync),
-                              tooltip: 'Sync',
-                              onPressed: () => _onSyncButtonClick(),
-                            );
-                    }));
-              })),
+          ValueListenableBuilder(
+              valueListenable: Singleton().getValueNotifierSyncStatus(),
+              builder: ((context, syncStatus, child) {
+                return syncStatus == SyncStatus.runningSync
+                    ? InkWell(
+                        onTap: () => _onSyncButtonClick(),
+                        child: Container(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Transform.scale(
+                              scale: 0.5,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 3,
+                              ),
+                            )),
+                      )
+                    : IconButton(
+                        color: syncStatus == SyncStatus.pendingSync
+                            ? Colors.red
+                            : Colors.white,
+                        icon: const Icon(Icons.sync),
+                        tooltip: 'Sync',
+                        onPressed: () => _onSyncButtonClick(),
+                      );
+              }))
         ],
       ),
       body: SafeArea(
         child: IndexedStack(
           index: _pageIndex,
-          children: const <Widget>[
+          children: <Widget>[
             NavigatorPage(
-              child: Home(),
+              child: Home(
+                scanNotifier: scanModel,
+              ),
             ),
-            NavigatorPage(
+            const NavigatorPage(
               child: HistoryView(),
             ),
-            NavigatorPage(
+            const NavigatorPage(
               child: SettingsView(),
             ),
           ],

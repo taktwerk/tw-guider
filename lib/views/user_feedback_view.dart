@@ -6,6 +6,7 @@ import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart' as local;
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -57,6 +58,8 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
                               controller: _scrollController,
                               thumbVisibility: true,
                               child: ListView.builder(
+                                key: const Key(
+                                    "listview_feedback"), //included for integration test purposes
                                 itemCount: snapshot.data?.length,
                                 controller: _scrollController,
                                 physics: const BouncingScrollPhysics(),
@@ -73,6 +76,15 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
                 })
           ],
         ));
+  }
+
+  void changeLikedFlag(id, liked) async {
+    await Singleton().getDatabase().updateFeedback(FeedbackCompanion(
+        id: drift.Value(id),
+        liked: drift.Value(liked),
+        updatedAt: drift.Value(DateTime.now().toUtc()),
+        updatedBy: drift.Value(currentUser!)));
+    SupabaseToDrift.sync();
   }
 
   Card buildCard(feedback) {
@@ -93,7 +105,16 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
             ListTile(
               title: Text(heading),
               subtitle: Text(subheading),
-              trailing: const Icon(Icons.favorite_outline),
+              trailing: feedback != null
+                  ? IconButton(
+                      icon: feedback.liked
+                          ? const Icon(Icons.favorite)
+                          : const Icon(Icons.favorite_outline),
+                      onPressed: () {
+                        changeLikedFlag(feedback.id, !feedback.liked);
+                      },
+                    )
+                  : const Icon(Icons.favorite_outline),
             ),
             feedback.image != null
                 ? Container(
@@ -126,7 +147,9 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
                           )
                         : FutureBuilder(
                             future: AppUtil.filePath(
-                                feedback, Const.feedbackImagesFolderName.key),
+                                feedback.id,
+                                feedback.image,
+                                Const.feedbackImagesFolderName.key),
                             builder: (_, snapshot) {
                               if (snapshot.hasError) {
                                 return Text(l.somethingWentWrong);
@@ -205,6 +228,8 @@ class _UserFeedbackViewState extends State<UserFeedbackView> {
                             updatedBy: drift.Value(currentUser!),
                             deletedAt: drift.Value(DateTime.now().toUtc()),
                             deletedBy: drift.Value(currentUser!)));
+
+                    SupabaseToDrift.sync();
                   },
                 ),
               ],

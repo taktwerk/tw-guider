@@ -5,37 +5,32 @@ import 'package:guider/helpers/constants.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
 import 'package:guider/languages/languages.dart';
-import 'package:guider/views/instruction_view.dart';
 import 'package:intl/intl.dart';
 
 class ListItem extends StatelessWidget {
-  const ListItem({
-    super.key,
-    required Instruction instruction,
-  }) : _instruction = instruction;
+  const ListItem(
+      {super.key,
+      required Instruction instruction,
+      required int count,
+      required this.itemSelectedCallback})
+      : _instruction = instruction,
+        _count = count;
 
   final Instruction _instruction;
+  final int _count;
+  final Function itemSelectedCallback;
 
   @override
   Widget build(BuildContext context) {
     final DateFormat formatter = DateFormat.yMd('de').add_Hms();
     final l = Languages.of(context);
+
     return Card(
       elevation: 4,
       margin: const EdgeInsets.all(10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => InstructionView(
-                      instruction: _instruction,
-                      open: false,
-                      additionalData: null,
-                    )),
-          );
-        },
+        onTap: () => itemSelectedCallback(_instruction),
         child: SizedBox(
           height: 160,
           child: Container(
@@ -67,7 +62,9 @@ class ListItem extends StatelessWidget {
                                   },
                                 )
                               : FutureBuilder(
-                                  future: AppUtil.filePath(_instruction,
+                                  future: AppUtil.filePath(
+                                      _instruction.id,
+                                      _instruction.image,
                                       Const.instructionImagesFolderName.key),
                                   builder: (_, snapshot) {
                                     if (snapshot.hasError) {
@@ -116,6 +113,8 @@ class ListItem extends StatelessWidget {
                         child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(_instruction.title,
+                                key: const Key(
+                                    "listitem_title"), //included for integration test purposes
                                 style: const TextStyle(fontSize: 23))),
                       ),
                       Expanded(
@@ -123,7 +122,7 @@ class ListItem extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.bottomLeft,
                           child: Text(
-                            '${l!.steps}: ? | ${l.lastUpdate}: ${formatter.format(_instruction.updatedAt)}',
+                            '${l!.steps}: $_count | ${l.lastUpdate}: ${formatter.format(_instruction.updatedAt)}',
                             style: const TextStyle(color: Colors.grey),
                           ),
                         ),

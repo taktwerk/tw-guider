@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 3.0.0
 
 environment:
   sdk: '>=3.0.5 <4.0.0'
@@ -30,18 +30,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  getwidget: ^3.1.1
+  getwidget: ^4.0.0
   atomsbox: ^0.4.0
   provider: ^6.0.5  
-  flutter_widget_from_html_core: ^0.10.3
-  logger: ^1.4.0
+  flutter_widget_from_html_core: ^0.14.7
+  logger: ^2.0.2+1
   supabase_flutter: ^1.10.10
   image_picker: ^1.0.1
   path: ^1.8.3
   file_selector: ^1.0.0
   flutter_localizations:
     sdk: flutter 
-  connectivity_plus: ^4.0.2
   internet_connection_checker: ^1.0.0+1
   drift: ^2.10.0
   # The following adds the Cupertino Icons font to your application.
@@ -56,6 +55,20 @@ dependencies:
   drift_db_viewer: ^2.0.0
   crypto: ^3.0.3
   intl: ^0.18.0
+  grouped_list: ^5.1.2
+  media_kit: ^1.1.8                              # Primary package.
+  media_kit_video: ^1.2.1                        # For video rendering.
+  media_kit_libs_video: ^1.0.3                   # Native video dependencies.
+  pdfx: 
+    git:
+      url: 'https://github.com/ScerIO/packages.flutter' 
+      ref: '4be9de9ffed5398fd7d5f44bbb07dcd3d3f1711b'  
+      path: packages/pdfx
+  model_viewer_plus: ^1.7.0
+  mobile_scanner: ^3.5.2
+  device_info_plus: ^9.1.0
+  android_id: ^0.3.6
+  yaml: ^3.1.2
   
 dev_dependencies:
   flutter_test:
@@ -68,7 +81,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
   build_runner: ^2.4.6
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -82,7 +95,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - pubspec.yaml
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

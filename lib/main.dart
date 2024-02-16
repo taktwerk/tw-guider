@@ -1,15 +1,21 @@
 import 'dart:async';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:guider/helpers/device_info.dart';
+import 'package:guider/helpers/environment.dart';
 import 'package:guider/helpers/localstorage/key_value.dart';
 import 'package:guider/helpers/localstorage/realtime.dart';
 import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
+import 'package:guider/objects/scanner.dart';
 import 'package:guider/views/login.dart';
+import 'package:guider/views/registration.dart';
 import 'package:guider/views/second_homepage.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:guider/languages/app_localizations.dart';
 import 'package:logger/logger.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:guider/languages/supported_languages.dart';
 
@@ -17,10 +23,9 @@ ValueNotifier<bool> isDeviceConnected = ValueNotifier(false);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
   await Supabase.initialize(
-      url: "https://spohaqvzfgvdihxcwvff.supabase.co",
-      anonKey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwb2hhcXZ6Zmd2ZGloeGN3dmZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkyMzM0OTgsImV4cCI6MjAwNDgwOTQ5OH0.vOlkfj8sLoDvmWV3rrbNWwpu0Iir0Z5V5P4MuUpI5oI");
+      url: Environment.supabaseClientURL, anonKey: Environment.anonKey);
   await KeyValue.initialize();
   currentUser = await KeyValue.getCurrentUser();
   if (currentUser == null) {
@@ -28,7 +33,12 @@ void main() async {
     await SupabaseToDrift.initializeUsers();
   }
   logger.i("Currentuser $currentUser (main)");
-  runApp(const GuiderApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ScanModel(),
+      child: const GuiderApp(),
+    ),
+  );
 }
 
 final supabase = Supabase.instance.client;
@@ -66,11 +76,20 @@ class _GuiderAppState extends State<GuiderApp> {
   ThemeMode? _theme;
   // StreamSubscription<ConnectivityResult>? subscription;
   bool? islogin;
+  String? client;
   List<StreamSubscription> list = Realtime.init();
 
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
+    });
+  }
+
+  Future<void> checkDevice() async {
+    await KeyValue.getClient().then((value) {
+      setState(() {
+        client = value;
+      });
     });
   }
 
@@ -84,6 +103,7 @@ class _GuiderAppState extends State<GuiderApp> {
   void initState() {
     super.initState();
     checkUserLoginState();
+    checkDevice();
     // subscription = Connectivity()
     //     .onConnectivityChanged
     //     .listen((ConnectivityResult result) async {
@@ -111,6 +131,19 @@ class _GuiderAppState extends State<GuiderApp> {
 
   @override
   Widget build(BuildContext context) {
+    if (DeviceInfo.isLargeScreen(context)) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+
     return MaterialApp(
       locale: _locale,
       supportedLocales: SupportedLanguages.all,
@@ -139,11 +172,13 @@ class _GuiderAppState extends State<GuiderApp> {
             seedColor: const Color.fromARGB(255, 92, 172, 252)),
         useMaterial3: true,
       ),
-      home: islogin != null
-          ? islogin!
-              ? const SecondHomePage()
+      home: client != null
+          ? islogin != null
+              ? islogin!
+                  ? const SecondHomePage()
+                  : const LoginPage()
               : const LoginPage()
-          : const LoginPage(),
+          : const RegistrationPage(),
     );
   }
 }

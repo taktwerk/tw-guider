@@ -5,10 +5,9 @@ import 'package:guider/objects/singleton.dart';
 
 class CategoryPopup extends StatefulWidget {
   const CategoryPopup(
-      {Key? key,
+      {super.key,
       required this.chosenCategory,
-      required this.updateCategoryInstructions})
-      : super(key: key);
+      required this.updateCategoryInstructions});
   final String chosenCategory;
   final Function updateCategoryInstructions;
 

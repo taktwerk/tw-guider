@@ -5,8 +5,10 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guider/helpers/constants.dart';
+import 'package:guider/helpers/device_info.dart';
 import 'package:guider/helpers/localstorage/app_util.dart';
 import 'package:guider/helpers/localstorage/localstorage.dart';
+import 'package:guider/helpers/localstorage/supabase_to_drift.dart';
 import 'package:guider/languages/languages.dart';
 import 'package:guider/main.dart';
 import 'package:guider/objects/singleton.dart';
@@ -37,16 +39,8 @@ class _FeedbackViewState extends State<FeedbackView> {
     super.dispose();
   }
 
-  bool isDevice() {
-    return Platform.isAndroid || Platform.isIOS;
-  }
-
-  bool isDesktop() {
-    return Platform.isMacOS || Platform.isLinux || Platform.isWindows;
-  }
-
   selectImage() async {
-    if (kIsWeb || isDevice()) {
+    if (kIsWeb || DeviceInfo.isDevice()) {
       XFile? pickedFile =
           await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
@@ -81,7 +75,7 @@ class _FeedbackViewState extends State<FeedbackView> {
   }
 
   takeImage() async {
-    if (!kIsWeb && !isDesktop()) {
+    if (!kIsWeb && !DeviceInfo.isDesktop()) {
       XFile? takenImage =
           await ImagePicker().pickImage(source: ImageSource.camera);
 
@@ -118,14 +112,16 @@ class _FeedbackViewState extends State<FeedbackView> {
         onPressed: () => Navigator.pop(context),
       ),
       TextButton(
-        child: Text(l.send),
+        child: Text(l.save),
         onPressed: () async {
+          // SYNC NOTE:
           if (_formKey.currentState!.validate() && currentUser != null) {
             String xid = Xid().toString();
             String? url;
             if (_imagesBytes != null) {
               String xidImage = Xid().toString();
-              url = "${Const.supabaseBucketUrl.key}$xidImage.png"; // TODO: png
+              url =
+                  "${Const.supabaseFeedbackImagesBucketUrl}$xidImage.png"; // TODO: png
               Singleton().getDatabase().insertFeedbackImageBytes(
                   BytesCompanion.insert(
                       feedbackId: xid,
@@ -135,20 +131,24 @@ class _FeedbackViewState extends State<FeedbackView> {
                 AppUtil.saveFeedbackImage(image!, xid, url);
               }
             }
-            Singleton().getDatabase().insertFeedback(FeedbackCompanion.insert(
-                id: xid,
-                instructionId: widget.instruction.id,
-                userId: currentUser!,
-                message: _controller.text,
-                image: drift.Value(url),
-                createdAt: DateTime.now().toUtc(),
-                createdBy: currentUser!,
-                updatedAt: DateTime.now().toUtc(),
-                updatedBy: currentUser!));
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
+            await Singleton().getDatabase().insertFeedback(
+                FeedbackCompanion.insert(
+                    id: xid,
+                    instructionId: widget.instruction.id,
+                    userId: currentUser!,
+                    message: _controller.text,
+                    image: drift.Value(url),
+                    createdAt: DateTime.now().toUtc(),
+                    createdBy: currentUser!,
+                    updatedAt: DateTime.now().toUtc(),
+                    updatedBy: currentUser!));
+            if (mounted) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(l.feedbackSaved)));
 
-            Navigator.pop(context);
+              Navigator.pop(context);
+            }
+            SupabaseToDrift.sync();
           }
         },
       )
@@ -192,7 +192,7 @@ class _FeedbackViewState extends State<FeedbackView> {
       String title, IconData iconData, int position, Function function) {
     final l = Languages.of(context);
     return PopupMenuItem(
-      enabled: (kIsWeb || isDesktop())
+      enabled: (kIsWeb || DeviceInfo.isDesktop())
           ? title == l!.takeImage
               ? false
               : true

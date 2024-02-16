@@ -61,9 +61,6 @@ class LanguageEn extends Languages {
   String get noImageSelected => "No Image selected.";
 
   @override
-  String get send => "Send";
-
-  @override
   String get settingsTitle => "Settings";
 
   @override
@@ -136,4 +133,11 @@ class LanguageEn extends Languages {
   @override
   String get feedbackImageError =>
       "No image available. This feedback probably hasn't been synced yet or another error has occured.";
+
+  @override
+  String get noContentAvailable => "No content available.";
+
+  @override
+  String get onlyOnIosAndroidWeb =>
+      "This is only on IOS, Android and Web available.";
 }

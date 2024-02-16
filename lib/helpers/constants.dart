@@ -1,3 +1,5 @@
+import 'package:guider/helpers/environment.dart';
+
 enum Const {
   id("id"),
   updatedAt("updated_at"),
@@ -15,6 +17,11 @@ enum Const {
   image("image"),
   categoryId("category_id"),
   name("name"),
+  type("type"),
+  text("text"),
+  file("file"),
+  textfield("textfield"),
+  assetId("asset_id"),
   title("title"),
   shortTitle("short_title"),
   username("username"),
@@ -24,12 +31,17 @@ enum Const {
   open("open"),
   lightmode("lightmode"),
   language("language"),
-  imagesFolderName("images"),
-  instructionStepsImagesFolderName("images/instructionStepsImages"),
-  instructionImagesFolderName("images/instructionImages"),
-  feedbackImagesFolderName("images/feedbackImages"),
-  supabaseBucketUrl(
-      "https://spohaqvzfgvdihxcwvff.supabase.co/storage/v1/object/public/feedback_images/");
+  imagesFolderName("guider/images"),
+  instructionStepsImagesFolderName("guider/images/instructionStepsImages"),
+  instructionImagesFolderName("guider/images/instructionImages"),
+  feedbackImagesFolderName("guider/images/feedbackImages"),
+  assetsImagesFolderName("guider/assets"),
+  supabaseFeedbackImagesBucketUrl(
+      "${Environment.supabaseClientURL}/storage/v1/object/public/feedback_images/"),
+  // for the JSON stored in the QR Code
+  app("app"),
+  client("client"),
+  host("host");
 
   const Const(this.key);
   final String key;
