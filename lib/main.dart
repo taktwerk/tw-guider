@@ -11,7 +11,7 @@ import 'package:guider/objects/scanner.dart';
 import 'package:guider/views/login.dart';
 import 'package:guider/views/registration.dart';
 import 'package:guider/views/second_homepage.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+// import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:guider/languages/app_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:media_kit/media_kit.dart';
