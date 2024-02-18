@@ -28,18 +28,18 @@ PODS:
     - FlutterMacOS
   - sign_in_with_apple (0.0.1):
     - FlutterMacOS
-  - sqlite3 (3.44.0):
-    - sqlite3/common (= 3.44.0)
-  - sqlite3/common (3.44.0)
-  - sqlite3/fts5 (3.44.0):
+  - sqlite3 (3.45.1):
+    - sqlite3/common (= 3.45.1)
+  - sqlite3/common (3.45.1)
+  - sqlite3/fts5 (3.45.1):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.44.0):
+  - sqlite3/perf-threadsafe (3.45.1):
     - sqlite3/common
-  - sqlite3/rtree (3.44.0):
+  - sqlite3/rtree (3.45.1):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - FlutterMacOS
-    - sqlite3 (~> 3.44.0)
+    - sqlite3 (~> 3.45.1)
     - sqlite3/fts5
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
@@ -109,21 +109,21 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_links: 4481ed4d71f384b0c3ae5016f4633aa73d32ff67
-  device_info_plus: 9c8d0b8cd744bc9ea8e93fd79005dee89c0b1dd5
+  device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
   file_selector_macos: 52ed4eaccdd96cd68e6398a7a8256e32620bd229
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   media_kit_libs_macos_video: b3e2bbec2eef97c285f2b1baa7963c67c753fb82
   media_kit_native_event_loop: 81fd5b45192b72f8b5b69eaf5b540f45777eb8d5
   media_kit_video: c75b07f14d59706c775778e4dd47dd027de8d1e5
-  mobile_scanner: 30e24ab8fae40a2a3a83e8ba8654d021bd1b1fbf
+  mobile_scanner: 54ceceae0c8da2457e26a362a6be5c61154b1829
   package_info_plus: 83edfcd2d4132b4b98f4467564d46d55eaad4510
-  path_provider_foundation: be2f61f523848c5f98282fbc6086ad8fd11ba1a7
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   pdfx: 363a0743f1d1f43d1da56485ed5bb424861db9b0
   screen_brightness_macos: 71763207091b3e0280cc083ae43412e3481c18b9
-  shared_preferences_foundation: 36256dfbe1c2de67509236b9d0bf5b0d6ebf8033
+  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sign_in_with_apple: 461ff3eefd2f22012bc05d40ae09545bdaa2e2ae
-  sqlite3: 6e2d4a4879854d0ec86b476bf3c3e30870bac273
-  sqlite3_flutter_libs: a25f3a0f522fdcd8fef6a4a50a3d681dd43d8dea
+  sqlite3: 73b7fc691fdc43277614250e04d183740cb15078
+  sqlite3_flutter_libs: 06a05802529659a272beac4ee1350bfec294f386
   url_launcher_macos: da8fd32d53041f0e0617c2bf19398014b97b6f6a
   wakelock_plus: 276209ffc66e4e87f6752849ad4c0cefca6cb304
 
