@@ -109,24 +109,24 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_links: 4481ed4d71f384b0c3ae5016f4633aa73d32ff67
-  device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
-  file_selector_macos: 468fb6b81fac7c0e88d71317f3eec34c3b008ff9
+  device_info_plus: 9c8d0b8cd744bc9ea8e93fd79005dee89c0b1dd5
+  file_selector_macos: 52ed4eaccdd96cd68e6398a7a8256e32620bd229
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   media_kit_libs_macos_video: b3e2bbec2eef97c285f2b1baa7963c67c753fb82
   media_kit_native_event_loop: 81fd5b45192b72f8b5b69eaf5b540f45777eb8d5
   media_kit_video: c75b07f14d59706c775778e4dd47dd027de8d1e5
-  mobile_scanner: 54ceceae0c8da2457e26a362a6be5c61154b1829
-  package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
-  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
-  pdfx: d1c406047b02acc54fe98495ae24b04fe9b4f024
-  screen_brightness_macos: 2d6d3af2165592d9a55ffcd95b7550970e41ebda
-  shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
-  sign_in_with_apple: a9e97e744e8edc36aefc2723111f652102a7a727
+  mobile_scanner: 30e24ab8fae40a2a3a83e8ba8654d021bd1b1fbf
+  package_info_plus: 83edfcd2d4132b4b98f4467564d46d55eaad4510
+  path_provider_foundation: be2f61f523848c5f98282fbc6086ad8fd11ba1a7
+  pdfx: 363a0743f1d1f43d1da56485ed5bb424861db9b0
+  screen_brightness_macos: 71763207091b3e0280cc083ae43412e3481c18b9
+  shared_preferences_foundation: 36256dfbe1c2de67509236b9d0bf5b0d6ebf8033
+  sign_in_with_apple: 461ff3eefd2f22012bc05d40ae09545bdaa2e2ae
   sqlite3: 6e2d4a4879854d0ec86b476bf3c3e30870bac273
   sqlite3_flutter_libs: a25f3a0f522fdcd8fef6a4a50a3d681dd43d8dea
-  url_launcher_macos: d2691c7dd33ed713bf3544850a623080ec693d95
-  wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269
+  url_launcher_macos: da8fd32d53041f0e0617c2bf19398014b97b6f6a
+  wakelock_plus: 276209ffc66e4e87f6752849ad4c0cefca6cb304
 
-PODFILE CHECKSUM: 236401fc2c932af29a9fcf0e97baeeb2d750d367
+PODFILE CHECKSUM: c2e95c8c0fe03c5c57e438583cae4cc732296009
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2

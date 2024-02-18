@@ -27,7 +27,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Upload image from camera</string>
+	<string>Code Scanner</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Post videos to profile</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -57,5 +57,7 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
     <false/>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.productivity</string>
 </dict>
 </plist>

@@ -74,9 +74,10 @@ class Categories extends Table with TableInfo<Categories, Category> {
         deletedBy
       ];
   @override
-  String get aliasedName => _alias ?? 'categories';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'categories';
+  String get actualTableName => $name;
+  static const String $name = 'categories';
   @override
   VerificationContext validateIntegrity(Insertable<Category> instance,
       {bool isInserting = false}) {
@@ -512,9 +513,10 @@ class Instructions extends Table with TableInfo<Instructions, Instruction> {
         deletedBy
       ];
   @override
-  String get aliasedName => _alias ?? 'instructions';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'instructions';
+  String get actualTableName => $name;
+  static const String $name = 'instructions';
   @override
   VerificationContext validateIntegrity(Insertable<Instruction> instance,
       {bool isInserting = false}) {
@@ -1036,9 +1038,10 @@ class Users extends Table with TableInfo<Users, User> {
         deletedBy
       ];
   @override
-  String get aliasedName => _alias ?? 'users';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'users';
+  String get actualTableName => $name;
+  static const String $name = 'users';
   @override
   VerificationContext validateIntegrity(Insertable<User> instance,
       {bool isInserting = false}) {
@@ -1542,9 +1545,10 @@ class FeedbackTable extends Table with TableInfo<FeedbackTable, Feedback> {
         liked
       ];
   @override
-  String get aliasedName => _alias ?? 'feedback';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'feedback';
+  String get actualTableName => $name;
+  static const String $name = 'feedback';
   @override
   VerificationContext validateIntegrity(Insertable<Feedback> instance,
       {bool isInserting = false}) {
@@ -2125,9 +2129,10 @@ class InstructionSteps extends Table
         deletedBy
       ];
   @override
-  String get aliasedName => _alias ?? 'instruction_steps';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'instruction_steps';
+  String get actualTableName => $name;
+  static const String $name = 'instruction_steps';
   @override
   VerificationContext validateIntegrity(Insertable<InstructionStep> instance,
       {bool isInserting = false}) {
@@ -2284,8 +2289,8 @@ class InstructionStep extends DataClass implements Insertable<InstructionStep> {
     map['description'] = Variable<String>(description);
     map['image'] = Variable<String>(image);
     {
-      final converter = InstructionSteps.$convertertype;
-      map['type'] = Variable<String>(converter.toSql(type));
+      map['type'] =
+          Variable<String>(InstructionSteps.$convertertype.toSql(type));
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['created_by'] = Variable<int>(createdBy);
@@ -2554,8 +2559,8 @@ class InstructionStepsCompanion extends UpdateCompanion<InstructionStep> {
       map['image'] = Variable<String>(image.value);
     }
     if (type.present) {
-      final converter = InstructionSteps.$convertertype;
-      map['type'] = Variable<String>(converter.toSql(type.value));
+      map['type'] =
+          Variable<String>(InstructionSteps.$convertertype.toSql(type.value));
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -2693,9 +2698,10 @@ class Histories extends Table with TableInfo<Histories, History> {
         additionalData
       ];
   @override
-  String get aliasedName => _alias ?? 'histories';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'histories';
+  String get actualTableName => $name;
+  static const String $name = 'histories';
   @override
   VerificationContext validateIntegrity(Insertable<History> instance,
       {bool isInserting = false}) {
@@ -3241,9 +3247,10 @@ class InstructionsCategories extends Table
         deletedBy
       ];
   @override
-  String get aliasedName => _alias ?? 'InstructionsCategories';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'InstructionsCategories';
+  String get actualTableName => $name;
+  static const String $name = 'InstructionsCategories';
   @override
   VerificationContext validateIntegrity(
       Insertable<InstructionCategory> instance,
@@ -3698,9 +3705,10 @@ class Settings extends Table with TableInfo<Settings, Setting> {
         lightmode
       ];
   @override
-  String get aliasedName => _alias ?? 'settings';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'settings';
+  String get actualTableName => $name;
+  static const String $name = 'settings';
   @override
   VerificationContext validateIntegrity(Insertable<Setting> instance,
       {bool isInserting = false}) {
@@ -4133,9 +4141,10 @@ class Bytes extends Table with TableInfo<Bytes, Byte> {
   @override
   List<GeneratedColumn> get $columns => [feedbackId, image, imageXid];
   @override
-  String get aliasedName => _alias ?? 'bytes';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'bytes';
+  String get actualTableName => $name;
+  static const String $name = 'bytes';
   @override
   VerificationContext validateIntegrity(Insertable<Byte> instance,
       {bool isInserting = false}) {
@@ -4431,9 +4440,10 @@ class Assets extends Table with TableInfo<Assets, Asset> {
         deletedBy
       ];
   @override
-  String get aliasedName => _alias ?? 'assets';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'assets';
+  String get actualTableName => $name;
+  static const String $name = 'assets';
   @override
   VerificationContext validateIntegrity(Insertable<Asset> instance,
       {bool isInserting = false}) {
@@ -4567,8 +4577,7 @@ class Asset extends DataClass implements Insertable<Asset> {
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     {
-      final converter = Assets.$convertertype;
-      map['type'] = Variable<String>(converter.toSql(type));
+      map['type'] = Variable<String>(Assets.$convertertype.toSql(type));
     }
     if (!nullToAbsent || file != null) {
       map['file'] = Variable<String>(file);
@@ -4818,8 +4827,7 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
       map['name'] = Variable<String>(name.value);
     }
     if (type.present) {
-      final converter = Assets.$convertertype;
-      map['type'] = Variable<String>(converter.toSql(type.value));
+      map['type'] = Variable<String>(Assets.$convertertype.toSql(type.value));
     }
     if (file.present) {
       map['file'] = Variable<String>(file.value);
@@ -4941,9 +4949,10 @@ class InstructionsAssets extends Table
         deletedBy
       ];
   @override
-  String get aliasedName => _alias ?? 'InstructionsAssets';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'InstructionsAssets';
+  String get actualTableName => $name;
+  static const String $name = 'InstructionsAssets';
   @override
   VerificationContext validateIntegrity(Insertable<InstructionAsset> instance,
       {bool isInserting = false}) {
@@ -5345,32 +5354,30 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         readsFrom: {
           instructions,
           histories,
-        }).map((QueryRow row) {
-      return OpenInstructionResult(
-        id: row.read<int>('id'),
-        title: row.read<String>('title'),
-        shortTitle: row.read<String>('short_title'),
-        image: row.read<String>('image'),
-        description: row.read<String>('description'),
-        createdAt: row.read<DateTime>('created_at'),
-        createdBy: row.read<int>('created_by'),
-        updatedAt: row.read<DateTime>('updated_at'),
-        updatedBy: row.read<int>('updated_by'),
-        deletedAt: row.readNullable<DateTime>('deleted_at'),
-        deletedBy: row.readNullable<int>('deleted_by'),
-        userId: row.read<int>('user_id'),
-        instructionId: row.read<int>('instruction_id'),
-        createdAt1: row.read<DateTime>('created_at'),
-        createdBy1: row.read<int>('created_by'),
-        updatedAt1: row.read<DateTime>('updated_at'),
-        updatedBy1: row.read<int>('updated_by'),
-        deletedAt1: row.readNullable<DateTime>('deleted_at'),
-        deletedBy1: row.readNullable<int>('deleted_by'),
-        instructionStepId: row.readNullable<int>('instruction_step_id'),
-        open: row.read<bool>('open'),
-        additionalData: row.readNullable<String>('additional_data'),
-      );
-    });
+        }).map((QueryRow row) => OpenInstructionResult(
+          id: row.read<int>('id'),
+          title: row.read<String>('title'),
+          shortTitle: row.read<String>('short_title'),
+          image: row.read<String>('image'),
+          description: row.read<String>('description'),
+          createdAt: row.read<DateTime>('created_at'),
+          createdBy: row.read<int>('created_by'),
+          updatedAt: row.read<DateTime>('updated_at'),
+          updatedBy: row.read<int>('updated_by'),
+          deletedAt: row.readNullable<DateTime>('deleted_at'),
+          deletedBy: row.readNullable<int>('deleted_by'),
+          userId: row.read<int>('user_id'),
+          instructionId: row.read<int>('instruction_id'),
+          createdAt1: row.read<DateTime>('created_at'),
+          createdBy1: row.read<int>('created_by'),
+          updatedAt1: row.read<DateTime>('updated_at'),
+          updatedBy1: row.read<int>('updated_by'),
+          deletedAt1: row.readNullable<DateTime>('deleted_at'),
+          deletedBy1: row.readNullable<int>('deleted_by'),
+          instructionStepId: row.readNullable<int>('instruction_step_id'),
+          open: row.read<bool>('open'),
+          additionalData: row.readNullable<String>('additional_data'),
+        ));
   }
 
   Selectable<bool> isSynced(DateTime timestampSettings,
@@ -5411,22 +5418,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
           instructions,
           instructionSteps,
           histories,
-        }).map((QueryRow row) {
-      return HistoryEntriesOfUserAsInstructionsResult(
-        id: row.read<int>('id'),
-        title: row.read<String>('title'),
-        shortTitle: row.read<String>('short_title'),
-        image: row.read<String>('image'),
-        description: row.read<String>('description'),
-        createdAt: row.read<DateTime>('created_at'),
-        createdBy: row.read<int>('created_by'),
-        updatedAt: row.read<DateTime>('updated_at'),
-        updatedBy: row.read<int>('updated_by'),
-        deletedAt: row.readNullable<DateTime>('deleted_at'),
-        deletedBy: row.readNullable<int>('deleted_by'),
-        numberOfSteps: row.read<int>('number_of_steps'),
-      );
-    });
+        }).map((QueryRow row) => HistoryEntriesOfUserAsInstructionsResult(
+          id: row.read<int>('id'),
+          title: row.read<String>('title'),
+          shortTitle: row.read<String>('short_title'),
+          image: row.read<String>('image'),
+          description: row.read<String>('description'),
+          createdAt: row.read<DateTime>('created_at'),
+          createdBy: row.read<int>('created_by'),
+          updatedAt: row.read<DateTime>('updated_at'),
+          updatedBy: row.read<int>('updated_by'),
+          deletedAt: row.readNullable<DateTime>('deleted_at'),
+          deletedBy: row.readNullable<int>('deleted_by'),
+          numberOfSteps: row.read<int>('number_of_steps'),
+        ));
   }
 
   Selectable<AllInstructionsResult> allInstructions() {
@@ -5436,22 +5441,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         readsFrom: {
           instructions,
           instructionSteps,
-        }).map((QueryRow row) {
-      return AllInstructionsResult(
-        id: row.read<int>('id'),
-        title: row.read<String>('title'),
-        shortTitle: row.read<String>('short_title'),
-        image: row.read<String>('image'),
-        description: row.read<String>('description'),
-        createdAt: row.read<DateTime>('created_at'),
-        createdBy: row.read<int>('created_by'),
-        updatedAt: row.read<DateTime>('updated_at'),
-        updatedBy: row.read<int>('updated_by'),
-        deletedAt: row.readNullable<DateTime>('deleted_at'),
-        deletedBy: row.readNullable<int>('deleted_by'),
-        numberOfSteps: row.read<int>('number_of_steps'),
-      );
-    });
+        }).map((QueryRow row) => AllInstructionsResult(
+          id: row.read<int>('id'),
+          title: row.read<String>('title'),
+          shortTitle: row.read<String>('short_title'),
+          image: row.read<String>('image'),
+          description: row.read<String>('description'),
+          createdAt: row.read<DateTime>('created_at'),
+          createdBy: row.read<int>('created_by'),
+          updatedAt: row.read<DateTime>('updated_at'),
+          updatedBy: row.read<int>('updated_by'),
+          deletedAt: row.readNullable<DateTime>('deleted_at'),
+          deletedBy: row.readNullable<int>('deleted_by'),
+          numberOfSteps: row.read<int>('number_of_steps'),
+        ));
   }
 
   Selectable<AllInstructionsBySearchResult> allInstructionsBySearch(
@@ -5464,22 +5467,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         readsFrom: {
           instructions,
           instructionSteps,
-        }).map((QueryRow row) {
-      return AllInstructionsBySearchResult(
-        id: row.read<int>('id'),
-        title: row.read<String>('title'),
-        shortTitle: row.read<String>('short_title'),
-        image: row.read<String>('image'),
-        description: row.read<String>('description'),
-        createdAt: row.read<DateTime>('created_at'),
-        createdBy: row.read<int>('created_by'),
-        updatedAt: row.read<DateTime>('updated_at'),
-        updatedBy: row.read<int>('updated_by'),
-        deletedAt: row.readNullable<DateTime>('deleted_at'),
-        deletedBy: row.readNullable<int>('deleted_by'),
-        numberOfSteps: row.read<int>('number_of_steps'),
-      );
-    });
+        }).map((QueryRow row) => AllInstructionsBySearchResult(
+          id: row.read<int>('id'),
+          title: row.read<String>('title'),
+          shortTitle: row.read<String>('short_title'),
+          image: row.read<String>('image'),
+          description: row.read<String>('description'),
+          createdAt: row.read<DateTime>('created_at'),
+          createdBy: row.read<int>('created_by'),
+          updatedAt: row.read<DateTime>('updated_at'),
+          updatedBy: row.read<int>('updated_by'),
+          deletedAt: row.readNullable<DateTime>('deleted_at'),
+          deletedBy: row.readNullable<int>('deleted_by'),
+          numberOfSteps: row.read<int>('number_of_steps'),
+        ));
   }
 
   Selectable<AllInstructionsByCategoryAndSearchResult>
@@ -5494,22 +5495,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
           instructions,
           instructionSteps,
           instructionsCategories,
-        }).map((QueryRow row) {
-      return AllInstructionsByCategoryAndSearchResult(
-        id: row.read<int>('id'),
-        title: row.read<String>('title'),
-        shortTitle: row.read<String>('short_title'),
-        image: row.read<String>('image'),
-        description: row.read<String>('description'),
-        createdAt: row.read<DateTime>('created_at'),
-        createdBy: row.read<int>('created_by'),
-        updatedAt: row.read<DateTime>('updated_at'),
-        updatedBy: row.read<int>('updated_by'),
-        deletedAt: row.readNullable<DateTime>('deleted_at'),
-        deletedBy: row.readNullable<int>('deleted_by'),
-        numberOfSteps: row.read<int>('number_of_steps'),
-      );
-    });
+        }).map((QueryRow row) => AllInstructionsByCategoryAndSearchResult(
+          id: row.read<int>('id'),
+          title: row.read<String>('title'),
+          shortTitle: row.read<String>('short_title'),
+          image: row.read<String>('image'),
+          description: row.read<String>('description'),
+          createdAt: row.read<DateTime>('created_at'),
+          createdBy: row.read<int>('created_by'),
+          updatedAt: row.read<DateTime>('updated_at'),
+          updatedBy: row.read<int>('updated_by'),
+          deletedAt: row.readNullable<DateTime>('deleted_at'),
+          deletedBy: row.readNullable<int>('deleted_by'),
+          numberOfSteps: row.read<int>('number_of_steps'),
+        ));
   }
 
   Selectable<AllInstructionsByCategoryResult> allInstructionsByCategory(
@@ -5523,22 +5522,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
           instructions,
           instructionSteps,
           instructionsCategories,
-        }).map((QueryRow row) {
-      return AllInstructionsByCategoryResult(
-        id: row.read<int>('id'),
-        title: row.read<String>('title'),
-        shortTitle: row.read<String>('short_title'),
-        image: row.read<String>('image'),
-        description: row.read<String>('description'),
-        createdAt: row.read<DateTime>('created_at'),
-        createdBy: row.read<int>('created_by'),
-        updatedAt: row.read<DateTime>('updated_at'),
-        updatedBy: row.read<int>('updated_by'),
-        deletedAt: row.readNullable<DateTime>('deleted_at'),
-        deletedBy: row.readNullable<int>('deleted_by'),
-        numberOfSteps: row.read<int>('number_of_steps'),
-      );
-    });
+        }).map((QueryRow row) => AllInstructionsByCategoryResult(
+          id: row.read<int>('id'),
+          title: row.read<String>('title'),
+          shortTitle: row.read<String>('short_title'),
+          image: row.read<String>('image'),
+          description: row.read<String>('description'),
+          createdAt: row.read<DateTime>('created_at'),
+          createdBy: row.read<int>('created_by'),
+          updatedAt: row.read<DateTime>('updated_at'),
+          updatedBy: row.read<int>('updated_by'),
+          deletedAt: row.readNullable<DateTime>('deleted_at'),
+          deletedBy: row.readNullable<int>('deleted_by'),
+          numberOfSteps: row.read<int>('number_of_steps'),
+        ));
   }
 
   @override

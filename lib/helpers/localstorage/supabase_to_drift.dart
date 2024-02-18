@@ -95,6 +95,7 @@ class SupabaseToDrift {
       if (folderInAppDocDir.isNotEmpty) {
         await AppUtil.deleteFolderContent(folderInAppDocDir);
       }
+      logger.w("DOWNLOAD FILE: $file");
       file.writeAsBytesSync(response.bodyBytes);
     }
   }
