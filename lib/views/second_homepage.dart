@@ -47,6 +47,12 @@ class _SecondHomePageState extends State<SecondHomePage>
     getUsers();
     initHistoryStream();
     initSyncedStream();
+    initPageIndex();
+  }
+
+  void initPageIndex() {
+    final scanModel = Provider.of<ScanModel>(context, listen: false);
+    scanModel.addListener(onScan);
   }
 
   void initSyncedStream() async {
@@ -80,6 +86,15 @@ class _SecondHomePageState extends State<SecondHomePage>
     setState(() {
       user = result.firstOrNull;
     });
+  }
+
+  void onScan() {
+    if (mounted) {
+      setState(() {
+        // change to "Instructions" Tab/ HomeView
+        _pageIndex = 0;
+      });
+    }
   }
 
   void initHistoryStream() {
